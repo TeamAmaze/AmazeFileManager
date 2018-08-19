@@ -43,6 +43,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import java.lang.ref.WeakReference;
+
 public class AppConfig extends GlideApplication {
 
     public static final String TAG = AppConfig.class.getSimpleName();
@@ -55,7 +57,7 @@ public class AppConfig extends GlideApplication {
     private static Handler mApplicationHandler = new Handler();
     private HandlerThread sBackgroundHandlerThread;
     private static Handler sBackgroundHandler;
-    private static Context sActivityContext;
+    private WeakReference<Context> mainActivityContext;
     private static ScreenUtils screenUtils;
 
     private static AppConfig mInstance;
@@ -201,17 +203,18 @@ public class AppConfig extends GlideApplication {
         return mUtilsHandler;
     }
 
-    public static void setActivityContext(Context context) {
-        sActivityContext = context;
-        screenUtils = new ScreenUtils((Activity)context);
+    public void setActivityContext(@NonNull Activity activity) {
+        mainActivityContext = new WeakReference<>(activity);
+        screenUtils = new ScreenUtils(activity);
     }
 
     public ScreenUtils getScreenUtils(){
         return screenUtils;
     }
 
+    @Nullable
     public Context getActivityContext() {
-        return sActivityContext;
+        return mainActivityContext.get();
     }
 
 }
