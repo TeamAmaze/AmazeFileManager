@@ -22,7 +22,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
@@ -157,7 +156,7 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
             {
                 DisconnectReason disconnectReason = TransportException.class.cast(result.exception).getDisconnectReason();
                 if(DisconnectReason.HOST_KEY_NOT_VERIFIABLE.equals(disconnectReason)) {
-                    new AlertDialog.Builder(AppConfig.getInstance().getActivityContext())
+                    new AlertDialog.Builder(AppConfig.getInstance().getMainActivityContext())
                             .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
                             .setMessage(R.string.ssh_connect_failed_host_key_changed_message)
                             .setPositiveButton(R.string.ok, (dialog, which) -> dialog.dismiss()).show();

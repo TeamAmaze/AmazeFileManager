@@ -21,7 +21,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.text.InputType;
@@ -126,8 +125,8 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
         if (values.length < 1) return;
 
         IOException result = values[0];
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getActivityContext());
-        View dialogLayout = View.inflate(AppConfig.getInstance().getActivityContext(), R.layout.dialog_singleedittext, null);
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getMainActivityContext());
+        View dialogLayout = View.inflate(AppConfig.getInstance().getMainActivityContext(), R.layout.dialog_singleedittext, null);
         WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
         EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
         textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
@@ -159,7 +158,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
 
         MaterialDialog dialog = builder.show();
 
-        new WarnableTextInputValidator(AppConfig.getInstance().getActivityContext(), textfield,
+        new WarnableTextInputValidator(AppConfig.getInstance().getMainActivityContext(), textfield,
                 wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
             if (text.length() < 1) {
                 return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
@@ -181,7 +180,7 @@ public class PemToKeyPairTask extends AsyncTask<Void, IOException, KeyPair>
     }
 
     private void toastOnParseError(IOException result){
-        Toast.makeText(AppConfig.getInstance().getActivityContext(),
+        Toast.makeText(AppConfig.getInstance().getMainActivityContext(),
                 AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error,
                         result.getLocalizedMessage()), Toast.LENGTH_LONG).show();
     }

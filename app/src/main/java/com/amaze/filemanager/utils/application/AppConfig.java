@@ -203,7 +203,7 @@ public class AppConfig extends GlideApplication {
         return mUtilsHandler;
     }
 
-    public void setActivityContext(@NonNull Activity activity) {
+    public void setMainActivityContext(@NonNull Activity activity) {
         mainActivityContext = new WeakReference<>(activity);
         screenUtils = new ScreenUtils(activity);
     }
@@ -213,7 +213,7 @@ public class AppConfig extends GlideApplication {
     }
 
     @Nullable
-    public Context getActivityContext() {
+    public Context getMainActivityContext() {
         return mainActivityContext.get();
     }
 

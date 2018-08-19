@@ -24,7 +24,6 @@ package com.amaze.filemanager.activities;
 
 import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.Application;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -279,7 +278,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         dataUtils.registerOnDataChangedListener(this);
 
         CustomSshJConfig.init();
-        AppConfig.getInstance().setActivityContext(this);
+        AppConfig.getInstance().setMainActivityContext(this);
 
         setContentView(R.layout.main_toolbar);
         appbar = new AppBar(this, getPrefs(), queue -> {
