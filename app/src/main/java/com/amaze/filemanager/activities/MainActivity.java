@@ -202,7 +202,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private Drawer drawer;
     //private HistoryManager history, grid;
     private MainActivity mainActivity = this;
-    private Context con = this;
     private String zippath;
     private boolean openProcesses = false;
     private MaterialDialog materialDialog;
@@ -279,7 +278,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         dataUtils.registerOnDataChangedListener(this);
 
         CustomSshJConfig.init();
-        AppConfig.setActivityContext(con);
+        AppConfig.setActivityContext(this);
 
         setContentView(R.layout.main_toolbar);
         appbar = new AppBar(this, getPrefs(), queue -> {
@@ -1330,7 +1329,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     }
                     for (int i = 0; i < oparrayListList.size(); i++) {
                         ArrayList<HybridFileParcelable> sourceList = oparrayListList.get(i);
-                        Intent intent1 = new Intent(con, CopyService.class);
+                        Intent intent1 = new Intent(this, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, sourceList);
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
                         ServiceWatcherUtil.runService(this, intent1);
