@@ -1381,6 +1381,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 // otg access
                 Uri usbOtgRoot = Uri.parse(intent.getData().toString());
                 SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
+                getCurrentMainFragment().loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
 
                 drawer.closeIfNotLocked();
                 if (drawer.isLocked()) drawer.onDrawerClosed();
