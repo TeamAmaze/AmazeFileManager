@@ -41,13 +41,11 @@ import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPAR
 
 public class TarHelperTask extends CompressedHelperTask {
 
-    private WeakReference<Context> context;
     private String filePath, relativePath;
 
-    public TarHelperTask(Context context, String filePath, String relativePath, boolean goBack,
+    public TarHelperTask(String filePath, String relativePath, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
-        this.context = new WeakReference<>(context);
         this.filePath = filePath;
         this.relativePath = relativePath;
     }

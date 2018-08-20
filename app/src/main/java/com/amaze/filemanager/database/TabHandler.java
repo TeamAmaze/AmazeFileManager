@@ -50,11 +50,8 @@ public class TabHandler extends SQLiteOpenHelper {
     protected static final String COLUMN_ENCRYPTED_PATH = "path";
     protected static final String COLUMN_ENCRYPTED_PASSWORD = "password";
 
-    private Context context;
-
     public TabHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
-        this.context = context;
         // The call to onUpgrade() is not performed unless getWritableDatabase() is called.
         // See more at https://github.com/TeamAmaze/AmazeFileManager/pull/1262
         getWritableDatabase();

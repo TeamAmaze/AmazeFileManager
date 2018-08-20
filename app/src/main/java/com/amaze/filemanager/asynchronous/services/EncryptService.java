@@ -53,7 +53,6 @@ public class EncryptService extends AbstractProgressiveService {
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
-    private OpenMode openMode;
     private HybridFileParcelable baseFile;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private String targetFilename;
@@ -79,7 +78,7 @@ public class EncryptService extends AbstractProgressiveService {
                 .getColorPreference()
                 .getCurrentUserColorPreferences(this, sharedPreferences).accent;
 
-        openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
+        OpenMode openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);

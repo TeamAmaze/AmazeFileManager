@@ -691,7 +691,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.rename:
 
-                    final ActionMode m = mode;
                     final HybridFileParcelable f;
                     f = checkedItems.get(0).generateBaseFile();
                     rename(f);
@@ -1447,7 +1446,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (!isEncryptOpen && encryptBaseFiles.size() != 0) {
                 // we've opened the file and are ready to delete it
-                new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(encryptBaseFiles);
+                new DeleteTask(getActivity()).execute(encryptBaseFiles);
             }
         }
     }

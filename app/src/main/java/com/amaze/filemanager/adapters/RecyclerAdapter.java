@@ -515,7 +515,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (holder.about != null) {
                     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                         holder.about.setColorFilter(grey_color);
-                    showPopup(holder.about, rowItem, p);
+                    showPopup(holder.about, rowItem);
                 }
                 holder.genericIcon.setOnClickListener(v -> {
                     int id = v.getId();
@@ -772,7 +772,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (holder.about != null) {
                     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
                         holder.about.setColorFilter(grey_color);
-                    showPopup(holder.about, rowItem, p);
+                    showPopup(holder.about, rowItem);
                 }
                 if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED))
                     holder.date.setText(rowItem.date1);
@@ -904,7 +904,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
     }
 
-    private void showPopup(View v, final LayoutElementParcelable rowItem, final int position) {
+    private void showPopup(View v, final LayoutElementParcelable rowItem) {
         v.setOnClickListener(view -> {
             PopupMenu popupMenu = new ItemPopupMenu(context, mainFrag.getMainActivity(),
                     utilsProvider, mainFrag, rowItem, view, sharedPrefs);

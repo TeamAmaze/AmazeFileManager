@@ -26,7 +26,6 @@ import android.content.Context;
 
 import com.amaze.filemanager.asynchronous.asynctasks.compress.RarHelperTask;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.rarfile.FileHeader;
@@ -44,7 +43,7 @@ public class RarDecompressor extends Decompressor {
     @Override
     public RarHelperTask changePath(String path, boolean addGoBackItem,
                                        OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
-        return new RarHelperTask(context, filePath, path, addGoBackItem, onFinish);
+        return new RarHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 
     public static String convertName(FileHeader file) {
