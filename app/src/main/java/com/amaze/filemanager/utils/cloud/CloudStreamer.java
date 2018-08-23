@@ -103,12 +103,12 @@ public class CloudStreamer extends CloudStreamServer {
                     source.moveTo(startFrom);
                     Log.d(CloudUtil.TAG, "Skipped " + startFrom + " bytes");
 
-                    res = new CloudStreamServer.Response(HTTP_PARTIALCONTENT, source.getMimeType(), source);
+                    res = new CloudStreamServer.Response(HTTP_PARTIALCONTENT, null, source);
                     res.addHeader("Content-length", "" + dataLen);
                 }
             } else {
                 source.reset();
-                res = new CloudStreamServer.Response(HTTP_OK, source.getMimeType(), source);
+                res = new CloudStreamServer.Response(HTTP_OK, null, source);
                 res.addHeader("Content-Length", "" + fileLen);
             }
         }
