@@ -505,5 +505,7 @@
   <string name="items">Éléments</string>
   <string name="byte_singular">octet</string>
   <string name="bytes">Octets</string>
+    <string name="preselectedconfigs_title">Couleurs préconfigurées</string>
+  <string name="selectcolorconfig">Configurer les couleurs</string>
   <!-- end of plurals -->
 </resources>
