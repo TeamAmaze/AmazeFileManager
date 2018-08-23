@@ -11,7 +11,6 @@ import java.io.InputStream;
  */
 
 public class CloudStreamSource extends RandomAccessStream {
-    protected String mime;
     protected long fp;
     protected String name;
     private InputStream inputStream;
@@ -79,9 +78,6 @@ public class CloudStreamSource extends RandomAccessStream {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-    public String getMimeType(){
-        return mime;
     }
 
     public String getName(){
