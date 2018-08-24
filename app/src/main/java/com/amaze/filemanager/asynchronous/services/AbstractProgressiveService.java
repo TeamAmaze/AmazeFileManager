@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 import android.widget.RemoteViews;
@@ -44,6 +45,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     protected abstract float getPercentProgress();
 
     protected abstract void setPercentProgress(float progress);
+
+    protected abstract @StringRes int getTitle(boolean move);
 
     protected abstract RemoteViews getNotificationCustomViewSmall();
 
@@ -101,30 +104,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
             setPercentProgress(((float) writtenSize / totalSize) * 100);
 
             if (!isNotificationTitleSet) {
-                int titleResource;
-
-                switch (getNotificationId()) {
-                    case NotificationConstants.COPY_ID:
-                        titleResource = move ? R.string.moving : R.string.copying;
-                        break;
-                    case NotificationConstants.ENCRYPT_ID:
-                        titleResource = move ? R.string.crypt_decrypting : R.string.crypt_encrypting;
-                        break;
-                    case NotificationConstants.EXTRACT_ID:
-                        titleResource = R.string.extracting;
-                        break;
-                    case NotificationConstants.ZIP_ID:
-                        titleResource = R.string.compressing;
-                        break;
-                    case NotificationConstants.DECRYPT_ID:
-                        titleResource = R.string.crypt_decrypting;
-                        break;
-                    default:
-                        titleResource = R.string.processing;
-                        break;
-                }
-
-                getNotificationBuilder().setSubText(getString(titleResource));
+                getNotificationBuilder().setSubText(getString(getTitle(move)));
                 isNotificationTitleSet = true;
             }
 
@@ -264,31 +244,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(getApplicationContext(), NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentTitle(getString(R.string.operationunsuccesful));
 
-        String titleResource;
-
-        switch (getNotificationId()) {
-            case NotificationConstants.COPY_ID:
-                titleResource = move ? getString(R.string.moved) : getString(R.string.copied);
-                break;
-            case NotificationConstants.ENCRYPT_ID:
-                titleResource = getString(R.string.crypt_encrypted);
-                break;
-            case NotificationConstants.EXTRACT_ID:
-                titleResource = getString(R.string.extracted);
-                break;
-            case NotificationConstants.ZIP_ID:
-                titleResource = getString(R.string.compressed);
-                break;
-            case NotificationConstants.DECRYPT_ID:
-                titleResource = getString(R.string.crypt_decrypted);
-                break;
-            default:
-                titleResource = getString(R.string.processed);
-                break;
-        }
-
-        mBuilder.setContentText(getString(R.string.copy_error).replace("%s",
-                titleResource.toLowerCase()));
+        mBuilder.setContentText(getString(R.string.copy_error, getString(getTitle(move)).toLowerCase()));
         mBuilder.setAutoCancel(true);
 
         getProgressHandler().setCancelled(true);

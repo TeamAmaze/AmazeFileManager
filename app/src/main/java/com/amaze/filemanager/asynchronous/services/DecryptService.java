@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -194,6 +195,12 @@ public class DecryptService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         progressPercent = progress;
+    }
+
+    @Override
+    @StringRes
+    protected int getTitle(boolean move) {
+        return R.string.crypt_decrypting;
     }
 
     @Override
