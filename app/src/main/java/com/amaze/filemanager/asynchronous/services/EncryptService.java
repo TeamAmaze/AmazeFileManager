@@ -147,7 +147,7 @@ public class EncryptService extends AbstractProgressiveService {
     @Override
     @StringRes
     protected int getTitle(boolean move) {
-        return move ? R.string.crypt_decrypting : R.string.crypt_encrypting;
+        return R.string.crypt_encrypting;
     }
 
     @Override
