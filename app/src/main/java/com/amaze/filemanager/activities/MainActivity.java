@@ -278,7 +278,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         dataUtils.registerOnDataChangedListener(this);
 
         CustomSshJConfig.init();
-        AppConfig.setActivityContext(this);
+        AppConfig.getInstance().setMainActivityContext(this);
 
         setContentView(R.layout.main_toolbar);
         appbar = new AppBar(this, getPrefs(), queue -> {
