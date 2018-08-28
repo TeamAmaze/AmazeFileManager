@@ -719,7 +719,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             drawer.close();
             return;
         }
-        
+
         Fragment fragment = getFragmentAtFrame();
         if (getAppbar().getSearchView().isShown()) {
             // hide search view if visible, with an animation
