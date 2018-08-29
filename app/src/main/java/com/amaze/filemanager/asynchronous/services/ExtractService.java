@@ -278,7 +278,7 @@ public class ExtractService extends AbstractProgressiveService {
                             public boolean isCancelled() {
                                 return progressHandler.getCancelled();
                             }
-                        });
+                        }, null);
 
                 if (entriesToExtract != null) {
                     extractor.extractFiles(entriesToExtract);

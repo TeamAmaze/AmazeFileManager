@@ -56,7 +56,7 @@ public abstract class AbstractExtractorTest {
     @Test
     public void testExtractFiles() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
+        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class, String.class)
                 .newInstance(RuntimeEnvironment.application,
                         getArchiveFile().getAbsolutePath(),
                         Environment.getExternalStorageDirectory().getAbsolutePath(), new Extractor.OnUpdate() {
@@ -86,7 +86,7 @@ public abstract class AbstractExtractorTest {
                             public boolean isCancelled() {
                                 return false;
                             }
-                        });
+                        }, null);
         extractor.extractEverything();
         latch.await();
     }

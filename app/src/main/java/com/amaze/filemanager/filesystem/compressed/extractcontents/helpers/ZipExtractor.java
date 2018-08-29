@@ -24,6 +24,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -45,8 +46,8 @@ import java.util.List;
 
 public class ZipExtractor extends Extractor {
 
-    public ZipExtractor(Context context, String filePath, String outputPath, OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public ZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener, @Nullable String password) {
+        super(context, filePath, outputPath, listener, password);
     }
 
     @Override
@@ -55,6 +56,8 @@ public class ZipExtractor extends Extractor {
         List<FileHeader> entriesToExtract = new ArrayList<>();
         try {
             ZipFile zipfile = new ZipFile(filePath);
+            if(password != null && password.length > 0)
+                zipfile.setPassword(password);
 
             // iterating archive elements to find file names that are to be extracted
             for (Object obj : zipfile.getFileHeaders()) {

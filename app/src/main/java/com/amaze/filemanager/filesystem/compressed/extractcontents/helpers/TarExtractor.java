@@ -24,6 +24,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -43,8 +44,8 @@ import java.util.List;
 
 public class TarExtractor extends Extractor {
 
-    public TarExtractor(Context context, String filePath, String outputPath, Extractor.OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public TarExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener, @Nullable String password) {
+        super(context, filePath, outputPath, listener, password);
     }
 
     @Override

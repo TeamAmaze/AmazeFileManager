@@ -98,7 +98,7 @@ dependencies {
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
     releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.3'
 
-    implementation 'org.apache.commons:commons-compress:1.12'
+    implementation 'org.apache.commons:commons-compress:1.18'
 
     implementation ('com.github.junrar:junrar:0.7') {
         exclude module: 'commons-logging'

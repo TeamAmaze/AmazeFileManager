@@ -63,7 +63,7 @@ public class B0rkenZipTest {
 
     @Test
     public void testExtractZipWithWrongPathUnix() throws Exception{
-        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile1.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile1.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener, null);
         extractor.extractEverything();
         assertEquals(1, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());
@@ -71,7 +71,7 @@ public class B0rkenZipTest {
 
     @Test
     public void testExtractZipWithWrongPathWindows() throws Exception{
-        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile2.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile2.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener, null);
         extractor.extractEverything();
         assertEquals(1, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());

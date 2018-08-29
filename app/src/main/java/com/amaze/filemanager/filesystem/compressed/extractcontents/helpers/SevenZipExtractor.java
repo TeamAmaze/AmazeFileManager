@@ -2,6 +2,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -19,14 +20,15 @@ import java.util.ArrayList;
 
 public class SevenZipExtractor extends Extractor {
 
-    public SevenZipExtractor(Context context, String filePath, String outputPath, OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public SevenZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener, @Nullable String password) {
+        super(context, filePath, outputPath, listener, password);
     }
 
     @Override
     protected void extractWithFilter(@NonNull Filter filter) throws IOException {
         long totalBytes = 0;
-        SevenZFile sevenzFile = new SevenZFile(new File(filePath));
+        SevenZFile sevenzFile = (password != null && password.length > 0) ? new SevenZFile(new File(filePath), password) : new SevenZFile(new File(filePath));
+
         ArrayList<SevenZArchiveEntry> arrayList = new ArrayList<>();
 
         // iterating archive elements to find file names that are to be extracted

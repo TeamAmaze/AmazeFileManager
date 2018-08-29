@@ -23,6 +23,8 @@
 package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
@@ -72,27 +74,27 @@ public abstract class CompressedHelper {
     /**
      * To add compatibility with other compressed file types edit this method
      */
-    public static Extractor getExtractorInstance(Context context, File file, String outputPath,
-                                                 Extractor.OnUpdate listener) {
+    public static Extractor getExtractorInstance(@NonNull Context context, @NonNull File file, @NonNull String outputPath,
+                                                 @NonNull Extractor.OnUpdate listener, @Nullable String password) {
         Extractor extractor;
         String type = getExtension(file.getPath());
 
         if (isZip(type)) {
-            extractor = new ZipExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new ZipExtractor(context, file.getPath(), outputPath, listener, null);
         } else if (isRar(type)) {
-            extractor = new RarExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new RarExtractor(context, file.getPath(), outputPath, listener, null);
         } else if(isTar(type)) {
-            extractor = new TarExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new TarExtractor(context, file.getPath(), outputPath, listener, null);
         } else if(isGzippedTar(type)) {
-            extractor = new GzipExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new GzipExtractor(context, file.getPath(), outputPath, listener, null);
         } else if(isBzippedTar(type)) {
-            extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener);
+            extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, null);
         } else if(isXzippedTar(type)) {
-            extractor = new XzExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new XzExtractor(context, file.getPath(), outputPath, listener, null);
         } else if(isLzippedTar(type)) {
-            extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener, null);
         } else if(is7zip(type)) {
-            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener);
+            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener, null);
         } else {
             return null;
         }
