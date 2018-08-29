@@ -8,7 +8,10 @@ import org.junit.runners.Suite;
         TarGzExtractorTest.class,
         ZipExtractorTest.class,
         TarExtractorTest.class,
-        RarExtractorTest.class
+        RarExtractorTest.class,
+        Bzip2ExtractorTest.class,
+        LzmaExtractorTest.class,
+        XzExtractorTest.class
 })
 public class ExtractorTestSuite {
 }

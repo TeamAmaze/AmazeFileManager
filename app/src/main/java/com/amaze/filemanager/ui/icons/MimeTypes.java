@@ -89,6 +89,7 @@ public final class MimeTypes {
         MIME_TYPES.put("lrf", "application/octet-stream");
         MIME_TYPES.put("jar", "application/java-archive");
         MIME_TYPES.put("xz", "application/x-xz");
+        MIME_TYPES.put("lzma", "application/x-lzma");
         MIME_TYPES.put("Z", "application/x-compress");
 
         MIME_TYPES.put("bat", "application/x-msdownload");
