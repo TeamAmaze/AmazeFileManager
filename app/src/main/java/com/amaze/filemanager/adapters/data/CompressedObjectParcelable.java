@@ -125,4 +125,15 @@ public class CompressedObjectParcelable implements Parcelable {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof CompressedObjectParcelable) {
+            CompressedObjectParcelable otherObj = (CompressedObjectParcelable)obj;
+            return name.equals(otherObj.name)
+                    && type == otherObj.type
+                    && directory == otherObj.directory
+                    && size == otherObj.size;
+        } else
+            return false;
+    }
 }

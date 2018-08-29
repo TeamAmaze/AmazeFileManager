@@ -103,12 +103,12 @@ public class ExtractService extends AbstractProgressiveService {
 
         Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey,
                 getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
+                .setSmallIcon(R.drawable.ic_zip_box_grey)
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(customSmallContentViews)
                 .setCustomBigContentView(customBigContentViews)

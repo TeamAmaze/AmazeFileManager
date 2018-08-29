@@ -119,7 +119,7 @@ public class ZipService extends AbstractProgressiveService {
         Intent stopIntent = new Intent(KEY_COMPRESS_BROADCAST_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
                 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey,
                 getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)

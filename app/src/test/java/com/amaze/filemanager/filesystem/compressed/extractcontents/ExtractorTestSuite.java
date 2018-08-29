@@ -11,7 +11,8 @@ import org.junit.runners.Suite;
         RarExtractorTest.class,
         Bzip2ExtractorTest.class,
         LzmaExtractorTest.class,
-        XzExtractorTest.class
+        XzExtractorTest.class,
+        SevenZipExtractorTest.class
 })
 public class ExtractorTestSuite {
 }
