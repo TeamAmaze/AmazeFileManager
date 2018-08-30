@@ -12,7 +12,10 @@ import org.junit.runners.Suite;
         Bzip2ExtractorTest.class,
         LzmaExtractorTest.class,
         XzExtractorTest.class,
-        SevenZipExtractorTest.class
+        SevenZipExtractorTest.class,
+        PasswordProtectedZipTest.class,
+        PasswordProtected7ZipTest.class,
+        ListPasswordProtected7ZipTest.class
 })
 public class ExtractorTestSuite {
 }

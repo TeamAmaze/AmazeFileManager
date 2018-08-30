@@ -38,6 +38,10 @@ public abstract class AbstractExtractorTest {
 
     protected abstract String getArchiveType();
 
+    protected String getArchivePassword(){
+        return null;
+    }
+
     @Before
     public void setUp() throws Exception {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
@@ -86,7 +90,7 @@ public abstract class AbstractExtractorTest {
                             public boolean isCancelled() {
                                 return false;
                             }
-                        }, null);
+                        }, getArchivePassword());
         extractor.extractEverything();
         latch.await();
     }
@@ -117,7 +121,7 @@ public abstract class AbstractExtractorTest {
         IOUtils.copy(new ByteArrayInputStream(TestArchives.readArchive(getArchiveType())), new FileOutputStream(getArchiveFile()));
     }
 
-    private File getArchiveFile() {
+    protected File getArchiveFile() {
         return new File(Environment.getExternalStorageDirectory(), "test-archive." + getArchiveType());
     }
 }

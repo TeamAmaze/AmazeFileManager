@@ -80,21 +80,21 @@ public abstract class CompressedHelper {
         String type = getExtension(file.getPath());
 
         if (isZip(type)) {
-            extractor = new ZipExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new ZipExtractor(context, file.getPath(), outputPath, listener, password);
         } else if (isRar(type)) {
-            extractor = new RarExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new RarExtractor(context, file.getPath(), outputPath, listener, password);
         } else if(isTar(type)) {
-            extractor = new TarExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new TarExtractor(context, file.getPath(), outputPath, listener, password);
         } else if(isGzippedTar(type)) {
-            extractor = new GzipExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new GzipExtractor(context, file.getPath(), outputPath, listener, password);
         } else if(isBzippedTar(type)) {
-            extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, password);
         } else if(isXzippedTar(type)) {
-            extractor = new XzExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new XzExtractor(context, file.getPath(), outputPath, listener, password);
         } else if(isLzippedTar(type)) {
-            extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener, password);
         } else if(is7zip(type)) {
-            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener, null);
+            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener, password);
         } else {
             return null;
         }

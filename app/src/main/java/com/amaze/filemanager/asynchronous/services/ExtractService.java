@@ -209,7 +209,7 @@ public class ExtractService extends AbstractProgressiveService {
         private String extractionPath, compressedPath;
         private ProgressHandler progressHandler;
         private ServiceWatcherUtil watcherUtil;
-
+        private String password;
 
         private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
                        String[] entries) {
@@ -218,6 +218,7 @@ public class ExtractService extends AbstractProgressiveService {
             compressedPath = cpath;
             extractionPath = epath;
             entriesToExtract = entries;
+            password = null;
         }
 
         @Override
@@ -278,7 +279,7 @@ public class ExtractService extends AbstractProgressiveService {
                             public boolean isCancelled() {
                                 return progressHandler.getCancelled();
                             }
-                        }, null);
+                        }, password);
 
                 if (entriesToExtract != null) {
                     extractor.extractFiles(entriesToExtract);
@@ -291,6 +292,11 @@ public class ExtractService extends AbstractProgressiveService {
                 AppConfig.toast(extractService, extractService.getString(R.string.error));
                 return false;
             }
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+            super.onProgressUpdate(values);
         }
 
         @Override
