@@ -58,7 +58,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.holders.HistoryViewHolder;
 import com.amaze.filemanager.adapters.items.HiddenAdapterItem;
+import com.amaze.filemanager.adapters.items.HistoryAdapterItem;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
@@ -1022,7 +1024,7 @@ public class GeneralDialogCreation {
         builder.theme(appTheme.getMaterialDialogTheme());
 
         builder.autoDismiss(true);
-        FlexibleAdapter<HiddenAdapterItem> adapter = new FlexibleAdapter<>(Collections.emptyList());
+        FlexibleAdapter<HistoryAdapterItem> adapter = new FlexibleAdapter<>(Collections.emptyList());
         builder.adapter(adapter, null);
         builder.onNegative((dialog, which) -> {
             DataUtils.getInstance().clearHistory();
@@ -1036,13 +1038,13 @@ public class GeneralDialogCreation {
         materialDialog.show();
     }
 
-    private static ArrayList<HiddenAdapterItem> getHistory(final MainActivity mainActivity, MainFragment mainFragment,
+    private static ArrayList<HistoryAdapterItem> getHistory(final MainActivity mainActivity, MainFragment mainFragment,
                                                            MaterialDialog materialDialog) {
         ArrayList<HybridFile> files = toHybridFileArrayList(DataUtils.getInstance().getHistory());
 
-        ArrayList<HiddenAdapterItem> result = new ArrayList<>(files.size());
+        ArrayList<HistoryAdapterItem> result = new ArrayList<>(files.size());
         for(HybridFile file : files) {
-            result.add(new HiddenAdapterItem(mainActivity, mainFragment, materialDialog, result.size(), file, true));
+            result.add(new HistoryAdapterItem(mainActivity, mainFragment, materialDialog, result.size(), file));
         }
 
         return result;
@@ -1071,7 +1073,7 @@ public class GeneralDialogCreation {
 
         ArrayList<HiddenAdapterItem> result = new ArrayList<>(files.size());
         for(HybridFile file : files) {
-            result.add(new HiddenAdapterItem(mainActivity, mainFragment, materialDialog, result.size(), file, false));
+            result.add(new HiddenAdapterItem(mainActivity, mainFragment, materialDialog, result.size(), file));
         }
         return result;
     }

@@ -5,6 +5,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.holders.HiddenViewHolder;
+import com.amaze.filemanager.adapters.holders.HistoryViewHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -20,7 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
+public class HistoryAdapterItem extends AbstractFlexibleItem<HistoryViewHolder> {
 
     private final DataUtils dataUtils = DataUtils.getInstance();
 
@@ -31,7 +32,7 @@ public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
     private final int id;
     private final HybridFile hybridFile;
 
-    public HiddenAdapterItem(MainActivity mainActivity, MainFragment mainFragment, MaterialDialog materialDialog,
+    public HistoryAdapterItem(MainActivity mainActivity, MainFragment mainFragment, MaterialDialog materialDialog,
                              int id, HybridFile hybridFile) {
         this.mainActivity = mainActivity;
         this.mainFragment = mainFragment;
@@ -42,8 +43,8 @@ public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
 
     @Override
     public boolean equals(Object other) {
-        if (other instanceof HiddenAdapterItem) {
-            HiddenAdapterItem inItem = (HiddenAdapterItem) other;
+        if (other instanceof HistoryAdapterItem) {
+            HistoryAdapterItem inItem = (HistoryAdapterItem) other;
             return this.id == inItem.id;
         }
 
@@ -57,34 +58,22 @@ public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
 
     @Override
     public int getLayoutRes() {
-        return R.layout.bookmarkrow;
+        return R.layout.history_item;
     }
 
     @Override
-    public HiddenViewHolder createViewHolder(View view, FlexibleAdapter<IFlexible> adapter) {
-        return new HiddenViewHolder(adapter, view);
+    public HistoryViewHolder createViewHolder(View view, FlexibleAdapter<IFlexible> adapter) {
+        return new HistoryViewHolder(adapter, view);
     }
 
     @Override
-    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, HiddenViewHolder holder, int position, List<Object> payloads) {
+    public void bindViewHolder(FlexibleAdapter<IFlexible> adapter, HistoryViewHolder holder, int position, List<Object> payloads) {
         HybridFile file = hybridFile;
 
         holder.txtTitle.setText(file.getName());
         String a = file.getReadablePath(file.getPath());
         holder.txtDesc.setText(a);
 
-        // TODO: move the listeners to the constructor
-        holder.image.setOnClickListener(view -> {
-            if (!file.isSmb() && file.isDirectory()) {
-                ArrayList<HybridFileParcelable> a1 = new ArrayList<>();
-                HybridFileParcelable baseFile = new HybridFileParcelable(hybridFile.getPath() + "/.nomedia");
-                baseFile.setMode(OpenMode.FILE);
-                a1.add(baseFile);
-                new DeleteTask(mainActivity).execute((a1));
-            }
-            dataUtils.removeHiddenFile(hybridFile.getPath());
-            adapter.removeItem(adapter.getCurrentItems().indexOf(this));// TODO: 30/08/18 fix
-        });
         holder.row.setOnClickListener(view -> {
             materialDialog.dismiss();
             new Thread(() -> {
