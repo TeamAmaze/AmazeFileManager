@@ -1,5 +1,6 @@
 package com.amaze.filemanager.adapters.holders;
 
+import android.support.constraint.ConstraintLayout;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
@@ -11,7 +12,7 @@ import eu.davidea.viewholders.FlexibleViewHolder;
 public class HistoryViewHolder extends FlexibleViewHolder {
     public final TextView txtTitle;
     public final TextView txtDesc;
-    public final LinearLayout row;
+    public final ConstraintLayout row;
 
     public HistoryViewHolder(FlexibleAdapter adapter, View view) {
         super(view, adapter);

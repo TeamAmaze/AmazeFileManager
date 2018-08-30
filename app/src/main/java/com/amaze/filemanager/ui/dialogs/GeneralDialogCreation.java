@@ -36,6 +36,8 @@ import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.AppCompatButton;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.OrientationHelper;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -1025,6 +1027,8 @@ public class GeneralDialogCreation {
 
         builder.autoDismiss(true);
         FlexibleAdapter<HistoryAdapterItem> adapter = new FlexibleAdapter<>(Collections.emptyList());
+        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mainActivity, OrientationHelper.VERTICAL);
+
         builder.adapter(adapter, null);
         builder.onNegative((dialog, which) -> {
             DataUtils.getInstance().clearHistory();
@@ -1033,6 +1037,7 @@ public class GeneralDialogCreation {
 
         MaterialDialog materialDialog = builder.build();
 
+        adapter.getRecyclerView().addItemDecoration(dividerItemDecoration);
         adapter.updateDataSet(getHistory(mainActivity, mainFragment, materialDialog), true);
 
         materialDialog.show();
