@@ -57,7 +57,7 @@ public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
 
     @Override
     public int getLayoutRes() {
-        return R.layout.bookmarkrow;
+        return R.layout.hidden_item;
     }
 
     @Override
