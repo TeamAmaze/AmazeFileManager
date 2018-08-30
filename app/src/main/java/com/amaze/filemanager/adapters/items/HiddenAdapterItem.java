@@ -73,7 +73,6 @@ public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
         String a = file.getReadablePath(file.getPath());
         holder.txtDesc.setText(a);
 
-        // TODO: move the listeners to the constructor
         holder.image.setOnClickListener(view -> {
             if (!file.isSmb() && file.isDirectory()) {
                 ArrayList<HybridFileParcelable> a1 = new ArrayList<>();

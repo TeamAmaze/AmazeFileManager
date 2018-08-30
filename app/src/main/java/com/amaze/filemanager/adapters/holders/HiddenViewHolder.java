@@ -1,5 +1,6 @@
 package com.amaze.filemanager.adapters.holders;
 
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -19,7 +20,7 @@ public class HiddenViewHolder extends FlexibleViewHolder {
     public final ImageButton image;
     public final TextView txtTitle;
     public final TextView txtDesc;
-    public final LinearLayout row;
+    public final ConstraintLayout row;
 
     public HiddenViewHolder(FlexibleAdapter adapter, View view) {
         super(view, adapter);
