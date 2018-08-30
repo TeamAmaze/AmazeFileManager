@@ -938,7 +938,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 break;
             case R.id.history:
                 if (ma != null)
-                    GeneralDialogCreation.showHistoryDialog(dataUtils, getPrefs(), ma, getAppTheme());
+                    GeneralDialogCreation.showHistoryDialog(this, ma, getAppTheme());
                 break;
             case R.id.sethome:
                 if (ma == null) return super.onOptionsItemSelected(item);
@@ -989,7 +989,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 builder.build().show();
                 break;
             case R.id.hiddenitems:
-                GeneralDialogCreation.showHiddenDialog(dataUtils, getPrefs(), ma, getAppTheme());
+                GeneralDialogCreation.showHiddenDialog(this, ma, getAppTheme());
                 break;
             case R.id.view:
                 final MainFragment mainFragment = ma;

@@ -32,7 +32,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
@@ -58,8 +57,8 @@ import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.items.HiddenAdapterItem;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
@@ -95,6 +94,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
+import eu.davidea.flexibleadapter.FlexibleAdapter;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,7 +106,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
@@ -1011,45 +1010,70 @@ public class GeneralDialogCreation {
     }
 
 
-    public static void showHistoryDialog(final DataUtils dataUtils, SharedPreferences sharedPrefs,
-                                         final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.getMainActivity().getAccent();
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);
-        a.positiveColor(accentColor);
-        a.negativeText(R.string.clear);
-        a.negativeColor(accentColor);
-        a.title(R.string.history);
-        a.onNegative((dialog, which) -> dataUtils.clearHistory());
-        a.theme(appTheme.getMaterialDialogTheme());
+    public static void showHistoryDialog(final MainActivity mainActivity, final MainFragment mainFragment,
+                                         AppTheme appTheme) {
+        int accentColor = mainActivity.getAccent();
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+        builder.positiveText(R.string.cancel);
+        builder.positiveColor(accentColor);
+        builder.negativeText(R.string.clear);
+        builder.negativeColor(accentColor);
+        builder.title(R.string.history);
+        builder.theme(appTheme.getMaterialDialogTheme());
 
-        a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
-                toHybridFileArrayList(dataUtils.getHistory()), null, true);
-        a.adapter(adapter, null);
+        builder.autoDismiss(true);
+        FlexibleAdapter<HiddenAdapterItem> adapter = new FlexibleAdapter<>(Collections.emptyList());
+        builder.adapter(adapter, null);
+        builder.onNegative((dialog, which) -> {
+            DataUtils.getInstance().clearHistory();
+            adapter.updateDataSet(getHistory(mainActivity, mainFragment, dialog), true);
+        });
 
-        MaterialDialog x= a.build();
-        adapter.updateDialog(x);
-        x.show();
+        MaterialDialog materialDialog = builder.build();
+
+        adapter.updateDataSet(getHistory(mainActivity, mainFragment, materialDialog), true);
+
+        materialDialog.show();
     }
 
-    public static void showHiddenDialog(DataUtils dataUtils, SharedPreferences sharedPrefs,
-                                        final MainFragment m, AppTheme appTheme) {
-        int accentColor = m.getMainActivity().getAccent();
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);
-        a.positiveColor(accentColor);
-        a.title(R.string.hiddenfiles);
-        a.theme(appTheme.getMaterialDialogTheme());
-        a.autoDismiss(true);
-        HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
-                FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()), null, false);
-        a.adapter(adapter, null);
-        a.dividerColor(Color.GRAY);
-        MaterialDialog x= a.build();
-        adapter.updateDialog(x);
-        x.show();
+    private static ArrayList<HiddenAdapterItem> getHistory(final MainActivity mainActivity, MainFragment mainFragment,
+                                                           MaterialDialog materialDialog) {
+        ArrayList<HybridFile> files = toHybridFileArrayList(DataUtils.getInstance().getHistory());
 
+        ArrayList<HiddenAdapterItem> result = new ArrayList<>(files.size());
+        for(HybridFile file : files) {
+            result.add(new HiddenAdapterItem(mainActivity, mainFragment, materialDialog, result.size(), file, true));
+        }
+
+        return result;
+    }
+
+    public static void showHiddenDialog(final MainActivity mainActivity, final MainFragment mainFragment,
+                                        AppTheme appTheme) {
+        int accentColor = mainActivity.getAccent();
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+        builder.positiveText(R.string.cancel);
+        builder.positiveColor(accentColor);
+        builder.title(R.string.hiddenfiles);
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.autoDismiss(true);
+        FlexibleAdapter<HiddenAdapterItem> adapter = new FlexibleAdapter<>(Collections.emptyList());
+        builder.adapter(adapter, null);
+        builder.dividerColor(Color.GRAY);
+        MaterialDialog materialDialog = builder.build();
+        adapter.updateDataSet(getHidden(mainActivity, mainFragment, materialDialog), true);
+        materialDialog.show();
+    }
+
+    private static ArrayList<HiddenAdapterItem> getHidden(final MainActivity mainActivity, MainFragment mainFragment,
+                                                          MaterialDialog materialDialog) {
+        ArrayList<HybridFile> files =  FileUtils.toHybridFileConcurrentRadixTree(DataUtils.getInstance().getHiddenFiles());
+
+        ArrayList<HiddenAdapterItem> result = new ArrayList<>(files.size());
+        for(HybridFile file : files) {
+            result.add(new HiddenAdapterItem(mainActivity, mainFragment, materialDialog, result.size(), file, false));
+        }
+        return result;
     }
 
     public static void setPermissionsDialog(final View v, View but, final HybridFile file,
