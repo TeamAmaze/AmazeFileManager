@@ -127,7 +127,9 @@ public class ServiceWatcherUtil {
                 if (position == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
                     // process complete, free up resources
                     // we've finished the work or process cancelled
-                    pendingIntents.remove();
+                    if(pendingIntents.size() > 0)
+                        pendingIntents.remove();
+
                     handler.removeCallbacks(this);
                     handlerThread.quit();
                     return;

@@ -33,14 +33,22 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
+import android.text.InputType;
 import android.util.Log;
+import android.view.View;
+import android.widget.EditText;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -203,13 +211,15 @@ public class ExtractService extends AbstractProgressiveService {
         return new File(filePath).length();
     }
 
-    public class DoWork extends AsyncTask<Void, Void, Boolean> {
+    public class DoWork extends AsyncTask<Void, IOException, Boolean> {
         private WeakReference<ExtractService> extractService;
         private String[] entriesToExtract;
         private String extractionPath, compressedPath;
         private ProgressHandler progressHandler;
         private ServiceWatcherUtil watcherUtil;
         private String password;
+        private boolean paused = false;
+        private String errorMessage;
 
         private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
                        String[] entries) {
@@ -223,80 +233,125 @@ public class ExtractService extends AbstractProgressiveService {
 
         @Override
         protected Boolean doInBackground(Void... p) {
-            final ExtractService extractService = this.extractService.get();
-            if(extractService == null) return null;
+            while(true){
+                if(isCancelled()) return false;
+                if(paused) continue;
 
-            File f = new File(compressedPath);
-            String extractDirName = CompressedHelper.getFileName(f.getName());
+                final ExtractService extractService = this.extractService.get();
+                if(extractService == null) return null;
 
-            if (compressedPath.equals(extractionPath)) {
-                // custom extraction path not set, extract at default path
-                extractionPath = f.getParent() + "/" + extractDirName;
-            } else {
-                if (extractionPath.endsWith("/")) {
-                    extractionPath = extractionPath + extractDirName;
+                File f = new File(compressedPath);
+                String extractDirName = CompressedHelper.getFileName(f.getName());
+
+                if (compressedPath.equals(extractionPath)) {
+                    // custom extraction path not set, extract at default path
+                    extractionPath = f.getParent() + "/" + extractDirName;
                 } else {
-                    extractionPath = extractionPath + "/" + extractDirName;
+                    if (extractionPath.endsWith("/")) {
+                        extractionPath = extractionPath + extractDirName;
+                    } else {
+                        extractionPath = extractionPath + "/" + extractDirName;
+                    }
                 }
-            }
 
-            try {
-                if(entriesToExtract.length == 0) entriesToExtract = null;
+                try {
+                    if(entriesToExtract != null && entriesToExtract.length == 0) entriesToExtract = null;
 
-                final Extractor extractor =
-                    CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
-                        f, extractionPath, new Extractor.OnUpdate() {
-                            private int sourceFilesProcessed = 0;
+                    final Extractor extractor =
+                        CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
+                            f, extractionPath, new Extractor.OnUpdate() {
+                                private int sourceFilesProcessed = 0;
 
-                            @Override
-                            public void onStart(long totalBytes, String firstEntryName) {
-                                // setting total bytes calculated from zip entries
-                                progressHandler.setTotalSize(totalBytes);
+                                @Override
+                                public void onStart(long totalBytes, String firstEntryName) {
+                                    // setting total bytes calculated from zip entries
+                                    progressHandler.setTotalSize(totalBytes);
 
-                                extractService.addFirstDatapoint(firstEntryName,
-                                        1, totalBytes, false);
+                                    extractService.addFirstDatapoint(firstEntryName,
+                                            1, totalBytes, false);
 
-                                watcherUtil = new ServiceWatcherUtil(progressHandler);
-                                watcherUtil.watch(ExtractService.this);
-                            }
-
-                            @Override
-                            public void onUpdate(String entryPath) {
-                                progressHandler.setFileName(entryPath);
-                                if (entriesToExtract != null) {
-                                    progressHandler.setSourceFilesProcessed(sourceFilesProcessed++);
+                                    watcherUtil = new ServiceWatcherUtil(progressHandler);
+                                    watcherUtil.watch(ExtractService.this);
                                 }
-                            }
 
-                            @Override
-                            public void onFinish() {
-                                if (entriesToExtract == null){
-                                    progressHandler.setSourceFilesProcessed(1);
+                                @Override
+                                public void onUpdate(String entryPath) {
+                                    progressHandler.setFileName(entryPath);
+                                    if (entriesToExtract != null) {
+                                        progressHandler.setSourceFilesProcessed(sourceFilesProcessed++);
+                                    }
                                 }
-                            }
 
-                            @Override
-                            public boolean isCancelled() {
-                                return progressHandler.getCancelled();
-                            }
-                        }, password);
+                                @Override
+                                public void onFinish() {
+                                    if (entriesToExtract == null){
+                                        progressHandler.setSourceFilesProcessed(1);
+                                    }
+                                }
 
-                if (entriesToExtract != null) {
-                    extractor.extractFiles(entriesToExtract);
-                } else {
-                    extractor.extractEverything();
+                                @Override
+                                public boolean isCancelled() {
+                                    return progressHandler.getCancelled();
+                                }
+                            }, password);
+                    if (entriesToExtract != null) {
+                        extractor.extractFiles(entriesToExtract);
+                    } else {
+                        extractor.extractEverything();
+                    }
+                    return (extractor.getInvalidArchiveEntries().size() == 0);
+                } catch (IOException e) {
+                    Log.e("amaze", "Error while extracting file " + compressedPath, e);
+                    //AppConfig.toast(extractService, extractService.getString(R.string.error));
+
+                    paused = true;
+                    publishProgress(e);
                 }
-                return (extractor.getInvalidArchiveEntries().size() == 0);
-            } catch (IOException e) {
-                Log.e("amaze", "Error while extracting file " + compressedPath, e);
-                AppConfig.toast(extractService, extractService.getString(R.string.error));
-                return false;
             }
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
+        protected void onProgressUpdate(IOException... values) {
             super.onProgressUpdate(values);
+            if(values.length < 1) return;
+
+            IOException result = values[0];
+            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getMainActivityContext());
+            View dialogLayout = View.inflate(AppConfig.getInstance().getMainActivityContext(), R.layout.dialog_singleedittext, null);
+            WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+            EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+            builder.customView(dialogLayout, false)
+                    .autoDismiss(false)
+                    .title(R.string.ssh_key_prompt_passphrase)
+                    .positiveText(R.string.ok)
+                    .onPositive(((dialog, which) -> {
+                        this.password = textfield.getText().toString();
+                        this.extractService.get().getDataPackages().clear();
+                        this.paused = false;
+                        dialog.dismiss();
+                    })).negativeText(R.string.cancel)
+                    .onNegative(((dialog, which) -> {
+                        dialog.dismiss();
+                        toastOnParseError(result);
+                        cancel(true);
+                    }));
+
+            MaterialDialog dialog = builder.show();
+
+            new WarnableTextInputValidator(AppConfig.getInstance().getMainActivityContext(), textfield,
+                    wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+                if (text.length() < 1) {
+                    return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+                }
+                return new WarnableTextInputValidator.ReturnState();
+            });
+
+            if (errorMessage != null) {
+                wilTextfield.setError(errorMessage);
+                textfield.selectAll();
+            }
         }
 
         @Override
@@ -314,6 +369,12 @@ public class ExtractService extends AbstractProgressiveService {
 
             if(!hasInvalidEntries)
                 AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
+        }
+
+        private void toastOnParseError(IOException result){
+            Toast.makeText(AppConfig.getInstance().getMainActivityContext(),
+                    AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error,
+                            result.getLocalizedMessage()), Toast.LENGTH_LONG).show();
         }
     }
 
