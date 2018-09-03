@@ -212,8 +212,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     private TabHandler tabHandler;
 
-    private AsyncTask<Void, Void, Boolean> cloudSyncTask;
-
     private AppBarLayout appBarLayout;
 
     private View fabBgView;
@@ -1315,7 +1313,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
             switch (operation) {
                 case DataUtils.DELETE://deletion
-                    new DeleteTask(null, mainActivity).execute((oparrayList));
+                    new DeleteTask(mainActivity).execute((oparrayList));
                     break;
                 case DataUtils.COPY://copying
                     //legacy compatibility
@@ -1829,11 +1827,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (cloudSyncTask != null && cloudSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-            cloudSyncTask.cancel(true);
-
-        }
-
         Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
 
         String[] projection = new String[] {

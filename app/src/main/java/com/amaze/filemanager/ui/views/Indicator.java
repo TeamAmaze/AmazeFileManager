@@ -99,7 +99,6 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
 
     // animation
     private ValueAnimator moveAnimation;
-    private AnimatorSet joiningAnimationSet;
     private PendingRetreatAnimator retreatAnimation;
     private PendingRevealAnimator[] revealAnimations;
     private final Interpolator interpolator;
@@ -649,9 +648,7 @@ public class Indicator extends View implements ViewPager.OnPageChangeListener,
     }
 
     private void cancelJoiningAnimations() {
-        if (joiningAnimationSet != null && joiningAnimationSet.isRunning()) {
-            joiningAnimationSet.cancel();
-        }
+        // TODO: 20/08/18 ?
     }
 
     /**

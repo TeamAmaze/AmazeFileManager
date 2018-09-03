@@ -25,8 +25,6 @@ public class SearchWorkerFragment extends Fragment {
 
     public SearchAsyncTask mSearchAsyncTask;
 
-    private static final String TAG = "SearchWorkerFragment";
-
     private HelperCallbacks mCallbacks;
 
     // interface for activity to communicate with asynctask

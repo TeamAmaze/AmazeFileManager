@@ -118,10 +118,8 @@ public class SmbSearchDialog extends DialogFragment {
 
         private ArrayList<ComputerParcelable> items;
         private LayoutInflater mInflater;
-        private Context context;
 
         public ListViewAdapter(Context context, List<ComputerParcelable> objects) {
-            this.context = context;
             items = new ArrayList<>(objects);
             mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);

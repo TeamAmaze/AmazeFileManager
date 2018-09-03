@@ -203,7 +203,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                                             } else {
                                                 files.add(f1);
                                             }
-                                            new DeleteTask(app.getActivity().getContentResolver(), app.getActivity()).execute((files));
+                                            new DeleteTask(app.getActivity()).execute((files));
                                         })).build().show();
                             } else {
                                 Toast.makeText(app.getActivity(),app.getString(R.string.enablerootmde),Toast.LENGTH_SHORT).show();

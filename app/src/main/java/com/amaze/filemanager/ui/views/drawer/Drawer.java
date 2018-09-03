@@ -167,7 +167,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             idleColor = Color.WHITE;
         }
 
-        actionViewStateManager = new ActionViewStateManager(navView, idleColor, accentColor);
+        actionViewStateManager = new ActionViewStateManager(idleColor, accentColor);
 
         ColorStateList drawerColors = new ColorStateList(
                 new int[][] {
