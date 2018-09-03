@@ -31,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -196,6 +197,12 @@ public class CopyService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         progressPercent = progress;
+    }
+
+    @Override
+    @StringRes
+    protected int getTitle(boolean move) {
+        return move ? R.string.moving : R.string.copying;
     }
 
     public ProgressListener getProgressListener() {
