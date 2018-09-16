@@ -85,7 +85,7 @@ dependencies {
     testImplementation "org.robolectric:shadows-multidex:3.7"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:3.7"//tests android interaction
     testImplementation "commons-logging:commons-logging:1.2" //required by junrar. Damn.
-
+    testImplementation "commons-net:commons-net:3.6"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
 
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
