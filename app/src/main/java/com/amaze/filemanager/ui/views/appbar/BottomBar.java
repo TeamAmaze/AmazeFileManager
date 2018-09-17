@@ -335,6 +335,9 @@ public class BottomBar implements View.OnTouchListener{
         final String oldPath = fullPathText.getText().toString();
         if (oldPath.equals(newPath)) return;
 
+        // replace multiple occurrences of '/' with single
+        newPath = newPath.replaceAll("/{2,}", "/");
+
         if (!areButtonsShowing()) {
             final Animation slideIn = AnimationUtils.loadAnimation(mainActivity, R.anim.slide_in);
             Animation slideOut = AnimationUtils.loadAnimation(mainActivity, R.anim.slide_out);

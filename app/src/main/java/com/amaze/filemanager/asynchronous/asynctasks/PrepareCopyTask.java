@@ -171,6 +171,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         intent.putExtra(CopyService.TAG_COPY_TARGET, target);
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openmode.ordinal());
         intent.putExtra(CopyService.TAG_COPY_MOVE, move);
+        intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, rootMode);
         ServiceWatcherUtil.runService(context, intent);
     }
 
