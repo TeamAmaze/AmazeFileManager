@@ -574,5 +574,6 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="cannot_overwrite">ファイルを上書きすることはできません。</string>
   <string name="filename">ファイル名</string>
   <string name="ssh_key_invalid_passphrase">無効な秘密鍵のパスフレーズ。</string>
-  <!-- end of plurals -->
+    <string name="internalstorage">内部ストレージ</string>
+    <!-- end of plurals -->
 </resources>

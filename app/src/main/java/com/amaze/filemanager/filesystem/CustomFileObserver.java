@@ -145,12 +145,6 @@ public class CustomFileObserver extends FileObserver {
         messagingScheduled = false;
     }
 
-    /**
-     *  No such file or directory
-     *  From: http://www-numi.fnal.gov/offline_software/srt_public_context/WebDocs/Errors/unix_system_errors.html
-     */
-    private static final int ENOENT = 2, ENOTDIR = 20;
-
     private ScheduledExecutorService executor = null;
 
     /**

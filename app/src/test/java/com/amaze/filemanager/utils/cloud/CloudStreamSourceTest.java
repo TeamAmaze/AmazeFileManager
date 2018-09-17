@@ -243,17 +243,6 @@ public class CloudStreamSourceTest {
     }
 
     /**
-     * Purpose: Get MIME type
-     * Input: no
-     * Expected:
-     *          return NULL
-     */
-    @Test
-    public void getMimeType() {
-        assertEquals(null, cs.getMimeType());
-    }
-
-    /**
      * Purpose: Get length of the text from a file
      * Input: no
      * Expected:

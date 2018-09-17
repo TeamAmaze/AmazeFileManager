@@ -3,8 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingLeft="@dimen/dialogPreferredPadding"
-    android:paddingRight="@dimen/dialogPreferredPadding">
+    android:paddingEnd="?android:dialogPreferredPadding"
+    android:paddingStart="?android:dialogPreferredPadding">
 
     <ScrollView
         android:layout_width="match_parent"

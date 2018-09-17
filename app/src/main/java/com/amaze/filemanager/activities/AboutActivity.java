@@ -84,7 +84,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         mAppBarLayout = findViewById(R.id.appBarLayout);
         mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
         mTitleTextView =  findViewById(R.id.text_view_title);
-        ImageView mLicensesIcon = findViewById(R.id.image_view_license);
         mAuthorsDivider = findViewById(R.id.view_divider_authors);
         mDeveloper1Divider = findViewById(R.id.view_divider_developers_1);
 

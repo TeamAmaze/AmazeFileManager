@@ -32,6 +32,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -104,7 +105,7 @@ public class ExtractService extends AbstractProgressiveService {
         Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+                getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentIntent(pendingIntent)
@@ -159,6 +160,12 @@ public class ExtractService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         progressPercent = progress;
+    }
+
+    @Override
+    @StringRes
+    protected int getTitle(boolean move) {
+        return R.string.extracting;
     }
 
     @Override

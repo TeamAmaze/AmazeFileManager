@@ -31,6 +31,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -129,7 +130,7 @@ public class CopyService extends AbstractProgressiveService {
         Intent stopIntent = new Intent(TAG_BROADCAST_COPY_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(c, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_content_copy_white_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+               getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(c, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setContentIntent(pendingIntent)
@@ -196,6 +197,12 @@ public class CopyService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         progressPercent = progress;
+    }
+
+    @Override
+    @StringRes
+    protected int getTitle(boolean move) {
+        return move ? R.string.moving : R.string.copying;
     }
 
     public ProgressListener getProgressListener() {
@@ -266,7 +273,7 @@ public class CopyService extends AbstractProgressiveService {
                         findAndReplaceEncryptedEntry(sourceFile);
                     } catch (Exception e) {
                         // unable to modify encrypted entry in database
-                        Toast.makeText(c, getResources().getString(R.string.encryption_fail_copy), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(c, getString(R.string.encryption_fail_copy), Toast.LENGTH_SHORT).show();
                     }
                 }
             }
@@ -429,7 +436,7 @@ public class CopyService extends AbstractProgressiveService {
                         if (!failedFOps.contains(a))
                             toDelete.add(a);
                     }
-                    new DeleteTask(getContentResolver(), c).execute((toDelete));
+                    new DeleteTask(c).execute((toDelete));
                 }
             }
 

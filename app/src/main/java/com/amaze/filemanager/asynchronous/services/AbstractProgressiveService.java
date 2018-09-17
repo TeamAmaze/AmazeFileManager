@@ -5,6 +5,7 @@ import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.text.format.Formatter;
 import android.widget.RemoteViews;
@@ -28,8 +29,6 @@ import java.util.ArrayList;
 
 public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
 
-    private Context context;
-
     private boolean isNotificationTitleSet = false;
 
     @Override
@@ -46,6 +45,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     protected abstract float getPercentProgress();
 
     protected abstract void setPercentProgress(float progress);
+
+    protected abstract @StringRes int getTitle(boolean move);
 
     protected abstract RemoteViews getNotificationCustomViewSmall();
 
@@ -99,55 +100,30 @@ public abstract class AbstractProgressiveService extends Service implements Serv
             long totalSize = getProgressHandler().getTotalSize();
             long writtenSize = getProgressHandler().getWrittenSize();
 
-            context = getApplicationContext();
-
             //notification
             setPercentProgress(((float) writtenSize / totalSize) * 100);
 
             if (!isNotificationTitleSet) {
-                int titleResource;
-
-                switch (getNotificationId()) {
-                    case NotificationConstants.COPY_ID:
-                        titleResource = move ? R.string.moving : R.string.copying;
-                        break;
-                    case NotificationConstants.ENCRYPT_ID:
-                        titleResource = move ? R.string.crypt_decrypting : R.string.crypt_encrypting;
-                        break;
-                    case NotificationConstants.EXTRACT_ID:
-                        titleResource = R.string.extracting;
-                        break;
-                    case NotificationConstants.ZIP_ID:
-                        titleResource = R.string.compressing;
-                        break;
-                    case NotificationConstants.DECRYPT_ID:
-                        titleResource = R.string.crypt_decrypting;
-                        break;
-                    default:
-                        titleResource = R.string.processing;
-                        break;
-                }
-
-                getNotificationBuilder().setSubText(context.getResources().getString(titleResource));
+                getNotificationBuilder().setSubText(getString(getTitle(move)));
                 isNotificationTitleSet = true;
             }
 
             if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
 
-                String written = Formatter.formatFileSize(context, writtenSize) + "/" +
-                        Formatter.formatFileSize(context, totalSize);
+                String written = Formatter.formatFileSize(this, writtenSize) + "/" +
+                        Formatter.formatFileSize(this, totalSize);
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big, fileName);
                 getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small, fileName);
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big, written);
                 getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_written_small, written);
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
-                        Formatter.formatFileSize(context, speed) + "/s");
+                        Formatter.formatFileSize(this, speed) + "/s");
 
                 String remainingTime;
                 if (speed != 0) {
                     remainingTime = Utils.formatTimer(Math.round((totalSize-writtenSize)/speed));
                 } else {
-                    remainingTime = getResources().getString(R.string.unknown);
+                    remainingTime = getString(R.string.unknown);
                 }
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
                 getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
@@ -169,9 +145,9 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                             0, 0, true);
 
                     getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
-                            context.getResources().getString(R.string.processing));
+                            getString(R.string.processing));
                     getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
-                            context.getResources().getString(R.string.processing));
+                            getString(R.string.processing));
                     getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
                             getString(R.string.unknown));
                     getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_transferRate_big,
@@ -254,11 +230,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     }
 
     @Override
-    public Context getApplicationContext() {
-        return super.getApplicationContext();
-    }
-
-    @Override
     public boolean isDecryptService() {
         return false;
     }
@@ -270,35 +241,10 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         if (!move) getNotificationManager().cancelAll();
 
         if(failedOps.size()==0)return;
-        context = getApplicationContext();
-        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
-        mBuilder.setContentTitle(context.getString(R.string.operationunsuccesful));
+        NotificationCompat.Builder mBuilder=new NotificationCompat.Builder(getApplicationContext(), NotificationConstants.CHANNEL_NORMAL_ID);
+        mBuilder.setContentTitle(getString(R.string.operationunsuccesful));
 
-        String titleResource;
-
-        switch (getNotificationId()) {
-            case NotificationConstants.COPY_ID:
-                titleResource = move ? context.getString(R.string.moved) : context.getString(R.string.copied);
-                break;
-            case NotificationConstants.ENCRYPT_ID:
-                titleResource = context.getString(R.string.crypt_encrypted);
-                break;
-            case NotificationConstants.EXTRACT_ID:
-                titleResource = context.getString(R.string.extracted);
-                break;
-            case NotificationConstants.ZIP_ID:
-                titleResource = context.getString(R.string.compressed);
-                break;
-            case NotificationConstants.DECRYPT_ID:
-                titleResource = context.getString(R.string.crypt_decrypted);
-                break;
-            default:
-                titleResource = context.getString(R.string.processed);
-                break;
-        }
-
-        mBuilder.setContentText(context.getString(R.string.copy_error).replace("%s",
-                titleResource.toLowerCase()));
+        mBuilder.setContentText(getString(R.string.copy_error, getString(getTitle(move)).toLowerCase()));
         mBuilder.setAutoCancel(true);
 
         getProgressHandler().setCancelled(true);
@@ -324,13 +270,12 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      * Initializes notification views to initial (processing..) state
      */
     public void initNotificationViews() {
-        context = getApplicationContext();
         getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_filename_big,
-                context.getResources().getString(R.string.processing));
+                getString(R.string.processing));
         getNotificationCustomViewSmall().setTextViewText(R.id.notification_service_textView_filename_small,
-                context.getResources().getString(R.string.processing));
+                getString(R.string.processing));
 
-        String zeroBytesFormat = Formatter.formatFileSize(context, 0l);
+        String zeroBytesFormat = Formatter.formatFileSize(this, 0l);
 
         getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_written_big,
                 zeroBytesFormat);
@@ -340,7 +285,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 zeroBytesFormat + "/s");
 
         getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big,
-                context.getResources().getString(R.string.unknown));
+                getString(R.string.unknown));
         getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
                 0, 0, true);
         getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,

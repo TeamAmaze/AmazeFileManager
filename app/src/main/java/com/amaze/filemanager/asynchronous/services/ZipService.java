@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -119,7 +120,7 @@ public class ZipService extends AbstractProgressiveService {
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
                 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+                getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
                 .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
@@ -167,6 +168,12 @@ public class ZipService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         progressPercent = progress;
+    }
+
+    @Override
+    @StringRes
+    protected int getTitle(boolean move) {
+        return R.string.compressing;
     }
 
     @Override

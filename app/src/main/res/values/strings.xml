@@ -25,7 +25,7 @@
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="icon">icon</string>
-    <string name="storage">Internal Storage</string>
+    <string name="internalstorage">Internal Storage</string>
     <string name="apps">App Manager</string>
     <string name="ftp">FTP Server</string>
     <string name="setting">Settings</string>

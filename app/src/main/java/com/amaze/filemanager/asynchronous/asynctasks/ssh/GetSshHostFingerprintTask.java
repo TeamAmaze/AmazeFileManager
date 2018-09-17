@@ -109,7 +109,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
 
     @Override
     protected void onPreExecute() {
-        progressDialog = ProgressDialog.show(AppConfig.getInstance().getActivityContext(),
+        progressDialog = ProgressDialog.show(AppConfig.getInstance().getMainActivityContext(),
                 "", AppConfig.getInstance().getResources().getString(R.string.processing));
     }
 

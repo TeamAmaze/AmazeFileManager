@@ -246,7 +246,7 @@ public class TabFragment extends Fragment
         } else if (openmode == OpenMode.SMB && path.startsWith("smb:/")) {
             return (new File(parseSmbPath(path)).getName());
         } else if ("/storage/emulated/0".equals(path)) {
-            return resources.getString(R.string.storage);
+            return resources.getString(R.string.internalstorage);
         } else if (openmode == OpenMode.CUSTOM) {
             return new MainActivityHelper(mainActivity).getIntegralNames(path);
         } else {

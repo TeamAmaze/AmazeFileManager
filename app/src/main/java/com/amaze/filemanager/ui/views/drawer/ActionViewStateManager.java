@@ -16,8 +16,7 @@ public class ActionViewStateManager {
     private @ColorInt int idleIconColor;
     private @ColorInt int selectedIconColor;
 
-    public ActionViewStateManager(NavigationView navView, @ColorInt int idleColor,
-                                  @ColorInt int accentColor) {
+    public ActionViewStateManager(@ColorInt int idleColor, @ColorInt int accentColor) {
         idleIconColor = idleColor;
         selectedIconColor = accentColor;
     }

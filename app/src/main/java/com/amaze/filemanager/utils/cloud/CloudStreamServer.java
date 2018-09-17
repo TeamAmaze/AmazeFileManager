@@ -199,7 +199,6 @@ public abstract class CloudStreamServer {
     public CloudStreamServer(int port, File wwwroot ) throws IOException
     {
         myTcpPort = port;
-        this.myRootDir = wwwroot;
         myServerSocket = tryBind(myTcpPort);
         myThread = new Thread(() -> {
             try {
@@ -226,7 +225,6 @@ public abstract class CloudStreamServer {
 
     public CloudStreamServer(File wwwroot ) throws IOException
     {
-        this.myRootDir = wwwroot;
         myServerSocket = tryBind(myTcpPort);
         myThread = new Thread(() -> {
             try {
@@ -889,7 +887,6 @@ public abstract class CloudStreamServer {
     private int myTcpPort;
     private final ServerSocket myServerSocket;
     private Thread myThread;
-    private File myRootDir;
 
     // ==================================================
     // File server code

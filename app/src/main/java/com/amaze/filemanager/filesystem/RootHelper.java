@@ -140,7 +140,7 @@ public class RootHelper {
         return null;
     }
 
-    public static HybridFileParcelable generateBaseFile(DocumentFile file, boolean showHidden) {
+    public static HybridFileParcelable generateBaseFile(DocumentFile file) {
         long size = 0;
         if (!file.isDirectory())
             size = file.length();

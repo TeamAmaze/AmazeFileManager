@@ -602,4 +602,5 @@
   <string name="transfer_rate">傳輸速率</string>
   <string name="time_remaining">剩餘時間</string>
   <string name="grant_apkinstall_permission">程式需要安裝程式的權限以繼續。</string>
+    <string name="internalstorage">內部儲存空間</string>
 </resources>

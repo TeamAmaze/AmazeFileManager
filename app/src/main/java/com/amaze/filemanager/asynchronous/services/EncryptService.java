@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -53,7 +54,6 @@ public class EncryptService extends AbstractProgressiveService {
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
-    private OpenMode openMode;
     private HybridFileParcelable baseFile;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
     private String targetFilename;
@@ -79,7 +79,7 @@ public class EncryptService extends AbstractProgressiveService {
                 .getColorPreference()
                 .getCurrentUserColorPreferences(this, sharedPreferences).accent;
 
-        openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
+        OpenMode openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -93,7 +93,7 @@ public class EncryptService extends AbstractProgressiveService {
         Intent stopIntent = new Intent(TAG_BROADCAST_CRYPT_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
         NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_folder_lock_white_36dp,
-                getResources().getString(R.string.stop_ftp), stopPendingIntent);
+                getString(R.string.stop_ftp), stopPendingIntent);
 
         notificationBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
         notificationBuilder.setContentIntent(pendingIntent)
@@ -141,6 +141,12 @@ public class EncryptService extends AbstractProgressiveService {
     @Override
     protected void setPercentProgress(float progress) {
         this.progressPercent = progress;
+    }
+
+    @Override
+    @StringRes
+    protected int getTitle(boolean move) {
+        return R.string.crypt_encrypting;
     }
 
     @Override

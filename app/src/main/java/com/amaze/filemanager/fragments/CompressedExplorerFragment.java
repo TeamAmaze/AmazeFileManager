@@ -355,7 +355,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         // in case of opening any unknown file inside the zip
 
         if (files.get(0).exists()) {
-            new DeleteTask(getActivity().getContentResolver(), getActivity(), this).execute(files);
+            new DeleteTask(getActivity(), this).execute(files);
         }
     }
 

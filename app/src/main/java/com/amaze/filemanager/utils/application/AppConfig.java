@@ -43,6 +43,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
+import java.lang.ref.WeakReference;
+
 public class AppConfig extends GlideApplication {
 
     public static final String TAG = AppConfig.class.getSimpleName();
@@ -55,7 +57,7 @@ public class AppConfig extends GlideApplication {
     private static Handler mApplicationHandler = new Handler();
     private HandlerThread sBackgroundHandlerThread;
     private static Handler sBackgroundHandler;
-    private static Context sActivityContext;
+    private WeakReference<Context> mainActivityContext;
     private static ScreenUtils screenUtils;
 
     private static AppConfig mInstance;
@@ -186,16 +188,11 @@ public class AppConfig extends GlideApplication {
         return mInstance;
     }
 
-    public RequestQueue getRequestQueue() {
+    public ImageLoader getImageLoader() {
         if (mRequestQueue == null) {
             mRequestQueue = Volley.newRequestQueue(getApplicationContext());
         }
 
-        return mRequestQueue;
-    }
-
-    public ImageLoader getImageLoader() {
-        getRequestQueue();
         if (mImageLoader == null) {
             this.mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
         }
@@ -206,32 +203,18 @@ public class AppConfig extends GlideApplication {
         return mUtilsHandler;
     }
 
-    public static void setActivityContext(Context context) {
-        sActivityContext = context;
-        screenUtils = new ScreenUtils((Activity)context);
+    public void setMainActivityContext(@NonNull Activity activity) {
+        mainActivityContext = new WeakReference<>(activity);
+        screenUtils = new ScreenUtils(activity);
     }
 
     public ScreenUtils getScreenUtils(){
         return screenUtils;
     }
 
-    public Context getActivityContext() {
-        return sActivityContext;
+    @Nullable
+    public Context getMainActivityContext() {
+        return mainActivityContext.get();
     }
 
-    public <T> void addToRequestQueue(Request<T> req, String tag) {
-        req.setTag(TextUtils.isEmpty(tag) ? TAG : tag);
-        getRequestQueue().add(req);
-    }
-
-    public <T> void addToRequestQueue(Request<T> req) {
-        req.setTag(TAG);
-        getRequestQueue().add(req);
-    }
-
-    public void cancelPendingRequests(Object tag) {
-        if (mRequestQueue != null) {
-            mRequestQueue.cancelAll(tag);
-        }
-    }
 }

@@ -202,7 +202,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private Drawer drawer;
     //private HistoryManager history, grid;
     private MainActivity mainActivity = this;
-    private Context con = this;
     private String zippath;
     private boolean openProcesses = false;
     private MaterialDialog materialDialog;
@@ -212,8 +211,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private View indicator_layout;
 
     private TabHandler tabHandler;
-
-    private AsyncTask<Void, Void, Boolean> cloudSyncTask;
 
     private AppBarLayout appBarLayout;
 
@@ -279,7 +276,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         dataUtils.registerOnDataChangedListener(this);
 
         CustomSshJConfig.init();
-        AppConfig.setActivityContext(con);
+        AppConfig.getInstance().setMainActivityContext(this);
 
         setContentView(R.layout.main_toolbar);
         appbar = new AppBar(this, getPrefs(), queue -> {
@@ -1316,7 +1313,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
             switch (operation) {
                 case DataUtils.DELETE://deletion
-                    new DeleteTask(null, mainActivity).execute((oparrayList));
+                    new DeleteTask(mainActivity).execute((oparrayList));
                     break;
                 case DataUtils.COPY://copying
                     //legacy compatibility
@@ -1330,7 +1327,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     }
                     for (int i = 0; i < oparrayListList.size(); i++) {
                         ArrayList<HybridFileParcelable> sourceList = oparrayListList.get(i);
-                        Intent intent1 = new Intent(con, CopyService.class);
+                        Intent intent1 = new Intent(this, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, sourceList);
                         intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
                         ServiceWatcherUtil.runService(this, intent1);
@@ -1382,6 +1379,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 // otg access
                 Uri usbOtgRoot = Uri.parse(intent.getData().toString());
                 SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
+                getCurrentMainFragment().loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
 
                 drawer.closeIfNotLocked();
                 if (drawer.isLocked()) drawer.onDrawerClosed();
@@ -1829,11 +1827,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        if (cloudSyncTask != null && cloudSyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-            cloudSyncTask.cancel(true);
-
-        }
-
         Uri uri = Uri.withAppendedPath(Uri.parse("content://" + CloudContract.PROVIDER_AUTHORITY), "/keys.db/secret_keys");
 
         String[] projection = new String[] {
