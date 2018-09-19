@@ -716,16 +716,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onBackPressed() {
-        if (!drawer.isLocked()) {
-            if (drawer.isOpen()) {
-                drawer.close();
-            } else {
-                onbackpressed();
-            }
-        } else onbackpressed();
-    }
+        if (!drawer.isLocked() && drawer.isOpen()) {
+            drawer.close();
+            return;
+        }
 
-    void onbackpressed() {
         Fragment fragment = getFragmentAtFrame();
         if (getAppbar().getSearchView().isShown()) {
             // hide search view if visible, with an animation

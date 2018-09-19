@@ -497,7 +497,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             // do not allow drawer to open when item gets selected
             if (!getMainActivity().getDrawer().isLocked()) {
-                getMainActivity().getDrawer().lock(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                getMainActivity().getDrawer().lockIfNotOnTablet(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
             return true;
         }
@@ -760,7 +760,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     primaryTwoColor : primaryColor));
 
             if (getMainActivity().getDrawer().isLocked()) {
-                getMainActivity().getDrawer().unlock();
+                getMainActivity().getDrawer().unlockIfNotOnTablet();
             }
         }
     };
