@@ -104,6 +104,7 @@ public class FtpServerFragment extends Fragment {
         View startDividerView = rootView.findViewById(R.id.divider_ftp_start);
         View statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
         ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
+        accentColor = mainActivity.getAccent();
 
         updateSpans();
         updateStatus();
@@ -150,7 +151,6 @@ public class FtpServerFragment extends Fragment {
 
         int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
         int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
-        accentColor = mainActivity.getAccent();
 
         mainActivity.updateViews(new ColorDrawable(MainActivity.currentTab==1 ?
                 skinTwoColor : skin_color));
@@ -417,6 +417,7 @@ public class FtpServerFragment extends Fragment {
             ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
 
         } else {
+            accentColor = mainActivity.getAccent();
             url.setText(spannedStatusUrl);
             statusText.setText(spannedStatusConnected);
             ftpBtn.setEnabled(true);
