@@ -46,19 +46,19 @@ public class FtpTileService extends TileService {
 
     @Override
     public void onClick() {
-        super.onClick();
-
-        if (getQsTile().getState() == Tile.STATE_ACTIVE) {
-            getApplicationContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getPackageName()));
-        } else {
-            if (FtpService.isConnectedToWifi(getApplicationContext())
-                    || FtpService.isConnectedToLocalNetwork(getApplicationContext())
-                    || FtpService.isEnabledWifiHotspot(getApplicationContext())) {
-                Intent i = new Intent(FtpService.ACTION_START_FTPSERVER).setPackage(getPackageName());
-                i.putExtra(FtpService.TAG_STARTED_BY_TILE, true);
-                getApplicationContext().sendBroadcast(i);
+        if(!isLocked()) {
+            if (getQsTile().getState() == Tile.STATE_ACTIVE) {
+                getApplicationContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getPackageName()));
             } else {
-                Toast.makeText(getApplicationContext(), getString(R.string.ftp_no_wifi), Toast.LENGTH_LONG).show();
+                if (FtpService.isConnectedToWifi(getApplicationContext())
+                        || FtpService.isConnectedToLocalNetwork(getApplicationContext())
+                        || FtpService.isEnabledWifiHotspot(getApplicationContext())) {
+                    Intent i = new Intent(FtpService.ACTION_START_FTPSERVER).setPackage(getPackageName());
+                    i.putExtra(FtpService.TAG_STARTED_BY_TILE, true);
+                    getApplicationContext().sendBroadcast(i);
+                } else {
+                    Toast.makeText(getApplicationContext(), getString(R.string.ftp_no_wifi), Toast.LENGTH_LONG).show();
+                }
             }
         }
     }
