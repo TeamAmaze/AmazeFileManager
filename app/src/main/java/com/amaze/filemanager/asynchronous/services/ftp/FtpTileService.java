@@ -49,12 +49,12 @@ public class FtpTileService extends TileService {
         super.onClick();
 
         if (getQsTile().getState() == Tile.STATE_ACTIVE) {
-            getApplicationContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER));
+            getApplicationContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getPackageName()));
         } else {
             if (FtpService.isConnectedToWifi(getApplicationContext())
                     || FtpService.isConnectedToLocalNetwork(getApplicationContext())
                     || FtpService.isEnabledWifiHotspot(getApplicationContext())) {
-                Intent i = new Intent(FtpService.ACTION_START_FTPSERVER);
+                Intent i = new Intent(FtpService.ACTION_START_FTPSERVER).setPackage(getPackageName());
                 i.putExtra(FtpService.TAG_STARTED_BY_TILE, true);
                 getApplicationContext().sendBroadcast(i);
             } else {

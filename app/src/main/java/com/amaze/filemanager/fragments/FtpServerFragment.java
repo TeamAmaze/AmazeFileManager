@@ -367,14 +367,14 @@ public class FtpServerFragment extends Fragment {
      * Sends a broadcast to start ftp server
      */
     private void startServer() {
-        getContext().sendBroadcast(new Intent(FtpService.ACTION_START_FTPSERVER));
+        getContext().sendBroadcast(new Intent(FtpService.ACTION_START_FTPSERVER).setPackage(getContext().getPackageName()));
     }
 
     /**
      * Sends a broadcast to stop ftp server
      */
     private void stopServer() {
-        getContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER));
+        getContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getContext().getPackageName()));
     }
 
     @Override
