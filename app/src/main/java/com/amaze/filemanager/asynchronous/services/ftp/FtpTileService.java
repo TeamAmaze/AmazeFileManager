@@ -46,8 +46,8 @@ public class FtpTileService extends TileService {
 
     @Override
     public void onClick() {
-        if(!isLocked()) {
-            if (getQsTile().getState() == Tile.STATE_ACTIVE) {
+        unlockAndRun(()->{
+            if (FtpService.isRunning()) {
                 getApplicationContext().sendBroadcast(new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getPackageName()));
             } else {
                 if (FtpService.isConnectedToWifi(getApplicationContext())
@@ -60,7 +60,7 @@ public class FtpTileService extends TileService {
                     Toast.makeText(getApplicationContext(), getString(R.string.ftp_no_wifi), Toast.LENGTH_LONG).show();
                 }
             }
-        }
+        });
     }
 
     private void updateTileState() {
