@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.net.Uri;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
@@ -39,7 +38,7 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private Context context;
 
     private static final String DATABASE_NAME = "utilities.db";
-    private static final int DATABASE_VERSION = 2;  // increment only when making change in schema
+    private static final int DATABASE_VERSION = 3;  // increment only when making change in schema
 
     private static final String TABLE_HISTORY = "history";
     private static final String TABLE_HIDDEN = "hidden";
@@ -55,15 +54,48 @@ public class UtilsHandler extends SQLiteOpenHelper {
     private static final String COLUMN_HOST_PUBKEY = "pub_key";
     private static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
     private static final String COLUMN_PRIVATE_KEY = "ssh_key";
+    private final String TEMP_TABLE_PREFIX ="temp_";
+
+    private String queryHistory = "CREATE TABLE IF NOT EXISTS " + TABLE_HISTORY + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_PATH + " TEXT UNIQUE"
+            + ");";
+
+    private String queryHidden = "CREATE TABLE IF NOT EXISTS " + TABLE_HIDDEN + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_PATH + " TEXT UNIQUE"
+            + ");";
+
+    private String queryList = "CREATE TABLE IF NOT EXISTS " + TABLE_LIST + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_PATH + " TEXT UNIQUE"
+            + ");";
+
+    private String queryGrid = "CREATE TABLE IF NOT EXISTS " + TABLE_GRID + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_PATH + " TEXT UNIQUE"
+            + ");";
+
+    private String queryBookmarks = "CREATE TABLE IF NOT EXISTS " + TABLE_BOOKMARKS + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_NAME + " TEXT,"
+            + COLUMN_PATH + " TEXT UNIQUE"
+            + ");";
+
+    private String querySmb = "CREATE TABLE IF NOT EXISTS " + TABLE_SMB + " ("
+            + COLUMN_ID + " INTEGER PRIMARY KEY,"
+            + COLUMN_NAME + " TEXT,"
+            + COLUMN_PATH + " TEXT UNIQUE"
+            + ");";
 
     private static final String querySftp = "CREATE TABLE IF NOT EXISTS " + TABLE_SFTP + " ("
             + COLUMN_ID + " INTEGER PRIMARY KEY,"
             + COLUMN_NAME + " TEXT,"
-            + COLUMN_PATH + " TEXT,"
+            + COLUMN_PATH + " TEXT UNIQUE,"
             + COLUMN_HOST_PUBKEY + " TEXT,"
             + COLUMN_PRIVATE_KEY_NAME + " TEXT,"
             + COLUMN_PRIVATE_KEY + " TEXT"
-            + ")";
+            + ");";
 
     public UtilsHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -72,33 +104,6 @@ public class UtilsHandler extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        String queryHistory = "CREATE TABLE IF NOT EXISTS " + TABLE_HISTORY + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT"
-                + ")";
-        String queryHidden = "CREATE TABLE IF NOT EXISTS " + TABLE_HIDDEN + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT"
-                + ")";
-        String queryList = "CREATE TABLE IF NOT EXISTS " + TABLE_LIST + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT"
-                + ")";
-        String queryGrid = "CREATE TABLE IF NOT EXISTS " + TABLE_GRID + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_PATH + " TEXT"
-                + ")";
-        String queryBookmarks = "CREATE TABLE IF NOT EXISTS " + TABLE_BOOKMARKS + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_NAME + " TEXT,"
-                + COLUMN_PATH + " TEXT"
-                + ")";
-        String querySmb = "CREATE TABLE IF NOT EXISTS " + TABLE_SMB + " ("
-                + COLUMN_ID + " INTEGER PRIMARY KEY,"
-                + COLUMN_NAME + " TEXT,"
-                + COLUMN_PATH + " TEXT"
-                + ")";
-
         db.execSQL(queryHistory);
         db.execSQL(queryHidden);
         db.execSQL(queryList);
@@ -113,7 +118,48 @@ public class UtilsHandler extends SQLiteOpenHelper {
         switch(oldVersion){
             case 1:
                 db.execSQL(querySftp);
-                break;
+            case 2:
+                String backupTable = TEMP_TABLE_PREFIX + TABLE_HISTORY;
+                db.execSQL(queryHistory.replace(TABLE_HISTORY, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_HISTORY + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_HISTORY + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_HISTORY + ";");
+
+                backupTable = TEMP_TABLE_PREFIX + TABLE_HIDDEN;
+                db.execSQL(queryHidden.replace(TABLE_HIDDEN, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_HIDDEN + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_HIDDEN + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_HIDDEN + ";");
+
+                backupTable = TEMP_TABLE_PREFIX + TABLE_LIST;
+                db.execSQL(queryList.replace(TABLE_LIST, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_LIST + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_LIST + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_LIST + ";");
+
+                backupTable = TEMP_TABLE_PREFIX + TABLE_GRID;
+                db.execSQL(queryGrid.replace(TABLE_GRID, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_GRID + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_GRID + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_GRID + ";");
+
+                backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS;
+                db.execSQL(queryBookmarks.replace(TABLE_BOOKMARKS, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_BOOKMARKS + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_BOOKMARKS + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_BOOKMARKS + ";");
+
+                backupTable = TEMP_TABLE_PREFIX + TABLE_SMB;
+                db.execSQL(querySmb.replace(TABLE_SMB, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_SMB + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_SMB + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_SMB + ";");
+
+                backupTable = TEMP_TABLE_PREFIX + TABLE_SFTP;
+                db.execSQL(querySftp.replace(TABLE_SFTP, backupTable));
+                db.execSQL("INSERT INTO " + backupTable + " SELECT * FROM " + TABLE_SFTP + " group by path;");
+                db.execSQL("DROP TABLE " + TABLE_SFTP + ";");
+                db.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_SFTP + ";");
             default:
                 break;
         }
