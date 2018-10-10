@@ -76,12 +76,17 @@ public class HybridFile {
     public HybridFile(OpenMode mode, String path, String name, boolean isDirectory) {
         this.mode = mode;
         if (path.startsWith("smb://") || isSmb()) {
-            if (!isDirectory) this.path = path + name;
-            else if (!name.endsWith("/")) this.path = path + name + "/";
-            else this.path = path + name;
+            if (!isDirectory) this.path += name;
+            else if (!name.endsWith("/")) this.path += name + "/";
+            else this.path += name;
         } else if(path.startsWith("ssh://") || isSftp()) {
-            this.path = path + "/" + name;
-        } else this.path = path + "/" + name;
+            this.path += "/" + name;
+        } else if (isRoot() && path.equals("/")) {
+            // root of filesystem, don't concat another '/'
+            this.path += name;
+        } else {
+            this.path += "/" + name;
+        }
     }
 
     public void generateMode(Context context) {
