@@ -125,6 +125,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     private RelativeLayout drawerHeaderParent;
     private View drawerHeaderLayout, drawerHeaderView;
 
+    /**
+     * Tablet is defined as 'width > 720dp'
+     */
+    private boolean isOnTablet = false;
+
     public Drawer(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         resources = mainActivity.getResources();
@@ -196,12 +201,13 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
         //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         if (mainActivity.findViewById(R.id.tab_frame) != null) {
+            isOnTablet = true;
             lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
             open();
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             mDrawerLayout.post(this::open);
         } else if (mainActivity.findViewById(R.id.tab_frame) == null) {
-            unlock();
+            unlockIfNotOnTablet();
             close();
             mDrawerLayout.post(this::close);
         }
@@ -722,13 +728,40 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
      * @param mode {@link DrawerLayout#LOCK_MODE_LOCKED_CLOSED},
      *              {@link DrawerLayout#LOCK_MODE_LOCKED_OPEN}
      *             or {@link DrawerLayout#LOCK_MODE_UNDEFINED}
+     *
+     * @throws IllegalArgumentException if you try to {{@link DrawerLayout#LOCK_MODE_LOCKED_OPEN}
+     *             or {@link DrawerLayout#LOCK_MODE_UNDEFINED} on a tablet
      */
-    public void lock(int mode) {
+    private void lock(int mode) {
+        if(isOnTablet && mode != DrawerLayout.LOCK_MODE_LOCKED_OPEN) {
+            throw new IllegalArgumentException("You can't lock closed or unlock drawer in tablet!");
+        }
+
         mDrawerLayout.setDrawerLockMode(mode, navView);
         isDrawerLocked = true;
     }
 
-    public void unlock() {
+    /**
+     * Does nothing on tablets {@link #isOnTablet}
+     *
+     * @param mode {@link DrawerLayout#LOCK_MODE_LOCKED_CLOSED},
+     *              {@link DrawerLayout#LOCK_MODE_LOCKED_OPEN}
+     *             or {@link DrawerLayout#LOCK_MODE_UNDEFINED}
+     */
+    public void lockIfNotOnTablet(int mode) {
+        if(isOnTablet) {
+            return;
+        }
+
+        mDrawerLayout.setDrawerLockMode(mode, navView);
+        isDrawerLocked = true;
+    }
+
+    public void unlockIfNotOnTablet() {
+        if(isOnTablet) {
+            return;
+        }
+
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, navView);
         isDrawerLocked = false;
     }

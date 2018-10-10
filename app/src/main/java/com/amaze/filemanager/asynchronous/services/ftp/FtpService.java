@@ -213,9 +213,9 @@ public class FtpService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
-            sendBroadcast(new Intent(FtpService.ACTION_STARTED).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
+            sendBroadcast(new Intent(FtpService.ACTION_STARTED).setPackage(getPackageName()).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
         } catch (Exception e) {
-            sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART));
+            sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART).setPackage(getPackageName()));
         }
     }
 
@@ -234,7 +234,7 @@ public class FtpService extends Service implements Runnable {
         }
         if (server != null) {
             server.stop();
-            sendBroadcast(new Intent(FtpService.ACTION_STOPPED));
+            sendBroadcast(new Intent(FtpService.ACTION_STOPPED).setPackage(getPackageName()));
         }
     }
 

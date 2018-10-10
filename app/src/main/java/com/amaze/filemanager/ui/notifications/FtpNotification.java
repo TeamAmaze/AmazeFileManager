@@ -76,7 +76,7 @@ public class FtpNotification extends BroadcastReceiver {
         if (!noStopButton && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
             CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER);
+            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
             PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
                     stopIntent, PendingIntent.FLAG_ONE_SHOT);
 

@@ -28,18 +28,18 @@ public class PermissionsActivity extends ThemedActivity
         if (requestCode == STORAGE_PERMISSION) {
             if (isGranted(grantResults)) {
                 permissionCallbacks[STORAGE_PERMISSION].onPermissionGranted();
+                permissionCallbacks[STORAGE_PERMISSION] = null;
             } else {
                 Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
                 requestStoragePermission(permissionCallbacks[STORAGE_PERMISSION]);
             }
 
-            permissionCallbacks[STORAGE_PERMISSION] = null;
         } else if (requestCode == INSTALL_APK_PERMISSION) {
             if (isGranted(grantResults)) {
                 permissionCallbacks[INSTALL_APK_PERMISSION].onPermissionGranted();
+                permissionCallbacks[INSTALL_APK_PERMISSION] = null;
             }
 
-            permissionCallbacks[INSTALL_APK_PERMISSION] = null;
         }
 
     }
@@ -85,7 +85,7 @@ public class PermissionsActivity extends ThemedActivity
 
         if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
             rationale.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
-                ActivityCompat.requestPermissions(PermissionsActivity.this, new String[]{permission}, 77);
+                ActivityCompat.requestPermissions(PermissionsActivity.this, new String[]{permission}, code);
                 rationale.dismiss();
             });
             rationale.show();
