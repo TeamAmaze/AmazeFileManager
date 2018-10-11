@@ -149,6 +149,46 @@ public class SshConnectionPoolTest {
         assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
     }
 
+    @Test
+    public void testGetConnectionWithUrlHavingMinusSignInPassword1() throws IOException {
+        String validUsername = "test@example.com";
+        String validPassword = "abcd-efgh";
+        createSshServer(validUsername, validPassword);
+        saveSshConnectionSettings(validUsername, validPassword, null);
+        assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://test@example.com:abcd-efgh@127.0.0.1:22222"));
+        assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+    }
+
+    @Test
+    public void testGetConnectionWithUrlHavingMinusSignInPassword2() throws IOException {
+        String validUsername = "test@example.com";
+        String validPassword = "---------------";
+        createSshServer(validUsername, validPassword);
+        saveSshConnectionSettings(validUsername, validPassword, null);
+        assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://test@example.com:---------------@127.0.0.1:22222"));
+        assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+    }
+
+    @Test
+    public void testGetConnectionWithUrlHavingMinusSignInPassword3() throws IOException {
+        String validUsername = "test@example.com";
+        String validPassword = "--agdiuhdpost15";
+        createSshServer(validUsername, validPassword);
+        saveSshConnectionSettings(validUsername, validPassword, null);
+        assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://test@example.com:--agdiuhdpost15@127.0.0.1:22222"));
+        assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+    }
+
+    @Test
+    public void testGetConnectionWithUrlHavingMinusSignInPassword4() throws IOException {
+        String validUsername = "test@example.com";
+        String validPassword = "t-h-i-s-i-s-p-a-s-s-w-o-r-d-";
+        createSshServer(validUsername, validPassword);
+        saveSshConnectionSettings(validUsername, validPassword, null);
+        assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:22222"));
+        assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+    }
+
     private void createSshServer(@NonNull String validUsername, @Nullable String validPassword) throws IOException {
         server = SshServer.setUpDefaultServer();
         server.setPublickeyAuthenticator(AcceptAllPublickeyAuthenticator.INSTANCE);
@@ -165,7 +205,6 @@ public class SshConnectionPoolTest {
         utilsHandler = new UtilsHandler(RuntimeEnvironment.application);
         utilsHandler.onCreate(utilsHandler.getWritableDatabase());
 
-        //FIXME: privateKeyContents created this way cannot be parsed back in PemToKeyPairTask
         String privateKeyContents = null;
         if(privateKey != null){
             StringWriter writer = new StringWriter();
