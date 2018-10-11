@@ -291,7 +291,12 @@ public class DataUtils {
     }
 
     public void addHistoryFile(final String i) {
-        history.push(i);
+        String d=i.replaceFirst("/+[^/]*","");
+        if(d.length()>1){
+            history.remove(i);
+            history.push(i);
+        }
+
         if (dataChangeListener != null) {
             dataChangeListener.onHistoryAdded(i);
         }
