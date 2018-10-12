@@ -64,7 +64,7 @@ public abstract class Extractor {
                 return true;
             } else {// header to be extracted is at least the entry path (may be more, when it is a directory)
                 for (String path : filesToExtract) {
-                    if(relativePath.startsWith(path)) {
+                    if(relativePath.startsWith(path) || relativePath.startsWith("/"+path)) {
                         return true;
                     }
                 }
@@ -97,6 +97,9 @@ public abstract class Extractor {
     protected String fixEntryName(String entryName){
         if(entryName.indexOf('\\') > 0) {
             return entryName.replaceAll("\\\\", CompressedHelper.SEPARATOR);
+        } if(entryName.indexOf(CompressedHelper.SEPARATOR_CHAR) == 0) {
+            //if entryName starts with "/" (e.g. "/test.txt"), strip the prefixing "/"s
+            return entryName.substring(entryName.lastIndexOf(CompressedHelper.SEPARATOR_CHAR)+1);
         } else {
             return entryName;
         }
