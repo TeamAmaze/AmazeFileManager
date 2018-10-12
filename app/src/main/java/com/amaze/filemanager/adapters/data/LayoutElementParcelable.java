@@ -46,6 +46,7 @@ public class LayoutElementParcelable implements Parcelable {
     public final boolean isDirectory;
     public final long date, longSize;
     public final String date1;
+    public final String date2;
     public final boolean header;
 
     //same as hfile.modes but different than openmode in Main.java
@@ -102,9 +103,11 @@ public class LayoutElementParcelable implements Parcelable {
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
             this.date1 = Utils.getDate(this.date, CURRENT_YEAR);
+            this.date2 = Utils.getDate(this.date);
         } else {
             this.date = 0;
             this.date1 = "";
+            this.date2 = "";
         }
     }
 
@@ -141,6 +144,7 @@ public class LayoutElementParcelable implements Parcelable {
         symlink = im.readString();
         int j = im.readInt();
         date = im.readLong();
+        date2 = im.readString();
         int i = im.readInt();
         header = i != 0;
         isDirectory = j != 0;
@@ -167,6 +171,7 @@ public class LayoutElementParcelable implements Parcelable {
         p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
         p1.writeString(date1);
+        p1.writeString(date2);
         p1.writeString(size);
         p1.writeLong(longSize);
     }

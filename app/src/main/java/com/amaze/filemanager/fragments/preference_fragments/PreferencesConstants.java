@@ -30,6 +30,7 @@ public class PreferencesConstants {
     public static final String PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack";
     public static final String PREFERENCE_SHOW_HIDDENFILES = "showHidden";
     public static final String PREFERENCE_SHOW_LAST_MODIFIED = "showLastModified";
+    public static final String PREFERENCE_SHOW_LAST_MODIFIED_TIME = "showLastModifiedTime";
     public static final String PREFERENCE_USE_CIRCULAR_IMAGES = "circularimages";
     public static final String PREFERENCE_ROOTMODE = "rootmode";
     public static final String PREFERENCE_CHANGEPATHS = "typeablepaths";

@@ -89,6 +89,11 @@
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
+            android:key="showLastModifiedTime"
+            android:summary="@string/lastModifiedSummaryTime"
+            android:title="@string/lastModifiedPrefTime"/>
+        <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showFileSize"
             android:summary="@string/sizePrefSummary"
