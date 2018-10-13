@@ -25,18 +25,14 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 import android.content.Context;
 import android.support.annotation.NonNull;
 
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
-
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR_CHAR;
 
 public abstract class Extractor {
 
@@ -95,11 +91,11 @@ public abstract class Extractor {
     }
 
     protected String fixEntryName(String entryName){
-        if(entryName.indexOf('\\') > 0) {
-            return entryName.replaceAll("\\\\", CompressedHelper.SEPARATOR);
-        } if(entryName.indexOf(CompressedHelper.SEPARATOR_CHAR) == 0) {
+        if(entryName.indexOf('\\') >= 0) {
+            return fixEntryName(entryName.replaceAll("\\\\", SEPARATOR));
+        } else if(entryName.indexOf(SEPARATOR_CHAR) == 0) {
             //if entryName starts with "/" (e.g. "/test.txt"), strip the prefixing "/"s
-            return entryName.substring(entryName.lastIndexOf(CompressedHelper.SEPARATOR_CHAR)+1);
+            return entryName.replaceAll("^/+", "");
         } else {
             return entryName;
         }
