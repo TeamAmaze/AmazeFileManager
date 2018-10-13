@@ -109,6 +109,23 @@ public class OTGUtil {
     }
 
     /**
+     * Returns the filename from a file in OTG.
+     */
+    public static String getName(String path) {
+        String name = null;
+
+        String[] parts = path.split("/");
+        for (String part : parts) {
+            if (path.equals("otg:/")) break;
+            if (part.equals("otg:") || part.equals("")) continue;
+
+            name = part;
+        }
+
+        return name;
+    }
+
+    /**
      * Checks if there is at least one USB device connected with class MASS STORAGE.
      */
     public static boolean isMassStorageDeviceConnected(@NonNull final Context context) {

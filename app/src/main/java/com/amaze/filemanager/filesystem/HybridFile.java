@@ -335,7 +335,7 @@ public class HybridFile {
             case ROOT:
                 return new File(path).getName();
             case OTG:
-                return OTGUtil.getDocumentFile(path, context, false).getName();
+                return OTGUtil.getName(path);
             default:
                 StringBuilder builder = new StringBuilder(path);
                 name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
