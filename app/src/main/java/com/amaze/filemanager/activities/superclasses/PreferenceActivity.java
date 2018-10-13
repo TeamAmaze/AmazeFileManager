@@ -62,6 +62,7 @@ public class PreferenceActivity extends BasicActivity {
             case PREFERENCE_ROOTMODE:
             case PREFERENCE_COLORED_NAVIGATION:
             case PREFERENCE_TEXTEDITOR_NEWSTACK:
+            case PREFERENCE_SHOW_LAST_MODIFIED_TIME:
             case PREFERENCE_CHANGEPATHS:
                 defaultValue = false;
                 break;
@@ -70,7 +71,6 @@ public class PreferenceActivity extends BasicActivity {
             case PREFERENCE_SHOW_HEADERS:
             case PREFERENCE_USE_CIRCULAR_IMAGES:
             case PREFERENCE_SHOW_LAST_MODIFIED:
-            case PREFERENCE_SHOW_LAST_MODIFIED_TIME:
             case PREFERENCE_COLORIZE_ICONS:
             case PREFERENCE_SHOW_THUMB:
             case PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES:
