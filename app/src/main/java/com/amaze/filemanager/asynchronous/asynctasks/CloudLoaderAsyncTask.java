@@ -46,7 +46,11 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
         if (data == null) return false;
         if (data.getCount() > 0 && data.moveToFirst()) {
             do {
-                if (mainActivityWeakReference.get() == null) cancel(true);
+
+                if (mainActivityWeakReference.get() == null) {
+                    cancel(true);
+                    return false;
+                }
                 if (isCancelled()) cancel(true);
 
                 switch (data.getInt(0)) {
@@ -56,8 +60,12 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getString(R.string.failed_cloud_api_key));
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getString(R.string.failed_cloud_api_key));
+                            } else {
+                                cancel(true);
+                            }
                             return false;
                         }
                         break;
@@ -66,9 +74,15 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         try {
                             CloudEntry cloudEntryGdrive = null;
                             CloudEntry savedCloudEntryGdrive;
-
-                            GoogleDrive cloudStorageDrive = new GoogleDrive(mainActivityWeakReference.get().getApplicationContext(),
-                                    data.getString(1), "", MainActivity.CLOUD_AUTHENTICATOR_REDIRECT_URI, data.getString(2));
+                            GoogleDrive cloudStorageDrive;
+                            if (mainActivityWeakReference.get() != null) {
+                                cloudStorageDrive = new GoogleDrive(mainActivityWeakReference.get().getApplicationContext(),
+                                        data.getString(1), "",
+                                        MainActivity.CLOUD_AUTHENTICATOR_REDIRECT_URI, data.getString(2));
+                            } else {
+                                cancel(true);
+                                return false;
+                            }
                             cloudStorageDrive.useAdvancedAuthentication();
 
                             if ((savedCloudEntryGdrive = cloudHandler.findEntry(OpenMode.GDRIVE)) != null) {
@@ -94,22 +108,34 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.GDRIVE);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.GDRIVE);
+                            } else {
+                                cancel(true);
+                            }
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.GDRIVE);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.GDRIVE);
+                            } else {
+                                cancel(true);
+                            }
                             return false;
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.GDRIVE);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.GDRIVE);
+                            } else {
+                                cancel(true);
+                            }
                             return false;
                         }
                         break;
@@ -118,9 +144,14 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         try {
                             CloudEntry cloudEntryDropbox = null;
                             CloudEntry savedCloudEntryDropbox;
-
-                            CloudStorage cloudStorageDropbox = new Dropbox(mainActivityWeakReference.get().getApplicationContext(),
-                                    data.getString(1), data.getString(2));
+                            CloudStorage cloudStorageDropbox;
+                            if (mainActivityWeakReference.get() != null) {
+                                cloudStorageDropbox = new Dropbox(mainActivityWeakReference.get().getApplicationContext(),
+                                        data.getString(1), data.getString(2));
+                            } else {
+                                cancel(true);
+                                return false;
+                            }
 
                             if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
                                 // we already have the entry and saved state, get it
@@ -144,22 +175,30 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.DROPBOX);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.DROPBOX);
+                            } else {
+                                cancel(true);
+                            }
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.DROPBOX);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.DROPBOX);
+                            } else cancel(true);
                             return false;
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.DROPBOX);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.DROPBOX);
+                            } else cancel(true);
                             return false;
                         }
                         break;
@@ -168,9 +207,14 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         try {
                             CloudEntry cloudEntryBox = null;
                             CloudEntry savedCloudEntryBox;
-
-                            CloudStorage cloudStorageBox = new Box(mainActivityWeakReference.get().getApplicationContext(),
-                                    data.getString(1), data.getString(2));
+                            CloudStorage cloudStorageBox;
+                            if (mainActivityWeakReference.get() != null) {
+                                cloudStorageBox = new Box(mainActivityWeakReference.get().getApplicationContext(),
+                                        data.getString(1), data.getString(2));
+                            } else {
+                                cancel(true);
+                                return false;
+                            }
 
                             if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
                                 // we already have the entry and saved state, get it
@@ -193,22 +237,28 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.BOX);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.BOX);
+                            } else cancel(true);
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.BOX);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.BOX);
+                            } else cancel(true);
                             return false;
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.BOX);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.BOX);
+                            } else cancel(true);
                             return false;
                         }
                         break;
@@ -217,9 +267,14 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         try {
                             CloudEntry cloudEntryOnedrive = null;
                             CloudEntry savedCloudEntryOnedrive;
-
-                            CloudStorage cloudStorageOnedrive = new OneDrive(mainActivityWeakReference.get().getApplicationContext(),
-                                    data.getString(1), data.getString(2));
+                            CloudStorage cloudStorageOnedrive;
+                            if (mainActivityWeakReference.get() != null) {
+                                cloudStorageOnedrive= new OneDrive(mainActivityWeakReference.get().getApplicationContext(),
+                                        data.getString(1), data.getString(2));
+                            } else {
+                                cancel(true);
+                                return false;
+                            }
 
                             if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
                                 // we already have the entry and saved state, get it
@@ -243,29 +298,37 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.ONEDRIVE);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_plugin));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.ONEDRIVE);
+                            } else cancel(true);
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.ONEDRIVE);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.cloud_fail_authenticate));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.ONEDRIVE);
+                            } else cancel(true);
                             return false;
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            AppConfig.toast(mainActivityWeakReference.get(),
-                                    mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
-                            mainActivityWeakReference.get().deleteConnection(OpenMode.ONEDRIVE);
+                            if (mainActivityWeakReference.get() != null) {
+                                AppConfig.toast(mainActivityWeakReference.get(),
+                                        mainActivityWeakReference.get().getResources().getString(R.string.failed_cloud_new_connection));
+                                mainActivityWeakReference.get().deleteConnection(OpenMode.ONEDRIVE);
+                            } else cancel(true);
                             return false;
                         }
                         break;
                     default:
-                        Toast.makeText(mainActivityWeakReference.get(),
-                                mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_failed_restart),
-                                Toast.LENGTH_LONG).show();
+                        if (mainActivityWeakReference.get() != null) {
+                            Toast.makeText(mainActivityWeakReference.get(),
+                                    mainActivityWeakReference.get().getResources().getString(R.string.cloud_error_failed_restart),
+                                    Toast.LENGTH_LONG).show();
+                        } else cancel(true);
                         return false;
                 }
             } while (data.moveToNext());
@@ -276,14 +339,18 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
-        mainActivityWeakReference.get().getSupportLoaderManager().destroyLoader(MainActivity.REQUEST_CODE_CLOUD_LIST_KEY);
-        mainActivityWeakReference.get().getSupportLoaderManager().destroyLoader(MainActivity.REQUEST_CODE_CLOUD_LIST_KEYS);
+        if (mainActivityWeakReference.get() != null) {
+            mainActivityWeakReference.get().getSupportLoaderManager().destroyLoader(MainActivity.REQUEST_CODE_CLOUD_LIST_KEY);
+            mainActivityWeakReference.get().getSupportLoaderManager().destroyLoader(MainActivity.REQUEST_CODE_CLOUD_LIST_KEYS);
+        }
     }
 
     @Override
     public void onPostExecute(@NonNull Boolean result) {
         if (result) {
-            mainActivityWeakReference.get().getDrawer().refreshDrawer();
+            if (mainActivityWeakReference.get() != null) {
+                mainActivityWeakReference.get().getDrawer().refreshDrawer();
+            }
         }
     }
 }

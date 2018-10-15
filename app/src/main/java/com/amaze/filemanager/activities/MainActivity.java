@@ -1892,7 +1892,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                             Toast.LENGTH_LONG).show();
                 }
             default:
-                return null;
+                Uri undefinedUriAppendedPath = ContentUris.withAppendedId(uri, 7);
+                return new CursorLoader(this, undefinedUriAppendedPath, projection, null, null, null);
         }
     }
 
