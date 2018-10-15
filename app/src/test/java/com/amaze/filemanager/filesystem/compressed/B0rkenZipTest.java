@@ -31,6 +31,7 @@ public class B0rkenZipTest {
 
     private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");
     private File zipfile2 = new File(Environment.getExternalStorageDirectory(), "zip-slip-win.zip");
+    private File zipfile3 = new File(Environment.getExternalStorageDirectory(), "test-slashprefix.zip");
 
     private Extractor.OnUpdate emptyListener = new Extractor.OnUpdate() {
 
@@ -59,6 +60,7 @@ public class B0rkenZipTest {
     public void setUp() throws Exception{
         IOUtils.copy(getClass().getClassLoader().getResourceAsStream("zip-slip.zip"), new FileOutputStream(zipfile1));
         IOUtils.copy(getClass().getClassLoader().getResourceAsStream("zip-slip-win.zip"), new FileOutputStream(zipfile2));
+        IOUtils.copy(getClass().getClassLoader().getResourceAsStream("test-slashprefix.zip"), new FileOutputStream(zipfile3));
     }
 
     @Test
@@ -75,6 +77,14 @@ public class B0rkenZipTest {
         extractor.extractEverything();
         assertEquals(1, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());
+    }
+
+    @Test
+    public void testExtractZipWithSlashPrefixEntry() throws Exception{
+        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile3.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        extractor.extractFiles(new String[]{"/test.txt"});
+        assertEquals(0, extractor.getInvalidArchiveEntries().size());
+        assertTrue(new File(Environment.getExternalStorageDirectory(), "test.txt").exists());
     }
 
     @Test
