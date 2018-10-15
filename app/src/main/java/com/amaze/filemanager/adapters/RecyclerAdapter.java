@@ -55,10 +55,10 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HEADERS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED_TIME;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
+import static java.lang.Boolean.getBoolean;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
@@ -639,10 +639,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
                 if (getBoolean(PREFERENCE_SHOW_PERMISSIONS))
                     holder.perm.setText(rowItem.permissions);
-                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED) && !getBoolean(PREFERENCE_SHOW_LAST_MODIFIED_TIME)) {
-                    holder.date.setText(rowItem.date1);
-                } else if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED_TIME)) {
-                    holder.date.setText(rowItem.date2);
+                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
+                    holder.date.setText(rowItem.dateModification);
                 } else{
                     holder.date.setVisibility(View.GONE);
                 }
@@ -776,10 +774,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         holder.about.setColorFilter(grey_color);
                     showPopup(holder.about, rowItem);
                 }
-                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED) && !getBoolean(PREFERENCE_SHOW_LAST_MODIFIED_TIME)) {
-                    holder.date.setText(rowItem.date1);
-                } else if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED_TIME)) {
-                    holder.date.setText(rowItem.date2);
+                
+                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
+                    holder.date.setText(rowItem.dateModification);
                 }
                 if (isBackButton) {
                     holder.date.setText(rowItem.size);
