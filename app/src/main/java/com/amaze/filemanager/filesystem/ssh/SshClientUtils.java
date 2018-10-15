@@ -156,9 +156,9 @@ public abstract class SshClientUtils
      * @return SSH URL with the password (if exists) encrypted
      */
     public static final String encryptSshPathAsNecessary(@NonNull String fullUri) {
-        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.indexOf('@'));
+        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
         try {
-            return (uriWithoutProtocol.indexOf(':') > 0) ?
+            return (uriWithoutProtocol.lastIndexOf(':') > 0) ?
                     SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri) :
                     fullUri;
         } catch(IOException | GeneralSecurityException e){
@@ -175,9 +175,9 @@ public abstract class SshClientUtils
      * @return SSH URL with the password (if exists) decrypted
      */
     public static final String decryptSshPathAsNecessary(@NonNull String fullUri) {
-        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.indexOf('@'));
+        String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
         try {
-            return (uriWithoutProtocol.indexOf(':') > 0) ?
+            return (uriWithoutProtocol.lastIndexOf(':') > 0) ?
                     SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri) :
                     fullUri;
         } catch(IOException | GeneralSecurityException e){
