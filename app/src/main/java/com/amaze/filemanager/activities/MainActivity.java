@@ -1193,8 +1193,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         utilsHandler.close();
         cloudHandler.close();
 
-        if (mCloudCursorData != null) mCloudCursorData.close();
-
         CryptHandler cryptHandler = new CryptHandler(this);
         cryptHandler.close();
         
