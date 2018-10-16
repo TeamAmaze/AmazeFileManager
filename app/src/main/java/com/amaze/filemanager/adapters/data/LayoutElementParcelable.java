@@ -141,10 +141,10 @@ public class LayoutElementParcelable implements Parcelable {
         symlink = im.readString();
         int j = im.readInt();
         date = im.readLong();
-        dateModification = im.readString();
         int i = im.readInt();
         header = i != 0;
         isDirectory = j != 0;
+        dateModification = im.readString();
         size = im.readString();
         longSize=im.readLong();
     }

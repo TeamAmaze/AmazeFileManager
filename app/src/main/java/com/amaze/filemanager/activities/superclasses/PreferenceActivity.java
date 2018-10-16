@@ -62,7 +62,6 @@ public class PreferenceActivity extends BasicActivity {
             case PREFERENCE_COLORED_NAVIGATION:
             case PREFERENCE_TEXTEDITOR_NEWSTACK:
             case PREFERENCE_CHANGEPATHS:
-            case PREFERENCE_SHOW_LAST_MODIFIED:
                 defaultValue = false;
                 break;
             case PREFERENCE_SHOW_FILE_SIZE:
@@ -75,6 +74,7 @@ public class PreferenceActivity extends BasicActivity {
             case PREFERENCE_NEED_TO_SET_HOME:
             case PREFERENCE_SHOW_SIDEBAR_FOLDERS:
             case PREFERENCE_VIEW:
+            case PREFERENCE_SHOW_LAST_MODIFIED:
                 defaultValue = true;
                 break;
             default:
