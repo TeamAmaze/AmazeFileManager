@@ -84,7 +84,7 @@
             android:key="showHidden"
             android:title="@string/hidden"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="showLastModified"
             android:summary="@string/lastModifiedSummary"
             android:title="@string/lastModifiedPref"/>
