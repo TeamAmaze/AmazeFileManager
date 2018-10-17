@@ -92,8 +92,6 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
 
             if (hFile.isSmb()) {
                 ma.smbPath = path;
-            } else if (android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()) {
-                openmode = OpenMode.ROOT;
             }
         }
 

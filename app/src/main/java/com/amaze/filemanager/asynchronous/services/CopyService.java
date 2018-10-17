@@ -64,7 +64,7 @@ import java.util.ArrayList;
 
 public class CopyService extends AbstractProgressiveService {
 
-    public static final String TAG_IS_ROOT_EXPLORER = "is root";
+    public static final String TAG_IS_ROOT_EXPLORER = "is_root";
     public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
     public static final String TAG_COPY_SOURCES = "FILE_PATHS";
     public static final String TAG_COPY_OPEN_MODE = "MODE"; // target open mode
@@ -375,10 +375,10 @@ public class CopyService extends AbstractProgressiveService {
 
                             if (!progressHandler.getCancelled()) {
 
-                                if (!f1.isSmb()
-                                        && (f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
+                                if ((f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT)
                                         && isRootExplorer) {
                                     // either source or target are in root
+                                    Log.d(getClass().getSimpleName(), "either source or target are in root");
                                     progressHandler.setSourceFilesProcessed(++sourceProgress);
                                     copyRoot(f1, hFile, move);
                                     continue;
@@ -402,7 +402,6 @@ public class CopyService extends AbstractProgressiveService {
                 } else if (isRootExplorer) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         if (!progressHandler.getCancelled()) {
-
                             HybridFile hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(),
                                     sourceFiles.get(i).isDirectory());
                             progressHandler.setSourceFilesProcessed(++sourceProgress);
@@ -414,8 +413,6 @@ public class CopyService extends AbstractProgressiveService {
                             }*/
                         }
                     }
-
-
                 } else {
                     for (HybridFileParcelable f : sourceFiles) failedFOps.add(f);
                     return;
@@ -440,8 +437,8 @@ public class CopyService extends AbstractProgressiveService {
                     else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
                     ServiceWatcherUtil.position += sourceFile.getSize();
                 } catch (ShellNotRunningException e) {
-                    failedFOps.add(sourceFile);
                     e.printStackTrace();
+                    failedFOps.add(sourceFile);
                 }
                 FileUtils.scanFile(targetFile.getFile(), c);
             }

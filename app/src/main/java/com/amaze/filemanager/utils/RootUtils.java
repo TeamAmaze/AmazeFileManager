@@ -4,6 +4,8 @@ package com.amaze.filemanager.utils;
  * Created by arpitkh996 on 25-01-2016.
  */
 
+import android.util.Log;
+
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
@@ -91,7 +93,7 @@ public class RootUtils {
         // remounting destination as rw
         String mountPoint = mountFileSystemRW(destination);
 
-        RootHelper.runShellCommand("cp \"" + source + "\" \"" + destination + "\"");
+        RootHelper.runShellCommand("cp -r \"" + source + "\" \"" + destination + "\"");
 
         if (mountPoint != null) {
             // we mounted the filesystem as rw, let's mount it back to ro

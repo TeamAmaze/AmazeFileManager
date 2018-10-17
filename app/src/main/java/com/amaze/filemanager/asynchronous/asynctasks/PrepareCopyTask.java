@@ -100,6 +100,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
                 || openMode == OpenMode.BOX
                 || openMode == OpenMode.GDRIVE
                 || openMode == OpenMode.ONEDRIVE
+                || openMode == OpenMode.ROOT
                 ) {
             // no helper method for OTG to determine storage space
             return null;
@@ -145,7 +146,9 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
                 || openMode == OpenMode.GDRIVE
                 || openMode == OpenMode.DROPBOX
                 || openMode == OpenMode.BOX
-                || openMode == OpenMode.ONEDRIVE) {
+                || openMode == OpenMode.ONEDRIVE
+                || openMode == OpenMode.ROOT
+                ) {
 
             startService(filesToCopy, path, openMode);
         } else {
@@ -168,6 +171,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         intent.putExtra(CopyService.TAG_COPY_TARGET, target);
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openmode.ordinal());
         intent.putExtra(CopyService.TAG_COPY_MOVE, move);
+        intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, rootMode);
         ServiceWatcherUtil.runService(context, intent);
     }
 

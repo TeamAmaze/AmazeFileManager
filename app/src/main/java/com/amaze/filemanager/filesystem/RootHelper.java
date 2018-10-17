@@ -293,7 +293,12 @@ public class RootHelper {
                             if (array != null) {
                                 array.setMode(OpenMode.ROOT);
                                 array.setName(array.getPath());
-                                array.setPath(path + "/" + array.getPath());
+                                if (!path.equals("/")) {
+                                    array.setPath(path + "/" + array.getPath());
+                                } else {
+                                    // root of filesystem, don't concat another '/'
+                                    array.setPath(path + array.getPath());
+                                }
                                 if (array.getLink().trim().length() > 0) {
                                     boolean isdirectory = isDirectory(array.getLink(), root, 0);
                                     array.setDirectory(isdirectory);
