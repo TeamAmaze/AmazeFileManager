@@ -244,7 +244,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 }
 
                 masterPasswordDialogBuilder.input(getResources().getString(R.string.authenticate_password),
-                        decryptedPassword, false, (dialog, input) -> { });
+                        decryptedPassword, true, (dialog, input) -> { });
                 masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
                 masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
