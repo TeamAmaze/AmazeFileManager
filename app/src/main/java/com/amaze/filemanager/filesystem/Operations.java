@@ -15,6 +15,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -476,6 +477,13 @@ public class Operations {
                     }
                 }
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (newFile != null)
+                    FileUtils.scanFile(newFile, context);
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
