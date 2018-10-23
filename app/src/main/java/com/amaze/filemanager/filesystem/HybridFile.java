@@ -300,9 +300,6 @@ public class HybridFile {
         return path;
     }
 
-    /**
-     * @deprecated use {@link #getName(Context)}
-     */
     public String getName() {
         String name = null;
         switch (mode) {
@@ -315,30 +312,11 @@ public class HybridFile {
                 return new File(path).getName();
             case ROOT:
                 return new File(path).getName();
+            case OTG:
+                return new File(path).getName();
             default:
                 StringBuilder builder = new StringBuilder(path);
                 name = builder.substring(builder.lastIndexOf("/") + 1, builder.length());
-        }
-        return name;
-    }
-
-    public String getName(Context context) {
-        String name = null;
-        switch (mode){
-            case SMB:
-                SmbFile smbFile=getSmbFile();
-                if(smbFile!=null)
-                    return smbFile.getName();
-                break;
-            case FILE:
-                return new File(path).getName();
-            case ROOT:
-                return new File(path).getName();
-            case OTG:
-                return OTGUtil.getName(path);
-            default:
-                StringBuilder builder = new StringBuilder(path);
-                name = builder.substring(builder.lastIndexOf("/")+1, builder.length());
         }
         return name;
     }
@@ -419,7 +397,7 @@ public class HybridFile {
             default:
                 StringBuilder builder = new StringBuilder(path);
                 StringBuilder parentPathBuilder = new StringBuilder(builder.substring(0,
-                        builder.length()-(getName(context).length()+1)));
+                        builder.length()-(getName().length()+1)));
                 return parentPathBuilder.toString();
         }
         return parentPath;
@@ -1175,7 +1153,7 @@ public class HybridFile {
             if (!exists(context)) {
                 DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, false);
                 if (parentDirectory.isDirectory()) {
-                    parentDirectory.createDirectory(getName(context));
+                    parentDirectory.createDirectory(getName());
                 }
             }
         } else if (isDropBoxFile()) {
@@ -1245,7 +1223,7 @@ public class HybridFile {
      * If no extension is found then whole file name is returned
      */
     public String getNameString(Context context) {
-        String fileName = getName(context);
+        String fileName = getName();
 
         int extensionStartIndex = fileName.lastIndexOf(".");
         return fileName.substring(0, extensionStartIndex == -1 ? fileName.length() : extensionStartIndex);

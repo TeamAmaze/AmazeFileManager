@@ -88,7 +88,7 @@ public class Operations {
             protected Void doInBackground(Void... params) {
                 // checking whether filename is valid or a recursive call possible
                 if (MainActivityHelper.isNewDirectoryRecursive(file) ||
-                        !Operations.isFileNameValid(file.getName(context))) {
+                        !Operations.isFileNameValid(file.getName())) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
@@ -119,7 +119,7 @@ public class Operations {
 
                     DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
-                        parentDirectory.createDirectory(file.getName(context));
+                        parentDirectory.createDirectory(file.getName());
                         errorCallBack.done(file, true);
                     } else errorCallBack.done(file, false);
                     return null;
@@ -173,7 +173,7 @@ public class Operations {
                             if (file.exists()) errorCallBack.exists(file);
                             try {
 
-                                RootUtils.mkDir(file.getParent(context), file.getName(context));
+                                RootUtils.mkDir(file.getParent(context), file.getName());
                             } catch (ShellNotRunningException e) {
                                 e.printStackTrace();
                             }
@@ -202,7 +202,7 @@ public class Operations {
             @Override
             protected Void doInBackground(Void... params) {
                 // check whether filename is valid or not
-                if (!Operations.isFileNameValid(file.getName(context))) {
+                if (!Operations.isFileNameValid(file.getName())) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
@@ -292,8 +292,8 @@ public class Operations {
 
                     DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
-                        parentDirectory.createFile(file.getName(context).substring(file.getName().lastIndexOf(".")),
-                                file.getName(context));
+                        parentDirectory.createFile(file.getName().substring(file.getName().lastIndexOf(".")),
+                                file.getName());
                         errorCallBack.done(file, true);
                     } else errorCallBack.done(file, false);
                     return null;
@@ -341,7 +341,7 @@ public class Operations {
             protected Void doInBackground(Void... params) {
                 // check whether file names for new file are valid or recursion occurs
                 if (MainActivityHelper.isNewDirectoryRecursive(newFile) ||
-                        !Operations.isFileNameValid(newFile.getName(context))) {
+                        !Operations.isFileNameValid(newFile.getName())) {
                     errorCallBack.invalidName(newFile);
                     return null;
                 }
@@ -430,7 +430,7 @@ public class Operations {
                         errorCallBack.exists(newFile);
                         return null;
                     }
-                    errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
+                    errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName()));
                     return null;
                 } else {
 

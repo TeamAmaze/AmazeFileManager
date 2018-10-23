@@ -68,7 +68,7 @@ public class EditableFileAbstraction {
                 path = Utils.sanitizeInput(path);
                 this.hybridFileParcelable = new HybridFileParcelable(path);
 
-                String tempN = hybridFileParcelable.getName(context);
+                String tempN = hybridFileParcelable.getName();
                 if(tempN == null) tempN = uri.getLastPathSegment();
                 this.name = tempN;
 
