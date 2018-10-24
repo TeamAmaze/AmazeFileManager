@@ -116,6 +116,26 @@ public class FileUtils {
         return length;
     }
 
+    //llrraa
+    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces) {
+        long length = 0;
+        try {
+            for (File file:directory.listFiles()) {
+                if (file.isFile()) {
+                    spaces[2] += file.length();  length += file.length();}
+                else
+                    length += folderSize(file, updateState, spaces);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //spaces[2] += length
+        if(updateState != null)
+            updateState.onUpdate(spaces);
+        return length;
+    }
+
     public static long folderSize(HybridFile directory, OnProgressUpdate<Long> updateState) {
         if(directory.isSimpleFile())
             return folderSize(new File(directory.getPath()), updateState);
@@ -662,17 +682,19 @@ public class FileUtils {
         }
     }
 
-    public static long[] getSpaces(HybridFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
+    public static Long[] getSpaces(HybridFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
         long totalSpace = hFile.getTotal(context);
         long freeSpace = hFile.getUsableSpace();
         long fileSize = 0l;
+        Long[] spaces = new Long[] {totalSpace, freeSpace, fileSize};  //llrraa
 
         if (hFile.isDirectory(context)) {
-            fileSize = hFile.folderSize(context);
+            fileSize = hFile.folderSize(context, updateState, spaces);  //llrraa
         } else {
             fileSize = hFile.length(context);
         }
-        return new long[] {totalSpace, freeSpace, fileSize};
+        spaces[2]=fileSize;
+        return spaces;
     }
 
     public static boolean copyToClipboard(Context context, String text) {
