@@ -68,13 +68,13 @@ public class PreferenceActivity extends BasicActivity {
             case PREFERENCE_SHOW_DIVIDERS:
             case PREFERENCE_SHOW_HEADERS:
             case PREFERENCE_USE_CIRCULAR_IMAGES:
-            case PREFERENCE_SHOW_LAST_MODIFIED:
             case PREFERENCE_COLORIZE_ICONS:
             case PREFERENCE_SHOW_THUMB:
             case PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES:
             case PREFERENCE_NEED_TO_SET_HOME:
             case PREFERENCE_SHOW_SIDEBAR_FOLDERS:
             case PREFERENCE_VIEW:
+            case PREFERENCE_SHOW_LAST_MODIFIED:
                 defaultValue = true;
                 break;
             default:
