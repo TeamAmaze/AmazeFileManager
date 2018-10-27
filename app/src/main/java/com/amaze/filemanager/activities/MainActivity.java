@@ -1898,6 +1898,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
 
+        /**
+         * A few hacks to delegate unwanted calls to this function
+         * For eg- when application resumes; when authenticator finishes up
+         * TODO: find a fix for random callbacks to onLoadFinished
+         */
         if (data == null) {
             Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
                     Toast.LENGTH_LONG).show();
