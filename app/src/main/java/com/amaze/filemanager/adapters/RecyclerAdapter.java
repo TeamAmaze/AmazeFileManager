@@ -58,6 +58,7 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
+import static java.lang.Boolean.getBoolean;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
@@ -142,7 +143,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
             if (imageView != null) {
-                imageView.setAnimation(iconAnimation);
+                imageView.startAnimation(iconAnimation);
             } else {
                 // TODO: we don't have the check icon object probably because of config change
             }
@@ -152,7 +153,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
             Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
             if (imageView != null) {
-                imageView.setAnimation(iconAnimation);
+                imageView.startAnimation(iconAnimation);
             } else {
                 // TODO: we don't have the check icon object probably because of config change
             }
@@ -540,9 +541,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 });
 
                 // resetting icons visibility
-                holder.genericIcon.setVisibility(View.GONE);
-                holder.pictureIcon.setVisibility(View.GONE);
-                holder.apkIcon.setVisibility(View.GONE);
+                holder.genericIcon.setVisibility(View.VISIBLE);
+                holder.pictureIcon.setVisibility(View.INVISIBLE);
+                holder.apkIcon.setVisibility(View.INVISIBLE);
                 holder.checkImageView.setVisibility(View.INVISIBLE);
 
                 // setting icons for various cases
@@ -639,11 +640,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (getBoolean(PREFERENCE_SHOW_PERMISSIONS))
                     holder.perm.setText(rowItem.permissions);
                 if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
-                    holder.date.setText(rowItem.date1);
-                } else {
+                    holder.date.setText(rowItem.dateModification);
+                } else{
                     holder.date.setVisibility(View.GONE);
                 }
-
                 if (isBackButton) {
                     holder.date.setText(rowItem.size);
                     holder.txtDesc.setText("");
@@ -774,8 +774,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         holder.about.setColorFilter(grey_color);
                     showPopup(holder.about, rowItem);
                 }
-                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED))
-                    holder.date.setText(rowItem.date1);
+                
+                if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
+                    holder.date.setText(rowItem.dateModification);
+                }
                 if (isBackButton) {
                     holder.date.setText(rowItem.size);
                     holder.txtDesc.setText("");
@@ -834,6 +836,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             @Override
             public boolean onLoadFailed(@Nullable GlideException e, Object model, Target target, boolean isFirstResource) {
                 new Handler(msg -> {
+                    viewHolder.genericIcon.setVisibility(View.VISIBLE);
                     GlideApp.with(mainFrag).load(R.drawable.ic_broken_image_white_24dp).into(viewHolder.genericIcon);
                     return false;
                 }).obtainMessage().sendToTarget();

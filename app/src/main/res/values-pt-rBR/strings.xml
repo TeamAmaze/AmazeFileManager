@@ -248,6 +248,7 @@
     <string name="anonymous">Anônimo</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="extstorage">Armazenamento externo</string>
+    <string name="internalstorage">Armazenamento interno</string>
     <string name="folders">Pastas</string>
     <string name="folderfilecount">%1$d pastas e %2$d arquivos</string>
     <string name="videos">Vídeos</string>

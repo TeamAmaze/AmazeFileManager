@@ -215,6 +215,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                 intent.putExtra(CopyService.TAG_COPY_TARGET, paths.get(i));
                 intent.putExtra(CopyService.TAG_COPY_MOVE, true);
                 intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
+                intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, mainFrag.getMainActivity().isRootExplorer());
 
                 ServiceWatcherUtil.runService(context, intent);
             }

@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.annotation.ColorInt;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -333,6 +334,7 @@ public class BottomBar implements View.OnTouchListener{
         }
 
         final String oldPath = fullPathText.getText().toString();
+
         if (oldPath.equals(newPath)) return;
 
         if (!areButtonsShowing()) {
