@@ -126,17 +126,9 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
-import com.cloudrail.si.exceptions.AuthenticationException;
-import com.cloudrail.si.exceptions.ParseException;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.services.Box;
-import com.cloudrail.si.services.Dropbox;
-import com.cloudrail.si.services.GoogleDrive;
-import com.cloudrail.si.services.OneDrive;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -219,7 +211,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private View fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
-    private Cursor mCloudCursorData = null;
+    private Cursor cloudCursorData = null;
     private CloudLoaderAsyncTask cloudLoaderAsyncTask;
 
     public static final int REQUEST_CODE_SAF = 223;
@@ -1909,13 +1901,13 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             return;
         }
 
-        if (mCloudCursorData != null && mCloudCursorData == data) return;
-        mCloudCursorData = data;
+        if (cloudCursorData != null && cloudCursorData == data) return;
+        cloudCursorData = data;
 
         if (cloudLoaderAsyncTask != null && cloudLoaderAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             return;
         }
-        cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudHandler, mCloudCursorData);
+        cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudHandler, cloudCursorData);
         cloudLoaderAsyncTask.execute();
     }
 
