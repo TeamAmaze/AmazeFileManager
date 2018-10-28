@@ -61,7 +61,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getString(R.string.failed_cloud_api_key));
+                                AppConfig.toast(mainActivity, R.string.failed_cloud_api_key);
                             } else {
                                 cancel(true);
                             }
@@ -110,7 +110,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
+                                AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
                                 mainActivity.deleteConnection(OpenMode.GDRIVE);
                             } else {
                                 cancel(true);
@@ -120,7 +120,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
+                                AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
                                 mainActivity.deleteConnection(OpenMode.GDRIVE);
                             } else {
                                 cancel(true);
@@ -131,7 +131,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
+                                AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
                                 mainActivity.deleteConnection(OpenMode.GDRIVE);
                             } else {
                                 cancel(true);
@@ -178,7 +178,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
+                                AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
                                 mainActivity.deleteConnection(OpenMode.DROPBOX);
                             } else {
                                 cancel(true);
@@ -188,7 +188,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
+                                AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
                                 mainActivity.deleteConnection(OpenMode.DROPBOX);
                             } else cancel(true);
                             return false;
@@ -197,7 +197,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
+                                AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
                                 mainActivity.deleteConnection(OpenMode.DROPBOX);
                             } else cancel(true);
                             return false;
@@ -241,7 +241,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
+                                AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
                                 mainActivity.deleteConnection(OpenMode.BOX);
                             } else cancel(true);
                             return false;
@@ -249,7 +249,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
+                                AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
                                 mainActivity.deleteConnection(OpenMode.BOX);
                             } else cancel(true);
                             return false;
@@ -258,7 +258,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
+                                AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
                                 mainActivity.deleteConnection(OpenMode.BOX);
                             } else cancel(true);
                             return false;
@@ -303,7 +303,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
+                                AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
                                 mainActivity.deleteConnection(OpenMode.ONEDRIVE);
                             } else cancel(true);
                             return false;
@@ -311,7 +311,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
+                                AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
                                 mainActivity.deleteConnection(OpenMode.ONEDRIVE);
                             } else cancel(true);
                             return false;
@@ -320,7 +320,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             e.printStackTrace();
                             final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
-                                AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
+                                AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
                                 mainActivity.deleteConnection(OpenMode.ONEDRIVE);
                             } else cancel(true);
                             return false;
@@ -329,8 +329,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                     default:
                         final MainActivity mainActivity = this.mainActivity.get();
                         if (mainActivity != null) {
-                            Toast.makeText(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_failed_restart),
-                                    Toast.LENGTH_LONG).show();
+                            Toast.makeText(mainActivity, R.string.cloud_error_failed_restart, Toast.LENGTH_LONG).show();
                         } else cancel(true);
                         return false;
                 }

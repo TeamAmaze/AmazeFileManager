@@ -214,7 +214,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private CloudLoaderAsyncTask cloudLoaderAsyncTask;
     /**
      * This is for a hack.
-     * 
+     *
      * @see MainActivity#onLoadFinished(Loader, Cursor)
      */
     private Cursor cloudCursorData = null;
