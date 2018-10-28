@@ -620,8 +620,8 @@ public class HybridFile {
         return size;
     }
 
-    //llrraa
-    public long folderSize(Context context,  final OnProgressUpdate<Long[]> updateState, Long[] spaces) {
+
+    public long folderSize(Context context,  final OnProgressUpdate<Long[]> updateState, Long[] spaces) {    //llrraa
 
         long size = 0l;
 

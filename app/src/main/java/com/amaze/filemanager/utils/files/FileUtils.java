@@ -116,8 +116,8 @@ public class FileUtils {
         return length;
     }
 
-    //llrraa
-    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces) {
+
+    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces) {    //llrraa
         long length = 0;
         try {
             for (File file:directory.listFiles()) {
