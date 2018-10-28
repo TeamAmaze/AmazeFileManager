@@ -211,8 +211,13 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private View fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
-    private Cursor cloudCursorData = null;
     private CloudLoaderAsyncTask cloudLoaderAsyncTask;
+    /**
+     * This is for a hack.
+     * 
+     * @see MainActivity#onLoadFinished(Loader, Cursor)
+     */
+    private Cursor cloudCursorData = null;
 
     public static final int REQUEST_CODE_SAF = 223;
 
@@ -1889,18 +1894,19 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
-
-        /**
-         * A few hacks to delegate unwanted calls to this function
-         * For eg- when application resumes; when authenticator finishes up
-         * TODO: find a fix for random callbacks to onLoadFinished
-         */
         if (data == null) {
             Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
                     Toast.LENGTH_LONG).show();
             return;
         }
 
+        /*
+         * This is hack for repeated calls to onLoadFinished(),
+         * we take the Cursor provided to check if the function
+         * has already been called on it.
+         *
+         * TODO: find a fix for repeated callbacks to onLoadFinished()
+         */
         if (cloudCursorData != null && cloudCursorData == data) return;
         cloudCursorData = data;
 
