@@ -1915,7 +1915,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         if (cloudLoaderAsyncTask != null && cloudLoaderAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             return;
         }
-        cloudLoaderAsyncTask = new CloudLoaderAsyncTask(new WeakReference<>(this), cloudHandler, mCloudCursorData);
+        cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudHandler, mCloudCursorData);
         cloudLoaderAsyncTask.execute();
     }
 

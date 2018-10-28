@@ -27,15 +27,14 @@ import java.lang.ref.WeakReference;
 public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
     private Cursor data;
-    private WeakReference<MainActivity> mainActivityWeakReference;
+    private WeakReference<MainActivity> mainActivity;
     private CloudHandler cloudHandler;
     private DataUtils dataUtils;
-    private MainActivity mainActivity;
 
-    public CloudLoaderAsyncTask(WeakReference<MainActivity> mainActivityWeakReference,
+    public CloudLoaderAsyncTask(MainActivity mainActivity,
                                 CloudHandler cloudHandler, Cursor data) {
         this.data = data;
-        this.mainActivityWeakReference = mainActivityWeakReference;
+        this.mainActivity = new WeakReference<>(mainActivity);
         this.cloudHandler = cloudHandler;
         this.dataUtils = DataUtils.getInstance();
     }
@@ -48,13 +47,10 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
         if (data == null) return false;
         if (data.getCount() > 0 && data.moveToFirst()) {
             do {
-
-                mainActivity = mainActivityWeakReference.get();
-                if (mainActivity == null) {
+                if (mainActivity.get() == null || isCancelled()) {
                     cancel(true);
                     return false;
                 }
-                if (isCancelled()) cancel(true);
 
                 switch (data.getInt(0)) {
                     case 1:
@@ -63,7 +59,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getString(R.string.failed_cloud_api_key));
                             } else {
@@ -78,7 +74,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             CloudEntry cloudEntryGdrive = null;
                             CloudEntry savedCloudEntryGdrive;
                             GoogleDrive cloudStorageDrive;
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 cloudStorageDrive = new GoogleDrive(mainActivity.getApplicationContext(),
                                         data.getString(1), "",
@@ -112,7 +108,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
                                 mainActivity.deleteConnection(OpenMode.GDRIVE);
@@ -122,7 +118,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
                                 mainActivity.deleteConnection(OpenMode.GDRIVE);
@@ -133,7 +129,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
                                 mainActivity.deleteConnection(OpenMode.GDRIVE);
@@ -149,7 +145,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             CloudEntry cloudEntryDropbox = null;
                             CloudEntry savedCloudEntryDropbox;
                             CloudStorage cloudStorageDropbox;
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 cloudStorageDropbox = new Dropbox(mainActivity.getApplicationContext(),
                                         data.getString(1), data.getString(2));
@@ -180,7 +176,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
                                 mainActivity.deleteConnection(OpenMode.DROPBOX);
@@ -190,7 +186,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
                                 mainActivity.deleteConnection(OpenMode.DROPBOX);
@@ -199,7 +195,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
                                 mainActivity.deleteConnection(OpenMode.DROPBOX);
@@ -213,7 +209,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             CloudEntry cloudEntryBox = null;
                             CloudEntry savedCloudEntryBox;
                             CloudStorage cloudStorageBox;
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 cloudStorageBox = new Box(mainActivity.getApplicationContext(),
                                         data.getString(1), data.getString(2));
@@ -243,7 +239,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
                                 mainActivity.deleteConnection(OpenMode.BOX);
@@ -251,7 +247,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
                                 mainActivity.deleteConnection(OpenMode.BOX);
@@ -260,7 +256,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
                                 mainActivity.deleteConnection(OpenMode.BOX);
@@ -274,7 +270,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             CloudEntry cloudEntryOnedrive = null;
                             CloudEntry savedCloudEntryOnedrive;
                             CloudStorage cloudStorageOnedrive;
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 cloudStorageOnedrive= new OneDrive(mainActivity.getApplicationContext(),
                                         data.getString(1), data.getString(2));
@@ -305,7 +301,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             hasUpdatedDrawer = true;
                         } catch (CloudPluginException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_plugin));
                                 mainActivity.deleteConnection(OpenMode.ONEDRIVE);
@@ -313,7 +309,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             return false;
                         } catch (AuthenticationException e) {
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.cloud_fail_authenticate));
                                 mainActivity.deleteConnection(OpenMode.ONEDRIVE);
@@ -322,7 +318,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         } catch (Exception e) {
                             // any other exception due to network conditions or other error
                             e.printStackTrace();
-                            mainActivity = mainActivityWeakReference.get();
+                            final MainActivity mainActivity = this.mainActivity.get();
                             if (mainActivity != null) {
                                 AppConfig.toast(mainActivity, mainActivity.getResources().getString(R.string.failed_cloud_new_connection));
                                 mainActivity.deleteConnection(OpenMode.ONEDRIVE);
@@ -331,7 +327,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                         }
                         break;
                     default:
-                        mainActivity = mainActivityWeakReference.get();
+                        final MainActivity mainActivity = this.mainActivity.get();
                         if (mainActivity != null) {
                             Toast.makeText(mainActivity, mainActivity.getResources().getString(R.string.cloud_error_failed_restart),
                                     Toast.LENGTH_LONG).show();
@@ -346,7 +342,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onCancelled() {
         super.onCancelled();
-        mainActivity = mainActivityWeakReference.get();
+        final MainActivity mainActivity = this.mainActivity.get();
         if (mainActivity != null) {
             mainActivity.getSupportLoaderManager().destroyLoader(MainActivity.REQUEST_CODE_CLOUD_LIST_KEY);
             mainActivity.getSupportLoaderManager().destroyLoader(MainActivity.REQUEST_CODE_CLOUD_LIST_KEYS);
@@ -356,7 +352,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     public void onPostExecute(@NonNull Boolean result) {
         if (result) {
-            mainActivity = mainActivityWeakReference.get();
+            final MainActivity mainActivity = this.mainActivity.get();
             if (mainActivity != null) {
                 mainActivity.getDrawer().refreshDrawer();
             }
