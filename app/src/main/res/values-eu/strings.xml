@@ -81,6 +81,7 @@
     <string name="questionset">Uneko bidea fitxa honen etxe bezala ezarri nahi duzu?</string>
     <string name="directorysort">Direktorioa sailkatzeko modua</string>
     <string name="sortby">Sailkatu honen arabera</string>
+    <string name="sort_only_this">Soilik karpeta hau</string>
     <string name="theme">Gaia</string>
     <string name="random">Ausazko azala</string>
     <string name="random_summary">Ausazko gaia ezartzen du abioan</string>
@@ -105,6 +106,7 @@
     <string name="light">Material argia</string>
     <string name="dark">Material iluna</string>
     <string name="daytime">Egunekoa</string>
+    <string name="black">Beltza (OLEDentzat)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Karpetak gainean</string>
@@ -249,6 +251,7 @@
     <string name="bluetooth">Bluetooth</string>
     <string name="extstorage">Kanpoko biltegia</string>
     <string name="folders">Karpetak</string>
+    <string name="folderfilecount">%1$d karpeta eta %2$d fitxategi</string>
     <string name="videos">Bideoak</string>
     <string name="apks">Apk-ak</string>
     <string name="documents">Dokumentuak</string>
@@ -289,7 +292,8 @@
     <string name="regular_expression">Adierazpen erregularra</string>
     <string name="regular_expression_summary">Bilatu BASH antzeko adierazpen erregular bat erabiliz</string>
     <string name="match_content">Edukiarekin bat egin</string>
-    <string name="match_content_summary">Ezartzen bada, espresio erregularra fitxategiaren izen osoarekin bat egingo du, bestela agertzen den bilatuko da.</string>
+    <string name="match_content_summary">Ezartzen bada, espresio erregularra fitxategi-izen osoarekin bat datorren begiratuko da,
+        bestela agertzen den bilatuko da.</string>
     <string name="start_ftp">Hasi</string>
     <string name="stop_ftp">Gelditu</string>
     <string name="ftp_status_running">Exekutatzen</string>
@@ -313,7 +317,7 @@
     <string name="translate_title">Itzuli</string>
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
     <string name="g_plus_community_summary">Parte hartu garapeneko
-beta proba eta eztabaidetan</string>
+        beta proba eta eztabaidetan</string>
     <string name="easter_egg_title">Studio modua</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
     <string name="searchingdevices">Gailuak bilatzen</string>
@@ -554,6 +558,7 @@ beta proba eta eztabaidetan</string>
     <string name="failed_smb_decrypt_path">Huts egin du SMB konexioa kargatzean</string>
     <string name="failed_cloud_new_connection">Huts egin du Cloud konexio berria gehitzean</string>
     <string name="failed_cloud_api_key">Huts egin du Cloud plugina autentifikatzean</string>
+    
     <string name="local_inet_addr_error">Errorea inet helbide lokala eskuratzean</string>
     <string name="intent_save_as">Gorde honela&#8230;</string>
     <string name="go">Joan</string>
@@ -561,4 +566,80 @@ beta proba eta eztabaidetan</string>
     <string name="typeablepaths_title">Bide pertsonalizatuak</string>
     <string name="typeablepaths_summary">Mantendu bide-barra sakatuta bide pertsonalizatu bat idazteko</string>
     <string name="send_email_to">Bidali e-posta honi</string>
+
+    <string name="text_editor">Testu-editorearen ezarpenak</string>
+    <string name="preference_newstack_title">Ireki fitxategiak ataza berri bezala</string>
+    <string name="preference_newstack_summary">Fixategiak ataza bereizi bezala irekitzea baimentzen du. Sistemaren azkenak pantailatik atzi ditzakezu.</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="developers">Garatzaileak</string>
+    <string name="nobitcoinapp">Instalatu bitcoin diru-zorro bat</string>
+    <string name="channelname_normal">Amaze jakinarazpenak</string>
+    <string name="channeldescription_normal">Amaze fitxategi-kudeatzailearen jakinarazpenak</string>
+    <string name="channelname_ftp">Amaze FTP zerbitzaria</string>
+    <string name="channeldescription_ftp">Amaze fitxategi-kudeatzailearen FTP zerbitzariaren jakinarazpenak</string>
+
+    <string name="appbar_name" translatable="false">Amaze</string>
+    <string name="processing">Prozesatzen&#8230;</string>
+    <string name="failed_no_connection">Huts egin du fitxategiak kargatzean. Egiaztatu zure konexioa.</string>
+
+    <string name="update">EGUNERATU</string>
+	<string name="scp_con">SCP/SFTP konexioa</string>
+    <string name="scp_port">Ataka</string>
+    <string name="ssh_host_key_verification_prompt">Ezin da ostalariaren egiazkotasuna ziurtatu.n\n%s gakoaren hatz-marka %s da.\n\nSakatu \"Bai\" identitatea berresteko; bestela, sakatu \"Ez\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Egiaztatu ostalaria</string>
+    <string name="ssh_select_pem_button">SSH gako pribatua</string>
+    <string name="ssh_pem_key_parse_error">Ezin da hautatutako PEM irakurri: %s</string>
+    <string name="password_unchanged">(aldatu gabe)</string>
+    <string name="ssh_authentication_failure_password">Saioa hastean arazoa: Ezin da emandako erabiltzaile-izen eta pasahitzarekin autentifikatu.</string>
+    <string name="ssh_authentication_failure_key">Saioa hastean arazoa: Ezin da emandako erabiltzaile-izen eta gako pribatuarekin autentifikatu.</string>
+    <string name="ssh_connect_failed">Ezin da konektatu %s(e)ra:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">ABISUA: URRUNEKO OSTALARIAREN IDENTIFIKAZIOA ALDATU DA!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        POSIBLE DA NORBAIT MALTZURKERIA BAT EGITEN ARITZEA!\n\n
+        Baliteke norbait ezkutuan entzuten egotea une honetan (man-in-the-middle erasoa)! Baliteke ostalariaren gakoa aldatu izana ere. Urruneko ostalariak bidalitako gako publikoaren hatz-marka ez dator bat Amazen gordetakoarekin.\n\n
+        Jakinarazi zure sistemaren administratzaileari edo konfiguratu konexio berri bat zerbitzarira konektatzeko.
+    </string>
+    <string name="ssh_key_prompt_passphrase">Sartu gakoaren pasaesaldia.</string>
+    <string name="addshortcut_not_supported_by_launcher">Zure abiarazleak ez du onartzen lasterbideak sortzea.</string>
+    
+    <string name="selectcolorconfig">Hautatu kolore konfigurazioa</string>
+    <string name="customize">Pertsonalizatu</string>
+    <string name="custom">Pertsonalizatua</string>
+    <string name="preselectedconfigs_title">Aurrez hautatutako konfigurazioak</string>
+    <string name="orange">Laranja</string>
+    <string name="blue">Urdina</string>
+    <string name="green">Berdea</string>
+    <string name="password_no_match">Pasahitzak ez datoz bat</string>
+    <string name="deselect_all">Desautatu guztiak</string>
+    <string name="filename">Fitxategi-izena</string>
+    <string name="compress_file_suggest_zip_extension">Fitxategiaren luzapen bezala \".zip\" erabiltzea gomendatzen da.</string>
+    <string name="about_amaze">Androiderako diseinu materia duen fitxategi-kudeatzailea</string>
+    <string name="license">Lizentzia</string>
+    <string name="libraries">Liburutegiak</string>
+    <string name="password_repeat">Errepikatu pasahitza</string>
+    <string name="create_file_suggest_txt_extension">Fitxategiaren luzapen bezala \".txt\" erabiltzea gomendatzen da.</string>
+    <string name="ssh_select_pem">Hautatu autentifikaziorako gako pribatua</string>
+    <string name="ssh_key_invalid_passphrase">Gakoaren pasaesaldi baliogabea.</string>
+    <string name="encryption_fail_copy">Huts egin du datu-basean enkriptatze sarrera eguneratzean</string>
+    <string name="extracted">Erauzita</string>
+    <string name="compressed">Konprimatua</string>
+    <string name="processed">Prozesatua</string>
+    <string name="no_obtainable_info">Ez dago fitxategi honi buruzko informaziorik</string>
+    <string name="reopen_from_source">Ezin da, ireki azken aplikaziotik</string>
+    <string name="no_file_error">Zerbaitek huts egin du, ez dago zer irekirik</string>
+    <string name="file_read_only">Irekitako fitxategia irakurtzeko soilik da.</string>
+    <string name="got_it">Ulertuta!</string>
+    <string name="encrypt_file_save_as">Gorde enkriptatutako fitxategia honela&#8230;</string>
+    <string name="encrypt_folder_save_as">Gorde enkriptatutako karpeta honela&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Enkriptatutako fitxategiek \".aze\" luzapena eduki behar dute.</string>
+    <string name="cannot_overwrite">Ezin da fitxategia gainidatzi.</string>
+    <string name="saved_single_file">Fitxategia honela gorde da: \'%s\'.</string>
+    <string name="saved_multi_files">%d fitxategi gorde dira.</string>
+    <string name="create_hidden_file_warn">Sortutako fitxategia ezkutuan egongo da fitxategi zerrendan.</string>
+    <string name="grant_apkinstall_permission">Aplikazioak instalatzeko baimena behar du aplikazioak aurrera jarraitzeko.</string>
+    <string name="time_remaining">Gelditzen den denbora</string>
+    <string name="transfer_rate">Transferentzia-abiadura</string>
+    <string name="unknown">ezezaguna</string>
+    <string name="multiple_invalid_archive_entries">Artxiboko zenbait fitxategi ezin dira erauzi; artxiboa hondatua egon daiteke edo jatorri maltzurrekoa izan daiteke.</string>
+    <string name="saf_otg_explanation">Androiden fitxategi-sistemara joango zara orain segurtasun arrazoiengatik. Hautatu USB gailua ezkerreko zerrendatik.</string>
 </resources>
