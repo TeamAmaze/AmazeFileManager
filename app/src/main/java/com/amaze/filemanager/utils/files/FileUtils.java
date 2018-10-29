@@ -117,7 +117,7 @@ public class FileUtils {
     }
 
 
-    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces) {    //llrraa
+    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces) {    
         long length = 0;
         try {
             for (File file:directory.listFiles()) {
@@ -686,10 +686,10 @@ public class FileUtils {
         long totalSpace = hFile.getTotal(context);
         long freeSpace = hFile.getUsableSpace();
         long fileSize = 0l;
-        Long[] spaces = new Long[] {totalSpace, freeSpace, fileSize};  //llrraa
+        Long[] spaces = new Long[] {totalSpace, freeSpace, fileSize};  
 
         if (hFile.isDirectory(context)) {
-            fileSize = hFile.folderSize(context, updateState, spaces);  //llrraa
+            fileSize = hFile.folderSize(context, updateState, spaces);  
         } else {
             fileSize = hFile.length(context);
         }
