@@ -126,17 +126,9 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
-import com.cloudrail.si.exceptions.AuthenticationException;
-import com.cloudrail.si.exceptions.ParseException;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.services.Box;
-import com.cloudrail.si.services.Dropbox;
-import com.cloudrail.si.services.GoogleDrive;
-import com.cloudrail.si.services.OneDrive;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -219,8 +211,13 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private View fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
-    private Cursor mCloudCursorData = null;
     private CloudLoaderAsyncTask cloudLoaderAsyncTask;
+    /**
+     * This is for a hack.
+     *
+     * @see MainActivity#onLoadFinished(Loader, Cursor)
+     */
+    private Cursor cloudCursorData = null;
 
     public static final int REQUEST_CODE_SAF = 223;
 
@@ -1897,25 +1894,26 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onLoadFinished(Loader<Cursor> loader, final Cursor data) {
-
-        /**
-         * A few hacks to delegate unwanted calls to this function
-         * For eg- when application resumes; when authenticator finishes up
-         * TODO: find a fix for random callbacks to onLoadFinished
-         */
         if (data == null) {
             Toast.makeText(this, getResources().getString(R.string.cloud_error_failed_restart),
                     Toast.LENGTH_LONG).show();
             return;
         }
 
-        if (mCloudCursorData != null && mCloudCursorData == data) return;
-        mCloudCursorData = data;
+        /*
+         * This is hack for repeated calls to onLoadFinished(),
+         * we take the Cursor provided to check if the function
+         * has already been called on it.
+         *
+         * TODO: find a fix for repeated callbacks to onLoadFinished()
+         */
+        if (cloudCursorData != null && cloudCursorData == data) return;
+        cloudCursorData = data;
 
         if (cloudLoaderAsyncTask != null && cloudLoaderAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
             return;
         }
-        cloudLoaderAsyncTask = new CloudLoaderAsyncTask(new WeakReference<>(this), cloudHandler, mCloudCursorData);
+        cloudLoaderAsyncTask = new CloudLoaderAsyncTask(this, cloudHandler, cloudCursorData);
         cloudLoaderAsyncTask.execute();
     }
 
