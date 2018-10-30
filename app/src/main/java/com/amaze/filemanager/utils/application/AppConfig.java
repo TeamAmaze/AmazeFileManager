@@ -30,6 +30,7 @@ import android.os.HandlerThread;
 import android.os.StrictMode;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.v7.app.AppCompatDelegate;
 import android.text.TextUtils;
 import android.widget.Toast;
@@ -145,6 +146,32 @@ public class AppConfig extends GlideApplication {
         public void onPostExecute(Result result) { }
 
         public void onPreExecute() { }
+    }
+
+    /**
+     * Shows a toast message
+     *
+     * @param context Any context belonging to this application
+     * @param message The message to show
+     */
+    public static void toast(Context context, @StringRes int message) {
+        // this is a static method so it is easier to call,
+        // as the context checking and casting is done for you
+
+        if (context == null) return;
+
+        if (!(context instanceof Application)) {
+            context = context.getApplicationContext();
+        }
+
+        if (context instanceof Application) {
+            final Context c = context;
+            final @StringRes int m = message;
+
+            ((AppConfig) context).runInApplicationThread(() -> {
+                Toast.makeText(c, m, Toast.LENGTH_LONG).show();
+            });
+        }
     }
 
     /**
