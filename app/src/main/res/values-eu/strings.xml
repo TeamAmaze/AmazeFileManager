@@ -26,6 +26,7 @@
     <string name="drawer_open">Ireki nabigazio tiradera</string>
     <string name="drawer_close">Itxi nabigazio tiradera</string>
     <string name="icon">ikonoa</string>
+    <string name="internalstorage">Barneko biltegia</string>
     <string name="apps">Aplikazio kudeatzailea</string>
     <string name="ftp">FTP zerbitzaria</string>
     <string name="setting">Ezarpenak</string>
