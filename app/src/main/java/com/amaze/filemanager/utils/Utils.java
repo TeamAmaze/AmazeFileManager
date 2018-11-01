@@ -36,7 +36,7 @@ public class Utils {
 
     private static final int INDEX_NOT_FOUND = -1;
     private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
-    private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
+    private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | HH:mm");
     private static final String INPUT_INTENT_BLACKLIST_COLON = ";";
     private static final String INPUT_INTENT_BLACKLIST_PIPE = "\\|";
     private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
