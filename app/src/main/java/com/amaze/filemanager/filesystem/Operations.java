@@ -482,8 +482,10 @@ public class Operations {
             @Override
             protected void onPostExecute(Void aVoid) {
                 super.onPostExecute(aVoid);
-                if (newFile != null)
-                    FileUtils.scanFile(newFile, context);
+                if (newFile != null && oldFile != null) {
+                    HybridFile[] hybridFiles = { newFile, oldFile};
+                    FileUtils.scanFile(context, hybridFiles);
+                }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 

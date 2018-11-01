@@ -235,6 +235,28 @@ public class FileUtils {
     }
 
     /**
+     * Triggers media scanner for multiple paths
+     * Don't use filesystem API directly as files might not be present anymore (eg. move/rename)
+     * which may lead to {@link java.io.FileNotFoundException}
+     * @param hybridFiles
+     * @param context
+     */
+    public static void scanFile(@NonNull Context context, @NonNull HybridFile[] hybridFiles) {
+        if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
+            String[] paths = new String[hybridFiles.length];
+            for (int i = 0; i<hybridFiles.length; i++) {
+                HybridFile hybridFile = hybridFiles[i];
+                paths[i] = hybridFile.getPath();
+            }
+            MediaScannerConnection.scanFile(context, paths, null, null);
+        } else {
+            for (HybridFile hybridFile : hybridFiles) {
+                scanFile(hybridFile, context);
+            }
+        }
+    }
+
+    /**
      * Triggers media store for the file path
      * @param hybridFile the file which was changed (directory not supported)
      * @param context
