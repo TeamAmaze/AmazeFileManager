@@ -92,7 +92,7 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
         } else if (sort == 2) {
 
             // sort by size
-            if (!file1.isDirectory && !file2.isDirectory) {
+            if ((!file1.isDirectory && !file2.isDirectory)||(file1.isDirectory && file2.isDirectory)) {
 
                 return asc * Long.valueOf(file1.longSize).compareTo(file2.longSize);
             } else {

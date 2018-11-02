@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.FolderHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.ssh.Statvfs;
@@ -19,6 +20,7 @@ import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import com.amaze.filemanager.utils.DataUtils;
@@ -79,15 +81,15 @@ public class HybridFile {
             if (!isDirectory) this.path += name;
             else if (!name.endsWith("/")) this.path += name + "/";
             else this.path += name;
-        } else if(path.startsWith("ssh://") || isSftp()) {
+		} else if(path.startsWith("ssh://") || isSftp()) {
             this.path += "/" + name;
         } else if (isRoot() && path.equals("/")) {
             // root of filesystem, don't concat another '/'
             this.path += name;
         } else {
             this.path += "/" + name;
-        }
-    }
+        }    
+	}
 
     public void generateMode(Context context) {
         if (path.startsWith("smb://")) {
@@ -598,6 +600,51 @@ public class HybridFile {
                 break;
             case FILE:
                 size = FileUtils.folderSize(new File(path), null);
+                break;
+            case ROOT:
+                HybridFileParcelable baseFile=generateBaseFileFromParent();
+                if(baseFile!=null) size = baseFile.getSize();
+                break;
+            case OTG:
+                size = FileUtils.otgFolderSize(path, context);
+                break;
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+                size = FileUtils.folderSizeCloud(mode,
+                        dataUtils.getAccount(mode).getMetadata(CloudUtil.stripPath(mode, path)));
+                break;
+            default:
+                return 0l;
+        }
+        return size;
+    }
+
+
+    public long folderSize(Context context,  final OnProgressUpdate<Long[]> updateState, Long[] spaces) {    //llrraa
+
+        long size = 0l;
+
+        switch (mode){
+            case SFTP:
+                return SshClientUtils.execute(new SFtpClientTemplate(path) {
+                    @Override
+                    public Long execute(SFTPClient client) throws IOException {
+                        return client.size(SshClientUtils.extractRemotePathFrom(path));
+                    }
+                });
+            case SMB:
+                try {
+                    size = FileUtils.folderSize(new SmbFile(path));
+                } catch (MalformedURLException e) {
+                    size = 0l;
+                    e.printStackTrace();
+                }
+                break;
+            case FILE:
+                FolderHandler folderHandler = new FolderHandler(context);
+                size = FileUtils.folderSize(new File(path), updateState, spaces, folderHandler);
                 break;
             case ROOT:
                 HybridFileParcelable baseFile=generateBaseFileFromParent();

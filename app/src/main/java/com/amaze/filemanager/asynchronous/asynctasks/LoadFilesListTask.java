@@ -29,8 +29,10 @@ import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.database.FolderHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.Folder;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -68,6 +70,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     private boolean showHiddenFiles, showThumbs;
     private DataUtils dataUtils = DataUtils.getInstance();
     private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
+    private FolderHandler folderHandler ;
 
     public LoadFilesListTask(Context c, String path, MainFragment ma, OpenMode openmode,
                              boolean showThumbs, boolean showHiddenFiles,
@@ -79,6 +82,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
         this.showThumbs = showThumbs;
         this.showHiddenFiles = showHiddenFiles;
         this.listener = l;
+        folderHandler = new FolderHandler(c);
     }
 
     @Override
@@ -220,12 +224,19 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
     }
 
     private LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
-        if (!dataUtils.isFileHidden(baseFile.getPath())) {
+        String path = baseFile.getPath();
+        if (!dataUtils.isFileHidden(path)) {
             String size = "";
             long longSize= 0;
 
             if (baseFile.isDirectory()) {
                 ma.folder_count++;
+                Folder oldFolder = folderHandler.findEntry(path);
+                if (oldFolder != null) {
+                    longSize = oldFolder.size;
+                    size = Formatter.formatFileSize(c, longSize);
+                }
+
             } else {
                 if (baseFile.getSize() != -1) {
                     try {

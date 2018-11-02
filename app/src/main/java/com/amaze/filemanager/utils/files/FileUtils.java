@@ -54,6 +54,8 @@ import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.database.FolderHandler;
+import com.amaze.filemanager.database.models.Folder;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -97,6 +99,7 @@ import jcifs.smb.SmbFile;
  * Functions that deal with files
  */
 public class FileUtils {
+    static private long folderRefreshInterval = 72 * 3600 * 1000;
 
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
@@ -113,6 +116,60 @@ public class FileUtils {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        return length;
+    }
+
+
+    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces) {    //llrraa
+        long length = 0;
+        try {
+            for (File file:directory.listFiles()) {
+                if (file.isFile()) {
+                    spaces[2] += file.length();  length += file.length();}
+                else
+                    length += folderSize(file, updateState, spaces);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //spaces[2] += length
+        if(updateState != null)
+            updateState.onUpdate(spaces);
+        return length;
+    }
+
+    public static long folderSize(File directory, final OnProgressUpdate<Long[]> updateState, Long[] spaces, FolderHandler folderHandler) {    //llrraa
+        long length = 0;
+        long now =System.currentTimeMillis();
+        String path = directory.getPath();
+        Folder newFolder = folderHandler.findEntry(path);
+        if (newFolder != null) {
+            long lastTime = newFolder.time;
+            if ((now-lastTime)<folderRefreshInterval){
+                spaces[2] += newFolder.size;
+                if(updateState != null)
+                    updateState.onUpdate(spaces);
+                return newFolder.size;
+            }
+        }
+
+        try {
+            for (File file:directory.listFiles()) {
+                if (file.isFile()) {
+                    spaces[2] += file.length();  length += file.length();}
+                else
+                    length += folderSize(file, updateState, spaces, folderHandler);
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        //spaces[2] += length
+        if(updateState != null)
+            updateState.onUpdate(spaces);
+        newFolder = new Folder(directory.getPath(), length, now);
+        folderHandler.updateEntry(newFolder);
         return length;
     }
 
@@ -662,17 +719,19 @@ public class FileUtils {
         }
     }
 
-    public static long[] getSpaces(HybridFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
+    public static Long[] getSpaces(HybridFile hFile, Context context, final OnProgressUpdate<Long[]> updateState) {
         long totalSpace = hFile.getTotal(context);
         long freeSpace = hFile.getUsableSpace();
         long fileSize = 0l;
+        Long[] spaces = new Long[] {totalSpace, freeSpace, fileSize};  //llrraa
 
         if (hFile.isDirectory(context)) {
-            fileSize = hFile.folderSize(context);
+            fileSize = hFile.folderSize(context, updateState, spaces);  //llrraa
         } else {
             fileSize = hFile.length(context);
         }
-        return new long[] {totalSpace, freeSpace, fileSize};
+        spaces[2]=fileSize;
+        return spaces;
     }
 
     public static boolean copyToClipboard(Context context, String text) {

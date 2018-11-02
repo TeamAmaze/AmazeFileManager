@@ -53,7 +53,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
 
     @Override
     protected Pair<String, List<PieEntry>> doInBackground(Void... params) {
-        long[] dataArray = FileUtils.getSpaces(file, context, this::publishProgress);
+        Long[] dataArray = FileUtils.getSpaces(file, context, this::publishProgress);
 
         if (dataArray[0] != -1 && dataArray[0] != 0) {
             long totalSpace = dataArray[0];
@@ -72,7 +72,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
             long totalSpace = dataArray[0];
 
             List<PieEntry> entries = createEntriesFromArray(
-                    new long[]{dataArray[0], dataArray[1], dataArray[2]},
+                    new Long[]{dataArray[0], dataArray[1], dataArray[2]},
                     true);
 
             updateChart(Formatter.formatFileSize(context, totalSpace), entries);
@@ -95,7 +95,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
         chart.invalidate();
     }
 
-    private List<PieEntry> createEntriesFromArray(long[] dataArray, boolean loading) {
+    private List<PieEntry> createEntriesFromArray(Long[] dataArray, boolean loading) {
         long usedByFolder = dataArray[2],
                 usedByOther = dataArray[0] - dataArray[1] - dataArray[2],
                 freeSpace = dataArray[1];
