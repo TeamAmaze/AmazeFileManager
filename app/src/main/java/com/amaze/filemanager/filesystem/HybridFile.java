@@ -74,7 +74,7 @@ public class HybridFile {
     }
 
     public HybridFile(OpenMode mode, String path, String name, boolean isDirectory) {
-        this.mode = mode;
+        this(mode, path);
         if (path.startsWith("smb://") || isSmb()) {
             if (!isDirectory) this.path += name;
             else if (!name.endsWith("/")) this.path += name + "/";
