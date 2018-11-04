@@ -122,15 +122,16 @@ public class FileUtils {
         try {
             for (File file:directory.listFiles()) {
                 if (file.isFile()) {
-                    spaces[2] += file.length();  length += file.length();}
-                else
+                    spaces[2] += file.length();  // spaces[2] stores the accumulated size, so the size of every file including files of subfolders will be accumulated.
+                    length += file.length();
+                }else {
                     length += folderSize(file, updateState, spaces);
+                }
 
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
-        //spaces[2] += length
         if(updateState != null)
             updateState.onUpdate(spaces);
         return length;
