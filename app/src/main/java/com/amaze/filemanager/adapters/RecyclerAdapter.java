@@ -46,6 +46,7 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
+import org.apache.commons.compress.archivers.tar.TarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -73,7 +74,7 @@ import static java.lang.Boolean.getBoolean;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
-    public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3;
+    public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3, TYPE_BACK = 4;
 
     private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
 
@@ -337,8 +338,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ArrayList<IconDataParcelable> uris = new ArrayList<>(itemsDigested.size());
 
         for (LayoutElementParcelable e : arrayList) {
-            itemsDigested.add(new ListItem(e));
-            uris.add(e != null? e.iconData:null);
+            itemsDigested.add(new ListItem(e.isBack, e));
+            uris.add(e != null ? e.iconData : null);
         }
 
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
@@ -432,6 +433,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 return new SpecialViewHolder(context, view, utilsProvider, type);
             case TYPE_ITEM:
+            case TYPE_BACK:
                 if (mainFrag.IS_LIST) {
                     view = mInflater.inflate(R.layout.rowlayout, parent, false);
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
@@ -460,7 +462,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         if (vholder instanceof ItemViewHolder) {
             final ItemViewHolder holder = (ItemViewHolder) vholder;
-            final boolean isBackButton = getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) && p == 0;
+            final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;
             if(isBackButton){
                 holder.about.setVisibility(View.GONE);
             }
@@ -953,8 +955,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         private boolean animate;
 
         ListItem(LayoutElementParcelable elem) {
+            this(false, elem);
+        }
+
+        ListItem(boolean isBack, LayoutElementParcelable elem) {
             this.elem = elem;
-            specialType = TYPE_ITEM;
+            specialType = isBack? TYPE_BACK:TYPE_ITEM;
         }
 
         ListItem(int specialType) {
