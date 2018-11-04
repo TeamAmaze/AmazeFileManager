@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -46,11 +47,11 @@ import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
 import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
-import org.apache.commons.compress.archivers.tar.TarUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.amaze.filemanager.adapters.RecyclerAdapter.ListElemType.*;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -59,11 +60,10 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_PERMISSIONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
-import static java.lang.Boolean.getBoolean;
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
- * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
+ * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES, EMPTY_LAST_ITEM and TYPE_BACK
  * represeted by ItemViewHolder, SpecialViewHolder and EmptyViewHolder respectively.
  * The showPopup shows the file's popup menu.
  * The 'go to parent' aka '..' button (go to settings to activate it) is just a folder.
@@ -75,6 +75,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
     public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3, TYPE_BACK = 4;
+
+    @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})
+    public @interface ListElemType {}
 
     private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
 
@@ -950,7 +953,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public static final int CHECKED = 0, NOT_CHECKED = 1, UNCHECKABLE = 2;
 
         private LayoutElementParcelable elem;
-        private int specialType;
+        private @ListElemType int specialType;
         private boolean checked;
         private boolean animate;
 
@@ -963,7 +966,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             specialType = isBack? TYPE_BACK:TYPE_ITEM;
         }
 
-        ListItem(int specialType) {
+        ListItem(@ListElemType int specialType) {
             this.specialType = specialType;
         }
 
