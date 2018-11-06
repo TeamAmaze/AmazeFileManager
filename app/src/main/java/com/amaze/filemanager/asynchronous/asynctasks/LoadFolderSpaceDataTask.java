@@ -53,6 +53,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
 
     @Override
     protected Pair<String, List<PieEntry>> doInBackground(Void... params) {
+        file.setPath(file.getFile().getParent());
         Long[] dataArray = FileUtils.getSpaces(file, context, this::publishProgress);
 
         if (dataArray[0] != -1 && dataArray[0] != 0) {
