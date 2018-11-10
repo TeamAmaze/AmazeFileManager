@@ -307,16 +307,8 @@ public class GenericCopyUtil {
 
             //If target file is copied onto the device and copy was successful, trigger media store
             //rescan
-
-            if((mTargetFile.isLocal() || mTargetFile.isOtgFile()) && mTargetFile.exists(mContext)) {
-
-                DocumentFile documentFile = FileUtil.getDocumentFile(mTargetFile.getFile(), false, mContext);
-                //If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
-                if(documentFile == null)
-                    documentFile = DocumentFile.fromFile(mTargetFile.getFile());
-
-                FileUtils.scanFile(documentFile.getUri(), mContext);
-            }
+            if (mTargetFile != null)
+                FileUtils.scanFile(mTargetFile, mContext);
         }
     }
 

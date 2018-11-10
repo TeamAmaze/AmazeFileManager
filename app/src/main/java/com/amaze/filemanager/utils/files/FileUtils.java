@@ -54,6 +54,7 @@ import com.amaze.filemanager.activities.DatabaseViewerActivity;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -218,7 +219,7 @@ public class FileUtils {
      * @param file File to scan
      * @param c {@link Context}
      */
-    public static void scanFile(@NonNull File file, @NonNull Context c){
+    public static void scanFile(@NonNull File file, @NonNull Context c) {
         scanFile(Uri.fromFile(file), c);
     }
 
@@ -228,10 +229,51 @@ public class FileUtils {
      * @param uri File's {@link Uri}
      * @param c {@link Context}
      */
-    public static void scanFile(@NonNull Uri uri, @NonNull Context c){
+    private static void scanFile(@NonNull Uri uri, @NonNull Context c) {
         Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
         c.sendBroadcast(mediaScanIntent);
     }
+
+    /**
+     * Triggers media scanner for multiple paths
+     * Don't use filesystem API directly as files might not be present anymore (eg. move/rename)
+     * which may lead to {@link java.io.FileNotFoundException}
+     * @param hybridFiles
+     * @param context
+     */
+    public static void scanFile(@NonNull Context context, @NonNull HybridFile[] hybridFiles) {
+        if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
+            String[] paths = new String[hybridFiles.length];
+            for (int i = 0; i<hybridFiles.length; i++) {
+                HybridFile hybridFile = hybridFiles[i];
+                paths[i] = hybridFile.getPath();
+            }
+            MediaScannerConnection.scanFile(context, paths, null, null);
+        } else {
+            for (HybridFile hybridFile : hybridFiles) {
+                scanFile(hybridFile, context);
+            }
+        }
+    }
+
+    /**
+     * Triggers media store for the file path
+     * @param hybridFile the file which was changed (directory not supported)
+     * @param context
+     */
+    public static void scanFile(@NonNull HybridFile hybridFile, Context context) {
+
+        if((hybridFile.isLocal() || hybridFile.isOtgFile()) && hybridFile.exists(context)) {
+
+            DocumentFile documentFile = FileUtil.getDocumentFile(hybridFile.getFile(), false, context);
+            //If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
+            if(documentFile == null)
+                documentFile = DocumentFile.fromFile(hybridFile.getFile());
+
+            FileUtils.scanFile(documentFile.getUri(), context);
+        }
+    }
+
 
     public static void crossfade(View buttons,final View pathbar) {
         // Set the content view to 0% opacity but visible, so that it is visible
