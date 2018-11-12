@@ -1160,9 +1160,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     private LayoutElementParcelable getBackElement() {
         if (back == null) {
-            back = new LayoutElementParcelable("..", "", "",
-                    getString(R.string.goback), 0, false, "",
-                    true, getBoolean(PREFERENCE_SHOW_THUMB), OpenMode.UNKNOWN);
+            back = new LayoutElementParcelable(true, getString(R.string.goback), getBoolean(PREFERENCE_SHOW_THUMB));
         }
 
         return back;

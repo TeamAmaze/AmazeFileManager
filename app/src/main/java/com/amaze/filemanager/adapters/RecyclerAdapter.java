@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -50,6 +51,7 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.amaze.filemanager.adapters.RecyclerAdapter.ListElemType.*;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -61,7 +63,7 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 
 /**
  * This class is the information that serves to load the files into a "list" (a RecyclerView).
- * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES and EMPTY_LAST_ITEM
+ * There are 3 types of item TYPE_ITEM, TYPE_HEADER_FOLDERS and TYPE_HEADER_FILES, EMPTY_LAST_ITEM and TYPE_BACK
  * represeted by ItemViewHolder, SpecialViewHolder and EmptyViewHolder respectively.
  * The showPopup shows the file's popup menu.
  * The 'go to parent' aka '..' button (go to settings to activate it) is just a folder.
@@ -72,7 +74,10 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
-    public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3;
+    public static final int TYPE_ITEM = 0, TYPE_HEADER_FOLDERS = 1, TYPE_HEADER_FILES = 2, EMPTY_LAST_ITEM = 3, TYPE_BACK = 4;
+
+    @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})
+    public @interface ListElemType {}
 
     private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
 
@@ -336,8 +341,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         ArrayList<IconDataParcelable> uris = new ArrayList<>(itemsDigested.size());
 
         for (LayoutElementParcelable e : arrayList) {
-            itemsDigested.add(new ListItem(e));
-            uris.add(e != null? e.iconData:null);
+            itemsDigested.add(new ListItem(e.isBack, e));
+            uris.add(e != null ? e.iconData : null);
         }
 
         if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
@@ -431,6 +436,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
                 return new SpecialViewHolder(context, view, utilsProvider, type);
             case TYPE_ITEM:
+            case TYPE_BACK:
                 if (mainFrag.IS_LIST) {
                     view = mInflater.inflate(R.layout.rowlayout, parent, false);
                     sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
@@ -459,7 +465,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         if (vholder instanceof ItemViewHolder) {
             final ItemViewHolder holder = (ItemViewHolder) vholder;
-            final boolean isBackButton = getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) && p == 0;
+            final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;
             if(isBackButton){
                 holder.about.setVisibility(View.GONE);
             }
@@ -946,16 +952,20 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         public static final int CHECKED = 0, NOT_CHECKED = 1, UNCHECKABLE = 2;
 
         private LayoutElementParcelable elem;
-        private int specialType;
+        private @ListElemType int specialType;
         private boolean checked;
         private boolean animate;
 
         ListItem(LayoutElementParcelable elem) {
-            this.elem = elem;
-            specialType = TYPE_ITEM;
+            this(false, elem);
         }
 
-        ListItem(int specialType) {
+        ListItem(boolean isBack, LayoutElementParcelable elem) {
+            this.elem = elem;
+            specialType = isBack? TYPE_BACK:TYPE_ITEM;
+        }
+
+        ListItem(@ListElemType int specialType) {
             this.specialType = specialType;
         }
 
