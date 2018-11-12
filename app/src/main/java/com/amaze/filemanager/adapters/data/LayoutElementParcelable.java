@@ -36,6 +36,7 @@ public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
+    public final boolean isBack;
     public final int filetype;
     public final IconDataParcelable iconData;
     public final String title;
@@ -51,16 +52,25 @@ public class LayoutElementParcelable implements Parcelable {
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
+    public LayoutElementParcelable(boolean isBack, String goback, boolean showThumbs) {
+        this(true, new File("..").getName(), "..", "", "", goback, 0,
+                false, "", true, showThumbs, OpenMode.UNKNOWN);
+    }
+
     public LayoutElementParcelable(String path, String permissions, String symlink,
                                    String size, long longSize,boolean header, String date,
                                    boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         this(new File(path).getName(), path, permissions, symlink, size, longSize, header,
                 date, isDirectory, useThumbs, openMode);
-
     }
 
-
     public LayoutElementParcelable(String title, String path, String permissions,
+                                   String symlink, String size, long longSize, boolean header,
+                                   String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
+        this(false, title, path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs, openMode);
+    }
+
+    public LayoutElementParcelable(boolean isBack, String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         filetype = Icons.getTypeOfFile(path, isDirectory);
@@ -106,6 +116,7 @@ public class LayoutElementParcelable implements Parcelable {
             this.date = 0;
             this.dateModification = "";
         }
+        this.isBack = isBack;
     }
 
     public OpenMode getMode() {
@@ -147,6 +158,7 @@ public class LayoutElementParcelable implements Parcelable {
         dateModification = im.readString();
         size = im.readString();
         longSize=im.readLong();
+        isBack = im.readInt() != 0;
     }
 
     @Override
@@ -169,6 +181,7 @@ public class LayoutElementParcelable implements Parcelable {
         p1.writeString(dateModification);
         p1.writeString(size);
         p1.writeLong(longSize);
+        p1.writeInt(isBack? 1:0);
     }
 
     public static final Parcelable.Creator<LayoutElementParcelable> CREATOR =
