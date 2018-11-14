@@ -1,8 +1,5 @@
 package com.amaze.filemanager.activities;
 
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -20,30 +17,15 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
-import com.android.billingclient.api.SkuDetailsResponseListener;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 
 /**
  * Created by vishal on 27/7/16.
@@ -62,11 +44,11 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private Snackbar snackbar;
     private SharedPreferences mSharedPref;
     private View mAuthorsDivider, mDeveloper1Divider;
-    private Billing billing;
 
     private static final String KEY_PREF_STUDIO = "studio";
     private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
     private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
+    private static final String URL_AUTHOR_2_PAYPAL = "https://www.paypal.me/vishalnehra";
     private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
     private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
@@ -255,8 +237,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
             case R.id.relative_layout_rate:
                 openURL(URL_REPO_RATE);
                 break;
+
             case R.id.relative_layout_donate:
-                billing = new Billing(this);
+                openURL(URL_AUTHOR_2_PAYPAL);
                 break;
         }
     }
@@ -265,14 +248,5 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setData(Uri.parse(url));
         startActivity(intent);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        Log.d(TAG, "Destroying the manager.");
-        if (billing != null) {
-            billing.destroyBillingInstance();
-        }
     }
 }
