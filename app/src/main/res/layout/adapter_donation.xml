@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:id="@+id/adapter_donation_root"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/minimal_material_padding"
+        android:background="?selectableItemBackground"
+        android:orientation="horizontal"
+        >
+        <LinearLayout
+            android:id="@+id/test"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginLeft="@dimen/minimal_material_padding"
+            android:layout_marginStart="@dimen/minimal_material_padding"
+            android:layout_weight="1"
+            >
+            <TextView
+                android:id="@+id/adapter_donation_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/Base.TextAppearance.AppCompat.Medium"
+                />
+            <TextView
+                android:id="@+id/adapter_donation_summary"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/goback_item"
+                android:layout_marginTop="@dimen/minimal_material_padding"
+                style="@style/Base.TextAppearance.AppCompat.Small"
+                />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/adapter_donation_price"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/minimal_material_padding"
+            android:layout_marginStart="@dimen/minimal_material_padding"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
+            android:textColor="@color/primary_light_green"
+            />
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>
