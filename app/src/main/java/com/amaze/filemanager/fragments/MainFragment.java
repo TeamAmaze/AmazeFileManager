@@ -1593,18 +1593,19 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
 
     public void filter_fast_search_child( String query) {
-        String[] querys=query.split("\\s");
+        String[] querys=query.toLowerCase().split("\\s+");
         _LIST_ELEMENTS.clear();
         for(LayoutElementParcelable e:LIST_ELEMENTS){
             _LIST_ELEMENTS.add(e);
+            String title=e.title.toLowerCase();
             for(String q:querys){
-                if(! e.title.contains(q)) {
+                if(! title.contains(q)) {
                     _LIST_ELEMENTS.remove(e);
                     break;
                 }
             }
         }
-        adapter.setItems(listView,(_LIST_ELEMENTS));
+        adapter.setItems(listView,_LIST_ELEMENTS);
     }
 
     // This method is used to implement the modification for the pre Searching
