@@ -4,6 +4,9 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.support.v7.widget.AppCompatEditText;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -38,6 +41,7 @@ public class SearchView {
     private AppCompatEditText searchViewEditText;
     private ImageView clearImageView;
     private ImageView backImageView;
+    private ImageView filterImageView;
 
     private boolean enabled = false;
 
@@ -49,10 +53,36 @@ public class SearchView {
         searchViewEditText = a.findViewById(R.id.search_edit_text);
         clearImageView = a.findViewById(R.id.search_close_btn);
         backImageView = a.findViewById(R.id.img_view_back);
+        filterImageView=a.findViewById(R.id.search_filter_btn);
 
         clearImageView.setOnClickListener(v -> searchViewEditText.setText(""));
 
         backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
+
+        filterImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String q=searchViewEditText.getText().toString();
+                Log.i("M quary searchOnlyChild",q);
+                a.getCurrentMainFragment().filter_fast_search_child(q);
+            }
+        });
+
+        searchViewEditText.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void afterTextChanged(Editable s) {
+                String q=searchViewEditText.getText().toString();
+                if(q.length()>0){
+                    Log.i("A quary searchOnlyChild",q);
+                    a.getCurrentMainFragment().filter_fast_search_child(q);
+                }
+
+            }
+        });
 
         searchViewEditText.setOnEditorActionListener((v, actionId, event) -> {
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {

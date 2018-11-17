@@ -43,4 +43,13 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
         android:layout_marginRight="@dimen/search_view_info_margin_left_right"/>
+    <ImageView
+        android:id="@+id/search_filter_btn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        app:srcCompat="@drawable/ic_filter_list_black_24dp"
+        android:layout_centerInParent="true"
+        android:layout_marginLeft="@dimen/search_view_info_margin_left_right"
+        android:layout_marginRight="52dp"/>
 </RelativeLayout>

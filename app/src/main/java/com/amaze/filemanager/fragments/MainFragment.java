@@ -145,7 +145,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     /**
      * This is not an exact copy of the elements in the adapter
      */
-    private ArrayList<LayoutElementParcelable> LIST_ELEMENTS;
+    private ArrayList<LayoutElementParcelable> LIST_ELEMENTS,_LIST_ELEMENTS=new ArrayList<>();
     public RecyclerAdapter adapter;
     private SharedPreferences sharedPref;
     private Resources res;
@@ -1588,6 +1588,23 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 .build();
 
         ShortcutManagerCompat.requestPinShortcut(ctx, info, null);
+    }
+
+
+
+    public void filter_fast_search_child( String query) {
+        String[] querys=query.split("\\s");
+        _LIST_ELEMENTS.clear();
+        for(LayoutElementParcelable e:LIST_ELEMENTS){
+            _LIST_ELEMENTS.add(e);
+            for(String q:querys){
+                if(! e.title.contains(q)) {
+                    _LIST_ELEMENTS.remove(e);
+                    break;
+                }
+            }
+        }
+        adapter.setItems(listView,(_LIST_ELEMENTS));
     }
 
     // This method is used to implement the modification for the pre Searching
