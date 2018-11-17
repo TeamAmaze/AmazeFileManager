@@ -110,8 +110,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             final KeyguardManager keyguardManager = (KeyguardManager)
                     getActivity().getSystemService(Context.KEYGUARD_SERVICE);
 
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager != null && fingerprintManager.isHardwareDetected()) {
 
                 checkBoxFingerprint.setEnabled(true);
             }
@@ -125,13 +124,13 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                             Toast.LENGTH_LONG).show();
                     return false;
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !fingerprintManager.hasEnrolledFingerprints()) {
+                        fingerprintManager != null && !fingerprintManager.hasEnrolledFingerprints()) {
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.crypt_fingerprint_not_enrolled),
                             Toast.LENGTH_LONG).show();
                     return false;
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !keyguardManager.isKeyguardSecure()) {
+                        keyguardManager != null && !keyguardManager.isKeyguardSecure()) {
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.crypt_fingerprint_no_security),
                             Toast.LENGTH_LONG).show();
