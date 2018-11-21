@@ -503,5 +503,6 @@
     <string name="item">Елемент</string>
     <string name="items">Елементи</string>
     <string name="bytes">Байт</string>
+    <string name="select_pem_file">Оберіть PEM файл</string>
     <!-- end of plurals -->
 </resources>

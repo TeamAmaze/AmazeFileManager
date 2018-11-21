@@ -142,10 +142,10 @@ public class SftpConnectDialog extends DialogFragment {
         //If MaterialDialog.Builder can be upgraded we may use their file selection dialog too
         selectPemBTN.setOnClickListener(v -> {
         Intent intent = new Intent()
-                .setType("*/*")
+                .setType("text/plain")
                 .setAction(Intent.ACTION_GET_CONTENT);
 
-        startActivityForResult(intent, SELECT_PEM_INTENT);
+        startActivityForResult(Intent.createChooser(intent, getString(R.string.select_pem_file)), SELECT_PEM_INTENT);
         });
 
         //Define action for buttons
