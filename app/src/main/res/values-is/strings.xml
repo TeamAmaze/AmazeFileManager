@@ -151,7 +151,7 @@
     <string name="ok">Í lagi</string>
     <string name="ui">Viðmót</string>
     <string name="general">Almennt</string>
-    <string name="thumbsummary">Birta smámyndir forrita og mynda</string>
+    <string name="thumbSummary">Birta smámyndir forrita og mynda</string>
     <string name="thumb">Birta smámyndir</string>
     <string name="hidden">Sýna faldar skrár og möppur</string>
     <string name="lastModifiedSummary">Sýna dagsetningu og tíma þegar skránni var síðast breytt</string>
@@ -637,4 +637,5 @@
     <string name="unknown">óþekkt</string>
     <string name="multiple_invalid_archive_entries">Ekki var hægt að afþjappa allar skrár í safnskránni; hún gæti verið skemmd eða af vafasömum uppruna.</string>
     <string name="saf_otg_explanation">Af öryggisástæðum ferðu núna á skráakerfi Android. Veldu USB-tækið úr listanum til vinstri.</string>
+    <string name="donation_thanks">Takk kærlega fyrir framlagið, þetta heldur okkur við efnið! (:</string>
 </resources>
