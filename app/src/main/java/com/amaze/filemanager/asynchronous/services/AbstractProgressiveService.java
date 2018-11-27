@@ -178,7 +178,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
         }
     }
 
-    protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
+    protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) throws IllegalStateException {
         if(!getDataPackages().isEmpty()) {
             throw new IllegalStateException("This is not the first datapoint!");
         }
