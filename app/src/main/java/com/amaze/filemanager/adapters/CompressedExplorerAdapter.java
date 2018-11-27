@@ -2,6 +2,7 @@ package com.amaze.filemanager.adapters;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
@@ -24,6 +25,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -53,11 +55,12 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     private LayoutInflater mInflater;
     private boolean[] itemsChecked;
     private int offset = 0;
+    private SharedPreferences sharedPrefs;
 
     public CompressedExplorerAdapter(Context c, UtilitiesProvider utilsProvider,
                                      List<CompressedObjectParcelable> items,
                                      CompressedExplorerFragment compressedExplorerFragment,
-                                     Decompressor decompressor) {
+                                     Decompressor decompressor, SharedPreferences sharedPrefs) {
         setHasStableIds(true);
 
         this.utilsProvider = utilsProvider;
@@ -71,6 +74,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         folder = c.getResources().getDrawable(R.drawable.ic_grid_folder_new);
         this.compressedExplorerFragment = compressedExplorerFragment;
         mInflater = (LayoutInflater) c.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
+        this.sharedPrefs = sharedPrefs;
     }
 
     public void toggleChecked(boolean check) {
@@ -299,7 +303,11 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     @Override
     public void onViewAttachedToWindow(CompressedItemViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
+        boolean enableMarqueeFilename = sharedPrefs.getBoolean(
+                PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
+        if (enableMarqueeFilename) {
+            AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
+        }
     }
 
     @Override

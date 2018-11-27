@@ -30,6 +30,7 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -286,7 +287,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     @Override
     public void onViewAttachedToWindow(RecyclerView.ViewHolder holder) {
         super.onViewAttachedToWindow(holder);
-        if (holder instanceof ItemViewHolder) {
+        boolean enableMarqueeFilename = sharedPrefs.getBoolean(
+                PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
+        if (enableMarqueeFilename && holder instanceof ItemViewHolder) {
             AnimUtils.marqueeAfterDelay(2000, ((ItemViewHolder) holder).txtTitle);
         }
         super.onViewAttachedToWindow(holder);

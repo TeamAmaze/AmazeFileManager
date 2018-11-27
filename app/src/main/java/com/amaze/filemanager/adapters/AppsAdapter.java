@@ -23,6 +23,7 @@ import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
 import android.graphics.Color;
 import android.net.Uri;
@@ -71,12 +72,13 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
     private ViewPreloadSizeProvider<String> sizeProvider;
     private SparseBooleanArray myChecked = new SparseBooleanArray();
     private AppsListFragment app;
+    private SharedPreferences sharedPrefs;
 
     private ThemedActivity themedActivity;
 
     public AppsAdapter(Context context, ThemedActivity ba, UtilitiesProvider utilsProvider,
                        AppsAdapterPreloadModel modelProvider, ViewPreloadSizeProvider<String> sizeProvider,
-                       int resourceId, AppsListFragment app) {
+                       int resourceId, AppsListFragment app, SharedPreferences sharedPrefs) {
         super(context, resourceId);
         themedActivity = ba;
         this.utilsProvider = utilsProvider;
@@ -84,6 +86,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         this.sizeProvider = sizeProvider;
         this.context = context;
         this.app = app;
+        this.sharedPrefs = sharedPrefs;
 
         /*for (int i = 0; i < items.size(); i++) {
             myChecked.put(i, false);
@@ -126,7 +129,11 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
             showPopup(holder.about, rowItem);
         }
         holder.txtTitle.setText(rowItem.label);
-        AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
+        boolean enableMarqueeFilename = sharedPrefs.getBoolean(
+                PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
+        if (enableMarqueeFilename) {
+            AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
+        }
 
         //	File f = new File(rowItem.getDesc());
         holder.txtDesc.setText(rowItem.fileSize);
