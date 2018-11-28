@@ -7,6 +7,7 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -189,6 +190,12 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
         if (!stoppedAnimation) {
             animate(holder);
         }
+
+        boolean enableMarquee = sharedPrefs.getBoolean(
+                PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
+        holder.txtTitle.setEllipsize(enableMarquee ?
+                TextUtils.TruncateAt.MARQUEE :
+                TextUtils.TruncateAt.MIDDLE);
 
         final CompressedObjectParcelable rowItem = items.get(position);
         GradientDrawable gradientDrawable = (GradientDrawable) holder.genericIcon.getBackground();

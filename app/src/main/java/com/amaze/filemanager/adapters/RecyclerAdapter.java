@@ -11,6 +11,7 @@ import android.os.Handler;
 import android.support.annotation.IntDef;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -468,6 +469,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
         if (vholder instanceof ItemViewHolder) {
             final ItemViewHolder holder = (ItemViewHolder) vholder;
+
+            boolean enableMarquee = sharedPrefs.getBoolean(
+                    PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
+            holder.txtTitle.setEllipsize(enableMarquee ?
+                    TextUtils.TruncateAt.MARQUEE :
+                    TextUtils.TruncateAt.MIDDLE);
+
             final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;
             if(isBackButton){
                 holder.about.setVisibility(View.GONE);

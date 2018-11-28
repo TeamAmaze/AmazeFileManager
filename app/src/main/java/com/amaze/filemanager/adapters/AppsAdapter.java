@@ -29,6 +29,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
+import android.text.TextUtils;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -132,6 +133,9 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         boolean enableMarqueeFilename = sharedPrefs.getBoolean(
                 PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
         if (enableMarqueeFilename) {
+            holder.txtTitle.setEllipsize(enableMarqueeFilename ?
+                    TextUtils.TruncateAt.MARQUEE :
+                    TextUtils.TruncateAt.MIDDLE);
             AnimUtils.marqueeAfterDelay(2000, holder.txtTitle);
         }
 
