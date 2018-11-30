@@ -45,7 +45,6 @@
             android:key="intelliHideToolbar"
             android:summary="@string/intellihide_toolbar_summary"
             android:title="@string/intellihide_toolbar_title"/>
-
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/sidebar_preferences">
@@ -101,6 +100,10 @@
         <Preference
             android:key="columns"
             android:title="@string/gridcolumnno"/>
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="true"
+            android:key="enableMarqueeFilename"
+            android:title="@string/enableMarqueeFilename"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/archive_preferences">
