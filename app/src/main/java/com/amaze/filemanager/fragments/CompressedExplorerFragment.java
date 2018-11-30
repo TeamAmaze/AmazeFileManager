@@ -436,7 +436,8 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
     private void createViews(List<CompressedObjectParcelable> items, String dir) {
         if (compressedExplorerAdapter == null) {
-            compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this, decompressor);
+            compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this, decompressor,
+                    PreferenceManager.getDefaultSharedPreferences(getActivity()));
             listView.setAdapter(compressedExplorerAdapter);
         } else {
             compressedExplorerAdapter.generateZip(items);

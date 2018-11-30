@@ -107,7 +107,7 @@
                     android:layout_gravity="start|center_vertical"
                     android:textAlignment="viewStart"
                     android:singleLine="true"
-                    android:ellipsize="marquee"
+                    android:ellipsize="middle"
                     android:fadingEdge="horizontal"
                     android:marqueeRepeatLimit="marquee_forever"
                     android:scrollHorizontally="true"
