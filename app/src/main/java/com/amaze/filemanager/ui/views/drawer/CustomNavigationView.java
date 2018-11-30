@@ -114,7 +114,7 @@ public class CustomNavigationView extends NavigationView
      */
     public boolean isNavigationViewSavedStateMissing() {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && Build.VERSION.SDK_INT <= Build.VERSION_CODES.O_MR1;
+                && Build.VERSION.SDK_INT <= Build.VERSION_CODES.P;
     }
 
     static class SavedState extends BaseSavedState {
