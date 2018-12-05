@@ -31,6 +31,7 @@
     <uses-permission android:name="com.amaze.cloud.permission.ACCESS_PROVIDER" />
     <uses-permission android:name="android.permission.USE_FINGERPRINT" />
     <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
