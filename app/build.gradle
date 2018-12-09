@@ -84,7 +84,7 @@ android {
 }
 
 ext {
-    supportLibVersion = '27.1.1'
+    supportLibVersion = '28.0.0'
     robolectricVersion = '3.8'
     glideVersion = '4.8.0'
     sshjVersion = '0.26.0'
