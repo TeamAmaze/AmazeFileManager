@@ -96,7 +96,8 @@ public class ServiceWatcherUtil {
                         // we passed at the beginning is never reached
                         // we try to get a less precise size and make our decision based on that
                         progressHandler.addWrittenLength(progressHandler.getTotalSize());
-                        pendingIntents.remove();
+                        if (!pendingIntents.isEmpty())
+                            pendingIntents.remove();
                         handler.removeCallbacks(this);
                         handlerThread.quit();
                         return;
