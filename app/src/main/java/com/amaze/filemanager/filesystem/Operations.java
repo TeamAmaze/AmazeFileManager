@@ -88,8 +88,7 @@ public class Operations {
             @Override
             protected Void doInBackground(Void... params) {
                 // checking whether filename is valid or a recursive call possible
-                if (MainActivityHelper.isNewDirectoryRecursive(file) ||
-                        !Operations.isFileNameValid(file.getName(context))) {
+                if (!Operations.isFileNameValid(file.getName(context))) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
