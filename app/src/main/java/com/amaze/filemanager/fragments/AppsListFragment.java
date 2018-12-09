@@ -98,7 +98,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
                 sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
 
         adapter = new AppsAdapter(getContext(), (ThemedActivity) getActivity(), utilsProvider, modelProvider, sizeProvider,
-                R.layout.rowlayout, app);
+                R.layout.rowlayout, app, Sp);
 
         getListView().setOnScrollListener(preloader);
         setListAdapter(adapter);

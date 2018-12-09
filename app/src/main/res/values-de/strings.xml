@@ -157,8 +157,8 @@
   <string name="type">Typ</string>
     <string name="rootdirectory">Stammverzeichnis</string>
     <string name="addshortcut">Schnellwahl</string>
-  <string name="unsavedchanges">Ungesicherte Änderungen</string>
-  <string name="unsavedchangesdesc">Du hast nicht gespeicherte Änderungen! Möchtest du diese vor dem Beenden speichern?</string>
+  <string name="unsavedchanges">Ungespeicherte Änderungen</string>
+  <string name="unsavedchangesdesc">Du hast ungespeicherte Änderungen! Möchtest du diese vor dem Beenden speichern?</string>
   <string name="saving">Speichere</string>
   <string name="packageinstaller">Paket-Installer</string>
   <string name="view">Ansicht</string>
@@ -298,7 +298,7 @@ andernfalls wird nach Treffern gesucht.</string>
   <string name="ftp_port_change_error_invalid">Gewählte Portnummer ist ungültig</string>
   <string name="primary_two_title">Primärfarbe (rechter Tab)</string>
   <string name="primary_two_summary">Setze Farbe für große UI Elemente in dem rechten Tab</string>
-  <string name="g_plus">Google +</string>
+  <string name="g_plus">Google+</string>
   <string name="support_development">Unterstütze die Entwicklung</string>
   <string name="report_bugs_title">Melde Fehler</string>
   <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
@@ -307,7 +307,7 @@ andernfalls wird nach Treffern gesucht.</string>
   <string name="g_plus_community_summary">Mach mit bei Beta-Tests und Diskussionen
 rund um die Entwicklung</string>
   <string name="easter_egg_title">Studio-Modus</string>
-  <string name="paypal_copy_message">Paypal ID in die Zwischenablage kopiert</string>
+  <string name="paypal_copy_message">PayPal ID in die Zwischenablage kopiert</string>
   <string name="searchingdevices">Suche nach Geräten</string>
   <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
   <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
@@ -388,7 +388,7 @@ rund um die Entwicklung</string>
   <string name="permission_owner">Besitzer</string>
   <string name="permission_group">Gruppe</string>
   <string name="permission_other">Sonstige</string>
-  <string name="clipboard_path_copy">Pfad in Zwischenspeicher kopiert</string>
+  <string name="clipboard_path_copy">Pfad in Zwischenablage kopiert</string>
     <string name="service_timer">Verstrichene Zeit</string>
   <string name="please_wait">Bitte warten</string>
   <string name="cloud_connection">Cloud-Verknüpfung</string>
@@ -404,7 +404,7 @@ rund um die Entwicklung</string>
   <string name="ftp_path_hint">Pfad zum root Verzeichnis teilen</string>
     <string name="change">Ändern</string>
   <string name="unknown_error">Hoppla! Leider ist etwas schiefgegangen.</string>
-  <string name="ftp_path_change_success">FTP-Pfad wurden erfolgreich geändert</string>
+  <string name="ftp_path_change_success">FTP-Pfad wurde erfolgreich geändert</string>
   <string name="ftp_path_change_error_invalid">Ungültiger Pfad</string>
   <string name="ftp_status_no_connection">Keine Verbindung</string>
   <string name="ftp_status_secure_connection">Sichere Verbindung</string>
@@ -436,7 +436,7 @@ rund um die Entwicklung</string>
   <string name="crypt_decrypt">Entschlüsseln</string>
   <string name="operation_fail_following">Für die folgenden Dateien ist die Operation fehlgeschlagen</string>
   <string name="crypt_pref_master_password_title">Master Passwort</string>
-  <string name="crypt_pref_master_password_summary">Legen Sie einen Master-Passwort fest für die Verschlüsselung.
+  <string name="crypt_pref_master_password_summary">Legen Sie ein Master-Passwort für die Verschlüsselung fest.
          Lassen Sie das Feld leer um es zu entfernen.</string>
   <string name="crypt_pref_fingerprint_title">Fingerabdruck</string>
   <string name="crypt_pref_fingerprint_summary">Verwenden Sie den Fingerabdruck bei der Authentifizierung</string>
@@ -444,13 +444,13 @@ rund um die Entwicklung</string>
   <string name="crypt_fingerprint_not_enrolled">Kein Fingerabdruck vorhanden</string>
   <string name="crypt_fingerprint_no_security">Keine Displaysperre gefunden</string>
   <string name="crypt_warning_key">Beachten Sie, dass es nicht möglich sein wird diese Inhalte zu entschlüsseln,
-         wenn Sie Ihren Muster von Systemeinstellungen aus ändern.</string>
+         wenn Sie Ihr Muster von den Systemeinstellungen aus ändern.</string>
   <string name="warning_never_show">Nicht mehr anzeigen</string>
   <string name="warning_confirm">Alles klar!</string>
   <string name="crypt_encryption_fail">Fehler beim Verschlüsseln</string>
   <string name="crypt_decryption_fail">Fehler beim Entschlüsseln</string>
   <string name="crypt_decryption_fail_password">Falsches Passwort!</string>
-  <string name="crypt_fingerprint_authenticate">Um fortzufahren, berühre den Sensor</string>
+  <string name="crypt_fingerprint_authenticate">Berühre den Sensor um fortzufahren</string>
   <string name="authenticate_password">Passwort eingeben</string>
   <string name="sidebarfolders_title">Seitenleiste Verknüpfungen</string>
   <string name="sidebarquickaccess_title">Seitenleiste Schnellzugriff</string>
@@ -465,9 +465,9 @@ rund um die Entwicklung</string>
     <string name="cloud_error_plugin">Amaze Cloud Plugin konnte nicht gefunden werden. Bitte laden Sie es aus dem Play Store herunter.</string>
   <string name="cloud_error_failed_restart">Fehler beim Laden der Verbindung.
          Bitte öffnen Sie Amaze Cloud einmal.</string>
-  <string name="cloud_remove">Möchten Sie die cloud-Verbindung entfernen?</string>
+  <string name="cloud_remove">Möchten Sie die Cloud-Verbindung entfernen?</string>
   <string name="cloud_fail_authenticate">Authentifizierung fehlgeschlagen</string>
-  <string name="cloud_share_copied">Teilbarer-Link wurde in die Zwischenablage kopiert</string>
+  <string name="cloud_share_copied">Teilbarer Link wurde in die Zwischenablage kopiert</string>
   <string name="copy_low_memory">Speicher fast voll, bitte machen Sie etwas RAM frei</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
   <string name="noitems">Keine Elemente</string>
@@ -476,7 +476,7 @@ rund um die Entwicklung</string>
   <string name="byte_singular">byte</string>
   <string name="bytes">bytes</string>
   <!-- end of plurals -->
-  <string name="no_name">Datei sollte ein Namen haben</string>
+  <string name="no_name">Datei sollte einen Namen haben</string>
   <string name="add_item">Element hinzufügen</string>
   <string name="failed_cloud_new_connection">Hinzufügen neuer Cloud-Verbindung fehlgeschlagen</string>
 </resources>
