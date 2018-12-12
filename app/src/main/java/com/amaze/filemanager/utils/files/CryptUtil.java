@@ -642,7 +642,7 @@ public class CryptUtil {
             }
 
             byte[] decryptedBytes = new byte[bytes.size()];
-            for (int i=0; i<bytes.size(); i++) {
+            for (int i=0, size = bytes.size(); i < size; i++) {
 
                 decryptedBytes[i] = bytes.get(i).byteValue();
             }

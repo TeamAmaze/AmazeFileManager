@@ -184,7 +184,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void toggleChecked(boolean b, String path) {
         int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
 
-        for (; i < itemsDigested.size(); i++) {
+        for (int size = itemsDigested.size(); i < size; i++) {
             ListItem item = itemsDigested.get(i);
             if (b && item.getChecked() != ListItem.CHECKED) {
                 item.setChecked(true);
@@ -214,7 +214,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
      * @param b if to toggle true or false
      */
     public void toggleChecked(boolean b) {
-        for (int i = 0; i < itemsDigested.size(); i++) {
+        for (int i = 0, size = itemsDigested.size(); i < size; i++) {
             ListItem item = itemsDigested.get(i);
             if (b && item.getChecked() != ListItem.CHECKED) {
                 item.setChecked(true);
@@ -240,7 +240,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public ArrayList<LayoutElementParcelable> getCheckedItems() {
         ArrayList<LayoutElementParcelable> selected = new ArrayList<>();
 
-        for (int i = 0; i < itemsDigested.size(); i++) {
+        for (int i = 0, size = itemsDigested.size(); i < size; i++) {
             if (itemsDigested.get(i).getChecked() == ListItem.CHECKED) {
                 selected.add(itemsDigested.get(i).elem);
             }
@@ -253,7 +253,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         boolean allChecked = true;
         int i = (path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON))? 0:1;
 
-        for (; i < itemsDigested.size(); i++) {
+        for (int size = itemsDigested.size(); i < size; i++) {
             if (itemsDigested.get(i).getChecked() == ListItem.NOT_CHECKED) {
                 allChecked = false;
             }
@@ -265,7 +265,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public ArrayList<Integer> getCheckedItemsIndex() {
         ArrayList<Integer> checked = new ArrayList<>();
 
-        for (int i = 0; i < itemsDigested.size(); i++) {
+        for (int i = 0, size = itemsDigested.size(); i < size; i++) {
             if (itemsDigested.get(i).getChecked() == ListItem.CHECKED) {
                 checked.add(i);
             }
@@ -350,7 +350,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             uris.add(null);
         }
 
-        for (int i = 0; i < itemsDigested.size(); i++) {
+        for (int i = 0, size = itemsDigested.size(); i < size; i++) {
             itemsDigested.get(i).setAnimate(false);
         }
 
@@ -369,7 +369,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public void createHeaders(boolean invalidate, List<IconDataParcelable> uris)  {
         boolean[] headers = new boolean[]{false, false};
 
-        for (int i = 0; i < itemsDigested.size(); i++) {
+        for (int i = 0, size = itemsDigested.size(); i < size; i++) {
 
             if (itemsDigested.get(i).elem != null) {
                 LayoutElementParcelable nextItem = itemsDigested.get(i).elem;

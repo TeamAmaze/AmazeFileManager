@@ -55,7 +55,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
         findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOnPreferenceClickListener(this);
 
-        for (int i = 0; i < dataUtils.getBooks().size(); i++) {
+        for (int i = 0, size = dataUtils.getBooks().size(); i < size; i++) {
             PathSwitchPreference p = new PathSwitchPreference(getActivity());
             p.setTitle(dataUtils.getBooks().get(i) [0]);
             p.setSummary(dataUtils.getBooks().get(i) [1]);

@@ -232,7 +232,7 @@ public class GeneralDialogCreation {
             @Override
             protected Void doInBackground(Void... params) {
 
-                for (int i = 0; i < positions.size(); i++) {
+                for (int i = 0, size = positions.size(); i < size; i++) {
                     final LayoutElementParcelable layoutElement = positions.get(i);
                     itemsToDelete.add(layoutElement.generateBaseFile());
 

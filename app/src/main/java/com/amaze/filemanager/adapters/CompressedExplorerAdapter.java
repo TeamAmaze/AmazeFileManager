@@ -74,9 +74,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
     }
 
     public void toggleChecked(boolean check) {
-        int k = 0;
-
-        for (int i = k; i < items.size(); i++) {
+        for (int i = 0, size = items.size(); i < size; i++) {
             itemsChecked[i] = check;
             notifyItemChanged(i);
         }

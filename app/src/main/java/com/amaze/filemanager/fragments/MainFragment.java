@@ -697,8 +697,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     mode.finish();
                     return true;
                 case R.id.hide:
-                    for (int i1 = 0; i1 < checkedItems.size(); i1++) {
-                        hide(checkedItems.get(i1).desc);
+                    for (int i = 0, size = checkedItems.size(); i < size; i++) {
+                        hide(checkedItems.get(i).desc);
                     }
                     updateList();
                     mode.finish();
@@ -710,7 +710,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 case R.id.cpy:
                 case R.id.cut: {
                     HybridFileParcelable[] copies = new HybridFileParcelable[checkedItems.size()];
-                    for (int i = 0; i < checkedItems.size(); i++) {
+                    for (int i = 0, size = checkedItems.size(); i < size; i++) {
                         copies[i] = checkedItems.get(i).generateBaseFile();
                     }
                     int op = item.getItemId() == R.id.cpy? PasteHelper.OPERATION_COPY:PasteHelper.OPERATION_CUT;
@@ -723,8 +723,8 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                 }
                 case R.id.compress:
                     ArrayList<HybridFileParcelable> copies1 = new ArrayList<>();
-                    for (int i4 = 0; i4 < checkedItems.size(); i4++) {
-                        copies1.add(checkedItems.get(i4).generateBaseFile());
+                    for (int i = 0, size = checkedItems.size(); i < size; i++) {
+                        copies1.add(checkedItems.get(i).generateBaseFile());
                     }
                     GeneralDialogCreation.showCompressDialog((MainActivity) getActivity(), copies1, CURRENT_PATH);
                     mode.finish();

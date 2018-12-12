@@ -1321,7 +1321,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                         oppatheList.add(oppathe);
                         oppathe = "";
                     }
-                    for (int i = 0; i < oparrayListList.size(); i++) {
+                    for (int i = 0, size = oparrayListList.size(); i < size; i++) {
                         ArrayList<HybridFileParcelable> sourceList = oparrayListList.get(i);
                         Intent intent1 = new Intent(this, CopyService.class);
                         intent1.putExtra(CopyService.TAG_COPY_SOURCES, sourceList);
@@ -1861,7 +1861,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     String ids[] = new String[cloudEntries.size() + 1];
 
                     ids[0] = 1 + "";
-                    for (int i=1; i<=cloudEntries.size(); i++) {
+                    for (int i=1, size = cloudEntries.size(); i <= size; i++) {
 
                         // we need to get only those cloud details which user wants
                         switch (cloudEntries.get(i-1).getServiceType()) {

@@ -440,7 +440,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 }),
                 R.drawable.ic_settings_white_24dp, null);
 
-        for (int i = 0; i < navView.getMenu().size(); i++) {
+        for (int i = 0, size = navView.getMenu().size(); i < size; i++) {
             navView.getMenu().getItem(i).setEnabled(true);
         }
 
@@ -717,7 +717,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
         navView.deselectItems();
 
-        for (int i = 0; i < navView.getMenu().size(); i++) {
+        for (int i = 0, size = navView.getMenu().size(); i < size; i++) {
             navView.getMenu().getItem(i).setChecked(false);
         }
 
