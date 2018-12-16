@@ -257,12 +257,7 @@ public class CopyService extends AbstractProgressiveService {
 
             watcherUtil = new ServiceWatcherUtil(progressHandler);
 
-            try {
-                addFirstDatapoint(sourceFiles.get(0).getName(), sourceFiles.size(), totalSize, move);
-            } catch (IllegalStateException e) {
-                e.printStackTrace();
-                return null;
-            }
+            addFirstDatapoint(sourceFiles.get(0).getName(), sourceFiles.size(), totalSize, move);
 
             targetPath = p1[0].getString(TAG_COPY_TARGET);
             move = p1[0].getBoolean(TAG_COPY_MOVE);
