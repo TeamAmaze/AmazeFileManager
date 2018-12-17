@@ -96,7 +96,8 @@ public class ServiceWatcherUtil {
                         // we passed at the beginning is never reached
                         // we try to get a less precise size and make our decision based on that
                         progressHandler.addWrittenLength(progressHandler.getTotalSize());
-                        pendingIntents.remove();
+                        if (!pendingIntents.isEmpty())
+                            pendingIntents.remove();
                         handler.removeCallbacks(this);
                         handlerThread.quit();
                         return;
@@ -127,7 +128,8 @@ public class ServiceWatcherUtil {
                 if (position == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
                     // process complete, free up resources
                     // we've finished the work or process cancelled
-                    pendingIntents.remove();
+                    if (!pendingIntents.isEmpty())
+                        pendingIntents.remove();
                     handler.removeCallbacks(this);
                     handlerThread.quit();
                     return;
@@ -158,15 +160,23 @@ public class ServiceWatcherUtil {
      * as there are higher chances for android system to GC the thread when it is running low on memory
      */
     public static synchronized void runService(final Context context, final Intent intent) {
-        pendingIntents.add(intent);
         switch (pendingIntents.size()) {
+            case 0:
+                context.startService(intent);
+                break;
             case 1:
                 // initialize waiting handlers
+                pendingIntents.add(intent);
                 postWaiting(context);
                 break;
             case 2:
                 // to avoid notifying repeatedly
+                pendingIntents.add(intent);
                 notificationManager.notify(NotificationConstants.WAIT_ID, builder.build());
+                break;
+            default:
+                pendingIntents.add(intent);
+                break;
         }
     }
 
