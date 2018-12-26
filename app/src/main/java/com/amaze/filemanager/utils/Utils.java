@@ -262,7 +262,6 @@ public class Utils {
      * Formats input to plain mm:ss format
      */
     public static String formatTimer(long timer) {
-
         final long min = timer / 60;
         final long sec = timer % 60;
         return String.format(Locale.US, "%02d:%02d", min, sec);
