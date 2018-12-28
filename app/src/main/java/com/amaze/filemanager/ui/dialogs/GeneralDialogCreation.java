@@ -32,7 +32,6 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
@@ -106,7 +105,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.stream.Stream;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
@@ -1092,7 +1090,7 @@ public class GeneralDialogCreation {
             String command = String.format(RootUtils.CHMOD_COMMAND, options, perms, file.getPath());
 
             try {
-                RootHelper.runShellCommand(command, (commandCode, exitCode, output) -> {
+                RootHelper.runShellCommandWithCallback(command, (commandCode, exitCode, output) -> {
                     if (exitCode < 0) {
                         Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
                                 Toast.LENGTH_LONG).show();
