@@ -45,6 +45,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
+import java.util.concurrent.TimeUnit;
 
 /**
  * Contains useful functions and methods (NOTHING HERE DEALS WITH FILES)
@@ -260,10 +261,13 @@ public class Utils {
 
     /**
      * Formats input to plain mm:ss format
+     *
+     * @param timerInSeconds duration in seconds
+     * @return time in mm:ss format
      */
-    public static String formatTimer(long timer) {
-        final long min = timer / 60;
-        final long sec = timer % 60;
+    public static String formatTimer(long timerInSeconds) {
+        final long min = TimeUnit.SECONDS.toMinutes(timerInSeconds);
+        final long sec = TimeUnit.SECONDS.toSeconds(timerInSeconds - TimeUnit.MINUTES.toSeconds(min));
         return String.format(Locale.US, "%02d:%02d", min, sec);
     }
 }
