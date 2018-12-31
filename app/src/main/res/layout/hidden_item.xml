@@ -21,18 +21,20 @@
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
                                              xmlns:tools="http://schemas.android.com/tools"
                                              android:layout_width="fill_parent"
-                                             android:layout_height="wrap_content"
-                                             android:minHeight="60dp" android:id="@+id/bookmarkrow">
+                                             android:layout_height="64dp"
+                                             android:id="@+id/bookmarkrow"
+                                             android:paddingLeft="?android:listPreferredItemPaddingLeft"
+                                             android:paddingRight="?android:listPreferredItemPaddingRight">
     <ImageButton
             android:id="@+id/delete_button"
-            android:layout_width="wrap_content"
+            android:layout_width="24dp"
             android:gravity="center_vertical"
-            android:layout_height="wrap_content"
+            android:layout_height="24dp"
             android:src="@drawable/ic_action_cancel_light"
             android:background="?android:selectableItemBackground"
             android:contentDescription="@string/delbook"
-            app:layout_constraintTop_toTopOf="parent" app:layout_constraintStart_toEndOf="@+id/text2"
-            app:layout_constraintEnd_toEndOf="parent" app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline" app:layout_constraintStart_toEndOf="@+id/text2"
+            app:layout_constraintEnd_toEndOf="parent"
     />
 
 
@@ -41,25 +43,31 @@
             style="@style/Base.TextAppearance.AppCompat.Subhead"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="?android:listPreferredItemPaddingLeft"
             app:layout_constraintVertical_chainStyle="packed" app:layout_constraintEnd_toStartOf="@+id/delete_button"
             app:layout_constraintBottom_toTopOf="@+id/guideline" app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-    />
+            tools:text="Title" android:textSize="10sp" android:lineSpacingMultiplier="1.5" android:typeface="normal"/>
 
     <TextView
             android:id="@+id/text2"
             style="?android:textAppearanceSmall"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:paddingLeft="?android:listPreferredItemPaddingLeft"
             app:layout_constraintEnd_toStartOf="@+id/delete_button"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/guideline"/>
+            app:layout_constraintTop_toTopOf="@+id/guideline" tools:text="Text"
+            android:textSize="14sp" android:typeface="normal"
+            android:lineSpacingMultiplier="0.25"
+            android:singleLine="true" app:layout_constraintBottom_toTopOf="@+id/guideline3"/>
+    <android.support.constraint.Guideline
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/guideline"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="24dp"/>
     <android.support.constraint.Guideline android:layout_width="wrap_content" android:layout_height="wrap_content"
-                                          android:id="@+id/guideline"
-                                          android:orientation="horizontal" app:layout_constraintGuide_percent="0.5"/>
+                                          android:id="@+id/guideline3" app:layout_constraintGuide_begin="44dp"
+                                          android:orientation="horizontal"/>
 
     <!-- A button that, when pressed, will delete this list item row from its container. -->
 

@@ -1066,13 +1066,11 @@ public class GeneralDialogCreation {
         builder.autoDismiss(true);
         
         FlexibleAdapter<HiddenAdapterItem> adapter = new FlexibleAdapter<>(Collections.emptyList());
-        DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(mainActivity, OrientationHelper.VERTICAL);
 
         builder.adapter(adapter, null);
         builder.dividerColor(Color.GRAY);
 
         MaterialDialog materialDialog = builder.build();
-        adapter.getRecyclerView().addItemDecoration(dividerItemDecoration);
         adapter.updateDataSet(getHidden(mainActivity, mainFragment, materialDialog), true);
         materialDialog.show();
     }

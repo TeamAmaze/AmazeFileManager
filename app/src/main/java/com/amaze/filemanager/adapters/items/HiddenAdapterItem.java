@@ -1,14 +1,18 @@
 package com.amaze.filemanager.adapters.items;
 
+import android.text.TextUtils;
 import android.view.View;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.holders.HiddenViewHolder;
+import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -70,8 +74,14 @@ public class HiddenAdapterItem extends AbstractFlexibleItem<HiddenViewHolder> {
         HybridFile file = hybridFile;
 
         holder.txtTitle.setText(file.getName());
-        String a = file.getReadablePath(file.getPath());
-        holder.txtDesc.setText(a);
+
+        boolean enableMarquee = mainActivity.getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME);
+        String filePath = file.getReadablePath(file.getPath());
+        holder.txtDesc.setText(filePath);
+        holder.txtDesc.setEllipsize(enableMarquee ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.MIDDLE);
+        if (enableMarquee) {
+            AnimUtils.marqueeAfterDelay(2000, holder.txtDesc);
+        }
 
         holder.image.setOnClickListener(view -> {
             if (!file.isSmb() && file.isDirectory()) {
