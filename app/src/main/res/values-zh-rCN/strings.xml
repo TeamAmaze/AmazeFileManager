@@ -596,4 +596,5 @@
   <string name="internalstorage">内部储存空间</string>
   <string name="saf_otg_explanation">你将进入Android文件系统，为了系统安全，请从左边USB设备列表选择设备。</string>
   <string name="donation_thanks">感谢您无私的捐赠，这将更加有利于我们项目的开发! (:</string>
+  <string name="enableMarqueeFilename">开启文件名滚动效果</string>
 </resources>
