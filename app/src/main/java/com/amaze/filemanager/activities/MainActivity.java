@@ -879,7 +879,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             menu.findItem(R.id.history).setVisible(true);
             menu.findItem(R.id.sethome).setVisible(true);
             menu.findItem(R.id.sort).setVisible(true);
-            if (getBoolean(PREFERENCE_SHOW_HIDDENFILES)) menu.findItem(R.id.hiddenitems).setVisible(true);
+            menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
             menu.findItem(R.id.extract).setVisible(false);
             invalidatePasteButton(menu.findItem(R.id.paste));
