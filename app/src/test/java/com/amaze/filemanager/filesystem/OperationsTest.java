@@ -214,6 +214,52 @@ public class OperationsTest {
         assertTrue(assertFlag.get());
     }
 
+    @Test
+    public void testRenameSameName3() throws InterruptedException
+    {
+        File folder = new File(storageRoot, "test");
+        HybridFile folderHF = new HybridFile(OpenMode.FILE, folder.getAbsolutePath());
+
+        CountDownLatch waiter1 = new CountDownLatch(1);
+        Operations.mkdir(folderHF, RuntimeEnvironment.application, false, new AbstractErrorCallback() {
+            @Override
+            public void done(HybridFile hFile, boolean b) {
+                waiter1.countDown();
+            }
+        });
+        waiter1.await();
+        assertTrue(folder.exists());
+
+        File folder2 = new File(folder, "test2");
+        HybridFile folder2HF = new HybridFile(OpenMode.FILE, folder2.getAbsolutePath());
+
+        CountDownLatch waiter2 = new CountDownLatch(1);
+        Operations.mkdir(folder2HF, RuntimeEnvironment.application, false, new AbstractErrorCallback() {
+            @Override
+            public void done(HybridFile hFile, boolean b) {
+                waiter2.countDown();
+            }
+        });
+        waiter2.await();
+        assertTrue(folder2.exists());
+
+        File folder3 = new File(folder, "test");
+        HybridFile folder3HF = new HybridFile(OpenMode.FILE, folder3.getAbsolutePath());
+
+        CountDownLatch waiter3 = new CountDownLatch(1);
+        AtomicBoolean assertFlag = new AtomicBoolean(false);
+        Operations.rename(folder2HF, folder3HF, false, RuntimeEnvironment.application, new AbstractErrorCallback() {
+            @Override
+            public void done(HybridFile file, boolean b){
+                assertFlag.set(true);
+                waiter3.countDown();
+            }
+        });
+        waiter3.await();
+        assertTrue(folder3.exists());
+        assertTrue(assertFlag.get());
+    }
+
     private abstract class AbstractErrorCallback implements Operations.ErrorCallBack
     {
         @Override
