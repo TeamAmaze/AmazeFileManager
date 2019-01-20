@@ -17,12 +17,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-    <string name="setting">הגדרות</string>
     <string name="cancel">ביטול</string>
     <string name="save">שמור</string>
     <string name="size_capitalized">גודל</string>
-    <string name="share">שיתוף</string>
-    <string name="about">אודות</string>
     <string name="yes">כן</string>
     <string name="no">לא</string>
     <string name="dialog_delete_title">אשר</string>
@@ -46,13 +43,11 @@
     <string name="ok">אישור</string>
     <string name="version">גרסה</string>
     <string name="install">התקן</string>
-    <string name="archive">ארכיון</string>
     <string name="details">פרטים</string>
     <string name="warning">אזהרה</string>
     <string name="donate">תרום</string>
     <string name="text">טקסט</string>
     <string name="other">אחר</string>
-    <string name="color_title">צבע</string>
     <string name="password">סיסמה</string>
     <string name="defualt">ברירת מחדל</string>
     <string name="edit">ערוך</string>
@@ -80,17 +75,10 @@
     <!-- end of plurals -->
 
 
-    <string name="cut">חתוך</string>
     <string name="search">חיפוש</string>
     <string name="copying">מעתיק</string>
     <string name="moving">מעביר</string>
-    <string name="copy">העתק</string>
-    <string name="paste">הדבק</string>
     <string name="selectall">בחר הכול</string>
-    <string name="rename">שנה שם</string>
-    <string name="properties">מאפיינים</string>
-    <string name="crypt_encrypt">הצפנה</string>
-    <string name="openwith">פתח בעזרת</string>
     <string name="sortName">שם</string>
     <string name="location">מיקום</string>
     <string name="file">קובץ</string>
@@ -100,14 +88,56 @@
     <string name="hiddenfiles">קבצים נסתרים</string>
     <string name="files">קבצים</string>
     <string name="cloud_connection">חיבור רשת</string>
-    <string name="theme">ערכת נושא</string>
-    <string name="general">כללי</string>
+    <string name="archive_preferences">ארכיון</string>
+    <string name="pressagain">ליציאה לחץ שנית</string>
+    <string name="rate">דרגו אותנו</string>
+    <string name="goback">חזרה</string>
+    <string name="sort">מיון</string>
+    <string name="ascending">סדר עולה</string>
+    <string name="descending">סדר יורד</string>
+    <string name="type">סוג</string>
+    <string name="sortby">מיון לפי..</string>
+    <string name="sort_only_this">רק תיקייה זאת</string>
+    <string name="listview">תצוגת רשימה</string>
+    <string name="gridview">תצוגת רשת</string>
+    <string name="setashome">הגדר כדף הבית</string>
+
+    <!--ActionMode-->
+    <string name="cut">חתוך</string>
+    <string name="copy">העתק</string>
+    <string name="paste">הדבק</string>
+    <string name="rename">שנה שם</string>
+    <string name="properties">מאפיינים</string>
+    <string name="crypt_encrypt">הצפנה</string>
+    <string name="openwith">פתח בעזרת</string>
+    <string name="share">שיתוף</string>
+
+    <!--Drawer-->
+    <string name="videos">סרטונים</string>
+    <string name="apks">Apks</string>
+    <string name="documents">מסמכים</string>
+    <string name="images">תמונות</string>
+    <string name="setting">הגדרות</string>
+    <string name="quick">גישה מהירה</string>
+    <string name="recent">קבצים אחרונים</string>
+    <string name="audio">אודיו</string>
+    <string name="apps">ניהול אפליקציות</string>
+
+    <!--PreferenceCategory-->
     <string name="ui">ממשק משתמש</string>
     <string name="sidebar_preferences">סרגל צד</string>
-    <string name="archive_preferences">ארכיון</string>
+    <string name="general">כללי</string>
+    <string name="archive">ארכיון</string>
     <string name="security">אבטחה</string>
     <string name="miscellaneous">שונות</string>
     <string name="advanced">מתקדם</string>
+    <string name="about">אודות</string>
 
+    <!--Preference-->
+    <string name="theme">ערכת נושא</string>
+    <string name="color_title">צבע</string>
+    <string name="aboutFileManager">אודות האפליקצייה</string>
+    <string name="feedback">שליחת משוב</string>
+    <string name="advanced_search">חיפוש מתקדם</string>
 
 </resources>
