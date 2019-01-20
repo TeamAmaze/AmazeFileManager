@@ -115,5 +115,7 @@
 
     <!-- Warning error for InputTextLayout -->
     <color name="warningColor">#ffe082</color>
+    <!-- Error error for InputTextLayout -->
+    <color name="error_color_material">#F4511E</color>
 
 </resources>
