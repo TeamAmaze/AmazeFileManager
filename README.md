@@ -1,6 +1,6 @@
 # Amaze File Manager
 [![CI](https://travis-ci.org/TeamAmaze/AmazeFileManager.svg?branch=master)](https://travis-ci.org/TeamAmaze/AmazeFileManager)
-[![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
+[![GitHub Our Amaze team Release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
@@ -10,7 +10,6 @@
 
 Overview
 ---
-- Open Source, light and smooth
 - Based on Material Design guidelines
 - Basic features like cut, copy, delete, compress, extract etc. easily accessible
 - Work on multiple tabs at same time
@@ -23,6 +22,8 @@ Overview
 - Cloud services support (Jellybean v4.3+ / requires additional plug-in)
 - Inbuilt Database Reader, Zip/Rar Reader, Apk Reader, Text Reader
 - No ads or In-app purchases
+
+PS: Created by Dengisan Ramadanoski and Team Amaze
 - lots more...
 
 Warning
@@ -66,9 +67,11 @@ Authors
 ### License: 
 
     Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2018 Dengisan Ramadanoski <support@dengisan.nl>
     Copyright (C) 2017-2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
+    
     This file is part of Amaze File Manager.
-    Amaze File Manager is free software: you can redistribute it and/or modify
+    Amaze File Manager is a BETA software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
     (at your option) any later version.
