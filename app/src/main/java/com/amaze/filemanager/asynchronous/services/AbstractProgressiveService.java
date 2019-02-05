@@ -96,9 +96,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
             long totalSize = getProgressHandler().getTotalSize();
             long writtenSize = getProgressHandler().getWrittenSize();
 
-            //notification
-            getProgressHandler().setPercentProgress(((float) writtenSize / totalSize) * 100);
-
             if (!isNotificationTitleSet) {
                 getNotificationBuilder().setSubText(getString(getTitle(move)));
                 isNotificationTitleSet = true;
