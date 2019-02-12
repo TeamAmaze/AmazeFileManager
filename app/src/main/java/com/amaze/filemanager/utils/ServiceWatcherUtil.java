@@ -15,16 +15,16 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import androidx.core.app.NotificationCompat;
 import android.text.format.Formatter;
-import android.util.Log;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.AbstractRepeatingRunnable;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.lang.ref.WeakReference;
+import java.util.concurrent.*;
 
 import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface.*;
-import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_UNSET;
 
 public class ServiceWatcherUtil {
 
@@ -186,9 +186,6 @@ public class ServiceWatcherUtil {
      * Halting condition depends on the state of {@link #handlerThread}
      */
     private static synchronized void postWaiting(final Context context) {
-        waitingHandlerThread = new HandlerThread("service_startup_watcher");
-        waitingHandlerThread.start();
-        waitingHandler = new Handler(waitingHandlerThread.getLooper());
         notificationManager = (NotificationManager)
                 context.getSystemService(Context.NOTIFICATION_SERVICE);
         builder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID)
@@ -200,30 +197,35 @@ public class ServiceWatcherUtil {
 
         NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_NORMAL);
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                if (handlerThread==null || !handlerThread.isAlive()) {
+        new WaitNotificationThread(context, true);
+    }
 
-                    if (pendingIntents.size()==0) {
-                        // we've done all the work, free up resources (if not already killed by system)
-                        waitingHandler.removeCallbacks(this);
-                        waitingHandlerThread.quit();
-                        return;
-                    } else {
-                        if (pendingIntents.size()==1) {
-                            notificationManager.cancel(NotificationConstants.WAIT_ID);
-                        }
+    private static final class WaitNotificationThread extends AbstractRepeatingRunnable {
+        private final WeakReference<Context> context;
+
+        private WaitNotificationThread(Context context, boolean startImmediately) {
+            super(0, 1, TimeUnit.SECONDS, startImmediately);
+            this.context = new WeakReference<>(context);
+        }
+
+        @Override
+        public void run() {
+            if (handlerThread == null || !handlerThread.isAlive()) {
+                if (pendingIntents.size() == 0) {
+                    handle.cancel(false);
+                    return;
+                } else {
+                    if (pendingIntents.size() == 1) {
+                        notificationManager.cancel(NotificationConstants.WAIT_ID);
+                    }
+
+                    final Context context = this.context.get();
+                    if (context != null) {
                         context.startService(pendingIntents.element());
                     }
                 }
-
-                Log.d(getClass().getSimpleName(), "Processes in progress, delay the check");
-                waitingHandler.postDelayed(this, 1000);
             }
-        };
-
-        waitingHandler.postDelayed(runnable, 0);
+        }
     }
 
     public interface ServiceWatcherInteractionInterface {
