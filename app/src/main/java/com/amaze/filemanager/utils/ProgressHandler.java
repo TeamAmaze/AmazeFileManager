@@ -47,16 +47,7 @@ public class ProgressHandler {
      * callback interface to interact with process viewer fragment and notification
      */
     private volatile ProgressListener progressListener;
-
-    /**
-     * Constructor to start an instance
-     * @param sourceFiles the total number of source files selected by the user for operation
-     */
-    public ProgressHandler(int sourceFiles, long totalSize) {
-        this.sourceFiles = sourceFiles;
-        this.totalSize = totalSize;
-    }
-
+    
     /**
      * Constructor to start an instance when we don't know of total files or size
      */
