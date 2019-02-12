@@ -45,6 +45,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;

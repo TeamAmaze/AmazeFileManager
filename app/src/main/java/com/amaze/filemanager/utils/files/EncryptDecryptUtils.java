@@ -18,7 +18,7 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.IOException;

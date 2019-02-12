@@ -122,7 +122,7 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;

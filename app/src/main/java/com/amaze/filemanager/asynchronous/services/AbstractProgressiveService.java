@@ -16,7 +16,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 
 import java.util.ArrayList;

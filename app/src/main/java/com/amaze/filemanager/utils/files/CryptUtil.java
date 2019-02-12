@@ -37,7 +37,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;

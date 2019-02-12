@@ -1,4 +1,4 @@
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.asynchronous.management;
 
 /**
  * Created by vishal on 4/1/17.
@@ -19,11 +19,12 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.AbstractRepeatingRunnable;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.ProgressHandler;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.*;
 
-import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceStatusCallbacks.*;
+import static com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil.ServiceStatusCallbacks.*;
 
 public class ServiceWatcherUtil {
 

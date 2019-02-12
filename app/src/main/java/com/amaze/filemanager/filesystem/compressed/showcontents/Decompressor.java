@@ -8,7 +8,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.CompressedHelperTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 
 import java.util.ArrayList;
 
