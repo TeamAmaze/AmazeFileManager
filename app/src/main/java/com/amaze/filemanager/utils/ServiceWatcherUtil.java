@@ -13,6 +13,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.text.format.Formatter;
 
+import androidx.core.app.NotificationCompat;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.AbstractRepeatingRunnable;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
@@ -21,9 +23,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import java.lang.ref.WeakReference;
 import java.util.concurrent.*;
 
-import androidx.core.app.NotificationCompat;
-
-import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface.*;
+import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceStatusCallbacks.*;
 
 public class ServiceWatcherUtil {
 
@@ -62,20 +62,20 @@ public class ServiceWatcherUtil {
      * Watches over the service progress without interrupting the worker thread in respective services
      * Method frees up all the resources and handlers after operation completes.
      */
-    public void watch(ServiceWatcherInteractionInterface interactionInterface) {
-        watcherRepeatingRunnable = new ServiceWatcherRepeatingRunnable(true, interactionInterface, progressHandler);
+    public void watch(ServiceStatusCallbacks serviceStatusCallbacks) {
+        watcherRepeatingRunnable = new ServiceWatcherRepeatingRunnable(true, serviceStatusCallbacks, progressHandler);
     }
 
     private static final class ServiceWatcherRepeatingRunnable extends AbstractRepeatingRunnable {
-        private final ServiceWatcherInteractionInterface interactionInterface;
+        private final ServiceStatusCallbacks serviceStatusCallbacks;
         private final ProgressHandler progressHandler;
 
         public ServiceWatcherRepeatingRunnable(boolean startImmediately,
-                                               ServiceWatcherInteractionInterface interactionInterface,
+                                               ServiceStatusCallbacks serviceStatusCallbacks,
                                                ProgressHandler progressHandler) {
             super(1, 1, TimeUnit.SECONDS, startImmediately);
 
-            this.interactionInterface = interactionInterface;
+            this.serviceStatusCallbacks = serviceStatusCallbacks;
             this.progressHandler = progressHandler;
         }
 
@@ -89,12 +89,12 @@ public class ServiceWatcherUtil {
             if (position == progressHandler.getWrittenSize() && (state != STATE_HALTED && ++haltCounter > 5)) {
                 // new position is same as the last second position, and halt counter is past threshold
 
-                String writtenSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
+                String writtenSize = Formatter.formatShortFileSize(serviceStatusCallbacks.getApplicationContext(),
                         progressHandler.getWrittenSize());
-                String totalSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
+                String totalSize = Formatter.formatShortFileSize(serviceStatusCallbacks.getApplicationContext(),
                         progressHandler.getTotalSize());
 
-                if (interactionInterface.isDecryptService() && writtenSize.equals(totalSize)) {
+                if (serviceStatusCallbacks.isDecryptService() && writtenSize.equals(totalSize)) {
                     // workaround for decryption when we have a length retrieved by
                     // CipherInputStream less than the original stream, and hence the total size
                     // we passed at the beginning is never reached
@@ -108,14 +108,14 @@ public class ServiceWatcherUtil {
 
                 haltCounter = 0;
                 state = STATE_HALTED;
-                interactionInterface.progressHalted();
+                serviceStatusCallbacks.progressHalted();
             } else if (position != progressHandler.getWrittenSize()) {
 
                 if (state == STATE_HALTED) {
 
                     state = STATE_RESUMED;
                     haltCounter = 0;
-                    interactionInterface.progressResumed();
+                    serviceStatusCallbacks.progressResumed();
                 } else {
 
                     // reset the halt counter everytime there is a progress
@@ -226,7 +226,7 @@ public class ServiceWatcherUtil {
         }
     }
 
-    public interface ServiceWatcherInteractionInterface {
+    public interface ServiceStatusCallbacks {
 
         int STATE_UNSET = -1;
         int STATE_HALTED = 0;

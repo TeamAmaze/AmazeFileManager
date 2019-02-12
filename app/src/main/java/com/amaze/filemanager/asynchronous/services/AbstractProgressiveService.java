@@ -26,7 +26,7 @@ import java.util.ArrayList;
  *         on 28/11/2017, at 19:32.
  */
 
-public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceStatusCallbacks {
 
     private boolean isNotificationTitleSet = false;
 
@@ -100,7 +100,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 isNotificationTitleSet = true;
             }
 
-            if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
+            if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceStatusCallbacks.STATE_HALTED) {
 
                 String written = Formatter.formatFileSize(this, writtenSize) + "/" +
                         Formatter.formatFileSize(this, totalSize);
