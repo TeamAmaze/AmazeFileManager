@@ -63,65 +63,79 @@ public class ServiceWatcherUtil {
      * Method frees up all the resources and handlers after operation completes.
      */
     public void watch(ServiceWatcherInteractionInterface interactionInterface) {
-        watcherRepeatingRunnable = new AbstractRepeatingRunnable(1, 1, TimeUnit.SECONDS, true) {
-            @Override
-            public void run() {
-                // we don't have a file name yet, wait for service to set
-                if (progressHandler.getFileName() == null) {
-                    return;
-                }
+        watcherRepeatingRunnable = new ServiceWatcherRepeatingRunnable(true, interactionInterface, progressHandler);
+    }
 
-                if (position == progressHandler.getWrittenSize() && (state != STATE_HALTED && ++haltCounter > 5)) {
-                    // new position is same as the last second position, and halt counter is past threshold
+    private static final class ServiceWatcherRepeatingRunnable extends AbstractRepeatingRunnable {
+        private final ServiceWatcherInteractionInterface interactionInterface;
+        private final ProgressHandler progressHandler;
 
-                    String writtenSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
-                            progressHandler.getWrittenSize());
-                    String totalSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
-                            progressHandler.getTotalSize());
+        public ServiceWatcherRepeatingRunnable(boolean startImmediately,
+                                               ServiceWatcherInteractionInterface interactionInterface,
+                                               ProgressHandler progressHandler) {
+            super(1, 1, TimeUnit.SECONDS, startImmediately);
 
-                    if (interactionInterface.isDecryptService() && writtenSize.equals(totalSize)) {
-                        // workaround for decryption when we have a length retrieved by
-                        // CipherInputStream less than the original stream, and hence the total size
-                        // we passed at the beginning is never reached
-                        // we try to get a less precise size and make our decision based on that
-                        progressHandler.addWrittenLength(progressHandler.getTotalSize());
-                        if (!pendingIntents.isEmpty())
-                            pendingIntents.remove();
-                        cancel(false);
-                        return;
-                    }
+            this.interactionInterface = interactionInterface;
+            this.progressHandler = progressHandler;
+        }
 
-                    haltCounter = 0;
-                    state = STATE_HALTED;
-                    interactionInterface.progressHalted();
-                } else if (position != progressHandler.getWrittenSize()) {
+        @Override
+        public void run() {
+            // we don't have a file name yet, wait for service to set
+            if (progressHandler.getFileName() == null) {
+                return;
+            }
 
-                    if (state == STATE_HALTED) {
+            if (position == progressHandler.getWrittenSize() && (state != STATE_HALTED && ++haltCounter > 5)) {
+                // new position is same as the last second position, and halt counter is past threshold
 
-                        state = STATE_RESUMED;
-                        haltCounter = 0;
-                        interactionInterface.progressResumed();
-                    } else {
+                String writtenSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
+                        progressHandler.getWrittenSize());
+                String totalSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
+                        progressHandler.getTotalSize());
 
-                        // reset the halt counter everytime there is a progress
-                        // so that it increments only when
-                        // progress was halted for consecutive time period
-                        state = STATE_UNSET;
-                        haltCounter = 0;
-                    }
-                }
-
-                progressHandler.addWrittenLength(position);
-
-                if (position == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
-                    // process complete, free up resources
-                    // we've finished the work or process cancelled
+                if (interactionInterface.isDecryptService() && writtenSize.equals(totalSize)) {
+                    // workaround for decryption when we have a length retrieved by
+                    // CipherInputStream less than the original stream, and hence the total size
+                    // we passed at the beginning is never reached
+                    // we try to get a less precise size and make our decision based on that
+                    progressHandler.addWrittenLength(progressHandler.getTotalSize());
                     if (!pendingIntents.isEmpty())
                         pendingIntents.remove();
                     cancel(false);
+                    return;
+                }
+
+                haltCounter = 0;
+                state = STATE_HALTED;
+                interactionInterface.progressHalted();
+            } else if (position != progressHandler.getWrittenSize()) {
+
+                if (state == STATE_HALTED) {
+
+                    state = STATE_RESUMED;
+                    haltCounter = 0;
+                    interactionInterface.progressResumed();
+                } else {
+
+                    // reset the halt counter everytime there is a progress
+                    // so that it increments only when
+                    // progress was halted for consecutive time period
+                    state = STATE_UNSET;
+                    haltCounter = 0;
                 }
             }
-        };
+
+            progressHandler.addWrittenLength(position);
+
+            if (position == progressHandler.getTotalSize() || progressHandler.getCancelled()) {
+                // process complete, free up resources
+                // we've finished the work or process cancelled
+                if (!pendingIntents.isEmpty())
+                    pendingIntents.remove();
+                cancel(false);
+            }
+        }
     }
 
     /**
