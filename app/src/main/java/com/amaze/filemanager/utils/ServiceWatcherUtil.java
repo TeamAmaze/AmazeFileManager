@@ -11,9 +11,6 @@ package com.amaze.filemanager.utils;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Handler;
-import android.os.HandlerThread;
-import androidx.core.app.NotificationCompat;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;
@@ -23,6 +20,8 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 
 import java.lang.ref.WeakReference;
 import java.util.concurrent.*;
+
+import androidx.core.app.NotificationCompat;
 
 import static com.amaze.filemanager.utils.ServiceWatcherUtil.ServiceWatcherInteractionInterface.*;
 
@@ -40,13 +39,9 @@ public class ServiceWatcherUtil {
      */
     public static volatile long position = 0L;
 
-    private Handler handler;
-    private static HandlerThread handlerThread;
     private ProgressHandler progressHandler;
-    private Runnable runnable;
 
-    private static Handler waitingHandler;
-    private static HandlerThread waitingHandlerThread;
+    private static AbstractRepeatingRunnable watcherRepeatingRunnable;
     private static NotificationManager notificationManager;
     private static NotificationCompat.Builder builder;
 
@@ -61,10 +56,6 @@ public class ServiceWatcherUtil {
         this.progressHandler = progressHandler;
         position = 0L;
         haltCounter = -1;
-
-        handlerThread = new HandlerThread("service_progress_watcher");
-        handlerThread.start();
-        handler = new Handler(handlerThread.getLooper());
     }
 
     /**
@@ -72,17 +63,15 @@ public class ServiceWatcherUtil {
      * Method frees up all the resources and handlers after operation completes.
      */
     public void watch(ServiceWatcherInteractionInterface interactionInterface) {
-        runnable = new Runnable() {
+        watcherRepeatingRunnable = new AbstractRepeatingRunnable(1, 1, TimeUnit.SECONDS, true) {
             @Override
             public void run() {
-
                 // we don't have a file name yet, wait for service to set
-                if (progressHandler.getFileName()==null) handler.postDelayed(this, 1000);
+                if (progressHandler.getFileName() == null) {
+                    return;
+                }
 
-                if (position == progressHandler.getWrittenSize() &&
-                        (state != STATE_HALTED
-                                && ++haltCounter >5)) {
-
+                if (position == progressHandler.getWrittenSize() && (state != STATE_HALTED && ++haltCounter > 5)) {
                     // new position is same as the last second position, and halt counter is past threshold
 
                     String writtenSize = Formatter.formatShortFileSize(interactionInterface.getApplicationContext(),
@@ -98,8 +87,7 @@ public class ServiceWatcherUtil {
                         progressHandler.addWrittenLength(progressHandler.getTotalSize());
                         if (!pendingIntents.isEmpty())
                             pendingIntents.remove();
-                        handler.removeCallbacks(this);
-                        handlerThread.quit();
+                        cancel(false);
                         return;
                     }
 
@@ -130,16 +118,10 @@ public class ServiceWatcherUtil {
                     // we've finished the work or process cancelled
                     if (!pendingIntents.isEmpty())
                         pendingIntents.remove();
-                    handler.removeCallbacks(this);
-                    handlerThread.quit();
-                    return;
+                    cancel(false);
                 }
-
-                handler.postDelayed(this, 1000);
             }
         };
-
-        handler.postDelayed(runnable, 1000);
     }
 
     /**
@@ -148,12 +130,14 @@ public class ServiceWatcherUtil {
      * Thus avoids posting any callback after service has stopped.
      */
     public void stopWatch() {
-        if (handlerThread.isAlive()) handler.post(runnable);
+        if (watcherRepeatingRunnable.isAlive()) {
+            watcherRepeatingRunnable.cancel(true);
+        }
     }
 
     /**
      * Convenience method to check whether another service is working in background
-     * If a service is found working (by checking {@link #handlerThread} for it's state)
+     * If a service is found working (by checking {@link #watcherRepeatingRunnable} for it's state)
      * then we wait for an interval of 5 secs, before checking on it again.
      *
      * Be advised - this method is not sure to start a new service, especially when app has been closed
@@ -183,7 +167,7 @@ public class ServiceWatcherUtil {
     /**
      * Helper method to {@link #runService(Context, Intent)}
      * Starts the wait watcher thread if not already started.
-     * Halting condition depends on the state of {@link #handlerThread}
+     * Halting condition depends on the state of {@link #watcherRepeatingRunnable}
      */
     private static synchronized void postWaiting(final Context context) {
         notificationManager = (NotificationManager)
@@ -210,7 +194,7 @@ public class ServiceWatcherUtil {
 
         @Override
         public void run() {
-            if (handlerThread == null || !handlerThread.isAlive()) {
+            if (watcherRepeatingRunnable == null || !watcherRepeatingRunnable.isAlive()) {
                 if (pendingIntents.size() == 0) {
                     handle.cancel(false);
                     return;

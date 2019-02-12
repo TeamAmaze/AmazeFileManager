@@ -1,6 +1,6 @@
 package com.amaze.filemanager.asynchronous;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -20,4 +20,15 @@ public abstract class AbstractRepeatingRunnable implements Runnable {
         handle = threadExcecutor.scheduleAtFixedRate(this, initialDelay, period, unit);
     }
 
+    public boolean isAlive() {
+        return handle.isDone();
+    }
+
+    /**
+     *
+     * @param immediatly sets if the cancellation occurt right now, or after the run() function returns
+     */
+    public void cancel(boolean immediatly) {
+        handle.cancel(immediatly);
+    }
 }
