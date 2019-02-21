@@ -139,5 +139,68 @@
     <string name="aboutFileManager">אודות האפליקצייה</string>
     <string name="feedback">שליחת משוב</string>
     <string name="advanced_search">חיפוש מתקדם</string>
+    <string name="thumbSummary">"הראה תצוגה מקדימה עבור אפליקציות ותמונות"</string>
+    <string name="thumb">"הראה תצוגה מקדימה"</string>
+
+    <!--translators-->
+    <string name="translators">מתרגמים</string>
+    <string name="german_translation_title">גרמנית</string>
+    <string name="italian_translation_title">איטלקית</string>
+    <string name="french_translation_title">צרפתית</string>
+    <string name="russian_translation_title">רוסית</string>
+    <string name="spanish_translation_title">ספרדית</string>
+    <string name="basque_translation_title">בסקית</string>
+    <string name="chinese_translation_title">סינית</string>
+    <string name="serbian_translation_title">סרבית</string>
+    <string name="turkish_translation_title">טורקית</string>
+    <string name="ukrainian_translation_title">אוקראינית</string>
+    <string name="portuguese_translation_title">פורטוגזית</string>
+    <string name="polish_translation_title">פולנית</string>
+    <string name="korean_translation_title">קוריאנית</string>
+    <string name="greek_translation_title">יוונית</string>
+    <string name="dutch_translation_title">הולנדית</string>
+    <string name="romanian_translation_title">רומנית</string>
+    <string name="vietnamese_translation_title">וייטנאמית</string>
+    <string name="japanese_translation_title">יפנית</string>
+    <string name="tamil_translation_title">טמילית</string>
+
+
+    <string name="not_allowed">פעולה לא אפשרית</string>
+    <string name="newfile">קובץ חדש</string>
+    <string name="nofiles"> קבצים לא קיימים</string>
+    <string name="authors">מפתחים</string>
+    <string name="saving">שומר</string>
+    <string name="uninstall">הסרת התקנה</string>
+    <string name="play">גוגל פליי</string>
+    <string name="delbook">מחק סימנייה</string>
+    <string name="addtobook">הוסף סימנייה</string>
+    <string name="enterpath">הכנס נתיב</string>
+    <string name="error">שגיאה</string>
+    <string name="bookmarksadded">סימנייה נשמרה</string>
+    <string name="fileexist">קיים קובץ עם שם זהה</string>
+    <string name="name">שם</string>
+    <string name="date">תאריך</string>
+    <string name="size">גודל התיקייה</string>
+    <string name="noappfound">לא נמצאה אפליקצייה לפתוח קובץ זה</string>
+    <string name="newfolder">תיקייה חדשה</string>
+    <string name="entername">הכנס שם</string>
+    <string name="extracting">מחלץ</string>
+    <string name="extract">חילוץ</string>
+    <string name="compress">דחיסה</string>
+    <string name="dialog_delete_category_files">קבצים</string>
+    <string name="dialog_delete_disclaimer">מחיקת הפרטים הבאים היא פעולה בלתי הפיכה ולא ניתנת לשחזור</string>
+    <string name="deleting">מוחק</string>
+    <string name="rootmodesummary">למכשירים פרוצים בלבד</string>
+    <string name="rootfailure">גישת מערכת לא ניתנה</string>
+    <string name="foldersOnTop">תיקיות למעלה</string>
+    <string name="filesOnTop">קבצים למעלה</string>
+    <string name="noneOnTop">אף אחד למעלה</string>
+    <string name="pick_a_file">בחר קובץ</string>
+    <string name="overwrite">מחק קיים</string>
+    <string name="permission">הרשאות</string>
+    <string name="hide">הסתר</string>
+    <string name="doforall">בצע עבור כול הפריטים</string>
+    <string name="setRandom">"השינוי המבוקש יתבצע לאחר אתחול של האפליקצייה"</string>
+
 
 </resources>
