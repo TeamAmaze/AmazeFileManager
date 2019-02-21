@@ -19,13 +19,13 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
     
-<resources 
-    xmlns:tools="http://schemas.android.com/tools"
+<resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name">Amaze</string>
     <string name="drawer_open">Abrir menu de navegação</string>
     <string name="drawer_close">Fechar menu de navegação</string>
     <string name="icon">ícone</string>
+    <string name="internalstorage">Armazenamento interno</string>
     <string name="apps">Gerenciador de Apps</string>
     <string name="ftp">Servidor FTP</string>
     <string name="setting">Configurações</string>
@@ -81,6 +81,7 @@
     <string name="questionset">Deseja definir o caminho atual como pasta inicial desta aba?</string>
     <string name="directorysort">Modo de ordenação de pastas</string>
     <string name="sortby">Ordenar por</string>
+    <string name="sort_only_this">Apenas esta pasta</string>
     <string name="theme">Tema</string>
     <string name="random">Visual aleatório</string>
     <string name="random_summary">Define a cor aleatória ao iniciar</string>
@@ -105,6 +106,7 @@
     <string name="light">Material Claro</string>
     <string name="dark">Material Escuro</string>
     <string name="daytime">Hora do Dia</string>
+    <string name="black">Preto (para OLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Pastas no início</string>
@@ -178,7 +180,7 @@
     <string name="circularimages">Utiliza ícones circulares para imagens e vídeos</string>
     <string name="circularicons">Usar ícones circulares</string>
     <string name="back_title">Botão de navegação</string>
-    <string name="back_summary">Coloca um botão de navegação no topo da lista</string>
+    <string name="back_summary">Ativa o botão de navegação no topo da lista</string>
     <string name="details">Detalhes</string>
     <string name="translators">Tradutores</string>
     <string name="german_translation_title">Alemão</string>
@@ -248,7 +250,6 @@
     <string name="anonymous">Anônimo</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="extstorage">Armazenamento externo</string>
-    <string name="internalstorage">Armazenamento interno</string>
     <string name="folders">Pastas</string>
     <string name="folderfilecount">%1$d pastas e %2$d arquivos</string>
     <string name="videos">Vídeos</string>
@@ -447,7 +448,7 @@
     <string name="cloud_drive">Google Drive</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
-    <string name="cloud_get">Instale o plugin para nuvem</string>
+    <string name="cloud_get">Obter plugin para nuvem</string>
     <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
     
     <string name="no_applications">Nenhum aplicativo</string>
@@ -466,7 +467,7 @@
     <string name="field_empty">O campo não pode ficar vazio</string>
     <string name="ftp_timeout">Tempo limite de ociosidade</string>
     <string name="ftp_seconds">Segundos</string>
-    <string name="intellihide_toolbar_title">Barra de ferramentas auto ocultante</string>
+    <string name="intellihide_toolbar_title">Barra de ferramentas auto-ocultante</string>
     <string name="intellihide_toolbar_summary">Ocultar automaticamente a barra de ferramentas durante a rolagem</string>
     <string name="hash_sha256">SHA-256</string>
     <!-- references 'name/size/location/hash' copied to clipboard -->
@@ -475,9 +476,9 @@
     <string name="contributors_2_summary">Ícone e banners</string>
     <string name="contributors_3_summary">Mecanismo de tema</string>
     <string name="contributors_4_summary">Sombra por trás de FAB</string>
-    <string name="contributors_5_summary">Transição de cor quando swiping para guias</string>
+    <string name="contributors_5_summary">Transição de cor quando deslizar as abas</string>
     <string name="contributors_6_summary">Servidor FTP</string>
-    <string name="contributors_7_summary">Disparar um shell interativo</string>
+    <string name="contributors_7_summary">Acionar um shell interativo</string>
     <string name="connection_exists">Conexão já existe</string>
     
     <string name="crypt_encrypting">Criptografando</string>
@@ -527,19 +528,18 @@
         <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
         <string name="noitems">Nenhum item</string>
         <string name="item">item</string>
-        <string name="items">Itens</string>
+        <string name="items">itens</string>
         
         <string name="byte_singular">byte</string>
         <string name="bytes">bytes</string>
-        
     <!-- end of plurals -->
         
     <string name="no_name">O arquivo deve ter um nome</string>
     <string name="add_item">Adicionar item</string>
     <string name="failed_smb_decrypt_path">Falha ao carregar a conexão SMB</string>
     <string name="failed_cloud_new_connection">Falha ao adicionar a nova conexão em nuvem</string>
-    <string name="failed_cloud_api_key">Falha ao autenticar o plug-in de conexão em nuvem</string>
-    <string name="local_inet_addr_error">Erro ao obter o endereço local inet</string>
+    <string name="failed_cloud_api_key">Falha ao autenticar o plugin de conexão em nuvem</string>
+    <string name="local_inet_addr_error">Erro ao obter o endereço inet local</string>
     <string name="intent_save_as">Salvar como&#8230;</string>
     <string name="go">Ir</string>
     <string name="advanced">Avançado</string>
@@ -549,7 +549,77 @@
 
     <string name="text_editor">Configurações do editor de texto</string>
     <string name="preference_newstack_title">Abrir arquivos como nova tarefa</string>
-    <string name="preference_newstack_summary">Permite-lhe abrir arquivos em tarefas separadas. Access them from system recents screen.</string>
+    <string name="preference_newstack_summary">Permite-lhe abrir arquivos em tarefas separadas. Acesse-os a partir da tela de arquivos recentes do sistema.</string>
     <string name="developers">Programadores</string>
     <string name="nobitcoinapp">Instale uma carteira de bitcoins</string>
+    <string name="channelname_normal">Notificações do Amaze</string>
+    <string name="channeldescription_normal">Notificações do Amaze</string>
+    <string name="channelname_ftp">Servidor FTP do Amaze</string>
+    <string name="channeldescription_ftp">Notificações do servidor FTP do Amaze</string>
+
+    <string name="processing">Processando&#8230;</string>
+    <string name="failed_no_connection">Ocorreu uma falha ao carregar os arquivos. Verifique sua conexão.</string>
+
+    <string name="update">ATUALIZAR</string>
+	<string name="scp_con">Conexão SCP/SFTP</string>
+    <string name="scp_port">Porta</string>
+    <string name="ssh_host_key_verification_prompt">Não é possível determinar a autenticidade do servidor \'%s\'.\n\n%s chave da impressão digital é %s.\n\nToque em \"Sim\" para confirmar a identidade, caso contrário, toque em \"Não\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Verificar servidor</string>
+    <string name="ssh_select_pem_button">Chave privada SSH</string>
+    <string name="ssh_pem_key_parse_error">Não foi possível ler o PEM selecionado: %s</string>
+    <string name="password_unchanged">(não alterada)</string>
+    <string name="ssh_authentication_failure_password">Falha na autenticação: Não foi possível autenticar com o nome de usuário e senha digitados.</string>
+    <string name="ssh_authentication_failure_key">Falha de autenticação: Não foi possível autenticar com o nome de usuário e chave privada digitados.</string>
+    <string name="ssh_connect_failed">Não foi possível conectar à %s:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">AVISO: A IDENTIFICAÇÃO DO SERVIDOR REMOTO FOI ALTERADA!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        É POSSÍVEL QUE ALGUÉM ESTEJA FAZENDO ALGO INDESEJADO!\n\n
+        Alguém pode estar espionando você agora (ataque man-in-the-middle)! Também é possível que a chave do servidor tenha sido alterada. A impressão digital da chave pública enviada pelo servidor remoto não corresponde a armazenada no Amaze\n\n
+        Entre em contato com o administrador do seu sistema ou configure uma nova conexão para continuar acessando o servidor.
+    </string>
+    <string name="ssh_key_prompt_passphrase">Digite a senha da chave.</string>
+    <string name="addshortcut_not_supported_by_launcher">Não há suporte a criação de atalhos pelo lançador.</string>
+    
+    <string name="selectcolorconfig">Selecione a configuração de cor</string>
+    <string name="customize">Personalizar</string>
+    <string name="custom">Personalizado</string>
+    <string name="preselectedconfigs_title">Configurações pré-selecionadas</string>
+    <string name="orange">Laranja</string>
+    <string name="blue">Azul</string>
+    <string name="green">Verde</string>
+    <string name="password_no_match">A senha não confere</string>
+    <string name="deselect_all">Desmarcar tudo</string>
+    <string name="filename">Nome do arquivo</string>
+    <string name="compress_file_suggest_zip_extension">Não recomendamos usar \".zip\" como extensão do arquivo.</string>
+    <string name="about_amaze">Gerenciador de arquivos em design Material para Android</string>
+    <string name="license">Licença</string>
+    <string name="libraries">Bibliotecas</string>
+    <string name="password_repeat">Repita a senha</string>
+    <string name="create_file_suggest_txt_extension">Não recomendamos usar \".txt\" como extenção do arquivo.</string>
+    <string name="ssh_select_pem">Selecione a chave privada para autenticação</string>
+    <string name="ssh_key_invalid_passphrase">A senha da chave é inválida.</string>
+    <string name="encryption_fail_copy">Ocorreu uma falha ao atualizar o item de criptografia no banco de dados</string>
+    <string name="extracted">Extraído</string>
+    <string name="compressed">Compactado</string>
+    <string name="processed">Processsado</string>
+    <string name="no_obtainable_info">Não há informações sobre este arquivo</string>
+    <string name="reopen_from_source">Não foi possível, reabra a partir do último aplicativo</string>
+    <string name="no_file_error">Algo deu errado, não há nada para abrir</string>
+    <string name="file_read_only">O arquivo aberto é apenas para leitura.</string>
+    <string name="got_it">Entendi!</string>
+    <string name="encrypt_file_save_as">Salvar arquivo criptografado como&#8230;</string>
+    <string name="encrypt_folder_save_as">Salvar pasta criptografada como&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Os arquivos criptografados devem usar \".aze\" como extensão.</string>
+    <string name="cannot_overwrite">Não foi possível sobrescrever o arquivo.</string>
+    <string name="saved_single_file">Arquivo salvo como \'%s\'.</string>
+    <string name="saved_multi_files">%d arquivos salvos.</string>
+    <string name="create_hidden_file_warn">O arquivo criado não aparecerá na lista de arquivos.</string>
+    <string name="grant_apkinstall_permission">O aplicativo precisa obter permissão para instalar.</string>
+    <string name="time_remaining">Tempo restante</string>
+    <string name="transfer_rate">Taxa de transferência</string>
+    <string name="unknown">desconhecida</string>
+    <string name="multiple_invalid_archive_entries">Não foi possível extrair alguns arquivos do pacote. O pacote pode estar danificado ou ter sido obtido a partir de uma fonte maliciosa.</string>
+    <string name="saf_otg_explanation">Por motivo de seguranção, você será direcionado para o sistema de arquivos do Android. Selecione o dispositivo USB a partir da lista à esquerda.</string>
+    <string name="donation_thanks">Obrigado pela doação, isto nos mantém motivados! (:</string>
+    <string name="enableMarqueeFilename">Ativar o efeito de letreiro para nomes de arquivos</string>    
 </resources>

@@ -42,10 +42,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
     protected abstract int getNotificationId();
 
-    protected abstract float getPercentProgress();
-
-    protected abstract void setPercentProgress(float progress);
-
     protected abstract @StringRes int getTitle(boolean move);
 
     protected abstract RemoteViews getNotificationCustomViewSmall();
@@ -81,9 +77,9 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     public void progressResumed() {
         // set notification to indeterminate unless progress resumes
         getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
-                100, Math.round(getPercentProgress()), false);
+                100, Math.round(getProgressHandler().getPercentProgress()), false);
         getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
-                100, Math.round(getPercentProgress()), false);
+                100, Math.round(getProgressHandler().getPercentProgress()), false);
         getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
     }
 
@@ -99,9 +95,6 @@ public abstract class AbstractProgressiveService extends Service implements Serv
             String fileName = getProgressHandler().getFileName();
             long totalSize = getProgressHandler().getTotalSize();
             long writtenSize = getProgressHandler().getWrittenSize();
-
-            //notification
-            setPercentProgress(((float) writtenSize / totalSize) * 100);
 
             if (!isNotificationTitleSet) {
                 getNotificationBuilder().setSubText(getString(getTitle(move)));
@@ -127,9 +120,9 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 }
                 getNotificationCustomViewBig().setTextViewText(R.id.notification_service_textView_timeRemaining_big, remainingTime);
                 getNotificationCustomViewSmall().setProgressBar(R.id.notification_service_progressBar_small,
-                        100, Math.round(getPercentProgress()), false);
+                        100, Math.round(getProgressHandler().getPercentProgress()), false);
                 getNotificationCustomViewBig().setProgressBar(R.id.notification_service_progressBar_big,
-                        100, Math.round(getPercentProgress()), false);
+                        100, Math.round(getProgressHandler().getPercentProgress()), false);
                 getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
             }
 

@@ -125,6 +125,11 @@ public class ProgressHandler {
         this.progressListener = progressListener;
     }
 
+    public synchronized float getPercentProgress() {
+        if(totalSize == 0) return 0f;//Sometimes the total size is 0, because of metadata not being measured
+        return ((float) writtenSize / totalSize) * 100;
+    }
+
     /**
      * An interface responsible for talking to this object
      * Utilized by relevant service and eventually for notification generation

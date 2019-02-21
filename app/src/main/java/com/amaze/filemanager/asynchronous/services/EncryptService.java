@@ -48,7 +48,6 @@ public class EncryptService extends AbstractProgressiveService {
     private Context context;
     private IBinder mBinder = new ObtainableServiceBinder<>(this);
     private ProgressHandler progressHandler = new ProgressHandler();
-    private volatile float progressPercent = 0f;
     private ProgressListener progressListener;
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
@@ -131,16 +130,6 @@ public class EncryptService extends AbstractProgressiveService {
     @Override
     protected int getNotificationId() {
         return NotificationConstants.ENCRYPT_ID;
-    }
-
-    @Override
-    protected float getPercentProgress() {
-        return progressPercent;
-    }
-
-    @Override
-    protected void setPercentProgress(float progress) {
-        this.progressPercent = progress;
     }
 
     @Override
