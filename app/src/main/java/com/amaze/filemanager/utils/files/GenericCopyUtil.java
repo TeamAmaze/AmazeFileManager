@@ -335,7 +335,7 @@ public class GenericCopyUtil {
     }
 
     /**
-     * Calls {@link #doCopy(ReadableByteChannel, FileChannel)}.
+     * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel)}.
      *
      * @see Channels#newChannel(InputStream)
      * @param bufferedInputStream source
@@ -349,7 +349,7 @@ public class GenericCopyUtil {
     }
 
     /**
-     * Calls {@link #doCopy(ReadableByteChannel, FileChannel)}.
+     * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel)}.
      *
      * @param inChannel source
      * @param outChannel target
@@ -406,20 +406,6 @@ public class GenericCopyUtil {
         buffer.flip();
         while(buffer.hasRemaining())
             to.write(buffer);
-
-        from.close();
-        to.close();
-    }
-
-    @VisibleForTesting
-    void doCopy(@NonNull ReadableByteChannel from, @NonNull FileChannel to) throws IOException{
-        long count;
-        long offset = 0;
-        while ((count = to.transferFrom(from, offset, DEFAULT_TRANSFER_QUANTUM)) > 0 && !progressHandler.getCancelled())
-        {
-            offset += count;
-            ServiceWatcherUtil.position += count;
-        }
 
         from.close();
         to.close();
