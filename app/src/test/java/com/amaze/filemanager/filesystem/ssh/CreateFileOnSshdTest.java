@@ -33,11 +33,13 @@ public class CreateFileOnSshdTest extends AbstractSftpServerTest {
 
     @Test
     public void testCreateFileNormal() throws Exception {
+        tearDown();
         createSshServer(new VirtualFileSystemFactory(Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath())));
     }
 
     @Test
     public void testCreateFilePermissionDenied() throws Exception{
+        tearDown();
         createSshServer(new VirtualFileSystemFactory(){
             @Override
             public FileSystem createFileSystem(Session session) throws IOException {

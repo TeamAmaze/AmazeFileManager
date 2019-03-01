@@ -497,7 +497,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             // do not allow drawer to open when item gets selected
             if (!getMainActivity().getDrawer().isLocked()) {
-                getMainActivity().getDrawer().lock(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+                getMainActivity().getDrawer().lockIfNotOnTablet(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
             return true;
         }
@@ -691,7 +691,6 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     return true;
                 case R.id.rename:
 
-                    final ActionMode m = mode;
                     final HybridFileParcelable f;
                     f = checkedItems.get(0).generateBaseFile();
                     rename(f);
@@ -760,7 +759,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
                     primaryTwoColor : primaryColor));
 
             if (getMainActivity().getDrawer().isLocked()) {
-                getMainActivity().getDrawer().unlock();
+                getMainActivity().getDrawer().unlockIfNotOnTablet();
             }
         }
     };
@@ -1160,9 +1159,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
     private LayoutElementParcelable getBackElement() {
         if (back == null) {
-            back = new LayoutElementParcelable("..", "", "",
-                    getString(R.string.goback), 0, false, "",
-                    true, getBoolean(PREFERENCE_SHOW_THUMB), OpenMode.UNKNOWN);
+            back = new LayoutElementParcelable(true, getString(R.string.goback), getBoolean(PREFERENCE_SHOW_THUMB));
         }
 
         return back;
@@ -1447,7 +1444,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
 
             if (!isEncryptOpen && encryptBaseFiles.size() != 0) {
                 // we've opened the file and are ready to delete it
-                new DeleteTask(getMainActivity().getContentResolver(), getActivity()).execute(encryptBaseFiles);
+                new DeleteTask(getActivity()).execute(encryptBaseFiles);
             }
         }
     }

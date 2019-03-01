@@ -3,6 +3,7 @@ package com.amaze.filemanager.utils;
 import org.junit.Test;
 
 import static com.amaze.filemanager.utils.Utils.sanitizeInput;
+import static com.amaze.filemanager.utils.Utils.formatTimer;
 import static org.junit.Assert.*;
 
 public class UtilsTest {
@@ -16,5 +17,14 @@ public class UtilsTest {
         assertEquals("an apple",sanitizeInput("an &&apple"));  //test the removing of AMP sign which are between two words.
         assertEquals("an apple",sanitizeInput("an ...apple"));  //test the removing of dots which are between two words.
         assertEquals("an apple.",sanitizeInput(";an |apple...."));  //test the removing of pipe sign and dots which are between two words. And test the fourth dot is not removed.
+    }
+
+    @Test
+    public void testFormatTimer() {
+        assertEquals("10:00", formatTimer(600));
+        assertEquals("00:00", formatTimer(0));
+        assertEquals("00:45", formatTimer(45));
+        assertEquals("02:45", formatTimer(165));
+        assertEquals("30:33", formatTimer(1833));
     }
 }

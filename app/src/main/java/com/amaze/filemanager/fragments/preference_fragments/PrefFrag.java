@@ -35,7 +35,6 @@ import android.os.Parcelable;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.view.LayoutInflater;
@@ -44,7 +43,6 @@ import android.view.ViewGroup;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.AboutActivity;
@@ -112,8 +110,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             final KeyguardManager keyguardManager = (KeyguardManager)
                     getActivity().getSystemService(Context.KEYGUARD_SERVICE);
 
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager.isHardwareDetected()) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && fingerprintManager != null && fingerprintManager.isHardwareDetected()) {
 
                 checkBoxFingerprint.setEnabled(true);
             }
@@ -127,13 +124,13 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                             Toast.LENGTH_LONG).show();
                     return false;
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !fingerprintManager.hasEnrolledFingerprints()) {
+                        fingerprintManager != null && !fingerprintManager.hasEnrolledFingerprints()) {
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.crypt_fingerprint_not_enrolled),
                             Toast.LENGTH_LONG).show();
                     return false;
                 } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M &&
-                        !keyguardManager.isKeyguardSecure()) {
+                        keyguardManager != null && !keyguardManager.isKeyguardSecure()) {
                     Toast.makeText(getActivity(),
                             getResources().getString(R.string.crypt_fingerprint_no_security),
                             Toast.LENGTH_LONG).show();
@@ -244,7 +241,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                 }
 
                 masterPasswordDialogBuilder.input(getResources().getString(R.string.authenticate_password),
-                        decryptedPassword, false, (dialog, input) -> { });
+                        decryptedPassword, true, (dialog, input) -> { });
                 masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
                 masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
                 masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));

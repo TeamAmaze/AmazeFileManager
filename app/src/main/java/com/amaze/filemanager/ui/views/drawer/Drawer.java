@@ -56,7 +56,7 @@ import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.SingletonUsbOtg;
+import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.FtpServerFragment;
@@ -125,6 +125,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     private RelativeLayout drawerHeaderParent;
     private View drawerHeaderLayout, drawerHeaderView;
 
+    /**
+     * Tablet is defined as 'width > 720dp'
+     */
+    private boolean isOnTablet = false;
+
     public Drawer(MainActivity mainActivity) {
         this.mainActivity = mainActivity;
         resources = mainActivity.getResources();
@@ -167,7 +172,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             idleColor = Color.WHITE;
         }
 
-        actionViewStateManager = new ActionViewStateManager(navView, idleColor, accentColor);
+        actionViewStateManager = new ActionViewStateManager(idleColor, accentColor);
 
         ColorStateList drawerColors = new ColorStateList(
                 new int[][] {
@@ -196,12 +201,13 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         drawerHeaderView.setBackgroundResource(R.drawable.amaze_header);
         //drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
         if (mainActivity.findViewById(R.id.tab_frame) != null) {
+            isOnTablet = true;
             lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
             open();
             mDrawerLayout.setScrimColor(Color.TRANSPARENT);
             mDrawerLayout.post(this::open);
         } else if (mainActivity.findViewById(R.id.tab_frame) == null) {
-            unlock();
+            unlockIfNotOnTablet();
             close();
             mDrawerLayout.post(this::close);
         }
@@ -576,13 +582,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                         && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
                     MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
                     dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
-                        SingletonUsbOtg.getInstance().setHasRootBeenRequested(true);
                         Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                         mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                         dialog.dismiss();
                     });
-
-                    dialog.show();
                 } else {
                     pendingPath = meta.path;
                     closeIfNotLocked();
@@ -722,13 +725,40 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
      * @param mode {@link DrawerLayout#LOCK_MODE_LOCKED_CLOSED},
      *              {@link DrawerLayout#LOCK_MODE_LOCKED_OPEN}
      *             or {@link DrawerLayout#LOCK_MODE_UNDEFINED}
+     *
+     * @throws IllegalArgumentException if you try to {{@link DrawerLayout#LOCK_MODE_LOCKED_OPEN}
+     *             or {@link DrawerLayout#LOCK_MODE_UNDEFINED} on a tablet
      */
-    public void lock(int mode) {
+    private void lock(int mode) {
+        if(isOnTablet && mode != DrawerLayout.LOCK_MODE_LOCKED_OPEN) {
+            throw new IllegalArgumentException("You can't lock closed or unlock drawer in tablet!");
+        }
+
         mDrawerLayout.setDrawerLockMode(mode, navView);
         isDrawerLocked = true;
     }
 
-    public void unlock() {
+    /**
+     * Does nothing on tablets {@link #isOnTablet}
+     *
+     * @param mode {@link DrawerLayout#LOCK_MODE_LOCKED_CLOSED},
+     *              {@link DrawerLayout#LOCK_MODE_LOCKED_OPEN}
+     *             or {@link DrawerLayout#LOCK_MODE_UNDEFINED}
+     */
+    public void lockIfNotOnTablet(int mode) {
+        if(isOnTablet) {
+            return;
+        }
+
+        mDrawerLayout.setDrawerLockMode(mode, navView);
+        isDrawerLocked = true;
+    }
+
+    public void unlockIfNotOnTablet() {
+        if(isOnTablet) {
+            return;
+        }
+
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, navView);
         isDrawerLocked = false;
     }

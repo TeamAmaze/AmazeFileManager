@@ -52,9 +52,36 @@ public abstract class AbstractExtractorTest {
     @After
     public void tearDown() throws Exception {
         File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
-        Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
-            .map(Path::toFile)
-            .forEach(File::delete);
+        if(extractedArchiveRoot.exists()) {
+            Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
+                .map(Path::toFile)
+                .forEach(File::delete);
+        }
+    }
+
+    @Test
+    public void testFixEntryName() throws Exception {
+        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
+                .newInstance(RuntimeEnvironment.application,
+                        getArchiveFile().getAbsolutePath(),
+                        Environment.getExternalStorageDirectory().getAbsolutePath(), null);
+
+        assertEquals("test.txt", extractor.fixEntryName("test.txt"));
+        assertEquals("test.txt", extractor.fixEntryName("/test.txt"));
+        assertEquals("test.txt", extractor.fixEntryName("/////////test.txt"));
+        assertEquals("test/", extractor.fixEntryName("/test/"));
+        assertEquals("test/a/b/c/d/e/", extractor.fixEntryName("/test/a/b/c/d/e/"));
+        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("a/b/c/d/e/test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("/a/b/c/d/e/test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("///////a/b/c/d/e/test.txt"));
+
+        //It is known redundant slashes inside path components are NOT tampered.
+        assertEquals("a/b/c//d//e//test.txt", extractor.fixEntryName("a/b/c//d//e//test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("a/b/c/d/e/test.txt"));
+        assertEquals("test.txt", extractor.fixEntryName("\\test.txt"));
+        assertEquals("test.txt", extractor.fixEntryName("\\\\\\\\\\\\\\\\\\\\test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("\\a\\b\\c\\d\\e\\test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("\\a\\b/c\\d\\e/test.txt"));
     }
 
     @Test

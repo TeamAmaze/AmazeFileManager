@@ -1,0 +1,642 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+ Locale: is, Icelandic
+-->
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze skráastjóri</string>
+    <string name="drawer_open">Opna leiðsagnarsleða</string>
+    <string name="drawer_close">Loka leiðsagnarsleða</string>
+    <string name="icon">táknmynd</string>
+    <string name="internalstorage">Innbyggð geymsla</string>
+    <string name="apps">Smáforritastjórnun</string>
+    <string name="ftp">FTP-þjónn</string>
+    <string name="setting">Stillingar</string>
+    <string name="select">Veldu atriði</string>
+    <string name="pressagain">Ýttu aftur til að hætta</string>
+    <string name="open">Opna</string>
+    <string name="backup">Öryggisafrit</string>
+    <string name="uninstall">Taka út</string>
+    <string name="play">Play Store</string>
+    <string name="properties">Eiginleikar</string>
+    <string name="copyingapk">Afrita APK í</string>
+    <string name="delbook">Eyða bókamerki</string>
+    <string name="addtobook">Bæta við bókamerki</string>
+    <string name="enterpath">Settu inn slóð</string>
+    <string name="cancel">HÆTTA VIÐ</string>
+    <string name="create">BÚA TIL</string>
+    <string name="loading">Hleð inn&#8230;</string>
+    <string name="file_empty">Skráin er tóm</string>
+    <string name="error">Villa</string>
+    <string name="searchresults">Leitarniðurstöður fyrir %s</string>
+    <string name="rename">Endurnefna</string>
+    <string name="save">Vista</string>
+    <string name="bookmarksadded">Bókamerki bætt við</string>
+    <string name="fileexist">Skrá með sama heiti er þegar til</string>
+    <string name="name">Heiti</string>
+    <string name="date">Dagsetning</string>
+    <string name="location">Staðsetning</string>
+    <string name="size_capitalized">Stærð</string>
+    <string name="size">stærð möppu</string>
+    <string name="enterzipname">Settu inn nafn á ZIP-skrá</string>
+    <string name="noappfound">Ekkert forrit fannst til að opna þessa skrá</string>
+    <string name="copying">Afrita</string>
+    <string name="moving">Færi</string>
+    <string name="file">Skrá</string>
+    <string name="folder">Mappa</string>
+    <string name="newfolder">Ný mappa</string>
+    <string name="entername">Settu inn nafn</string>
+    <string name="extracting">Afþjappa</string>
+    <string name="stopping">Stöðva</string>
+    <string name="openparent">Opna yfirmöppu</string>
+    <string name="openwith">Opna með</string>
+    <string name="share">Deila</string>
+    <string name="about">Um hugbúnaðinn</string>
+    <string name="extract">Afþjappa</string>
+    <string name="compress">Þjappa</string>
+    <string name="yes">Já</string>
+    <string name="no">Nei</string>
+    <string name="dialog_delete_category_directories">Möppur</string>
+    <string name="dialog_delete_category_files">Skrár</string>
+    <string name="dialog_delete_disclaimer">Ef atriðunum hér fyrir neðan er eytt, eru þau fjarlægð endanlega af tækinu og er ekki hægt að endurheimta þau.</string>
+    <string name="dialog_delete_title">Eyða atriðum varanlega?</string>
+    <string name="deleting">Eyði</string>
+    <string name="questionset">Viltu setja þessa slóð sem upphafsstað fyrir þennan flipa?</string>
+    <string name="directorysort">Röðun á möppum</string>
+    <string name="sortby">Raða eftir</string>
+    <string name="sort_only_this">Aðeins þessi mappa</string>
+    <string name="theme">Þema</string>
+    <string name="random">Tilviljanakennt skinn</string>
+    <string name="random_summary">Setur tilviljanakenndan aðallit í ræsingu</string>
+    <string name="colorize">Lita táknmyndir</string>
+    <string name="colorize_summary">Stillir lit á fastri táknmynd. Er ekki rétthærra en litastillingar fyrir möppur.</string>
+    <string name="home">Heim</string>
+    <string name="paste">Líma</string>
+    <string name="history">Aðgerðaferill</string>
+    <string name="copy">Afrita</string>
+    <string name="rootmode">Kerfisstjóravafur (root)</string>
+    <string name="rootmodesummary">Einungis fyrir tæki með rótaraðgangi (rooted). Hakaðu einungis við þetta ef þú ert alveg viss.</string>
+    <string name="rootfailure">Rótaraðgangur ekki veittur</string>
+    <string name="selectall">Velja allt</string>
+    <string name="delete">Eyða</string>
+    <string name="setashome">Stilla sem upphafsstöðu</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <!-- Theme -->
+    <string name="light">Ljóst Material-þema</string>
+    <string name="dark">Dökkt Material-þema</string>
+    <string name="daytime">Dagsbirta</string>
+    <string name="black">Svart (fyrir OLED)</string>
+    <!--Skin-->
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">Möppur efst</string>
+    <string name="filesOnTop">Skrár efst</string>
+    <string name="noneOnTop">Ekkert efst</string>
+    <!--SortBy-->
+    <string name="sortName">Heiti</string>
+    <string name="lastModified">Síðast breytt</string>
+    <string name="sortSize">Stærð</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">Veldu skrá</string>
+    <string name="process_viewer">Skoðun vinnsluferla</string>
+    <string name="in_safe">Ekki nægilegt diskpláss</string>
+    <string name="no_file_overwrite">Engin skrá yfirskrifuð</string>
+    <string name="skip">Sleppa</string>
+    <string name="overwrite">Skrifa yfir</string>
+    <string name="not_allowed">Ekki leyft</string>
+    <string name="searching">Leita að %s</string>
+    <string name="done">Lokið</string>
+    <string name="set">Setja</string>
+    <string name="enablerootmde">Virkja kerfisstjóraham</string>
+    <string name="goback">Fara til baka</string>
+    <string name="newfile">Ný skrá</string>
+    <string name="nofiles">Engar skrár</string>
+    <string name="used">notað geymslupláss</string>
+    <string name="used_by_others">notað af öðrum</string>
+    <string name="free">laust geymslupláss</string>
+    <string name="listview">Listasýn</string>
+    <string name="gridview">Reitasýn</string>
+    <string name="permission">Heimildir</string>
+    <string name="hide">Fela</string>
+    <string name="exit">Fara út</string>
+    <string name="doforall">Gera fyrir öll atriði</string>
+    <string name="gridcolumnno">Fjöldi dálka í reitasýn</string>
+    <string name="setRandom">Breytingar munu taka gildi eftir að forritið hefur verið endurræst</string>
+    <string name="authors">Höfundar</string>
+    <string name="changelog">Breytingaskrá</string>
+    <string name="ok">Í lagi</string>
+    <string name="ui">Viðmót</string>
+    <string name="general">Almennt</string>
+    <string name="thumbSummary">Birta smámyndir forrita og mynda</string>
+    <string name="thumb">Birta smámyndir</string>
+    <string name="hidden">Sýna faldar skrár og möppur</string>
+    <string name="lastModifiedSummary">Sýna dagsetningu og tíma þegar skránni var síðast breytt</string>
+    <string name="lastModifiedPref">Sýna síðustu breytingadagsetningu og tíma</string>
+    <string name="sizePrefSummary">Sýna stærð á skrám og fjölda atriða í möppum</string>
+    <string name="sizePref">Sýna stærð</string>
+    <string name="miscellaneous">Ýmislegt</string>
+    <string name="rootPrefSummary">Sýna heimildir á skrám og möppum</string>
+    <string name="rootPref">Sýna aðgangsheimildir</string>
+    <string name="aboutFileManager">Um Amaze skráastjórann</string>
+    <string name="version">Útgáfa</string>
+    <string name="rate">Gefðu forritinu einkunn</string>
+    <string name="feedback">Sendu umsögn</string>
+    <string name="hiddenfiles">Faldar skrár</string>
+    <string name="type">Tegund</string>
+    <string name="rootdirectory">Rót (root)</string>
+    <string name="addshortcut">Bæta við flýtileið</string>
+    <string name="unsavedchanges">Óvistaðar breytingar</string>
+    <string name="unsavedchangesdesc">Það eru óvistaðar breytingar, viltu vista þær áður en þú hættir?</string>
+    <string name="saving">Vista</string>
+    <string name="packageinstaller">Pakkauppsetningarforrit</string>
+    <string name="view">Skoða</string>
+    <string name="install">Setja upp</string>
+    <string name="archive">Safnskrá</string>
+    <string name="archtext">Þetta er safnskrá. Hvaða aðgerð viltu framkvæma?</string>
+    <string name="pitext">Þetta er pakkauppsetningarforrit. Hvaða aðgerð viltu framkvæma?</string>
+    <string name="xda_title">Spjallþráður á XDA</string>
+    <string name="xda_summary">Spurningar, hjálp og vandamálalausnir</string>
+    <string name="circularimages">Nota hringlaga táknmyndir fyrir myndir og myndskeið</string>
+    <string name="circularicons">Nota hringlaga táknmyndir</string>
+    <string name="back_title">Flakk til baka</string>
+    <string name="back_summary">Virkjar sérsniðið flakk til baka efst í listanum</string>
+    <string name="details">Nánar</string>
+    <string name="translators">Þýðendur</string>
+    <string name="german_translation_title">Þýska</string>
+    <string name="italian_translation_title">Ítalska</string>
+    <string name="french_translation_title">Franska</string>
+    <string name="russian_translation_title">Rússneska</string>
+    <string name="spanish_translation_title">Spænska</string>
+    <string name="basque_translation_title">Baskneska</string>
+    <string name="chinese_translation_title">Kínverska</string>
+    <string name="serbian_translation_title">Serbneska</string>
+    <string name="turkish_translation_title">Tyrkneska</string>
+    <string name="ukrainian_translation_title">Úkraínska</string>
+    <string name="portuguese_translation_title">Portúgalska</string>
+    <string name="polish_translation_title">Pólska</string>
+    <string name="korean_translation_title">Kóreska</string>
+    <string name="greek_translation_title">Gríska</string>
+    <string name="dutch_translation_title">Hollenska</string>
+    <string name="romanian_translation_title">Rúmenska</string>
+    <string name="vietnamese_translation_title">Víetnamska</string>
+    <string name="japanese_translation_title">Japanska</string>
+    <string name="tamil_translation_title">Tamílska</string>
+    <string name="zip_viewer">ZIP-lesari</string>
+    <string name="unin_system_apk">Þetta er kerfisforrit, ef því er eytt gæti kerfið orðið óstöðugt.\nHalda áfram?</string>
+    <string name="warning">Aðvörun</string>
+    <string name="donate">Styrkja</string>
+    <string name="archive_preferences">Kjörstillingar safnskrár</string>
+    <string name="archive_extract_folder">Mappa undir afþjöppun safnskrár</string>
+    <string name="zip_create_folder">Mappa til að útbúa í ZIP-skrár</string>
+    <string name="archive_summary">Safnskrár verða afþjappaðar í þessa möppu. Sjálfgefið er að það sé mappan þar sem safnskráin er staðsett.</string>
+    <string name="zip_summary">Nýjar ZIP-safnskrár verða búnar til í þessari möppu. Sjálfgefið er að það sé mappan þar sem skrárnar eru staðsettar.</string>
+    <string name="openas">Opna sem</string>
+    <string name="text">Texti</string>
+    <string name="audio">Hljóð</string>
+    <string name="video">Myndskeið</string>
+    <string name="other">Annað</string>
+    <string name="image">Mynd</string>
+    <string name="contributors">Þáttakendur</string>
+    <string name="savepaths">Muna slóðir</string>
+    <string name="savepathsummary">Við ræsingu eru síðast skoðuðu möppur hvers flipa birtar</string>
+    <string name="select_intent">Veldu</string>
+    <string name="database">Gagnagrunnur</string>
+    <string name="colourednavigation">Lituð flakkstika</string>
+    <string name="colourednavigationsum">Hvort flakkstika kerfisins taki lit frá skinni</string>
+    <string name="color_title">Litur</string>
+    <string name="color_summary">Stilla lit á ýmsa viðmótshluta</string>
+    <string name="primary_color_title">Aðallitur (vinstri flipi)</string>
+    <string name="primary_color_summary">Stilla lit á stærri viðmótshluta flipans til vinstri</string>
+    <string name="accent_color_title">Áherslulitur</string>
+    <string name="accent_color_summary">Stilla lit á FAB-aðgerðahnapp og aðra smærri viðmótshluta</string>
+    <string name="icon_color_title">Litur táknmyndar</string>
+    <string name="icon_color_summary">Stilla lit á táknmyndir</string>
+    <string name="choose_color">Veldu lit</string>
+    <string name="g_plus_community_title">Taktu þátt í G+ samfélaginu</string>
+    <string name="files">Skrár</string>
+    <string name="textreader">Textalesari</string>
+    <string name="databasereader">Gagnagrunnslesari</string>
+    <string name="showDividers">Sýna aðgreina</string>
+    <string name="needsaccess">Skrifaðgangur nauðsynlegur</string>
+    <string name="needsaccesssummary">Veldu rótarmöppu fyrir \t</string>
+    <string name="needsaccesssummary1">\ttil að veita skrifaðgang fyrir vinnslu</string>
+    <string name="smb_con">SMB-tenging</string>
+    <string name="smb_server">IP-vistfang þjóns</string>
+    <string name="username">Notandanafn</string>
+    <string name="password">Lykilorð</string>
+    <string name="anonymous">Nafnlaus notandi</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">Ytri gagnageymsla</string>
+    <string name="folders">Möppur</string>
+    <string name="folderfilecount">%1$d möppur og %2$d skrár</string>
+    <string name="videos">Myndskeið</string>
+    <string name="apks">APK-pakkar</string>
+    <string name="documents">Skjöl</string>
+    <string name="images">Myndir</string>
+    <string name="clear">Hreinsa</string>
+    <string name="md5">MD5</string>
+    <string name="total">Alls:</string>
+    <string name="calculating">reikna</string>
+    <string name="sort">Röðun</string>
+    <string name="ascending">Hækkandi</string>
+    <string name="descending">Lækkandi</string>
+    <string name="defualt">Sjálfgefið</string>
+    <string name="doit">Gera það</string>
+    <string name="wanthelp">&lt;u&gt;Þarftu hjálp?&lt;/u&gt;</string>
+    <string name="quick">Flýtiaðgangur</string>
+    <string name="recent">Nýlegar skrár</string>
+    <string name="edit">Breyta</string>
+    <string name="find">Finna á síðu</string>
+    <string name="grant">Veita</string>
+    <string name="grantper">Veita heimild</string>
+    <string name="grantfailed">Heimild ekki veitt</string>
+    <string name="grant_storage_permission">Forritið þarf heimild til að nota geymslurými svo að uppsetning geti haldið áfram. Ef þessum glugga er lokað hættir forritið.</string>
+    <string name="operationunsuccesful">Aðgerð tókst ekki</string>
+    <string name="creatingfile">Bý til skrá</string>
+    <string name="creatingfolder">Bý til möppu</string>
+    <string name="renaming">Endurnefni</string>
+    <string name="cantbeempty">%s má ekki vera tómt</string>
+    <string name="ip">Vistfang</string>
+    <string name="connectionname">Heiti tengingar</string>
+    <string name="nodevicefound">Ekkert tæki fannst</string>
+    <string name="path">Slóð</string>
+    <string name="renamebookmark">Breyta bókamerki</string>
+    <string name="cut">Klippa</string>
+    <string name="search">Leita</string>
+    <string name="invalid_name">Ógilt heiti</string>
+    <string name="search_hint">Skrifaðu til að leita...</string>
+    <string name="advanced_search">Ítarleg leit</string>
+    <string name="regular_expression">Regluleg segð</string>
+    <string name="regular_expression_summary">Leita með reglulegri segð í BASH-stíl</string>
+    <string name="match_content">Samsvara innihaldi</string>
+    <string name="match_content_summary">Ef þetta er valið, verður reglulega segðin mátuð við allt skráarheitið,
+        annars er leitað að tilfellum þar sem hún kemur fyrir.</string>
+    <string name="start_ftp">Byrja</string>
+    <string name="stop_ftp">Stöðva</string>
+    <string name="ftp_status_running">Í gangi</string>
+    <string name="ftp_status_not_running">Ekki í gangi</string>
+    <string name="ftp_no_wifi">Gakktu úr skugga um að þú sért tengdur við þráðlaust WiFi-net</string>
+    <string name="domain">Lén</string>
+    <string name="invalid">Ógilt %s</string>
+    <string name="ftp_notif_starting">FTP-þjónn er að ræsast</string>
+    <string name="ftp_notif_title">Amaze FTP-þjónn er í gangi</string>
+    <string name="ftp_notif_text">á %s</string>
+    <string name="ftp_notif_stop_server">STÖÐVA</string>
+    <string name="ftp_port_edit_menu_title">FTP-gátt</string>
+    <string name="ftp_port_change_success">Tókst að breyta FTP-gátt</string>
+    <string name="ftp_port_change_error_invalid">Ógilt númer á gátt var valið</string>
+    <string name="primary_two_title">Aðallitur (hægri flipi)</string>
+    <string name="primary_two_summary">Stilla lit á stærri viðmótshluta flipans til hægri</string>
+    <string name="g_plus">Google Plus</string>
+    <string name="support_development">Styðja áframhaldandi þróun</string>
+    <string name="report_bugs_title">Tilkynna villur</string>
+    <string name="report_bugs_summary">Tilkynna villur eða biðja um nýja eiginleika</string>
+    <string name="translate_title">Þýða</string>
+    <string name="translate_summary">Þýða Amaze á tungumálið þitt</string>
+    <string name="g_plus_community_summary">Taka þátt í beta-prófunum og umræðum
+        sem tengjast þróun hugbúnaðarins</string>
+    <string name="easter_egg_title">Stúdíóhamur</string>
+    <string name="paypal_copy_message">Paypal auðkenni afritað á klippispjald</string>
+    <string name="searchingdevices">Leita að tækjum...</string>
+    <string name="use_custom_ip">Nota sérsniðið IP-vistfang</string>
+    <string name="bookmark_lost">Bókamerki fannst ekki, útbý aftur&#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Hvernig hægt er að tengjast sameiginlegri Windows-möppu á  Android (SMB)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Virkjaðu skráadeilingu á Windows</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Opnaðu stjórnskjáinn (Control Panel), smelltu á 'Choose homegroup and sharing 
+                        options' undir 'Network and Internet' og smelltu síðan á 'Change advanced 
+                        sharing settings'. Virkjaðu deilimöguleikana fyrir skrár og prentun.\n\n
+                    </p>
+
+                    <li>
+                        <b>Viðbótarstillingar fyrir skráadeilingu</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Þú gætir einnig viljað stilla hérna aðra ítarlegri valkosti deilingar. \n
+                        Til dæmis getur þú virkjað aðgang að skránum þínum án lykilorðs EF þú treystir öllum
+                        tækjum á staðarnetinu þínu. Eftir að deiling skráa og prentunar hefur verið virkjuð, geturðu
+                        opnað File Explorer eða Windows Explorer skráastjóra, hægri-smellt á möppu sem þú vilt deila,
+                        og valið eiginleika hennar (Properties). \n
+                        Smelltu á Deila/Share hnappinn og gerðu möppuna tiltæka á netkerfinu.\n\n
+                        </p>
+
+                    <li>
+                        <b>Gakktu úr skugga um að bæði tækin séu á sama WiFi-netinu</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Þessi eiginleiki gerir skrár tiltækar á staðarnetinu, þannig að tölvan þín og snjalltæki
+                        verða að vera á sama staðarneti. Þú getur ekki fengið aðgang að sameiginlegri Windows-möppu
+                        í gegnum Internetið eða þegar farsíminn er tengdur í gegnum símkerfið — hann verður að
+                        vera tendur í gegnum þráðlausa WiFi-netið.\n\n
+                    </p>
+
+                    <li>
+                        <b>Finndu IP-vistfangið</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Opnaðu Command Prompt skipanalínuforritið. Skrifaðu \'ipconfig\' og ýttu á Enter. Leitaðu
+                        að \'Default Gateway\' netkortsins fyrir IP-vistfang beinisins (router). Leitaðu að 
+                        \\\"IPv4 Address\\\" undir hlutanum sem tilheyrir netkortinu til að sjá IP-vistfang 
+                        tölvunnar.\n\n
+                    </p>
+
+                    <b>Settu inn nauðsynlegar upplýsingar í SMB-glugganum</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+    <string name="share_limit">Get ekki deilt fleiri en 100 skrám</string>
+    <string name="otg_access">Veldu rót OTG tækis</string>
+    <string name="opening">Opna...</string>
+    <string name="information">Upplýsingar</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">Síðast notað</string>
+    <!-- reference to file modified date -->
+    <string name="modified">Breytt</string>
+    <string name="title">Titill</string>
+    <string name="artist">Flytjandi</string>
+    <string name="album">Hljómplata</string>
+    <string name="year">Ár</string>
+    <string name="duration">Tímalengd</string>
+    <string name="comment">Athugasemd</string>
+    <!-- reference to audio/video file -->
+    <string name="container">Gagnagámur</string>
+    <string name="codec">Kóðunarlykill</string>
+    <string name="channels">Rásir</string>
+    <string name="sample_rate">Safntíðni</string>
+    <string name="bitrate">Bitahraði</string>
+    <string name="dimensions">Stærðir</string>
+    <string name="frame_rate">Rammatíðni</string>
+    <string name="image_type">Gerð myndar</string>
+    <string name="width">Breidd</string>
+    <string name="height">Hæð</string>
+    <string name="date_modified">Breytt þann</string>
+    <string name="software">Hugbúnaður</string>
+    <string name="creator">Gert af</string>
+    <string name="camera_brand">Tegund myndavélar</string>
+    <string name="camera_model">Gerð myndavélar</string>
+    <string name="date_taken">Tökudagur</string>
+    <string name="exposure_time">Lýsingartími</string>
+    <string name="aperture_value">Gildi ljósops</string>
+    <string name="image_iso">ISO hraði</string>
+    <string name="flash_fired">Flass notað</string>
+    <string name="focal_length">Brennivídd</string>
+    <string name="subject">Viðfangsefni</string>
+    <string name="author">Höfundur</string>
+    <string name="keywords">Stikkorð</string>
+    <string name="producer">Framleiðandi</string>
+    <string name="created">Búið til</string>
+    <string name="format">Snið</string>
+    <string name="pages">Fjöldi síðna</string>
+    <!-- reference to a document file -->
+    <string name="optimized">Bestað</string>
+    <string name="security">Öryggi</string>
+    <string name="paper_size">Pappírsstærð</string>
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">Sumar skrár tókst ekki að %s</string>
+    <string name="copied">afrita</string>
+    <string name="moved">færa</string>
+    <string name="copy_complete">Afritun lokið</string>
+    <string name="waiting_title">Bíð</string>
+    <string name="waiting_content">Bíð eftir að aðgerðinni ljúki</string>
+    <string name="extract_complete">Afþjöppun lokið</string>
+    <string name="compression_complete">Þjöppun lokið</string>
+    <string name="compressing">Þjappa</string>
+    <string name="cancelled">Hætt við</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">Skrifað</string>
+    <string name="out_of">af alls</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">af</string>
+    <string name="processing_file">Vinn með skrá</string>
+    <string name="current_speed">Núverandi hraði</string>
+    <string name="smb_launch_error">Þú þarft að afrita þetta yfir í geymslurými til að opna það</string>
+    <string name="error_file_not_found">Villa: Skrá finnst ekki</string>
+    <string name="error_io">I/O villa</string>
+    <string name="medium_text">Texti miðils</string>
+    <string name="permission_read">Lesa</string>
+    <string name="permission_write">Skrifa</string>
+    <string name="permission_execute">Keyra</string>
+    <string name="permission_owner">Eigandi</string>
+    <string name="permission_group">Hópur</string>
+    <string name="permission_other">Aðrir</string>
+    <string name="clipboard_path_copy">Slóð afrituð á klippispjald</string>
+    <string name="service_timer">Tími liðinn</string>
+    <string name="please_wait">Bíddu aðeins</string>
+    <string name="cloud_connection">Skýjatenging</string>
+    <string name="cloud_connection_new">Ný tenging við tölvuský</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Ná í Cloud-plugin skýjaviðbót</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">Engin forrit</string>
+    <string name="ftp_path">Deild slóð</string>
+    <string name="ftp_path_hint">Slóð að rótarmöppu sem á að deila</string>
+    <string name="change">Breyta</string>
+    <string name="unknown_error">Úbbs, eitthvað fór úrskeiðis!</string>
+    <string name="ftp_path_change_success">Tókst að breyta FTP-slóð</string>
+    <string name="ftp_path_change_error_invalid">Ógild slóð</string>
+    <string name="ftp_status_no_connection">Engin tenging</string>
+    <string name="ftp_status_secure_connection">Örugg tenging</string>
+    <string name="ftp_status_title">Staða</string>
+    <string name="ftp_port">Gátt</string>
+    <string name="ftp_login">Innskráning</string>
+    <string name="field_empty">Reitur má ekki vera auður</string>
+    <string name="ftp_timeout">Tímamörk við aðgerðaleysi</string>
+    <string name="ftp_seconds">Sekúndur</string>
+    <string name="intellihide_toolbar_title">Fela snjallt verkfærastiku</string>
+    <string name="intellihide_toolbar_summary">Fela verkfærastiku sjálfvirkt við skrun</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">afritað á klippispjald</string>
+    <string name="contributors_1_summary">Þýðing</string>
+    <string name="contributors_2_summary">Táknmynd og borðar</string>
+    <string name="contributors_3_summary">Þemakerfi</string>
+    <string name="contributors_4_summary">Skuggi aftan við FAB-aðgerðahnappa</string>
+    <string name="contributors_5_summary">Litabreyting við að fletta (strjúka) flipum</string>
+    <string name="contributors_6_summary">FTP-þjónn</string>
+    <string name="contributors_7_summary">Ræsi upp gagnvirka skel</string>
+    <string name="connection_exists">Tenging er þegar til staðar</string>
+    <string name="crypt_encrypting">Dulrita</string>
+    <string name="crypt_decrypting">Afkóða</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Dulrituð</string>
+    <string name="crypt_decrypted">Afkóðuð</string>
+    <string name="crypt_encrypt">Dulrita</string>
+    <string name="crypt_decrypt">Afkóða</string>
+    <string name="operation_fail_following">Aðgerð tókst ekki fyrir eftirfarandi skrár</string>
+    <string name="crypt_pref_master_password_title">Aðal-lykilorð</string>
+    <string name="crypt_pref_master_password_summary">Stilltu aðallykilorð fyrir dulritun.
+        Hafðu autt til að fjarlægja aðallykilorð.</string>
+    <string name="crypt_pref_fingerprint_title">Fingrafar</string>
+    <string name="crypt_pref_fingerprint_summary">Nota fingrafar til að auðkenna fyrir dulritun</string>
+    <string name="crypt_fingerprint_no_permission">Heimildir vantar fyrir fingrafaralestur</string>
+    <string name="crypt_fingerprint_not_enrolled">Ekkert fingrafar virkt</string>
+    <string name="crypt_fingerprint_no_security">Ekkert öryggi fannst fyrir skjálæsingu</string>
+    <string name="crypt_warning_key">Hafðu í huga að ef þú breytir öryggisstillingum úr
+        kerfisstillingunum, þá muntu ekki geta afkóðað þetta efni.</string>
+    <string name="warning_never_show">Ekki birta þetta aftur</string>
+    <string name="warning_confirm">Náði því!</string>
+    <string name="crypt_encryption_fail">Mistókst að dulrita</string>
+    <string name="crypt_decryption_fail">Mistókst að afkóða</string>
+    <string name="crypt_decryption_fail_password">Rangt lykilorð!</string>
+    <string name="crypt_fingerprint_authenticate">Snertu skynjara til að halda áfram</string>
+    <string name="authenticate_password">Settu inn lykilorð</string>
+
+    <string name="sidebar_preferences">Hliðarspjald</string>
+    <string name="sidebarfolders_title">Flýtileiðir á hliðarspjaldi</string>
+    <string name="sidebarquickaccess_title">Flýtiaðgangur á hliðarspjaldi</string>
+    <string name="showfolders_pref_title">Birta flýtileiðir</string>
+    <string name="showfolders_pref">Flýtileiðir</string>
+    <string name="showquickaccess_pref_title">Sýna flýtiaðganga</string>
+    <string name="showquickaccess_pref">Flýtiaðgangar</string>
+    <string name="create_shortcut">Búa til flýtileið</string>
+    <string name="edit_shortcut">Breyta flýtileið</string>
+    <string name="directory">Mappa</string>
+    <string name="questiondelete_shortcut">Eyða flýtileið?</string>
+
+    <string name="cloud_error_plugin">Amaze skýjaviðbótin (cloud plugin) fannst ekki. Náðu í hana úr Play Store safninu.</string>
+    <string name="cloud_error_failed_restart">Mistókst að hlaða inn tengingunni.
+        Opnaðu Amaze-skýið einu sinni.</string>
+    <string name="cloud_remove">Ertu viss um að þú viljir fjarlægja skýjatenginguna?</string>
+    <string name="cloud_fail_authenticate">Tókst ekki að auðkenna</string>
+    <string name="cloud_share_copied">Deilitengill afritaður á klippispjald</string>
+    <string name="copy_low_memory">Er að klára allt laust minni, hreinsaðu út úr vinnsluminninu</string>
+    <string name="cloud_token_lost">Tapaði teikni, skráðu þig aftur inn</string>
+    <string name="monofont">Jafnbreitt letur</string>
+    <string name="showHeaders">Sýna hausa</string>
+	
+    <!-- FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml -->
+    <string name="noitems">Engin atriði</string>
+    <string name="item">atriði</string>
+    <string name="items">atriði</string>
+	
+    <string name="byte_singular">bæti</string>
+    <string name="bytes">bæti</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">Skrá ætti að heita eitthvað</string>
+    <string name="add_item">Bæta við atriði</string>
+    <string name="failed_smb_decrypt_path">Mistókst að hlaða inn SMB-tengingu</string>
+    <string name="failed_cloud_new_connection">Mistókst að bæta við nýrri skýjatengingu</string>
+    <string name="failed_cloud_api_key">Tókst ekki að auðkenna með skýjaviðbótinni</string>
+
+    <string name="local_inet_addr_error">Villa við að ná í inet-vistfang</string>
+    <string name="intent_save_as">Vista sem&#8230;</string>
+    <string name="go">Fara</string>
+    <string name="advanced">Ítarlegt</string>
+    <string name="typeablepaths_title">Sérsniðnar slóðir</string>
+    <string name="typeablepaths_summary">Ýttu lengi á slóðastikuna til að skrifa sérsniðna slóð</string>
+    <string name="send_email_to">Senda tölvupóst til</string>
+    <string name="text_editor">Stillingar textaritils</string>
+    <string name="preference_newstack_title">Opna skrár sem nýtt verk</string>
+    <string name="preference_newstack_summary">Gerir þér kleift að opna skrár sem aðskilin verk. Þannig er hægt að komast í þau af kerfisskjánum yfir nýleg verk.</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="developers">Forritarar</string>
+    <string name="nobitcoinapp">Endilega settu upp rafmyntaveski</string>
+    <string name="channelname_normal">Amaze tilkynningar</string>
+    <string name="channeldescription_normal">Tilkynningar frá Amaze skráastjóranum</string>
+    <string name="channelname_ftp">Amaze FTP-þjónn</string>
+    <string name="channeldescription_ftp">Tilkynningar frá FTP-þjóni Amaze skráastjórans</string>
+
+    <string name="appbar_name" translatable="false">Amaze</string>
+    <string name="processing">Í vinnslu&#8230;</string>
+    <string name="failed_no_connection">Gat ekki hlaðið inn skrám. Athugaðu hvort allt sé í lagi með nettenginguna.</string>
+
+    <string name="update">UPPFÆRA</string>
+    <string name="scp_con">SCP/SFTP tenging</string>
+    <string name="scp_port">Gátt</string>
+    <string name="ssh_host_key_verification_prompt">Ekki var hægt að sannvotta auðkenni \'%s\'.\n\nFingrafar %s dulritunarlykilsins er %s.\n\nÝttu á \"Já\" til að staðfesta auðkenni; annars skaltu ýta á \"Nei\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Sannreyna hýsiþjón</string>
+    <string name="ssh_select_pem_button">SSH-einkalykill</string>
+    <string name="ssh_pem_key_parse_error">Gat ekki lesið valinn PEM-einkalykil: %s</string>
+    <string name="password_unchanged">(óbreytt)</string>
+    <string name="ssh_authentication_failure_password">Innskráning mistókst: get ekki skráð inn með uppgefnu notandanafni og lykilorði.</string>
+    <string name="ssh_authentication_failure_key">Innskráning mistókst: get ekki skráð inn með uppgefnu notandanafni og einkalykli.</string>
+    <string name="ssh_connect_failed">Ekki tókst að tengjast %s:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">AÐVÖRUN: AUÐKENNING HÝSILVÉLAR HEFUR BREYST!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        ÞAÐ ER HUGSANLEGT AÐ EINHVER SÉ AÐ GERA EITTHVAÐ Í LEYNI!\n\n
+        Einhver gæti verið að njósna um þig akkúrat núna (maður-á-milli árás)! Það er líka mögulegt að dulritunarlykli á hýsilvélinni hafi verið breytt. Fingrafar dreifilykilsins sem fjartengda vélin sendi samsvarar ekki því sem Amaze geymir.\n\n
+        Hafðu samband við kerfisstjórann þinn eða útbúðu nýja tengingu áður en þú heldur áfram að tengjast þjóninum.
+    </string>
+    <string name="ssh_key_prompt_passphrase">Settu inn aðgangssetningu dulritunarlykilsins.</string>
+    <string name="addshortcut_not_supported_by_launcher">Gerð flýtileiða er ekki studd í ræsinum þínum</string>
+
+    <string name="selectcolorconfig">Veldu litauppsetningu</string>
+    <string name="customize">Sérsníða</string>
+    <string name="custom">Sérsniðið</string>
+    <string name="preselectedconfigs_title">Forvaldar uppsetningar</string>
+    <string name="orange">Appelsínu</string>
+    <string name="blue">Blátt</string>
+    <string name="green">Grænt</string>
+    <string name="password_no_match">Lykilorðin stemma ekki</string>
+    <string name="deselect_all">Afvelja allt</string>
+    <string name="filename">Skráarheiti</string>
+    <string name="compress_file_suggest_zip_extension">Mælt er með því að nota \".zip\" sem skráarendingu.</string>
+    <string name="about_amaze">Skráastjóri með Material-hönnun fyrir Android</string>
+    <string name="license">Notkunarleyfi</string>
+    <string name="libraries">Aðgerðasöfn</string>
+    <string name="password_repeat">Endurtaktu lykilorð</string>
+    <string name="create_file_suggest_txt_extension">Mælt er með því að nota \".txt\" sem skráarendingu.</string>
+    <string name="ssh_select_pem">Veldu einkalykil fyrir auðkenningu</string>
+    <string name="ssh_key_invalid_passphrase">Ógild aðgangssetning dulritunarlykils</string>
+    <string name="encryption_fail_copy">Mistókst að uppfæra dulritunarfærslu í gagnagrunni</string>
+    <string name="extracted">Afþjöppuð</string>
+    <string name="compressed">Þjöppuð</string>
+    <string name="processed">Meðhöndluð</string>
+    <string name="no_obtainable_info">Það eru engar upplýsingar um þessa skrá</string>
+    <string name="reopen_from_source">Tekst ekki, opnaðu aftur úr síðast notaða forriti</string>
+    <string name="no_file_error">Eitthvað fór úrskeiðis, hér er ekkert sem hægt er að opna</string>
+    <string name="file_read_only">Skráin sem var opnuð er aðeins til lestrar.</string>
+    <string name="got_it">Náði því!</string>
+    <string name="encrypt_file_save_as">Vista dulritaða skrá sem&#8230;</string>
+    <string name="encrypt_folder_save_as">Vista dulritaða möppu sem&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Dulritaðar skrár verða að nota \".aze\" sem skráarendingu.</string>
+    <string name="cannot_overwrite">Get ekki yfirskrifað þessa skrá.</string>
+    <string name="saved_single_file">Skrá vistuð sem \'%s\'.</string>
+    <string name="saved_multi_files">%d skrár vistaðar.</string>
+    <string name="create_hidden_file_warn">Nýgerða skráin verður falin í skráalistanum.</string>
+    <string name="grant_apkinstall_permission">Forritið þarf heimild svo að uppsetning geti haldið áfram.</string>
+    <string name="time_remaining">Tími eftir</string>
+    <string name="transfer_rate">Flutningshraði</string>
+    <string name="unknown">óþekkt</string>
+    <string name="multiple_invalid_archive_entries">Ekki var hægt að afþjappa allar skrár í safnskránni; hún gæti verið skemmd eða af vafasömum uppruna.</string>
+    <string name="saf_otg_explanation">Af öryggisástæðum ferðu núna á skráakerfi Android. Veldu USB-tækið úr listanum til vinstri.</string>
+    <string name="donation_thanks">Takk kærlega fyrir framlagið, þetta heldur okkur við efnið! (:</string>
+    <string name="enableMarqueeFilename">Virkja áherslubrellu fyrir skráaheiti</string>
+</resources>

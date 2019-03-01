@@ -19,24 +19,25 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
+<resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Buka laci navigasi</string>
     <string name="drawer_close">Tutup laci navigasi</string>
-    <string name="icon">Ikon</string>
+    <string name="icon">ikon</string>
+    <string name="internalstorage">Penyimpanan Internal</string>
     <string name="apps">Pengelola Apl</string>
     <string name="ftp">Server FTP</string>
     <string name="setting">Pengaturan</string>
     <string name="select">Pilih Item</string>
-    <string name="pressagain">Ketuk lagi untuk keluar</string>
+    <string name="pressagain">Sentuh lagi untuk keluar</string>
     <string name="open">Buka</string>
     <string name="backup">Cadangan</string>
     <string name="uninstall">Copot</string>
     <string name="play">Play store</string>
     <string name="properties">Properti</string>
-    <string name="copyingapk">Menyalin apk ke</string>
+    <string name="copyingapk">Menyalin apk ke </string>
+    <string name="delbook">Hapus Markah</string>
     <string name="addtobook">Tambahkan ke Markah</string>
     <string name="enterpath">Masukkan Jalur</string>
     <string name="cancel">BATAL</string>
@@ -44,13 +45,16 @@
     <string name="loading">Memuat&#8230;</string>
     <string name="file_empty">Berkas kosong</string>
     <string name="error">Galat</string>
+    <string name="searchresults">Hasil pencarian dari %s</string>
     <string name="rename">Ubah Nama</string>
     <string name="save">Simpan</string>
     <string name="bookmarksadded">Markah Ditambahkan</string>
-    <string name="fileexist">Sudah ada berkas dengan nama yang sama</string>
+    <string name="fileexist">Sudah ada berkas dengan nama yang sama </string>
     <string name="name">Nama</string>
     <string name="date">Tanggal</string>
     <string name="location">Lokasi</string>
+    <string name="size_capitalized">Ukuran</string>
+    <string name="size">ukuran folder</string>
     <string name="enterzipname">Masukkan Nama Zip</string>
     <string name="noappfound">Tidak ada Apl yang bisa membuka berkas ini</string>
     <string name="copying">Menyalin</string>
@@ -69,23 +73,26 @@
     <string name="compress">Kompres</string>
     <string name="yes">Ya</string>
     <string name="no">Tidak</string>
-    <string name="dialog_delete_title">Konfirm</string>
+    <string name="dialog_delete_category_directories">Direktori</string>
+    <string name="dialog_delete_category_files">Berkas</string>
+    <string name="dialog_delete_disclaimer">Menghapus item di bawah secara permanen menghapusnya dari perangkat Anda dan tidak bisa dipulihkan kembali.</string>
+    <string name="dialog_delete_title">Hapus item secara permanen?</string>
     <string name="deleting">Menghapus</string>
-    <string name="dialog_delete_disclaimer">Apakah Anda benar-benar ingin menghapus berkas ini?</string>
     <string name="questionset">Apakah Anda ingin menetapkan jalur saat ini sebagai beranda untuk tab ini?</string>
     <string name="directorysort">Mode Pengurutan Direktori</string>
     <string name="sortby">Urutkan Menurut</string>
+    <string name="sort_only_this">Hanya folder ini</string>
     <string name="theme">Tema</string>
     <string name="random">Tema Acak</string>
     <string name="random_summary">Setel warna utama acak setiap memulai</string>
     <string name="colorize">Warnai Ikon</string>
     <string name="colorize_summary">Gunakan warna ikon statis. Tidak menimpa preferensi warna ikon direktori.</string>
     <string name="home">Beranda</string>
-    <string name="paste">Salin</string>
+    <string name="paste">Tempel</string>
     <string name="history">Riwayat</string>
     <string name="copy">Salin</string>
     <string name="rootmode">Penjelajah Root</string>
-    <string name="rootmodesummary">Hanya untuk perangkat yang memiliki akses root. Aktfkan jika Anda benar-benar yakin.</string>
+    <string name="rootmodesummary">Hanya untuk perangkat yang memiliki akses root. Aktifkan jika Anda benar-benar yakin.</string>
     <string name="rootfailure">Akses Root tidak diperbolehkan</string>
     <string name="selectall">Pilih Semua</string>
     <string name="delete">Hapus</string>
@@ -99,6 +106,7 @@
     <string name="light">Material Terang</string>
     <string name="dark">Material Gelap</string>
     <string name="daytime">Siang Hari</string>
+    <string name="black">Hitam (untuk OLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folder di Atas</string>
@@ -110,47 +118,49 @@
     <string name="sortSize">Ukuran</string>
     <!--ListMode-->
     <!--Folder-->
-    <string name="pick_a_file">Ambil sebuah berkas</string>
+    <string name="pick_a_file">Ambil berkas</string>
     <string name="process_viewer">Penilik Proses</string>
     <string name="in_safe">Ruang kosong tidak cukup</string>
     <string name="no_file_overwrite">Tidak Ada Berkas yang Ditimpa</string>
     <string name="skip">Lewati</string>
     <string name="overwrite">Timpa</string>
     <string name="not_allowed">Tidak Diizinkan</string>
+    <string name="searching">Mencari %s</string>
     <string name="done">Selesai</string>
-    <string name="items">Item</string>
-    <string name="item">Item</string>
     <string name="set">Setel</string>
     <string name="enablerootmde">Aktifkan Mode Root</string>
     <string name="goback">Kembali</string>
     <string name="newfile">Berkas Baru</string>
-    <string name="nofiles">Tidak Ada Berkas</string>
-    <string name="listview">Tampilan List</string>
+    <string name="nofiles">Berkas Tidak Ada</string>
+    <string name="used">ruang yang digunakan</string>
+    <string name="used_by_others">digunakan oleh yang lain</string>
+    <string name="free">ruang kosong</string>
+    <string name="listview">Tampilan Daftar</string>
     <string name="gridview">Tampilan Grid</string>
     <string name="permission">Perizinan</string>
     <string name="hide">Sembunyikan</string>
     <string name="exit">Keluar</string>
     <string name="doforall">Lakukan untuk semua item</string>
-    <string name="gridcolumnno">Jumlah kolom pada tampilan grid</string>
-    <string name="setRandom">Ubahan akan terdampak setelah Anda memulai ulang apl</string>
+    <string name="gridcolumnno">Jumlah kolom tampilan grid</string>
+    <string name="setRandom">Ubahan akan berdampak setelah Anda memulai ulang apl</string>
     <string name="authors">Pengembang</string>
     <string name="changelog">Catatan Perubahan</string>
     <string name="ok">OK</string>
     <string name="ui">Antarmuka</string>
     <string name="general">Umum</string>
-    <string name="thumbSummary">Tampilkan thumbnail untuk apl dan gambar</string>
+    <string name="thumbSummary">Tampilkan Thumbnail apl dan gambar</string>
     <string name="thumb">Tampilkan Thumbnail</string>
     <string name="hidden">Tampilkan Berkas dan Folder Tersembunyi</string>
     <string name="lastModifiedSummary">Tampilkan tanggal dan waktu saat terakhir berkas diubah</string>
-    <string name="lastModifiedPref">Tampilkan Terakhir Diubah</string>
-    <string name="sizePrefSummary">Tampilkan ukuran dan jumlah berkas di dalam folder</string>
+    <string name="lastModifiedPref">Tampilkan Tanggal dan Waktu Terakhir Diubah</string>
+    <string name="sizePrefSummary">Tampilkan ukuran berkas dan jumlah item di dalam folder</string>
     <string name="sizePref">Tampilkan Ukuran</string>
-    <string name="miscellaneous">Macam-macam</string>
-    <string name="rootPrefSummary">Tampilkan Perizinan dari Berkas dan Folder</string>
+    <string name="miscellaneous">Lain-lain</string>
+    <string name="rootPrefSummary">Tampilkan Perizinan Berkas dan Folder</string>
     <string name="rootPref">Tampilkan Perizinan</string>
     <string name="aboutFileManager">Tentang Amaze File Manager</string>
     <string name="version">Versi</string>
-    <string name="rate">Beri nilai apl</string>
+    <string name="rate">Beri nilai aplikasi</string>
     <string name="feedback">Kirim Umpanbalik</string>
     <string name="hiddenfiles">Berkas Tersembunyi</string>
     <string name="type">Tipe</string>
@@ -160,17 +170,17 @@
     <string name="unsavedchangesdesc">Anda memiliki ubahan yang belum disimpan, apakah Anda ingin menyimpannya sebelum keluar?</string>
     <string name="saving">Menyimpan</string>
     <string name="packageinstaller">Pemasang Paket</string>
-    <string name="view">Tampilan</string>
+    <string name="view">Lihat</string>
     <string name="install">Pasang</string>
     <string name="archive">Arsip</string>
-    <string name="archtext">Ini adalah arsip. Tindakan apa yang ingin Anda lakukan?</string>
+    <string name="archtext">Ini adalah berkas arsip. Tindakan apa yang ingin Anda lakukan?</string>
     <string name="pitext">Ini adalah pemasang paket. Tindakan apa yang ingin Anda lakukan?</string>
     <string name="xda_title">Forum XDA</string>
     <string name="xda_summary">Q&amp;A, Bantuan &amp; Pemecahan Masalah</string>
     <string name="circularimages">Gunakan ikon bundar untuk gambar dan video</string>
     <string name="circularicons">Gunakan ikon bundar</string>
     <string name="back_title">Navigasi kembali</string>
-    <string name="back_summary">Aktifkan navigasi kembali ubahsuai di atas daftar</string>
+    <string name="back_summary">Aktifkan navigasi kembali sebelum daftar berkas</string>
     <string name="details">Detail</string>
     <string name="translators">Penerjemah</string>
     <string name="german_translation_title">Jerman</string>
@@ -182,7 +192,7 @@
     <string name="chinese_translation_title">Cina</string>
     <string name="serbian_translation_title">Serbia</string>
     <string name="turkish_translation_title">Turki</string>
-    <string name="ukrainian_translation_title">Ukrania</string>
+    <string name="ukrainian_translation_title">Ukraina</string>
     <string name="portuguese_translation_title">Portugis</string>
     <string name="polish_translation_title">Polandia</string>
     <string name="korean_translation_title">Korea</string>
@@ -194,15 +204,15 @@
     <string name="tamil_translation_title">Tamil</string>
 
     <string name="zip_viewer">Penilik Zip</string>
-    <string name="unin_system_apk">Ini adalah apl sistem, menghapusnya akan membuat sistem tidak stabil.\\nLanjutkan?</string>
+    <string name="unin_system_apk">Ini adalah apl sistem, menghapusnya akan membuat sistem menjadi tidak stabil.\nLanjutkan?</string>
     <string name="warning">Peringatan</string>
     <string name="donate">Donasi</string>
     <string name="archive_preferences">Preferensi Arsip</string>
     <string name="archive_extract_folder">Folder Ekstrak Arsip</string>
-    <string name="zip_create_folder">Folder Zip Dibuat</string>
-    <string name="archive_summary">Arsip akan diekstrak ke folder ini. Nilai bawaannya adalah folder dimana arsip tersebut berada</string>
-    <string name="zip_summary">Zip baru akan dibuat di folder ini. Nilai bawaannya adalah folder dimana berkas tersebut berada</string>
-    <string name="openas">Buka sebagai</string>
+    <string name="zip_create_folder">Folder Zip Baru</string>
+    <string name="archive_summary">Berkas arsip akan diekstrak ke folder ini. Nilai bawaannya adalah folder dimana arsip tersebut berada.</string>
+    <string name="zip_summary">Berkas zip baru akan dibuat di folder ini. Nilai bawaannya adalah folder dimana berkas tersebut berada.</string>
+    <string name="openas">Buka Sebagai</string>
     <string name="text">Teks</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
@@ -213,57 +223,58 @@
     <string name="savepathsummary">Ketika memulai, folder yang terakhir dilihat untuk setiap tab akan ditampilkan</string>
     <string name="select_intent">Pilih</string>
     <string name="database">Basis Data</string>
-    <string name="colourednavigation">Bilah Navigasi Berwarna</string>
-    <string name="colourednavigationsum">Apakah warna bilah navigasi sistem sama dengan tampilan</string>
+    <string name="colourednavigation">Bilah Navigasi berwarna</string>
+    <string name="colourednavigationsum">Apakah bilah navigasi sistem juga berwarna sama dengan tema</string>
 
     <string name="color_title">Warna</string>
-    <string name="color_summary">Tetapkan warna untuk macam-macam komponen UI</string>
+    <string name="color_summary">Tetapkan warna untuk berbagai macam komponen UI</string>
     <string name="primary_color_title">Warna Utama (Tab Kiri)</string>
-    <string name="primary_color_summary">Tetapkan warna elemen UI yang besar di tab kiri</string>
+    <string name="primary_color_summary">Tetapkan warna elemen UI besar untuk tab sebelah kiri</string>
     <string name="accent_color_title">Warna Aksen</string>
-    <string name="accent_color_summary">Tetapkan warna untuk FAB dan elemen UI kecil lainnya</string>
+    <string name="accent_color_summary">Tetapkan warna FAB dan elemen UI kecil lainnya</string>
     <string name="icon_color_title">Warna Ikon</string>
-    <string name="icon_color_summary">Tetapkan warna untuk ikon</string>
+    <string name="icon_color_summary">Tetapkan warna ikon</string>
     <string name="choose_color">Pilih warna</string>
-    <string name="g_plus_community_title">Bergabung dengan komunitas G+</string>
+    <string name="g_plus_community_title">Gabung Komunitas G+</string>
     <string name="files">Berkas</string>
     <string name="textreader">Pembaca Teks</string>
     <string name="databasereader">Pembaca Basis Data</string>
     <string name="showDividers">Tampilkan Pemisah</string>
     <string name="needsaccess">Membutuhkan Akses Tulis</string>
-    <string name="needsaccesssummary">Silakan pilih direktori akar dari \\t</string>
-    <string name="needsaccesssummary1">\\tagar akses tulis bisa beroperasi</string>
+    <string name="needsaccesssummary">Silakan pilih direktori root dari \t</string>
+    <string name="needsaccesssummary1">\tuntuk memberikan izin akses tulis untuk beroperasi </string>
     <string name="smb_con">Koneksi SMB</string>
     <string name="smb_server">Alamat IP Server</string>
-    <string name="username">Nama pengguna</string>
+    <string name="username">Nama Pengguna</string>
     <string name="password">Sandi</string>
     <string name="anonymous">Anonim</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="extstorage">Penyimpanan Eksternal</string>
     <string name="folders">Folder</string>
+    <string name="folderfilecount">%1$d folder dan %2$d berkas</string>
     <string name="videos">Video</string>
     <string name="apks">Apk</string>
     <string name="documents">Dokumen</string>
     <string name="images">Gambar</string>
-    <string name="clear">Bersihkan</string>
-    <string name="md5">md5: </string>
+    <string name="clear">Kosongkan</string>
+    <string name="md5">MD5</string>
     <string name="total">Total:</string>
-    <string name="calculating">mengkalkulasi</string>
+    <string name="calculating"> mengkalkulasi </string>
     <string name="sort">Urutkan</string>
     <string name="ascending">Naik</string>
     <string name="descending">Turun</string>
     <string name="defualt">Bawaan</string>
     <string name="doit">Lakukan</string>
     <string name="wanthelp"><u>Butuh bantuan?</u></string>
-    <string name="quick">Akses Cepat</string>
-    <string name="recent">Berkas Terbaru</string>
+    <string name="quick">Akses cepat</string>
+    <string name="recent">Berkas baru-baru ini</string>
     <string name="edit">Sunting</string>
     <string name="find">Temukan di halaman</string>
     <string name="grant">Izinkan</string>
-    <string name="grantper">Berikan Izin</string>
+    <string name="grantper">Berikan izin</string>
     <string name="grantfailed">Izin tidak diberikan</string>
-    <string name="grant_storage_permission">Apl membutuhkan izin akses penyimpanan untuk bisa melanjutkan. Membatalkan izin ini akan keluar dari apl.</string>
-    <string name="operationunsuccesful">Operasi tidak Berhasil</string>
+    <string name="grant_storage_permission">Apl membutuhkan izin penyimpanan untuk melanjutkan. Menolak dialog ini akan menutup apl.</string>
+    <string name="operationunsuccesful">Operasi Tidak Sukses</string>
     <string name="creatingfile">Membuat Berkas</string>
     <string name="creatingfolder">Membuat Folder</string>
     <string name="renaming">Mengubah Nama</string>
@@ -272,48 +283,98 @@
     <string name="connectionname">Nama koneksi</string>
     <string name="nodevicefound">Tidak ada perangkat yang ditemukan</string>
     <string name="path">Jalur</string>
-    <string name="renamebookmark">Sunting Markah</string>
+    <string name="renamebookmark">Ubah Markah</string>
     <string name="cut">Potong</string>
     <string name="search">Cari</string>
     <string name="invalid_name">Nama Tidak Valid</string>
-    <string name="search_hint">Ketuk untuk mencari&#8230;</string>
+    <string name="search_hint">Ketik untuk mencari&#8230;</string>
     <string name="advanced_search">Pencarian Lanjutan</string>
-    <string name="regular_expression">Regular Ekspresi</string>
-    <string name="regular_expression_summary">Cari menggunakan regular ekspresi BASH</string>
+    <string name="regular_expression">Ekspresi Reguler</string>
+    <string name="regular_expression_summary">Cari menggunakan ekspresi reguler BASH</string>
     <string name="match_content">Konten cocok</string>
-    <string name="match_content_summary">Jika diatur, regular ekspresi akan mencocokkan dengan seluruh nama berkas,
-jika tidak, akan mencari yang lain</string>
+    <string name="match_content_summary">Jika diatur, ekspresi regular akan mencocokkan dengan seluruh nama berkas,
+        jika tidak, akan mencari yang lain.</string>
     <string name="start_ftp">Mulai</string>
-    <string name="stop_ftp">Berhenti</string>
+    <string name="stop_ftp">Setop</string>
     <string name="ftp_status_running">Berjalan</string>
-    <string name="ftp_status_not_running">Tidak berjalan</string>
-    <string name="ftp_no_wifi">Pastikan Anda terhubung dengan WiFi</string>
+    <string name="ftp_status_not_running">Tidak Berjalan</string>
+    <string name="ftp_no_wifi">Pastikan Anda tersambung ke WiFi</string>
     <string name="domain">Domain</string>
     <string name="invalid">%s tidak valid</string>
-    <string name="ftp_notif_starting">Server FTP sedang berjalan</string>
+    <string name="ftp_notif_starting">Server FTP sedang memulai</string>
     <string name="ftp_notif_title">Server FTP Amaze sedang berjalan</string>
     <string name="ftp_notif_text">pada %s</string>
-    <string name="ftp_notif_stop_server">BERHENTI</string>
-    <string name="ftp_port_edit_menu_title">Pilih Port FTP</string>
+    <string name="ftp_notif_stop_server">SETOP</string>
+    <string name="ftp_port_edit_menu_title">Port FTP</string>
     <string name="ftp_port_change_success">Port FTP berhasil diubah</string>
-    <string name="ftp_port_change_error_invalid">Port yang dipilih tidak valid</string>
+    <string name="ftp_port_change_error_invalid">Nomor port yang dipilih tidak valid</string>
     <string name="primary_two_title">Warna Utama (Tab Kanan)</string>
-    <string name="primary_two_summary">Tetapkan warna elemen UI yang besar di tab kanan</string>
+    <string name="primary_two_summary">Tetapkan warna untuk elemen UI besar untuk tab sebelah kanan</string>
     <string name="g_plus">Google Plus</string>
     <string name="support_development">Dukung Pengembangan</string>
     <string name="report_bugs_title">Laporkan Bug</string>
     <string name="report_bugs_summary">Laporkan bug atau minta fitur baru</string>
     <string name="translate_title">Terjemahkan</string>
-    <string name="translate_summary">Terjemahkan Amaze ke bahasa Anda</string>
-    <string name="g_plus_community_summary">Ambil bagian dalam uji coba versi beta dan diskusi
-terkait dengan pengembangan</string>
+    <string name="translate_summary">Terjemahkan Amaze ke dalam bahasa Anda</string>
+    <string name="g_plus_community_summary">Terlibat dengan uji coba beta dan diskusi
+        terkait dengan pengembangan</string>
     <string name="easter_egg_title">Mode Studio</string>
-    <string name="paypal_copy_message">ID paypal disalin ke papan klip</string>
+    <string name="paypal_copy_message">Id Paypal disalin ke papan klip</string>
     <string name="searchingdevices">Mencari perangkat</string>
-    <string name="use_custom_ip">Gunakan IP ubahsuai</string>
+    <string name="use_custom_ip">Gunakan IP khusus</string>
     <string name="bookmark_lost">Markah tidak ditemukan, membuat ulang&#8230;</string>
 
-    <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas.</string>
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Bagaimana cara mengakses folder berbagi windows dari android (smb)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Aktifkan Berbagi Berkas</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Buka Panel Kontrol, pilih grup rumah dan opsi berbagi di menu Jaringan
+                        dan Internet, dan klik Change advanced sharing settings. Aktifkan fitur
+                        file and printer sharing.\n\n
+                    </p>
+
+                    <li>
+                        <b>Pengaturan Berbagi Berkas tambahan</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Anda juga bisa mengubah pengaturan berbagi lanjutan lainnya di sini. \n
+                        Contoh, Anda bisa mengaktifkan akses ke berkas Anda tanpa sandi jika Anda percaya
+                        semua perangkat di jaringan lokal Anda. Setelah Berbagi berkas dan printer diaktifkan, Anda bisa
+                        membuka File Explorer atau Windows Explorer, klik kanan folder yang ingin Anda bagikan, dan
+                        pilih Properti. \n
+                        Klik tombol Berbagi dan buat folder tersedia dalam jaringan.\n\n
+                        </p>
+
+                    <li>
+                        <b>Pastikan kedua perangkat berada dalam satu jaringan Wifi</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Fitur ini membuat berkas tersedia pada jaringa lokal, jadi perangkat selular dan PC Anda
+                        harus berada dalam satu jaringan lokal yang sama. Anda tidak bisa mengakses folder berbagi Windows
+                        melalui Internet atau ketika telepon pintar Anda tersambung ke jaringan seluler — perangkat
+                        harus tersambung ke jaringan Wi-Fi yang sama.\n\n
+                    </p>
+
+                    <li>
+                        <b>Temukan Alamat IP</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Buka Prompt Perintah. Ketik \'ipconfig\' dan tekan Enter. Cari Default Gateway
+                        di bawah adapter jaringan untuk alamat IP router Anda. Cari \\\"IPv4 Address\\\"
+                        di bawah adapter yang sama untuk mengetahui alamat IP komputer Anda.\n\n
+                    </p>
+
+                    <b>Masukkan detail di dalam kotak dialog smb</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+    <string name="share_limit">Tidak bisa berbagi lebih dari 100 berkas</string>
     <string name="otg_access">Pilih root dari perangkat OTG</string>
     <string name="opening">Membuka..</string>
     <string name="information">Informasi</string>
@@ -331,17 +392,17 @@ terkait dengan pengembangan</string>
     <!-- reference to audio/video file -->
     <string name="container">Kontainer</string>
     <string name="codec">Kodek</string>
-    <string name="channels">Saluran</string>
+    <string name="channels">Channel</string>
     <string name="sample_rate">Laju Sampel</string>
     <string name="bitrate">Laju Bit</string>
     <string name="dimensions">Dimensi</string>
     <string name="frame_rate">Laju Frame</string>
-    <string name="image_type">Tipe Gambar</string>
+    <string name="image_type">Jenis Gambar</string>
     <string name="width">Lebar</string>
     <string name="height">Tinggi</string>
     <string name="date_modified">Tanggal Diubah</string>
     <string name="software">Perangkat Lunak</string>
-    <string name="creator">Pembuat</string>
+    <string name="creator">Pencipta</string>
     <string name="camera_brand">Merek Kamera</string>
     <string name="camera_model">Model Kamera</string>
     <string name="date_taken">Tanggal Diambil</string>
@@ -350,7 +411,7 @@ terkait dengan pengembangan</string>
     <string name="image_iso">Nilai Kecepatan ISO</string>
     <string name="flash_fired">Menggunakan Flash</string>
     <string name="focal_length">Jarak Fokus</string>
-    <string name="subject">Subyek</string>
+    <string name="subject">Subject</string>
     <string name="author">Penulis</string>
     <string name="keywords">Kata Kunci</string>
     <string name="producer">Produser</string>
@@ -362,7 +423,225 @@ terkait dengan pengembangan</string>
     <string name="security">Keamanan</string>
     <string name="paper_size">Ukuran Kertas</string>
 
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">Beberapa berkas tidak berhasil %s</string>
     <string name="copied">disalin</string>
-    <string name="moved">dipindahkan</string>
-    </resources>
+    <string name="moved">dipindah</string>
+    <string name="copy_complete">Menyalin selesai</string>
+    <string name="waiting_title">Menunggu</string>
+    <string name="waiting_content">Menunggu operasi berjalan hingga selesai</string>
+    <string name="extract_complete">Ekstrak selesai</string>
+    <string name="compression_complete">Kompresi selesai</string>
+    <string name="compressing">Mengompres</string>
+    <string name="cancelled">Dibatalkan</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">Menulis</string>
+    <string name="out_of">dari</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">dari</string>
+    <string name="processing_file">Memproses berkas</string>
+    <string name="current_speed">Kecepatan Saat Ini</string>
+    <string name="smb_launch_error">Anda perlu menyalin berkas ini ke penyimpanan untuk membukanya</string>
+    <string name="error_file_not_found">Galat: Berkas Tidak Ditemukan</string>
+    <string name="error_io">Galat I/O</string>
+    <string name="medium_text">Teks Medium</string>
+    <string name="permission_read">Baca</string>
+    <string name="permission_write">Tulis</string>
+    <string name="permission_execute">Eksekusi</string>
+    <string name="permission_owner">Pemilik</string>
+    <string name="permission_group">Grup</string>
+    <string name="permission_other">Lainnya</string>
+    <string name="clipboard_path_copy">Jalur disalin ke papan klip</string>
+    <string name="service_timer">Waktu berjalan</string>
+    <string name="please_wait">Silakan Tunggu</string>
+
+    <string name="cloud_connection">Koneksi Cloud</string>
+    <string name="cloud_connection_new">Koneksi Cloud Baru</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">Dapatkan plugin Cloud</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">Tidak ada aplikasi</string>
+    <string name="ftp_path">Jalur Berbagi</string>
+    <string name="ftp_path_hint">Jalur ke direktori root untuk dibagikan</string>
+    <string name="change">Ubah</string>
+    <string name="unknown_error">Oops, telah terjadi kesalahan!</string>
+
+    <string name="ftp_path_change_success">Jalur FTP berhasil diubah</string>
+    <string name="ftp_path_change_error_invalid">Jalur tidak valid</string>
+    <string name="ftp_status_no_connection">Tidak Ada Koneksi</string>
+    <string name="ftp_status_secure_connection">Koneksi Aman</string>
+    <string name="ftp_status_title">Status</string>
+    <string name="ftp_port">Port</string>
+    <string name="ftp_login">Masuk</string>
+    <string name="field_empty">Ruas tidak boleh kosong</string>
+    <string name="ftp_timeout">Batas waktu menganggur</string>
+    <string name="ftp_seconds">Detik</string>
+    <string name="intellihide_toolbar_title">Sembunyikan Bilah Alat</string>
+    <string name="intellihide_toolbar_summary">Otomatis sembunyikan bilah alat saat menggulir</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">disalin ke papan klip</string>
+    <string name="contributors_1_summary">Terjemahan</string>
+    <string name="contributors_2_summary">Ikon dan banner</string>
+    <string name="contributors_3_summary">Mesin Tema</string>
+    <string name="contributors_4_summary">Bayangan di belakang FAB</string>
+    <string name="contributors_5_summary">Transisi warna saat menggeser tab</string>
+    <string name="contributors_6_summary">Server FTP</string>
+    <string name="contributors_7_summary">Menjalankan shell interaktif</string>
+    <string name="connection_exists">Koneksi sudah ada</string>
+
+    <string name="crypt_encrypting">Mengenkripsi</string>
+    <string name="crypt_decrypting">Mendekripsi</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Dienkripsi</string>
+    <string name="crypt_decrypted">Didekripsi</string>
+    <string name="crypt_encrypt">Enkripsi</string>
+    <string name="crypt_decrypt">Dekripsi</string>
+    <string name="operation_fail_following">Gagal menjalankan tindakan untuk berkas ini</string>
+    <string name="crypt_pref_master_password_title">Sandi Master</string>
+    <string name="crypt_pref_master_password_summary">Buat sandi master untuk enkripsi.
+        Biarkan kosong untuk menghapusnya.</string>
+    <string name="crypt_pref_fingerprint_title">Sidik Jari</string>
+    <string name="crypt_pref_fingerprint_summary">Gunakan sidik jadi untuk otentikasi enkripsi</string>
+    <string name="crypt_fingerprint_no_permission">Perizinan sidik jadi tidak ada</string>
+    <string name="crypt_fingerprint_not_enrolled">Sidik jadi belum dibuat</string>
+    <string name="crypt_fingerprint_no_security">Tidak ditemukan keamanan layar penguncian</string>
+    <string name="crypt_warning_key">Harap diingat, ketika Anda mengubah pola keamanan dari
+        pengaturan Sistem, Anda tidak akan bisa mendekripsi konten ini.</string>
+    <string name="warning_never_show">Jangan beritahu lagi</string>
+    <string name="warning_confirm">Got it!</string>
+    <string name="crypt_encryption_fail">Gagal enkripsi</string>
+    <string name="crypt_decryption_fail">Gagal dekripsi</string>
+    <string name="crypt_decryption_fail_password">Sandi salah!</string>
+    <string name="crypt_fingerprint_authenticate">Sensor sentuh untuk melanjutkan</string>
+    <string name="authenticate_password">Masukkan sandi</string>
+
+    <string name="sidebar_preferences">Menu</string>
+    <string name="sidebarfolders_title">Menu pintasan</string>
+    <string name="sidebarquickaccess_title">Menu akses cepat</string>
+    <string name="showfolders_pref_title">Tampilkan pintasan</string>
+    <string name="showfolders_pref">Pintasan</string>
+    <string name="showquickaccess_pref_title">Tampilkan akses cepat</string>
+    <string name="showquickaccess_pref">Akses cepat</string>
+    <string name="create_shortcut">Buat pintasan</string>
+    <string name="edit_shortcut">Sunting pintasan</string>
+    <string name="directory">Direktori</string>
+    <string name="questiondelete_shortcut">Hapus pintasan?</string>
+
+    <string name="cloud_error_plugin">Plugin Amaze Cloud tidak ditemukan. Silakan untuk dari Play Store.</string>
+    <string name="cloud_error_failed_restart">Gagal memuat koneksi.
+        Silakan buka Amaze Cloud sekali saja.</string>
+    <string name="cloud_remove">Apakah Anda ingin membuang koneksi cloud?</string>
+    <string name="cloud_fail_authenticate">Gagal otentikasi</string>
+    <string name="cloud_share_copied">Tautan berbagi disalin ke papan klip</string>
+    <string name="copy_low_memory">Kehabisan memori, silakan bebaskan RAM yang tidakk terpakai</string>
+    <string name="cloud_token_lost">Token hilang, silakan masuk lagi</string>
+    <string name="monofont">Fon Monospace</string>
+    <string name="showHeaders">Tampilkan Tajuk</string>
+
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="noitems">Item tidak ada</string>
+	<string name="item">item</string>
+	<string name="items">item</string>
+
+	<string name="byte_singular">byte</string>
+	<string name="bytes">bytes</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">Berkas harus memiliki nama</string>
+    <string name="add_item">Tambah Item</string>
+    <string name="failed_smb_decrypt_path">Gagal memuat koneksi SMB</string>
+    <string name="failed_cloud_new_connection">Gagal menambahkan koneksi Cloud baru</string>
+    <string name="failed_cloud_api_key">Gagal otentikasi plugin Cloud</string>
+
+    <string name="local_inet_addr_error">Gagal mendapatkan alamat inet lokal</string>
+    <string name="intent_save_as">Simpan sebagai&#8230;</string>
+    <string name="go">Kunjungi</string>
+    <string name="advanced">Lanjutan</string>
+    <string name="typeablepaths_title">Jalur khusus</string>
+    <string name="typeablepaths_summary">Sentuh lama bilah jalur untuk mengetik jalur khusus</string>
+    <string name="send_email_to">Kirim surel ke</string>
+
+    <string name="text_editor">Pengaturan penyunting teks</string>
+    <string name="preference_newstack_title">Buka berkas dalam proses baru</string>
+    <string name="preference_newstack_summary">Memungkinkan Anda membuka berkas dalam proses yang berbeda. Akses proses dari layar baru-baru ini.</string>
+    <string name="github" translatable="false">GitHub</string>
+    <string name="developers">Pengembang</string>
+    <string name="nobitcoinapp">Silakan pasang dompet bitcoin</string>
+    <string name="channelname_normal">Notifikasi Amaze</string>
+    <string name="channeldescription_normal">Notifikasi Amaze File Manager</string>
+    <string name="channelname_ftp">Server FTP Amaze</string>
+    <string name="channeldescription_ftp">Notifikasi Server FTP Amaze File Manager</string>
+
+    <string name="appbar_name" translatable="false">Amaze</string>
+    <string name="processing">Memproses&#8230;</string>
+    <string name="failed_no_connection">Gagal untuk memuat berkas. Silakan periksa koneksi Anda.</string>
+
+    <string name="update">PERBARUI</string>
+	<string name="scp_con">Koneksi SCP/SFTP</string>
+    <string name="scp_port">Port</string>
+    <string name="ssh_host_key_verification_prompt">Keaslian host \'%s\' tidak bisa diverifikasi.\n\n%s kunci sidik jari adalah %s.\n\nSilakan sentuh \"Ya\" untuk mengkonfirmasi identitas; atau, sentuh \"Tidak\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Verifikasi Host</string>
+    <string name="ssh_select_pem_button">Kunci Privat SSH</string>
+    <string name="ssh_pem_key_parse_error">Tidak bisa membaca PEM yang dipilih: %s</string>
+    <string name="password_unchanged">(tidak berubah)</string>
+    <string name="ssh_authentication_failure_password">Gagal masuk: Tidak bisa otentikasi menggunakan nama pengguna dan sandi yang ada.</string>
+    <string name="ssh_authentication_failure_key">Gagal masuk: Tidak bisa otentikasi menggunakan nama dan kunci privat yang ada.</string>
+    <string name="ssh_connect_failed">Tidak bisa menyambung ke %s:%d: %s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">PERINGATAN: IDENTIFIKASI HOST REMOTE TELAH BERUBAH!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        ADA KEMUNGKINAN SESEORANG SEDANG MELAKUKAN HAL YANG JAHAT!\n\n
+        Seseorang mungkin sedang memata-matai Anda sekarang (serangan man-in-the-middle)! Ada juga kemungkinan bahwa kunci host sudah berubah. Sidik jari untuk kunci publik yang dikirim oleh host remote tidak cocok dengan yang disimpan di Amaze.\n\n
+        Silakan hubungi administrator sistem Anda atau buat koneksi baru untuk terus terhubung ke server.
+    </string>
+    <string name="ssh_key_prompt_passphrase">Silakan masukkan kunci frasa sandi.</string>
+    <string name="addshortcut_not_supported_by_launcher">Launcher Anda tidak mendukung pembuatan pintasan.</string>
+
+    <string name="selectcolorconfig">Pilih konfigurasi warna</string>
+    <string name="customize">Ubahsuai</string>
+    <string name="custom">Khusus</string>
+    <string name="preselectedconfigs_title">Konfigurasi bawaan</string>
+    <string name="orange">Oranye</string>
+    <string name="blue">Biru</string>
+    <string name="green">Hijau</string>
+    <string name="password_no_match">Sandi tidak cocok</string>
+    <string name="deselect_all">Urung Pilih Semua</string>
+    <string name="filename">Nama Berkas</string>
+    <string name="compress_file_suggest_zip_extension">Direkomendasikan menggunakan \".zip\" sebagai ekstensi berkas.</string>
+    <string name="about_amaze">Pengelola berkas dengan desain Material untuk Android</string>
+    <string name="license">Lisensi</string>
+    <string name="libraries">Pustaka</string>
+    <string name="password_repeat">Ulangi sandi</string>
+    <string name="create_file_suggest_txt_extension">Direkomendasikan menggunakan \".txt\" sebagai ekstensi berkas.</string>
+    <string name="ssh_select_pem">Pilih kunci privat untuk otentikasi</string>
+    <string name="ssh_key_invalid_passphrase">Kunci frasa sandi tidak valid.</string>
+    <string name="encryption_fail_copy">Gagal memperbarui entri enkripsi di dalam basis data</string>
+    <string name="extracted">Diekstrak</string>
+    <string name="compressed">Dikompres</string>
+    <string name="processed">Diproses</string>
+    <string name="no_obtainable_info">Tidak ada info tentang berkas ini</string>
+    <string name="reopen_from_source">Tidak bisa, silakan buka kembali dari apl sebelumnya</string>
+    <string name="no_file_error">Terjadi kesalahan, tidak ada yang dibuka</string>
+    <string name="file_read_only">Berkas yang dibuka memiliki atribut baca-saja.</string>
+    <string name="got_it">Got it!</string>
+    <string name="encrypt_file_save_as">Simpan Berkas Terenkripsi Sebagai&#8230;</string>
+    <string name="encrypt_folder_save_as">Simpan Folder Terenkripsi Sebagai&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Berkas terenkripsi harus menggunakan ekstensi berkas \".aze\".</string>
+    <string name="cannot_overwrite">Tidak bisa menimpa.</string>
+    <string name="saved_single_file">Berkas disimpan sebagai \'%s\'.</string>
+    <string name="saved_multi_files">%d berkas disimpan.</string>
+    <string name="create_hidden_file_warn">Berkas yang dibuat akan disembunyikan dari daftar berkas.</string>
+    <string name="grant_apkinstall_permission">Apl membutuhkan izin untuk memasang apl.</string>
+    <string name="time_remaining">Waktu yang tersisa</string>
+    <string name="transfer_rate">Laju Transfer</string>
+    <string name="unknown">tidak dikenal</string>
+    <string name="multiple_invalid_archive_entries">Beberapa berkas di dalam arsip tidak bisa diekstrak; arsip mungkin rusak atau berasal dari sumber yang tidak dapat dipercaya.</string>
+    <string name="saf_otg_explanation">Sekarang Anda kunjungi sistem berkas Android untuk alasan keamanan. Silakan pilih perangkat dari daftar di sebelah kiri.</string>
+    <string name="donation_thanks">Terima kasih atas donasinya, ini membuat kami semakin termotivasi! (:</string>
+    <string name="enableMarqueeFilename">Aktifkan efek marquee untuk nama berkas</string>
+</resources>
 

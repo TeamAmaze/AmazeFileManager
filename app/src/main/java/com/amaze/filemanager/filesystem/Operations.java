@@ -15,6 +15,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
+import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -87,8 +88,7 @@ public class Operations {
             @Override
             protected Void doInBackground(Void... params) {
                 // checking whether filename is valid or a recursive call possible
-                if (MainActivityHelper.isNewDirectoryRecursive(file) ||
-                        !Operations.isFileNameValid(file.getName(context))) {
+                if (!Operations.isFileNameValid(file.getName(context))) {
                     errorCallBack.invalidName(file);
                     return null;
                 }
@@ -340,8 +340,7 @@ public class Operations {
             @Override
             protected Void doInBackground(Void... params) {
                 // check whether file names for new file are valid or recursion occurs
-                if (MainActivityHelper.isNewDirectoryRecursive(newFile) ||
-                        !Operations.isFileNameValid(newFile.getName(context))) {
+                if (!Operations.isFileNameValid(newFile.getName(context))) {
                     errorCallBack.invalidName(newFile);
                     return null;
                 }
@@ -476,6 +475,15 @@ public class Operations {
                     }
                 }
                 return null;
+            }
+
+            @Override
+            protected void onPostExecute(Void aVoid) {
+                super.onPostExecute(aVoid);
+                if (newFile != null && oldFile != null) {
+                    HybridFile[] hybridFiles = { newFile, oldFile};
+                    FileUtils.scanFile(context, hybridFiles);
+                }
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 

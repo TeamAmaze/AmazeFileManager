@@ -210,7 +210,6 @@ public class PreferencesActivity extends ThemedActivity {
             SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
             p.setMargins(0, config.getStatusBarHeight(), 0, 0);
         } else if (SDK_INT >= 21) {
-            SharedPreferences Sp = PreferenceManager.getDefaultSharedPreferences(this);
             boolean colourednavigation = getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION);
             Window window = getWindow();
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);

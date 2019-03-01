@@ -44,15 +44,23 @@ public class RootHelper {
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
      */
-    public static ArrayList<String> runShellCommand(String cmd) throws ShellNotRunningException {
+    public static ArrayList<String> runShellCommandToList(String cmd) throws ShellNotRunningException {
+        final ArrayList<String> result = new ArrayList<>();
+        // callback being called on a background handler thread
+        runShellCommandWithCallback(cmd, (commandCode, exitCode, output) -> result.addAll(output));
+        return result;
+    }
+
+    /**
+     * Command is run from the root context (u:r:SuperSU0)
+     *
+     * @param cmd the command
+     */
+    public static void runShellCommand(String cmd) throws ShellNotRunningException {
         if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
             throw new ShellNotRunningException();
-        final ArrayList<String> result = new ArrayList<>();
-
-        // callback being called on a background handler thread
-        MainActivity.shellInteractive.addCommand(cmd, 0, (commandCode, exitCode, output) -> result.addAll(output));
+        MainActivity.shellInteractive.addCommand(cmd);
         MainActivity.shellInteractive.waitForIdle();
-        return result;
     }
 
     /**
@@ -63,7 +71,7 @@ public class RootHelper {
      *
      * @param cmd the command
      */
-    public static void runShellCommand(String cmd, Shell.OnCommandResultListener callback)
+    public static void runShellCommandWithCallback(String cmd, Shell.OnCommandResultListener callback)
             throws ShellNotRunningException {
         if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
             throw new ShellNotRunningException();
@@ -140,7 +148,7 @@ public class RootHelper {
         return null;
     }
 
-    public static HybridFileParcelable generateBaseFile(DocumentFile file, boolean showHidden) {
+    public static HybridFileParcelable generateBaseFile(DocumentFile file) {
         long size = 0;
         if (!file.isDirectory())
             size = file.length();
@@ -217,7 +225,7 @@ public class RootHelper {
         String name = f.getName();
         String p = f.getParent();
         if (p != null && p.length() > 0) {
-            ArrayList<String> ls = runShellCommand("ls -l " + p);
+            ArrayList<String> ls = runShellCommandToList("ls -l " + p);
             for (String s : ls) {
                 if (contains(s.split(" "), name)) {
                     try {
@@ -285,7 +293,7 @@ public class RootHelper {
                 List<String> ls;
                 String cpath = getCommandLineString(path);
                 //ls = Shell.SU.run("ls -l " + cpath);
-                ls = runShellCommand("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
+                ls = runShellCommandToList("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
                 if (ls != null) {
                     for (String file : ls) {
                         if (!file.contains("Permission denied")) {
@@ -293,7 +301,12 @@ public class RootHelper {
                             if (array != null) {
                                 array.setMode(OpenMode.ROOT);
                                 array.setName(array.getPath());
-                                array.setPath(path + "/" + array.getPath());
+                                if (!path.equals("/")) {
+                                    array.setPath(path + "/" + array.getPath());
+                                } else {
+                                    // root of filesystem, don't concat another '/'
+                                    array.setPath(path + array.getPath());
+                                }
                                 if (array.getLink().trim().length() > 0) {
                                     boolean isdirectory = isDirectory(array.getLink(), root, 0);
                                     array.setDirectory(isdirectory);

@@ -36,6 +36,7 @@ public class LayoutElementParcelable implements Parcelable {
 
     private static final String CURRENT_YEAR = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
+    public final boolean isBack;
     public final int filetype;
     public final IconDataParcelable iconData;
     public final String title;
@@ -45,22 +46,31 @@ public class LayoutElementParcelable implements Parcelable {
     public final String size;
     public final boolean isDirectory;
     public final long date, longSize;
-    public final String date1;
+    public final String dateModification;
     public final boolean header;
 
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
+
+    public LayoutElementParcelable(boolean isBack, String goback, boolean showThumbs) {
+        this(true, new File("..").getName(), "..", "", "", goback, 0,
+                false, "", true, showThumbs, OpenMode.UNKNOWN);
+    }
 
     public LayoutElementParcelable(String path, String permissions, String symlink,
                                    String size, long longSize,boolean header, String date,
                                    boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         this(new File(path).getName(), path, permissions, symlink, size, longSize, header,
                 date, isDirectory, useThumbs, openMode);
-
     }
 
-
     public LayoutElementParcelable(String title, String path, String permissions,
+                                   String symlink, String size, long longSize, boolean header,
+                                   String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
+        this(false, title, path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs, openMode);
+    }
+
+    public LayoutElementParcelable(boolean isBack, String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
         filetype = Icons.getTypeOfFile(path, isDirectory);
@@ -101,11 +111,12 @@ public class LayoutElementParcelable implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.date1 = Utils.getDate(this.date, CURRENT_YEAR);
+            this.dateModification = Utils.getDate(this.date);
         } else {
             this.date = 0;
-            this.date1 = "";
+            this.dateModification = "";
         }
+        this.isBack = isBack;
     }
 
     public OpenMode getMode() {
@@ -144,9 +155,10 @@ public class LayoutElementParcelable implements Parcelable {
         int i = im.readInt();
         header = i != 0;
         isDirectory = j != 0;
-        date1 = im.readString();
+        dateModification = im.readString();
         size = im.readString();
         longSize=im.readLong();
+        isBack = im.readInt() != 0;
     }
 
     @Override
@@ -166,9 +178,10 @@ public class LayoutElementParcelable implements Parcelable {
         p1.writeInt(isDirectory?1:0);
         p1.writeLong(date);
         p1.writeInt(header ? 1 : 0);
-        p1.writeString(date1);
+        p1.writeString(dateModification);
         p1.writeString(size);
         p1.writeLong(longSize);
+        p1.writeInt(isBack? 1:0);
     }
 
     public static final Parcelable.Creator<LayoutElementParcelable> CREATOR =

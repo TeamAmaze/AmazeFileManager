@@ -528,7 +528,7 @@ public class MainActivityHelper {
     public void deleteFiles(ArrayList<HybridFileParcelable> files) {
         if (files == null || files.size() == 0) return;
         if (files.get(0).isSmb()) {
-            new DeleteTask(null, mainActivity).execute((files));
+            new DeleteTask(mainActivity).execute((files));
             return;
         }
         int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
@@ -536,7 +536,7 @@ public class MainActivityHelper {
             mainActivity.oparrayList = (files);
             mainActivity.operation = DataUtils.DELETE;
         } else if (mode == 1 || mode == 0)
-            new DeleteTask(null, mainActivity).execute((files));
+            new DeleteTask(mainActivity).execute((files));
         else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
     }
 

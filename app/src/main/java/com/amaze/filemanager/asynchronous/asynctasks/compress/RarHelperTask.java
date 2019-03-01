@@ -39,7 +39,6 @@ import java.util.ArrayList;
 
 public class RarHelperTask extends CompressedHelperTask {
 
-    private WeakReference<Context> context;
     private String fileLocation;
     private String relativeDirectory;
 
@@ -48,10 +47,9 @@ public class RarHelperTask extends CompressedHelperTask {
      * @param realFileDirectory the location of the zip file
      * @param dir relativeDirectory to access inside the zip file
      */
-    public RarHelperTask(Context context, String realFileDirectory, String dir, boolean goBack,
+    public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
                          OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
         super(goBack, l);
-        this.context = new WeakReference<>(context);
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
     }

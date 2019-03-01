@@ -31,8 +31,6 @@ public class SortHandler extends SQLiteOpenHelper {
     public static final String COLUMN_SORT_PATH = "path";
     public static final String COLUMN_SORT_TYPE = "type";
 
-    private Context context;
-
     public static int getSortType(Context context, String path) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         final Set<String> onlyThisFloders = sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, new HashSet<>());
@@ -51,7 +49,6 @@ public class SortHandler extends SQLiteOpenHelper {
 
     public SortHandler(Context context) {
         super(context, DATABASE_NAME, null, TabHandler.DATABASE_VERSION);
-        this.context = context;
     }
 
     @Override

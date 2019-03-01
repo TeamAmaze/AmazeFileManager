@@ -1,3 +1,25 @@
+/*
+ * Utils.java
+ *
+ * Copyright (C) 2017-2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Raymond Lai <airwave209gt@gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils;
 
 import android.app.Activity;
@@ -13,7 +35,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.util.DisplayMetrics;
 import android.view.View;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
@@ -23,6 +44,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
+import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,7 +58,7 @@ public class Utils {
 
     private static final int INDEX_NOT_FOUND = -1;
     private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
-    private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | KK:mm a");
+    private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | HH:mm");
     private static final String INPUT_INTENT_BLACKLIST_COLON = ";";
     private static final String INPUT_INTENT_BLACKLIST_PIPE = "\\|";
     private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
@@ -239,10 +261,13 @@ public class Utils {
 
     /**
      * Formats input to plain mm:ss format
+     *
+     * @param timerInSeconds duration in seconds
+     * @return time in mm:ss format
      */
-    public static String formatTimer(long timer) {
-        final long min = TimeUnit.SECONDS.toMinutes(timer);
-        final long sec = TimeUnit.SECONDS.toSeconds(timer - TimeUnit.MINUTES.toMillis(min));
+    public static String formatTimer(long timerInSeconds) {
+        final long min = TimeUnit.SECONDS.toMinutes(timerInSeconds);
+        final long sec = TimeUnit.SECONDS.toSeconds(timerInSeconds - TimeUnit.MINUTES.toSeconds(min));
         return String.format("%02d:%02d", min, sec);
     }
 }

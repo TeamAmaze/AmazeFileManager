@@ -10,6 +10,7 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.widget.RemoteViews;
 
@@ -48,13 +49,11 @@ public class DecryptService extends AbstractProgressiveService {
     private ProgressHandler progressHandler = new ProgressHandler();
     private NotificationManager notificationManager;
     private NotificationCompat.Builder notificationBuilder;
-    private volatile float progressPercent = 0f;
     private ProgressListener progressListener;
     // list of data packages, to initiate chart in process viewer fragment
     private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
     private ServiceWatcherUtil serviceWatcherUtil;
     private long totalSize = 0l;
-    private OpenMode openMode;
     private String decryptPath;
     private HybridFileParcelable baseFile;
     private ArrayList<HybridFile> failedOps = new ArrayList<>();
@@ -80,7 +79,7 @@ public class DecryptService extends AbstractProgressiveService {
                 .getColorPreference()
                 .getCurrentUserColorPreferences(this, sharedPreferences).accent;
 
-        openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
+        OpenMode openMode = OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -187,13 +186,9 @@ public class DecryptService extends AbstractProgressiveService {
     }
 
     @Override
-    protected float getPercentProgress() {
-        return progressPercent;
-    }
-
-    @Override
-    protected void setPercentProgress(float progress) {
-        progressPercent = progress;
+    @StringRes
+    protected int getTitle(boolean move) {
+        return R.string.crypt_decrypting;
     }
 
     @Override

@@ -1,8 +1,5 @@
 package com.amaze.filemanager.activities;
 
-import android.content.ActivityNotFoundException;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -20,11 +17,11 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.mikepenz.aboutlibraries.Libs;
@@ -47,23 +44,19 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private Snackbar snackbar;
     private SharedPreferences mSharedPref;
     private View mAuthorsDivider, mDeveloper1Divider;
+    private Billing billing;
 
     private static final String KEY_PREF_STUDIO = "studio";
     private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
-    private static final String URL_AUTHOR_1_PAYPAL = "arpitkh96@gmail.com";
     private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
-    private static final String URL_AUTHOR_2_PAYPAL = "https://www.paypal.me/vishalnehra";
     private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
     private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
-    private static final String URL_DEVELOPER1_BITCOIN = "bitcoin:12SRnoDQvDD8aoCy1SVSn6KSdhQFvRf955?amount=0.0005";
-    private static final String URL_DEVELOPER2_DONATE = "https://paypal.me/TranceLove";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
     private static final String URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues";
     private static final String URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager-1/";
     private static final String URL_REPO_G_PLUS_COMMUNITY = "https://plus.google.com/communities/113997576965363268101";
     private static final String URL_REPO_XDA = "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
     private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
-    private static final String TAG_CLIPBOARD_DONATE = "donate_id";
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -84,7 +77,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         mAppBarLayout = findViewById(R.id.appBarLayout);
         mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
         mTitleTextView =  findViewById(R.id.text_view_title);
-        ImageView mLicensesIcon = findViewById(R.id.image_view_license);
         mAuthorsDivider = findViewById(R.id.view_divider_authors);
         mDeveloper1Divider = findViewById(R.id.view_divider_developers_1);
 
@@ -218,19 +210,8 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 openURL(URL_AUTHOR_1_G_PLUS);
                 break;
 
-            case R.id.text_view_author_1_donate:
-                ClipboardManager clipManager1 = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-                ClipData clip1 = ClipData.newPlainText(TAG_CLIPBOARD_DONATE, URL_AUTHOR_1_PAYPAL);
-                clipManager1.setPrimaryClip(clip1);
-                Snackbar.make(v, R.string.paypal_copy_message, Snackbar.LENGTH_LONG).show();
-                break;
-
             case R.id.text_view_author_2_g_plus:
                 openURL(URL_AUTHOR_2_G_PLUS);
-                break;
-
-            case R.id.text_view_author_2_donate:
-                openURL(URL_AUTHOR_2_PAYPAL);
                 break;
 
             case R.id.text_view_developer_1_github:
@@ -239,18 +220,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
             case R.id.text_view_developer_2_github:
                 openURL(URL_DEVELOPER2_GITHUB);
-                break;
-
-            case R.id.text_view_developer_1_donate:
-                try {
-                    openURL(URL_DEVELOPER1_BITCOIN);
-                } catch (ActivityNotFoundException e) {
-                    Snackbar.make(v, R.string.nobitcoinapp, Snackbar.LENGTH_LONG).show();
-                }
-                break;
-
-            case R.id.text_view_developer_2_donate:
-                openURL(URL_DEVELOPER2_DONATE);
                 break;
 
             case R.id.relative_layout_translate:
@@ -268,6 +237,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
             case R.id.relative_layout_rate:
                 openURL(URL_REPO_RATE);
                 break;
+            case R.id.relative_layout_donate:
+                billing = new Billing(this);
+                break;
         }
     }
 
@@ -277,4 +249,12 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         startActivity(intent);
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        Log.d(TAG, "Destroying the manager.");
+        if (billing != null) {
+            billing.destroyBillingInstance();
+        }
+    }
 }

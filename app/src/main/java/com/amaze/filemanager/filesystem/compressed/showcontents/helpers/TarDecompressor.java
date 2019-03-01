@@ -39,7 +39,7 @@ public class TarDecompressor extends Decompressor {
 
     @Override
     public TarHelperTask changePath(String path, boolean addGoBackItem, OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
-        return new TarHelperTask(context, filePath, path, addGoBackItem, onFinish);
+        return new TarHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 
 }
