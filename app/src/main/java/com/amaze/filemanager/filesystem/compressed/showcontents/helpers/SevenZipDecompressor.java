@@ -2,9 +2,8 @@ package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 
 import android.content.Context;
 
-import com.amaze.filemanager.asynchronous.asynctasks.compress.SevenZipHelperTask;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.asynchronous.asynctasks.compress.SevenZipHelperTask;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 

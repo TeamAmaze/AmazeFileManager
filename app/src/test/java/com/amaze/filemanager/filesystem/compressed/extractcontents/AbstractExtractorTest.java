@@ -31,7 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 14, maxSdk = 26)
 public abstract class AbstractExtractorTest {
 
     protected abstract Class<? extends Extractor> extractorClass();
@@ -61,10 +61,10 @@ public abstract class AbstractExtractorTest {
 
     @Test
     public void testFixEntryName() throws Exception {
-        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
+        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class, String.class)
                 .newInstance(RuntimeEnvironment.application,
                         getArchiveFile().getAbsolutePath(),
-                        Environment.getExternalStorageDirectory().getAbsolutePath(), null);
+                        Environment.getExternalStorageDirectory().getAbsolutePath(), null, null);
 
         assertEquals("test.txt", extractor.fixEntryName("test.txt"));
         assertEquals("test.txt", extractor.fixEntryName("/test.txt"));

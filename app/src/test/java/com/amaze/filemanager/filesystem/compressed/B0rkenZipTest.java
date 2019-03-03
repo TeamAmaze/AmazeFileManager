@@ -81,7 +81,7 @@ public class B0rkenZipTest {
 
     @Test
     public void testExtractZipWithSlashPrefixEntry() throws Exception{
-        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile3.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile3.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener, null);
         extractor.extractFiles(new String[]{"/test.txt"});
         assertEquals(0, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "test.txt").exists());

@@ -3,8 +3,8 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import org.apache.commons.compress.archivers.sevenz.SevenZArchiveEntry;
-import org.apache.commons.compress.archivers.sevenz.SevenZFile;
+import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
+import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
 
 import java.io.File;
 import java.io.IOException;
@@ -30,6 +30,7 @@ public class SevenZipHelperTask extends CompressedHelperTask {
             sevenzFile = new SevenZFile(new File(filePath));
 
             for (SevenZArchiveEntry entry : sevenzFile.getEntries()) {
+                android.util.Log.d("DEBUG", String.format("Entry: %s", entry.getName()));
                 String name = entry.getName();
                 boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);
                 boolean isInRelativeDir = name.contains(SEPARATOR)
