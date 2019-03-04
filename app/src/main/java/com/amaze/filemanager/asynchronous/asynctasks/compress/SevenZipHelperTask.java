@@ -30,14 +30,13 @@ public class SevenZipHelperTask extends CompressedHelperTask {
             sevenzFile = new SevenZFile(new File(filePath));
 
             for (SevenZArchiveEntry entry : sevenzFile.getEntries()) {
-                android.util.Log.d("DEBUG", String.format("Entry: %s", entry.getName()));
                 String name = entry.getName();
                 boolean isInBaseDir = relativePath.equals("") && !name.contains(SEPARATOR);
                 boolean isInRelativeDir = name.contains(SEPARATOR)
                         && name.substring(0, name.lastIndexOf(SEPARATOR)).equals(relativePath);
 
                 if (isInBaseDir || isInRelativeDir) {
-                    elements.add(new CompressedObjectParcelable(entry.getName(),
+                    elements.add(new CompressedObjectParcelable(entry.getName() + " ",
                             entry.getLastModifiedDate().getTime(), entry.getSize(), entry.isDirectory()));
                 }
             }
