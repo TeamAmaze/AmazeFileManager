@@ -267,7 +267,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     toggleChecked(position, holder.checkImageView);
                 } else {
                     if (rowItem.directory) {
-                        String newPath = rowItem.path.substring(0, rowItem.path.length() - 1);
+                        String newPath = (rowItem.path.endsWith("/")) ? rowItem.path.substring(0, rowItem.path.length() - 1) : rowItem.path;
                         compressedExplorerFragment.changePath(newPath);
                     } else {
 
