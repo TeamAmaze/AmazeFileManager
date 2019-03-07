@@ -103,11 +103,11 @@ public abstract class AbstractCompressedHelperTaskTest {
 
     protected abstract String getArchiveType();
 
-    private void copyArchiveToStorage() throws IOException {
-        IOUtils.copy(new ByteArrayInputStream(TestArchives.readArchive(getArchiveType())), new FileOutputStream(getArchiveFile()));
+    protected File getArchiveFile() {
+        return new File(Environment.getExternalStorageDirectory(), "test-archive." + getArchiveType());
     }
 
-    private File getArchiveFile() {
-        return new File(Environment.getExternalStorageDirectory(), "test-archive." + getArchiveType());
+    private void copyArchiveToStorage() throws IOException {
+        IOUtils.copy(new ByteArrayInputStream(TestArchives.readArchive(getArchiveType())), new FileOutputStream(getArchiveFile()));
     }
 }

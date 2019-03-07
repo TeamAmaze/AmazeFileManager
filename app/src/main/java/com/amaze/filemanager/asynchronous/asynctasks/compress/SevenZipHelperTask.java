@@ -1,5 +1,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import android.support.annotation.Nullable;
+
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
@@ -16,18 +18,28 @@ public class SevenZipHelperTask extends CompressedHelperTask {
 
     private String filePath, relativePath;
 
+    private String password;
+
     public SevenZipHelperTask(String filePath, String relativePath, boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                              OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+        this(filePath, relativePath, goBack, l, null);
+    }
+
+    public SevenZipHelperTask(String filePath, String relativePath, boolean goBack,
+                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l, @Nullable String password) {
         super(goBack, l);
         this.filePath = filePath;
         this.relativePath = relativePath;
+        this.password = password;
     }
 
     @Override
     void addElements(ArrayList<CompressedObjectParcelable> elements) {
         SevenZFile sevenzFile = null;
         try {
-            sevenzFile = new SevenZFile(new File(filePath));
+            sevenzFile = (password != null) ?
+                    new SevenZFile(new File(filePath), password.toCharArray()) :
+                    new SevenZFile(new File(filePath));
 
             for (SevenZArchiveEntry entry : sevenzFile.getEntries()) {
                 String name = entry.getName();
