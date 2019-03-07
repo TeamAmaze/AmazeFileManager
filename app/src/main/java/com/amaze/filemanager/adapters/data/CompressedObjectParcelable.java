@@ -113,10 +113,12 @@ public class CompressedObjectParcelable implements Parcelable {
     }
 
     private String getNameForPath(String path) {
+        System.err.printf("getNameForPath: %s\n", path);
         if (path.isEmpty()) return "";
 
         final StringBuilder stringBuilder = new StringBuilder(path);
-        stringBuilder.deleteCharAt(path.length() - 1);
+        if(stringBuilder.charAt(path.length()-1) == '/')
+            stringBuilder.deleteCharAt(path.length() - 1);
 
         try {
             return stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1);
