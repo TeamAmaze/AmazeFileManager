@@ -9,12 +9,7 @@ public class LzmaHelperTaskTest extends AbstractCompressedHelperTaskTest {
     @Override
     protected CompressedHelperTask createTask(String relativePath) {
         return new LzmaHelperTask(new File(Environment.getExternalStorageDirectory(),
-                "test-archive." + getArchiveType()).getAbsolutePath(),
+                "test-archive.tar.lzma").getAbsolutePath(),
                 relativePath, false, (data) -> {});
-    }
-
-    @Override
-    protected String getArchiveType() {
-        return "tar.lzma";
     }
 }

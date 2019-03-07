@@ -18,6 +18,7 @@ import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -32,8 +33,7 @@ public abstract class AbstractCompressedHelperTaskTest {
     public void setUp() throws IOException
     {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
-        TestArchives.init(RuntimeEnvironment.application);
-        copyArchiveToStorage();
+        copyArchivesToStorage();
     }
 
     @Test
@@ -101,13 +101,9 @@ public abstract class AbstractCompressedHelperTaskTest {
 
     protected abstract CompressedHelperTask createTask(String relativePath);
 
-    protected abstract String getArchiveType();
-
-    protected File getArchiveFile() {
-        return new File(Environment.getExternalStorageDirectory(), "test-archive." + getArchiveType());
-    }
-
-    private void copyArchiveToStorage() throws IOException {
-        IOUtils.copy(new ByteArrayInputStream(TestArchives.readArchive(getArchiveType())), new FileOutputStream(getArchiveFile()));
+    private void copyArchivesToStorage() throws IOException {
+        for(File f : new File("src/test/resources").listFiles()) {
+            IOUtils.copy(new FileInputStream(f), new FileOutputStream(new File(Environment.getExternalStorageDirectory(), f.getName())));
+        }
     }
 }

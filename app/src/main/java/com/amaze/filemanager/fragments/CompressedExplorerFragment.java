@@ -211,7 +211,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
             String path = getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
             files.add(new HybridFileParcelable(path));
-            decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
+            decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile, null);
 
             changePath("");
         } else {
@@ -239,7 +239,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
         relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
 
-        decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
+        decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile, null);
         createViews(elements, relativeDirectory);
     }
 

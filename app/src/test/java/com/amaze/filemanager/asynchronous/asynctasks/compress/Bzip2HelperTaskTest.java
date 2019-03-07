@@ -9,12 +9,7 @@ public class Bzip2HelperTaskTest extends AbstractCompressedHelperTaskTest {
     @Override
     protected CompressedHelperTask createTask(String relativePath) {
         return new Bzip2HelperTask(new File(Environment.getExternalStorageDirectory(),
-                "test-archive." + getArchiveType()).getAbsolutePath(),
+                "test-archive.tar.bz2").getAbsolutePath(),
                 relativePath, false, (data) -> {});
-    }
-
-    @Override
-    protected String getArchiveType() {
-        return "tar.bz2";
     }
 }

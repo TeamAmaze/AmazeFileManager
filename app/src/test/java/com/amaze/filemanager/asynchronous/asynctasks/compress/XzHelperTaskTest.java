@@ -9,12 +9,7 @@ public class XzHelperTaskTest extends AbstractCompressedHelperTaskTest {
     @Override
     protected CompressedHelperTask createTask(String relativePath) {
         return new XzHelperTask(new File(Environment.getExternalStorageDirectory(),
-                "test-archive." + getArchiveType()).getAbsolutePath(),
+                "test-archive.tar.xz").getAbsolutePath(),
                 relativePath, false, (data) -> {});
-    }
-
-    @Override
-    protected String getArchiveType() {
-        return "tar.xz";
     }
 }

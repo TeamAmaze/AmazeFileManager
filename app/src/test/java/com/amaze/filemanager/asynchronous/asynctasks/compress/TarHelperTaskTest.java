@@ -9,12 +9,7 @@ public class TarHelperTaskTest extends AbstractCompressedHelperTaskTest {
     @Override
     protected CompressedHelperTask createTask(String relativePath) {
         return new TarHelperTask(new File(Environment.getExternalStorageDirectory(),
-                "test-archive." + getArchiveType()).getAbsolutePath(),
+                "test-archive.tar").getAbsolutePath(),
                 relativePath, false, (data) -> {});
-    }
-
-    @Override
-    protected String getArchiveType() {
-        return "tar";
     }
 }

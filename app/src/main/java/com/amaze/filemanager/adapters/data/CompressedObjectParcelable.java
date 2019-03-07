@@ -113,7 +113,6 @@ public class CompressedObjectParcelable implements Parcelable {
     }
 
     private String getNameForPath(String path) {
-        System.err.printf("getNameForPath: %s\n", path);
         if (path.isEmpty()) return "";
 
         final StringBuilder stringBuilder = new StringBuilder(path);

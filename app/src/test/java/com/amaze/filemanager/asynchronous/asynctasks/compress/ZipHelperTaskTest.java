@@ -10,11 +10,7 @@ public class ZipHelperTaskTest extends AbstractCompressedHelperTaskTest {
 
     protected CompressedHelperTask createTask(String relativePath){
         return new ZipHelperTask(RuntimeEnvironment.application,
-                new File(Environment.getExternalStorageDirectory(),"test-archive." + getArchiveType()).getAbsolutePath(),
+                new File(Environment.getExternalStorageDirectory(),"test-archive.zip").getAbsolutePath(),
                 relativePath, false, (data) -> {});
-    }
-
-    protected String getArchiveType(){
-        return "zip";
     }
 }
