@@ -15,6 +15,9 @@ import org.junit.runners.Suite;
     LzmaHelperTaskTest.class,
     XzHelperTaskTest.class,
     SevenZipHelperTaskTest.class,
+    EncryptedZipHelperTaskTest.class,
+    EncryptedSevenZipHelperTaskTest.class,
+    ListEncryptedSevenZipHelperTaskTest.class
 })
 public class CompressedHelperTaskTestSuite {
 }
