@@ -105,7 +105,7 @@ public abstract class CompressedHelper {
     /**
      * To add compatibility with other compressed file types edit this method
      */
-    public static Decompressor getCompressorInstance(@NonNull Context context, @NonNull File file, @Nullable String password) {
+    public static Decompressor getCompressorInstance(@NonNull Context context, @NonNull File file) {
         Decompressor decompressor;
         String type = getExtension(file.getPath());
 
@@ -124,7 +124,7 @@ public abstract class CompressedHelper {
         } else if(isLzippedTar(type)) {
             decompressor = new LzmaDecompressor(context);
         } else if(is7zip(type)) {
-            decompressor = new SevenZipDecompressor(context, password);
+            decompressor = new SevenZipDecompressor(context);
         } else {
             return null;
         }

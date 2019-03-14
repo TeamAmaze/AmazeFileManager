@@ -23,14 +23,19 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
+import org.apache.commons.compress.PasswordRequiredException;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayList<CompressedObjectParcelable>> {
+public abstract class CompressedHelperTask extends AsyncTask<Void, IOException, ArrayList<CompressedObjectParcelable>> {
 
     private boolean createBackItem;
     private OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish;
@@ -58,6 +63,6 @@ public abstract class CompressedHelperTask extends AsyncTask<Void, Void, ArrayLi
         onFinish.onAsyncTaskFinished(zipEntries);
     }
 
-    abstract void addElements(ArrayList<CompressedObjectParcelable> elements);
+    abstract void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements);
 
 }

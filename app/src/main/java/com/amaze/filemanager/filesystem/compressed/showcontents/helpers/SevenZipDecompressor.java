@@ -13,16 +13,13 @@ import java.util.ArrayList;
 
 public class SevenZipDecompressor extends Decompressor {
 
-    private String password;
-
-    public SevenZipDecompressor(@NonNull Context context, @Nullable String password) {
+    public SevenZipDecompressor(@NonNull Context context) {
         super(context);
-        this.password = password;
     }
 
     @Override
     public SevenZipHelperTask changePath(String path, boolean addGoBackItem,
                                        OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
-        return new SevenZipHelperTask(filePath, path, addGoBackItem, onFinish, password);
+        return new SevenZipHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 }

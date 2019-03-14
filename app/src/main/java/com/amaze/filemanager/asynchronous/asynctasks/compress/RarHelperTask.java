@@ -23,6 +23,8 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -55,7 +57,7 @@ public class RarHelperTask extends CompressedHelperTask {
     }
 
     @Override
-    void addElements(ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) {
         try {
             Archive zipfile = new Archive(new File(fileLocation));
             String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");

@@ -24,6 +24,8 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
@@ -60,7 +62,7 @@ public class ZipHelperTask extends CompressedHelperTask {
     }
 
     @Override
-    void addElements(ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) {
         try {
             ArrayList<CompressedObjectParcelable> wholelist = new ArrayList<>();
 

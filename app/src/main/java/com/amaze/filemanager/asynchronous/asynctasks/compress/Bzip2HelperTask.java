@@ -20,6 +20,9 @@
  */
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
@@ -45,7 +48,7 @@ public class Bzip2HelperTask extends CompressedHelperTask {
     }
 
     @Override
-    void addElements(ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) {
         TarArchiveInputStream tarInputStream = null;
         try {
             tarInputStream = new TarArchiveInputStream(
