@@ -1,15 +1,19 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.widget.EditText;
 
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
-import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.utils.OnAsyncTaskFinished;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import org.apache.commons.compress.PasswordRequiredException;
+import org.tukaani.xz.CorruptedInputException;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,7 +60,7 @@ public class SevenZipHelperTask extends CompressedHelperTask {
                 }
                 paused = false;
                 break;
-            } catch (PasswordRequiredException e) {
+            } catch (PasswordRequiredException | CorruptedInputException e) {
                 paused = true;
                 publishProgress(e);
             } catch (IOException e) {
@@ -72,12 +76,18 @@ public class SevenZipHelperTask extends CompressedHelperTask {
 
         IOException result = values[0];
         //We only handle PasswordRequiredException here.
-        if(result instanceof PasswordRequiredException)
+        if(result instanceof PasswordRequiredException || result instanceof CorruptedInputException)
         {
-            System.err.println("Display dialog!");
-            //Display dialog!
-            password = "123456";
-            paused = false;
+            GeneralDialogCreation.showPasswordDialog(AppConfig.getInstance().getMainActivityContext(),
+                (MainActivity)AppConfig.getInstance().getMainActivityContext(),
+                AppConfig.getInstance().getUtilsProvider().getAppTheme(),
+                R.string.archive_password_prompt, R.string.authenticate_password,
+                ((dialog, which) -> {
+                    EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+                    this.password = editText.getText().toString();
+                    paused = false;
+                    dialog.dismiss();
+                }), null);
         }
     }
 

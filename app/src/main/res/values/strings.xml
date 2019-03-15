@@ -644,5 +644,7 @@
     <string name="saf_otg_explanation">You\'ll now go to Android\'s filesystem for security reasons. Please select the USB device from the list on the left.</string>
     <string name="donation_thanks">Thank you for the donation, this keeps us motivated! (:</string>
     <string name="enableMarqueeFilename">Enable marquee effect for file names</string>
+    <string name="archive_password_prompt">Please enter archive password:</string>
+    <string name="empty_string" translatable="false" />
 </resources>
 

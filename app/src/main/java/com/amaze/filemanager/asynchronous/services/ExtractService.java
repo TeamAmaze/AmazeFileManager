@@ -34,22 +34,17 @@ import android.os.IBinder;
 import android.preference.PreferenceManager;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
-import android.text.InputType;
 import android.util.Log;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
-import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -312,42 +307,21 @@ public class ExtractService extends AbstractProgressiveService {
             if(values.length < 1) return;
 
             IOException result = values[0];
-            MaterialDialog.Builder builder = new MaterialDialog.Builder(AppConfig.getInstance().getMainActivityContext());
-            View dialogLayout = View.inflate(AppConfig.getInstance().getMainActivityContext(), R.layout.dialog_singleedittext, null);
-            WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
-            EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
-            textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-
-            builder.customView(dialogLayout, false)
-                    .autoDismiss(false)
-                    .title(R.string.ssh_key_prompt_passphrase)
-                    .positiveText(R.string.ok)
-                    .onPositive(((dialog, which) -> {
-                        this.password = textfield.getText().toString();
-                        this.extractService.get().getDataPackages().clear();
-                        this.paused = false;
-                        dialog.dismiss();
-                    })).negativeText(R.string.cancel)
-                    .onNegative(((dialog, which) -> {
-                        dialog.dismiss();
-                        toastOnParseError(result);
-                        cancel(true);
-                    }));
-
-            MaterialDialog dialog = builder.show();
-
-            new WarnableTextInputValidator(AppConfig.getInstance().getMainActivityContext(), textfield,
-                    wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
-                if (text.length() < 1) {
-                    return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-                }
-                return new WarnableTextInputValidator.ReturnState();
-            });
-
-            if (errorMessage != null) {
-                wilTextfield.setError(errorMessage);
-                textfield.selectAll();
-            }
+            GeneralDialogCreation.showPasswordDialog(AppConfig.getInstance().getMainActivityContext(),
+                (MainActivity)AppConfig.getInstance().getMainActivityContext(),
+                AppConfig.getInstance().getUtilsProvider().getAppTheme(),
+                R.string.archive_password_prompt, R.string.authenticate_password,
+                (dialog, which) -> {
+                    EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+                    this.password = editText.getText().toString();
+                    this.extractService.get().getDataPackages().clear();
+                    this.paused = false;
+                    dialog.dismiss();
+                }, ((dialog, which) -> {
+                    dialog.dismiss();
+                    toastOnParseError(result);
+                    cancel(true);
+                }));
         }
 
         @Override
