@@ -1,3 +1,25 @@
+/*
+ * SevenZipHelperTask.java
+ *
+ * Copyright © 2018-2019 N00byKing <N00byKing@hotmail.de>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com> and Raymond Lai <airwave209gt at gmail.com>.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.support.annotation.NonNull;
@@ -6,6 +28,7 @@ import android.widget.EditText;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -25,8 +48,6 @@ public class SevenZipHelperTask extends CompressedHelperTask {
 
     private String filePath, relativePath;
 
-    private String password;
-
     private boolean paused = false;
 
     public SevenZipHelperTask(String filePath, String relativePath, boolean goBack,
@@ -41,10 +62,9 @@ public class SevenZipHelperTask extends CompressedHelperTask {
         while(true) {
             if (paused) continue;
 
-            SevenZFile sevenzFile = null;
             try {
-                sevenzFile = (password != null) ?
-                        new SevenZFile(new File(filePath), password.toCharArray()) :
+                SevenZFile sevenzFile = (ArchivePasswordCache.getInstance().containsKey(filePath)) ?
+                        new SevenZFile(new File(filePath), ArchivePasswordCache.getInstance().get(filePath).toCharArray()) :
                         new SevenZFile(new File(filePath));
 
                 for (SevenZArchiveEntry entry : sevenzFile.getEntries()) {
@@ -78,13 +98,15 @@ public class SevenZipHelperTask extends CompressedHelperTask {
         //We only handle PasswordRequiredException here.
         if(result instanceof PasswordRequiredException || result instanceof CorruptedInputException)
         {
+            ArchivePasswordCache.getInstance().remove(filePath);
             GeneralDialogCreation.showPasswordDialog(AppConfig.getInstance().getMainActivityContext(),
                 (MainActivity)AppConfig.getInstance().getMainActivityContext(),
                 AppConfig.getInstance().getUtilsProvider().getAppTheme(),
                 R.string.archive_password_prompt, R.string.authenticate_password,
                 ((dialog, which) -> {
                     EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
-                    this.password = editText.getText().toString();
+                    String password = editText.getText().toString();
+                    ArchivePasswordCache.getInstance().put(filePath, password);
                     paused = false;
                     dialog.dismiss();
                 }), null);
