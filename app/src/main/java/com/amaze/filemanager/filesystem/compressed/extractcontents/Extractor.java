@@ -24,8 +24,6 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.text.TextUtils;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -42,18 +40,14 @@ public abstract class Extractor {
     protected String filePath, outputPath;
     protected OnUpdate listener;
     protected List<String> invalidArchiveEntries;
-    protected char[] password;
 
     public Extractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath,
-                     @NonNull Extractor.OnUpdate listener, @Nullable String password) {
+                     @NonNull Extractor.OnUpdate listener) {
         this.context = context;
         this.filePath = filePath;
         this.outputPath = outputPath;
         this.listener = listener;
         this.invalidArchiveEntries = new ArrayList<>();
-
-        if(!TextUtils.isEmpty(password))
-            this.password = password.toCharArray();
     }
 
     public void extractFiles(String[] files) throws IOException {

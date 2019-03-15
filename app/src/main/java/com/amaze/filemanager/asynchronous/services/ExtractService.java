@@ -41,6 +41,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -208,7 +209,6 @@ public class ExtractService extends AbstractProgressiveService {
         private String extractionPath, compressedPath;
         private ProgressHandler progressHandler;
         private ServiceWatcherUtil watcherUtil;
-        private String password;
         private boolean paused = false;
         private String errorMessage;
 
@@ -219,7 +219,6 @@ public class ExtractService extends AbstractProgressiveService {
             compressedPath = cpath;
             extractionPath = epath;
             entriesToExtract = entries;
-            password = null;
         }
 
         @Override
@@ -284,7 +283,7 @@ public class ExtractService extends AbstractProgressiveService {
                                 public boolean isCancelled() {
                                     return progressHandler.getCancelled();
                                 }
-                            }, password);
+                            });
                     if (entriesToExtract != null) {
                         extractor.extractFiles(entriesToExtract);
                     } else {
@@ -307,13 +306,14 @@ public class ExtractService extends AbstractProgressiveService {
             if(values.length < 1) return;
 
             IOException result = values[0];
+            ArchivePasswordCache.getInstance().remove(compressedPath);
             GeneralDialogCreation.showPasswordDialog(AppConfig.getInstance().getMainActivityContext(),
                 (MainActivity)AppConfig.getInstance().getMainActivityContext(),
                 AppConfig.getInstance().getUtilsProvider().getAppTheme(),
                 R.string.archive_password_prompt, R.string.authenticate_password,
                 (dialog, which) -> {
                     EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
-                    this.password = editText.getText().toString();
+                    ArchivePasswordCache.getInstance().put(compressedPath, editText.getText().toString());
                     this.extractService.get().getDataPackages().clear();
                     this.paused = false;
                     dialog.dismiss();

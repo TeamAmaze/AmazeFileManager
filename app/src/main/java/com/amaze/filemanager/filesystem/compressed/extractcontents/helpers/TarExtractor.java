@@ -44,8 +44,8 @@ import java.util.List;
 
 public class TarExtractor extends Extractor {
 
-    public TarExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener, @Nullable String password) {
-        super(context, filePath, outputPath, listener, password);
+    public TarExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
+        super(context, filePath, outputPath, listener);
     }
 
     @Override

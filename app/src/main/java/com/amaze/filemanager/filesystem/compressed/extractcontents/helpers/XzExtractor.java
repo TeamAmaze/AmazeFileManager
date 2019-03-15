@@ -41,8 +41,8 @@ import java.util.ArrayList;
 
 public class XzExtractor extends Extractor {
 
-    public XzExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener, @Nullable String password) {
-        super(context, filePath, outputPath, listener, password);
+    public XzExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
+        super(context, filePath, outputPath, listener);
     }
 
     @Override

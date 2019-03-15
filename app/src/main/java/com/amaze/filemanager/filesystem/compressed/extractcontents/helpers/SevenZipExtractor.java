@@ -1,3 +1,24 @@
+/*
+ * SevenZipExtractor.java
+ *
+ * Copyright (C) 2017-2019 N00byKing <N00byKing@hotmail.de>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt@gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
@@ -5,6 +26,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
@@ -18,14 +40,16 @@ import java.util.ArrayList;
 
 public class SevenZipExtractor extends Extractor {
 
-    public SevenZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener, @Nullable String password) {
-        super(context, filePath, outputPath, listener, password);
+    public SevenZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
+        super(context, filePath, outputPath, listener);
     }
 
     @Override
     protected void extractWithFilter(@NonNull Filter filter) throws IOException {
         long totalBytes = 0;
-        SevenZFile sevenzFile = (password != null && password.length > 0) ? new SevenZFile(new File(filePath), password) : new SevenZFile(new File(filePath));
+        SevenZFile sevenzFile = (ArchivePasswordCache.getInstance().containsKey(filePath)) ?
+                new SevenZFile(new File(filePath), ArchivePasswordCache.getInstance().get(filePath).toCharArray()) :
+                new SevenZFile(new File(filePath));
 
         ArrayList<SevenZArchiveEntry> arrayList = new ArrayList<>();
 

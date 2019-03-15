@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.TestArchives;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -44,6 +45,9 @@ public abstract class AbstractExtractorTest {
 
     @Before
     public void setUp() throws Exception {
+        if(getArchivePassword() != null)
+            ArchivePasswordCache.getInstance().put(getArchiveFile().getAbsolutePath(), getArchivePassword());
+
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
         TestArchives.init(RuntimeEnvironment.application);
         copyArchiveToStorage();
@@ -51,6 +55,7 @@ public abstract class AbstractExtractorTest {
 
     @After
     public void tearDown() throws Exception {
+        ArchivePasswordCache.getInstance().clear();
         File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
         if(extractedArchiveRoot.exists()) {
             Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
@@ -61,10 +66,10 @@ public abstract class AbstractExtractorTest {
 
     @Test
     public void testFixEntryName() throws Exception {
-        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class, String.class)
+        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
                 .newInstance(RuntimeEnvironment.application,
                         getArchiveFile().getAbsolutePath(),
-                        Environment.getExternalStorageDirectory().getAbsolutePath(), null, null);
+                        Environment.getExternalStorageDirectory().getAbsolutePath(), null);
 
         assertEquals("test.txt", extractor.fixEntryName("test.txt"));
         assertEquals("test.txt", extractor.fixEntryName("/test.txt"));
@@ -87,7 +92,7 @@ public abstract class AbstractExtractorTest {
     @Test
     public void testExtractFiles() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class, String.class)
+        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
                 .newInstance(RuntimeEnvironment.application,
                         getArchiveFile().getAbsolutePath(),
                         Environment.getExternalStorageDirectory().getAbsolutePath(), new Extractor.OnUpdate() {
@@ -117,7 +122,7 @@ public abstract class AbstractExtractorTest {
                             public boolean isCancelled() {
                                 return false;
                             }
-                        }, getArchivePassword());
+                        });
         extractor.extractEverything();
         latch.await();
     }
