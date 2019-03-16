@@ -52,6 +52,9 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 
+import org.apache.commons.compress.PasswordRequiredException;
+import org.tukaani.xz.CorruptedInputException;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -211,6 +214,7 @@ public class ExtractService extends AbstractProgressiveService {
         private ServiceWatcherUtil watcherUtil;
         private boolean paused = false;
         private String errorMessage;
+        private boolean passwordProtected = false;
 
         private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
                        String[] entries) {
@@ -239,7 +243,7 @@ public class ExtractService extends AbstractProgressiveService {
                 } else {
                     if (extractionPath.endsWith("/")) {
                         extractionPath = extractionPath + extractDirName;
-                    } else {
+                    } else if (!passwordProtected) {
                         extractionPath = extractionPath + "/" + extractDirName;
                     }
                 }
@@ -290,10 +294,14 @@ public class ExtractService extends AbstractProgressiveService {
                         extractor.extractEverything();
                     }
                     return (extractor.getInvalidArchiveEntries().size() == 0);
+                } catch (PasswordRequiredException | CorruptedInputException ifArchiveIsPasswordProtected) {
+                    Log.e("amaze", "Archive is password protected.", ifArchiveIsPasswordProtected);
+                    passwordProtected = true;
+                    paused = true;
+                    publishProgress(ifArchiveIsPasswordProtected);
                 } catch (IOException e) {
                     Log.e("amaze", "Error while extracting file " + compressedPath, e);
                     //AppConfig.toast(extractService, extractService.getString(R.string.error));
-
                     paused = true;
                     publishProgress(e);
                 }
