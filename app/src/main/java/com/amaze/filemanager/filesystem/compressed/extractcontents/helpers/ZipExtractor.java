@@ -24,7 +24,6 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
@@ -57,8 +56,9 @@ public class ZipExtractor extends Extractor {
         List<FileHeader> entriesToExtract = new ArrayList<>();
         try {
             ZipFile zipfile = new ZipFile(filePath);
-            if(ArchivePasswordCache.getInstance().containsKey(filePath))
+            if(ArchivePasswordCache.getInstance().containsKey(filePath)) {
                 zipfile.setPassword(ArchivePasswordCache.getInstance().get(filePath));
+            }
 
             // iterating archive elements to find file names that are to be extracted
             for (Object obj : zipfile.getFileHeaders()) {
@@ -98,6 +98,9 @@ public class ZipExtractor extends Extractor {
     private void extractEntry(@NonNull final Context context, ZipFile zipFile, FileHeader entry,
                               String outputDir) throws IOException, ZipException {
         final File outputFile = new File(outputDir, fixEntryName(entry.getFileName()));
+
+        if(ArchivePasswordCache.getInstance().containsKey(filePath))
+            entry.setPassword(ArchivePasswordCache.getInstance().get(filePath).toCharArray());
 
         if (!outputFile.getCanonicalPath().startsWith(outputDir)){
             throw new IOException("Incorrect ZipEntry path!");
