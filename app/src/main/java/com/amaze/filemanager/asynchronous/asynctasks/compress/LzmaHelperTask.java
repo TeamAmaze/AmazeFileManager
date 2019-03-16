@@ -1,7 +1,7 @@
 /*
  * LzmaHelperTask.java
  *
- * Copyright © 2018 Raymond Lai <airwave209gt at gmail.com>.
+ * Copyright © 2018-2019 Raymond Lai <airwave209gt at gmail.com>.
  *
  * This file is part of AmazeFileManager.
  *

@@ -1,7 +1,7 @@
 /*
  * GeneralDialogCreation.java
  *
- * Copyright © 2017-2018 Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Copyright © 2017-2019 Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
  * Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of AmazeFileManager.

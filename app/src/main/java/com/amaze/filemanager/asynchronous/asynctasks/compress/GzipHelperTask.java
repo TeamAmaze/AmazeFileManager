@@ -1,7 +1,7 @@
 /*
  * GzipHelperTask.java
  *
- * Copyright (C) 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Copyright (C) 2018-2019 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
  * Raymond Lai <airwave209gt@gmail.com>.
  *
  * This file is part of Amaze File Manager.
@@ -24,7 +24,6 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
@@ -40,7 +39,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 

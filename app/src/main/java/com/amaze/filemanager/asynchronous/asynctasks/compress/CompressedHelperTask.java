@@ -1,7 +1,7 @@
 /*
  * CompressedHelperTask.java
  *
- * Copyright (C) 2017-2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Copyright (C) 2017-2019 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
  * Raymond Lai <airwave209gt@gmail.com>.
  *
  * This file is part of Amaze File Manager.
@@ -24,12 +24,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-
-import org.apache.commons.compress.PasswordRequiredException;
 
 import java.io.IOException;
 import java.util.ArrayList;
