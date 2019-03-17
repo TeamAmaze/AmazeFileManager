@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Marcin Zasuwa <marcinadd@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -242,18 +243,20 @@ public class FileUtils {
      * @param context
      */
     public static void scanFile(@NonNull Context context, @NonNull HybridFile[] hybridFiles) {
-        if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
-            String[] paths = new String[hybridFiles.length];
-            for (int i = 0; i<hybridFiles.length; i++) {
-                HybridFile hybridFile = hybridFiles[i];
-                paths[i] = hybridFile.getPath();
+        AsyncTask.execute(() -> {
+            if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
+                String[] paths = new String[hybridFiles.length];
+                for (int i = 0; i<hybridFiles.length; i++) {
+                    HybridFile hybridFile = hybridFiles[i];
+                    paths[i] = hybridFile.getPath();
+                }
+                MediaScannerConnection.scanFile(context, paths, null, null);
+            } else {
+                for (HybridFile hybridFile : hybridFiles) {
+                    scanFile(hybridFile, context);
+                }
             }
-            MediaScannerConnection.scanFile(context, paths, null, null);
-        } else {
-            for (HybridFile hybridFile : hybridFiles) {
-                scanFile(hybridFile, context);
-            }
-        }
+        });
     }
 
     /**
