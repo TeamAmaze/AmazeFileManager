@@ -1,17 +1,24 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
-import android.os.Environment;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
 
-import java.io.File;
+import org.apache.commons.compress.PasswordRequiredException;
+import org.tukaani.xz.CorruptedInputException;
 
-public class PasswordProtected7ZipTest extends SevenZipExtractorTest {
+public class PasswordProtected7ZipTest extends AbstractExtractorPasswordProtectedArchivesTest {
+
     @Override
-    protected File getArchiveFile() {
-        return new File(Environment.getExternalStorageDirectory(), "test-archive-encrypted." + getArchiveType());
+    protected Class<? extends Extractor> extractorClass() {
+        return SevenZipExtractor.class;
     }
 
     @Override
-    protected String getArchivePassword() {
-        return "123456";
+    protected Class[] expectedRootExceptionClass() {
+        return new Class[]{PasswordRequiredException.class, CorruptedInputException.class};
+    }
+
+    @Override
+    protected String getArchiveType() {
+        return "7z";
     }
 }

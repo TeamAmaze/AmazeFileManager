@@ -1,18 +1,23 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
-import android.os.Environment;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
 
-import java.io.File;
+import net.lingala.zip4j.exception.ZipException;
 
-public class PasswordProtectedZipTest extends ZipExtractorTest {
+public class PasswordProtectedZipTest extends AbstractExtractorPasswordProtectedArchivesTest {
 
     @Override
-    protected File getArchiveFile() {
-        return new File(Environment.getExternalStorageDirectory(), "test-archive-encrypted." + getArchiveType());
+    protected Class<? extends Extractor> extractorClass() {
+        return ZipExtractor.class;
     }
 
     @Override
-    protected String getArchivePassword() {
-        return "123456";
+    protected Class[] expectedRootExceptionClass() {
+        return new Class[]{ZipException.class};
+    }
+
+    @Override
+    protected String getArchiveType() {
+        return "zip";
     }
 }

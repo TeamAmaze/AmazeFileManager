@@ -9,9 +9,4 @@ public class ListPasswordProtected7ZipTest extends PasswordProtected7ZipTest {
     protected File getArchiveFile() {
         return new File(Environment.getExternalStorageDirectory(), "test-archive-encrypted-list." + getArchiveType());
     }
-
-    @Override
-    protected String getArchivePassword() {
-        return "123456";
-    }
 }

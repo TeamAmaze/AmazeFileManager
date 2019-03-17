@@ -23,7 +23,6 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
@@ -99,7 +98,7 @@ public class SevenZipExtractor extends Extractor {
         try {
             while (progress<entry.getSize()) {
                 int length;
-                int bytesLeft = new Long(entry.getSize()-progress).intValue();
+                int bytesLeft = Long.valueOf(entry.getSize()-progress).intValue();
                 length = sevenzFile.read(content, 0,
                         bytesLeft>GenericCopyUtil.DEFAULT_BUFFER_SIZE ? GenericCopyUtil.DEFAULT_BUFFER_SIZE : bytesLeft);
                 outputStream.write(content, 0, length);
