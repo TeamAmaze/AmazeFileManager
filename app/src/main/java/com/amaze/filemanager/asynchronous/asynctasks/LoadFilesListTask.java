@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
- *     Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ *     Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ *     Marcin Zasuwa <marcinadd@gmail.com>
  *
  * This file is part of Amaze File Manager.
  *
@@ -127,8 +128,12 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 list = new ArrayList<LayoutElementParcelable>();
 
                 sftpHFile.forEachChildrenFile(c, false, file -> {
-                    LayoutElementParcelable elem = createListParcelables(file);
-                    if(elem != null) list.add(elem);
+                    if (!(dataUtils.isFileHidden(file.getPath()) || file.isHidden() && !showHiddenFiles)) {
+                        LayoutElementParcelable elem = createListParcelables(file);
+                        if (elem != null) {
+                            list.add(elem);
+                        }
+                    }
                 });
                 break;
             case CUSTOM:
