@@ -522,11 +522,16 @@ public class UtilsHandler extends SQLiteOpenHelper {
         SQLiteDatabase sqLiteDatabase = getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_PATH, path);
+        sqLiteDatabase.beginTransaction();
+        try {
+            if(Operation.HISTORY.equals(operation))
+                sqLiteDatabase.delete(getTableForOperation(operation), "path = ?", new String[]{path});
 
-        if(Operation.HISTORY.equals(operation))
-            sqLiteDatabase.delete(getTableForOperation(operation), "path = ?", new String[]{path});
-
-        sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
+            sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
+            sqLiteDatabase.setTransactionSuccessful();
+        } finally {
+            sqLiteDatabase.endTransaction();
+        }
     }
 
     private void setPath(Operation operation, String name, String path) {
