@@ -523,6 +523,9 @@ public class UtilsHandler extends SQLiteOpenHelper {
         ContentValues contentValues = new ContentValues();
         contentValues.put(COLUMN_PATH, path);
 
+        if(Operation.HISTORY.equals(operation))
+            sqLiteDatabase.delete(getTableForOperation(operation), "path = ?", new String[]{path});
+
         sqLiteDatabase.insert(getTableForOperation(operation), null, contentValues);
     }
 
