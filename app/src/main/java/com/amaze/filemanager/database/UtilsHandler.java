@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.os.Environment;
+import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -346,7 +347,9 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 e.printStackTrace();
 
                 // failing to decrypt the path, removing entry from database
+                Looper.prepare();
                 Toast.makeText(context, context.getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG).show();
+                Looper.loop();
                 removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
                         "");
                 continue;
@@ -375,9 +378,11 @@ public class UtilsHandler extends SQLiteOpenHelper {
                 Log.e("ERROR", "Error decrypting path: " + cursor.getString(cursor.getColumnIndex(COLUMN_PATH)));
 
                 // failing to decrypt the path, removing entry from database
+                Looper.prepare();
                 Toast.makeText(context,
                         context.getString(R.string.failed_smb_decrypt_path),
                         Toast.LENGTH_LONG).show();
+                Looper.loop();
 //                    removeSmbPath(cursor.getString(cursor.getColumnIndex(COLUMN_NAME)),
 //                            "");
                 continue;
