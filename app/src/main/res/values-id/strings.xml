@@ -584,14 +584,14 @@
     <string name="update">PERBARUI</string>
 	<string name="scp_con">Koneksi SCP/SFTP</string>
     <string name="scp_port">Port</string>
-    <string name="ssh_host_key_verification_prompt">Keaslian host \'%s\' tidak bisa diverifikasi.\n\n%s kunci sidik jari adalah %s.\n\nSilakan sentuh \"Ya\" untuk mengkonfirmasi identitas; atau, sentuh \"Tidak\".</string>
+    <string name="ssh_host_key_verification_prompt">Keaslian host \'%1$s\' tidak bisa diverifikasi.\n\n%2$s kunci sidik jari adalah %3$s.\n\nSilakan sentuh \"Ya\" untuk mengkonfirmasi identitas; atau, sentuh \"Tidak\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verifikasi Host</string>
     <string name="ssh_select_pem_button">Kunci Privat SSH</string>
     <string name="ssh_pem_key_parse_error">Tidak bisa membaca PEM yang dipilih: %s</string>
     <string name="password_unchanged">(tidak berubah)</string>
     <string name="ssh_authentication_failure_password">Gagal masuk: Tidak bisa otentikasi menggunakan nama pengguna dan sandi yang ada.</string>
     <string name="ssh_authentication_failure_key">Gagal masuk: Tidak bisa otentikasi menggunakan nama dan kunci privat yang ada.</string>
-    <string name="ssh_connect_failed">Tidak bisa menyambung ke %s:%d: %s</string>
+    <string name="ssh_connect_failed">Tidak bisa menyambung ke %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">PERINGATAN: IDENTIFIKASI HOST REMOTE TELAH BERUBAH!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         ADA KEMUNGKINAN SESEORANG SEDANG MELAKUKAN HAL YANG JAHAT!\n\n

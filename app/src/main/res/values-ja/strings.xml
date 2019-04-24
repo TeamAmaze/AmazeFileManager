@@ -535,7 +535,7 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="crypt_fingerprint_not_enrolled">指紋が登録されていません</string>
   <string name="send_email_to">電子メールを送信する</string>
   <string name="file_read_only">ファイルが読み取り専用として開かれた</string>
-  <string name="ssh_connect_failed">%s:%d に接続できません：%s</string>
+  <string name="ssh_connect_failed">%1$s:%2$d に接続できません：%3$s</string>
   <string name="ssh_pem_key_parse_error">選択されたの PEMをロードできません：%s</string>
   <string name="typeablepaths_title">カスタム・パス</string>
   <string name="go">開く</string>
