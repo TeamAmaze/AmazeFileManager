@@ -836,6 +836,7 @@ public class GeneralDialogCreation {
         builder.customView(dialogLayout, false)
                 .theme(appTheme.getMaterialDialogTheme())
                 .autoDismiss(false)
+                .canceledOnTouchOutside(false)
                 .title(titleText)
                 .positiveText(R.string.ok)
                 .positiveColor(accentColor)

@@ -52,6 +52,8 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 
+import net.lingala.zip4j.exception.ZipException;
+
 import org.apache.commons.compress.PasswordRequiredException;
 import org.tukaani.xz.CorruptedInputException;
 
@@ -63,6 +65,8 @@ import java.util.ArrayList;
 public class ExtractService extends AbstractProgressiveService {
 
     Context context;
+
+    private static final String TAG = ExtractService.class.getSimpleName();
 
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
@@ -76,6 +80,7 @@ public class ExtractService extends AbstractProgressiveService {
     private int accentColor;
     private SharedPreferences sharedPreferences;
     private RemoteViews customSmallContentViews, customBigContentViews;
+
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -122,6 +127,7 @@ public class ExtractService extends AbstractProgressiveService {
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setAutoCancel(true)
                 .setOngoing(true)
                 .setColor(accentColor);
 
@@ -213,7 +219,6 @@ public class ExtractService extends AbstractProgressiveService {
         private ProgressHandler progressHandler;
         private ServiceWatcherUtil watcherUtil;
         private boolean paused = false;
-        private String errorMessage;
         private boolean passwordProtected = false;
 
         private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
@@ -227,12 +232,11 @@ public class ExtractService extends AbstractProgressiveService {
 
         @Override
         protected Boolean doInBackground(Void... p) {
-            while(true){
-                if(isCancelled()) return false;
+            while(!isCancelled()){
                 if(paused) continue;
 
                 final ExtractService extractService = this.extractService.get();
-                if(extractService == null) return null;
+                if (extractService == null) return null;
 
                 File f = new File(compressedPath);
                 String extractDirName = CompressedHelper.getFileName(f.getName());
@@ -248,64 +252,71 @@ public class ExtractService extends AbstractProgressiveService {
                     }
                 }
 
+                if (entriesToExtract != null && entriesToExtract.length == 0)
+                    entriesToExtract = null;
+
+                final Extractor extractor =
+                    CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
+                        f, extractionPath, new Extractor.OnUpdate() {
+                            private int sourceFilesProcessed = 0;
+
+                            @Override
+                            public void onStart(long totalBytes, String firstEntryName) {
+                                // setting total bytes calculated from zip entries
+                                progressHandler.setTotalSize(totalBytes);
+
+                                extractService.addFirstDatapoint(firstEntryName,
+                                        1, totalBytes, false);
+
+                                watcherUtil = new ServiceWatcherUtil(progressHandler);
+                                watcherUtil.watch(ExtractService.this);
+                            }
+
+                            @Override
+                            public void onUpdate(String entryPath) {
+                                progressHandler.setFileName(entryPath);
+                                if (entriesToExtract != null) {
+                                    progressHandler.setSourceFilesProcessed(sourceFilesProcessed++);
+                                }
+                            }
+
+                            @Override
+                            public void onFinish() {
+                                if (entriesToExtract == null) {
+                                    progressHandler.setSourceFilesProcessed(1);
+                                }
+                            }
+
+                            @Override
+                            public boolean isCancelled() {
+                                return progressHandler.getCancelled();
+                            }
+                        });
+
                 try {
-                    if(entriesToExtract != null && entriesToExtract.length == 0) entriesToExtract = null;
-
-                    final Extractor extractor =
-                        CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
-                            f, extractionPath, new Extractor.OnUpdate() {
-                                private int sourceFilesProcessed = 0;
-
-                                @Override
-                                public void onStart(long totalBytes, String firstEntryName) {
-                                    // setting total bytes calculated from zip entries
-                                    progressHandler.setTotalSize(totalBytes);
-
-                                    extractService.addFirstDatapoint(firstEntryName,
-                                            1, totalBytes, false);
-
-                                    watcherUtil = new ServiceWatcherUtil(progressHandler);
-                                    watcherUtil.watch(ExtractService.this);
-                                }
-
-                                @Override
-                                public void onUpdate(String entryPath) {
-                                    progressHandler.setFileName(entryPath);
-                                    if (entriesToExtract != null) {
-                                        progressHandler.setSourceFilesProcessed(sourceFilesProcessed++);
-                                    }
-                                }
-
-                                @Override
-                                public void onFinish() {
-                                    if (entriesToExtract == null){
-                                        progressHandler.setSourceFilesProcessed(1);
-                                    }
-                                }
-
-                                @Override
-                                public boolean isCancelled() {
-                                    return progressHandler.getCancelled();
-                                }
-                            });
                     if (entriesToExtract != null) {
                         extractor.extractFiles(entriesToExtract);
                     } else {
                         extractor.extractEverything();
                     }
                     return (extractor.getInvalidArchiveEntries().size() == 0);
-                } catch (PasswordRequiredException | CorruptedInputException ifArchiveIsPasswordProtected) {
-                    Log.e("amaze", "Archive is password protected.", ifArchiveIsPasswordProtected);
-                    passwordProtected = true;
-                    paused = true;
-                    publishProgress(ifArchiveIsPasswordProtected);
                 } catch (IOException e) {
-                    Log.e("amaze", "Error while extracting file " + compressedPath, e);
-                    //AppConfig.toast(extractService, extractService.getString(R.string.error));
-                    paused = true;
-                    publishProgress(e);
+                    if(PasswordRequiredException.class.isAssignableFrom(e.getClass()) ||
+                            CorruptedInputException.class.isAssignableFrom(e.getClass()) ||
+                            e.getCause() != null && ZipException.class.isAssignableFrom(e.getCause().getClass())) {
+                        Log.d(TAG, "Archive is password protected.", e);
+                        passwordProtected = true;
+                        paused = true;
+                        publishProgress(e);
+                    } else {
+                        Log.e(TAG, "Error while extracting file " + compressedPath, e);
+                        AppConfig.toast(extractService, extractService.getString(R.string.error));
+                        paused = true;
+                        publishProgress(e);
+                    }
                 }
             }
+            return false;
         }
 
         @Override
@@ -328,7 +339,10 @@ public class ExtractService extends AbstractProgressiveService {
                 }, ((dialog, which) -> {
                     dialog.dismiss();
                     toastOnParseError(result);
-                    cancel(true);
+                    cancel(true); //This cancels the AsyncTask...
+                    progressHandler.setCancelled(true);
+                    stopSelf(); //and this stops the ExtractService altogether.
+                    this.paused = false;
                 }));
         }
 
@@ -351,8 +365,8 @@ public class ExtractService extends AbstractProgressiveService {
 
         private void toastOnParseError(IOException result){
             Toast.makeText(AppConfig.getInstance().getMainActivityContext(),
-                    AppConfig.getInstance().getResources().getString(R.string.ssh_pem_key_parse_error,
-                            result.getLocalizedMessage()), Toast.LENGTH_LONG).show();
+                AppConfig.getInstance().getResources().getString(R.string.cannot_extract_archive,
+                    compressedPath, result.getLocalizedMessage()), Toast.LENGTH_LONG).show();
         }
     }
 
@@ -363,7 +377,7 @@ public class ExtractService extends AbstractProgressiveService {
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            progressHandler.setCancelled(true);
+        progressHandler.setCancelled(true);
         }
     };
 
@@ -373,4 +387,3 @@ public class ExtractService extends AbstractProgressiveService {
     }
 
 }
-

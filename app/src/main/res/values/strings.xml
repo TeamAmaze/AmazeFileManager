@@ -646,5 +646,6 @@
     <string name="enableMarqueeFilename">Enable marquee effect for file names</string>
     <string name="archive_password_prompt">Please enter archive password:</string>
     <string name="empty_string" translatable="false" />
+    <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>
 </resources>
 
