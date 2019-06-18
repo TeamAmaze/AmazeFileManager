@@ -72,7 +72,7 @@ public class FileHandler extends Handler {
                 main.reloadListElements(true, main.results, !main.IS_LIST);
             } else {
                 // we already have some elements in list view, invalidate the adapter
-                ((RecyclerAdapter) listView.getAdapter()).setItems(listView, main.getElementsList());
+                ((RecyclerAdapter) listView.getAdapter()).setItems(listView, main.getElementsList(), false);
             }
         } else {
             // there was no list view, means the directory was empty

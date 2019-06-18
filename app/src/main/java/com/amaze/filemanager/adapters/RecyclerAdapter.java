@@ -51,6 +51,7 @@ import com.bumptech.glide.request.RequestListener;
 import com.bumptech.glide.request.target.Target;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static com.amaze.filemanager.adapters.RecyclerAdapter.ListElemType.*;
@@ -93,6 +94,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private RecyclerPreloadSizeProvider sizeProvider;
     private RecyclerPreloadModelProvider modelProvider;
     private ArrayList<ListItem> itemsDigested = new ArrayList<>();
+    private ArrayList<IconDataParcelable> iconDataParcelables = new ArrayList<>();
     private Context context;
     private LayoutInflater mInflater;
     private float minRowHeight;
@@ -127,7 +129,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         grey_color = Utils.getColor(context, R.color.grey);
         apkColor = Utils.getColor(context, R.color.apk_item);
 
-        setItems(recyclerView, itemsRaw, false);
+        setItems(recyclerView, itemsRaw, false, false);
 
     }
 
@@ -311,63 +313,61 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         this.offset += 30;
     }
 
-    /**
-     * Adds item to the end of the list, don't use this unless you are dynamically loading the adapter,
-     * after you are finished you must call createHeaders
-     */
-    public void addItem(LayoutElementParcelable e) {
-        if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
-            itemsDigested.add(itemsDigested.size()-1, new ListItem(e));
-        } else if(mainFrag.IS_LIST) {
-            itemsDigested.add(new ListItem(e));
-            itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
-        } else {
-            itemsDigested.add(new ListItem(e));
+    private List<IconDataParcelable> getIconData(List<LayoutElementParcelable> parcelables) {
+        List<IconDataParcelable> iconDataParcelables = new ArrayList<>();
+        for (LayoutElementParcelable parcelable : parcelables) {
+            iconDataParcelables.add(parcelable.iconData);
         }
-
-        notifyItemInserted(getItemCount());
+        return iconDataParcelables;
     }
 
-    public void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList) {
-        setItems(recyclerView, arrayList, true);
+    public void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean addItems) {
+        setItems(recyclerView, arrayList, true, addItems);
     }
 
-    private void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+    private void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList,
+                          boolean invalidate, boolean addItems) {
         if(preloader != null)  {
             recyclerView.removeOnScrollListener(preloader);
             preloader = null;
         }
 
-        itemsDigested.clear();
+        if (!addItems) {
+            itemsDigested.clear();
+            iconDataParcelables.clear();
+        }
         offset = 0;
         stoppedAnimation = false;
 
-        ArrayList<IconDataParcelable> uris = new ArrayList<>(itemsDigested.size());
-
         for (LayoutElementParcelable e : arrayList) {
             itemsDigested.add(new ListItem(e.isBack, e));
-            uris.add(e != null ? e.iconData : null);
+            iconDataParcelables.add(e.iconData);
         }
 
-        if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
+        if (mainFrag.IS_LIST && itemsDigested.size() > 0 && !addItems) {
             itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
-            uris.add(null);
+
+            iconDataParcelables.add(null);
         }
 
         for (int i = 0; i < itemsDigested.size(); i++) {
             itemsDigested.get(i).setAnimate(false);
         }
 
-        if (getBoolean(PREFERENCE_SHOW_HEADERS)) {
-            createHeaders(invalidate, uris);
+        if (getBoolean(PREFERENCE_SHOW_HEADERS) && !addItems) {
+            createHeaders(invalidate, iconDataParcelables);
         }
 
         sizeProvider = new RecyclerPreloadSizeProvider(this);
-        modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris);
+        modelProvider = new RecyclerPreloadModelProvider(mainFrag, iconDataParcelables);
 
         preloader = new RecyclerViewPreloader<>(GlideApp.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES);
 
         recyclerView.addOnScrollListener(preloader);
+
+        if (addItems) {
+            notifyDataSetChanged();
+        }
     }
 
     public void createHeaders(boolean invalidate, List<IconDataParcelable> uris)  {

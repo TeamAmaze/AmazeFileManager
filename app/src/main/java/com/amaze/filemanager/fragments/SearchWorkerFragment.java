@@ -8,6 +8,8 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchAsyncTask;
 import com.amaze.filemanager.utils.OpenMode;
 
+import java.util.List;
+
 /**
  * Worker fragment designed to not be destroyed when the activity holding it is recreated
  * (aka the state changes like screen rotation) thus maintaining alive an AsyncTask (SearchTask in this case)
@@ -31,7 +33,7 @@ public class SearchWorkerFragment extends Fragment {
     public interface HelperCallbacks {
         void onPreExecute(String query);
         void onPostExecute(String query);
-        void onProgressUpdate(HybridFileParcelable val, String query);
+        void onProgressUpdate(List<HybridFileParcelable> val, String query);
         void onCancelled();
     }
 

@@ -1,9 +1,15 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.os.AsyncTask;
+import android.os.Build;
+import android.os.CountDownTimer;
+import android.os.Environment;
+import android.os.Handler;
 import android.util.Log;
 
+import com.amaze.filemanager.asynchronous.asynctasks.search.SearchTask;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
@@ -11,6 +17,11 @@ import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinTask;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Pattern;
 
 /**
@@ -27,6 +38,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
     private String mInput;
     private OpenMode mOpenMode;
     private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
+    private ForkJoinPool forkJoinPool;
 
     public SearchAsyncTask(Activity a, SearchWorkerFragment.HelperCallbacks l,
                            String input, OpenMode openMode, boolean root, boolean regex,
@@ -49,6 +61,10 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
              */
         if (mCallbacks != null) {
             mCallbacks.onPreExecute(mInput);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                forkJoinPool = new ForkJoinPool();
+            }
         }
     }
 
@@ -78,7 +94,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
 
     @Override
     public void onPostExecute(Void c) {
-        if (mCallbacks != null) {
+        if (mCallbacks != null && activity.get() != null) {
             mCallbacks.onPostExecute(mInput);
         }
     }
@@ -91,7 +107,12 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
     @Override
     public void onProgressUpdate(HybridFileParcelable... val) {
         if (!isCancelled() && mCallbacks != null) {
-            mCallbacks.onProgressUpdate(val[0], mInput);
+            int i=-1;
+            List<HybridFileParcelable> hybridFileParcelableList = new ArrayList<>();
+            while(++i<val.length) {
+                hybridFileParcelableList.add(val[i]);
+            }
+            mCallbacks.onProgressUpdate(hybridFileParcelableList, mInput);
         }
     }
 
@@ -100,7 +121,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      *
      * @param directory the current path
      */
-    private void search(HybridFile directory, final SearchFilter filter) {
+    private void searchOld(HybridFile directory, final SearchFilter filter) {
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
             directory.forEachChildrenFile(activity.get(), mRootMode, file -> {
                 if (!isCancelled()) {
@@ -117,6 +138,22 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
         }
     }
 
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void search(HybridFile hybridFile, final SearchFilter filter) {
+        ForkJoinTask<List<HybridFileParcelable>> forkJoinTask = new SearchTask(activity, mRootMode,
+                hybridFile, filter, this);
+        forkJoinPool.submit(forkJoinTask);
+        while(!forkJoinPool.isQuiescent()) {
+            // do nothing
+            Log.d(getClass().getSimpleName(), "Wait out " + forkJoinPool.getActiveThreadCount());
+            try {
+                Thread.sleep(5000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
 
     /**
      * Recursively search for occurrences of a given text in file names and publish the result
@@ -125,7 +162,13 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      * @param query the searched text
      */
     private void search(HybridFile file, final String query) {
-        search(file, fileName -> fileName.toLowerCase().contains(query.toLowerCase()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            search(file, fileName -> fileName.toLowerCase().contains(query.toLowerCase()));
+        } else {
+
+            searchOld(file, fileName -> fileName.toLowerCase().contains(query.toLowerCase()));
+        }
     }
 
     /**
@@ -135,7 +178,13 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      * @param pattern the compiled java regex
      */
     private void searchRegExFind(HybridFile file, final Pattern pattern) {
-        search(file, fileName -> pattern.matcher(fileName).find());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            search(file, fileName -> pattern.matcher(fileName).find());
+        } else {
+
+            searchOld(file, fileName -> pattern.matcher(fileName).find());
+        }
     }
 
     /**
@@ -145,7 +194,13 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      * @param pattern the compiled java regex
      */
     private void searchRegExMatch(HybridFile file, final Pattern pattern) {
-        search(file, fileName -> pattern.matcher(fileName).matches());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+
+            search(file, fileName -> pattern.matcher(fileName).matches());
+        } else {
+
+            searchOld(file, fileName -> pattern.matcher(fileName).matches());
+        }
     }
 
     /**

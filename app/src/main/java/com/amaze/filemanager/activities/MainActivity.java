@@ -1783,25 +1783,25 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onPreExecute(String query) {
-        mainFragment.mSwipeRefreshLayout.setRefreshing(true);
-        mainFragment.onSearchPreExecute(query);
+        getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(true);
+        getCurrentMainFragment().onSearchPreExecute(query);
     }
 
     @Override
     public void onPostExecute(String query) {
-        mainFragment.onSearchCompleted(query);
-        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+        getCurrentMainFragment().onSearchCompleted(query);
+        getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
-    public void onProgressUpdate(HybridFileParcelable val , String query) {
-        mainFragment.addSearchResult(val,query);
+    public void onProgressUpdate(List<HybridFileParcelable> val , String query) {
+        getCurrentMainFragment().addSearchResult(val,query);
     }
 
     @Override
     public void onCancelled() {
-        mainFragment.reloadListElements(false, false, !mainFragment.IS_LIST);
-        mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+        getCurrentMainFragment().reloadListElements(false, false, !getCurrentMainFragment().IS_LIST);
+        getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(false);
     }
 
     @Override
