@@ -86,6 +86,7 @@ import com.cloudrail.si.services.OneDrive;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.function.Predicate;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
@@ -266,9 +267,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
             File f = new File(file);
             String name;
-            @DrawableRes int icon1;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
-                name = resources.getString(R.string.internalstorage);
+            @DrawableRes int icon1 = R.drawable.ic_sd_storage_white_24dp;
+            if (isInternalStorage(file)) {
+                name = resources.getString(R.string.storage);
                 icon1 = R.drawable.ic_phone_android_white_24dp;
             } else if ("/storage/sdcard1".equals(file)) {
                 name = resources.getString(R.string.extstorage);
@@ -492,6 +493,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             }
 
             item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
+            item.getActionView().setOnLongClickListener(v -> {
+                onNavigationItemActionLongClick(item);
+                return false;
+            });
         }
     }
 
@@ -601,6 +606,16 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         return true;
     }
 
+    /**
+     * Tries to identify if file belongs to internal storage
+     *
+     * @param file given path to root of file system
+     * @return true if file is an internal storage
+     */
+    private boolean isInternalStorage(String file) {
+        return "/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file);
+    }
+
     public void onNavigationItemActionClick(MenuItem item) {
         String title = item.getTitle().toString();
         MenuMetadata meta = dataUtils.getDrawerMetadata(item);
@@ -633,6 +648,26 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
                     GeneralDialogCreation.showCloudDialog(mainActivity, mainActivity.getAppTheme(), OpenMode.ONEDRIVE);
                 }
+        }
+    }
+
+    /**
+     * Performs operation on long click of drawer menu icon
+     *
+     * @param item current item whose icon was long pressed
+     */
+    public void onNavigationItemActionLongClick(MenuItem item) {
+        String title = item.getTitle().toString();
+        MenuMetadata meta = dataUtils.getDrawerMetadata(item);
+        String path = meta.path;
+
+        switch (item.getGroupId()) {
+            case STORAGES_GROUP:
+                if (!path.equals("/") && !isInternalStorage(path)) {
+                    // make external storage rename
+                    mainActivity.renameBookmark(title, path);
+                }
+                break;
         }
     }
 
