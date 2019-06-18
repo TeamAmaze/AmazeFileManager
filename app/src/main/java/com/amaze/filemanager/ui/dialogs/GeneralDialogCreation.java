@@ -78,6 +78,7 @@ import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
+import com.amaze.filemanager.utils.OnOperationPerform;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
@@ -114,7 +115,7 @@ import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
  * Here are a lot of function that create material dialogs
  *
  * @author Emmanuel
- *         on 17/5/2017, at 13:27.
+ * on 17/5/2017, at 13:27.
  */
 
 public class GeneralDialogCreation {
@@ -137,10 +138,10 @@ public class GeneralDialogCreation {
     }
 
     public static MaterialDialog showNameDialog(final MainActivity m, String hint, String prefill,
-                                                          String title, String positiveButtonText,
-                                                          String neutralButtonText, String negativeButtonText,
-                                                          MaterialDialog.SingleButtonCallback positiveButtonAction,
-                                                          WarnableTextInputValidator.OnTextValidate validator) {
+                                                String title, String positiveButtonText,
+                                                String neutralButtonText, String negativeButtonText,
+                                                MaterialDialog.SingleButtonCallback positiveButtonAction,
+                                                WarnableTextInputValidator.OnTextValidate validator) {
         int accentColor = m.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(m);
 
@@ -158,7 +159,7 @@ public class GeneralDialogCreation {
                 .positiveText(positiveButtonText)
                 .onPositive(positiveButtonAction);
 
-        if(neutralButtonText != null) {
+        if (neutralButtonText != null) {
             builder.neutralText(neutralButtonText);
         }
 
@@ -172,7 +173,7 @@ public class GeneralDialogCreation {
         WarnableTextInputValidator textInputValidator = new WarnableTextInputValidator(builder.getContext(), textfield, tilTextfield,
                 dialog.getActionButton(DialogAction.POSITIVE), validator);
 
-        if(!TextUtils.isEmpty(prefill))
+        if (!TextUtils.isEmpty(prefill))
             textInputValidator.afterTextChanged(textfield.getText());
 
         return dialog;
@@ -315,7 +316,7 @@ public class GeneralDialogCreation {
                     listFiles.setVisibility(View.GONE);
                 }
 
-                if (tempCounterDirectories != 0 || tempCounterFiles !=0) {
+                if (tempCounterDirectories != 0 || tempCounterFiles != 0) {
                     listDirectories.setText(directoriesStringBuilder);
                     if (listDirectories.getVisibility() != View.VISIBLE && tempCounterDirectories != 0)
                         listDirectories.setVisibility(View.VISIBLE);
@@ -362,6 +363,7 @@ public class GeneralDialogCreation {
     public static void showPropertiesDialogWithoutPermissions(final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, false);
     }
+
     public static void showPropertiesDialogForStorage(final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
         showPropertiesDialog(f, null, activity, false, appTheme, false, true);
     }
@@ -375,7 +377,7 @@ public class GeneralDialogCreation {
         long last = baseFile.getDate();
         final String date = Utils.getDate(last),
                 items = c.getString(R.string.calculating),
-                name  = baseFile.getName(),
+                name = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
 
         MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
@@ -385,7 +387,8 @@ public class GeneralDialogCreation {
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
         TextView itemsText = v.findViewById(R.id.t7);
 
-        /*View setup*/ {
+        /*View setup*/
+        {
             TextView mNameTitle = v.findViewById(R.id.title_name);
             mNameTitle.setTextColor(accentColor);
 
@@ -448,7 +451,8 @@ public class GeneralDialogCreation {
         GenerateHashesTask hashGen = new GenerateHashesTask(baseFile, c, v);
         hashGen.executeOnExecutor(executor);
 
-        /*Chart creation and data loading*/ {
+        /*Chart creation and data loading*/
+        {
             boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
             boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
             PieChart chart = v.findViewById(R.id.chart);
@@ -457,19 +461,19 @@ public class GeneralDialogCreation {
             chart.setDrawEntryLabels(false);
             chart.setDescription(null);
             chart.setNoDataText(c.getString(R.string.loading));
-            chart.setRotationAngle(!isRightToLeft? 0f:180f);
+            chart.setRotationAngle(!isRightToLeft ? 0f : 180f);
             chart.setHoleColor(Color.TRANSPARENT);
-            chart.setCenterTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
+            chart.setCenterTextColor(isDarkTheme ? Color.WHITE : Color.BLACK);
 
             chart.getLegend().setEnabled(true);
             chart.getLegend().setForm(Legend.LegendForm.CIRCLE);
             chart.getLegend().setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
             chart.getLegend().setTypeface(Typeface.create("sans-serif-medium", Typeface.NORMAL));
-            chart.getLegend().setTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
+            chart.getLegend().setTextColor(isDarkTheme ? Color.WHITE : Color.BLACK);
 
             chart.animateY(1000);
 
-            if(forStorage) {
+            if (forStorage) {
                 final String[] LEGENDS = new String[]{c.getString(R.string.used), c.getString(R.string.free)};
                 final int[] COLORS = {Utils.getColor(c, R.color.piechart_red), Utils.getColor(c, R.color.piechart_green)};
 
@@ -492,7 +496,7 @@ public class GeneralDialogCreation {
 
                 PieData pieData = new PieData(set);
                 pieData.setValueFormatter(new SizeFormatter(c));
-                pieData.setValueTextColor(isDarkTheme? Color.WHITE:Color.BLACK);
+                pieData.setValueTextColor(isDarkTheme ? Color.WHITE : Color.BLACK);
 
                 String totalSpaceFormatted = Formatter.formatFileSize(c, totalSpace);
 
@@ -506,7 +510,7 @@ public class GeneralDialogCreation {
             chart.invalidate();
         }
 
-        if(!forStorage && showPermissions) {
+        if (!forStorage && showPermissions) {
             final MainFragment main = ((MainActivity) base).mainFragment;
             AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
             appCompatButton.setAllCaps(true);
@@ -557,8 +561,8 @@ public class GeneralDialogCreation {
         @Override
         public String getFormattedValue(float value, Entry entry, int dataSetIndex,
                                         ViewPortHandler viewPortHandler) {
-            String prefix = entry.getData() != null && entry.getData() instanceof String?
-                    (String) entry.getData():"";
+            String prefix = entry.getData() != null && entry.getData() instanceof String ?
+                    (String) entry.getData() : "";
 
             return prefix + Formatter.formatFileSize(context, (long) value);
         }
@@ -723,13 +727,13 @@ public class GeneralDialogCreation {
                     } finally {
                         dialog.dismiss();
                     }
-        });
+                });
 
         MaterialDialog dialog = builder.show();
         MDButton btnOK = dialog.getActionButton(DialogAction.POSITIVE);
         btnOK.setEnabled(false);
 
-        TextWatcher textWatcher = new SimpleTextWatcher(){
+        TextWatcher textWatcher = new SimpleTextWatcher() {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 btnOK.setEnabled(encryptSaveAsEditText.getText().toString().length() > 0
@@ -750,7 +754,7 @@ public class GeneralDialogCreation {
         });
 
         new WarnableTextInputValidator(c, passwordConfirmEditText, textInputLayoutPasswordConfirm, btnOK, (text) -> {
-            if(!text.equals(passwordEditText.getText().toString())) {
+            if (!text.equals(passwordEditText.getText().toString())) {
                 return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.password_no_match);
             }
             return new WarnableTextInputValidator.ReturnState();
@@ -801,11 +805,12 @@ public class GeneralDialogCreation {
     public static void showDecryptDialog(Context c, final MainActivity main, final Intent intent,
                                          AppTheme appTheme, final String password,
                                          final EncryptDecryptUtils.DecryptButtonCallbackInterface
-                                          decryptButtonCallbackInterface) {
+                                                 decryptButtonCallbackInterface) {
         int accentColor = main.getAccent();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
         builder.title(c.getString(R.string.crypt_decrypt));
-        builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {});
+        builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {
+        });
         builder.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
         builder.theme(appTheme.getMaterialDialogTheme());
         builder.positiveText(c.getString(R.string.ok));
@@ -823,8 +828,8 @@ public class GeneralDialogCreation {
         builder.show();
     }
 
-    public static void showSMBHelpDialog(Context m, int accentColor){
-        MaterialDialog.Builder b=new MaterialDialog.Builder(m);
+    public static void showSMBHelpDialog(Context m, int accentColor) {
+        MaterialDialog.Builder b = new MaterialDialog.Builder(m);
         b.content(m.getText(R.string.smb_instructions));
         b.positiveText(R.string.doit);
         b.positiveColor(accentColor);
@@ -860,9 +865,10 @@ public class GeneralDialogCreation {
                 .positiveColor(accentColor)
                 .negativeColor(accentColor)
                 .neutralColor(accentColor)
-                .onPositive((dialog, which) -> m. mainActivityHelper.extractFile(f))
+                .onPositive((dialog, which) -> m.mainActivityHelper.extractFile(f))
                 .onNegative((dialog, which) -> m.openCompressed(Uri.fromFile(f).toString()));
-        if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK)) mat.theme(Theme.DARK);
+        if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK))
+            mat.theme(Theme.DARK);
         MaterialDialog b = mat.build();
 
         if (!CompressedHelper.isFileExtractable(f.getPath())) {
@@ -883,20 +889,20 @@ public class GeneralDialogCreation {
         WarnableTextInputLayout tilFilename = dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
         a.customView(dialogView, false)
-            .widgetColor(accentColor)
-            .theme(m.getAppTheme().getMaterialDialogTheme())
-            .title(m.getResources().getString(R.string.enterzipname))
-            .positiveText(R.string.create)
-            .positiveColor(accentColor).onPositive((materialDialog, dialogAction) -> {
-                String name = current + "/" + etFilename.getText().toString();
-                m.mainActivityHelper.compressFiles(new File(name), b);
-            }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
+                .widgetColor(accentColor)
+                .theme(m.getAppTheme().getMaterialDialogTheme())
+                .title(m.getResources().getString(R.string.enterzipname))
+                .positiveText(R.string.create)
+                .positiveColor(accentColor).onPositive((materialDialog, dialogAction) -> {
+            String name = current + "/" + etFilename.getText().toString();
+            m.mainActivityHelper.compressFiles(new File(name), b);
+        }).negativeText(m.getResources().getString(R.string.cancel)).negativeColor(accentColor);
 
         final MaterialDialog materialDialog = a.build();
 
         new WarnableTextInputValidator(a.getContext(), etFilename, tilFilename,
-                        materialDialog.getActionButton(DialogAction.POSITIVE),
-                        (text) -> {
+                materialDialog.getActionButton(DialogAction.POSITIVE),
+                (text) -> {
                     boolean isValidFilename = FileUtil.isValidFilename(text);
 
                     if (isValidFilename && text.length() > 0 && !text.toLowerCase().endsWith(".zip")) {
@@ -1026,7 +1032,7 @@ public class GeneralDialogCreation {
                 toHybridFileArrayList(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
 
-        MaterialDialog x= a.build();
+        MaterialDialog x = a.build();
         adapter.updateDialog(x);
         x.show();
     }
@@ -1044,14 +1050,14 @@ public class GeneralDialogCreation {
                 FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()), null, false);
         a.adapter(adapter, null);
         a.dividerColor(Color.GRAY);
-        MaterialDialog x= a.build();
+        MaterialDialog x = a.build();
         adapter.updateDialog(x);
         x.show();
 
     }
 
     public static void setPermissionsDialog(final View v, View but, final HybridFile file,
-                                     final String f, final Context context, final MainFragment mainFrag) {
+                                            final String f, final Context context, final MainFragment mainFrag) {
         final CheckBox readown = v.findViewById(R.id.creadown);
         final CheckBox readgroup = v.findViewById(R.id.creadgroup);
         final CheckBox readother = v.findViewById(R.id.creadother);
@@ -1083,29 +1089,24 @@ public class GeneralDialogCreation {
         exeother.setChecked(exe[2]);
         but.setOnClickListener(v1 -> {
             int perms = RootUtils.permissionsToOctalString(readown.isChecked(), writeown.isChecked(), exeown.isChecked(),
-                                                                    readgroup.isChecked(), writegroup.isChecked(), exegroup.isChecked(),
-                                                                    readother.isChecked(), writeother.isChecked(), exeother.isChecked());
-
-            String options =  !file.isDirectory(context)? "-R":"";
-            String command = String.format(RootUtils.CHMOD_COMMAND, options, perms, file.getPath());
+                    readgroup.isChecked(), writegroup.isChecked(), exegroup.isChecked(),
+                    readother.isChecked(), writeother.isChecked(), exeother.isChecked());
 
             try {
-                RootHelper.runShellCommandWithCallback(command, (commandCode, exitCode, output) -> {
-                    if (exitCode < 0) {
-                        Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
-                                Toast.LENGTH_LONG).show();
-                    } else {
+                RootUtils.changePermissions(file.getPath(), perms, file.isDirectory(context), isSuccess -> {
+                    if (isSuccess) {
                         Toast.makeText(context,
                                 mainFrag.getString(R.string.done), Toast.LENGTH_LONG).show();
+                    } else {
+                        Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
+                                Toast.LENGTH_LONG).show();
                     }
                 });
-                mainFrag.updateList();
-            } catch (ShellNotRunningException e1) {
+            } catch (ShellNotRunningException e) {
                 Toast.makeText(context, mainFrag.getString(R.string.rootfailure),
                         Toast.LENGTH_LONG).show();
-                e1.printStackTrace();
+                e.printStackTrace();
             }
-
         });
     }
 
@@ -1144,5 +1145,4 @@ public class GeneralDialogCreation {
         return GeneralDialogCreation.showBasicDialog(themedActivity, R.string.saf_otg_explanation,
                 R.string.otg_access, R.string.ok, R.string.cancel);
     }
-
 }
