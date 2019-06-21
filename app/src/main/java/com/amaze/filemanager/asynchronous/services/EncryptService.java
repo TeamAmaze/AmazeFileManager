@@ -167,6 +167,11 @@ public class EncryptService extends AbstractProgressiveService {
         return progressHandler;
     }
 
+    @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
+    }
+
     class BackgroundTask extends AsyncTask<Void, Void, Void> {
 
         @Override

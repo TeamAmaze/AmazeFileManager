@@ -200,6 +200,11 @@ public class ExtractService extends AbstractProgressiveService {
     }
 
     @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
+    }
+
+    @Override
     public void onDestroy() {
         unregisterReceiver(receiver1);
     }

@@ -221,6 +221,11 @@ public class DecryptService extends AbstractProgressiveService {
     }
 
     @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
+    }
+
+    @Override
     public boolean isDecryptService() {
         return true;
     }

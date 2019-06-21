@@ -195,6 +195,11 @@ public class ZipService extends AbstractProgressiveService {
         return progressHandler;
     }
 
+    @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
+    }
+
     public class CompressAsyncTask extends AsyncTask<Void, Void, Void> {
 
         @SuppressLint("StaticFieldLeak")

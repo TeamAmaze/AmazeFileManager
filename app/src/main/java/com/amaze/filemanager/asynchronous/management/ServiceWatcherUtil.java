@@ -211,7 +211,7 @@ public class ServiceWatcherUtil {
         public void run() {
             if (watcherRepeatingRunnable == null || !watcherRepeatingRunnable.isAlive()) {
                 if (pendingIntents.size() == 0) {
-                    handle.cancel(false);
+                    cancel(false);
                     return;
                 } else {
                     if (pendingIntents.size() == 1) {
@@ -221,6 +221,8 @@ public class ServiceWatcherUtil {
                     final Context context = this.context.get();
                     if (context != null) {
                         context.startService(pendingIntents.element());
+                        cancel(true);
+                        return;
                     }
                 }
             }

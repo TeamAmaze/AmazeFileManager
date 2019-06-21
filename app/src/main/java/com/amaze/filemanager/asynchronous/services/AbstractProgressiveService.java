@@ -58,6 +58,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
 
     protected abstract ProgressHandler getProgressHandler();
 
+    protected abstract void clearDataPackages();
+
     @Override
     public void progressHalted() {
         // set notification to indeterminate unless progress resumes
@@ -230,6 +232,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      * Displays a notification, sends intent and cancels progress if there were some failures
      */
     void finalizeNotification(ArrayList<HybridFile> failedOps, boolean move) {
+        clearDataPackages();
+
         if (!move) getNotificationManager().cancelAll();
 
         if(failedOps.size()==0)return;
