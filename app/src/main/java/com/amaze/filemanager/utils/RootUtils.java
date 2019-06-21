@@ -4,14 +4,13 @@ package com.amaze.filemanager.utils;
  * Created by arpitkh996 on 25-01-2016.
  */
 
-import android.util.Log;
+import android.widget.Toast;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.regex.Pattern;
 
 public class RootUtils {
@@ -94,6 +93,36 @@ public class RootUtils {
         String mountPoint = mountFileSystemRW(destination);
 
         RootHelper.runShellCommand("cp -r \"" + source + "\" \"" + destination + "\"");
+
+        if (mountPoint != null) {
+            // we mounted the filesystem as rw, let's mount it back to ro
+            mountFileSystemRO(mountPoint);
+        }
+    }
+
+    /**
+     * Change permissions for a given file path - requires root
+     *
+     * @param filePath           given file path
+     * @param updatedPermissions octal notation for permissions
+     * @param isDirectory        is given path a directory or file
+     */
+    public static void changePermissions(String filePath, int updatedPermissions, boolean isDirectory,
+                                         OnOperationPerform onOperationPerform)
+            throws ShellNotRunningException {
+
+        String mountPoint = mountFileSystemRW(filePath);
+
+        String options = isDirectory ? "-R" : "";
+        String command = String.format(CHMOD_COMMAND, options, updatedPermissions, filePath);
+
+        RootHelper.runShellCommandWithCallback(command, (commandCode, exitCode, output) -> {
+            if (exitCode < 0) {
+                onOperationPerform.callback(false);
+            } else {
+                onOperationPerform.callback(true);
+            }
+        });
 
         if (mountPoint != null) {
             // we mounted the filesystem as rw, let's mount it back to ro
@@ -213,11 +242,11 @@ public class RootUtils {
      * (true, false, false,  true, true, false,  false, false, true) => 0461
      */
     public static int permissionsToOctalString(boolean ur, boolean uw, boolean ux,
-                                                  boolean gr, boolean gw, boolean gx,
-                                                  boolean or, boolean ow, boolean ox) {
-        int u = ((ur?CHMOD_READ:0) | (uw?CHMOD_WRITE:0) | (ux?CHMOD_EXECUTE:0)) << 6;
-        int g = ((gr?CHMOD_READ:0) | (gw?CHMOD_WRITE:0) | (gx?CHMOD_EXECUTE:0)) << 3;
-        int o = (or?CHMOD_READ:0) | (ow?CHMOD_WRITE:0) | (ox?CHMOD_EXECUTE:0);
+                                               boolean gr, boolean gw, boolean gx,
+                                               boolean or, boolean ow, boolean ox) {
+        int u = ((ur ? CHMOD_READ : 0) | (uw ? CHMOD_WRITE : 0) | (ux ? CHMOD_EXECUTE : 0)) << 6;
+        int g = ((gr ? CHMOD_READ : 0) | (gw ? CHMOD_WRITE : 0) | (gx ? CHMOD_EXECUTE : 0)) << 3;
+        int o = (or ? CHMOD_READ : 0) | (ow ? CHMOD_WRITE : 0) | (ox ? CHMOD_EXECUTE : 0);
         return u | g | o;
     }
 
