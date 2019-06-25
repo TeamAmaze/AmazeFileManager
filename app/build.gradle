@@ -107,7 +107,6 @@ dependencies {
     testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
     testImplementation "org.robolectric:shadows-multidex:$robolectricVersion"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
-    testImplementation "commons-logging:commons-logging:1.2" //required by junrar. Damn.
 
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
 
@@ -146,6 +145,8 @@ dependencies {
     implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
     implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
+    // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
+    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.25'
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
