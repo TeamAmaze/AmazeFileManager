@@ -206,6 +206,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
+                    android:paddingRight="@dimen/material_generic"
                     android:paddingBottom="@dimen/material_generic"
                     >
 
@@ -460,6 +461,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/material_generic"
+                    android:paddingRight="@dimen/material_generic"
                     >
 
                     <!-- title -->
@@ -734,6 +736,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/material_generic"
+                    android:paddingRight="@dimen/material_generic"
                     >
 
                     <!-- title -->
@@ -1223,6 +1226,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
                     android:paddingBottom="@dimen/material_generic"
+                    android:paddingRight="@dimen/material_generic"
                     >
 
                     <!-- title -->
