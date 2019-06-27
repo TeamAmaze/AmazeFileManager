@@ -80,9 +80,11 @@ public class SevenZipHelperTask extends CompressedHelperTask {
                 }
                 paused = false;
                 break;
-            } catch (PasswordRequiredException | CorruptedInputException e) {
+            } catch (PasswordRequiredException e) {
                 paused = true;
                 publishProgress(e);
+            } catch (CorruptedInputException e) {
+                break;
             } catch (IOException e) {
                 e.printStackTrace();
             }

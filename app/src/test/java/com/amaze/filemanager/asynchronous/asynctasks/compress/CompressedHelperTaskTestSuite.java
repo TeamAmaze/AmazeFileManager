@@ -14,7 +14,9 @@ import org.junit.runners.Suite;
     Bzip2HelperTaskTest.class,
     LzmaHelperTaskTest.class,
     XzHelperTaskTest.class,
+    XzHelperTaskTest2.class,
     SevenZipHelperTaskTest.class,
+    SevenZipHelperTaskTest2.class,
     EncryptedZipHelperTaskTest.class,
     EncryptedSevenZipHelperTaskTest.class,
     ListEncryptedSevenZipHelperTaskTest.class

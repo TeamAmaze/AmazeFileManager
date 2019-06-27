@@ -300,9 +300,11 @@ public class ExtractService extends AbstractProgressiveService {
                         extractor.extractEverything();
                     }
                     return (extractor.getInvalidArchiveEntries().size() == 0);
+                } catch (CorruptedInputException e) {
+                    Log.d(TAG, "Corrupted LZMA input", e);
+                    return false;
                 } catch (IOException e) {
                     if(PasswordRequiredException.class.isAssignableFrom(e.getClass()) ||
-                            CorruptedInputException.class.isAssignableFrom(e.getClass()) ||
                             e.getCause() != null && ZipException.class.isAssignableFrom(e.getCause().getClass())) {
                         Log.d(TAG, "Archive is password protected.", e);
                         passwordProtected = true;
@@ -322,7 +324,7 @@ public class ExtractService extends AbstractProgressiveService {
         @Override
         protected void onProgressUpdate(IOException... values) {
             super.onProgressUpdate(values);
-            if(values.length < 1) return;
+            if(values.length < 1 || !passwordProtected) return;
 
             IOException result = values[0];
             ArchivePasswordCache.getInstance().remove(compressedPath);
