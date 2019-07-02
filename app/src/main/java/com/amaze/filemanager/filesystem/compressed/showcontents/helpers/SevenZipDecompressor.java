@@ -27,6 +27,7 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.SevenZipHelperTask;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
@@ -41,7 +42,7 @@ public class SevenZipDecompressor extends Decompressor {
 
     @Override
     public SevenZipHelperTask changePath(String path, boolean addGoBackItem,
-                                       OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
+                                       OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
         return new SevenZipHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 }

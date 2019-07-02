@@ -27,9 +27,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -46,14 +48,14 @@ public class TarHelperTask extends CompressedHelperTask {
     private String filePath, relativePath;
 
     public TarHelperTask(String filePath, String relativePath, boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                         OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
         super(goBack, l);
         this.filePath = filePath;
         this.relativePath = relativePath;
     }
 
     @Override
-    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException {
         TarArchiveInputStream tarInputStream = null;
         try {
             tarInputStream = new TarArchiveInputStream(new FileInputStream(filePath));
@@ -76,7 +78,7 @@ public class TarHelperTask extends CompressedHelperTask {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArchiveException(String.format("Tar archive %s is corrupt", filePath));
         }
 
     }

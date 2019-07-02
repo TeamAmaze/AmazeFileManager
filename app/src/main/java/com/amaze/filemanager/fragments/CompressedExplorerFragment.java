@@ -406,11 +406,16 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
         boolean addGoBackItem = gobackitem && !isRoot(folder);
         String finalfolder = folder;
-        decompressor.changePath(folder, addGoBackItem, data -> {
-            elements = data;
-            createViews(elements, finalfolder);
-            swipeRefreshLayout.setRefreshing(false);
-            updateBottomBar();
+        decompressor.changePath(folder, addGoBackItem, result -> {
+            if(result.exception == null) {
+                elements = result.result;
+                createViews(elements, finalfolder);
+                swipeRefreshLayout.setRefreshing(false);
+                updateBottomBar();
+            } else {
+                Toast.makeText(getActivity(), R.string.multiple_invalid_archive_entries, Toast.LENGTH_SHORT).show();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            }
         }).execute();
         swipeRefreshLayout.setRefreshing(true);
         updateBottomBar();

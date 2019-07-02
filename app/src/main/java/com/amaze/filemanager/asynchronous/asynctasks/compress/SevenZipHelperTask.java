@@ -28,6 +28,7 @@ import android.widget.EditText;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
@@ -36,6 +37,7 @@ import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import org.apache.commons.compress.PasswordRequiredException;
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.tukaani.xz.CorruptedInputException;
 
 import java.io.File;
@@ -51,14 +53,14 @@ public class SevenZipHelperTask extends CompressedHelperTask {
     private boolean paused = false;
 
     public SevenZipHelperTask(String filePath, String relativePath, boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                         OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
         super(goBack, l);
         this.filePath = filePath;
         this.relativePath = relativePath;
     }
 
     @Override
-    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException {
         while(true) {
             if (paused) continue;
 
@@ -83,10 +85,8 @@ public class SevenZipHelperTask extends CompressedHelperTask {
             } catch (PasswordRequiredException e) {
                 paused = true;
                 publishProgress(e);
-            } catch (CorruptedInputException e) {
-                break;
             } catch (IOException e) {
-                e.printStackTrace();
+                throw new ArchiveException(String.format("7zip archive %s is corrupt", filePath));
             }
         }
     }

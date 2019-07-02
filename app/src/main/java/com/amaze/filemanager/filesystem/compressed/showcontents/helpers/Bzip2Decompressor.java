@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 import android.content.Context;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.Bzip2HelperTask;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.CompressedHelperTask;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
@@ -38,7 +39,7 @@ public class Bzip2Decompressor extends Decompressor {
 
     @Override
     public CompressedHelperTask changePath(String path, boolean addGoBackItem,
-                                           OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
+                                           OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
         return new Bzip2HelperTask(filePath, path, addGoBackItem, onFinish);
     }
 

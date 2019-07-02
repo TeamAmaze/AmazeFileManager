@@ -29,6 +29,7 @@ import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.application.AppConfig;
@@ -36,6 +37,8 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
+
+import org.apache.commons.compress.archivers.ArchiveException;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -54,7 +57,7 @@ public class ZipHelperTask extends CompressedHelperTask {
      * @param dir relativeDirectory to access inside the zip file
      */
     public ZipHelperTask(Context c, String realFileDirectory, String dir, boolean goback,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                         OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
         super(goback, l);
         context = new WeakReference<>(c);
         fileLocation = Uri.parse(realFileDirectory);
@@ -62,7 +65,7 @@ public class ZipHelperTask extends CompressedHelperTask {
     }
 
     @Override
-    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException {
         try {
             ArrayList<CompressedObjectParcelable> wholelist = new ArrayList<>();
 
@@ -124,7 +127,7 @@ public class ZipHelperTask extends CompressedHelperTask {
                 }
             }
         } catch (ZipException e) {
-            e.printStackTrace();
+            throw new ArchiveException("Zip file is corrupt", e);
         }
     }
 

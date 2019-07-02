@@ -25,6 +25,7 @@ package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 import android.content.Context;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.ZipHelperTask;
 import java.util.ArrayList;
 
@@ -39,7 +40,7 @@ public class ZipDecompressor extends Decompressor {
 
     @Override
     public ZipHelperTask changePath(String path, boolean addGoBackItem,
-                           OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
+                           OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
         return new ZipHelperTask(context, filePath, path, addGoBackItem, onFinish);
     }
 
