@@ -604,4 +604,6 @@
   <string name="grant_apkinstall_permission">程式需要安裝程式的權限以繼續。</string>
     <string name="internalstorage">內部儲存空間</string>
   <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
+  <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
+  <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>
 </resources>

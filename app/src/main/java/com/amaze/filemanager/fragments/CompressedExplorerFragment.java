@@ -413,7 +413,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                 swipeRefreshLayout.setRefreshing(false);
                 updateBottomBar();
             } else {
-                Toast.makeText(getActivity(), R.string.multiple_invalid_archive_entries, Toast.LENGTH_SHORT).show();
+                Toast.makeText(getActivity(), getActivity().getString(R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
                 getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
             }
         }).execute();

@@ -647,5 +647,6 @@
     <string name="archive_password_prompt">Please enter archive password:</string>
     <string name="empty_string" translatable="false" />
     <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Cannot open archive \"%s\". Either we cannot open the archive, or the archive was damaged.</string>
 </resources>
 
