@@ -171,6 +171,7 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
     private DataUtils dataUtils;
     private boolean isEncryptOpen = false;       // do we have to open a file when service is begin destroyed
     private HybridFileParcelable encryptBaseFile;            // the cached base file which we're to open, delete it later
+    private int ordinalValue;
 
     /**
      *  a list of encrypted base files which are supposed to be deleted
@@ -206,6 +207,9 @@ public class MainFragment extends android.support.v4.app.Fragment implements Bot
         no = getArguments().getInt("no", 1);
         home = getArguments().getString("home");
         CURRENT_PATH = getArguments().getString("lastpath");
+        ordinalValue = getArguments().getInt("openmode", -1);
+
+        if (ordinalValue != -1) openMode = OpenMode.getOpenMode(ordinalValue);
 
         IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 

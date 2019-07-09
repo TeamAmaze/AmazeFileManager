@@ -352,6 +352,7 @@ public class TabFragment extends Fragment
 
         if (path != null && path.length() != 0) {
             b.putString("lastpath", path);
+            b.putInt("openmode", OpenMode.UNKNOWN.ordinal());
         } else {
             b.putString("lastpath", tab.getOriginalPath(savepaths, mainActivity.getPrefs()));
         }
