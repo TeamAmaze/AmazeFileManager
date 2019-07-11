@@ -24,16 +24,16 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 
+import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 import com.amaze.filemanager.utils.Utils;
 
 import java.io.File;
@@ -54,7 +54,7 @@ public abstract class CompressedHelper {
 
     public static final String fileExtensionZip = "zip", fileExtensionJar = "jar", fileExtensionApk = "apk";
     public static final String fileExtensionTar = "tar";
-    public static final String fileExtensionGzipTar = "tar.gz";
+    public static final String fileExtensionGzipTarLong = "tar.gz", fileExtensionGzipTarShort = "tgz";
     public static final String fileExtensionRar = "rar";
 
     /**
@@ -117,7 +117,7 @@ public abstract class CompressedHelper {
      */
     public static String getFileName(String compressedName) {
         compressedName = compressedName.toLowerCase();
-        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName)) {
+        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || compressedName.endsWith(fileExtensionGzipTarShort)) {
             return compressedName.substring(0, compressedName.lastIndexOf("."));
         } else if (isGzippedTar(compressedName)) {
             return compressedName.substring(0,
@@ -141,7 +141,7 @@ public abstract class CompressedHelper {
     }
 
     private static boolean isGzippedTar(String type) {
-         return type.endsWith(fileExtensionGzipTar);
+         return type.endsWith(fileExtensionGzipTarLong) || type.endsWith(fileExtensionGzipTarShort);
     }
 
     private static boolean isRar(String type) {

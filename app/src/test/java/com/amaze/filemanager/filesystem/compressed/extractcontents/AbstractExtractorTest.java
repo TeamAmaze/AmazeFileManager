@@ -31,7 +31,7 @@ import java.util.concurrent.CountDownLatch;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public abstract class AbstractExtractorTest {
 
     protected abstract Class<? extends Extractor> extractorClass();
