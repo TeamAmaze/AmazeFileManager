@@ -52,9 +52,6 @@ public class LayoutElementParcelable implements Parcelable {
     public final String dateModification;
     public final boolean header;
 
-    @Nullable
-    private final Context context;
-
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
@@ -79,7 +76,6 @@ public class LayoutElementParcelable implements Parcelable {
     public LayoutElementParcelable(@NonNull Context c, boolean isBack, String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
-        this.context = c;
         filetype = Icons.getTypeOfFile(path, isDirectory);
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
         this.mode = openMode;
@@ -118,7 +114,7 @@ public class LayoutElementParcelable implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.dateModification = Utils.getDate(context, this.date);
+            this.dateModification = Utils.getDate(c, this.date);
         } else {
             this.date = 0;
             this.dateModification = "";
@@ -152,7 +148,6 @@ public class LayoutElementParcelable implements Parcelable {
 
     //Hopefully it should be safe - nobody else is using this
     public LayoutElementParcelable(Parcel im) {
-        context = null;
         filetype = im.readInt();
         iconData = im.readParcelable(IconDataParcelable.class.getClassLoader());
         title = im.readString();
