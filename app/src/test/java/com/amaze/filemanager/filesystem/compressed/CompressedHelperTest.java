@@ -27,7 +27,7 @@ import java.io.File;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public class CompressedHelperTest {
 
     private Context context;
@@ -73,6 +73,9 @@ public class CompressedHelperTest {
         file = new File("/test/test.tar.gz");//.tar.gz used by GzipExtractor
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(), GzipExtractor.class);
+        file = new File("/test/test.tgz");//.tgz used by GzipExtractor
+        result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
+        assertEquals(result.getClass(), GzipExtractor.class);
         file = new File("/test/test.rar");//.rar used by RarExtractor
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
         assertEquals(result.getClass(),RarExtractor.class);
@@ -105,6 +108,9 @@ public class CompressedHelperTest {
         file = new File("/test/test.tar.gz");//.tar.gz used by GzipDecompressor
         result = CompressedHelper.getCompressorInstance(context,file);
         assertEquals(result.getClass(),GzipDecompressor.class);
+        file = new File("/test/test.tgz");//.tar.gz used by GzipDecompressor
+        result = CompressedHelper.getCompressorInstance(context,file);
+        assertEquals(result.getClass(),GzipDecompressor.class);
         file = new File("/test/test.rar");//.rar used by RarDecompressor
         result = CompressedHelper.getCompressorInstance(context,file);
         assertEquals(result.getClass(),RarDecompressor.class);
@@ -126,6 +132,7 @@ public class CompressedHelperTest {
         assertTrue(CompressedHelper.isFileExtractable("/test/test.rar"));
         assertTrue(CompressedHelper.isFileExtractable("/test/test.tar"));
         assertTrue(CompressedHelper.isFileExtractable("/test/test.tar.gz"));
+        assertTrue(CompressedHelper.isFileExtractable("/test/test.tgz"));
         assertTrue(CompressedHelper.isFileExtractable("/test/test.jar"));
         assertTrue(CompressedHelper.isFileExtractable("/test/test.apk"));
 
@@ -144,6 +151,7 @@ public class CompressedHelperTest {
         assertEquals("test",CompressedHelper.getFileName("test.rar"));
         assertEquals("test",CompressedHelper.getFileName("test.tar"));
         assertEquals("test",CompressedHelper.getFileName("test.tar.gz"));
+        assertEquals("test",CompressedHelper.getFileName("test.tgz"));
         assertEquals("test",CompressedHelper.getFileName("test.jar"));
         assertEquals("test",CompressedHelper.getFileName("test.apk"));
 
