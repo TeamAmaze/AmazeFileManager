@@ -117,7 +117,7 @@ public abstract class CompressedHelper {
      */
     public static String getFileName(String compressedName) {
         compressedName = compressedName.toLowerCase();
-        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || compressedName.endsWith(fileExtensionGzipTarShort)) {
+        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || isGzippedTarShort(compressedName)) {
             return compressedName.substring(0, compressedName.lastIndexOf("."));
         } else if (isGzippedTar(compressedName)) {
             return compressedName.substring(0,
@@ -142,6 +142,10 @@ public abstract class CompressedHelper {
 
     private static boolean isGzippedTar(String type) {
          return type.endsWith(fileExtensionGzipTarLong) || type.endsWith(fileExtensionGzipTarShort);
+    }
+
+    private static boolean isGzippedTarShort(String type) {
+        return type.endsWith(fileExtensionGzipTarShort);
     }
 
     private static boolean isRar(String type) {
