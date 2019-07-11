@@ -75,7 +75,7 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.amaze.filemanager.adapters.RecyclerAdapter.ListElemType.*;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -963,13 +963,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 popupMenu.getMenu().findItem(R.id.book).setVisible(false);
             }
 
-            if (description.endsWith(".zip") || description.endsWith(".jar")
-                    || description.endsWith(".apk") || description.endsWith(".rar")
-                    || description.endsWith(".tar") || description.endsWith(".tar.gz")
-                    || description.endsWith(".tar.bz2")
-                    || description.endsWith(".tar.xz")
-                    || description.endsWith(".tar.lzma")
-                    || description.endsWith(".7z"))
+            if (description.endsWith(fileExtensionZip) || description.endsWith(fileExtensionJar)
+                    || description.endsWith(fileExtensionApk) || description.endsWith(fileExtensionRar)
+                    || description.endsWith(fileExtensionTar) || description.endsWith(fileExtensionGzipTarLong) || description.endsWith(fileExtensionGzipTarShort)
+                    || description.endsWith(fileExtensionBzip2TarLong) || description.endsWith(fileExtensionBzip2TarShort)
+                    || description.endsWith(fileExtensionXz)
+                    || description.endsWith(fileExtensionLzma)
+                    || description.endsWith(fileExtension7zip))
                 popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {

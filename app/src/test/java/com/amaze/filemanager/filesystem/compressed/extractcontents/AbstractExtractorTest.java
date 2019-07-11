@@ -31,7 +31,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 14, maxSdk = 26)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 14, maxSdk = 27)
 public abstract class AbstractExtractorTest {
 
     protected abstract Class<? extends Extractor> extractorClass();

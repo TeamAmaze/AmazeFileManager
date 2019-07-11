@@ -24,26 +24,25 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import android.content.Context;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
+import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.LzmaExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.XzExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.Bzip2Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.LzmaDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZipDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZipDecompressor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.Utils;
 
 import java.io.File;
@@ -64,8 +63,8 @@ public abstract class CompressedHelper {
 
     public static final String fileExtensionZip = "zip", fileExtensionJar = "jar", fileExtensionApk = "apk";
     public static final String fileExtensionTar = "tar";
-    public static final String fileExtensionGzipTar = "tar.gz";
-    public static final String fileExtensionBzip2Tar = "tar.bz2";
+    public static final String fileExtensionGzipTarLong = "tar.gz", fileExtensionGzipTarShort = "tgz";
+    public static final String fileExtensionBzip2TarLong = "tar.bz2", fileExtensionBzip2TarShort = "tbz";
     public static final String fileExtensionRar = "rar";
     public static final String fileExtension7zip = "7z";
     public static final String fileExtensionLzma = "tar.lzma";
@@ -147,9 +146,10 @@ public abstract class CompressedHelper {
      */
     public static String getFileName(String compressedName) {
         compressedName = compressedName.toLowerCase();
-        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || is7zip(compressedName)) {
+        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || is7zip(compressedName)
+                || compressedName.endsWith(fileExtensionGzipTarShort) || compressedName.endsWith(fileExtensionBzip2TarShort)) {
             return compressedName.substring(0, compressedName.lastIndexOf("."));
-        } else if (isGzippedTar(compressedName) || isXzippedTar(compressedName) || isLzippedTar(compressedName)) {
+        } else if (isGzippedTar(compressedName) || isXzippedTar(compressedName) || isLzippedTar(compressedName) || isBzippedTar(compressedName)) {
             return compressedName.substring(0,
                     Utils.nthToLastCharIndex(2, compressedName, '.'));
         } else {
@@ -171,11 +171,11 @@ public abstract class CompressedHelper {
     }
 
     private static boolean isGzippedTar(String type) {
-         return type.endsWith(fileExtensionGzipTar);
+         return type.endsWith(fileExtensionGzipTarLong) || type.endsWith(fileExtensionGzipTarShort);
     }
 
     private static boolean isBzippedTar(String type) {
-        return type.endsWith(fileExtensionBzip2Tar);
+        return type.endsWith(fileExtensionBzip2TarLong) || type.endsWith(fileExtensionBzip2TarShort);
     }
 
     private static boolean isRar(String type) {

@@ -3,6 +3,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 import android.os.Environment;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 
 import org.junit.Ignore;
 import org.junit.Test;
@@ -17,30 +18,30 @@ public class XzHelperTaskTest2 extends AbstractCompressedHelperTaskTest {
     @Test @Override
     public void testRoot(){
         CompressedHelperTask task = createTask("");
-        ArrayList<CompressedObjectParcelable> result = task.doInBackground();
-        assertEquals(result.size(), 1);
-        assertEquals("compress", result.get(0).name);
+        AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
+        assertEquals(result.result.size(), 1);
+        assertEquals("compress", result.result.get(0).name);
     }
 
     @Test @Override
     public void testSublevels(){
         CompressedHelperTask task = createTask("compress");
-        ArrayList<CompressedObjectParcelable> result = task.doInBackground();
-        assertEquals(result.size(), 3);
-        assertEquals("a", result.get(0).name);
-        assertEquals("bç", result.get(1).name);
-        assertEquals("r.txt", result.get(2).name);
-        assertEquals(4, result.get(2).size);
+        AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
+        assertEquals(result.result.size(), 3);
+        assertEquals("a", result.result.get(0).name);
+        assertEquals("bç", result.result.get(1).name);
+        assertEquals("r.txt", result.result.get(2).name);
+        assertEquals(4, result.result.get(2).size);
 
         task = createTask("compress/a");
         result = task.doInBackground();
-        assertEquals(result.size(), 0);
+        assertEquals(result.result.size(), 0);
 
         task = createTask("compress/bç");
         result = task.doInBackground();
-        assertEquals(result.size(), 1);
-        assertEquals("t.txt", result.get(0).name);
-        assertEquals(6, result.get(0).size);
+        assertEquals(result.result.size(), 1);
+        assertEquals("t.txt", result.result.get(0).name);
+        assertEquals(6, result.result.get(0).size);
     }
 
     @Override
