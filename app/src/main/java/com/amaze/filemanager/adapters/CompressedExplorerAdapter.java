@@ -217,7 +217,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
             GlideApp.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
 
             if (compressedExplorerFragment.showLastModified)
-                holder.date.setText(Utils.getDate(rowItem.date));
+                holder.date.setText(Utils.getDate(context, rowItem.date));
             if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(compressedExplorerFragment.iconskin);

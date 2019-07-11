@@ -49,7 +49,7 @@ public class FileHandler extends Handler {
             case CustomFileObserver.NEW_ITEM:
                 HybridFile fileCreated = new HybridFile(main.openMode,
                         main.getCurrentPath() + "/" + path);
-                main.getElementsList().add(fileCreated.generateLayoutElement(useThumbs));
+                main.getElementsList().add(fileCreated.generateLayoutElement(main.getContext(), useThumbs));
                 break;
             case CustomFileObserver.DELETED_ITEM:
                 for (int i = 0; i < main.getElementsList().size(); i++) {

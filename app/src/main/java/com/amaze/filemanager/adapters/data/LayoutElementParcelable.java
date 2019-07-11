@@ -20,9 +20,12 @@
 
 package com.amaze.filemanager.adapters.data;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.DrawableRes;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -49,30 +52,34 @@ public class LayoutElementParcelable implements Parcelable {
     public final String dateModification;
     public final boolean header;
 
+    @Nullable
+    private final Context context;
+
     //same as hfile.modes but different than openmode in Main.java
     private OpenMode mode = OpenMode.FILE;
 
-    public LayoutElementParcelable(boolean isBack, String goback, boolean showThumbs) {
-        this(true, new File("..").getName(), "..", "", "", goback, 0,
+    public LayoutElementParcelable(@NonNull Context c, boolean isBack, String goback, boolean showThumbs) {
+        this(c,true, new File("..").getName(), "..", "", "", goback, 0,
                 false, "", true, showThumbs, OpenMode.UNKNOWN);
     }
 
-    public LayoutElementParcelable(String path, String permissions, String symlink,
+    public LayoutElementParcelable(@NonNull Context c, String path, String permissions, String symlink,
                                    String size, long longSize,boolean header, String date,
                                    boolean isDirectory, boolean useThumbs, OpenMode openMode) {
-        this(new File(path).getName(), path, permissions, symlink, size, longSize, header,
+        this(c, new File(path).getName(), path, permissions, symlink, size, longSize, header,
                 date, isDirectory, useThumbs, openMode);
     }
 
-    public LayoutElementParcelable(String title, String path, String permissions,
+    public LayoutElementParcelable(@NonNull Context c, String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
-        this(false, title, path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs, openMode);
+        this(c,false, title, path, permissions, symlink, size, longSize, header, date, isDirectory, useThumbs, openMode);
     }
 
-    public LayoutElementParcelable(boolean isBack, String title, String path, String permissions,
+    public LayoutElementParcelable(@NonNull Context c, boolean isBack, String title, String path, String permissions,
                                    String symlink, String size, long longSize, boolean header,
                                    String date, boolean isDirectory, boolean useThumbs, OpenMode openMode) {
+        this.context = c;
         filetype = Icons.getTypeOfFile(path, isDirectory);
         @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
         this.mode = openMode;
@@ -111,7 +118,7 @@ public class LayoutElementParcelable implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.dateModification = Utils.getDate(this.date);
+            this.dateModification = Utils.getDate(context, this.date);
         } else {
             this.date = 0;
             this.dateModification = "";
@@ -143,7 +150,9 @@ public class LayoutElementParcelable implements Parcelable {
         return title + "\n" + desc;
     }
 
+    //Hopefully it should be safe - nobody else is using this
     public LayoutElementParcelable(Parcel im) {
+        context = null;
         filetype = im.readInt();
         iconData = im.readParcelable(IconDataParcelable.class.getClassLoader());
         title = im.readString();
