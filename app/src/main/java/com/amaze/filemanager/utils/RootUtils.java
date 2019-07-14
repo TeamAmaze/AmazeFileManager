@@ -116,7 +116,7 @@ public class RootUtils {
         String options = isDirectory ? "-R" : "";
         String command = String.format(CHMOD_COMMAND, options, updatedPermissions, filePath);
 
-        RootHelper.runShellCommandWithCallback(command, (commandCode, exitCode, output) -> {
+        RootHelper.runShellCommand(command, (commandCode, exitCode, output) -> {
             if (exitCode < 0) {
                 onOperationPerform.callback(false);
             } else {
