@@ -139,6 +139,8 @@ public class UtilsHandler extends SQLiteOpenHelper {
                     setPath(operationData.type, operationData.path);
                     break;
                 case BOOKMARKS:
+                    setPath(operationData.type, operationData.path, operationData.name);
+                    break;
                 case SMB:
                     setPath(operationData.type, operationData.name, operationData.path);
                     break;
