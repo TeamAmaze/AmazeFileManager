@@ -49,7 +49,19 @@ public class FtpNotification extends BroadcastReceiver {
                 + address.getHostAddress() + ":"
                 + port + "/";
 
-        int icon = R.drawable.ic_ftp_light;
+        //TODO: the below notification needs to change to update the notification to the server information since the server has now started
+        //TODO: do I get the notification to update out of the notification manager? do I have to create a new notification manager object?
+        //TODO: I guress I need to send the notification builder with the intent to update it here, something like:
+
+        /*
+        * mBuilder.setContentText(message)
+            .setProgress(100, progress, true);
+
+            mNotificationManager.notify(mNotificationId, mBuilder.build());
+        *
+        * */
+
+/*        int icon = R.drawable.ic_ftp_light;
         CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
@@ -88,7 +100,7 @@ public class FtpNotification extends BroadcastReceiver {
         }
 
         // Pass Notification to NotificationManager
-        notificationManager.notify(NotificationConstants.FTP_ID, notification);
+        notificationManager.notify(NotificationConstants.FTP_ID, notification);*/
     }
 
     private void removeNotification(Context context){
