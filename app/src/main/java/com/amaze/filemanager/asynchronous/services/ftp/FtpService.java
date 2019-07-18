@@ -145,6 +145,7 @@ public class FtpService extends Service implements Runnable {
         //TODO: How do I handle multiple languages instead of hardcoding these strings?
         //TODO: also, the server starts up pretty fast and it sends out two notifications back to back. Not ideal...
         //TODO: do I have the context right? Compare to FtpNotification
+        //TODO: Test timeout setting
 
         CharSequence tickerText = this.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
