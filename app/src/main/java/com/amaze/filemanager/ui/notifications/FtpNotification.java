@@ -49,58 +49,24 @@ public class FtpNotification extends BroadcastReceiver {
                 + address.getHostAddress() + ":"
                 + port + "/";
 
-        //TODO: the below notification needs to change to update the notification to the server information since the server has now started
-        //TODO: do I get the notification to update out of the notification manager? do I have to create a new notification manager object?
-        //TODO: I guress I need to send the notification builder with the intent to update it here, something like:
+        //TODO: is this an appropriate way to get the builder from FtpService to update the notification here?
+        NotificationCompat.Builder builder = FtpService.getBuilder();
 
-        /*
-        * mBuilder.setContentText(message)
-            .setProgress(100, progress, true);
-
-            mNotificationManager.notify(mNotificationId, mBuilder.build());
-        *
-        * */
-
-/*        int icon = R.drawable.ic_ftp_light;
+        int icon = R.drawable.ic_ftp_light;
         CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
-
 
         CharSequence contentTitle = context.getString(R.string.ftp_notif_title);
         CharSequence contentText = String.format(context.getString(R.string.ftp_notif_text), iptext);
 
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle(contentTitle)
+        builder.setContentTitle(contentTitle)
                 .setContentText(contentText)
-                .setContentIntent(contentIntent)
                 .setSmallIcon(icon)
                 .setTicker(tickerText)
                 .setWhen(when)
                 .setOngoing(true);
 
-        NotificationConstants.setMetadata(context, notificationBuilder, NotificationConstants.TYPE_FTP);
-
-        Notification notification;
-        if (!noStopButton && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
-            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
-                    stopIntent, PendingIntent.FLAG_ONE_SHOT);
-
-            notificationBuilder.addAction(stopIcon, stopText, stopPendingIntent);
-            notificationBuilder.setShowWhen(false);
-            notification = notificationBuilder.build();
-        } else {
-            notification = notificationBuilder.getNotification();
-        }
-
-        // Pass Notification to NotificationManager
-        notificationManager.notify(NotificationConstants.FTP_ID, notification);*/
+        notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }
 
     private void removeNotification(Context context){

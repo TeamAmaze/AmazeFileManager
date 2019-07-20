@@ -38,6 +38,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.wifi.WifiManager;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
@@ -110,6 +111,7 @@ public class FtpService extends Service implements Runnable {
     static public final String ACTION_STOP_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER";
 
     static public final String TAG_STARTED_BY_TILE = "started_by_tile";  // attribute of action_started, used by notification
+    static public final String TAG_NOTIFICATION = "notification";  // attribute of action_started, used by notification
 
     private String username, password;
     private boolean isPasswordProtected = false;
@@ -119,8 +121,7 @@ public class FtpService extends Service implements Runnable {
 
     private boolean isStartedByTile = false;
 
-    private NotificationManager notificationManager;
-    private NotificationCompat.Builder builder;
+    private static NotificationCompat.Builder builder;
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
@@ -141,22 +142,18 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
-        //Generate notification to start ForeGroundService
-        //TODO: How do I handle multiple languages instead of hardcoding these strings?
-        //TODO: also, the server starts up pretty fast and it sends out two notifications back to back. Not ideal...
-        //TODO: do I have the context right? Compare to FtpNotification
-        //TODO: Test timeout setting
+        //TODO: should I be using getApplicatoinContext() or this for context?
 
         CharSequence tickerText = this.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
+        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
 
-        builder  = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle("FTP Server Starting")
-                .setContentText("FTP Server Starting Text")
+        builder  = new NotificationCompat.Builder(getApplicationContext(), NotificationConstants.CHANNEL_FTP_ID)
+                .setContentTitle(getApplicationContext().getString(R.string.ftp_notif_starting_title))
+                .setContentText(getApplicationContext().getString(R.string.ftp_notif_starting))
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_ftp_light)
                 .setTicker(tickerText)
@@ -165,15 +162,11 @@ public class FtpService extends Service implements Runnable {
                 .setOnlyAlertOnce(true);
 
         Notification notification;
-        //TODO: in the original code, what is this stop button stuff? track it down... Looks like it is the button to stop the server from the FTP Server notification
-        //if (!noStopButton && Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            //TODO: am i right to change context to this?
-            //CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-            CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(this.getPackageName());
-            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0,
+            CharSequence stopText = getApplicationContext().getString(R.string.ftp_notif_stop_server);
+            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getApplicationContext().getPackageName());
+            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
                     stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
             builder.addAction(stopIcon, stopText, stopPendingIntent);
@@ -182,9 +175,6 @@ public class FtpService extends Service implements Runnable {
         } else {
             notification = builder.getNotification();
         }
-
-        // Pass Notification to NotificationManager
-        //notificationManager.notify(NotificationConstants.FTP_ID, notification);
 
         startForeground(NotificationConstants.FTP_ID, notification);
 
@@ -270,6 +260,7 @@ public class FtpService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
+
             sendBroadcast(new Intent(FtpService.ACTION_STARTED).setPackage(getPackageName()).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
         } catch (Exception e) {
             sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART).setPackage(getPackageName()));
@@ -278,8 +269,6 @@ public class FtpService extends Service implements Runnable {
 
     @Override
     public void onDestroy() {
-        Log.i("onDestory()","On destroy will destroy you");
-
         if (serverThread == null) {
             return;
         }
@@ -425,4 +414,7 @@ public class FtpService extends Service implements Runnable {
         return r;
     }
 
+    public static NotificationCompat.Builder getBuilder() {
+        return builder;
+    }
 }
