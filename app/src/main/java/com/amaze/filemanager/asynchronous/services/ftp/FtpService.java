@@ -28,6 +28,8 @@ package com.amaze.filemanager.asynchronous.services.ftp;
 
 import android.app.AlarmManager;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -44,6 +46,7 @@ import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
@@ -155,18 +158,30 @@ public class FtpService extends Service implements Runnable {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true);
 
-        Notification notification;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-            int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(this.getPackageName());
-            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0,
-                    stopIntent, PendingIntent.FLAG_ONE_SHOT);
+        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
+        CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
+        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getApplicationContext().getPackageName());
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
-            builder.addAction(stopIcon, stopText, stopPendingIntent);
-            builder.setShowWhen(false);
+        builder.addAction(stopIcon, stopText, stopPendingIntent);
+
+        Notification notification;
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            Log.i("Got here", "got here 1");
+            notification = builder.build();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            Log.i("Got here", "got here 2");
+            String channelName = NotificationConstants.CHANNEL_FTP_NAME;
+
+            NotificationChannel chan = new NotificationChannel(NotificationConstants.CHANNEL_FTP_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(chan);
+
             notification = builder.build();
         } else {
+            Log.i("Got here", "got here 2");
             notification = builder.getNotification();
         }
 
@@ -174,6 +189,7 @@ public class FtpService extends Service implements Runnable {
 
         return START_STICKY;
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {
