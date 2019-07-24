@@ -108,7 +108,6 @@ public class FtpService extends Service implements Runnable {
     static public final String ACTION_STOP_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER";
 
     static public final String TAG_STARTED_BY_TILE = "started_by_tile";  // attribute of action_started, used by notification
-    static public final String TAG_NOTIFICATION = "notification";  // attribute of action_started, used by notification
 
     private String username, password;
     private boolean isPasswordProtected = false;
@@ -139,18 +138,16 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
-        //TODO: should I be using getApplicatoinContext() or this for context?
-
         CharSequence tickerText = this.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
-        Intent notificationIntent = new Intent(getApplicationContext(), MainActivity.class);
+        Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(getApplicationContext(), 0, notificationIntent, 0);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
 
-        builder  = new NotificationCompat.Builder(getApplicationContext(), NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle(getApplicationContext().getString(R.string.ftp_notif_starting_title))
-                .setContentText(getApplicationContext().getString(R.string.ftp_notif_starting))
+        builder  = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_FTP_ID)
+                .setContentTitle(this.getString(R.string.ftp_notif_starting_title))
+                .setContentText(this.getString(R.string.ftp_notif_starting))
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_ftp_light)
                 .setTicker(tickerText)
@@ -161,9 +158,9 @@ public class FtpService extends Service implements Runnable {
         Notification notification;
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            CharSequence stopText = getApplicationContext().getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getApplicationContext().getPackageName());
-            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
+            CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
+            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(this.getPackageName());
+            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(this, 0,
                     stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
             builder.addAction(stopIcon, stopText, stopPendingIntent);

@@ -46,7 +46,6 @@ public class FtpNotification extends BroadcastReceiver {
                 + address.getHostAddress() + ":"
                 + port + "/";
 
-        //TODO: is this an appropriate way to get the builder from FtpService to update the notification here?
         NotificationCompat.Builder builder = FtpService.getBuilder();
 
         int icon = R.drawable.ic_ftp_light;
