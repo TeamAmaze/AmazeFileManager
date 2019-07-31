@@ -24,6 +24,8 @@ package com.amaze.filemanager.asynchronous.services.ftp;
 
 /**
  * Created by yashwanthreddyg on 09-06-2016.
+ *
+ * Edited by zent-co on 30-07-2019
  */
 
 import android.app.AlarmManager;
@@ -41,6 +43,7 @@ import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Environment;
 import android.os.IBinder;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
@@ -122,6 +125,8 @@ public class FtpService extends Service implements Runnable {
 
     private static NotificationCompat.Builder builder;
 
+    private PowerManager.WakeLock wakeLock;
+
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false);
@@ -141,49 +146,9 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
-        CharSequence tickerText = this.getString(R.string.ftp_notif_starting);
-        long when = System.currentTimeMillis();
+        acquireWakeLock();
 
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        builder  = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle(this.getString(R.string.ftp_notif_starting_title))
-                .setContentText(this.getString(R.string.ftp_notif_starting))
-                .setContentIntent(contentIntent)
-                .setSmallIcon(R.drawable.ic_ftp_light)
-                .setTicker(tickerText)
-                .setWhen(when)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true);
-
-        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-        CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
-        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getApplicationContext().getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
-                stopIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        builder.addAction(stopIcon, stopText, stopPendingIntent);
-
-        Notification notification;
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            Log.i("Got here", "got here 1");
-            notification = builder.build();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            Log.i("Got here", "got here 2");
-            String channelName = NotificationConstants.CHANNEL_FTP_NAME;
-
-            NotificationChannel chan = new NotificationChannel(NotificationConstants.CHANNEL_FTP_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(chan);
-
-            notification = builder.build();
-        } else {
-            Log.i("Got here", "got here 2");
-            notification = builder.getNotification();
-        }
+        Notification notification = buildNotification();
 
         startForeground(NotificationConstants.FTP_ID, notification);
 
@@ -291,6 +256,8 @@ public class FtpService extends Service implements Runnable {
             serverThread = null;
         }
         if (server != null) {
+            releaseWakeLock();
+
             server.stop();
             sendBroadcast(new Intent(FtpService.ACTION_STOPPED).setPackage(getPackageName()));
         }
@@ -426,5 +393,62 @@ public class FtpService extends Service implements Runnable {
 
     public static NotificationCompat.Builder getBuilder() {
         return builder;
+    }
+
+    private void acquireWakeLock(){
+        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "FtpService::Wakelock");
+        wakeLock.acquire();
+    }
+
+    private void releaseWakeLock(){
+        wakeLock.release();
+    }
+
+    private Notification buildNotification(){
+        Notification notification;
+
+        Intent notificationIntent = new Intent(this, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+        CharSequence tickerText = this.getString(R.string.ftp_notif_starting);
+        long when = System.currentTimeMillis();
+
+        builder  = new NotificationCompat.Builder(getApplicationContext(), NotificationConstants.CHANNEL_FTP_ID)
+                .setContentTitle(this.getString(R.string.ftp_notif_starting_title))
+                .setContentText(this.getString(R.string.ftp_notif_starting))
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_ftp_light)
+                .setTicker(tickerText)
+                .setWhen(when)
+                .setOngoing(true)
+                .setOnlyAlertOnce(true);
+
+        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
+        CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
+        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getApplicationContext().getPackageName());
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
+                stopIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        builder.addAction(stopIcon, stopText, stopPendingIntent);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+            notification = builder.build();
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+            String channelName = NotificationConstants.CHANNEL_FTP_NAME;
+
+            NotificationChannel chan = new NotificationChannel(NotificationConstants.CHANNEL_FTP_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
+
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            manager.createNotificationChannel(chan);
+
+            notification = builder.build();
+        } else {
+            notification = builder.getNotification();
+        }
+
+        return notification;
     }
 }

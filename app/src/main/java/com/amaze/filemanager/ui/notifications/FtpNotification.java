@@ -16,6 +16,8 @@ import java.net.InetAddress;
 
 /**
  * Created by yashwanthreddyg on 19-06-2016.
+ *
+ * Edited by zent-co on 30-07-2019
  */
 public class FtpNotification extends BroadcastReceiver {
 
