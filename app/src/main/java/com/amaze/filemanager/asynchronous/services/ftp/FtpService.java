@@ -146,8 +146,6 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
-        acquireWakeLock();
-
         Notification notification = buildNotification();
 
         startForeground(NotificationConstants.FTP_ID, notification);
@@ -256,8 +254,6 @@ public class FtpService extends Service implements Runnable {
             serverThread = null;
         }
         if (server != null) {
-            releaseWakeLock();
-
             server.stop();
             sendBroadcast(new Intent(FtpService.ACTION_STOPPED).setPackage(getPackageName()));
         }
@@ -393,17 +389,6 @@ public class FtpService extends Service implements Runnable {
 
     public static NotificationCompat.Builder getBuilder() {
         return builder;
-    }
-
-    private void acquireWakeLock(){
-        PowerManager powerManager = (PowerManager) getSystemService(POWER_SERVICE);
-        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
-                "FtpService::Wakelock");
-        wakeLock.acquire();
-    }
-
-    private void releaseWakeLock(){
-        wakeLock.release();
     }
 
     private Notification buildNotification(){
