@@ -104,8 +104,8 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
         ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        final AppCompatEditText editText1 = v.findViewById(R.id.text1),
-                editText2 = v.findViewById(R.id.text2);
+        final AppCompatEditText txtShortcutName = v.findViewById(R.id.text1),
+                txtShortcutPath = v.findViewById(R.id.text2);
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
                 .title(R.string.create_shortcut)
@@ -119,25 +119,25 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
 
         dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
 
-        disableButtonIfTitleEmpty(editText1, dialog);
-        disableButtonIfNotPath(editText2, dialog);
+        disableButtonIfTitleEmpty(txtShortcutName, dialog);
+        disableButtonIfNotPath(txtShortcutPath, dialog);
 
         dialog.getActionButton(DialogAction.POSITIVE)
                 .setOnClickListener(view -> {
                     PathSwitchPreference p = new PathSwitchPreference(getActivity());
-                    p.setTitle(editText1.getText());
-                    p.setSummary(editText2.getText());
+                    p.setTitle(txtShortcutName.getText());
+                    p.setSummary(txtShortcutPath.getText());
                     p.setOnPreferenceClickListener(FoldersPref.this);
 
                     position.put(p, dataUtils.getBooks().size());
                     getPreferenceScreen().addPreference(p);
 
-                    String[] values = new String[] {editText1.getText().toString(),
-                            editText2.getText().toString()};
+                    String[] values = new String[] {txtShortcutName.getText().toString(),
+                            txtShortcutPath.getText().toString()};
 
                     dataUtils.addBook(values);
                     utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
-                            editText2.getText().toString(), editText1.getText().toString()));
+                            txtShortcutName.getText().toString(), txtShortcutPath.getText().toString()));
 
                     dialog.dismiss();
                 });
