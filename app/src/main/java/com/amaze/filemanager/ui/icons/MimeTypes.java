@@ -50,7 +50,7 @@ public final class MimeTypes {
     public static final String ALL_MIME_TYPES = "*/*";
 
     // construct a with an approximation of the capacity
-    private static final HashMap<String, String> MIME_TYPES = new HashMap<>(1 + (int)(66 / 0.75));
+    private static final HashMap<String, String> MIME_TYPES = new HashMap<>(1 + (int)(68 / 0.75));
 
     static {
 
@@ -125,6 +125,7 @@ public final class MimeTypes {
         MIME_TYPES.put("spx", "audio/ogg");
         MIME_TYPES.put("aac", "audio/x-aac");
         MIME_TYPES.put("mka", "audio/x-matroska");
+        MIME_TYPES.put("opus", "audio/ogg");
 
         MIME_TYPES.put("jpgv", "video/jpeg");
         MIME_TYPES.put("jpgm", "video/jpm");
