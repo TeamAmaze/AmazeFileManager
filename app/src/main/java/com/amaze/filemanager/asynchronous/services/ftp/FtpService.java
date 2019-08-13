@@ -123,10 +123,6 @@ public class FtpService extends Service implements Runnable {
 
     private boolean isStartedByTile = false;
 
-    private static NotificationCompat.Builder builder;
-
-    private PowerManager.WakeLock wakeLock;
-
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
         isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false);
@@ -387,12 +383,9 @@ public class FtpService extends Service implements Runnable {
         return r;
     }
 
-    public static NotificationCompat.Builder getBuilder() {
-        return builder;
-    }
-
     private Notification buildNotification(){
         Notification notification;
+        NotificationCompat.Builder builder;
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -436,4 +429,5 @@ public class FtpService extends Service implements Runnable {
 
         return notification;
     }
+
 }

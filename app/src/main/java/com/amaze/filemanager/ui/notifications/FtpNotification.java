@@ -1,6 +1,7 @@
 package com.amaze.filemanager.ui.notifications;
 
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -25,7 +26,7 @@ public class FtpNotification extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
             case FtpService.ACTION_STARTED:
-                createNotification(context, intent.getBooleanExtra(FtpService.TAG_STARTED_BY_TILE, false));
+                updateNotification(context);
                 break;
             case FtpService.ACTION_STOPPED:
                 removeNotification(context);
@@ -33,7 +34,7 @@ public class FtpNotification extends BroadcastReceiver {
         }
     }
 
-    private void createNotification(Context context, boolean noStopButton) {
+    private void updateNotification(Context context) {
 
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
@@ -48,7 +49,7 @@ public class FtpNotification extends BroadcastReceiver {
                 + address.getHostAddress() + ":"
                 + port + "/";
 
-        NotificationCompat.Builder builder = FtpService.getBuilder();
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), NotificationConstants.CHANNEL_FTP_ID);
 
         int icon = R.drawable.ic_ftp_light;
         CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
@@ -63,6 +64,14 @@ public class FtpNotification extends BroadcastReceiver {
                 .setTicker(tickerText)
                 .setWhen(when)
                 .setOngoing(true);
+
+        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
+        CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
+        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getApplicationContext().getPackageName());
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0,
+                stopIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        builder.addAction(stopIcon, stopText, stopPendingIntent);
 
         notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }
