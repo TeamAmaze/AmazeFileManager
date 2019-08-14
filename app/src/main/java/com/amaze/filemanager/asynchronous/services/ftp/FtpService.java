@@ -384,7 +384,6 @@ public class FtpService extends Service implements Runnable {
     }
 
     private Notification buildNotification(){
-        Notification notification;
         NotificationCompat.Builder builder;
 
         Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -412,22 +411,9 @@ public class FtpService extends Service implements Runnable {
 
         builder.addAction(stopIcon, stopText, stopPendingIntent);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN && Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-            notification = builder.build();
-        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
-            String channelName = NotificationConstants.CHANNEL_FTP_NAME;
+        NotificationConstants.setMetadata(getApplicationContext(), builder, NotificationConstants.TYPE_FTP);
 
-            NotificationChannel chan = new NotificationChannel(NotificationConstants.CHANNEL_FTP_ID, channelName, NotificationManager.IMPORTANCE_DEFAULT);
-
-            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-            manager.createNotificationChannel(chan);
-
-            notification = builder.build();
-        } else {
-            notification = builder.getNotification();
-        }
-
-        return notification;
+        return builder.build();
     }
 
 }
