@@ -54,6 +54,7 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
@@ -142,7 +143,7 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
-        Notification notification = buildNotification();
+        Notification notification = FtpNotification.buildNotification(getApplicationContext());
 
         startForeground(NotificationConstants.FTP_ID, notification);
 
@@ -381,39 +382,6 @@ public class FtpService extends Service implements Runnable {
         }
 
         return r;
-    }
-
-    private Notification buildNotification(){
-        NotificationCompat.Builder builder;
-
-        Intent notificationIntent = new Intent(this, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
-
-        CharSequence tickerText = this.getString(R.string.ftp_notif_starting);
-        long when = System.currentTimeMillis();
-
-        builder  = new NotificationCompat.Builder(getApplicationContext(), NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle(this.getString(R.string.ftp_notif_starting_title))
-                .setContentText(this.getString(R.string.ftp_notif_starting))
-                .setContentIntent(contentIntent)
-                .setSmallIcon(R.drawable.ic_ftp_light)
-                .setTicker(tickerText)
-                .setWhen(when)
-                .setOngoing(true)
-                .setOnlyAlertOnce(true);
-
-        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-        CharSequence stopText = this.getString(R.string.ftp_notif_stop_server);
-        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getApplicationContext().getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(), 0,
-                stopIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        builder.addAction(stopIcon, stopText, stopPendingIntent);
-
-        NotificationConstants.setMetadata(getApplicationContext(), builder, NotificationConstants.TYPE_FTP);
-
-        return builder.build();
     }
 
 }

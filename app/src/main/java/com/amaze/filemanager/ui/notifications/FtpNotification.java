@@ -1,5 +1,6 @@
 package com.amaze.filemanager.ui.notifications;
 
+import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -34,7 +35,40 @@ public class FtpNotification extends BroadcastReceiver {
         }
     }
 
-    private void updateNotification(Context context) {
+    public static Notification buildNotification(Context context){
+        NotificationCompat.Builder builder;
+
+        Intent notificationIntent = new Intent(context, MainActivity.class);
+        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+
+        CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
+        long when = System.currentTimeMillis();
+
+        builder  = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
+                .setContentTitle(context.getString(R.string.ftp_notif_starting_title))
+                .setContentText(context.getString(R.string.ftp_notif_starting))
+                .setContentIntent(contentIntent)
+                .setSmallIcon(R.drawable.ic_ftp_light)
+                .setTicker(tickerText)
+                .setWhen(when)
+                .setOngoing(true)
+                .setOnlyAlertOnce(true);
+
+        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
+        CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
+        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
+        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
+                stopIntent, PendingIntent.FLAG_ONE_SHOT);
+
+        builder.addAction(stopIcon, stopText, stopPendingIntent);
+
+        NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_FTP);
+
+        return builder.build();
+    }
+
+    private static void updateNotification(Context context) {
 
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
@@ -76,7 +110,7 @@ public class FtpNotification extends BroadcastReceiver {
         notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }
 
-    private void removeNotification(Context context){
+    private static void removeNotification(Context context){
         String ns = Context.NOTIFICATION_SERVICE;
         NotificationManager nm = (NotificationManager) context.getSystemService(ns);
         nm.cancelAll();
