@@ -23,6 +23,11 @@ import java.net.InetAddress;
  */
 public class FtpNotification extends BroadcastReceiver {
 
+    private static NotificationCompat.Builder builder;
+    private static CharSequence tickerText;
+    private static String contentTitle;
+    private static String contentText;
+
     @Override
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
@@ -35,19 +40,16 @@ public class FtpNotification extends BroadcastReceiver {
         }
     }
 
-    public static Notification buildNotification(Context context){
-        NotificationCompat.Builder builder;
-
+    private static void buildNotification(Context context){
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
-        CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
         long when = System.currentTimeMillis();
 
         builder  = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle(context.getString(R.string.ftp_notif_starting_title))
-                .setContentText(context.getString(R.string.ftp_notif_starting))
+                .setContentTitle(contentTitle)
+                .setContentText(contentText)
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_ftp_light)
                 .setTicker(tickerText)
@@ -64,12 +66,19 @@ public class FtpNotification extends BroadcastReceiver {
         builder.addAction(stopIcon, stopText, stopPendingIntent);
 
         NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_FTP);
+    }
+
+    public static Notification startNotification(Context context){
+        tickerText = context.getString(R.string.ftp_notif_starting);
+        contentTitle = context.getString(R.string.ftp_notif_starting_title);
+        contentText = context.getString(R.string.ftp_notif_starting);
+
+        buildNotification(context);
 
         return builder.build();
     }
 
     private static void updateNotification(Context context) {
-
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
@@ -83,29 +92,11 @@ public class FtpNotification extends BroadcastReceiver {
                 + address.getHostAddress() + ":"
                 + port + "/";
 
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context.getApplicationContext(), NotificationConstants.CHANNEL_FTP_ID);
+        tickerText = context.getString(R.string.ftp_notif_starting);
+        contentTitle = context.getString(R.string.ftp_notif_title);
+        contentText = String.format(context.getString(R.string.ftp_notif_text), iptext);
 
-        int icon = R.drawable.ic_ftp_light;
-        CharSequence tickerText = context.getString(R.string.ftp_notif_starting);
-        long when = System.currentTimeMillis();
-
-        CharSequence contentTitle = context.getString(R.string.ftp_notif_title);
-        CharSequence contentText = String.format(context.getString(R.string.ftp_notif_text), iptext);
-
-        builder.setContentTitle(contentTitle)
-                .setContentText(contentText)
-                .setSmallIcon(icon)
-                .setTicker(tickerText)
-                .setWhen(when)
-                .setOngoing(true);
-
-        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-        CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getApplicationContext().getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context.getApplicationContext(), 0,
-                stopIntent, PendingIntent.FLAG_ONE_SHOT);
-
-        builder.addAction(stopIcon, stopText, stopPendingIntent);
+        buildNotification(context);
 
         notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }
