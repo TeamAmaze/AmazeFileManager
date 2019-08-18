@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 
 import com.amaze.filemanager.R;
@@ -23,11 +24,6 @@ import java.net.InetAddress;
  */
 public class FtpNotification extends BroadcastReceiver {
 
-    private static NotificationCompat.Builder builder;
-    private static CharSequence tickerText;
-    private static String contentTitle;
-    private static String contentText;
-
     @Override
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
@@ -40,19 +36,21 @@ public class FtpNotification extends BroadcastReceiver {
         }
     }
 
-    private static void buildNotification(Context context){
+    private static NotificationCompat.Builder buildNotification(Context context,
+                                                                @StringRes int contentTitleRes,
+                                                                String contentText){
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
 
         long when = System.currentTimeMillis();
 
-        builder  = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
-                .setContentTitle(contentTitle)
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
+                .setContentTitle(context.getString(contentTitleRes))
                 .setContentText(contentText)
                 .setContentIntent(contentIntent)
                 .setSmallIcon(R.drawable.ic_ftp_light)
-                .setTicker(tickerText)
+                .setTicker(context.getString( R.string.ftp_notif_starting))
                 .setWhen(when)
                 .setOngoing(true)
                 .setOnlyAlertOnce(true);
@@ -66,14 +64,13 @@ public class FtpNotification extends BroadcastReceiver {
         builder.addAction(stopIcon, stopText, stopPendingIntent);
 
         NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_FTP);
+
+        return builder;
     }
 
     public static Notification startNotification(Context context){
-        tickerText = context.getString(R.string.ftp_notif_starting);
-        contentTitle = context.getString(R.string.ftp_notif_starting_title);
-        contentText = context.getString(R.string.ftp_notif_starting);
-
-        buildNotification(context);
+        NotificationCompat.Builder builder = buildNotification(context,
+                R.string.ftp_notif_starting_title, context.getString(R.string.ftp_notif_starting));
 
         return builder.build();
     }
@@ -92,11 +89,8 @@ public class FtpNotification extends BroadcastReceiver {
                 + address.getHostAddress() + ":"
                 + port + "/";
 
-        tickerText = context.getString(R.string.ftp_notif_starting);
-        contentTitle = context.getString(R.string.ftp_notif_title);
-        contentText = String.format(context.getString(R.string.ftp_notif_text), iptext);
-
-        buildNotification(context);
+        NotificationCompat.Builder builder = buildNotification(context,
+                R.string.ftp_notif_title, context.getString(R.string.ftp_notif_text, iptext));
 
         notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }
