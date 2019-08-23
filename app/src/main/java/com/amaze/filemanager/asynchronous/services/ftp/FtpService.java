@@ -136,7 +136,7 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
-        Notification notification = FtpNotification.startNotification(getApplicationContext());
+        Notification notification = FtpNotification.startNotification(getApplicationContext(), isStartedByTile);
 
         startForeground(NotificationConstants.FTP_ID, notification);
 

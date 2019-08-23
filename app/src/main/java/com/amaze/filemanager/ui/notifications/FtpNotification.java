@@ -28,7 +28,7 @@ public class FtpNotification extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         switch(intent.getAction()){
             case FtpService.ACTION_STARTED:
-                updateNotification(context);
+                updateNotification(context, intent.getBooleanExtra(FtpService.TAG_STARTED_BY_TILE, false));
                 break;
             case FtpService.ACTION_STOPPED:
                 removeNotification(context);
@@ -38,7 +38,8 @@ public class FtpNotification extends BroadcastReceiver {
 
     private static NotificationCompat.Builder buildNotification(Context context,
                                                                 @StringRes int contentTitleRes,
-                                                                String contentText){
+                                                                String contentText,
+                                                                boolean noStopButton){
         Intent notificationIntent = new Intent(context, MainActivity.class);
         notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
@@ -55,27 +56,29 @@ public class FtpNotification extends BroadcastReceiver {
                 .setOngoing(true)
                 .setOnlyAlertOnce(true);
 
-        int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-        CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-        Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
-        PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
-                stopIntent, PendingIntent.FLAG_ONE_SHOT);
+        if(!noStopButton) {
+            int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
+            CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
+            Intent stopIntent = new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
+            PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 0,
+                    stopIntent, PendingIntent.FLAG_ONE_SHOT);
 
-        builder.addAction(stopIcon, stopText, stopPendingIntent);
+            builder.addAction(stopIcon, stopText, stopPendingIntent);
+        }
 
         NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_FTP);
 
         return builder;
     }
 
-    public static Notification startNotification(Context context){
+    public static Notification startNotification(Context context, boolean noStopButton){
         NotificationCompat.Builder builder = buildNotification(context,
-                R.string.ftp_notif_starting_title, context.getString(R.string.ftp_notif_starting));
+                R.string.ftp_notif_starting_title, context.getString(R.string.ftp_notif_starting), noStopButton);
 
         return builder.build();
     }
 
-    private static void updateNotification(Context context) {
+    private static void updateNotification(Context context, boolean noStopButton) {
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
@@ -90,7 +93,7 @@ public class FtpNotification extends BroadcastReceiver {
                 + port + "/";
 
         NotificationCompat.Builder builder = buildNotification(context,
-                R.string.ftp_notif_title, context.getString(R.string.ftp_notif_text, iptext));
+                R.string.ftp_notif_title, context.getString(R.string.ftp_notif_text, iptext), noStopButton);
 
         notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }
