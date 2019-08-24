@@ -24,9 +24,12 @@ package com.amaze.filemanager.asynchronous.services.ftp;
 
 /**
  * Created by yashwanthreddyg on 09-06-2016.
+ *
+ * Edited by zent-co on 30-07-2019
  */
 
 import android.app.AlarmManager;
+import android.app.Notification;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -44,6 +47,8 @@ import android.support.annotation.Nullable;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.notifications.FtpNotification;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import org.apache.ftpserver.ConnectionConfigFactory;
@@ -131,8 +136,13 @@ public class FtpService extends Service implements Runnable {
         serverThread = new Thread(this);
         serverThread.start();
 
+        Notification notification = FtpNotification.startNotification(getApplicationContext(), isStartedByTile);
+
+        startForeground(NotificationConstants.FTP_ID, notification);
+
         return START_STICKY;
     }
+
 
     @Override
     public IBinder onBind(Intent intent) {
@@ -213,6 +223,7 @@ public class FtpService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
+
             sendBroadcast(new Intent(FtpService.ACTION_STARTED).setPackage(getPackageName()).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
         } catch (Exception e) {
             sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART).setPackage(getPackageName()));

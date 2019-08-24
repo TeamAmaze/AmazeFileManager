@@ -30,7 +30,7 @@ public class NotificationConstants {
 
     public static final String CHANNEL_NORMAL_ID = "normalChannel";
     public static final String CHANNEL_FTP_ID = "ftpChannel";
-
+    
     /**
      * This creates a channel (API >= 26) or applies the correct metadata to a notification (API < 26)
      */
