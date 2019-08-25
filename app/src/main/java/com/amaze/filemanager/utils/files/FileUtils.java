@@ -814,14 +814,15 @@ public class FileUtils {
     }
 
     private static boolean isSelfDefault(File f, Context c){
-        Intent intent = new Intent();
-        intent.setAction(android.content.Intent.ACTION_VIEW);
+        Intent intent = new Intent(Intent.ACTION_VIEW);
         intent.setDataAndType(Uri.fromFile(f), MimeTypes.getMimeType(f.getPath(), f.isDirectory()));
-        String s="";
-        ResolveInfo rii = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        if (rii !=  null && rii.activityInfo != null) s = rii.activityInfo.packageName;
+        ResolveInfo info = c.getPackageManager().resolveActivity(intent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (info !=  null && info.activityInfo != null) {
+            return info.activityInfo.packageName.equals(c.getPackageName());
+        } else {
+            return true;
+        }
 
-        return s.equals("com.amaze.filemanager") || rii == null;
     }
 
     /**
