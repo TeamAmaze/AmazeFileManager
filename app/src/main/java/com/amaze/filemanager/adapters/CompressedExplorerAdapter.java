@@ -219,7 +219,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
 
             final StringBuilder stringBuilder = new StringBuilder(rowItem.name);
             if (compressedExplorerFragment.showLastModified)
-                holder.date.setText(Utils.getDate(rowItem.date, compressedExplorerFragment.year));
+                holder.date.setText(Utils.getDate(context, rowItem.date, compressedExplorerFragment.year));
             if (rowItem.directory) {
                 holder.genericIcon.setImageDrawable(folder);
                 gradientDrawable.setColor(compressedExplorerFragment.iconskin);

@@ -1255,7 +1255,7 @@ public class HybridFile {
      * Generates a {@link LayoutElementParcelable} adapted compatible element.
      * Currently supports only local filesystem
      */
-    public LayoutElementParcelable generateLayoutElement(boolean showThumbs) {
+    public LayoutElementParcelable generateLayoutElement(@NonNull Context c, boolean showThumbs) {
         switch (mode) {
             case FILE:
             case ROOT:
@@ -1263,11 +1263,11 @@ public class HybridFile {
                 LayoutElementParcelable layoutElement;
                 if (isDirectory()) {
 
-                    layoutElement = new LayoutElementParcelable(path, RootHelper.parseFilePermission(file),
+                    layoutElement = new LayoutElementParcelable(c, path, RootHelper.parseFilePermission(file),
                             "", folderSize() + "", 0, true, file.lastModified() + "",
                             false, showThumbs, mode);
                 } else {
-                    layoutElement = new LayoutElementParcelable(
+                    layoutElement = new LayoutElementParcelable(c,
                             file.getPath(), RootHelper.parseFilePermission(file),
                             file.getPath(), file.length() + "", file.length(), false, file.lastModified() + "",
                             false, showThumbs, mode);
