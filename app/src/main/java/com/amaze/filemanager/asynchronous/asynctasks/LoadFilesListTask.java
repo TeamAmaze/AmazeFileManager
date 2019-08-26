@@ -244,7 +244,7 @@ public class LoadFilesListTask extends AsyncTask<Void, Void, Pair<OpenMode, Arra
                 ma.file_count++;
             }
 
-            LayoutElementParcelable layoutElement = new LayoutElementParcelable(baseFile.getName(),
+            LayoutElementParcelable layoutElement = new LayoutElementParcelable(c, baseFile.getName(),
                     baseFile.getPath(), baseFile.getPermission(), baseFile.getLink(), size,
                     longSize, false, baseFile.getDate() + "", baseFile.isDirectory(),
                     showThumbs, baseFile.getMode());

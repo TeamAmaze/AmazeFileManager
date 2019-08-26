@@ -31,8 +31,10 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.ColorRes;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.graphics.drawable.DrawableCompat;
+import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
 import android.widget.CheckBox;
@@ -43,8 +45,6 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -57,12 +57,11 @@ import java.util.concurrent.TimeUnit;
 public class Utils {
 
     private static final int INDEX_NOT_FOUND = -1;
-    private static final SimpleDateFormat DATE_NO_MINUTES = new SimpleDateFormat("MMM dd, yyyy");
-    private static final SimpleDateFormat DATE_WITH_MINUTES = new SimpleDateFormat("MMM dd yyyy | HH:mm");
     private static final String INPUT_INTENT_BLACKLIST_COLON = ";";
     private static final String INPUT_INTENT_BLACKLIST_PIPE = "\\|";
     private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
     private static final String INPUT_INTENT_BLACKLIST_DOTS = "\\.\\.\\.";
+    private static final String DATE_TIME_FORMAT = "%s | %s";
 
     //methods for fastscroller
     public static float clamp(float min, float max, float value) {
@@ -94,15 +93,8 @@ public class Utils {
         }
     }
 
-    public static String getDate(long f) {
-        return DATE_WITH_MINUTES.format(f);
-    }
-
-    public static String getDate(long f, String year) {
-        String date = DATE_NO_MINUTES.format(f);
-        if (date.substring(date.length() - 4, date.length()).equals(year))
-            date = date.substring(0, date.length() - 6);
-        return date;
+    public static String getDate(@NonNull Context c, long f) {
+        return String.format(DATE_TIME_FORMAT, DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_DATE), DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_TIME));
     }
 
     /**
@@ -111,6 +103,7 @@ public class Utils {
      * @param color the resource id for the color
      * @return the color
      */
+    @SuppressWarnings("deprecation")
     public static int getColor(Context c, @ColorRes int color) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             return c.getColor(color);
