@@ -53,7 +53,13 @@ import com.bumptech.glide.request.target.Target;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.amaze.filemanager.adapters.RecyclerAdapter.ListElemType.*;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApk;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionJar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionRar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionZip;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarShort;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -940,9 +946,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 popupMenu.getMenu().findItem(R.id.book).setVisible(false);
             }
 
-            if (description.endsWith(".zip") || description.endsWith(".jar")
-                    || description.endsWith(".apk") || description.endsWith(".rar")
-                    || description.endsWith(".tar") || description.endsWith(".tar.gz"))
+            if (description.endsWith(fileExtensionZip) || description.endsWith(fileExtensionJar)
+                    || description.endsWith(fileExtensionApk) || description.endsWith(fileExtensionRar)
+                    || description.endsWith(fileExtensionTar) || description.endsWith(fileExtensionGzipTarLong)
+                    || description.endsWith(fileExtensionGzipTarShort))
                 popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
