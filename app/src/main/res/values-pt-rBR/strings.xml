@@ -563,14 +563,14 @@
     <string name="update">ATUALIZAR</string>
 	<string name="scp_con">Conexão SCP/SFTP</string>
     <string name="scp_port">Porta</string>
-    <string name="ssh_host_key_verification_prompt">Não é possível determinar a autenticidade do servidor \'%s\'.\n\n%s chave da impressão digital é %s.\n\nToque em \"Sim\" para confirmar a identidade, caso contrário, toque em \"Não\".</string>
+    <string name="ssh_host_key_verification_prompt">Não é possível determinar a autenticidade do servidor \'%1$s\'.\n\n%2$s chave da impressão digital é %3$s.\n\nToque em \"Sim\" para confirmar a identidade, caso contrário, toque em \"Não\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verificar servidor</string>
     <string name="ssh_select_pem_button">Chave privada SSH</string>
     <string name="ssh_pem_key_parse_error">Não foi possível ler o PEM selecionado: %s</string>
     <string name="password_unchanged">(não alterada)</string>
     <string name="ssh_authentication_failure_password">Falha na autenticação: Não foi possível autenticar com o nome de usuário e senha digitados.</string>
     <string name="ssh_authentication_failure_key">Falha de autenticação: Não foi possível autenticar com o nome de usuário e chave privada digitados.</string>
-    <string name="ssh_connect_failed">Não foi possível conectar à %s:%d: %s</string>
+    <string name="ssh_connect_failed">Não foi possível conectar à %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">AVISO: A IDENTIFICAÇÃO DO SERVIDOR REMOTO FOI ALTERADA!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         É POSSÍVEL QUE ALGUÉM ESTEJA FAZENDO ALGO INDESEJADO!\n\n

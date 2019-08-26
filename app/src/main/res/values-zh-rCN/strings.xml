@@ -561,14 +561,14 @@
     <string name="update">刷新</string>
     <string name="scp_con">SCP/SFTP 连接</string>
     <string name="scp_port">端口号</string>
-    <string name="ssh_host_key_verification_prompt">\'%s\' 的远端连接无法建立，%s 密钥的指纹为 %s，是否确认连接？</string>
+    <string name="ssh_host_key_verification_prompt">\'%1$s\' 的远端连接无法建立，%2$s 密钥的指纹为 %3$s，是否确认连接？</string>
     <string name="ssh_host_key_verification_prompt_title">验证远端</string>
     <string name="ssh_select_pem_button">SSH 私钥</string>
     <string name="ssh_pem_key_parse_error">无法读取所选的 PEM 文件: %s</string>
     <string name="password_unchanged">(保持不变)</string>
     <string name="ssh_authentication_failure_password">登录失败：密码或私钥有误</string>
     <string name="ssh_authentication_failure_key">登录失败：密码或私钥有误</string>
-    <string name="ssh_connect_failed">连接到 %s:%d: %s 失败</string>
+    <string name="ssh_connect_failed">连接到 %1$s:%2$d: %3$s 失败</string>
     <string name="ssh_connect_failed_host_key_changed_title">警告：远端的认证信息已变</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         可能某人正在做坏事！\n\n

@@ -586,14 +586,14 @@
     <string name="update">EGUNERATU</string>
 	<string name="scp_con">SCP/SFTP konexioa</string>
     <string name="scp_port">Ataka</string>
-    <string name="ssh_host_key_verification_prompt">Ezin da ostalariaren egiazkotasuna ziurtatu.n\n%s gakoaren hatz-marka %s da.\n\nSakatu \"Bai\" identitatea berresteko; bestela, sakatu \"Ez\".</string>
+    <string name="ssh_host_key_verification_prompt">Ezin da ostalariaren egiazkotasuna ziurtatu %1$s.n\n%2$s gakoaren hatz-marka %3$s da.\n\nSakatu \"Bai\" identitatea berresteko; bestela, sakatu \"Ez\".</string>
     <string name="ssh_host_key_verification_prompt_title">Egiaztatu ostalaria</string>
     <string name="ssh_select_pem_button">SSH gako pribatua</string>
     <string name="ssh_pem_key_parse_error">Ezin da hautatutako PEM irakurri: %s</string>
     <string name="password_unchanged">(aldatu gabe)</string>
     <string name="ssh_authentication_failure_password">Saioa hastean arazoa: Ezin da emandako erabiltzaile-izen eta pasahitzarekin autentifikatu.</string>
     <string name="ssh_authentication_failure_key">Saioa hastean arazoa: Ezin da emandako erabiltzaile-izen eta gako pribatuarekin autentifikatu.</string>
-    <string name="ssh_connect_failed">Ezin da konektatu %s(e)ra:%d: %s</string>
+    <string name="ssh_connect_failed">Ezin da konektatu %1$s(e)ra:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">ABISUA: URRUNEKO OSTALARIAREN IDENTIFIKAZIOA ALDATU DA!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         POSIBLE DA NORBAIT MALTZURKERIA BAT EGITEN ARITZEA!\n\n
