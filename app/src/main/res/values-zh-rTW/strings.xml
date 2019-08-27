@@ -554,7 +554,7 @@
   <string name="folderfilecount">%1$d 個檔案夾和 %2$d個檔案</string>
   <string name="preference_newstack_title">以新工作開啟檔案</string>
   <string name="preference_newstack_summary">可以新工作開啟檔案，它會出現在系統的總覽畫面。</string>
-  <string name="ssh_connect_failed">不能連線到 %s:%d: %s</string>
+  <string name="ssh_connect_failed">不能連線到 %1$s:%2$d: %3$s</string>
   <string name="ssh_authentication_failure_password">登入失敗：未能以所設用戶名稱及密碼登入。</string>
   <string name="ssh_authentication_failure_key">登入失敗：未能以所設用戶名稱及私鑰登入。</string>
   <string name="failed_no_connection">無法載入檔案。請檢查網路連線。</string>
@@ -562,7 +562,7 @@
   <string name="selectcolorconfig">選擇配色</string>
   <string name="preselectedconfigs_title">已選擇的配色</string>
   <string name="ssh_host_key_verification_prompt_title">確認遠端主機</string>
-  <string name="ssh_host_key_verification_prompt">未能確認遠端主機\'%s\'的身份。\n\n%s的公鑰指紋碼為 %s.\n\n請按「是」以確認其身份；否則請按「否」。</string>
+  <string name="ssh_host_key_verification_prompt">未能確認遠端主機\'%1$s\'的身份。\n\n%2$s的公鑰指紋碼為 %3$s.\n\n請按「是」以確認其身份；否則請按「否」。</string>
   <string name="ssh_connect_failed_host_key_changed_message">
         似乎有人有不軌企圖！\n\n
         可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n

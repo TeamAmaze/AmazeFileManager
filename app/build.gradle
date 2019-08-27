@@ -181,7 +181,7 @@ dependencies {
     }
     annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
 
-    implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.3'//Floating Action Buttons Menu (aka expandable FAB)
+    implementation 'com.github.jahirfiquitiva:FABsMenu:1.1.4'//Floating Action Buttons Menu (aka expandable FAB)
 
     //Simple library show
     implementation('com.mikepenz:aboutlibraries:6.1.1@aar') {

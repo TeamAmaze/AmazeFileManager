@@ -334,9 +334,9 @@
                         <b>Virkjaðu skráadeilingu á Windows</b>\n
                     </li>
                     <p style='margin-left: 40px'>
-                        Opnaðu stjórnskjáinn (Control Panel), smelltu á 'Choose homegroup and sharing 
-                        options' undir 'Network and Internet' og smelltu síðan á 'Change advanced 
-                        sharing settings'. Virkjaðu deilimöguleikana fyrir skrár og prentun.\n\n
+                        Opnaðu stjórnskjáinn (Control Panel), smelltu á \'Choose homegroup and sharing
+                        options\' undir \'Network and Internet\' og smelltu síðan á \'Change advanced
+                        sharing settings\'. Virkjaðu deilimöguleikana fyrir skrár og prentun.\n\n
                     </p>
 
                     <li>
@@ -580,14 +580,14 @@
     <string name="update">UPPFÆRA</string>
     <string name="scp_con">SCP/SFTP tenging</string>
     <string name="scp_port">Gátt</string>
-    <string name="ssh_host_key_verification_prompt">Ekki var hægt að sannvotta auðkenni \'%s\'.\n\nFingrafar %s dulritunarlykilsins er %s.\n\nÝttu á \"Já\" til að staðfesta auðkenni; annars skaltu ýta á \"Nei\".</string>
+    <string name="ssh_host_key_verification_prompt">Ekki var hægt að sannvotta auðkenni \'%1$s\'.\n\nFingrafar %2$s dulritunarlykilsins er %3$s.\n\nÝttu á \"Já\" til að staðfesta auðkenni; annars skaltu ýta á \"Nei\".</string>
     <string name="ssh_host_key_verification_prompt_title">Sannreyna hýsiþjón</string>
     <string name="ssh_select_pem_button">SSH-einkalykill</string>
     <string name="ssh_pem_key_parse_error">Gat ekki lesið valinn PEM-einkalykil: %s</string>
     <string name="password_unchanged">(óbreytt)</string>
     <string name="ssh_authentication_failure_password">Innskráning mistókst: get ekki skráð inn með uppgefnu notandanafni og lykilorði.</string>
     <string name="ssh_authentication_failure_key">Innskráning mistókst: get ekki skráð inn með uppgefnu notandanafni og einkalykli.</string>
-    <string name="ssh_connect_failed">Ekki tókst að tengjast %s:%d: %s</string>
+    <string name="ssh_connect_failed">Ekki tókst að tengjast %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">AÐVÖRUN: AUÐKENNING HÝSILVÉLAR HEFUR BREYST!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         ÞAÐ ER HUGSANLEGT AÐ EINHVER SÉ AÐ GERA EITTHVAÐ Í LEYNI!\n\n

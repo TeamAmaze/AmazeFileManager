@@ -586,14 +586,14 @@
     <string name="update">UPDATE</string>
 	<string name="scp_con">SCP/SFTP Connection</string>
     <string name="scp_port">Port</string>
-    <string name="ssh_host_key_verification_prompt">The authenticity of host \'%s\' can\'t be established.\n\n%s key fingerprint is %s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
+    <string name="ssh_host_key_verification_prompt">The authenticity of host \'%1$s\' can\'t be established.\n\n%2$s key fingerprint is %3$s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
     <string name="ssh_select_pem_button">SSH Private Key</string>
     <string name="ssh_pem_key_parse_error">Unable to read selected PEM: %s</string>
     <string name="password_unchanged">(unchanged)</string>
     <string name="ssh_authentication_failure_password">Logon failure: Unable to authenticate with supplied username and password.</string>
     <string name="ssh_authentication_failure_key">Logon failure: Unable to authenticate with supplied username and private key.</string>
-    <string name="ssh_connect_failed">Unable to connect to %s:%d: %s</string>
+    <string name="ssh_connect_failed">Unable to connect to %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</string>
     <string name="ssh_connect_failed_host_key_changed_message">
         IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\n

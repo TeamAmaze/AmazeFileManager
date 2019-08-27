@@ -581,7 +581,7 @@
     <string name="password_unchanged">(no modificado)</string>
     <string name="ssh_authentication_failure_password">Falla de inicio de sesión: No se pudo autenticar el nombre de usuario y contraseña.</string>
     <string name="ssh_authentication_failure_key">Falla de inicio de sesión: No se pudo autenticar el nombre de usuario y la llave de privada.</string>
-    <string name="ssh_connect_failed">No se pudo conectar a %s:%d: %s</string>
+    <string name="ssh_connect_failed">No se pudo conectar a %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">ADVERTECIA: LA IDENTIFICACIÓN DEL HOST REMOTO A CAMBIADO!</string>
     <!-- ssh_connect_failed_host_key_changed_message missing-->
     <string name="ssh_key_prompt_passphrase">Por favor ingrese la frase de contraseña.</string>
