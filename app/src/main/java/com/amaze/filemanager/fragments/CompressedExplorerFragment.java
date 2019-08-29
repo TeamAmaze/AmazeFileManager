@@ -134,16 +134,19 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         mainActivity = (MainActivity) getActivity();
         listView = rootView.findViewById(R.id.listView);
         listView.setOnTouchListener((view, motionEvent) -> {
-            if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
-                stopAnim();
-            }
-            compressedExplorerAdapter.stoppedAnimation = true;
+            if(compressedExplorerAdapter != null) {
+                if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
+                    stopAnim();
+                }
+                compressedExplorerAdapter.stoppedAnimation = true;
 
-            stopAnims = false;
+                stopAnims = false;
+            }
             return false;
         });
         swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
         swipeRefreshLayout.setOnRefreshListener(this::refresh);
+        swipeRefreshLayout.setRefreshing(true);
 
         return rootView;
     }
@@ -403,14 +406,18 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
         boolean addGoBackItem = gobackitem && !isRoot(folder);
         String finalfolder = folder;
-        decompressor.changePath(folder, addGoBackItem, data -> {
-            elements = data;
-            createViews(elements, finalfolder);
-
-            swipeRefreshLayout.setRefreshing(false);
-            updateBottomBar();
+        decompressor.changePath(folder, addGoBackItem, result -> {
+            if(result.exception == null) {
+                elements = result.result;
+                createViews(elements, finalfolder);
+                swipeRefreshLayout.setRefreshing(false);
+                updateBottomBar();
+            } else {
+                Toast.makeText(getActivity(), getActivity().getString(R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+            }
         }).execute();
-
+        swipeRefreshLayout.setRefreshing(true);
         updateBottomBar();
     }
 

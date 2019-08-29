@@ -25,6 +25,7 @@ package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 import android.content.Context;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.TarHelperTask;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
@@ -38,7 +39,7 @@ public class TarDecompressor extends Decompressor {
     }
 
     @Override
-    public TarHelperTask changePath(String path, boolean addGoBackItem, OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish) {
+    public TarHelperTask changePath(String path, boolean addGoBackItem, OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
         return new TarHelperTask(filePath, path, addGoBackItem, onFinish);
     }
 

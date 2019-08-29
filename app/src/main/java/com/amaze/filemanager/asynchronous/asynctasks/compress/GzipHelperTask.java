@@ -1,7 +1,7 @@
 /*
  * GzipHelperTask.java
  *
- * Copyright (C) 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Copyright (C) 2018-2019 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
  * Raymond Lai <airwave209gt@gmail.com>.
  *
  * This file is part of Amaze File Manager.
@@ -23,13 +23,16 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.application.AppConfig;
 
+import org.apache.commons.compress.archivers.ArchiveException;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
@@ -38,7 +41,6 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.zip.GZIPInputStream;
 
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 
@@ -48,7 +50,7 @@ public class GzipHelperTask extends CompressedHelperTask {
     private String filePath, relativePath;
 
     public GzipHelperTask(Context context, String filePath, String relativePath, boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                         OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
         super(goBack, l);
         this.context = new WeakReference<>(context);
         this.filePath = filePath;
@@ -56,7 +58,7 @@ public class GzipHelperTask extends CompressedHelperTask {
     }
 
     @Override
-    void addElements(ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException {
         TarArchiveInputStream tarInputStream = null;
         try {
             tarInputStream = new TarArchiveInputStream(
@@ -81,7 +83,7 @@ public class GzipHelperTask extends CompressedHelperTask {
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new ArchiveException(String.format("Tarball archive %s is corrupt", filePath), e);
         }
 
     }

@@ -1,7 +1,7 @@
 /*
  * GeneralDialogCreation.java
  *
- * Copyright © 2017-2018 Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Copyright © 2017-2019 Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
  * Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of AmazeFileManager.
@@ -32,6 +32,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.support.annotation.StringRes;
 import android.support.design.widget.TextInputEditText;
@@ -83,6 +84,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
+import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -805,27 +807,60 @@ public class GeneralDialogCreation {
     public static void showDecryptDialog(Context c, final MainActivity main, final Intent intent,
                                          AppTheme appTheme, final String password,
                                          final EncryptDecryptUtils.DecryptButtonCallbackInterface
-                                                 decryptButtonCallbackInterface) {
-        int accentColor = main.getAccent();
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
-        builder.title(c.getString(R.string.crypt_decrypt));
-        builder.input(c.getString(R.string.authenticate_password), "", false, (dialog, input) -> {
-        });
-        builder.inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
-        builder.theme(appTheme.getMaterialDialogTheme());
-        builder.positiveText(c.getString(R.string.ok));
-        builder.negativeText(c.getString(R.string.cancel));
-        builder.positiveColor(accentColor);
-        builder.negativeColor(accentColor);
-        builder.onPositive((dialog, which) -> {
-            EditText editText = dialog.getInputEditText();
+                                          decryptButtonCallbackInterface) {
 
-            if (editText.getText().toString().equals(password))
-                decryptButtonCallbackInterface.confirm(intent);
-            else decryptButtonCallbackInterface.failed();
+        showPasswordDialog(c, main, appTheme,
+                R.string.crypt_decrypt, R.string.authenticate_password,
+                ((dialog, which) -> {
+                    EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+
+                    if (editText.getText().toString().equals(password))
+                        decryptButtonCallbackInterface.confirm(intent);
+                    else
+                        decryptButtonCallbackInterface.failed();
+
+                    dialog.dismiss();
+                }), null);
+    }
+
+    public static void showPasswordDialog(@NonNull Context c, @NonNull final MainActivity main,
+                                          @NonNull AppTheme appTheme, @StringRes int titleText, @StringRes int promptText,
+                                          @NonNull MaterialDialog.SingleButtonCallback positiveCallback,
+                                          @Nullable MaterialDialog.SingleButtonCallback negativeCallback) {
+        int accentColor = main.getAccent();
+
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
+        View dialogLayout = View.inflate(main, R.layout.dialog_singleedittext, null);
+        WarnableTextInputLayout wilTextfield = dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout);
+        EditText textfield = dialogLayout.findViewById(R.id.singleedittext_input);
+        textfield.setHint(promptText);
+        textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+        builder.customView(dialogLayout, false)
+                .theme(appTheme.getMaterialDialogTheme())
+                .autoDismiss(false)
+                .canceledOnTouchOutside(false)
+                .title(titleText)
+                .positiveText(R.string.ok)
+                .positiveColor(accentColor)
+                .onPositive(positiveCallback)
+                .negativeText(R.string.cancel)
+                .negativeColor(accentColor);
+
+        if(negativeCallback != null)
+            builder.onNegative(negativeCallback);
+        else
+            builder.onNegative((dialog, which) -> dialog.cancel());
+
+        MaterialDialog dialog = builder.show();
+
+        new WarnableTextInputValidator(AppConfig.getInstance().getMainActivityContext(), textfield,
+                wilTextfield, dialog.getActionButton(DialogAction.POSITIVE), (text) -> {
+            if (text.length() < 1) {
+                return new WarnableTextInputValidator.ReturnState(WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+            }
+            return new WarnableTextInputValidator.ReturnState();
         });
-        builder.onNegative((dialog, which) -> dialog.cancel());
-        builder.show();
     }
 
     public static void showSMBHelpDialog(Context m, int accentColor) {

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.CompressedHelperTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
@@ -34,7 +35,7 @@ public abstract class Decompressor {
      * @param path end with "/" if it is a directory, does not if it's a file
      */
     public abstract CompressedHelperTask changePath(String path, boolean addGoBackItem,
-                                                    OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> onFinish);
+                                                    OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish);
 
     /**
      * Decompress a file somewhere

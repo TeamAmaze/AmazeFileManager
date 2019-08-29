@@ -267,11 +267,11 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
                     toggleChecked(position, holder.checkImageView);
                 } else {
                     if (rowItem.directory) {
-                        String newPath = rowItem.path.substring(0, rowItem.path.length() - 1);
+                        String newPath = (rowItem.path.endsWith("/")) ? rowItem.path.substring(0, rowItem.path.length() - 1) : rowItem.path;
                         compressedExplorerFragment.changePath(newPath);
                     } else {
-                        String fileName = compressedExplorerFragment.compressedFile.getName().substring(0,
-                                compressedExplorerFragment.compressedFile.getName().lastIndexOf("."));
+
+                        String fileName = CompressedHelper.getFileName(compressedExplorerFragment.compressedFile.getName());
                         String archiveCacheDirPath = compressedExplorerFragment.getActivity().getExternalCacheDir().getPath() +
                                 CompressedHelper.SEPARATOR + fileName;
 

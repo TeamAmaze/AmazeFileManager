@@ -49,15 +49,16 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
-import java.io.BufferedInputStream;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.io.ZipOutputStream;
+import net.lingala.zip4j.model.ZipParameters;
+import net.lingala.zip4j.util.Zip4jConstants;
+
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
 
 public class ZipService extends AbstractProgressiveService {
 
@@ -118,11 +119,11 @@ public class ZipService extends AbstractProgressiveService {
         Intent stopIntent = new Intent(KEY_COMPRESS_BROADCAST_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(getApplicationContext(),
                 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey,
                 getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
+                .setSmallIcon(R.drawable.ic_zip_box_grey)
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(customSmallContentViews)
                 .setCustomBigContentView(customBigContentViews)
@@ -262,7 +263,7 @@ public class ZipService extends AbstractProgressiveService {
                     progressHandler.setSourceFilesProcessed(++fileProgress);
                     compressFile(file, "");
                 }
-            } catch (IOException e) {
+            } catch (IOException | ZipException e) {
                 e.printStackTrace();
             } finally {
                 try {
@@ -274,24 +275,17 @@ public class ZipService extends AbstractProgressiveService {
             }
         }
 
-        private void compressFile(File file, String path) throws IOException, NullPointerException {
+        private void compressFile(File file, String path) throws IOException, NullPointerException, ZipException {
             if (progressHandler.getCancelled()) return;
 
             if (!file.isDirectory()) {
                 byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
-                BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
-                zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
-                try {
-                    while ((len = in.read(buf)) > 0) {
-                        if (!progressHandler.getCancelled()) {
-                            zos.write(buf, 0, len);
-                            ServiceWatcherUtil.position += len;
-                        } else break;
-                    }
-                } finally {
-                    in.close();
-                }
+                ZipParameters parameters = new ZipParameters();
+                parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
+                parameters.setFileNameInZip(path + "/" + file.getName());
+                zos.putNextEntry(file, parameters);
+                ServiceWatcherUtil.position += file.length();
                 return;
             }
 

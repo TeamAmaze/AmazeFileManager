@@ -35,18 +35,27 @@ import android.preference.PreferenceManager;
 import android.support.annotation.StringRes;
 import android.support.v4.app.NotificationCompat;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.RemoteViews;
+import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
+
+import net.lingala.zip4j.exception.ZipException;
+
+import org.apache.commons.compress.PasswordRequiredException;
+import org.tukaani.xz.CorruptedInputException;
 
 import java.io.File;
 import java.io.IOException;
@@ -56,6 +65,8 @@ import java.util.ArrayList;
 public class ExtractService extends AbstractProgressiveService {
 
     Context context;
+
+    private static final String TAG = ExtractService.class.getSimpleName();
 
     private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
@@ -69,6 +80,7 @@ public class ExtractService extends AbstractProgressiveService {
     private int accentColor;
     private SharedPreferences sharedPreferences;
     private RemoteViews customSmallContentViews, customBigContentViews;
+
 
     public static final String KEY_PATH_ZIP = "zip";
     public static final String KEY_ENTRIES_ZIP = "entries";
@@ -103,18 +115,19 @@ public class ExtractService extends AbstractProgressiveService {
 
         Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
         PendingIntent stopPendingIntent = PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
-        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey600_36dp,
+        NotificationCompat.Action action = new NotificationCompat.Action(R.drawable.ic_zip_box_grey,
                 getString(R.string.stop_ftp), stopPendingIntent);
 
         mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
         mBuilder.setContentIntent(pendingIntent)
-                .setSmallIcon(R.drawable.ic_zip_box_grey600_36dp)
+                .setSmallIcon(R.drawable.ic_zip_box_grey)
                 .setContentIntent(pendingIntent)
                 .setCustomContentView(customSmallContentViews)
                 .setCustomBigContentView(customBigContentViews)
                 .setCustomHeadsUpContentView(customSmallContentViews)
                 .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
                 .addAction(action)
+                .setAutoCancel(true)
                 .setOngoing(true)
                 .setColor(accentColor);
 
@@ -199,13 +212,14 @@ public class ExtractService extends AbstractProgressiveService {
         return new File(filePath).length();
     }
 
-    public class DoWork extends AsyncTask<Void, Void, Boolean> {
+    public class DoWork extends AsyncTask<Void, IOException, Boolean> {
         private WeakReference<ExtractService> extractService;
         private String[] entriesToExtract;
         private String extractionPath, compressedPath;
         private ProgressHandler progressHandler;
         private ServiceWatcherUtil watcherUtil;
-
+        private boolean paused = false;
+        private boolean passwordProtected = false;
 
         private DoWork(ExtractService extractService, ProgressHandler progressHandler, String cpath, String epath,
                        String[] entries) {
@@ -218,25 +232,28 @@ public class ExtractService extends AbstractProgressiveService {
 
         @Override
         protected Boolean doInBackground(Void... p) {
-            final ExtractService extractService = this.extractService.get();
-            if(extractService == null) return null;
+            while(!isCancelled()){
+                if(paused) continue;
 
-            File f = new File(compressedPath);
-            String extractDirName = CompressedHelper.getFileName(f.getName());
+                final ExtractService extractService = this.extractService.get();
+                if (extractService == null) return null;
 
-            if (compressedPath.equals(extractionPath)) {
-                // custom extraction path not set, extract at default path
-                extractionPath = f.getParent() + "/" + extractDirName;
-            } else {
-                if (extractionPath.endsWith("/")) {
-                    extractionPath = extractionPath + extractDirName;
+                File f = new File(compressedPath);
+                String extractDirName = CompressedHelper.getFileName(f.getName());
+
+                if (compressedPath.equals(extractionPath)) {
+                    // custom extraction path not set, extract at default path
+                    extractionPath = f.getParent() + "/" + extractDirName;
                 } else {
-                    extractionPath = extractionPath + "/" + extractDirName;
+                    if (extractionPath.endsWith("/")) {
+                        extractionPath = extractionPath + extractDirName;
+                    } else if (!passwordProtected) {
+                        extractionPath = extractionPath + "/" + extractDirName;
+                    }
                 }
-            }
 
-            try {
-                if(entriesToExtract.length == 0) entriesToExtract = null;
+                if (entriesToExtract != null && entriesToExtract.length == 0)
+                    entriesToExtract = null;
 
                 final Extractor extractor =
                     CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
@@ -265,7 +282,7 @@ public class ExtractService extends AbstractProgressiveService {
 
                             @Override
                             public void onFinish() {
-                                if (entriesToExtract == null){
+                                if (entriesToExtract == null) {
                                     progressHandler.setSourceFilesProcessed(1);
                                 }
                             }
@@ -276,17 +293,59 @@ public class ExtractService extends AbstractProgressiveService {
                             }
                         });
 
-                if (entriesToExtract != null) {
-                    extractor.extractFiles(entriesToExtract);
-                } else {
-                    extractor.extractEverything();
+                try {
+                    if (entriesToExtract != null) {
+                        extractor.extractFiles(entriesToExtract);
+                    } else {
+                        extractor.extractEverything();
+                    }
+                    return (extractor.getInvalidArchiveEntries().size() == 0);
+                } catch (CorruptedInputException e) {
+                    Log.d(TAG, "Corrupted LZMA input", e);
+                    return false;
+                } catch (IOException e) {
+                    if(PasswordRequiredException.class.isAssignableFrom(e.getClass()) ||
+                            e.getCause() != null && ZipException.class.isAssignableFrom(e.getCause().getClass())) {
+                        Log.d(TAG, "Archive is password protected.", e);
+                        passwordProtected = true;
+                        paused = true;
+                        publishProgress(e);
+                    } else {
+                        Log.e(TAG, "Error while extracting file " + compressedPath, e);
+                        AppConfig.toast(extractService, extractService.getString(R.string.error));
+                        paused = true;
+                        publishProgress(e);
+                    }
                 }
-                return (extractor.getInvalidArchiveEntries().size() == 0);
-            } catch (IOException e) {
-                Log.e("amaze", "Error while extracting file " + compressedPath, e);
-                AppConfig.toast(extractService, extractService.getString(R.string.error));
-                return false;
             }
+            return false;
+        }
+
+        @Override
+        protected void onProgressUpdate(IOException... values) {
+            super.onProgressUpdate(values);
+            if(values.length < 1 || !passwordProtected) return;
+
+            IOException result = values[0];
+            ArchivePasswordCache.getInstance().remove(compressedPath);
+            GeneralDialogCreation.showPasswordDialog(AppConfig.getInstance().getMainActivityContext(),
+                (MainActivity)AppConfig.getInstance().getMainActivityContext(),
+                AppConfig.getInstance().getUtilsProvider().getAppTheme(),
+                R.string.archive_password_prompt, R.string.authenticate_password,
+                (dialog, which) -> {
+                    EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+                    ArchivePasswordCache.getInstance().put(compressedPath, editText.getText().toString());
+                    this.extractService.get().getDataPackages().clear();
+                    this.paused = false;
+                    dialog.dismiss();
+                }, ((dialog, which) -> {
+                    dialog.dismiss();
+                    toastOnParseError(result);
+                    cancel(true); //This cancels the AsyncTask...
+                    progressHandler.setCancelled(true);
+                    stopSelf(); //and this stops the ExtractService altogether.
+                    this.paused = false;
+                }));
         }
 
         @Override
@@ -305,6 +364,12 @@ public class ExtractService extends AbstractProgressiveService {
             if(!hasInvalidEntries)
                 AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
         }
+
+        private void toastOnParseError(IOException result){
+            Toast.makeText(AppConfig.getInstance().getMainActivityContext(),
+                AppConfig.getInstance().getResources().getString(R.string.cannot_extract_archive,
+                    compressedPath, result.getLocalizedMessage()), Toast.LENGTH_LONG).show();
+        }
     }
 
     /**
@@ -314,7 +379,7 @@ public class ExtractService extends AbstractProgressiveService {
     private BroadcastReceiver receiver1 = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
-            progressHandler.setCancelled(true);
+        progressHandler.setCancelled(true);
         }
     };
 
@@ -324,4 +389,3 @@ public class ExtractService extends AbstractProgressiveService {
     }
 
 }
-

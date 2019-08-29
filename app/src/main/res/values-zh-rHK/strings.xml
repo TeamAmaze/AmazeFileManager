@@ -482,4 +482,6 @@
   <string name="failed_smb_decrypt_path">載入 SMB 連線失敗</string>
   <string name="failed_cloud_new_connection">新增雲端硬碟失敗</string>
   <string name="failed_cloud_api_key">認證雲端硬碟套件失敗</string>
+  <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
+  <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>
 </resources>

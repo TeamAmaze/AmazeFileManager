@@ -24,21 +24,26 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.application.AppConfig;
 
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
+
+import org.apache.commons.compress.archivers.ArchiveException;
+
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Enumeration;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
-import java.util.zip.ZipInputStream;
+import java.util.Iterator;
 
 public class ZipHelperTask extends CompressedHelperTask {
 
@@ -52,7 +57,7 @@ public class ZipHelperTask extends CompressedHelperTask {
      * @param dir relativeDirectory to access inside the zip file
      */
     public ZipHelperTask(Context c, String realFileDirectory, String dir, boolean goback,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                         OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
         super(goback, l);
         context = new WeakReference<>(c);
         fileLocation = Uri.parse(realFileDirectory);
@@ -60,28 +65,18 @@ public class ZipHelperTask extends CompressedHelperTask {
     }
 
     @Override
-    void addElements(ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException {
         try {
             ArrayList<CompressedObjectParcelable> wholelist = new ArrayList<>();
-            if (new File(fileLocation.getPath()).canRead()) {
-                ZipFile zipfile = new ZipFile(fileLocation.getPath());
-                for (Enumeration e = zipfile.entries(); e.hasMoreElements(); ) {
-                    ZipEntry entry = (ZipEntry) e.nextElement();
-                    if (!CompressedHelper.isEntryPathValid(entry.getName())) {
-                        AppConfig.toast(context.get(), context.get().getString(R.string.multiple_invalid_archive_entries));
-                        continue;
-                    }
-                    wholelist.add(new CompressedObjectParcelable(entry.getName(), entry.getTime(), entry.getSize(), entry.isDirectory()));
+
+            ZipFile zipfile = new ZipFile(fileLocation.getPath());
+            for (Iterator<FileHeader> headers = zipfile.getFileHeaders().iterator(); headers.hasNext(); ) {
+                FileHeader entry = (FileHeader) headers.next();
+                if (!CompressedHelper.isEntryPathValid(entry.getFileName())) {
+                    AppConfig.toast(context.get(), context.get().getString(R.string.multiple_invalid_archive_entries));
+                    continue;
                 }
-            } else {
-                ZipInputStream zipfile1 = new ZipInputStream(context.get().getContentResolver().openInputStream(fileLocation));
-                for (ZipEntry entry = zipfile1.getNextEntry(); entry != null; entry = zipfile1.getNextEntry()) {
-                    if (!CompressedHelper.isEntryPathValid(entry.getName())){
-                        AppConfig.toast(context.get(), context.get().getString(R.string.multiple_invalid_archive_entries));
-                        continue;
-                    }
-                    wholelist.add(new CompressedObjectParcelable(entry.getName(), entry.getTime(), entry.getSize(), entry.isDirectory()));
-                }
+                wholelist.add(new CompressedObjectParcelable(entry.getFileName(), entry.getLastModFileTime(), entry.getUncompressedSize(), entry.isDirectory()));
             }
 
             ArrayList<String> strings = new ArrayList<>();
@@ -131,8 +126,8 @@ public class ZipHelperTask extends CompressedHelperTask {
 
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (ZipException e) {
+            throw new ArchiveException("Zip file is corrupt", e);
         }
     }
 

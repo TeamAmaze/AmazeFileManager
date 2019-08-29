@@ -23,14 +23,19 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
 import com.github.junrar.rarfile.FileHeader;
+
+import org.apache.commons.compress.archivers.ArchiveException;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,14 +53,14 @@ public class RarHelperTask extends CompressedHelperTask {
      * @param dir relativeDirectory to access inside the zip file
      */
     public RarHelperTask(String realFileDirectory, String dir, boolean goBack,
-                         OnAsyncTaskFinished<ArrayList<CompressedObjectParcelable>> l) {
+                         OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
         super(goBack, l);
         fileLocation = realFileDirectory;
         relativeDirectory = dir;
     }
 
     @Override
-    void addElements(ArrayList<CompressedObjectParcelable> elements) {
+    void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException {
         try {
             Archive zipfile = new Archive(new File(fileLocation));
             String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
@@ -74,7 +79,7 @@ public class RarHelperTask extends CompressedHelperTask {
                 }
             }
         } catch (RarException | IOException e) {
-            e.printStackTrace();
+            throw new ArchiveException(String.format("RAR archive %s is corrupt", fileLocation));
         }
     }
 

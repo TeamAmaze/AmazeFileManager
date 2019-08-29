@@ -619,4 +619,6 @@
     <string name="saf_otg_explanation">你将进入 Android 文件系统，为了系统安全，请从左边 USB 设备列表选择设备。</string>
     <string name="donation_thanks">感谢您无私的捐赠，这将更加有利于我们项目的开发! (:</string>
     <string name="enableMarqueeFilename">开启文件名滚动效果</string>
+    <string name="cannot_extract_archive">不能开启压缩档 \"%s\"： %s</string>
+    <string name="archive_unsupported_or_corrupt">不能开启压缩档 \"%s\"。可能是程式库不支援此压缩档，或者压缩档真的坏掉了。</string>
 </resources>

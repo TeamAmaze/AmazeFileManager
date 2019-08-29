@@ -1,3 +1,24 @@
+/*
+ * CompressedObjectParcelable.java
+ *
+ * Copyright © 2017-2019 Emmanuel Messulam<emmanuelbendavid@gmail.com>
+ * and Raymond Lai <airwave209gt at gmail.com>.
+ *
+ * This file is part of AmazeFileManager.
+ *
+ * AmazeFileManager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AmazeFileManager is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.adapters.data;
 
 import android.os.Parcel;
@@ -116,7 +137,8 @@ public class CompressedObjectParcelable implements Parcelable {
         if (path.isEmpty()) return "";
 
         final StringBuilder stringBuilder = new StringBuilder(path);
-        stringBuilder.deleteCharAt(path.length() - 1);
+        if(stringBuilder.charAt(path.length()-1) == '/')
+            stringBuilder.deleteCharAt(path.length() - 1);
 
         try {
             return stringBuilder.substring(stringBuilder.lastIndexOf("/") + 1);
@@ -125,4 +147,15 @@ public class CompressedObjectParcelable implements Parcelable {
         }
     }
 
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof CompressedObjectParcelable) {
+            CompressedObjectParcelable otherObj = (CompressedObjectParcelable)obj;
+            return name.equals(otherObj.name)
+                    && type == otherObj.type
+                    && directory == otherObj.directory
+                    && size == otherObj.size;
+        } else
+            return false;
+    }
 }

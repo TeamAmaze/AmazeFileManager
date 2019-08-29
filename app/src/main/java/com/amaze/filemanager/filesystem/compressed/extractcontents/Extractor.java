@@ -41,8 +41,8 @@ public abstract class Extractor {
     protected OnUpdate listener;
     protected List<String> invalidArchiveEntries;
 
-    public Extractor(Context context, String filePath, String outputPath,
-                     Extractor.OnUpdate listener) {
+    public Extractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath,
+                     @NonNull Extractor.OnUpdate listener) {
         this.context = context;
         this.filePath = filePath;
         this.outputPath = outputPath;

@@ -575,5 +575,6 @@ Wi-Fiに接続する必要があります。</li><li>\\n
   <string name="filename">ファイル名</string>
   <string name="ssh_key_invalid_passphrase">無効な秘密鍵のパスフレーズ。</string>
     <string name="internalstorage">内部ストレージ</string>
+  <string name="archive_password_prompt">アーカイブのパスワードを入力ください。</string>
     <!-- end of plurals -->
 </resources>

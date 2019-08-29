@@ -26,68 +26,81 @@ import android.content.Context;
 import android.support.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Enumeration;
 import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipFile;
+
 
 public class ZipExtractor extends Extractor {
 
-    public ZipExtractor(Context context, String filePath, String outputPath, OnUpdate listener) {
+    public ZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
         super(context, filePath, outputPath, listener);
     }
 
     @Override
     protected void extractWithFilter(@NonNull Filter filter) throws IOException {
         long totalBytes = 0;
-        List<ZipEntry> entriesToExtract = new ArrayList<>();
-        ZipFile zipfile = new ZipFile(filePath);
+        List<FileHeader> entriesToExtract = new ArrayList<>();
+        try {
+            ZipFile zipfile = new ZipFile(filePath);
+            if(ArchivePasswordCache.getInstance().containsKey(filePath)) {
+                zipfile.setPassword(ArchivePasswordCache.getInstance().get(filePath));
+            }
 
-        // iterating archive elements to find file names that are to be extracted
-        for (Enumeration<? extends ZipEntry> e = zipfile.entries(); e.hasMoreElements(); ) {
-            ZipEntry zipEntry = e.nextElement();
+            // iterating archive elements to find file names that are to be extracted
+            for (Object obj : zipfile.getFileHeaders()) {
+                FileHeader fileHeader = (FileHeader)obj;
 
-            if(CompressedHelper.isEntryPathValid(zipEntry.getName())) {
-                if (filter.shouldExtract(zipEntry.getName(), zipEntry.isDirectory())) {
-                    entriesToExtract.add(zipEntry);
-                    totalBytes += zipEntry.getSize();
+                if(CompressedHelper.isEntryPathValid(fileHeader.getFileName())) {
+                    if (filter.shouldExtract(fileHeader.getFileName(), fileHeader.isDirectory())) {
+                        entriesToExtract.add(fileHeader);
+                        totalBytes += fileHeader.getUncompressedSize();
+                    }
+                } else {
+                    invalidArchiveEntries.add(fileHeader.getFileName());
                 }
-            } else {
-                invalidArchiveEntries.add(zipEntry.getName());
             }
-        }
 
-        listener.onStart(totalBytes, entriesToExtract.get(0).getName());
+            listener.onStart(totalBytes, entriesToExtract.get(0).getFileName());
 
-        for (ZipEntry entry : entriesToExtract) {
-            if (!listener.isCancelled()) {
-                listener.onUpdate(entry.getName());
-                extractEntry(context, zipfile, entry, outputPath);
+            for (FileHeader entry : entriesToExtract) {
+                if (!listener.isCancelled()) {
+                    listener.onUpdate(entry.getFileName());
+                    extractEntry(context, zipfile, entry, outputPath);
+                }
             }
+            listener.onFinish();
+        } catch (ZipException e) {
+            throw new IOException(e);
         }
-        listener.onFinish();
     }
     
     /**
-     * Method extracts {@link ZipEntry} from {@link ZipFile}
+     * Method extracts {@link FileHeader} from {@link ZipFile}
      *
      * @param zipFile   zip file from which entriesToExtract are to be extracted
      * @param entry     zip entry that is to be extracted
      * @param outputDir output directory
      */
-    private void extractEntry(@NonNull final Context context, ZipFile zipFile, ZipEntry entry,
-                              String outputDir) throws IOException {
-        final File outputFile = new File(outputDir, fixEntryName(entry.getName()));
+    private void extractEntry(@NonNull final Context context, ZipFile zipFile, FileHeader entry,
+                              String outputDir) throws IOException, ZipException {
+        final File outputFile = new File(outputDir, fixEntryName(entry.getFileName()));
+
+        if(ArchivePasswordCache.getInstance().containsKey(filePath))
+            entry.setPassword(ArchivePasswordCache.getInstance().get(filePath).toCharArray());
 
         if (!outputFile.getCanonicalPath().startsWith(outputDir)){
             throw new IOException("Incorrect ZipEntry path!");

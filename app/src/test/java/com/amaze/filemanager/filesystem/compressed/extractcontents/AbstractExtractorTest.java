@@ -4,7 +4,7 @@ import android.content.Context;
 import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.filesystem.compressed.TestArchives;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
@@ -17,7 +17,6 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -25,13 +24,14 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 14, maxSdk = 27)
 public abstract class AbstractExtractorTest {
 
     protected abstract Class<? extends Extractor> extractorClass();
@@ -41,12 +41,12 @@ public abstract class AbstractExtractorTest {
     @Before
     public void setUp() throws Exception {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
-        TestArchives.init(RuntimeEnvironment.application);
-        copyArchiveToStorage();
+        copyArchivesToStorage();
     }
 
     @After
     public void tearDown() throws Exception {
+        ArchivePasswordCache.getInstance().clear();
         File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
         if(extractedArchiveRoot.exists()) {
             Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
@@ -82,6 +82,10 @@ public abstract class AbstractExtractorTest {
 
     @Test
     public void testExtractFiles() throws Exception {
+        doTestExtractFiles();
+    }
+
+    protected void doTestExtractFiles() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
         Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
                 .newInstance(RuntimeEnvironment.application,
@@ -140,11 +144,13 @@ public abstract class AbstractExtractorTest {
         assertTrue(IOUtils.toByteArray(new FileInputStream(new File(new File(extractedArchiveRoot, "a/b/c/d"), "lipsum.bin"))).length == 512);
     }
 
-    private void copyArchiveToStorage() throws IOException{
-        IOUtils.copy(new ByteArrayInputStream(TestArchives.readArchive(getArchiveType())), new FileOutputStream(getArchiveFile()));
+    private void copyArchivesToStorage() throws IOException {
+        for(File f : new File("src/test/resources").listFiles()) {
+            IOUtils.copy(new FileInputStream(f), new FileOutputStream(new File(Environment.getExternalStorageDirectory(), f.getName())));
+        }
     }
 
-    private File getArchiveFile() {
+    protected File getArchiveFile() {
         return new File(Environment.getExternalStorageDirectory(), "test-archive." + getArchiveType());
     }
 }
