@@ -114,7 +114,7 @@ public class LayoutElementParcelable implements Parcelable {
         this.isDirectory = isDirectory;
         if (!date.trim().equals("")) {
             this.date = Long.parseLong(date);
-            this.date1 = Utils.getDate(c, this.date, CURRENT_YEAR);
+            this.date1 = Utils.getDate(c, this.date);
         } else {
             this.date = 0;
             this.date1 = "";
