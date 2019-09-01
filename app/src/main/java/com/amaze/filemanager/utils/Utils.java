@@ -40,7 +40,7 @@ public class Utils {
     private static final String INPUT_INTENT_BLACKLIST_PIPE = "\\|";
     private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
     private static final String INPUT_INTENT_BLACKLIST_DOTS = "\\.\\.\\.";
-    private static final String DATE_TIME_FORMAT = "%s | %s %s";
+    private static final String DATE_TIME_FORMAT = "%s | %s";
 
     //methods for fastscroller
     public static float clamp(float min, float max, float value) {
@@ -73,16 +73,7 @@ public class Utils {
     }
 
     public static String getDate(@NonNull Context c, long f) {
-        return String.format(DATE_TIME_FORMAT,
-                DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_DATE),
-                DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_TIME));
-    }
-
-    public static String getDate(@NonNull Context c, long f, @NonNull String year) {
-        return String.format(DATE_TIME_FORMAT,
-                DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_DATE),
-                DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_TIME),
-                year);
+        return String.format(DATE_TIME_FORMAT, DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_DATE), DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_TIME));
     }
 
     /**
