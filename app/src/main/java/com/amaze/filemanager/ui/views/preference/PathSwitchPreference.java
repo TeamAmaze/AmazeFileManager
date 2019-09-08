@@ -2,7 +2,7 @@ package com.amaze.filemanager.ui.views.preference;
 
 import android.content.Context;
 import android.preference.Preference;
-import android.support.annotation.IdRes;
+import androidx.annotation.IdRes;
 import android.view.View;
 import android.view.ViewGroup;
 

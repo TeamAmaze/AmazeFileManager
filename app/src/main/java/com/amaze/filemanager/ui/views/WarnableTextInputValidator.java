@@ -1,8 +1,8 @@
 package com.amaze.filemanager.ui.views;
 
 import android.content.Context;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.StringRes;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.StringRes;
 import android.text.Editable;
 import android.view.MotionEvent;
 import android.view.View;

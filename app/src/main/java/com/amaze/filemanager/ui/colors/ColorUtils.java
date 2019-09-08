@@ -2,7 +2,7 @@ package com.amaze.filemanager.ui.colors;
 
 import android.content.Context;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.icons.Icons;

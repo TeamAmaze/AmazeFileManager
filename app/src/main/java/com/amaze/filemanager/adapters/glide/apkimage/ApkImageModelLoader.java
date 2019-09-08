@@ -2,7 +2,7 @@ package com.amaze.filemanager.adapters.glide.apkimage;
 
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;

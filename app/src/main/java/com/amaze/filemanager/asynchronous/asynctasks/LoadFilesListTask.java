@@ -25,7 +25,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.R;

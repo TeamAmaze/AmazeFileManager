@@ -1,7 +1,7 @@
 package com.amaze.filemanager.utils.files;
 
-import android.support.test.InstrumentationRegistry;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.amaze.filemanager.utils.test.DummyFileGenerator;
 import com.amaze.filemanager.utils.ProgressHandler;

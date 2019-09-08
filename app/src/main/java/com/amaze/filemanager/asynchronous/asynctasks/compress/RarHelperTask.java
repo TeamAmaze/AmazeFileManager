@@ -22,9 +22,8 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
-import android.content.Context;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
@@ -39,7 +38,6 @@ import org.apache.commons.compress.archivers.ArchiveException;
 
 import java.io.File;
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 public class RarHelperTask extends CompressedHelperTask {

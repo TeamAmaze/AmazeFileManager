@@ -3,7 +3,7 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.AsyncTask;
-import android.support.v4.util.Pair;
+import androidx.core.util.Pair;
 import android.text.SpannableString;
 import android.text.format.Formatter;
 import android.view.View;

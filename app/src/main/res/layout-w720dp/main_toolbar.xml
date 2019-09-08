@@ -26,7 +26,7 @@
     android:fitsSystemWindows="true"
     android:id="@+id/tab_frame">
 
-    <android.support.design.widget.CoordinatorLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_marginLeft="@dimen/drawer_width"
         android:layout_height="match_parent">
@@ -72,7 +72,7 @@
 
         <include layout="@layout/layout_fab"/>
 
-    </android.support.design.widget.CoordinatorLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <View
         android:layout_width="1dp"
@@ -80,7 +80,7 @@
         android:layout_marginLeft="@dimen/drawer_width"
         android:background="#9e9e9e"/>
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
@@ -90,7 +90,7 @@
             android:layout_width="@dimen/drawer_width"
             android:layout_height="match_parent"
             android:layout_gravity="start"/>
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 </FrameLayout>
 
     <!--

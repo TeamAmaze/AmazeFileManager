@@ -1,6 +1,6 @@
 package com.amaze.filemanager.ssh;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 

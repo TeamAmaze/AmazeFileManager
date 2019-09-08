@@ -2,8 +2,8 @@ package com.amaze.filemanager.ui.views.preference;
 
 import android.content.Context;
 import android.preference.PreferenceCategory;
-import android.support.annotation.ColorInt;
-import android.support.v7.widget.AppCompatTextView;
+import androidx.annotation.ColorInt;
+import androidx.appcompat.widget.AppCompatTextView;
 import android.util.AttributeSet;
 import android.view.View;
 

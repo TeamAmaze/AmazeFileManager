@@ -2,9 +2,7 @@ package com.amaze.filemanager.ui.colors;
 
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.support.annotation.ColorInt;
-
-import com.amaze.filemanager.R;
+import androidx.annotation.ColorInt;
 
 public final class UserColorPreferences implements Parcelable {
 

@@ -22,7 +22,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.EditText;
 
 import com.amaze.filemanager.R;

@@ -4,8 +4,8 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
-import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.util.Pair;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.core.util.Pair;
 import android.text.format.Formatter;
 
 import com.amaze.filemanager.adapters.data.AppDataParcelable;

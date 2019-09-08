@@ -1,9 +1,9 @@
 package com.amaze.filemanager.ui.views.appbar;
 
 import android.content.SharedPreferences;
-import android.support.annotation.StringRes;
-import android.support.design.widget.AppBarLayout;
-import android.support.v7.widget.Toolbar;
+import androidx.annotation.StringRes;
+import com.google.android.material.appbar.AppBarLayout;
+import androidx.appcompat.widget.Toolbar;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;

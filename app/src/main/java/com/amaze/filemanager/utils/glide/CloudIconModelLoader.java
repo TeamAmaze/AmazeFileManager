@@ -2,11 +2,9 @@ package com.amaze.filemanager.utils.glide;
 
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.support.annotation.Nullable;
+import androidx.annotation.Nullable;
 
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.utils.OpenMode;
 import com.bumptech.glide.load.Options;
 import com.bumptech.glide.load.model.ModelLoader;
 import com.bumptech.glide.signature.ObjectKey;

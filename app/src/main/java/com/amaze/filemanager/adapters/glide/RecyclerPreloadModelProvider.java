@@ -1,11 +1,9 @@
 package com.amaze.filemanager.adapters.glide;
 
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.GlideRequest;

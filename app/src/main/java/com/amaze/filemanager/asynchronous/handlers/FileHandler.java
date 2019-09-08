@@ -3,14 +3,13 @@ package com.amaze.filemanager.asynchronous.handlers;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.RecyclerView;
 import android.view.View;
 
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 
 import java.io.File;
 import java.lang.ref.WeakReference;

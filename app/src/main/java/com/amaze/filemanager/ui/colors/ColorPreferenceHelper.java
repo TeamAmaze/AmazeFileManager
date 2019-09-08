@@ -2,13 +2,12 @@ package com.amaze.filemanager.ui.colors;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.ui.colors.ColorPreference;
 
 import java.util.Arrays;
 import java.util.List;

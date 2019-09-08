@@ -1,6 +1,6 @@
 package com.amaze.filemanager.utils;
 
-import android.support.annotation.DrawableRes;
+import androidx.annotation.DrawableRes;
 
 /**
  * This lets BottomBar be independent of the Fragment MainActivity is housing

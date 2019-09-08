@@ -1,8 +1,7 @@
 package com.amaze.filemanager.ui.views.drawer;
 
-import android.content.res.ColorStateList;
-import android.support.annotation.ColorInt;
-import android.support.design.widget.NavigationView;
+import androidx.annotation.ColorInt;
+
 import android.view.MenuItem;
 import android.widget.ImageButton;
 

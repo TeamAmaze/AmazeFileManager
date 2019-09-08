@@ -22,7 +22,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;

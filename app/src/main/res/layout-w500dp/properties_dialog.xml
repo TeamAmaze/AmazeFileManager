@@ -163,7 +163,7 @@
         android:layout_width="match_parent"
         android:layout_height="150dp" />
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/permission"
@@ -175,7 +175,7 @@
         android:visibility="gone"
         layout="@layout/permissiontable"/>
 
-    <android.support.v7.widget.AppCompatButton
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/set"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -2,7 +2,7 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;

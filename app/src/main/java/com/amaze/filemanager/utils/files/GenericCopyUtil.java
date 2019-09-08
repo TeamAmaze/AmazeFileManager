@@ -24,11 +24,10 @@ package com.amaze.filemanager.utils.files;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
-import android.support.v4.provider.DocumentFile;
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.documentfile.provider.DocumentFile;
 import android.util.Log;
 
 import com.amaze.filemanager.R;
@@ -43,7 +42,6 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.test.DummyFileGenerator;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import java.io.BufferedInputStream;
@@ -55,9 +53,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.RandomAccessFile;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.nio.MappedByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;

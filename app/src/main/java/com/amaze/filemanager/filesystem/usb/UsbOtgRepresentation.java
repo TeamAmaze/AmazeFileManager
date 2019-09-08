@@ -1,9 +1,6 @@
 package com.amaze.filemanager.filesystem.usb;
 
-import android.hardware.usb.UsbInterface;
-import android.support.annotation.Nullable;
-
-import com.amaze.filemanager.utils.Utils;
+import androidx.annotation.Nullable;
 
 /**
  * This class replesents a usb device.
