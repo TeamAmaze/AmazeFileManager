@@ -2,7 +2,7 @@ package com.amaze.filemanager.ui.views;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.util.DisplayMetrics;
 
 import com.amaze.filemanager.utils.theme.AppTheme;

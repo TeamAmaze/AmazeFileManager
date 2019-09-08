@@ -1,12 +1,11 @@
 package com.amaze.filemanager.filesystem;
 
 import android.os.Parcel;
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import com.amaze.filemanager.utils.OpenMode;
 
 import org.junit.*;
-import org.junit.runner.RunWith;
 
 import static org.junit.Assert.*;
 

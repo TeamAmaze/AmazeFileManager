@@ -10,8 +10,8 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import android.support.annotation.StringRes;
-import android.support.v4.app.NotificationCompat;
+import androidx.annotation.StringRes;
+import androidx.core.app.NotificationCompat;
 import android.widget.RemoteViews;
 
 import com.amaze.filemanager.R;

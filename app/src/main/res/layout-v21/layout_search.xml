@@ -22,7 +22,7 @@
         android:layout_centerInParent="true"
         android:layout_marginLeft="@dimen/search_view_back_margin_left_right"
         android:layout_marginRight="@dimen/search_view_back_margin_left_right"/>
-    <android.support.v7.widget.AppCompatEditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/search_edit_text"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

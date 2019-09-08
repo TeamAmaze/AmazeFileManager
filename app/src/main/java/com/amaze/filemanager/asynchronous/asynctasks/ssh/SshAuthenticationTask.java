@@ -24,7 +24,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 import android.app.AlertDialog;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;

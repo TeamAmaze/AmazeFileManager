@@ -3,8 +3,8 @@ package com.amaze.filemanager.ui.views.appbar;
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.support.v7.widget.AppCompatEditText;
-import android.view.KeyEvent;
+import androidx.appcompat.widget.AppCompatEditText;
+
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -12,12 +12,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
-
-import java.lang.ref.WeakReference;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;

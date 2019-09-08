@@ -32,8 +32,8 @@ import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import android.support.annotation.NonNull;
-import android.support.v4.provider.DocumentFile;
+import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -71,8 +71,6 @@ import java.util.regex.Pattern;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-
-import static android.os.Build.VERSION.SDK_INT;
 
 /**
  * Utility class for helping parsing file systems.

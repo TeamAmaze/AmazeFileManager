@@ -1,6 +1,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
-import android.support.test.runner.AndroidJUnit4;
+import androidx.test.runner.AndroidJUnit4;
 
 import net.schmizz.sshj.userauth.password.PasswordFinder;
 import net.schmizz.sshj.userauth.password.Resource;

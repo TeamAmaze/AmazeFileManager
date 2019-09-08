@@ -3,7 +3,7 @@ package com.amaze.filemanager.filesystem;
 import android.os.Build;
 import android.os.FileObserver;
 import android.os.Handler;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 
 import java.io.File;
 import java.util.ArrayList;

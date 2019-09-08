@@ -28,18 +28,17 @@ import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.StrictMode;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.v7.app.AppCompatDelegate;
-import android.text.TextUtils;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.app.AppCompatDelegate;
+
 import android.widget.Toast;
 
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;

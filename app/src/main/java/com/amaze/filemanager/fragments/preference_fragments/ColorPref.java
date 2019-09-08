@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
-import android.support.annotation.ColorInt;
+import androidx.annotation.ColorInt;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.GridView;

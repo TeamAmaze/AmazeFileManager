@@ -23,17 +23,16 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.support.annotation.ColorInt;
-import android.support.annotation.StringRes;
-import android.support.v7.widget.Toolbar;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -84,7 +83,7 @@ public class PreferencesActivity extends ThemedActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         invalidateRecentsColorAndIcon();
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_HOME_AS_UP | android.support.v7.app.ActionBar.DISPLAY_SHOW_TITLE);
+        getSupportActionBar().setDisplayOptions(androidx.appcompat.app.ActionBar.DISPLAY_HOME_AS_UP | androidx.appcompat.app.ActionBar.DISPLAY_SHOW_TITLE);
         invalidateToolbarColor();
         invalidateNavBar();
 

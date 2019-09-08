@@ -2,7 +2,7 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.content.Intent;
 import android.os.Environment;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;

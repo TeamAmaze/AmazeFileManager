@@ -3,7 +3,7 @@ package com.amaze.filemanager.utils;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Build;
-import android.support.v7.widget.AppCompatEditText;
+import androidx.appcompat.widget.AppCompatEditText;
 import android.widget.EditText;
 
 import com.amaze.filemanager.R;
@@ -11,7 +11,7 @@ import com.amaze.filemanager.R;
 /**
  * Created by vishal on 20/2/17.
  *
- * Use this class when dealing with {@link android.support.v7.widget.AppCompatEditText}
+ * Use this class when dealing with {@link androidx.appcompat.widget.AppCompatEditText}
  * for it's color states for different user interactions
  */
 

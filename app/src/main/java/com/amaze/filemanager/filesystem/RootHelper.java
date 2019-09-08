@@ -19,7 +19,7 @@
 
 package com.amaze.filemanager.filesystem;
 
-import android.support.v4.provider.DocumentFile;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;

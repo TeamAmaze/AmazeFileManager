@@ -22,7 +22,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
 import android.os.AsyncTask;
-import android.support.annotation.NonNull;
+import androidx.annotation.NonNull;
 import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;

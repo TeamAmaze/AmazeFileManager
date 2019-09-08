@@ -1,9 +1,9 @@
 package com.amaze.filemanager.adapters;
 
 import android.content.Context;
-import android.support.annotation.ColorInt;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
+import androidx.annotation.ColorInt;
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,8 +13,6 @@ import android.widget.ArrayAdapter;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.views.CheckableCircleView;
 import com.amaze.filemanager.utils.Utils;
-
-import java.util.List;
 
 public class ColorAdapter extends ArrayAdapter<Integer> implements AdapterView.OnItemClickListener {
 
