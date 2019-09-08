@@ -406,19 +406,22 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
         boolean addGoBackItem = gobackitem && !isRoot(folder);
         String finalfolder = folder;
-        decompressor.changePath(folder, addGoBackItem, result -> {
-            if(result.exception == null) {
-                elements = result.result;
-                createViews(elements, finalfolder);
-                swipeRefreshLayout.setRefreshing(false);
-                updateBottomBar();
-            } else {
-                Toast.makeText(getActivity(), getActivity().getString(R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
-                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-            }
-        }).execute();
-        swipeRefreshLayout.setRefreshing(true);
-        updateBottomBar();
+        if(decompressor!=null) {
+            decompressor.changePath(folder, addGoBackItem, result -> {
+                if (result.exception == null) {
+                    elements = result.result;
+                    createViews(elements, finalfolder);
+                    swipeRefreshLayout.setRefreshing(false);
+                    updateBottomBar();
+                } else {
+                    archiveCorruptOrUnsupportedToast();
+                }
+            }).execute();
+            swipeRefreshLayout.setRefreshing(true);
+            updateBottomBar();
+        } else {
+            archiveCorruptOrUnsupportedToast();
+        }
     }
 
     @Override
@@ -497,6 +500,11 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
     private boolean isRoot(String folder) {
         return folder == null || folder.isEmpty();
+    }
+
+    private void archiveCorruptOrUnsupportedToast(){
+        Toast.makeText(getActivity(), getActivity().getString(R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
+        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
     }
 
 }
