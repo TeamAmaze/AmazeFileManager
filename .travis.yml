@@ -60,6 +60,7 @@ script:
   # TODO correct unit tests - ./gradlew assembleFdroidDebugUnitTest
   # TODO correct unit tests - ./gradlew assemblePlayDebugUnitTest
   - ./gradlew assembledebug
+  - ./gradlew connectedAndroidTest
   - ./gradlew assembleFdroidDebugAndroidTest
   - ./gradlew assemblePlayDebugAndroidTest
 
