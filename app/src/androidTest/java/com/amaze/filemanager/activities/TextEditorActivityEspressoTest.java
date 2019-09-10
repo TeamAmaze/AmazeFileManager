@@ -14,6 +14,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
 
 @SmallTest
@@ -28,10 +29,11 @@ public class TextEditorActivityEspressoTest {
     private Uri uri;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         context = InstrumentationRegistry.getTargetContext();
 
         File file = new File("/default.prop");
+        if(!file.exists()) file.createNewFile();
         uri = Uri.fromFile(file);
     }
 
