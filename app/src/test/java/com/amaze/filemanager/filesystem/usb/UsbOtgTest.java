@@ -24,7 +24,7 @@ import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public class UsbOtgTest {
 
     @Test

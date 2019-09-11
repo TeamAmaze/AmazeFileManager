@@ -30,7 +30,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
 public class SshConnectionPoolTest {
 
     private SshServer server;

@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 27, maxSdk = 27)
+@Config(shadows = {ShadowMultiDex.class}, minSdk = 27, maxSdk = 27)
 public abstract class AbstractCompressedHelperTaskTest {
 
     @Before

@@ -18,7 +18,7 @@ import java.security.GeneralSecurityException;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
 public class ShadowCryptUtilTest {
 
     @Test

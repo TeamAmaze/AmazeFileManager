@@ -36,7 +36,7 @@ import static org.junit.Assert.*;
  * Created by Rustam Khadipash on 30/3/2018.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
+@Config(shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
 public class StreamSourceTest {
     private SmbFile file;
     private StreamSource ss;

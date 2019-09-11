@@ -35,7 +35,7 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public class TextEditorActivityTest {
 
     private final String fileContents = "fsdfsdfs";

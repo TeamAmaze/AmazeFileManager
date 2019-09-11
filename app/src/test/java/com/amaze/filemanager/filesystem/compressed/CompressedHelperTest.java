@@ -35,7 +35,7 @@ import java.io.File;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
+@Config(shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public class CompressedHelperTest {
 
     private Context context;

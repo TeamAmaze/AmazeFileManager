@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
  * Created by Rustam Khadipash on 31/3/2018.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public class CloudStreamSourceTest {
     private CloudStreamSource cs;
     private String testFilePath;

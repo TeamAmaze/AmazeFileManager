@@ -26,7 +26,7 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public class B0rkenZipTest {
 
     private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");

@@ -17,7 +17,7 @@ import org.robolectric.shadows.multidex.ShadowMultiDex;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public class IconsTest {
 
     @Before

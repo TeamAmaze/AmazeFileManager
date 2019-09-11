@@ -25,7 +25,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public abstract class AbstractSftpServerTest {
 
     protected SshServer server;

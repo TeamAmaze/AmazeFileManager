@@ -28,7 +28,7 @@ import eu.chainfire.libsuperuser.Shell;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
+@Config(shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
 public class RootHelperTest {
 
     private static final File sysroot = new File(Environment.getExternalStorageDirectory(), "sysroot");

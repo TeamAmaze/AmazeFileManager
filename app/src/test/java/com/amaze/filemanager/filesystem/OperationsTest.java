@@ -19,7 +19,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(maxSdk = 27, constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(maxSdk = 27, shadows = {ShadowMultiDex.class})
 public class OperationsTest {
 
     private File storageRoot = Environment.getExternalStorageDirectory();
