@@ -5,6 +5,7 @@ import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -24,7 +25,7 @@ public class FtpServiceStaticMethodsTest {
     /**
      * To test {@link FtpService#getLocalInetAddress(Context)} must not return an empty string.
      */
-    @Test
+    @Test @Ignore("Test disabled due to [#1664](https://github.com/TeamAmaze/AmazeFileManager/issues/1664)")
     public void testGetLocalInetAddressMustNotBeEmpty(){
         if(!FtpService.isConnectedToLocalNetwork(InstrumentationRegistry.getTargetContext()))
             fail("Please connect your device to network to run this test!");
@@ -37,7 +38,7 @@ public class FtpServiceStaticMethodsTest {
      *
      * <b>Remember to turn on wifi AP when running this test on <u>real</u> devices.</b>
      */
-    @Test
+    @Test @Ignore("Test disabled due to [#1664](https://github.com/TeamAmaze/AmazeFileManager/issues/1664)")
     public void testGetLocalInetAddressMustBeAPAddress(){
         if(!FtpService.isEnabledWifiHotspot(InstrumentationRegistry.getTargetContext()))
             fail("Please enable wifi hotspot on your device to run this test!");

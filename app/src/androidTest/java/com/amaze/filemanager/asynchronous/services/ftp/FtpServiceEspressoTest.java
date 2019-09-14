@@ -38,6 +38,7 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.security.SecureRandom;
 
+import static com.amaze.filemanager.asynchronous.services.ftp.FtpService.KEY_PREFERENCE_PATH;
 import static org.junit.Assert.*;
 
 @RunWith(AndroidJUnit4.class)
@@ -48,6 +49,7 @@ public class FtpServiceEspressoTest {
     @Before
     public void setUp() throws ReflectiveOperationException {
         service = create();
+        assertNotNull(service);
     }
 
     @After
@@ -187,13 +189,23 @@ public class FtpServiceEspressoTest {
     }
 
     private FtpService create() throws ReflectiveOperationException {
+        PreferenceManager.getDefaultSharedPreferences(InstrumentationRegistry.getTargetContext())
+            .edit()
+            .putString(KEY_PREFERENCE_PATH, Environment.getExternalStorageDirectory().getAbsolutePath())
+            .commit();
+
         FtpService service = new FtpService();
         // Trick borrowed from org.robolectric.android.controller.ServiceController
         Class activityThreadClazz = Class.forName("android.app.ActivityThread");
+        Class activityManagerNativeClazz = Class.forName("android.app.ActivityManagerNative");
+        Method getDefault = activityManagerNativeClazz.getDeclaredMethod("getDefault");
+        getDefault.setAccessible(true);
+        Object iActivityManager = getDefault.invoke(null);
+
         Method attach = Service.class.getDeclaredMethod("attach", Context.class,
                 activityThreadClazz, String.class, IBinder.class, Application.class, Object.class);
         attach.invoke(service, InstrumentationRegistry.getTargetContext(),
-                null, service.getClass().getSimpleName(), null, null, null);
+                null, service.getClass().getSimpleName(), null, null, iActivityManager);
         return service;
     }
 

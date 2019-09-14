@@ -6,6 +6,7 @@ import androidx.test.runner.AndroidJUnit4;
 import com.amaze.filemanager.utils.test.DummyFileGenerator;
 import com.amaze.filemanager.utils.ProgressHandler;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,6 +24,7 @@ import java.security.NoSuchAlgorithmException;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 
 @RunWith(AndroidJUnit4.class)
 public class GenericCopyUtilEspressoTest {
@@ -38,6 +40,15 @@ public class GenericCopyUtilEspressoTest {
         file2 = File.createTempFile("test", "bin");
         file1.deleteOnExit();
         file2.deleteOnExit();
+    }
+
+    @After
+    public void tearDown()
+    {
+        if(file1.exists()) file1.delete();
+        if(file2.exists()) file2.delete();
+        assertFalse(file1.exists());
+        assertFalse(file2.exists());
     }
 
     @Test
