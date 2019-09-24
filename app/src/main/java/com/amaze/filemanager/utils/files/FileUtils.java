@@ -42,6 +42,7 @@ import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
 import android.text.TextUtils;
 import android.util.Log;
@@ -90,6 +91,8 @@ import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
 import jcifs.smb.SmbFile;
+
+import static androidx.core.content.FileProvider.getUriForFile;
 
 /**
  * Functions that deal with files
@@ -434,21 +437,21 @@ public class FileUtils {
      * @param forcechooser force the chooser to show up even when set default by user
      */
     public static void openunknown(File f, Context c, boolean forcechooser, boolean useNewStack) {
-        Intent chooserIntent = new Intent();
-        chooserIntent.setAction(Intent.ACTION_VIEW);
+        Intent intent = new Intent();
+        intent.setAction(Intent.ACTION_VIEW);
 
         String type = MimeTypes.getMimeType(f.getPath(), f.isDirectory());
         if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
-            Uri uri = fileToContentUri(c, f);
-            if (uri == null) uri = Uri.fromFile(f);
-            chooserIntent.setDataAndType(uri, type);
+            Uri uri = fileToContentUri(c, f, intent);
+
+            intent.setDataAndType(uri, type);
 
             Intent activityIntent;
             if (forcechooser) {
-                if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.open_with));
+                if(useNewStack) applyNewDocFlag(intent);
+                activityIntent = Intent.createChooser(intent, c.getString(R.string.open_with));
             } else {
-                activityIntent = chooserIntent;
+                activityIntent = intent;
                 if(useNewStack) applyNewDocFlag(activityIntent);
             }
 
@@ -527,7 +530,9 @@ public class FileUtils {
         }
         return path;
     }
-    public static Uri fileToContentUri(Context context, File file) {
+
+    @NonNull
+    public static Uri fileToContentUri(Context context, File file, Intent chooserIntent) {
         // Normalize the path to ensure media search
         final String normalizedPath = normalizeMediaPath(file.getAbsolutePath());
 
@@ -536,11 +541,14 @@ public class FileUtils {
         if (uri != null) {
             return uri;
         }
+
         uri = fileToContentUri(context, normalizedPath, file.isDirectory(), INTERNAL_VOLUME);
         if (uri != null) {
             return uri;
         }
-        return null;
+
+        chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        return FileProvider.getUriForFile(context, "com.amaze.filemanager", file);
     }
 
     private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {
@@ -602,10 +610,10 @@ public class FileUtils {
         String[] items=new String[]{c.getString(R.string.text),c.getString(R.string.image),c.getString(R.string.video),c.getString(R.string.audio),c.getString(R.string.database),c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
-            Uri uri = fileToContentUri(c, f);
-            if (uri == null) uri = Uri.fromFile(f);
             Intent intent = new Intent();
+            Uri uri = fileToContentUri(c, f, intent);
             intent.setAction(Intent.ACTION_VIEW);
+
             switch (i) {
                 case 0:
                     if(useNewStack) applyNewDocFlag(intent);
