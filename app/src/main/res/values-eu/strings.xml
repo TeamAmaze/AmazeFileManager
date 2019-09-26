@@ -308,7 +308,7 @@
                     <li>
                         <b>Gaitu fitxategiak partekatzea</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Ireki Kontrol-panela, klikatu Sarea eta Internet ataleko Aukeratu etxeko taldea eta partekatzeko aukerak
                         eta klikatu Aldatu partekatzeko aukera aurreratuak. Gaitu fitxategiak eta
                         inprimagailua partekatzeko ezaugarria.\n\n
@@ -317,7 +317,7 @@
                     <li>
                         <b>Fitxategiak partekatzeko aukera gehigarriak</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Partekatzeko ezarpen aurreratu gehiago konfigura ditzakezu. \n
                         Adibidez, zure sare lokaleko gailu guztietaz fidatzen bazara fitxategiak pasahitzik gabe atzitzea gaitu dezakezu.
                         Fitxategiak eta inprimagailuak partekatzea gaituta badaude,
@@ -329,7 +329,7 @@
                     <li>
                         <b>Ziurtatu bi gailuak Wifi berean daudela</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Ezaugarri honek fitxategiak sare lokalean eskuragarri jartzen ditu, horretarako zure PCak eta gailu mugikorrek
                         sare lokal berean egon behar dute. Ezin duzu partekatutako Windows karpeta bat
                         Internet-en zehar atzitu edo zure mugikorra datu mugikorretara konektatuta dagoenean — Wi-Fira
@@ -339,7 +339,7 @@
                     <li>
                         <b>Bilatu IP helbidea</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Ireki komando-gonbita. Idatzi \'ipconfig\' eta sakatu Enter. Ikusi zein den Default Gateway
                         zure sare-moldagailuaren azpian zure bideratzailearen IP helbidea jakiteko. Begiratu
                         \\\"IPv4 Address\\\" moldagailu beraren azpian zure ordenagailuaren IP helbidea

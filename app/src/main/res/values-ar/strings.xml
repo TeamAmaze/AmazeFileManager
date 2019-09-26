@@ -286,7 +286,7 @@
                     <li>
                         <b>Enable File Sharing</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Open the Control Panel, click Choose homegroup and sharing options under Network
                         and Internet, and click Change advanced sharing settings. Enable the file and
                         printer sharing feature.\n\n
@@ -295,7 +295,7 @@
                     <li>
                         <b>Additional File Sharing settings</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         You may also want to configure the other advanced sharing settings here. \n
                         For example, you could enable access to your files without a password if you trust all
                         the devices on your local network.Once file and printer sharing is enabled, you can
@@ -307,7 +307,7 @@
                     <li>
                         <b>Make sure both devices are on same Wifi</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         This feature makes files available on the local network, so your PC and mobile devices
                         have to be on the same local network. You can\’t access a shared Windows folder
                         over the Internet or when your smartphone is connected to its mobile data — it
@@ -317,7 +317,7 @@
                     <li>
                         <b>Find IP Address</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Open Command Prompt. Type \'ipconfig\' and press Enter. Look for Default Gateway
                         under your network adapter for your router\'s IP address. Look for
                         \\\"IPv4 Address\\\" under the same adapter section to find your computer\'s IP

@@ -346,7 +346,7 @@
 \n
 \n</li>
 \n<p style="margin-left: 40px">
-\nAbra o linha de comandos. Escreva 'ipconfig' e pressione Enter. Procure Gateway Padrão do seu adaptador de rede para o endereço IP do seu router. Procure "Endereço IPv4" na mesma seção do adaptador para encontrar o endereço IP do seu computador.
+\nAbra o linha de comandos. Escreva \'ipconfig\' e pressione Enter. Procure Gateway Padrão do seu adaptador de rede para o endereço IP do seu router. Procure \"Endereço IPv4\" na mesma seção do adaptador para encontrar o endereço IP do seu computador.
 \n
 \n
 \n</p>

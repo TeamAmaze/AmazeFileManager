@@ -307,14 +307,14 @@
                     <li>
                         <b>Habilitar la compartición de archivos</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Abrir el Panel de Control, selecciona Escoger Grupo en el hogar y opciones de compartición mediante una red e Internet, y selecciona la opción Cambir ajustes avanzados de compartición. Habilitar la característica de compartición de archivos e impresoras.\n\n
                     </p>
 
                     <li>
                         <b>Configuración adicional de compartición de archivos</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                        Tal vez también quiera configurar los demás parámetros avanzados aquí. \n
                         Por ejemplo, puede habilitar el acceso a sus archivos sin necesidad de una contraseña si confía en todos los dispositivos de su red local. Una vez que la compartición de archivos e impresoras esté habilitada, puede abrir el Explorador de archivo, clic derecho en la carpeta que desea compartir, y seleccionar Propiedades. \n
                         Seleccionar el botón Compartir y hacer que la carpeta esté disponible a través de la red.\n\n
@@ -323,14 +323,14 @@
                     <li>
                         <b>Asegurarse que los dos dispositivos estén en la misma red wifi</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Esta característica hace que sus archivos estén disponibles en su red local, así que su PC y dispositivos móviles tienen qué estar en la misma red local. No podrás acceder a una carpeta compartida de Windows desde Internet o cuando su teléfono esté conectado a los datos móviles —  debe estar conectado a Wi-Fi.\n\n
                     </p>
 
                     <li>
                         <b>Encontrar la dirección IP</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Abrir el símbolo del sistema. Escribir \'ipconfig\' y presionar la tecla Enter. Mirar el apartado Default Gateway debajo de su adaptador de red para ver la dirección IP de su router. Ver el apartado \\\"IPv4 Address\\\" es la misma sección para encontrar la dirección IP de su computador.\n\n
                     </p>
 

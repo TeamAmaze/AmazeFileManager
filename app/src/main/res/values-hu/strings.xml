@@ -309,14 +309,14 @@ egyébként az előfordulásokra fog rákeresni.</string>
 <li>
 <b>Engedélyezze a fájlmegosztást</b>\\n
 </li>
-<p style=\'margin-left: 40px\'>
+<p style="margin-left: 40px">
 Nyissa meg a Vezérlőpultot, kattintson az Otthoni csoport kiválasztása ikonra, majd a Speciális megosztási beállítások módosítása hivatkozásra. Engedélyezze a fájl- és nyomtatómegosztás funkciót.\\n\\n
 </p>
 
 <li>
 <b>További fájlmegosztási beállítások</b>\\n
 </li>
-<p style=\'margin-left: 40px\'>
+<p style="margin-left: 40px">
 Itt további speciális megosztási beálítások konfigurálására nyílik lehetősége. \\n
 Például, engedélyezheti a fájlok jelszó nélküli elérését, ha megbízik a helyi hálózaton lévő összes eszközben. A fájl- és nyomtatómegosztás engedélyezése után, megnyithatja a Fájlkezelőt vagy a Windows Intézőt, kattintson jobb gombbal a megosztani kívánt mappára, és válassza a Tulajdonságok lehetőséget. \\n
 Kattintson a Megosztás gombra, és tegye a mappát elérhetővé a hálózaton.\\n\\n
@@ -325,14 +325,14 @@ Kattintson a Megosztás gombra, és tegye a mappát elérhetővé a hálózaton.
 <li>
 <b>Győződjön meg arról, hogy mindkét eszköz ugyanazon a Wifi hálózaton van</b>\\n
 </li>
-<p style=\'margin-left: 40px\'>
+<p style="margin-left: 40px">
 Ez a funkció elérhetővé teszi a fájlokat a helyi hálózaton, így PC-je, illetve mobil készüléke ugyanazon a helyi hálózaton lesz. Nem férhet hozzá a megosztott Windows mappához interneten keresztül vagy okostelefonjáról mobil adatátviteli kapcsolat használatával — ehhez kapcsolódnia kell a Wi-Fi-hez.\\n\\n
 </p>
 
 <li>
 <b>IP-cím keresése</b>\\n
 </li>
-<p style=\'margin-left: 40px\'>
+<p style="margin-left: 40px">
 Nyissa meg a parancssort. Írja be az \'ipconfig\' parancsot, majd nyomja le az Enter billentyűt. Keresse az alapértelmezett átjárót a hálózati adapter alatt routere IP-címével. Keresse az \\\"IPv4-cím\\\" bejegyzést ugyanabban a csatoló részben számítógépe IP-címének megtalálásához.\\n\\n
 </p>
 

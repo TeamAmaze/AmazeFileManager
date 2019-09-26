@@ -313,14 +313,14 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
                     <li>
                         <b>Abilita Condivisione File</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Apri il Pannello di Controllo, clicca su Scegli gruppo home e opzioni di condivisione sotto Rete ed Internet, e clicca su Modifica impostazioni di condivisione avanzate. Abilita Condivisione file e stampanti. \n\n
                     </p>
 
                     <li>
                         <b>Impostazioni aggiuntive sulla Condivisione dei File</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Potresti voler configurare anche queste altre impostazioni avanzate di condivisione. \n
                         Per esempio, potresti abilitare l\'accesso ai tuoi file senza una passoword, se ti fidi di tutti i dispositivi sulla tua rete locale. Quando la condivisione di file e stampanti è abilitata, puoi aprire Esplora File o Windows Explorer, cliccare con il tasto destro del mouse su una cartella che vuoi condividere, e selezionare Proprietà. \n
                         Clicca sul tasto Condividi e rendi la cartella disponibile sulla rete.\n\n
@@ -329,14 +329,14 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
                     <li>
                         <b>Assicurati che entrambi i dispositivi siano sulla stessa Wifi</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Questa configurazione rende i file e le cartelle accessibili dalla rete locale, quindi il tuo PC e il tuo dispositivo mobile devono essere sulla stessa rete locale. Non puoi accedere alle cartelle condivise di Windows tramite internet o quando il tuo telefono è connesso con i dati mobili — deve essere connesso tramite Wi-Fi.\n\n
                     </p>
 
                     <li>
                         <b>Trova Indirizzo IP </b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Apri Prompt dei Comandi. Digita \'ipconfig\' e premi Invio. Cerca Gateway Predefinito
                         sotto la tua scheda di rete, per l\'indirizzo IP del tuo router. Cerca
                         \\\"Indirizzo IPv4\\\" sotto la stessa sezione per trovare l\'indirizzo IP del tuo computer.\n\n

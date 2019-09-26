@@ -308,7 +308,7 @@
                     <li>
                         <b>Activez le partage de fichiers</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Ouvrez le Panneau de Configuration, cliquez sur « Choisir les options de groupe résidentiel et de partage » dans Réseau et Internet,
                         et cliquez sur changer les options des partages avancées. Active l\'option de partage
 de fichiers et d\'imprimantes.\n\n
@@ -317,7 +317,7 @@ de fichiers et d\'imprimantes.\n\n
                     <li>
                         <b>Options de partages de fichiers avancées</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Vous pouvez aussi régler d\'autres paramètres de partages à cet endroit.\n
                         Par exemple, vous pouvez autoriser l\'accès à vos fichiers sans mot de passe si vous vous trouvez dans un réseau de confiance (réseau domestique).
 Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez ouvrir l\'Explorateur de fichiers, cliquer-droit sur un dossier à partager,
@@ -328,7 +328,7 @@ Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez o
                     <li>
                         <b>Assurez vous que les deux appareils soient connectés au même réseau Wifi</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
+                    <p style="margin-left: 40px">
                         Cette fonction rend disponible vos fichiers sur un réseau local, donc votre PC et votre appareil mobile doit
                         se trouver sur le même réseau local. Vous ne pouvez pas accéder à vos partages Windows
                         à travers Internet où quand votre appareil mobile est connecté au réseau cellulaire – Il doit être connecté au Wifi.
@@ -337,8 +337,8 @@ Une fois que le partage de fichiers et d\'imprimantes est activé, vous pouvez o
                     <li>
                         <b>Trouvez votre adresse IP</b>\n
                     </li>
-                    <p style=\'margin-left: 40px\'>
-                        Ouvrez une invite de commande. Tapez \'ipconfig\' et appuyez sur Entrer. 
+                    <p style="margin-left: 40px">
+                        Ouvrez une invite de commande. Tapez \'ipconfig\' et appuyez sur Entrer.
 Regardez la valeur de Passerelle par défaut
 pour connaître l\'IP de votre routeur. Regardez
                         \\\"Adresse IPv4\\\" pour connaître l\'adresse IP de votre ordinateur.\n\n
