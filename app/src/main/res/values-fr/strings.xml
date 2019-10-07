@@ -224,7 +224,6 @@
   <string name="icon_color_title">Couleur d\'icône</string>
   <string name="icon_color_summary">Définir la couleur des icônes</string>
     <string name="choose_color">Choisir la couleur</string>
-  <string name="g_plus_community_title">Rejoignez la communauté G+</string>
   <string name="files">Fichiers</string>
     <string name="textreader">Lecteur de texte</string>
   <string name="databasereader">Lecteur de bases de données</string>
@@ -299,13 +298,11 @@
   <string name="primary_two_title">Couleur Primaire (Onglet Droit)</string>
   <string name="primary_two_summary">Assigner la couleur des grands ensembles de l\'IU
         pour l\'onglet de droite.</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Aider au développement</string>
   <string name="report_bugs_title">Signaler un bug</string>
   <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
   <string name="translate_title">Traduire</string>
   <string name="translate_summary">Traduire Amaze dans votre langue</string>
-  <string name="g_plus_community_summary">Prendre part aux bêta-tests et discussions en relation au développement</string>
   <string name="easter_egg_title">Mode Studio</string>
   <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
   <string name="searchingdevices">Recherche d\'appareils</string>

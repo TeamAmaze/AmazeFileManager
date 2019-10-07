@@ -220,7 +220,6 @@
   <string name="icon_color_title">Χρώμα εικονιδίων</string>
   <string name="icon_color_summary">Ορίστε το χρώμα των εικονιδίων</string>
     <string name="choose_color">Επιλέξτε χρώμα</string>
-  <string name="g_plus_community_title">Κοινότητα G+</string>
   <string name="files">Αρχεία</string>
     <string name="textreader">Αναγνώστης κειμένου</string>
   <string name="databasereader">Αναγνώστης βάσεων δεδομένων</string>

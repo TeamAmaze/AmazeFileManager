@@ -220,7 +220,6 @@
   <string name="icon_color_title">Kolor ikon</string>
   <string name="icon_color_summary">Ustala kolor ikon</string>
     <string name="choose_color">Wybierz kolor</string>
-  <string name="g_plus_community_title">Dołącz do społeczności G+</string>
   <string name="files">Pliki</string>
     <string name="textreader">Czytnik tekstu</string>
   <string name="databasereader">Czytnik baz danych</string>
@@ -293,13 +292,11 @@
   <string name="ftp_port_change_error_invalid">Wprowadzono nieprawidłowy numer portu</string>
   <string name="primary_two_title">Kolor główny (prawa karta)</string>
   <string name="primary_two_summary">Ustala kolor dużych elementów interfejsu prawej karty</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Wspomóż rozwój</string>
   <string name="report_bugs_title">Zgłoś błąd</string>
   <string name="report_bugs_summary">Umożliwia zgłoszenie błędu lub zaproponowanie nowej funkcjonalności</string>
   <string name="translate_title">Przetłumacz</string>
   <string name="translate_summary">Umożliwia przetłumaczenie aplikacji na dany język</string>
-  <string name="g_plus_community_summary">Umożliwia testowanie wersji beta i wzięcie udziału w dyskusjach związanych z rozwojem programu</string>
   <string name="easter_egg_title">Tryb studio</string>
   <string name="paypal_copy_message">Skopiowano do schowka identyfikator Paypal</string>
   <string name="searchingdevices">Szukanie urządzeń</string>

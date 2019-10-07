@@ -226,7 +226,6 @@
   <string name="icon_color_title">圖示顏色</string>
   <string name="icon_color_summary">將顏色設定為圖示</string>
   <string name="choose_color">選擇顏色</string>
-  <string name="g_plus_community_title">加入 G + 社群</string>
   <string name="files">近期檔案</string>
   <string name="textreader">文字閱讀器</string>
   <string name="databasereader">資料庫讀取器</string>
@@ -299,16 +298,13 @@
   <string name="ftp_port_change_error_invalid">所選取的埠號是無效數值</string>
   <string name="primary_two_title">主顏色 (右側頁籤)</string>
   <string name="primary_two_summary">將顏色設定為右側頁籤的大使用者介面元素</string>
-  <string name="g_plus">Google +</string>
   <string name="support_development">支援開發</string>
   <string name="report_bugs_title">回報程式錯誤</string>
   <string name="report_bugs_summary">回報問題或告訴我們您想要的新功能</string>
   <string name="translate_title">翻譯</string>
   <string name="translate_summary">用您的語言翻譯 Amaze</string>
-  <string name="g_plus_community_summary">參與 beta 測試和討論
-         與發展有關</string>
   <string name="easter_egg_title">工作室模式</string>
-  <string name="paypal_copy_message">Paypal id 已複製到剪貼簿</string>
+  <string name="paypal_copy_message">Paypal ID 已複製到剪貼簿</string>
   <string name="searchingdevices">正在搜尋裝置</string>
   <string name="use_custom_ip">使用自訂的 IP</string>
   <string name="bookmark_lost">找不到，重新建立書籤......</string>
@@ -595,7 +591,7 @@
   <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
   <string name="filename">檔案名稱</string>
   <string name="saved_single_file">檔案 \'%s\'已儲存。</string>
-  <string name="saved_multi_files">儲存了 %d個檔案。</string>
+  <string name="saved_multi_files">儲存了 %d 個檔案。</string>
   <string name="create_hidden_file_warn">此檔案將會從檔案列表中隱藏。</string>
   <string name="multiple_invalid_archive_entries">壓縮檔有部份檔案未能解壓；壓縮檔可能已損壞或來自不明的來源。</string>
     <string name="unknown">未知</string>

@@ -224,7 +224,6 @@
   <string name="icon_color_title">Колер цэтліка</string>
   <string name="icon_color_summary">Усталяваць колер цэтлікаў</string>
     <string name="choose_color">Выбраць колер</string>
-  <string name="g_plus_community_title">Супольнасць G+</string>
   <string name="files">Файлы</string>
     <string name="textreader">Прагляднік тэксту</string>
   <string name="databasereader">Прагляднік баз дадзеных</string>
@@ -297,13 +296,11 @@
   <string name="ftp_port_change_error_invalid">Выбраны недапушчальны нумар порта</string>
   <string name="primary_two_title">Асноўны колер (Правая ўкладка)</string>
   <string name="primary_two_summary">Усталяваць колер вялікіх элементаў UI для правай ўкладкі</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Падтрымаць распрацоўку</string>
   <string name="report_bugs_title">Справаздача пра памылку</string>
   <string name="report_bugs_summary">Паведамляць пра памылкі ці спытаць новую функцыю</string>
   <string name="translate_title">Перакласці</string>
   <string name="translate_summary">Перавесці Amaze вашай мовай</string>
-  <string name="g_plus_community_summary">Прыняць удзел у бэта-тэставанні і абмеркаванні пытанняў, якія адносяцца да распрацоўкі</string>
   <string name="easter_egg_title">Рэжым Студыі</string>
   <string name="paypal_copy_message">PayPal id скапіявана ў буфер абмену</string>
   <string name="searchingdevices">Пошук прылад</string>

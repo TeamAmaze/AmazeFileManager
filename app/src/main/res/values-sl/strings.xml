@@ -197,7 +197,6 @@
   <string name="icon_color_title">Barva ikone</string>
   <string name="icon_color_summary">Nastavi barvo za ikone</string>
     <string name="choose_color">Izberite barvo</string>
-  <string name="g_plus_community_title">Pridruži se G+ skupnosti</string>
   <string name="files">Datoteke</string>
     <string name="textreader">Bralnik</string>
   <string name="databasereader">Bralnik zbirke podatkov</string>
@@ -258,13 +257,11 @@
   <string name="ftp_port_change_success">FTP vrata uspešno spremenjena</string>
   <string name="ftp_port_change_error_invalid">Izbrana neveljavna vrata</string>
   <string name="primary_two_title">Primarne barve (Desni tab)</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Podprite razvoj</string>
   <string name="report_bugs_title">Prijavi napako</string>
   <string name="report_bugs_summary">Prijavi napako ali zahtevaj novo funkcijo</string>
   <string name="translate_title">Prevajanje</string>
   <string name="translate_summary">Prevedite Amaze v vaš jezik</string>
-  <string name="g_plus_community_summary">Sodelujte v beta testiranju in razpravah, povezanih z razvojem</string>
   <string name="paypal_copy_message">PayPal id kopiran v odložišče</string>
   <string name="searchingdevices">Iskanje naprav</string>
   <string name="use_custom_ip">Uporaba IP po meri</string>

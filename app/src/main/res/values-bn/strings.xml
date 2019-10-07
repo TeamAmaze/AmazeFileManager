@@ -426,9 +426,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="choose_color">Choose color</string>
 
-    <string name="g_plus_community_title">G+ Community</string>
-
-    <string name="files">Files</string>
+  <string name="files">Files</string>
 
     <string name="textreader">Text Reader</string>
 

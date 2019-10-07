@@ -224,8 +224,7 @@
     <string name="icon_color_title">Цвет значка</string>
     <string name="icon_color_summary">Установить цвет значков</string>
     <string name="choose_color">Выберите цвет</string>
-    <string name="g_plus_community_title">Присоединиться к G+ сообществу</string>
-    <string name="files">Файлы</string>
+  <string name="files">Файлы</string>
     <string name="textreader">Просмотр текста</string>
     <string name="databasereader">Просмотрщик баз данных</string>
     <string name="showDividers">Показать разделители</string>
@@ -298,15 +297,12 @@
     <string name="ftp_port_change_error_invalid">Выбран неверный порт</string>
     <string name="primary_two_title">Основной цвет (Правая вкладка)</string>
     <string name="primary_two_summary">Выбрать цвет для больших элементов интерфейса правой вкладки</string>
-    <string name="g_plus">Google+</string>
-    <string name="support_development">Поддержать разработку</string>
+  <string name="support_development">Поддержать разработку</string>
     <string name="report_bugs_title">Сообщить о баге</string>
     <string name="report_bugs_summary">Сообщить о баге или запросить новый функционал</string>
     <string name="translate_title">Перевести</string>
     <string name="translate_summary">Перевести Amaze на ваш язык</string>
-    <string name="g_plus_community_summary">Принять участие в бета тестировании и обсуждениях,
-        связанных с разработкой</string>
-    <string name="easter_egg_title">Студийный режим</string>
+  <string name="easter_egg_title">Студийный режим</string>
     <string name="paypal_copy_message">Paypal id скопирован в буфер обмена</string>
     <string name="searchingdevices">Поиск устройств</string>
     <string name="use_custom_ip">Использовать другой IP</string>

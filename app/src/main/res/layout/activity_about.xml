@@ -258,25 +258,6 @@
                                 android:text="@string/author_1"
                                 android:textSize="@dimen/material_generic_title"
                                 />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_author_1_title"
-                                android:layout_marginTop="@dimen/material_generic"
-                                >
-                                <TextView
-                                    android:id="@+id/text_view_author_1_g_plus"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/g_plus"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"
-                                    />
-                            </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
 
@@ -323,25 +304,6 @@
                                 android:text="@string/author_2"
                                 android:textSize="@dimen/material_generic_title"
                                 />
-
-                            <RelativeLayout
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_author_2_title"
-                                android:layout_marginTop="@dimen/material_generic"
-                                >
-                                <TextView
-                                    android:id="@+id/text_view_author_2_g_plus"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:background="?android:attr/selectableItemBackground"
-                                    android:text="@string/g_plus"
-                                    android:textColor="@color/accent_red"
-                                    android:layout_alignParentLeft="true"
-                                    android:textSize="@dimen/material_generic_title"
-                                    android:onClick="onClick"
-                                    />
-                            </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
 
@@ -561,49 +523,6 @@
                                 android:layout_height="wrap_content"
                                 android:layout_below="@+id/text_view_dev_2_title"
                                 android:text="@string/translate_summary"
-                                android:textSize="@dimen/material_generic_title_summary"
-                                />
-                        </RelativeLayout>
-                    </RelativeLayout>
-
-                    <RelativeLayout
-                        android:id="@+id/relative_layout_g_plus_community"
-                        android:layout_width="match_parent"
-                        android:layout_height="@dimen/material_generic_list_item"
-                        android:background="?android:attr/selectableItemBackground"
-                        android:gravity="center_vertical"
-                        android:onClick="onClick"
-                        >
-
-                        <ImageView
-                            android:id="@+id/image_dev_3_title"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentLeft="true"
-                            android:layout_marginLeft="@dimen/material_generic"
-                            android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_group_add_grey_24dp"
-                            android:layout_centerVertical="true"
-                            />
-
-                        <RelativeLayout
-                            android:layout_width="wrap_content"
-                            android:layout_height="match_parent"
-                            android:layout_toRightOf="@+id/image_dev_3_title"
-                            android:gravity="center_vertical"
-                            >
-                            <TextView
-                                android:id="@+id/text_view_dev_3_title"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/g_plus_community_title"
-                                android:textSize="@dimen/material_generic_title"
-                                />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_below="@+id/text_view_dev_3_title"
-                                android:text="@string/g_plus_community_summary"
                                 android:textSize="@dimen/material_generic_title_summary"
                                 />
                         </RelativeLayout>

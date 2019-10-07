@@ -225,7 +225,6 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="icon_color_title">Simge rengi</string>
   <string name="icon_color_summary">Simge renklerini ayarla</string>
     <string name="choose_color">Renk seç</string>
-  <string name="g_plus_community_title">G+ Topluluğuna Katıl</string>
   <string name="files">Dosyalar</string>
     <string name="textreader">Düz Yazı Okuyucu</string>
   <string name="databasereader">Veritabanı Okuyucu</string>
@@ -299,14 +298,11 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="ftp_port_change_error_invalid">Geçersiz bir bağlantı noktası numarası seçili</string>
   <string name="primary_two_title">Birincil Renk (Sağ Sekme)</string>
   <string name="primary_two_summary">Sağ arayüz sekmesinin rengini belirle</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Geliştirmeye Destek</string>
   <string name="report_bugs_title">Hata Bildirimi</string>
   <string name="report_bugs_summary">Hata bildirimi veya yeni özellik isteği yapın</string>
   <string name="translate_title">Çeviri</string>
   <string name="translate_summary">Amaze uygulamasını kendi dilinize çevirin</string>
-  <string name="g_plus_community_summary">Geliştirici ile bağlantı içerisinde beta testleri ve
-tartışmalarının parçası olun</string>
   <string name="easter_egg_title">Stüdyo Modu</string>
   <string name="paypal_copy_message">Paypal ID panoya kopyalandı</string>
   <string name="searchingdevices">Cihazlar aranıyor</string>

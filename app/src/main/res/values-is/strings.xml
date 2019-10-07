@@ -236,8 +236,7 @@
     <string name="icon_color_title">Litur táknmyndar</string>
     <string name="icon_color_summary">Stilla lit á táknmyndir</string>
     <string name="choose_color">Veldu lit</string>
-    <string name="g_plus_community_title">Taktu þátt í G+ samfélaginu</string>
-    <string name="files">Skrár</string>
+  <string name="files">Skrár</string>
     <string name="textreader">Textalesari</string>
     <string name="databasereader">Gagnagrunnslesari</string>
     <string name="showDividers">Sýna aðgreina</string>
@@ -311,15 +310,12 @@
     <string name="ftp_port_change_error_invalid">Ógilt númer á gátt var valið</string>
     <string name="primary_two_title">Aðallitur (hægri flipi)</string>
     <string name="primary_two_summary">Stilla lit á stærri viðmótshluta flipans til hægri</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Styðja áframhaldandi þróun</string>
+  <string name="support_development">Styðja áframhaldandi þróun</string>
     <string name="report_bugs_title">Tilkynna villur</string>
     <string name="report_bugs_summary">Tilkynna villur eða biðja um nýja eiginleika</string>
     <string name="translate_title">Þýða</string>
     <string name="translate_summary">Þýða Amaze á tungumálið þitt</string>
-    <string name="g_plus_community_summary">Taka þátt í beta-prófunum og umræðum
-        sem tengjast þróun hugbúnaðarins</string>
-    <string name="easter_egg_title">Stúdíóhamur</string>
+  <string name="easter_egg_title">Stúdíóhamur</string>
     <string name="paypal_copy_message">Paypal auðkenni afritað á klippispjald</string>
     <string name="searchingdevices">Leita að tækjum...</string>
     <string name="use_custom_ip">Nota sérsniðið IP-vistfang</string>

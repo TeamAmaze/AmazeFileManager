@@ -212,7 +212,6 @@
   <string name="icon_color_title">Cor do ícone</string>
   <string name="icon_color_summary">Define a cor dos ícones</string>
     <string name="choose_color">Escolha a cor</string>
-  <string name="g_plus_community_title">Integrar a comunidade G+</string>
   <string name="files">Ficheiros</string>
     <string name="textreader">Leitor de texto</string>
   <string name="databasereader">Leitor de bases de dados</string>
@@ -287,8 +286,6 @@ Se inativa, será procurada qualquer correspondência.</string>
   <string name="report_bugs_summary">Reporte de erros e novas funcionalidades</string>
   <string name="translate_title">Tradução</string>
   <string name="translate_summary">Traduza o Amaze para o seu idioma</string>
-  <string name="g_plus_community_summary">Participar no programa de versões Beta e
-debater ideias com os programadores</string>
   <string name="easter_egg_title">Modo estúdio</string>
   <string name="paypal_copy_message">ID Paypal copiada para a área de transferência</string>
   <string name="searchingdevices">A pesquisar por dispositivos</string>

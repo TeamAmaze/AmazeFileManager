@@ -220,8 +220,7 @@
     <string name="icon_color_title">Колір іконок</string>
     <string name="icon_color_summary">Встановити колір іконок</string>
     <string name="choose_color">Обрати колір</string>
-    <string name="g_plus_community_title">Приєднатися до спільноти G +</string>
-    <string name="files">Файли</string>
+  <string name="files">Файли</string>
     <string name="textreader">Читач текстів</string>
     <string name="databasereader">Читач бази даних</string>
     <string name="showDividers">Показати розділювачі</string>
@@ -292,14 +291,12 @@
     <string name="ftp_port_change_error_invalid">Вибрано неприпустимий номер порта</string>
     <string name="primary_two_title">Первинний колір (права вкладка)</string>
     <string name="primary_two_summary">Встановити колір основних елементів інтерфейсу для правої вкладки</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Підтримати розробку</string>
+  <string name="support_development">Підтримати розробку</string>
     <string name="report_bugs_title">Звіт про помилку</string>
     <string name="report_bugs_summary">Повідомляти про помилки або запитати нову функцію</string>
     <string name="translate_title">Перекласти</string>
     <string name="translate_summary">Перекласти Amaze вашою мовою</string>
-    <string name="g_plus_community_summary">Взяти участь в бета-тестуванні та обговореннях, що відносяться до розробки</string>
-    <string name="easter_egg_title">Режим Студії</string>
+  <string name="easter_egg_title">Режим Студії</string>
     <string name="paypal_copy_message">PayPal id скопійовано до буфера обміну</string>
     <string name="searchingdevices">Пошук пристроїв</string>
     <string name="use_custom_ip">Використовувати користувацьку IP</string>

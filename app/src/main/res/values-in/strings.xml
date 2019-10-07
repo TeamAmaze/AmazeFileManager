@@ -235,8 +235,7 @@
     <string name="icon_color_title">Warna Ikon</string>
     <string name="icon_color_summary">Atur warna ikon</string>
     <string name="choose_color">Pilih warna</string>
-    <string name="g_plus_community_title">Gabung ke Komunitas G+</string>
-    <string name="files">Berkas</string>
+  <string name="files">Berkas</string>
     <string name="textreader">Pembaca Teks</string>
     <string name="databasereader">Pembaca Basis Data</string>
     <string name="showDividers">Tampilkan Pemisah</string>
@@ -310,15 +309,12 @@
     <string name="ftp_port_change_error_invalid">Porta yang dipilih tidak valid</string>
     <string name="primary_two_title">Warna Utama (Tab Kanan)</string>
     <string name="primary_two_summary">Atur warna elemen UI besar untuk tab di sebelah kanan</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Dukung Pengembangan</string>
+  <string name="support_development">Dukung Pengembangan</string>
     <string name="report_bugs_title">Laporkan Bug</string>
     <string name="report_bugs_summary">Laporkan bug atau minta fitur baru</string>
     <string name="translate_title">Terjemahkan</string>
     <string name="translate_summary">Terjemahkan Amaze ke dalam bahasa anda</string>
-    <string name="g_plus_community_summary">Ambil bagian dalam uji coba beta dan diskusi
-        yang terkait dengan pengembangan</string>
-    <string name="easter_egg_title">Mode Studio</string>
+  <string name="easter_egg_title">Mode Studio</string>
     <string name="paypal_copy_message">Id Paypal disalin ke papan klip</string>
     <string name="searchingdevices">Mencari perangkat</string>
     <string name="use_custom_ip">Gunakan IP khusus</string>
