@@ -225,8 +225,7 @@
     <string name="icon_color_title">Ikonfärg</string>
     <string name="icon_color_summary">Färga ikoner</string>
     <string name="choose_color">Välj färg</string>
-    <string name="g_plus_community_title">Gå med i G+ Communityn</string>
-    <string name="files">Filer</string>
+  <string name="files">Filer</string>
     <string name="textreader">Textläsare</string>
     <string name="databasereader">Databasläsare</string>
     <string name="showDividers">Visa Avdelare</string>
@@ -299,15 +298,12 @@ kommer annars att söka efter förekomster.</string>
     <string name="ftp_port_change_error_invalid">Ogiltigt val av portnummer</string>
     <string name="primary_two_title">Huvudfärg (Höger Flik)</string>
     <string name="primary_two_summary">Välj färg på stora UI-element på höger flik</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Stöd Utvecklingen</string>
+  <string name="support_development">Stöd Utvecklingen</string>
     <string name="report_bugs_title">Rapportera Buggar</string>
     <string name="report_bugs_summary">Rapportera buggar eller föreslå nya funktioner</string>
     <string name="translate_title">Översätt</string>
     <string name="translate_summary">Översätt Amaze till ditt språk</string>
-    <string name="g_plus_community_summary">Var delaktig i betatestning och diskussioner
-kopplade till utveckling</string>
-    <string name="easter_egg_title">Studioläge</string>
+  <string name="easter_egg_title">Studioläge</string>
     <string name="paypal_copy_message">Paypal-ID kopierat till utklipp</string>
     <string name="searchingdevices">Söker efter enheter</string>
     <string name="use_custom_ip">Använd anpassat IP</string>

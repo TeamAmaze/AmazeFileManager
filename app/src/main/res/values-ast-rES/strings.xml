@@ -215,7 +215,6 @@ inestable\'l preséu.\\n¿Siguir?</string>
   <string name="icon_color_title">Color d\'iconos</string>
   <string name="icon_color_summary">Afita\'l color a los iconos</string>
     <string name="choose_color">Escoyeta de color</string>
-  <string name="g_plus_community_title">Xúnite la comunidá de G+</string>
   <string name="files">Ficheros</string>
     <string name="textreader">Llector de testos</string>
   <string name="databasereader">Llector de bases de datos</string>
@@ -288,8 +287,6 @@ inestable\'l preséu.\\n¿Siguir?</string>
   <string name="report_bugs_summary">Informa fallos o pidi carauterístiques nueves</string>
   <string name="translate_title">Tornar</string>
   <string name="translate_summary">Torna Amaze a la to llingua</string>
-  <string name="g_plus_community_summary">Involúcrate na beta y discusiones venceyaes
-al desendolcu</string>
   <string name="easter_egg_title">Mou estudiu</string>
   <string name="paypal_copy_message">Copióse la ID de Paypal nel cartafueyu</string>
   <string name="searchingdevices">Guetando preseos</string>

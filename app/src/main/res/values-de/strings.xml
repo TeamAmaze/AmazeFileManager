@@ -224,7 +224,6 @@
   <string name="icon_color_title">Farbe der Icons</string>
   <string name="icon_color_summary">Icon-Farbe setzen</string>
     <string name="choose_color">Wähle eine Farbe</string>
-  <string name="g_plus_community_title">Trete der G+ Community bei</string>
   <string name="files">Dateien</string>
     <string name="textreader">Text-Reader</string>
   <string name="databasereader">Datenbank-Leser</string>
@@ -298,14 +297,11 @@ andernfalls wird nach Treffern gesucht.</string>
   <string name="ftp_port_change_error_invalid">Gewählte Portnummer ist ungültig</string>
   <string name="primary_two_title">Primärfarbe (rechter Tab)</string>
   <string name="primary_two_summary">Setze Farbe für große UI Elemente in dem rechten Tab</string>
-  <string name="g_plus">Google+</string>
   <string name="support_development">Unterstütze die Entwicklung</string>
   <string name="report_bugs_title">Melde Fehler</string>
   <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
   <string name="translate_title">Übersetzen</string>
   <string name="translate_summary">Übersetze Amaze in deine Sprache</string>
-  <string name="g_plus_community_summary">Mach mit bei Beta-Tests und Diskussionen
-rund um die Entwicklung</string>
   <string name="easter_egg_title">Studio-Modus</string>
   <string name="paypal_copy_message">PayPal ID in die Zwischenablage kopiert</string>
   <string name="searchingdevices">Suche nach Geräten</string>

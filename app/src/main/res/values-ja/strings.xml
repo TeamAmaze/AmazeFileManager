@@ -225,7 +225,6 @@
   <string name="icon_color_title">アイコンの色</string>
   <string name="icon_color_summary">アイコンに色を設定します</string>
     <string name="choose_color">色を選択</string>
-  <string name="g_plus_community_title">G+ コミュニティに参加</string>
   <string name="files">ファイル</string>
     <string name="textreader">テキストリーダー</string>
   <string name="databasereader">データベースリーダー</string>
@@ -299,14 +298,11 @@
   <string name="ftp_port_change_error_invalid">選択されたポート番号が正しくありません</string>
   <string name="primary_two_title">プライマリー色 (右タブ)</string>
   <string name="primary_two_summary">右タブの大きな UI エレメントに色を設定します</string>
-  <string name="g_plus">Google+</string>
   <string name="support_development">開発をサポート</string>
   <string name="report_bugs_title">バグを報告</string>
   <string name="report_bugs_summary">バグを報告したり、新しい機能をリクエストします</string>
   <string name="translate_title">翻訳</string>
   <string name="translate_summary">Amaze をお使いの言語に翻訳します</string>
-  <string name="g_plus_community_summary">ベータテストに参加して
-開発に関連する議論をします</string>
   <string name="easter_egg_title">スタジオモード</string>
   <string name="paypal_copy_message">Paypal ID をクリップボードにコピーしました</string>
   <string name="searchingdevices">デバイスの検索中</string>

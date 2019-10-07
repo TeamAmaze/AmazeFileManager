@@ -216,7 +216,6 @@
   <string name="icon_color_title">Боја икона</string>
   <string name="icon_color_summary">Боја икона</string>
     <string name="choose_color">Избор боје</string>
-  <string name="g_plus_community_title">Придружите се Г+ заједници</string>
   <string name="files">Фајлови</string>
     <string name="textreader">Читач текста</string>
   <string name="databasereader">Читач базе података</string>
@@ -286,14 +285,11 @@
   <string name="ftp_notif_stop_server">ЗАУСТАВИ</string>
   <string name="primary_two_title">Примарна боја (десни језичак)</string>
   <string name="primary_two_summary">Боја великих елемената УИ-ја за десни језичак</string>
-  <string name="g_plus">Гугл Плус</string>
   <string name="support_development">Подржите развој</string>
   <string name="report_bugs_title">Пријавите грешке</string>
   <string name="report_bugs_summary">Пријавите грешке или затражите нову функционалност</string>
   <string name="translate_title">Преведите</string>
   <string name="translate_summary">Преведите Амејз на ваш језик</string>
-  <string name="g_plus_community_summary">Учествујте у бета тестирању и дискусијама
-        везаним за развој</string>
   <string name="easter_egg_title">Студијски режим</string>
   <string name="paypal_copy_message">Пејпел ИД копиран на клипборд</string>
   <string name="searchingdevices">Тражим уређаје</string>

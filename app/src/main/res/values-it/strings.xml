@@ -226,7 +226,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="icon_color_title">Colore icone</string>
   <string name="icon_color_summary">Imposta il colore delle icone</string>
     <string name="choose_color">Scegli colore</string>
-  <string name="g_plus_community_title">Unisciti alla community G+</string>
   <string name="files">File</string>
     <string name="textreader">Visualizzatore testo</string>
   <string name="databasereader">Visualizzatore database</string>
@@ -302,14 +301,11 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
   <string name="ftp_port_change_error_invalid">È stato selezionato un numero di porta non valido</string>
   <string name="primary_two_title">Colore primario (scheda di destra)</string>
   <string name="primary_two_summary">Imposta il colore degli elementi grandi dell\'interfaccia utente per la scheda di destra</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Sostieni lo sviluppo</string>
   <string name="report_bugs_title">Segnala bug</string>
   <string name="report_bugs_summary">Segnala bug o richiedi nuove funzionalità</string>
   <string name="translate_title">Traduci</string>
   <string name="translate_summary">Traduci Amaze nella tua lingua</string>
-  <string name="g_plus_community_summary">Prendi parte al beta testing e alle discussioni
-relative allo sviluppo</string>
   <string name="easter_egg_title">Modalità studio</string>
   <string name="paypal_copy_message">ID PayPal copiato negli Appunti</string>
   <string name="searchingdevices">Ricerca dispositivi in corso</string>

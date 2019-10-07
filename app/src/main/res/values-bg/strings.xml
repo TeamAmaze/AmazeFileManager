@@ -193,8 +193,7 @@
   <string name="icon_color_title">Цвят на иконата</string>
   <string name="icon_color_summary">Задаване цвят на икони</string>
     <string name="choose_color">Изберете цвят</string>
-  <string name="g_plus_community_title">Присъединете се към G+ общност</string>
-    <string name="files">Файлове</string>
+  <string name="files">Файлове</string>
     <string name="textreader">Четец на текст</string>
   <string name="databasereader">Четец на база данни</string>
   <string name="showDividers">Покажи разделители</string>
@@ -258,7 +257,6 @@
   <string name="ftp_port_change_success">FTP порта е променен успешно</string>
   <string name="ftp_port_change_error_invalid">Невалиден номер на порт е избран</string>
   <string name="primary_two_title">Основен цвят (десен раздел)</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Подкрепете разработката</string>
   <string name="report_bugs_title">Докладвайте грешка</string>
   <string name="report_bugs_summary">Докладвай грешка или поискай нова функция</string>

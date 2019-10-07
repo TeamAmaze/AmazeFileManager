@@ -214,7 +214,6 @@
   <string name="icon_color_title">아이콘 색상</string>
   <string name="icon_color_summary">아이콘의 색상을 설정합니다.</string>
     <string name="choose_color">색상을 선택해 주세요.</string>
-  <string name="g_plus_community_title">구글 플러스 커뮤니티</string>
   <string name="files">파일</string>
     <string name="textreader">텍스트 리더</string>
   <string name="databasereader">데이터베이스 리더</string>

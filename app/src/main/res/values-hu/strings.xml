@@ -235,8 +235,7 @@
     <string name="icon_color_title">Ikon színe</string>
     <string name="icon_color_summary">Állítsa be az ikonok színét</string>
     <string name="choose_color">Válasszon színt</string>
-    <string name="g_plus_community_title">Csatlakozzon a G+ közösséghez</string>
-    <string name="files">fájl</string>
+  <string name="files">fájl</string>
     <string name="textreader">Szövegolvasó</string>
     <string name="databasereader">Adatbázis-olvasó</string>
     <string name="showDividers">Elválasztók megjelenítése</string>
@@ -310,15 +309,12 @@
     <string name="ftp_port_change_error_invalid">Érvénytelen port szám lett kiválasztva</string>
     <string name="primary_two_title">Alapszín (jobb lap)</string>
     <string name="primary_two_summary">Állítsa be a jobb lapon lévő nagy kezelőfelületi elemek a színét</string>
-    <string name="g_plus">Google+</string>
-    <string name="support_development">Fejlesztés támogatása</string>
+  <string name="support_development">Fejlesztés támogatása</string>
     <string name="report_bugs_title">Hibák jelentése</string>
     <string name="report_bugs_summary">Hibák jelentése vagy új funkciók igénylése</string>
     <string name="translate_title">Fordítás</string>
     <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
-    <string name="g_plus_community_summary">Vegyenek részt a béta tesztelésben és a fejlesztéssel
-        kapcsolatos eszmecseréken</string>
-    <string name="easter_egg_title">Stúdió mód</string>
+  <string name="easter_egg_title">Stúdió mód</string>
     <string name="paypal_copy_message">A Paypal id a vágólapra lett másolva</string>
     <string name="searchingdevices">Eszközök keresése</string>
     <string name="use_custom_ip">Egyéni IP használata</string>

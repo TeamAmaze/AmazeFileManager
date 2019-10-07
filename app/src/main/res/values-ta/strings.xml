@@ -225,8 +225,7 @@
     <string name="icon_color_title">படவுறு வண்ணம்</string>
     <string name="icon_color_summary">படவுருகளுக்கு வண்ணத்தை அமை</string>
     <string name="choose_color">வண்ணத்தை தேர்வுசெய்க</string>
-    <string name="g_plus_community_title">G+ குழுவில் சேர</string>
-    <string name="files">கோப்புகள்</string>
+  <string name="files">கோப்புகள்</string>
     <string name="textreader">உரை வாசிப்பாளர்</string>
     <string name="databasereader">தரவுத்தள வசிப்பாளர்</string>
     <string name="showDividers">வகுப்புகளை காண்பி</string>
@@ -299,15 +298,12 @@
     <string name="ftp_port_change_error_invalid">தகுதியற்ற போர்ட் எண் தேர்வுசெய்யப்பட்டது</string>
     <string name="primary_two_title">முதன்மை வண்ணம் (வலது தாவல்)</string>
     <string name="primary_two_summary">வலது தாவலின் பெரிய இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
-    <string name="g_plus">கூகிள் பிளஸ்</string>
-    <string name="support_development">வளர்ச்சிக்கு ஆதரவு</string>
+  <string name="support_development">வளர்ச்சிக்கு ஆதரவு</string>
     <string name="report_bugs_title">பிழைகளின் அறிவித்தல்</string>
     <string name="report_bugs_summary">பிழைகளை அறிவி அல்லது புதிய அம்சத்திற்கு வேண்டுகோள்விடுக்க</string>
     <string name="translate_title">மொழிபெயர்ப்பு</string>
     <string name="translate_summary">அமெஸ்ஸை உன் மொழிக்கு மாற்று</string>
-    <string name="g_plus_community_summary">சோதனை மற்றும் விவாதத்தில் பங்குபெற
-        வளர்ச்சி சமந்தப்பட்டது</string>
-    <string name="easter_egg_title">ஸ்டூடியோ முறை</string>
+  <string name="easter_egg_title">ஸ்டூடியோ முறை</string>
     <string name="paypal_copy_message">பேபால் ஐடி பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
     <string name="searchingdevices">சாதனத்தை தேடுகிறது</string>
     <string name="use_custom_ip">பயனர் ஐபியை பயன்படுத்து</string>
