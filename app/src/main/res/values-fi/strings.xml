@@ -220,7 +220,6 @@
   <string name="icon_color_title">Kuvakkeen väri</string>
   <string name="icon_color_summary">Set color to icons</string>
     <string name="choose_color">Valitse väri</string>
-  <string name="g_plus_community_title">Liity G+ yhteisöön</string>
   <string name="files">Tiedostot</string>
     <string name="textreader">Tekstinlukija</string>
   <string name="databasereader">Tietokannan lukija</string>
@@ -293,13 +292,11 @@
   <string name="ftp_port_change_error_invalid">Virheellinen porttinumero valittu</string>
   <string name="primary_two_title">Pääväri (oikea-välilehti)</string>
   <string name="primary_two_summary">Määritä väri isoilla käyttöliittymän osille</string>
-  <string name="g_plus">Google+</string>
   <string name="support_development">Tue kehitystä</string>
   <string name="report_bugs_title">Ilmoita virheestä</string>
   <string name="report_bugs_summary">Raportoi bugeja tai pyydä uusia ominaisuuksia</string>
   <string name="translate_title">Käännä</string>
   <string name="translate_summary">Käännä Amaze omalle kielelle</string>
-  <string name="g_plus_community_summary">Ota osaa beta testaukseen ja kehityskeskusteluihin</string>
   <string name="easter_egg_title">Studio-tila</string>
   <string name="paypal_copy_message">PayPal-tunnus kopioitu leikepöydälle</string>
   <string name="searchingdevices">Etsitään laitteita</string>

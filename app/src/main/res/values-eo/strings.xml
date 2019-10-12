@@ -233,8 +233,7 @@
     <string name="icon_color_title">Piktograma piktogramo</string>
     <string name="icon_color_summary">Agordi koloron por piktogramoj</string>
     <string name="choose_color">Elekti koloron</string>
-    <string name="g_plus_community_title">Aliĝi G+ komunumo</string>
-    <string name="files">Dosieroj</string>
+  <string name="files">Dosieroj</string>
     <string name="textreader">Teksta legilo</string>
     <string name="databasereader">Datumbaza legilo</string>
     <string name="showDividers">Montri dividilojn</string>
@@ -308,15 +307,12 @@
     <string name="ftp_port_change_error_invalid">Malvalida porda nombro elektita</string>
     <string name="primary_two_title">Ĉefa koloro (deksstra langeto)</string>
     <string name="primary_two_summary">Agordi koloron al largaj UI-a eroj por la dekstra langeto</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Subteni programaron</string>
+  <string name="support_development">Subteni programaron</string>
     <string name="report_bugs_title">Raporti cimon</string>
     <string name="report_bugs_summary">Raporti cimojn aŭ peti novan funkcion</string>
     <string name="translate_title">Traduki</string>
     <string name="translate_summary">Traduki Amaze en via lingvo</string>
-    <string name="g_plus_community_summary">Partoprenu en beta-testado kaj diskutoj
-        rilata al programaro</string>
-    <string name="easter_egg_title">Studio Mode</string>
+  <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">PayPal ID kopiita al poŝo</string>
     <string name="searchingdevices">Serĉanta aparatojn</string>
     <string name="use_custom_ip">Uzi propan IP-adreson</string>

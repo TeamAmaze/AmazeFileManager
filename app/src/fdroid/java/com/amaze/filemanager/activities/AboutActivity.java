@@ -45,15 +45,12 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
     private View mAuthorsDivider, mDeveloper1Divider;
 
     private static final String KEY_PREF_STUDIO = "studio";
-    private static final String URL_AUTHOR_1_G_PLUS = "https://plus.google.com/u/0/110424067388738907251/";
-    private static final String URL_AUTHOR_2_G_PLUS = "https://plus.google.com/+VishalNehra/";
     private static final String URL_AUTHOR_2_PAYPAL = "https://www.paypal.me/vishalnehra";
     private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
     private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
     private static final String URL_REPO_CHANGELOG = "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
     private static final String URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues";
     private static final String URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager-1/";
-    private static final String URL_REPO_G_PLUS_COMMUNITY = "https://plus.google.com/communities/113997576965363268101";
     private static final String URL_REPO_XDA = "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
     private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
 
@@ -205,14 +202,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
                 break;
 
-            case R.id.text_view_author_1_g_plus:
-                openURL(URL_AUTHOR_1_G_PLUS);
-                break;
-
-            case R.id.text_view_author_2_g_plus:
-                openURL(URL_AUTHOR_2_G_PLUS);
-                break;
-
             case R.id.text_view_developer_1_github:
                 openURL(URL_DEVELOPER1_GITHUB);
                 break;
@@ -223,10 +212,6 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
             case R.id.relative_layout_translate:
                 openURL(URL_REPO_TRANSLATE);
-                break;
-
-            case R.id.relative_layout_g_plus_community:
-                openURL(URL_REPO_G_PLUS_COMMUNITY);
                 break;
 
             case R.id.relative_layout_xda:

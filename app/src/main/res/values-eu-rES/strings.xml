@@ -236,8 +236,7 @@
     <string name="icon_color_title">Ikonoen kolorea</string>
     <string name="icon_color_summary">Ezarri ikonoen kolorea</string>
     <string name="choose_color">Aukeratu kolorea</string>
-    <string name="g_plus_community_title">Batu G+ Komunitatera</string>
-    <string name="files">Fitxategiak</string>
+  <string name="files">Fitxategiak</string>
     <string name="textreader">Testu irakurlea</string>
     <string name="databasereader">Datu-base irakurlea</string>
     <string name="showDividers">Erakutsi banatzaileak</string>
@@ -311,15 +310,12 @@
     <string name="ftp_port_change_error_invalid">Ataka zenbaki baliogabea hautatu da</string>
     <string name="primary_two_title">Kolore nagusia (eskuineko fitxa)</string>
     <string name="primary_two_summary">Ezarri eskuineko fitxako UI elementu handien kolorea</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Sostengatu garapena</string>
+  <string name="support_development">Sostengatu garapena</string>
     <string name="report_bugs_title">Eman erroreen berri</string>
     <string name="report_bugs_summary">Eman erroreen berri edo eskatu ezaugarri berri bat</string>
     <string name="translate_title">Itzuli</string>
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
-    <string name="g_plus_community_summary">Parte hartu garapeneko
-        beta proba eta eztabaidetan</string>
-    <string name="easter_egg_title">Studio modua</string>
+  <string name="easter_egg_title">Studio modua</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
     <string name="searchingdevices">Gailuak bilatzen</string>
     <string name="use_custom_ip">Erabili IP pertsonalizatua</string>

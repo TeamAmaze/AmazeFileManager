@@ -235,7 +235,6 @@
     <string name="icon_color_title">Icon Color</string>
     <string name="icon_color_summary">Set color to icons</string>
     <string name="choose_color">Choose color</string>
-    <string name="g_plus_community_title">Join G+ Community</string>
     <string name="files">Files</string>
     <string name="textreader">Text Reader</string>
     <string name="databasereader">Database Reader</string>
@@ -311,14 +310,11 @@
     <string name="ftp_port_change_error_invalid">Invalid port number selected</string>
     <string name="primary_two_title">Primary Color (Right Tab)</string>
     <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
-    <string name="g_plus">Google Plus</string>
     <string name="support_development">Support Development</string>
     <string name="report_bugs_title">Report Bugs</string>
     <string name="report_bugs_summary">Report bugs or request new feature</string>
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>
-    <string name="g_plus_community_summary">Take part in beta testing and discussions
-        related to development</string>
     <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">Paypal id copied to clipboard</string>
     <string name="searchingdevices">Searching for devices</string>

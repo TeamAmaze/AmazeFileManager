@@ -235,8 +235,7 @@
     <string name="icon_color_title">Cor dos ícones</string>
     <string name="icon_color_summary">Define a cor dos ícones</string>
     <string name="choose_color">Escolha a cor</string>
-    <string name="g_plus_community_title">Comunidade G+</string>
-        <string name="files">Arquivos</string>
+  <string name="files">Arquivos</string>
     <string name="textreader">Leitor de texto</string>
     <string name="databasereader">Leitor de banco de dados</string>
     <string name="showDividers">Mostrar linhas divisórias</string>
@@ -309,14 +308,12 @@
     <string name="ftp_port_change_error_invalid">Número de porta inválido selecionado</string>
     <string name="primary_two_title">Cor primária (aba direita)</string>
     <string name="primary_two_summary">Define a cor dos elementos grandes da interface para a aba direita</string>
-    <string name="g_plus">Google Plus</string>
-    <string name="support_development">Apoie o desenvolvimento</string>
+  <string name="support_development">Apoie o desenvolvimento</string>
     <string name="report_bugs_title">Relate erros</string>
     <string name="report_bugs_summary">Comunique erros encontrados ou solicite novas funcionalidades</string>
     <string name="translate_title">Traduza</string>
     <string name="translate_summary">Traduza o Amaze para seu idioma</string>
-    <string name="g_plus_community_summary">Participe dos testes da versão beta e de discussões relacionadas ao desenvolvimento</string>
-    <string name="easter_egg_title">Modo Studio</string>
+  <string name="easter_egg_title">Modo Studio</string>
     <string name="paypal_copy_message">ID do Paypal copiado para a área de transferência</string>
     <string name="searchingdevices">Procurando dispositivos</string>
     <string name="use_custom_ip">Usar IP personalizado</string>

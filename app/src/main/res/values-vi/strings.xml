@@ -218,7 +218,6 @@
   <string name="icon_color_title">Màu biểu tượng</string>
   <string name="icon_color_summary">Đặt màu cho biểu tượng</string>
     <string name="choose_color">Chọn màu</string>
-  <string name="g_plus_community_title">Tham gia cộng đồng G+</string>
   <string name="files">Tệp</string>
     <string name="textreader">Trình đọc văn bản thô</string>
   <string name="databasereader">Trình đọc dữ liệu</string>
@@ -291,14 +290,11 @@
   <string name="ftp_port_change_error_invalid">Đã chọn số cổng không hợp lệ</string>
   <string name="primary_two_title">Màu nguyên thủy (Thẻ phải)</string>
   <string name="primary_two_summary">Đặt màu sắc cho các yếu tố UI lớn cho các thẻ bên phải</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Ủng hộ phát triển</string>
   <string name="report_bugs_title">Báo lỗi</string>
   <string name="report_bugs_summary">Báo lỗi hoặc yêu cầu tính năng mới</string>
   <string name="translate_title">Dịch</string>
   <string name="translate_summary">Dịch Amaze sang ngôn ngữ của bạn</string>
-  <string name="g_plus_community_summary">Tham gia thử nghiệm và thảo luận beta
-        có liên quan đến phát triển</string>
   <string name="easter_egg_title">Chế độ Studio</string>
   <string name="paypal_copy_message">Đã chép ID Paypal vào clipboard</string>
   <string name="searchingdevices">Đang tìm kiếm thiết bị</string>

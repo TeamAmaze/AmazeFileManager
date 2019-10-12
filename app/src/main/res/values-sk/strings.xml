@@ -224,7 +224,6 @@
   <string name="icon_color_title">Farba ikony</string>
   <string name="icon_color_summary">Nastavit farbu ikony</string>
     <string name="choose_color">Vybrať farbu</string>
-  <string name="g_plus_community_title">Pripojiť sa ku G+ komunite</string>
   <string name="files">Súbory</string>
     <string name="textreader">Prehliadač textov</string>
   <string name="databasereader">Prehliadač databáz</string>
@@ -297,13 +296,11 @@
   <string name="ftp_port_change_error_invalid">Vybrané nesprávne číslo portu</string>
   <string name="primary_two_title">Hlavná farba (pravá karta)</string>
   <string name="primary_two_summary">Nastavte farbu pre veľké UI elementy pre pravú kartu</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Podporte vývoj</string>
   <string name="report_bugs_title">Nahlásiť chyby</string>
   <string name="report_bugs_summary">Nahlásiť chyby alebo požiadať o novú funkciu</string>
   <string name="translate_title">Preložiť</string>
   <string name="translate_summary">Preložiť Amaze do vašho jazyka</string>
-  <string name="g_plus_community_summary">Zúčastniť sa beta testovania a diskusií súvisiacich s rozvojom</string>
   <string name="easter_egg_title">Štúdiový režim</string>
   <string name="paypal_copy_message">Paypal id bol skopírovaný do schránky</string>
   <string name="searchingdevices">Vyhľadávajú sa zariadenia...</string>

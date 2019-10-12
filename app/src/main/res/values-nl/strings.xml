@@ -220,7 +220,6 @@
   <string name="icon_color_title">Pictogramkleur</string>
   <string name="icon_color_summary">Kleur instellen voor pictogrammen</string>
   <string name="choose_color">Kleur kiezen</string>
-  <string name="g_plus_community_title">Word lid van de G+ community</string>
   <string name="files">Bestanden</string>
   <string name="textreader">Tekst bekijken</string>
   <string name="databasereader">Databases bekijken</string>
@@ -293,14 +292,11 @@ Anders wordt er naar een voorval gezocht.</string>
   <string name="ftp_port_change_error_invalid">Ongeldige poortnummer geselecteerd</string>
   <string name="primary_two_title">Primaire kleur (Rechter Tabblad)</string>
   <string name="primary_two_summary">Kleur instellen voor grote UI-elementen voor de juiste tabblas</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Ondersteuning ontwikkeling</string>
   <string name="report_bugs_title">Bugs melden</string>
   <string name="report_bugs_summary">Meld een bug of verzoek nieuwe functies</string>
   <string name="translate_title">Vertalen</string>
   <string name="translate_summary">Amaze vertalen in uw eigen taal</string>
-  <string name="g_plus_community_summary">Neem deel aan beta tests en discussies
-*.* Verwant aan ontwikkeling</string>
   <string name="easter_egg_title">Studiomodus</string>
   <string name="paypal_copy_message">PayPal Id gekopieerd naar klembord</string>
   <string name="searchingdevices">Zoeken naar apparaten</string>

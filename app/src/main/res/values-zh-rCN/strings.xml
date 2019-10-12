@@ -233,7 +233,6 @@
     <string name="icon_color_title">图标颜色</string>
     <string name="icon_color_summary">为图标设置颜色</string>
     <string name="choose_color">选择颜色</string>
-    <string name="g_plus_community_title">加入 G+ 社区</string>
     <string name="files">文件</string>
     <string name="textreader">文本阅读器</string>
     <string name="databasereader">数据库读取器</string>
@@ -307,13 +306,11 @@
     <string name="ftp_port_change_error_invalid">选定的端口号无效</string>
     <string name="primary_two_title">主色调（右侧面板）</string>
     <string name="primary_two_summary">设置右侧面板大部分控件的颜色</string>
-    <string name="g_plus">Google +</string>
     <string name="support_development">协助开发</string>
     <string name="report_bugs_title">反馈问题</string>
     <string name="report_bugs_summary">反馈问题或提交新功能需求</string>
     <string name="translate_title">贡献翻译</string>
     <string name="translate_summary">前往 Amaze 本地化系统进行语言翻译</string>
-    <string name="g_plus_community_summary">参与 Beta 版测试并讨论后续改进</string>
     <string name="easter_egg_title">工作室模式</string>
     <string name="paypal_copy_message">Paypal ID 已复制至剪切板</string>
     <string name="searchingdevices">正在搜索设备</string>

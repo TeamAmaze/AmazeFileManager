@@ -224,7 +224,6 @@
   <string name="icon_color_title">Color de los iconos</string>
   <string name="icon_color_summary">Establecer color para los iconos</string>
     <string name="choose_color">Elija el color</string>
-  <string name="g_plus_community_title">Unirse a la comunidad G+</string>
   <string name="files">Archivos</string>
     <string name="textreader">Lector de texto</string>
   <string name="databasereader">Lector de base de datos</string>
@@ -297,13 +296,11 @@
   <string name="ftp_port_change_error_invalid">Numero de puerto seleccionado no valido</string>
   <string name="primary_two_title">Color primario (pestaña derecha)</string>
   <string name="primary_two_summary">Establecer el color para los elementos de la interfaz de usuario de la pestaña derecha</string>
-  <string name="g_plus">Google Plus</string>
   <string name="support_development">Apoyar el desarrollo</string>
   <string name="report_bugs_title">Reportar de errores</string>
   <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
   <string name="translate_title">Traducir</string>
   <string name="translate_summary">Asombro</string>
-  <string name="g_plus_community_summary">Participar en pruebas beta y debates relacionados con el desarrollo</string>
   <string name="easter_egg_title">Modo de estudio</string>
   <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
   <string name="searchingdevices">Buscando dispositivos</string>
