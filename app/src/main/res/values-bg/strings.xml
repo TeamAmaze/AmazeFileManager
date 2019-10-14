@@ -193,7 +193,7 @@
   <string name="icon_color_title">Цвят на иконата</string>
   <string name="icon_color_summary">Задаване цвят на икони</string>
     <string name="choose_color">Изберете цвят</string>
-  <string name="files">Файлове</string>
+    <string name="files">Файлове</string>
     <string name="textreader">Четец на текст</string>
   <string name="databasereader">Четец на база данни</string>
   <string name="showDividers">Покажи разделители</string>

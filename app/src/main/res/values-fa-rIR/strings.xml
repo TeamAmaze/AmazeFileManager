@@ -1,0 +1,44 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">Amaze File Manager</string>
+    <string name="icon">آیکن</string>
+    <string name="apps">مدیریت برنامه</string>
+    <string name="ftp">سرور FTP</string>
+    <string name="setting">تنظیمات</string>
+    <string name="select">انتخاب فایل‌ها</string>
+    <string name="open">باز کردن</string>
+    <string name="backup">پشتیبان گیری</string>
+    <string name="uninstall">حذف کردن</string>
+    <string name="play">فروشگاه Play</string>
+    <string name="properties">اطلاعات</string>
+    <string name="copyingapk">درحال کپی برنامه به</string>
+    <string name="delbook">حذف نشانک</string>
+    <string name="addtobook">افزودن به نشانک‌ها</string>
+    <string name="enterpath">مسیر را وارد کنید</string>
+    <string name="cancel">لغو</string>
+    <string name="loading">درحال بارگذاری&#8230;</string>
+    <string name="ftp_notif_starting_title">سرور FTP</string>
+    <string name="contributors_6_summary">سرور FTP</string>
+    </resources>
+

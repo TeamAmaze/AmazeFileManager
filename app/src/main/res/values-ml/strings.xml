@@ -1,0 +1,41 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">അമേസ്  ഫയൽ മാനേജർ </string>
+    <string name="drawer_open">നാവിഗേഷൻ ഡ്രോയർ തുറക്കുക</string>
+    <string name="drawer_close">നാവിഗേഷൻ ഡ്രോയർ അടയ്ക്കുക</string>
+    <string name="icon">ഐക്കൺ</string>
+    <string name="apps">അപ്ലിക്കേഷൻ മാനേജർ</string>
+    <string name="ftp">FTP സെർവർ</string>
+    <string name="setting">ക്രമീകരണങ്ങൾ</string>
+    <string name="select">ഇനം തിരഞ്ഞെടുക്കുക</string>
+    <string name="open">തുറക്കുക</string>
+    <string name="backup">ബാക്കപ്പ്</string>
+    <string name="uninstall">അൺഇൻസ്റ്റാൾ ചെയ്യുക</string>
+    <string name="play">പ്ലേ സ്റ്റോർ</string>
+    <string name="properties">പ്രോപ്പർട്ടികൾ</string>
+    <string name="delbook">ബുക്ക്മാർക്ക് ഇല്ലാതാക്കുക</string>
+    <string name="ftp_notif_starting_title">FTP സെർവർ</string>
+    <string name="contributors_6_summary">FTP സെർവർ</string>
+    </resources>
+
