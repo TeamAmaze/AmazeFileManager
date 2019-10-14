@@ -1,0 +1,11 @@
+[main]
+host = https://www.transifex.com
+lang_map = sv_SE: sv_rSE, pt_PT: pt-rPT, ko_KR: ko-rKR, hi_IN: hi-rIN, fa_IR: fa-rIR
+, ast_ES: ast-rES, zh_CN: zh-rCN, zh_TW: zh-rTW, zh_HK: zh-rHK, pt_BR: pt-rBR
+
+[amaze-file-manager.strings-xml--master]
+file_filter = app/src/main/res/values-<lang>/strings.xml
+minimum_perc = 0
+source_file = app/src/main/res/values/strings.xml
+source_lang = en_US
+type = ANDROID
