@@ -263,7 +263,7 @@
     <string name="sort">Urutkan</string>
     <string name="ascending">Naik</string>
     <string name="descending">Turun</string>
-    <string name="defualt">Default</string>
+    <string name="default_string">Default</string>
     <string name="doit">Lakukan</string>
     <string name="wanthelp"><u>Perlu bantuan?</u></string>
     <string name="quick">Akses cepat</string>

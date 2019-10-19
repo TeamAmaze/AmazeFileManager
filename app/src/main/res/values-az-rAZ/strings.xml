@@ -43,7 +43,7 @@
   <string name="other">Digər</string>
   <string name="color_title">Rəng</string>
     <string name="password">Şifrə</string>
-  <string name="defualt">Susmaya görə</string>
+  <string name="default_string">Susmaya görə</string>
   <string name="edit">Dəyiş</string>
   <string name="path">Cığır</string>
   <string name="information">Məlumat</string>

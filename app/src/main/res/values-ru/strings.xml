@@ -251,7 +251,7 @@
     <string name="sort">Сортировка</string>
     <string name="ascending">По возрастанию</string>
     <string name="descending">По убыванию</string>
-    <string name="defualt">По умолчанию</string>
+    <string name="default_string">По умолчанию</string>
     <string name="doit">Сделай это</string>
     <string name="wanthelp"><u>Нужна помощь?</u></string>
     <string name="quick">Быстрый доступ</string>

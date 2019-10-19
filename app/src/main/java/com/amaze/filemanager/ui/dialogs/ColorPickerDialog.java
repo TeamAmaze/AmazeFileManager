@@ -48,7 +48,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
      * ONLY add new elements to the end of the array
      */
     private static final ColorItemPair[] COLORS = new ColorItemPair[]{
-            new ColorItemPair(R.string.defualt,
+            new ColorItemPair(R.string.default_string,
                     new int[]{R.color.primary_indigo, R.color.primary_indigo, R.color.primary_pink, R.color.accent_pink}),
             new ColorItemPair(R.string.orange,
                     new int[]{R.color.primary_orange, R.color.primary_orange, R.color.primary_deep_orange, R.color.accent_amber}),

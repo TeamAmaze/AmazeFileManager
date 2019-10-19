@@ -36,7 +36,7 @@
   <string name="crypt_decrypt">Dekrypter</string>
   <string name="crypt_encrypt">Krypter</string>
   <string name="cut">Klipp ut</string>
-  <string name="defualt">Standard</string>
+  <string name="default_string">Standard</string>
   <string name="descending">Synkende</string>
   <string name="details">Detaljer</string>
   <string name="dialog_delete_category_directories">Mapper</string>

@@ -47,7 +47,7 @@
   <string name="other">অন্যান্য</string>
   <string name="color_title">রঙ</string>
     <string name="password">পাসওয়ার্ড</string>
-  <string name="defualt">Default</string>
+  <string name="default_string">Default</string>
   <string name="edit">Edit</string>
   <string name="start_ftp">Start</string>
   <string name="information">তথ্য</string>

@@ -264,7 +264,7 @@
     <string name="sort">Röðun</string>
     <string name="ascending">Hækkandi</string>
     <string name="descending">Lækkandi</string>
-    <string name="defualt">Sjálfgefið</string>
+    <string name="default_string">Sjálfgefið</string>
     <string name="doit">Gera það</string>
     <string name="wanthelp">&lt;u&gt;Þarftu hjálp?&lt;/u&gt;</string>
     <string name="quick">Flýtiaðgangur</string>

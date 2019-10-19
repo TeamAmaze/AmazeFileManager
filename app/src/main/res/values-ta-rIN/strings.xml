@@ -46,7 +46,7 @@
   <string name="other">பிற</string>
   <string name="color_title">நிறம்</string>
     <string name="password">கடவுச்சொல்</string>
-  <string name="defualt">இயல்புநிலை</string>
+  <string name="default_string">இயல்புநிலை</string>
   <string name="edit">திருத்தம்</string>
   <string name="start_ftp">ஆரம்பி</string>
   <string name="information">தகவல்</string>

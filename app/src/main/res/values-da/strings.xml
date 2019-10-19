@@ -58,7 +58,7 @@
   <string name="color_title">Farve</string>
     <string name="password">Adgangskode</string>
   <string name="bluetooth">Bluetooth</string>
-  <string name="defualt">Standard</string>
+  <string name="default_string">Standard</string>
   <string name="edit">Redigér</string>
   <string name="path">Sti:</string>
   <string name="start_ftp">Start</string>
