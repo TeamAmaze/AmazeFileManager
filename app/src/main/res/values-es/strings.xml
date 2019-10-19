@@ -255,7 +255,7 @@
     <string name="sort">Ordenar</string>
     <string name="ascending">Ascendente</string>
     <string name="descending">Descendente</string>
-    <string name="defualt">Por omisión</string>
+    <string name="default_string">Por omisión</string>
     <string name="doit">Aplicar</string>
     <string name="want_help"><u>¿Necesitas ayuda?</u></string>
     <string name="quick">Acceso rápido</string>

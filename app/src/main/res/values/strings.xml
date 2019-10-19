@@ -262,7 +262,7 @@
     <string name="sort">Sort</string>
     <string name="ascending">Ascending</string>
     <string name="descending">Descending</string>
-    <string name="defualt">Default</string>
+    <string name="default_string">Default</string>
     <string name="doit">Do it</string>
     <string name="want_help"><u>Need help?</u></string>
     <string name="quick">Quick access</string>

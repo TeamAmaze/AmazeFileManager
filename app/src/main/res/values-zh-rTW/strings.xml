@@ -252,7 +252,7 @@
   <string name="sort">排序</string>
   <string name="ascending">遞增</string>
   <string name="descending">遞減</string>
-  <string name="defualt">預設</string>
+  <string name="default_string">預設</string>
   <string name="doit">執行吧！</string>
   <string name="want_help"><u>需要幫助嗎？</u></string>
   <string name="quick">快速存取</string>

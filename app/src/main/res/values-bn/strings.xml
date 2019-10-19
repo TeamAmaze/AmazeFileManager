@@ -478,7 +478,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="descending">Descending</string>
 
-    <string name="defualt">Default</string>
+    <string name="default_string">Default</string>
 
     <string name="doit">Do it</string>
 

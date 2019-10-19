@@ -234,7 +234,7 @@
   <string name="sort">Organização</string>
   <string name="ascending">Ascendente</string>
   <string name="descending">Descendente</string>
-  <string name="defualt">Padrão</string>
+  <string name="default_string">Padrão</string>
   <string name="doit">Executar</string>
   <string name="want_help"><u>Necessita de ajuda?</u></string>
   <string name="quick">Acesso rápido</string>

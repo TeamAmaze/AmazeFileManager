@@ -49,7 +49,7 @@
     <string name="text">טקסט</string>
     <string name="other">אחר</string>
     <string name="password">סיסמה</string>
-    <string name="defualt">ברירת מחדל</string>
+    <string name="default_string">ברירת מחדל</string>
     <string name="edit">ערוך</string>
     <string name="path">נתיב</string>
     <string name="start_ftp">התחל</string>

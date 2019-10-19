@@ -245,7 +245,7 @@
   <string name="sort">Lajittele</string>
   <string name="ascending">Nouseva</string>
   <string name="descending">Laskeva</string>
-  <string name="defualt">Oletus</string>
+  <string name="default_string">Oletus</string>
   <string name="doit">Tee se!</string>
   <string name="want_help"><u>Tarvitsetko apua?</u></string>
   <string name="quick">Pikavalikko</string>

@@ -41,7 +41,7 @@
   <string name="other">Muud</string>
   <string name="color_title">Värv</string>
     <string name="password">Parool</string>
-  <string name="defualt">Vaikimisi</string>
+  <string name="default_string">Vaikimisi</string>
   <string name="path">Tee</string>
   <string name="information">Teave</string>
   <!-- reference to file accessed date -->

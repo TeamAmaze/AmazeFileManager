@@ -250,7 +250,7 @@
   <string name="sort">Sortieren</string>
   <string name="ascending">Aufsteigend</string>
   <string name="descending">Absteigend</string>
-  <string name="defualt">Standard</string>
+  <string name="default_string">Standard</string>
   <string name="doit">Ausführen</string>
   <string name="want_help"><u>Hilfe?</u></string>
   <string name="quick">Schnellzugriff</string>

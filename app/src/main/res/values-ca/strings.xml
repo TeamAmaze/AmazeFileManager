@@ -51,7 +51,7 @@
   <string name="donate">Donar</string>
   <string name="other">Altres</string>
     <string name="password">Contrasenya</string>
-  <string name="defualt">per defecte</string>
+  <string name="default_string">per defecte</string>
   <string name="path">Camí</string>
   <string name="start_ftp">Inicia</string>
   <string name="information">Informació</string>

@@ -250,7 +250,7 @@
   <string name="sort">Trier</string>
   <string name="ascending">Croissant</string>
   <string name="descending">Décroissant</string>
-  <string name="defualt">Par défaut</string>
+  <string name="default_string">Par défaut</string>
   <string name="doit">Le faire</string>
   <string name="want_help"><u>Besoin d\'aide ?</u></string>
   <string name="quick">Accès rapide</string>

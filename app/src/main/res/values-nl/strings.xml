@@ -245,7 +245,7 @@
   <string name="sort">Sorteren</string>
   <string name="ascending">Oplopend</string>
   <string name="descending">Aflopend</string>
-  <string name="defualt">Standaard</string>
+  <string name="default_string">Standaard</string>
   <string name="doit">Doe het</string>
   <string name="want_help"><u>Hulp nodig?</u></string>
   <string name="quick">Snelle Toegang</string>

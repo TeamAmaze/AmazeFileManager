@@ -175,7 +175,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                     .autoDismiss(true)
                     .positiveColor(fab_skin)
                     .neutralColor(fab_skin)
-                    .neutralText(R.string.defualt)
+                    .neutralText(R.string.default_string)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onNeutral(MaterialDialog dialog) {

@@ -251,7 +251,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="sort">Sırala</string>
   <string name="ascending">Artan</string>
   <string name="descending">Artan</string>
-  <string name="defualt">Ön tanımlı</string>
+  <string name="default_string">Ön tanımlı</string>
   <string name="doit">Yap</string>
   <string name="want_help"><u>Yardım mı gerekiyor?</u></string>
   <string name="quick">Hızlı Erişim</string>

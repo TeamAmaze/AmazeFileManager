@@ -251,7 +251,7 @@
     <string name="sort">Sortera</string>
     <string name="ascending">Stigande</string>
     <string name="descending">Fallande</string>
-    <string name="defualt">Standard</string>
+    <string name="default_string">Standard</string>
     <string name="doit">Gör det</string>
     <string name="want_help"><u>Behöver hjälp?</u></string>
     <string name="quick">Snabbtillträde</string>
