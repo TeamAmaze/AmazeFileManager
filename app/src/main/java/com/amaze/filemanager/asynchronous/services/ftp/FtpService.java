@@ -26,6 +26,7 @@ package com.amaze.filemanager.asynchronous.services.ftp;
  * Created by yashwanthreddyg on 09-06-2016.
  *
  * Edited by zent-co on 30-07-2019
+ * Edited by bowiechen on 2019-10-19.
  */
 
 import android.app.AlarmManager;
@@ -42,26 +43,13 @@ import android.os.Environment;
 import android.os.IBinder;
 import android.os.SystemClock;
 import android.preference.PreferenceManager;
+import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import android.widget.Toast;
-
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.files.CryptUtil;
-
-import org.apache.ftpserver.ConnectionConfigFactory;
-import org.apache.ftpserver.FtpServer;
-import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.Authority;
-import org.apache.ftpserver.ftplet.FtpException;
-import org.apache.ftpserver.listener.ListenerFactory;
-import org.apache.ftpserver.ssl.ClientAuth;
-import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration;
-import org.apache.ftpserver.usermanager.impl.BaseUser;
-import org.apache.ftpserver.usermanager.impl.WritePermission;
-
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -75,9 +63,18 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
 import java.util.List;
-
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
+import org.apache.ftpserver.ConnectionConfigFactory;
+import org.apache.ftpserver.FtpServer;
+import org.apache.ftpserver.FtpServerFactory;
+import org.apache.ftpserver.ftplet.Authority;
+import org.apache.ftpserver.ftplet.FtpException;
+import org.apache.ftpserver.listener.ListenerFactory;
+import org.apache.ftpserver.ssl.ClientAuth;
+import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration;
+import org.apache.ftpserver.usermanager.impl.BaseUser;
+import org.apache.ftpserver.usermanager.impl.WritePermission;
 
 public class FtpService extends Service implements Runnable {
 
@@ -95,7 +92,7 @@ public class FtpService extends Service implements Runnable {
     public static final String INITIALS_HOST_FTP = "ftp://";
     public static final String INITIALS_HOST_SFTP = "ftps://";
 
-    private static final String WIFI_AP_ADDRESS = "192.168.43.1";
+    private static final String WIFI_AP_ADDRESS_PREFIX = "192.168.43.";
     private static final char[] KEYSTORE_PASSWORD = "vishal007".toCharArray();
 
     // Service will (global) broadcast when server start/stop
@@ -324,7 +321,7 @@ public class FtpService extends Service implements Runnable {
                 while (addresses.hasMoreElements()) {
                     InetAddress address = addresses.nextElement();
 
-                    if(WIFI_AP_ADDRESS.equals(address.getHostAddress()) && isEnabledWifiHotspot(context))
+                    if(address.getHostAddress().startsWith(WIFI_AP_ADDRESS_PREFIX) && isEnabledWifiHotspot(context))
                         return address;
 
                     // this is the condition that sometimes gives problems
