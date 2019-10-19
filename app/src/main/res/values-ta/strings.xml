@@ -251,7 +251,7 @@
     <string name="sort">வரிசைப்படுத்து</string>
     <string name="ascending">ஏறுமுகப்படுத்தல்</string>
     <string name="descending">இறங்குமுகப்படுத்தல்</string>
-    <string name="defualt">இயல்புநிலை</string>
+    <string name="default_string">இயல்புநிலை</string>
     <string name="doit">செய்து முடி</string>
     <string name="want_help"><u>உதவி தேவையா?</u></string>
     <string name="quick">விரைவு அணுகல்</string>

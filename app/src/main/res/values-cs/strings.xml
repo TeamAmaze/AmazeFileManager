@@ -250,7 +250,7 @@
   <string name="sort">Řazení</string>
   <string name="ascending">Vzestupně</string>
   <string name="descending">Sestupně</string>
-  <string name="defualt">Výchozí</string>
+  <string name="default_string">Výchozí</string>
   <string name="doit">Vykonat</string>
   <string name="want_help"><u>Potřebujete pomoc?</u></string>
   <string name="quick">Rychlý přístup</string>

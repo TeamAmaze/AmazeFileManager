@@ -246,7 +246,7 @@
   <string name="sort">Sortowanie</string>
   <string name="ascending">Rosnąco</string>
   <string name="descending">Malejąco</string>
-  <string name="defualt">Domyślnie</string>
+  <string name="default_string">Domyślnie</string>
   <string name="doit">Gotowe</string>
   <string name="want_help"><u>Czy potrzebujesz pomocy?</u></string>
   <string name="quick">Szybki dostęp</string>

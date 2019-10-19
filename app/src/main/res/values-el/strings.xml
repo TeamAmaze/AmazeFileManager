@@ -245,7 +245,7 @@
   <string name="sort">Ταξινόμηση</string>
   <string name="ascending">Αύξουσα</string>
   <string name="descending">Φθήνουσα</string>
-  <string name="defualt">Εξ\' ορισμού</string>
+  <string name="default_string">Εξ\' ορισμού</string>
   <string name="doit">Κάντο</string>
   <string name="want_help"><u>Χρειάζεστε βοήθεια;</u></string>
   <string name="quick">Γρήγορη Πρόσβαση</string>

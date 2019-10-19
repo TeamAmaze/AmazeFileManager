@@ -263,7 +263,7 @@
     <string name="sort">Ordenatu</string>
     <string name="ascending">Goranzkoa</string>
     <string name="descending">Beheranzkoa</string>
-    <string name="defualt">Lehenetsia</string>
+    <string name="default_string">Lehenetsia</string>
     <string name="doit">Egin</string>
     <string name="want_help"><u>Laguntzarik behar?</u></string>
     <string name="quick">Sarrera azkarra</string>

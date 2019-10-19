@@ -138,7 +138,7 @@
   <string name="other">Kita</string>
   <string name="color_title">Spalva</string>
     <string name="password">Slaptažodis</string>
-  <string name="defualt">Numatytas</string>
+  <string name="default_string">Numatytas</string>
   <string name="path">Kelias</string>
   <string name="start_ftp">Pradžia</string>
   <string name="information">Informacija</string>

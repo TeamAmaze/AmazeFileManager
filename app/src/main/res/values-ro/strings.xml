@@ -228,7 +228,7 @@
   <string name="sort">Sortare</string>
   <string name="ascending">Ascendent</string>
   <string name="descending">Descendent</string>
-  <string name="defualt">Implicit</string>
+  <string name="default_string">Implicit</string>
   <string name="doit">Fă-o</string>
   <string name="want_help"><u>Aveţi nevoie de ajutor?</u></string>
   <string name="quick">Acces rapid</string>

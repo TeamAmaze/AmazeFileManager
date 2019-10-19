@@ -220,7 +220,7 @@
   <string name="sort">Razvrsti</string>
   <string name="ascending">Naraščajoče</string>
   <string name="descending">Padajoče</string>
-  <string name="defualt">Privzeto</string>
+  <string name="default_string">Privzeto</string>
   <string name="doit">Naredi to</string>
   <string name="want_help"><u>Potrebujete pomoč?</u></string>
   <string name="quick">Hitri dostop</string>

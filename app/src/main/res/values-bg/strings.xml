@@ -216,7 +216,7 @@
   <string name="sort">Сортирай</string>
   <string name="ascending">Възходящо</string>
   <string name="descending">Низходящо</string>
-  <string name="defualt">Основен</string>
+  <string name="default_string">Основен</string>
   <string name="doit">Направи го</string>
   <string name="want_help"><u>Нужда от помощ?</u></string>
   <string name="quick">Бърз достъп</string>

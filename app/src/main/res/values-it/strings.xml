@@ -252,7 +252,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="sort">Ordina</string>
   <string name="ascending">Crescente</string>
   <string name="descending">Decrescente</string>
-  <string name="defualt">Predefinito</string>
+  <string name="default_string">Predefinito</string>
   <string name="doit">Fallo</string>
   <string name="want_help">
 <u>Serve aiuto?</u>

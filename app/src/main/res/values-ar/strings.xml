@@ -192,7 +192,7 @@
   <string name="password">كلمة المرور</string>
   <string name="images">الصّور</string>
   <string name="clear">مسح</string>
-  <string name="defualt">الإفتراضي</string>
+  <string name="default_string">الإفتراضي</string>
   <string name="recent">الملفات الأخيرة</string>
   <string name="edit">تعديل</string>
   <string name="path">المسار</string>

@@ -245,7 +245,7 @@
     <string name="sort">Сортувати</string>
     <string name="ascending">За зростанням</string>
     <string name="descending">За спаданням</string>
-    <string name="defualt">За замовчуванням</string>
+    <string name="default_string">За замовчуванням</string>
     <string name="doit">Робити це</string>
     <string name="want_help"><u>Потрібна допомога?</u></string>
     <string name="quick">Швидкий доступ</string>

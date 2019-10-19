@@ -243,7 +243,7 @@
   <string name="sort">Sắp xếp</string>
   <string name="ascending">Tăng dần</string>
   <string name="descending">Giảm dần</string>
-  <string name="defualt">Mặc định</string>
+  <string name="default_string">Mặc định</string>
   <string name="doit">Thực thi nó</string>
   <string name="want_help"><u>Cần trợ giúp?</u></string>
   <string name="quick">Truy cập nhanh</string>

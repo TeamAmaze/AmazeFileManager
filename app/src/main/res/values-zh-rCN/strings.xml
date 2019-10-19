@@ -260,7 +260,7 @@
     <string name="sort">排序</string>
     <string name="ascending">升序排列</string>
     <string name="descending">降序排列</string>
-    <string name="defualt">默认</string>
+    <string name="default_string">默认</string>
     <string name="doit">确定</string>
     <string name="want_help"><u>需要帮助吗？</u></string>
     <string name="quick">快速访问</string>

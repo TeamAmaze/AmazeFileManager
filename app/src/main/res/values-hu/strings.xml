@@ -262,7 +262,7 @@
     <string name="sort">Rendezés</string>
     <string name="ascending">Növekvő</string>
     <string name="descending">Csökkenő</string>
-    <string name="defualt">Alapértelmezett</string>
+    <string name="default_string">Alapértelmezett</string>
     <string name="doit">Hajtsa végre</string>
     <string name="want_help">Segítségre van szüksége?</string>
     <string name="quick">Gyorselérés</string>
