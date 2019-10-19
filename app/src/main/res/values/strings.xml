@@ -48,7 +48,7 @@
     <string name="searchresults">Search results of %s</string>
     <string name="rename">Rename</string>
     <string name="save">Save</string>
-    <string name="bookmarksadded">Bookmarks Added</string>
+    <string name="bookmarksadded">Bookmark added</string>
     <string name="fileexist">File with same name already exists </string>
     <string name="name">Name</string>
     <string name="date">Date</string>
@@ -645,5 +645,6 @@
     <string name="empty_string" translatable="false" />
     <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Cannot open archive \"%s\". Either we cannot open the archive, or the archive was damaged.</string>
+    <string name="bookmarkexists">Bookmark exists</string>
 </resources>
 

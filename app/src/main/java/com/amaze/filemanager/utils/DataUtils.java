@@ -2,7 +2,8 @@
  * DataUtils.java
  *
  * Copyright (C) 2016-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
+ * Bowie Chen, and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,10 +22,8 @@
  */
 package com.amaze.filemanager.utils;
 
-import androidx.annotation.Nullable;
-
 import android.view.MenuItem;
-
+import androidx.annotation.Nullable;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -37,7 +36,6 @@ import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFa
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -235,19 +233,35 @@ public class DataUtils {
     }
 
     public void addBook(String[] i) {
+        if (containsBooks(i) != -1) {
+            return;
+        }
         synchronized (books) {
 
             books.add(i);
         }
     }
 
-    public void addBook(final String[] i, boolean refreshdrawer) {
-        synchronized (books) {
-
-            books.add(i);
+    /**
+     * @param i The bookmark name and path.
+     * @param refreshdrawer boolean flag to indicate if drawer refresh is desired.
+     * @return True if operation successful, false if failure.
+     */
+    public boolean addBook(final String[] i, boolean refreshdrawer) {
+        if (containsBooks(i) != -1) {
+            // book exists
+            return false;
         }
-        if (refreshdrawer && dataChangeListener != null) {
-            dataChangeListener.onBookAdded(i, true);
+        else {
+            synchronized (books) {
+                books.add(i);
+            }
+
+            if (dataChangeListener != null) {
+                dataChangeListener.onBookAdded(i, refreshdrawer);
+            }
+
+            return true;
         }
     }
 
