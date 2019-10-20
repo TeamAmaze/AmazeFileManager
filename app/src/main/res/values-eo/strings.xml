@@ -30,7 +30,7 @@
     <string name="ftp">FTP-servilo</string>
     <string name="setting">Agordoj</string>
     <string name="select">Elekti ero</string>
-    <string name="pressagain">Tuŝu denove pro eliri</string>
+    <string name="press_again">Tuŝu denove pro eliri</string>
     <string name="open">Malfermi</string>
     <string name="backup">Savkopio</string>
     <string name="uninstall">Malinstali</string>
@@ -38,17 +38,17 @@
     <string name="properties">Ecujo</string>
     <string name="copyingapk">Copianta APK al </string>
     <string name="delbook">Forigi legosignon</string>
-    <string name="addtobook">Aldoni al legosignujo</string>
+    <string name="add_to_bookmarks">Aldoni al legosignujo</string>
     <string name="enterpath">Enigi la dosierindikon</string>
     <string name="cancel">NULIGI</string>
     <string name="create">KREI</string>
     <string name="loading">Ŝarganta&#8230;</string>
     <string name="file_empty">La dosiero estas malplena</string>
     <string name="error">Eraro</string>
-    <string name="searchresults">Resulto de la ŝerco de %s</string>
+    <string name="search_results">Resulto de la ŝerco de %s</string>
     <string name="rename">Alinomi</string>
     <string name="save">Konservi</string>
-    <string name="bookmarksadded">Legosignoj aldonita</string>
+    <string name="bookmarks_added">Legosignoj aldonita</string>
     <string name="fileexist">Jam ekzistas dosiero kun sama nomo </string>
     <string name="name">Dosiernomo</string>
     <string name="date">Dato</string>
@@ -56,7 +56,7 @@
     <string name="size_capitalized">Grando</string>
     <string name="size">grando de la dosierujo</string>
     <string name="enterzipname">Enigi Zip-an dosiernomon</string>
-    <string name="noappfound">Nenio aplikaĵo existas por malfermi ĉi tiun dosieron</string>
+    <string name="no_app_found">Nenio aplikaĵo existas por malfermi ĉi tiun dosieron</string>
     <string name="copying">Kopianta</string>
     <string name="moving">Movanta</string>
     <string name="file">Dosiero</string>
@@ -65,8 +65,8 @@
     <string name="entername">Enigi la nomon</string>
     <string name="extracting">Malkompresanta</string>
     <string name="stopping">Haltiganta</string>
-    <string name="openparent">Malfermi superan dosierujon</string>
-    <string name="openwith">Malfermi kun</string>
+    <string name="open_parent">Malfermi superan dosierujon</string>
+    <string name="open_with">Malfermi kun</string>
     <string name="share">Kunhavigi</string>
     <string name="about">Pri</string>
     <string name="extract">Malkompresi</string>
@@ -78,9 +78,9 @@
     <string name="dialog_delete_disclaimer">Forigi la subajn erojn forigos ilin permanente de via poŝkomputilo kaj ili ne povos esti rekuperita.</string>
     <string name="dialog_delete_title">Forigi erojn permanente?</string>
     <string name="deleting">Foriganta</string>
-    <string name="questionset">Ĉu vi volas agordi la aktualna doiserindikon kiel ĉefpaĝo por ĉi tio langeto?</string>
+    <string name="question_set_path_as_home">Ĉu vi volas agordi la aktualna doiserindikon kiel ĉefpaĝo por ĉi tio langeto?</string>
     <string name="directorysort">Dosiera ordiga modo</string>
-    <string name="sortby">Ordigi pro</string>
+    <string name="sort_by">Ordigi pro</string>
     <string name="theme">Temo</string>
     <string name="random">Aleatora temo</string>
     <string name="random_summary">Agordi aleatoran ĉefkoloron kiam aplikaĵo ekas</string>
@@ -90,12 +90,12 @@
     <string name="paste">Alglui</string>
     <string name="history">Historio</string>
     <string name="copy">Kopii</string>
-    <string name="rootmode">Esplorilo kun ĉefuzanta privilegio</string>
-    <string name="rootmodesummary">Por aparatoj kun ĉefuzantaj privilegioj nur. Ŝalti ĝin se vi estas certa pri ĝi.</string>
-    <string name="rootfailure">Ĉefuzanta privilegio ne esti ricevinta</string>
-    <string name="selectall">Elekti ĉiujn</string>
+    <string name="root_mode">Esplorilo kun ĉefuzanta privilegio</string>
+    <string name="root_mode_summary">Por aparatoj kun ĉefuzantaj privilegioj nur. Ŝalti ĝin se vi estas certa pri ĝi.</string>
+    <string name="root_failure">Ĉefuzanta privilegio ne esti ricevinta</string>
+    <string name="select_all">Elekti ĉiujn</string>
     <string name="delete">Forigi</string>
-    <string name="setashome">Agordi kiel ĉefpaĝo</string>
+    <string name="set_as_home">Agordi kiel ĉefpaĝo</string>
 
     <!-- New -->
     <!-- Array -->
@@ -109,11 +109,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Dosierujoj unue</string>
     <string name="filesOnTop">Dosieroj unua</string>
-    <string name="noneOnTop">Neniom unua</string>
+    <string name="none_on_top">Neniom unua</string>
     <!--SortBy-->
-    <string name="sortName">Nomo</string>
+    <string name="sort_name">Nomo</string>
     <string name="lastModified">Lasta modifita</string>
-    <string name="sortSize">Grando</string>
+    <string name="sort_size">Grando</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Elektaĵi dosieron</string>
@@ -129,7 +129,7 @@
     <string name="enablerootmde">Ebligi ĉefuzantan privilegien modon</string>
     <string name="goback">Reiri</string>
     <string name="newfile">Nova dosiero</string>
-    <string name="nofiles">Neniom dosiero</string>
+    <string name="no_files">Neniom dosiero</string>
     <string name="used">uzita spaco</string>
     <string name="used_by_others">uzita pro aliaj</string>
     <string name="free">libera spaco</string>
@@ -140,43 +140,43 @@
     <string name="exit">Eliri</string>
     <string name="doforall">Fari por ĉi tion erojn</string>
     <string name="gridcolumnno">Nombro de kolumnoj en krada vido</string>
-    <string name="setRandom">Ŝanĝoj faros poste vi rekomenci la aplikaĵon</string>
+    <string name="set_random">Ŝanĝoj faros poste vi rekomenci la aplikaĵon</string>
     <string name="authors">Aŭtoroj</string>
     <string name="changelog">Changelog</string>
     <string name="ok">Bone</string>
     <string name="ui">Interfaco</string>
     <string name="general">Ĝenerala</string>
-    <string name="thumbSummary">Montri bildetojn de aplikaĵoj kaj bildoj</string>
+    <string name="thumb_summary">Montri bildetojn de aplikaĵoj kaj bildoj</string>
     <string name="thumb">Montri bildetojn</string>
     <string name="hidden">Montri kaŝajn dosierojn kaj dosierujojn</string>
     <string name="lastModifiedSummary">Montri daton kaj tempon kiam la dosiero estis modifita lasta fojo</string>
     <string name="lastModifiedPref">Montri lastan modifon</string>
-    <string name="sizePrefSummary">Montri grandon de dosiero kaj nombron de eroj en dosierujo</string>
-    <string name="sizePref">Montri grandojn</string>
+    <string name="size_pref_summary">Montri grandon de dosiero kaj nombron de eroj en dosierujo</string>
+    <string name="size_pref">Montri grandojn</string>
     <string name="miscellaneous">Diverso</string>
-    <string name="rootPrefSummary">Montri permesojn de dosieroj kaj dosierujoj</string>
-    <string name="rootPref">Montri permesojn</string>
-    <string name="aboutFileManager">Pri dosieresplorilo Amaze</string>
+    <string name="root_pref_summary">Montri permesojn de dosieroj kaj dosierujoj</string>
+    <string name="root_pref">Montri permesojn</string>
+    <string name="about_amaze_file_manager_label">Pri dosieresplorilo Amaze</string>
     <string name="version">Versio</string>
     <string name="rate">Taksi la aplikaĵon</string>
     <string name="feedback">Sendi Feedback-on</string>
     <string name="hiddenfiles">Kaŝaj dosieroj</string>
     <string name="type">Tipo</string>
-    <string name="rootdirectory">Ĉefuzanta privilegia dosierujo</string>
-    <string name="addshortcut">Aldoni ligilon</string>
-    <string name="unsavedchanges">Malkonservita ŝanĝoj</string>
-    <string name="unsavedchangesdesc">Vi havas malkonservitajn ŝanĝojn, ĉu vi volas konservi ilin antaŭ eliri?</string>
+    <string name="root_directory">Ĉefuzanta privilegia dosierujo</string>
+    <string name="add_shortcut">Aldoni ligilon</string>
+    <string name="unsaved_changes">Malkonservita ŝanĝoj</string>
+    <string name="unsaved_changes_description">Vi havas malkonservitajn ŝanĝojn, ĉu vi volas konservi ilin antaŭ eliri?</string>
     <string name="saving">Konservanta</string>
-    <string name="packageinstaller">Instalpakaĵo</string>
+    <string name="package_installer">Instalpakaĵo</string>
     <string name="view">Vidi</string>
     <string name="install">Instali</string>
     <string name="archive">Arkivi</string>
-    <string name="archtext">Ĉi tio estas an arkivaĵo. Kio vi volas fari?</string>
-    <string name="pitext">Ĉi tio estas a instalpakaĵo. Kio vi volas fari?</string>
+    <string name="archive_text">Ĉi tio estas an arkivaĵo. Kio vi volas fari?</string>
+    <string name="package_installer_text">Ĉi tio estas a instalpakaĵo. Kio vi volas fari?</string>
     <string name="xda_title">XDA-a fadeno</string>
     <string name="xda_summary">Demandoj&amp;respondoj, Helpo &amp; Solvo de problemoj</string>
-    <string name="circularimages">Uzi cirklan legosignojn por bildoj kaj videoj</string>
-    <string name="circularicons">Uzi cirklan legosignojn</string>
+    <string name="circular_images">Uzi cirklan legosignojn por bildoj kaj videoj</string>
+    <string name="circular_icons">Uzi cirklan legosignojn</string>
     <string name="back_title">Antaŭa navigacio</string>
     <string name="back_summary">Ebligi propran antaŭan navigacion en supre listo</string>
     <string name="details">Detalaro</string>
@@ -210,19 +210,19 @@
     <string name="zip_create_folder">Krei Zip-an dosierujojn</string>
     <string name="archive_summary">Arkivaj dosieroj estos malkompresita en ĉi tion dosuerujon. Defaŭlta valuo estas dosierujo en kiu la arkivaĵo estas.</string>
     <string name="zip_summary">Nova Zip-a dosierojn estos kreita en ĉi tion dosuerujon. Defaŭlta valuo estas dosierujo en kiu la dosiero estas.</string>
-    <string name="openas">Malfermi kiel</string>
+    <string name="open_as">Malfermi kiel</string>
     <string name="text">Teksto</string>
     <string name="audio">Sono</string>
     <string name="video">Video</string>
     <string name="other">Alia</string>
     <string name="image">Bildo</string>
     <string name="contributors">Kontributistoj</string>
-    <string name="savepaths">Memori dosierindikoj</string>
-    <string name="savepathsummary">Kiam la aplikaĵo komencas, la plej freŝa vidita dosierujo en ĉiu langeto estos montrita</string>
+    <string name="save_paths">Memori dosierindikoj</string>
+    <string name="save_path_summary">Kiam la aplikaĵo komencas, la plej freŝa vidita dosierujo en ĉiu langeto estos montrita</string>
     <string name="select_intent">Elekti</string>
     <string name="database">Datumbazilo</string>
-    <string name="colourednavigation">Kolorita navigacia breto</string>
-    <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+    <string name="colored_navigation">Kolorita navigacia breto</string>
+    <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
 
     <string name="color_title">Koloro</string>
     <string name="color_summary">Agordi koloron de multe UI-komponanto</string>
@@ -236,11 +236,11 @@
   <string name="files">Dosieroj</string>
     <string name="textreader">Teksta legilo</string>
     <string name="databasereader">Datumbaza legilo</string>
-    <string name="showDividers">Montri dividilojn</string>
-    <string name="needsaccess">Skriba atingo bezonas</string>
-    <string name="needsaccesssummary">Bonvolu elekti la radikdosierujon de \t</string>
-    <string name="needsaccesssummary1">\tpor ricevi skriba atingo pro labori </string>
-    <string name="smb_con">SMB-a konekto</string>
+    <string name="show_dividers">Montri dividilojn</string>
+    <string name="needs_access">Skriba atingo bezonas</string>
+    <string name="needs_access_summary">Bonvolu elekti la radikdosierujon de \t</string>
+    <string name="needs_access_summary1">\tpor ricevi skriba atingo pro labori </string>
+    <string name="smb_connection">SMB-a konekto</string>
     <string name="smb_server">Servila IP-a adreso</string>
     <string name="username">Uzantnomo</string>
     <string name="password">Pasvorto</string>
@@ -262,7 +262,7 @@
     <string name="descending">Malkreskanta</string>
     <string name="defualt">Defaŭlta</string>
     <string name="doit">Faru ĝin</string>
-    <string name="wanthelp"><u>Ĉu vi bezonas helpon?</u></string>
+    <string name="want_help"><u>Ĉu vi bezonas helpon?</u></string>
     <string name="quick">Rapida atingo</string>
     <string name="recent">Lastaj dosieroj</string>
     <string name="edit">Redakti</string>
@@ -271,16 +271,16 @@
     <string name="grantper">Ricevi permesilo</string>
     <string name="grantfailed">Permesilo ne estas ricevita</string>
     <string name="grant_storage_permission">Aplikaĵo bezonas memoran permesilon por daŭrigi. Nuligi ĉi tion dialogujon eliros la aplikaĵo.</string>
-    <string name="operationunsuccesful">Operacio malsukcesita</string>
+    <string name="operation_unsuccesful">Operacio malsukcesita</string>
     <string name="creatingfile">Kreanta dosieron</string>
     <string name="creatingfolder">Kreanta dosierujon</string>
     <string name="renaming">Renomanta</string>
-    <string name="cantbeempty">%s ne povas estas malplena</string>
+    <string name="cant_be_empty">%s ne povas estas malplena</string>
     <string name="ip">Adreso</string>
-    <string name="connectionname">Konokta nomo</string>
-    <string name="nodevicefound">Aparato ne estis trovita</string>
+    <string name="connection_name">Konokta nomo</string>
+    <string name="no_device_found">Aparato ne estis trovita</string>
     <string name="path">Dosierindiko</string>
-    <string name="renamebookmark">Modifi legosignon</string>
+    <string name="rename_bookmark">Modifi legosignon</string>
     <string name="cut">Eltondi</string>
     <string name="search">Serĉi</string>
     <string name="invalid_name">Malvalida nomo</string>
@@ -295,7 +295,7 @@
     <string name="stop_ftp">Halti</string>
     <string name="ftp_status_running">Aktiva</string>
     <string name="ftp_status_not_running">Ne aktiva</string>
-    <string name="ftp_no_wifi">konfirmi vi estas konektita al WiFi</string>
+    <string name="ftp_no_wifi">konfirmi vi estas konektita al Wi-Fi</string>
     <string name="domain">Domajno</string>
     <string name="invalid">Malvalida %s</string>
     <string name="ftp_notif_starting">FTP-a servilo estas aktivanta</string>
@@ -314,14 +314,14 @@
     <string name="translate_summary">Traduki Amaze en via lingvo</string>
   <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">PayPal ID kopiita al poŝo</string>
-    <string name="searchingdevices">Serĉanta aparatojn</string>
+    <string name="searching_devices">Serĉanta aparatojn</string>
     <string name="use_custom_ip">Uzi propan IP-adreson</string>
     <string name="bookmark_lost">Legosigno ne trovita, rekreinta&#8230;</string>
 
     <string name="smb_instructions">
         <html>
             <body>
-                <h1>Kiel atingi al Vindozan kunhavigitan dosierujon en Android-o (smb)</h1>\n\n
+                <h1>Kiel atingi al Vindozan kunhavigitan dosierujon en Android-o (SMB)</h1>\n\n
                 <ul>
                     <li>
                         <b>Ebligi kunhavigon de dosiero</b>\n
@@ -364,7 +364,7 @@
                         adresojn.\n\n
                     </p>
 
-                    <b>Enigi detalojn en smb-a dialogujo</b>\n
+                    <b>Enigi detalojn en SMB-a dialogujo</b>\n
                 </ul>
             </body>
         </html>
@@ -516,16 +516,16 @@
     <string name="authenticate_password">Enigi pasvorto</string>
 
     <string name="sidebar_preferences">Ekstrapanelo</string>
-    <string name="sidebarfolders_title">Ligiloj de la ekstrapanelo</string>
-    <string name="sidebarquickaccess_title">Rapida alirujo de la ekstrapanelo</string>
-    <string name="showfolders_pref_title">Montri ligilojn</string>
-    <string name="showfolders_pref">Ligiloj</string>
-    <string name="showquickaccess_pref_title">Montri rapidan alirujon</string>
-    <string name="showquickaccess_pref">Rapida alirujo</string>
+    <string name="sidebar_folders_title">Ligiloj de la ekstrapanelo</string>
+    <string name="sidebar_quick_access_title">Rapida alirujo de la ekstrapanelo</string>
+    <string name="show_folders_pref_title">Montri ligilojn</string>
+    <string name="show_folders_pref">Ligiloj</string>
+    <string name="show_quick_access_pref_title">Montri rapidan alirujon</string>
+    <string name="show_quick_access_pref">Rapida alirujo</string>
     <string name="create_shortcut">Krei ligilon</string>
     <string name="edit_shortcut">Redakti ligilon</string>
     <string name="directory">Dosierujo</string>
-    <string name="questiondelete_shortcut">Forigi ligilon?</string>
+    <string name="question_delete_shortcut">Forigi ligilon?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin ne estas instalita. Bonvolu, download el Play Store.</string>
     <string name="cloud_error_failed_restart">Ŝargo de la konekto malsukcesis.
@@ -539,7 +539,7 @@
     <string name="showHeaders">Montri kaplinio</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-	<string name="noitems">Nenio eroj</string>
+	<string name="no_items">Nenio eroj</string>
 	<string name="item">ero</string>
 	<string name="items">eroj</string>
 	
@@ -556,13 +556,13 @@
     <string name="intent_save_as">Savi kiel&#8230;</string>
     <string name="go">Iri</string>
     <string name="advanced">Specialo</string>
-    <string name="typeablepaths_title">Kutimaj dosierindikoj</string>
-    <string name="typeablepaths_summary">Longa preŝo al dosieruja breto enigas a propra dosierujo</string>
+    <string name="typeable_paths_title">Kutimaj dosierindikoj</string>
+    <string name="typeable_paths_summary">Longa preŝo al dosieruja breto enigas a propra dosierujo</string>
     <string name="send_email_to">Sendi retmesaĝo al</string>
 
     <string name="text_editor">Agordoj de la tekstredaktilo</string>
     <string name="preference_newstack_title">Malfermi dosierojn kiel nova tasko</string>
     <string name="preference_newstack_summary">Ĝi ebligi vin malfermi dosierojn en malkuna taskoj. Atingi ilin el sistema freŝa ekrano.</string>
     <string name="developers">Programistoj</string>
-    <string name="nobitcoinapp">Bonvolu, instali bitcoin-monujo</string>
+    <string name="no_bitcoin_app">Bonvolu, instali bitcoin-monujo</string>
 </resources>

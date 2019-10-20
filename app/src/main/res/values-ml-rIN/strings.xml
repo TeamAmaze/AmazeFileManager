@@ -28,7 +28,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">വലുപ്പം</string>
+  <string name="sort_size">വലുപ്പം</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="ok">ശരി</string>

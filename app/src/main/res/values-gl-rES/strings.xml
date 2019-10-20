@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Tamaño</string>
+  <string name="sort_size">Tamaño</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Versión</string>

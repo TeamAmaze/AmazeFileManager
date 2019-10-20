@@ -274,7 +274,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 name = resources.getString(R.string.extstorage);
                 icon1 = R.drawable.ic_sd_storage_white_24dp;
             } else if ("/".equals(file)) {
-                name = resources.getString(R.string.rootdirectory);
+                name = resources.getString(R.string.root_directory);
                 icon1 = R.drawable.ic_drawer_root_white;
             } else {
                 name = f.getName();

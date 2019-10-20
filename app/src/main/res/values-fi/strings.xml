@@ -27,7 +27,7 @@
   <string name="ftp">FTP-palvelin</string>
     <string name="setting">Asetukset</string>
   <string name="select">Valitse kohde</string>
-  <string name="pressagain">Paina uudestaan poistuaksesi</string>
+  <string name="press_again">Paina uudestaan poistuaksesi</string>
   <string name="open">Avaa</string>
   <string name="backup">Varmuuskopio</string>
   <string name="uninstall">Asennuksen poisto</string>
@@ -35,7 +35,7 @@
   <string name="properties">Ominaisuudet</string>
   <string name="copyingapk">Kopioi APK-tiedostoa </string>
     <string name="delbook">Poista kirjanmerkki</string>
-  <string name="addtobook">Lisää kirjanmerkkeihin</string>
+  <string name="add_to_bookmarks">Lisää kirjanmerkkeihin</string>
   <string name="enterpath">Kirjoita polku</string>
   <string name="cancel">PERUUTA</string>
   <string name="create">LUO</string>
@@ -44,14 +44,14 @@
   <string name="error">Virhe</string>
     <string name="rename">Nimeä uudelleen</string>
   <string name="save">Tallenna</string>
-    <string name="bookmarksadded">Kirjanmerkit lisätty</string>
+    <string name="bookmarks_added">Kirjanmerkit lisätty</string>
   <string name="fileexist">Saman niminen tiedosto on jo olemassa </string>
     <string name="name">Nimi</string>
   <string name="date">pvm</string>
   <string name="location">Sijainti</string>
   <string name="size_capitalized">Koko</string>
     <string name="enterzipname">Kirjoita tiedostonimi</string>
-  <string name="noappfound">Ei löydetty sovellusta jolla tämän tiedostotyypin voisi avata</string>
+  <string name="no_app_found">Ei löydetty sovellusta jolla tämän tiedostotyypin voisi avata</string>
   <string name="copying">Kopioidaan...</string>
   <string name="moving">Siirretään</string>
     <string name="file">Tiedosto</string>
@@ -60,8 +60,8 @@
   <string name="entername">Anna nimi</string>
   <string name="extracting">Puretaan</string>
   <string name="stopping">Pysäytetään</string>
-    <string name="openparent">Avaa päähakemisto</string>
-  <string name="openwith">Avaa sovelluksessa</string>
+    <string name="open_parent">Avaa päähakemisto</string>
+  <string name="open_with">Avaa sovelluksessa</string>
   <string name="share">Jaa</string>
   <string name="about">Tietoja</string>
   <string name="extract">Pura</string>
@@ -73,9 +73,9 @@
   <string name="dialog_delete_disclaimer">Haluatko varmasti poistaa nämä tiedostot?</string>
   <string name="dialog_delete_title">Vahvista</string>
   <string name="deleting">Poistetaan</string>
-  <string name="questionset">Haluatko asettaa nykyisen polun kodiksi tässä välilehdessä?</string>
+  <string name="question_set_path_as_home">Haluatko asettaa nykyisen polun kodiksi tässä välilehdessä?</string>
     <string name="directorysort">Kansion lajittelu</string>
-  <string name="sortby">Lajitteluperuste</string>
+  <string name="sort_by">Lajitteluperuste</string>
   <string name="theme">Teema</string>
     <string name="random">Satunnaisesti valittu teema</string>
   <string name="random_summary">Asettaa satunnaisen päävärin käynnistyessä</string>
@@ -85,12 +85,12 @@
   <string name="paste">Liitä</string>
     <string name="history">Historia</string>
     <string name="copy">Kopioi</string>
-  <string name="rootmode">Juurihakemisto</string>
-  <string name="rootmodesummary">Ainoastaan rootatulle laitteelle, tarkista vain jos tiedät mitä teet.</string>
-    <string name="rootfailure">Pääkäyttäjän oikeuksia ei myönnetä</string>
-    <string name="selectall">Valitse kaikki</string>
+  <string name="root_mode">Juurihakemisto</string>
+  <string name="root_mode_summary">Ainoastaan rootatulle laitteelle, tarkista vain jos tiedät mitä teet.</string>
+    <string name="root_failure">Pääkäyttäjän oikeuksia ei myönnetä</string>
+    <string name="select_all">Valitse kaikki</string>
   <string name="delete">Poista</string>
-  <string name="setashome">Aseta kotisivuksi</string>
+  <string name="set_as_home">Aseta kotisivuksi</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -102,11 +102,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Kansiot ylimpänä</string>
   <string name="filesOnTop">Tiedostot ylimpänä</string>
-  <string name="noneOnTop">Ei mitään ylimpänä</string>
+  <string name="none_on_top">Ei mitään ylimpänä</string>
   <!--SortBy-->
-  <string name="sortName">Nimi</string>
+  <string name="sort_name">Nimi</string>
   <string name="lastModified">Viimeisin muokkaus</string>
-  <string name="sortSize">Koko</string>
+  <string name="sort_size">Koko</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Valitse tiedosto</string>
@@ -121,7 +121,7 @@
   <string name="enablerootmde">Ota Root-tila käyttöön</string>
   <string name="goback">Mene takaisin</string>
     <string name="newfile">Uusi tiedosto</string>
-  <string name="nofiles">Ei tiedostoja</string>
+  <string name="no_files">Ei tiedostoja</string>
     <string name="listview">Listanäkymä</string>
   <string name="gridview">Ruudukkonäkymä</string>
     <string name="permission">Käyttöoikeudet</string>
@@ -129,43 +129,43 @@
   <string name="exit">Lopeta</string>
     <string name="doforall">Tee kaikille kohteille</string>
   <string name="gridcolumnno">Number of columns in grid view</string>
-    <string name="setRandom">Changes will take place after you restart the app</string>
+    <string name="set_random">Changes will take place after you restart the app</string>
   <string name="authors">Tekijät</string>
   <string name="changelog">Muutoslogi</string>
     <string name="ok">OK</string>
     <string name="ui">Interface</string>
   <string name="general">Yleinen</string>
-  <string name="thumbSummary">Show Thumbnails of apps and images</string>
+  <string name="thumb_summary">Show Thumbnails of apps and images</string>
   <string name="thumb">Show Thumbnails</string>
   <string name="hidden">Näytä piilotetut tiedostot ja kansiot</string>
   <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
   <string name="lastModifiedPref">Show Last Modified</string>
-  <string name="sizePrefSummary">Show size of files and number of items in folders</string>
-  <string name="sizePref">Näytä koot</string>
+  <string name="size_pref_summary">Show size of files and number of items in folders</string>
+  <string name="size_pref">Näytä koot</string>
   <string name="miscellaneous">Sekalaiset</string>
-  <string name="rootPrefSummary">Kansioiden ja tiedostojen oikeudet</string>
-  <string name="rootPref">Näytä käyttöoikeudet</string>
-  <string name="aboutFileManager">Tietoja Amaze-tiedostonhallinnasta</string>
+  <string name="root_pref_summary">Kansioiden ja tiedostojen oikeudet</string>
+  <string name="root_pref">Näytä käyttöoikeudet</string>
+  <string name="about_amaze_file_manager_label">Tietoja Amaze-tiedostonhallinnasta</string>
   <string name="version">Versio</string>
   <string name="rate">Arvostele sovellus</string>
   <string name="feedback">Lähetä palautetta</string>
   <string name="hiddenfiles">Piilotetut Tiedostot</string>
   <string name="type">Tyyppi</string>
-    <string name="rootdirectory">Juurihakemisto</string>
-    <string name="addshortcut">Luo pikakuvake</string>
-  <string name="unsavedchanges">Tallentamattomat muutokset</string>
-  <string name="unsavedchangesdesc">Tallentamattomia muutoksia. Haluatko tallentaa nyt?</string>
+    <string name="root_directory">Juurihakemisto</string>
+    <string name="add_shortcut">Luo pikakuvake</string>
+  <string name="unsaved_changes">Tallentamattomat muutokset</string>
+  <string name="unsaved_changes_description">Tallentamattomia muutoksia. Haluatko tallentaa nyt?</string>
   <string name="saving">Tallentaminen</string>
-  <string name="packageinstaller">Paketin asentaja</string>
+  <string name="package_installer">Paketin asentaja</string>
   <string name="view">Näytä</string>
   <string name="install">Asenna</string>
   <string name="archive">Arkistoi</string>
-  <string name="archtext">Tämä on arkisto. Mitä haluat tehdä?</string>
-  <string name="pitext">This is a package installer. What action would you like to perform?</string>
+  <string name="archive_text">Tämä on arkisto. Mitä haluat tehdä?</string>
+  <string name="package_installer_text">This is a package installer. What action would you like to perform?</string>
   <string name="xda_title">XDA-ketju</string>
   <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
-    <string name="circularimages">Käytä pyöreitä kuvakkeita kuville ja videoille</string>
-  <string name="circularicons">Käytä pyöreitä kuvakkeita</string>
+    <string name="circular_images">Käytä pyöreitä kuvakkeita kuville ja videoille</string>
+  <string name="circular_icons">Käytä pyöreitä kuvakkeita</string>
   <string name="back_title">Edellinen</string>
   <string name="back_summary">Sallii mukautetun palaamisen alkuun</string>
   <string name="details">Tiedot</string>
@@ -198,19 +198,19 @@
   <string name="zip_create_folder">Zip Create Folder</string>
   <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present</string>
   <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
-  <string name="openas">Avaa</string>
+  <string name="open_as">Avaa</string>
   <string name="text">Teksti</string>
   <string name="audio">Ääni</string>
   <string name="video">Video</string>
   <string name="other">Muu</string>
   <string name="image">Kuva</string>
   <string name="contributors">Kehittäjät</string>
-  <string name="savepaths">Muista polut</string>
-  <string name="savepathsummary">When starting up, the most recently viewed folder for each tab will be displayed</string>
+  <string name="save_paths">Muista polut</string>
+  <string name="save_path_summary">When starting up, the most recently viewed folder for each tab will be displayed</string>
   <string name="select_intent">Valitse</string>
     <string name="database">Tietokanta</string>
-  <string name="colourednavigation">Värillinen navigointipalkki</string>
-  <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+  <string name="colored_navigation">Värillinen navigointipalkki</string>
+  <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
     <string name="color_title">Väri</string>
   <string name="color_summary">Set color to various UI components</string>
   <string name="primary_color_title">Primary Color (Left Tab)</string>
@@ -223,11 +223,11 @@
   <string name="files">Tiedostot</string>
     <string name="textreader">Tekstinlukija</string>
   <string name="databasereader">Tietokannan lukija</string>
-  <string name="showDividers">Näytä välipalkit</string>
-    <string name="needsaccess">Write Access Required</string>
-  <string name="needsaccesssummary">Please choose the root directory of \t</string>
-  <string name="needsaccesssummary1">\tto grant write access to operate </string>
-  <string name="smb_con">SMB yhteys</string>
+  <string name="show_dividers">Näytä välipalkit</string>
+    <string name="needs_access">Write Access Required</string>
+  <string name="needs_access_summary">Please choose the root directory of \t</string>
+  <string name="needs_access_summary1">\tto grant write access to operate </string>
+  <string name="smb_connection">SMB yhteys</string>
   <string name="smb_server">Palvelimen IP-osoite</string>
   <string name="username">Käyttäjänimi</string>
   <string name="password">Salasana</string>
@@ -247,7 +247,7 @@
   <string name="descending">Laskeva</string>
   <string name="defualt">Oletus</string>
   <string name="doit">Tee se!</string>
-  <string name="wanthelp"><u>Tarvitsetko apua?</u></string>
+  <string name="want_help"><u>Tarvitsetko apua?</u></string>
   <string name="quick">Pikavalikko</string>
   <string name="recent">Viimeisimmät tiedostot</string>
   <string name="edit">Muokkaa</string>
@@ -256,16 +256,16 @@
   <string name="grantper">Anna lupa</string>
   <string name="grantfailed">Oikeuksia ei myönnetty</string>
   <string name="grant_storage_permission">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
-  <string name="operationunsuccesful">Toiminto ei onnistunut</string>
+  <string name="operation_unsuccesful">Toiminto ei onnistunut</string>
   <string name="creatingfile">Luodaan tiedosto</string>
   <string name="creatingfolder">Luodaan kansio</string>
   <string name="renaming">Uudelleennimeäminen</string>
-  <string name="cantbeempty">%s ei voi olla tyhjä</string>
+  <string name="cant_be_empty">%s ei voi olla tyhjä</string>
   <string name="ip">Osoite</string>
-  <string name="connectionname">Yhteyden nimi</string>
-  <string name="nodevicefound">Laitetta ei löytynyt</string>
+  <string name="connection_name">Yhteyden nimi</string>
+  <string name="no_device_found">Laitetta ei löytynyt</string>
   <string name="path">Polku</string>
-  <string name="renamebookmark">Muokkaa kirjanmerkkiä</string>
+  <string name="rename_bookmark">Muokkaa kirjanmerkkiä</string>
   <string name="cut">Leikkaa</string>
   <string name="search">Etsi</string>
   <string name="invalid_name">Virheellinen nimi</string>
@@ -299,13 +299,13 @@
   <string name="translate_summary">Käännä Amaze omalle kielelle</string>
   <string name="easter_egg_title">Studio-tila</string>
   <string name="paypal_copy_message">PayPal-tunnus kopioitu leikepöydälle</string>
-  <string name="searchingdevices">Etsitään laitteita</string>
+  <string name="searching_devices">Etsitään laitteita</string>
   <string name="use_custom_ip">Käytä mukautettu IP-osoitetta</string>
   <string name="bookmark_lost">Kirjanmerkkiä ei löydy, luodaan uudestaan&#8230;</string>
   <string name="smb_instructions">
         <html>
             <body>
-                <h1>How to access shared windows folder on android (smb)</h1>\n\n
+                <h1>How to access shared Windows folder on android (SMB)</h1>\n\n
                 <ul>
                     <li>
                         <b>Enable File Sharing</b>\n
@@ -348,7 +348,7 @@
                         address.\n\n
                     </p>
 
-                    <b>Enter details in smb dialog box</b>\n
+                    <b>Enter details in SMB dialog box</b>\n
                 </ul>
             </body>
         </html>
@@ -490,16 +490,16 @@
   <string name="crypt_decryption_fail_password">Väärä salasana!</string>
   <string name="crypt_fingerprint_authenticate">Paina kosketusanturia jatkaaksesi</string>
   <string name="authenticate_password">Syötä salasana</string>
-  <string name="sidebarfolders_title">Sivupalkin pikanäppäimet</string>
-  <string name="sidebarquickaccess_title">Sivupalkin nopeavaus</string>
-  <string name="showfolders_pref_title">Näytä pikanäppäimet</string>
-  <string name="showfolders_pref">Pikavalinnat</string>
-  <string name="showquickaccess_pref_title">Hallitse pikakäyttöä</string>
-  <string name="showquickaccess_pref">Pikavalikko</string>
+  <string name="sidebar_folders_title">Sivupalkin pikanäppäimet</string>
+  <string name="sidebar_quick_access_title">Sivupalkin nopeavaus</string>
+  <string name="show_folders_pref_title">Näytä pikanäppäimet</string>
+  <string name="show_folders_pref">Pikavalinnat</string>
+  <string name="show_quick_access_pref_title">Hallitse pikakäyttöä</string>
+  <string name="show_quick_access_pref">Pikavalikko</string>
   <string name="create_shortcut">Luo pikakuvake</string>
   <string name="edit_shortcut">Muokkaa pikakuvaketta</string>
   <string name="directory">Hakemisto</string>
-  <string name="questiondelete_shortcut">Poista pikavalinta</string>
+  <string name="question_delete_shortcut">Poista pikavalinta</string>
     <string name="cloud_error_plugin">Amaze laajennusta ei löytynyt, lataa Google Play Storesta.</string>
   <string name="cloud_error_failed_restart">Yhteys epäonnistui.  Avaa Amaze Cloud kerran.</string>
   <string name="cloud_remove">Haluatko poisaa pilvi-yhteyden?</string>

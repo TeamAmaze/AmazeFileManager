@@ -27,7 +27,7 @@
   <string name="ftp">FTP Sunucu</string>
     <string name="setting">Ayarlar</string>
   <string name="select">Öğe seç</string>
-  <string name="pressagain">Çıkmak için tekrar basın</string>
+  <string name="press_again">Çıkmak için tekrar basın</string>
   <string name="open">Aç</string>
   <string name="backup">Yedek</string>
   <string name="uninstall">Kaldır</string>
@@ -35,7 +35,7 @@
   <string name="properties">Özellikler</string>
   <string name="copyingapk">Apk kopyalanıyor</string>
     <string name="delbook">Yer işaretini sil</string>
-  <string name="addtobook">Yer işaretlerine ekle</string>
+  <string name="add_to_bookmarks">Yer işaretlerine ekle</string>
   <string name="enterpath">Yolu gir</string>
   <string name="cancel">İptal</string>
   <string name="create">Oluştur</string>
@@ -44,7 +44,7 @@
   <string name="error">Hata</string>
     <string name="rename">Yeniden adlandır</string>
   <string name="save">Kaydet</string>
-    <string name="bookmarksadded">Yer imleri eklendi</string>
+    <string name="bookmarks_added">Yer imleri eklendi</string>
   <string name="fileexist">Aynı ad ile dosya zaten var</string>
     <string name="name">Ad:</string>
   <string name="date">Tarih:</string>
@@ -52,7 +52,7 @@
   <string name="size_capitalized">Boyut</string>
   <string name="size">klasör boyutu</string>
     <string name="enterzipname">Zip adını gir</string>
-  <string name="noappfound">Bu uygulamayı açmak için uygulama bulanamadı</string>
+  <string name="no_app_found">Bu uygulamayı açmak için uygulama bulanamadı</string>
   <string name="copying">Kopyalanıyor</string>
   <string name="moving">Taşınıyor</string>
     <string name="file">Dosya</string>
@@ -61,8 +61,8 @@
   <string name="entername">Ad gir</string>
   <string name="extracting">Ayıklanıyor</string>
   <string name="stopping">Durduruluyor</string>
-    <string name="openparent">Ana dizini aç</string>
-  <string name="openwith">İle aç</string>
+    <string name="open_parent">Ana dizini aç</string>
+  <string name="open_with">İle aç</string>
   <string name="share">Paylaş</string>
   <string name="about">Hakkında</string>
   <string name="extract">Ayıkla</string>
@@ -74,9 +74,9 @@
   <string name="dialog_delete_disclaimer">Aşağıdaki öğeler silindiğinde cihazınızdan kalıcı olarak kaldırılacaktır ve bu işlem geri alınamaz.</string>
   <string name="dialog_delete_title">Öğeler kalıcı olarak silinsin mi?</string>
   <string name="deleting">Siliniyor</string>
-  <string name="questionset">Mevcut konumu bu sekme için ana konum olarak seçmek istiyor musunuz?</string>
+  <string name="question_set_path_as_home">Mevcut konumu bu sekme için ana konum olarak seçmek istiyor musunuz?</string>
     <string name="directorysort">Dizin sıralama modu</string>
-  <string name="sortby">Sırala</string>
+  <string name="sort_by">Sırala</string>
   <string name="theme">Tema</string>
     <string name="random">Rastgele arayüz</string>
   <string name="random_summary">Başlangıçta rastgele tema ayarlar</string>
@@ -86,12 +86,12 @@
   <string name="paste">Yapıştır</string>
     <string name="history">Geçmiş</string>
     <string name="copy">Kopyala</string>
-  <string name="rootmode">Root gezgini</string>
-  <string name="rootmodesummary">Sadece Rootlu cihazlar içindir. Rootlu olduğundan emin olun</string>
-    <string name="rootfailure">Root erişimi verilmemiş</string>
-    <string name="selectall">Tümünü seç</string>
+  <string name="root_mode">Root gezgini</string>
+  <string name="root_mode_summary">Sadece Rootlu cihazlar içindir. Rootlu olduğundan emin olun</string>
+    <string name="root_failure">Root erişimi verilmemiş</string>
+    <string name="select_all">Tümünü seç</string>
   <string name="delete">Sil</string>
-  <string name="setashome">Ana klasör olarak ayarla</string>
+  <string name="set_as_home">Ana klasör olarak ayarla</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -103,11 +103,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Üst klasörler</string>
   <string name="filesOnTop">Üst dosyalar</string>
-  <string name="noneOnTop">Üst yok</string>
+  <string name="none_on_top">Üst yok</string>
   <!--SortBy-->
-  <string name="sortName">Ad</string>
+  <string name="sort_name">Ad</string>
   <string name="lastModified">Son değiştirilme</string>
-  <string name="sortSize">Boyut</string>
+  <string name="sort_size">Boyut</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Bir dosyayı seç</string>
@@ -122,7 +122,7 @@
   <string name="enablerootmde">Root modunu etkinleştir</string>
   <string name="goback">Geri git</string>
     <string name="newfile">Yeni dosya</string>
-  <string name="nofiles">Dosya yok</string>
+  <string name="no_files">Dosya yok</string>
     <string name="used">Kullanılan alan</string>
   <string name="used_by_others">başkaları tarafından kullanılan</string>
   <string name="free">Boş alan</string>
@@ -133,43 +133,43 @@
   <string name="exit">Çıkış</string>
     <string name="doforall">Tüm öğeler için yapın</string>
   <string name="gridcolumnno">Izgara görünümü sütunların sayısı</string>
-    <string name="setRandom">Değişiklikler uygulamayı yeniden başlatttıktan sonra gerçekleşecektir</string>
+    <string name="set_random">Değişiklikler uygulamayı yeniden başlatttıktan sonra gerçekleşecektir</string>
   <string name="authors">Yazarlar</string>
   <string name="changelog">Değişiklik</string>
     <string name="ok">Tamam</string>
     <string name="ui">Arayüz</string>
   <string name="general">Genel</string>
-  <string name="thumbSummary">Uygulamaların ve görüntülerin küçük resimlerini gösterir</string>
+  <string name="thumb_summary">Uygulamaların ve görüntülerin küçük resimlerini gösterir</string>
   <string name="thumb">Küçük resimleri göster</string>
   <string name="hidden">Gizli dosyalar ve klasörler</string>
   <string name="lastModifiedSummary">Dosyanın değiştirildiği tarih ve saati göster</string>
   <string name="lastModifiedPref">Son değiştirilmeyi göster</string>
-  <string name="sizePrefSummary">Dosyaların boyutunu ve klasörlerdeki öğe sayısını göster</string>
-  <string name="sizePref">Boyutları göster</string>
+  <string name="size_pref_summary">Dosyaların boyutunu ve klasörlerdeki öğe sayısını göster</string>
+  <string name="size_pref">Boyutları göster</string>
   <string name="miscellaneous">Diğer</string>
-  <string name="rootPrefSummary">Dosya ve klasörlerin izinlerini göster</string>
-  <string name="rootPref">İzinleri göster</string>
-  <string name="aboutFileManager">Hakkında</string>
+  <string name="root_pref_summary">Dosya ve klasörlerin izinlerini göster</string>
+  <string name="root_pref">İzinleri göster</string>
+  <string name="about_amaze_file_manager_label">Hakkında</string>
   <string name="version">Sürüm</string>
   <string name="rate">Değerlendir</string>
   <string name="feedback">Geri bildirim</string>
   <string name="hiddenfiles">Gizli dosyalar</string>
   <string name="type">Tip</string>
-    <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Kısayol ekle</string>
-  <string name="unsavedchanges">Kaydedilmemiş değişiklikler</string>
-  <string name="unsavedchangesdesc">Kaydedilmemiş değişiklikler var. Çıkmadan önce bunları kaydetmek ister misiniz?</string>
+    <string name="root_directory">Root</string>
+    <string name="add_shortcut">Kısayol ekle</string>
+  <string name="unsaved_changes">Kaydedilmemiş değişiklikler</string>
+  <string name="unsaved_changes_description">Kaydedilmemiş değişiklikler var. Çıkmadan önce bunları kaydetmek ister misiniz?</string>
   <string name="saving">Kaydediliyor</string>
-  <string name="packageinstaller">Paket yükleyici</string>
+  <string name="package_installer">Paket yükleyici</string>
   <string name="view">Görünüm</string>
   <string name="install">Yükle</string>
   <string name="archive">Arşiv</string>
-  <string name="archtext">Bu bir arşivdir. Ne eylem gerçekleştirmek istersiniz?</string>
-  <string name="pitext">Bu bir paket yükleyicidir. Ne eylemi gerçekleştirmek istersiniz?</string>
+  <string name="archive_text">Bu bir arşivdir. Ne eylem gerçekleştirmek istersiniz?</string>
+  <string name="package_installer_text">Bu bir paket yükleyicidir. Ne eylemi gerçekleştirmek istersiniz?</string>
   <string name="xda_title">XDA başlığı</string>
   <string name="xda_summary">Q&amp;A, Yardım &amp; Sorun giderme</string>
-    <string name="circularimages">Görüntüler ve videolar için dairesel simgeleri kullan</string>
-  <string name="circularicons">Dairesel simgeleri kullan</string>
+    <string name="circular_images">Görüntüler ve videolar için dairesel simgeleri kullan</string>
+  <string name="circular_icons">Dairesel simgeleri kullan</string>
   <string name="back_title">Geri navigasyonu</string>
   <string name="back_summary">Listenin en üstünde geri navigasyonunu sağlar</string>
   <string name="details">Detaylar</string>
@@ -203,19 +203,19 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="zip_create_folder">Sıkıştırma klasörü</string>
   <string name="archive_summary">Arşiv dosyaları bu klasöre çıkartılacaktır</string>
   <string name="zip_summary">Yeni sıkıştırılmış dosyalar bu klasörde olacak</string>
-  <string name="openas">Farklı aç</string>
+  <string name="open_as">Farklı aç</string>
   <string name="text">Metin</string>
   <string name="audio">Ses</string>
   <string name="video">Video</string>
   <string name="other">Diğer</string>
   <string name="image">Resim</string>
   <string name="contributors">Katkıda bulunanlar</string>
-  <string name="savepaths">Yolu hatırla</string>
-  <string name="savepathsummary">Başlarken, her sekme için en son görüntülenen klasör görüntülenir</string>
+  <string name="save_paths">Yolu hatırla</string>
+  <string name="save_path_summary">Başlarken, her sekme için en son görüntülenen klasör görüntülenir</string>
   <string name="select_intent">Seç</string>
     <string name="database">Veri tabanı</string>
-  <string name="colourednavigation">Renkli gezinti çubuğu</string>
-  <string name="colourednavigationsum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
+  <string name="colored_navigation">Renkli gezinti çubuğu</string>
+  <string name="colored_navigvation_sum">Sistem gezinti çubuğu ile renklendirilmiş olsun ya da olmasın</string>
     <string name="color_title">Renk</string>
   <string name="color_summary">Çeşitli sistem bileşenlerinin renklerini ayarlayın</string>
   <string name="primary_color_title">Ana renk</string>
@@ -228,11 +228,11 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="files">Dosyalar</string>
     <string name="textreader">Düz Yazı Okuyucu</string>
   <string name="databasereader">Veritabanı Okuyucu</string>
-  <string name="showDividers">Ayırıcıları Göster</string>
-    <string name="needsaccess">Yazma İzni Gerekli</string>
-  <string name="needsaccesssummary">\t kök dizini seçiniz</string>
-  <string name="needsaccesssummary1">\tçalıştırmak için yazma iznine erişim için </string>
-  <string name="smb_con">SMB Bağlantısı</string>
+  <string name="show_dividers">Ayırıcıları Göster</string>
+    <string name="needs_access">Yazma İzni Gerekli</string>
+  <string name="needs_access_summary">\t kök dizini seçiniz</string>
+  <string name="needs_access_summary1">\tçalıştırmak için yazma iznine erişim için </string>
+  <string name="smb_connection">SMB Bağlantısı</string>
   <string name="smb_server">Sunucu IP Adresi</string>
   <string name="username">Kullanıcı adı</string>
   <string name="password">Şifre</string>
@@ -253,7 +253,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="descending">Artan</string>
   <string name="defualt">Ön tanımlı</string>
   <string name="doit">Yap</string>
-  <string name="wanthelp"><u>Yardım mı gerekiyor?</u></string>
+  <string name="want_help"><u>Yardım mı gerekiyor?</u></string>
   <string name="quick">Hızlı Erişim</string>
   <string name="recent">Son Kullanılan Dosyalar</string>
   <string name="edit">Düzenle</string>
@@ -262,16 +262,16 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="grantper">İzin ver</string>
   <string name="grantfailed">İzin verilmedi</string>
   <string name="grant_storage_permission">Uygulamanın devam edebilmesi için depolama iznine ihtiyacı var. İptal etmek uygulamayı sonlandıracaktır.</string>
-  <string name="operationunsuccesful">İşlem Başarısız</string>
+  <string name="operation_unsuccesful">İşlem Başarısız</string>
   <string name="creatingfile">Dosya Oluşturuluyor</string>
   <string name="creatingfolder">Klasör oluşturuluyor</string>
   <string name="renaming">Yeniden adlandırılıyor</string>
-  <string name="cantbeempty">%s boş olamaz</string>
+  <string name="cant_be_empty">%s boş olamaz</string>
   <string name="ip">Adres</string>
-  <string name="connectionname">Bağlantı ismi</string>
-  <string name="nodevicefound">Cihaz bulunamadı</string>
+  <string name="connection_name">Bağlantı ismi</string>
+  <string name="no_device_found">Cihaz bulunamadı</string>
   <string name="path">Yol</string>
-  <string name="renamebookmark">Yer İmini Düzenle</string>
+  <string name="rename_bookmark">Yer İmini Düzenle</string>
   <string name="cut">Kes</string>
   <string name="search">Ara</string>
   <string name="invalid_name">Geçersiz İsim</string>
@@ -286,7 +286,7 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="stop_ftp">Dur</string>
   <string name="ftp_status_running">Çalışıyor</string>
   <string name="ftp_status_not_running">Çalışmıyor</string>
-  <string name="ftp_no_wifi">WiFi bağlantınız olduğuna emin olun.</string>
+  <string name="ftp_no_wifi">Wi-Fi bağlantınız olduğuna emin olun.</string>
   <string name="domain">Alan Adı</string>
   <string name="invalid">Geçersiz %s</string>
   <string name="ftp_notif_starting">FTP Sunucu başlatılıyor</string>
@@ -305,13 +305,13 @@ Devam etmek istiyor musunuz?\"</string>
   <string name="translate_summary">Amaze uygulamasını kendi dilinize çevirin</string>
   <string name="easter_egg_title">Stüdyo Modu</string>
   <string name="paypal_copy_message">Paypal ID panoya kopyalandı</string>
-  <string name="searchingdevices">Cihazlar aranıyor</string>
+  <string name="searching_devices">Cihazlar aranıyor</string>
   <string name="use_custom_ip">Özel IP kullan</string>
   <string name="bookmark_lost">Yer imi bulunamadı, oluşturuluyor&#8230;</string>
   <string name="smb_instructions">
 <html>
             <body>
-                <h1>Android\'de paylaşılan windows klasörüne nasıl erişilir (smb)</h1>\n\n
+                <h1>Android\'de paylaşılan Windows klasörüne nasıl erişilir (smb)</h1>\n\n
                 <ul>
                     <li>
                         <b>Dosya Paylaşımını Etkinleştirme</b>\n
@@ -494,16 +494,16 @@ Kaldırmak için boş bırakın.</string>
   <string name="crypt_decryption_fail_password">Yanlış şifre!</string>
   <string name="crypt_fingerprint_authenticate">Devam etmek için parmak izi sensörüne dokunun</string>
   <string name="authenticate_password">Şifreyi girin</string>
-  <string name="sidebarfolders_title">Kenar çubuğu kısayolları</string>
-  <string name="sidebarquickaccess_title">Kenar çubuğu hızlı erişim</string>
-  <string name="showfolders_pref_title">Kısayolları göster</string>
-  <string name="showfolders_pref">Kısayollar</string>
-  <string name="showquickaccess_pref_title">Hızlı erişimleri göster</string>
-  <string name="showquickaccess_pref">Hızlı erişimler</string>
+  <string name="sidebar_folders_title">Kenar çubuğu kısayolları</string>
+  <string name="sidebar_quick_access_title">Kenar çubuğu hızlı erişim</string>
+  <string name="show_folders_pref_title">Kısayolları göster</string>
+  <string name="show_folders_pref">Kısayollar</string>
+  <string name="show_quick_access_pref_title">Hızlı erişimleri göster</string>
+  <string name="show_quick_access_pref">Hızlı erişimler</string>
   <string name="create_shortcut">Kısayol oluştur</string>
   <string name="edit_shortcut">Kısayolu düzelt</string>
   <string name="directory">Dizin</string>
-  <string name="questiondelete_shortcut">Kısayol silinsin mi?</string>
+  <string name="question_delete_shortcut">Kısayol silinsin mi?</string>
     <string name="cloud_error_plugin">Amaze Cloud eklentisi bulunamadı. Play Store dan indirin.</string>
   <string name="cloud_error_failed_restart">Bağlantı yüklenemedi.
 Önce Amaze Cloud u açın.</string>
@@ -515,7 +515,7 @@ Kaldırmak için boş bırakın.</string>
     <string name="monofont">Tek aralıklı yazı tipi</string>
   <string name="showHeaders">Başlıkları Göster</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="noitems">Öğe yok</string>
+  <string name="no_items">Öğe yok</string>
   <string name="item">Öğe</string>
   <string name="items">Öğeler</string>
   <string name="byte_singular">byte</string>

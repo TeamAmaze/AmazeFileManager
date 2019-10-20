@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Madhësia</string>
+  <string name="sort_size">Madhësia</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Versioni</string>

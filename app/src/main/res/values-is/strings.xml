@@ -33,7 +33,7 @@
     <string name="ftp">FTP-þjónn</string>
     <string name="setting">Stillingar</string>
     <string name="select">Veldu atriði</string>
-    <string name="pressagain">Ýttu aftur til að hætta</string>
+    <string name="press_again">Ýttu aftur til að hætta</string>
     <string name="open">Opna</string>
     <string name="backup">Öryggisafrit</string>
     <string name="uninstall">Taka út</string>
@@ -41,17 +41,17 @@
     <string name="properties">Eiginleikar</string>
     <string name="copyingapk">Afrita APK í</string>
     <string name="delbook">Eyða bókamerki</string>
-    <string name="addtobook">Bæta við bókamerki</string>
+    <string name="add_to_bookmarks">Bæta við bókamerki</string>
     <string name="enterpath">Settu inn slóð</string>
     <string name="cancel">HÆTTA VIÐ</string>
     <string name="create">BÚA TIL</string>
     <string name="loading">Hleð inn&#8230;</string>
     <string name="file_empty">Skráin er tóm</string>
     <string name="error">Villa</string>
-    <string name="searchresults">Leitarniðurstöður fyrir %s</string>
+    <string name="search_results">Leitarniðurstöður fyrir %s</string>
     <string name="rename">Endurnefna</string>
     <string name="save">Vista</string>
-    <string name="bookmarksadded">Bókamerki bætt við</string>
+    <string name="bookmarks_added">Bókamerki bætt við</string>
     <string name="fileexist">Skrá með sama heiti er þegar til</string>
     <string name="name">Heiti</string>
     <string name="date">Dagsetning</string>
@@ -59,7 +59,7 @@
     <string name="size_capitalized">Stærð</string>
     <string name="size">stærð möppu</string>
     <string name="enterzipname">Settu inn nafn á ZIP-skrá</string>
-    <string name="noappfound">Ekkert forrit fannst til að opna þessa skrá</string>
+    <string name="no_app_found">Ekkert forrit fannst til að opna þessa skrá</string>
     <string name="copying">Afrita</string>
     <string name="moving">Færi</string>
     <string name="file">Skrá</string>
@@ -68,8 +68,8 @@
     <string name="entername">Settu inn nafn</string>
     <string name="extracting">Afþjappa</string>
     <string name="stopping">Stöðva</string>
-    <string name="openparent">Opna yfirmöppu</string>
-    <string name="openwith">Opna með</string>
+    <string name="open_parent">Opna yfirmöppu</string>
+    <string name="open_with">Opna með</string>
     <string name="share">Deila</string>
     <string name="about">Um hugbúnaðinn</string>
     <string name="extract">Afþjappa</string>
@@ -81,9 +81,9 @@
     <string name="dialog_delete_disclaimer">Ef atriðunum hér fyrir neðan er eytt, eru þau fjarlægð endanlega af tækinu og er ekki hægt að endurheimta þau.</string>
     <string name="dialog_delete_title">Eyða atriðum varanlega?</string>
     <string name="deleting">Eyði</string>
-    <string name="questionset">Viltu setja þessa slóð sem upphafsstað fyrir þennan flipa?</string>
+    <string name="question_set_path_as_home">Viltu setja þessa slóð sem upphafsstað fyrir þennan flipa?</string>
     <string name="directorysort">Röðun á möppum</string>
-    <string name="sortby">Raða eftir</string>
+    <string name="sort_by">Raða eftir</string>
     <string name="sort_only_this">Aðeins þessi mappa</string>
     <string name="theme">Þema</string>
     <string name="random">Tilviljanakennt skinn</string>
@@ -94,12 +94,12 @@
     <string name="paste">Líma</string>
     <string name="history">Aðgerðaferill</string>
     <string name="copy">Afrita</string>
-    <string name="rootmode">Kerfisstjóravafur (root)</string>
-    <string name="rootmodesummary">Einungis fyrir tæki með rótaraðgangi (rooted). Hakaðu einungis við þetta ef þú ert alveg viss.</string>
-    <string name="rootfailure">Rótaraðgangur ekki veittur</string>
-    <string name="selectall">Velja allt</string>
+    <string name="root_mode">Kerfisstjóravafur (root)</string>
+    <string name="root_mode_summary">Einungis fyrir tæki með rótaraðgangi (rooted). Hakaðu einungis við þetta ef þú ert alveg viss.</string>
+    <string name="root_failure">Rótaraðgangur ekki veittur</string>
+    <string name="select_all">Velja allt</string>
     <string name="delete">Eyða</string>
-    <string name="setashome">Stilla sem upphafsstöðu</string>
+    <string name="set_as_home">Stilla sem upphafsstöðu</string>
 
     <!-- New -->
     <!-- Array -->
@@ -114,11 +114,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Möppur efst</string>
     <string name="filesOnTop">Skrár efst</string>
-    <string name="noneOnTop">Ekkert efst</string>
+    <string name="none_on_top">Ekkert efst</string>
     <!--SortBy-->
-    <string name="sortName">Heiti</string>
+    <string name="sort_name">Heiti</string>
     <string name="lastModified">Síðast breytt</string>
-    <string name="sortSize">Stærð</string>
+    <string name="sort_size">Stærð</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Veldu skrá</string>
@@ -134,7 +134,7 @@
     <string name="enablerootmde">Virkja kerfisstjóraham</string>
     <string name="goback">Fara til baka</string>
     <string name="newfile">Ný skrá</string>
-    <string name="nofiles">Engar skrár</string>
+    <string name="no_files">Engar skrár</string>
     <string name="used">notað geymslupláss</string>
     <string name="used_by_others">notað af öðrum</string>
     <string name="free">laust geymslupláss</string>
@@ -145,43 +145,43 @@
     <string name="exit">Fara út</string>
     <string name="doforall">Gera fyrir öll atriði</string>
     <string name="gridcolumnno">Fjöldi dálka í reitasýn</string>
-    <string name="setRandom">Breytingar munu taka gildi eftir að forritið hefur verið endurræst</string>
+    <string name="set_random">Breytingar munu taka gildi eftir að forritið hefur verið endurræst</string>
     <string name="authors">Höfundar</string>
     <string name="changelog">Breytingaskrá</string>
     <string name="ok">Í lagi</string>
     <string name="ui">Viðmót</string>
     <string name="general">Almennt</string>
-    <string name="thumbSummary">Birta smámyndir forrita og mynda</string>
+    <string name="thumb_summary">Birta smámyndir forrita og mynda</string>
     <string name="thumb">Birta smámyndir</string>
     <string name="hidden">Sýna faldar skrár og möppur</string>
     <string name="lastModifiedSummary">Sýna dagsetningu og tíma þegar skránni var síðast breytt</string>
     <string name="lastModifiedPref">Sýna síðustu breytingadagsetningu og tíma</string>
-    <string name="sizePrefSummary">Sýna stærð á skrám og fjölda atriða í möppum</string>
-    <string name="sizePref">Sýna stærð</string>
+    <string name="size_pref_summary">Sýna stærð á skrám og fjölda atriða í möppum</string>
+    <string name="size_pref">Sýna stærð</string>
     <string name="miscellaneous">Ýmislegt</string>
-    <string name="rootPrefSummary">Sýna heimildir á skrám og möppum</string>
-    <string name="rootPref">Sýna aðgangsheimildir</string>
-    <string name="aboutFileManager">Um Amaze skráastjórann</string>
+    <string name="root_pref_summary">Sýna heimildir á skrám og möppum</string>
+    <string name="root_pref">Sýna aðgangsheimildir</string>
+    <string name="about_amaze_file_manager_label">Um Amaze skráastjórann</string>
     <string name="version">Útgáfa</string>
     <string name="rate">Gefðu forritinu einkunn</string>
     <string name="feedback">Sendu umsögn</string>
     <string name="hiddenfiles">Faldar skrár</string>
     <string name="type">Tegund</string>
-    <string name="rootdirectory">Rót (root)</string>
-    <string name="addshortcut">Bæta við flýtileið</string>
-    <string name="unsavedchanges">Óvistaðar breytingar</string>
-    <string name="unsavedchangesdesc">Það eru óvistaðar breytingar, viltu vista þær áður en þú hættir?</string>
+    <string name="root_directory">Rót (root)</string>
+    <string name="add_shortcut">Bæta við flýtileið</string>
+    <string name="unsaved_changes">Óvistaðar breytingar</string>
+    <string name="unsaved_changes_description">Það eru óvistaðar breytingar, viltu vista þær áður en þú hættir?</string>
     <string name="saving">Vista</string>
-    <string name="packageinstaller">Pakkauppsetningarforrit</string>
+    <string name="package_installer">Pakkauppsetningarforrit</string>
     <string name="view">Skoða</string>
     <string name="install">Setja upp</string>
     <string name="archive">Safnskrá</string>
-    <string name="archtext">Þetta er safnskrá. Hvaða aðgerð viltu framkvæma?</string>
-    <string name="pitext">Þetta er pakkauppsetningarforrit. Hvaða aðgerð viltu framkvæma?</string>
+    <string name="archive_text">Þetta er safnskrá. Hvaða aðgerð viltu framkvæma?</string>
+    <string name="package_installer_text">Þetta er pakkauppsetningarforrit. Hvaða aðgerð viltu framkvæma?</string>
     <string name="xda_title">Spjallþráður á XDA</string>
     <string name="xda_summary">Spurningar, hjálp og vandamálalausnir</string>
-    <string name="circularimages">Nota hringlaga táknmyndir fyrir myndir og myndskeið</string>
-    <string name="circularicons">Nota hringlaga táknmyndir</string>
+    <string name="circular_images">Nota hringlaga táknmyndir fyrir myndir og myndskeið</string>
+    <string name="circular_icons">Nota hringlaga táknmyndir</string>
     <string name="back_title">Flakk til baka</string>
     <string name="back_summary">Virkjar sérsniðið flakk til baka efst í listanum</string>
     <string name="details">Nánar</string>
@@ -214,19 +214,19 @@
     <string name="zip_create_folder">Mappa til að útbúa í ZIP-skrár</string>
     <string name="archive_summary">Safnskrár verða afþjappaðar í þessa möppu. Sjálfgefið er að það sé mappan þar sem safnskráin er staðsett.</string>
     <string name="zip_summary">Nýjar ZIP-safnskrár verða búnar til í þessari möppu. Sjálfgefið er að það sé mappan þar sem skrárnar eru staðsettar.</string>
-    <string name="openas">Opna sem</string>
+    <string name="open_as">Opna sem</string>
     <string name="text">Texti</string>
     <string name="audio">Hljóð</string>
     <string name="video">Myndskeið</string>
     <string name="other">Annað</string>
     <string name="image">Mynd</string>
     <string name="contributors">Þáttakendur</string>
-    <string name="savepaths">Muna slóðir</string>
-    <string name="savepathsummary">Við ræsingu eru síðast skoðuðu möppur hvers flipa birtar</string>
+    <string name="save_paths">Muna slóðir</string>
+    <string name="save_path_summary">Við ræsingu eru síðast skoðuðu möppur hvers flipa birtar</string>
     <string name="select_intent">Veldu</string>
     <string name="database">Gagnagrunnur</string>
-    <string name="colourednavigation">Lituð flakkstika</string>
-    <string name="colourednavigationsum">Hvort flakkstika kerfisins taki lit frá skinni</string>
+    <string name="colored_navigation">Lituð flakkstika</string>
+    <string name="colored_navigvation_sum">Hvort flakkstika kerfisins taki lit frá skinni</string>
     <string name="color_title">Litur</string>
     <string name="color_summary">Stilla lit á ýmsa viðmótshluta</string>
     <string name="primary_color_title">Aðallitur (vinstri flipi)</string>
@@ -239,11 +239,11 @@
   <string name="files">Skrár</string>
     <string name="textreader">Textalesari</string>
     <string name="databasereader">Gagnagrunnslesari</string>
-    <string name="showDividers">Sýna aðgreina</string>
-    <string name="needsaccess">Skrifaðgangur nauðsynlegur</string>
-    <string name="needsaccesssummary">Veldu rótarmöppu fyrir \t</string>
-    <string name="needsaccesssummary1">\ttil að veita skrifaðgang fyrir vinnslu</string>
-    <string name="smb_con">SMB-tenging</string>
+    <string name="show_dividers">Sýna aðgreina</string>
+    <string name="needs_access">Skrifaðgangur nauðsynlegur</string>
+    <string name="needs_access_summary">Veldu rótarmöppu fyrir \t</string>
+    <string name="needs_access_summary1">\ttil að veita skrifaðgang fyrir vinnslu</string>
+    <string name="smb_connection">SMB-tenging</string>
     <string name="smb_server">IP-vistfang þjóns</string>
     <string name="username">Notandanafn</string>
     <string name="password">Lykilorð</string>
@@ -265,7 +265,7 @@
     <string name="descending">Lækkandi</string>
     <string name="defualt">Sjálfgefið</string>
     <string name="doit">Gera það</string>
-    <string name="wanthelp">&lt;u&gt;Þarftu hjálp?&lt;/u&gt;</string>
+    <string name="want_help">&lt;u&gt;Þarftu hjálp?&lt;/u&gt;</string>
     <string name="quick">Flýtiaðgangur</string>
     <string name="recent">Nýlegar skrár</string>
     <string name="edit">Breyta</string>
@@ -274,16 +274,16 @@
     <string name="grantper">Veita heimild</string>
     <string name="grantfailed">Heimild ekki veitt</string>
     <string name="grant_storage_permission">Forritið þarf heimild til að nota geymslurými svo að uppsetning geti haldið áfram. Ef þessum glugga er lokað hættir forritið.</string>
-    <string name="operationunsuccesful">Aðgerð tókst ekki</string>
+    <string name="operation_unsuccesful">Aðgerð tókst ekki</string>
     <string name="creatingfile">Bý til skrá</string>
     <string name="creatingfolder">Bý til möppu</string>
     <string name="renaming">Endurnefni</string>
-    <string name="cantbeempty">%s má ekki vera tómt</string>
+    <string name="cant_be_empty">%s má ekki vera tómt</string>
     <string name="ip">Vistfang</string>
-    <string name="connectionname">Heiti tengingar</string>
-    <string name="nodevicefound">Ekkert tæki fannst</string>
+    <string name="connection_name">Heiti tengingar</string>
+    <string name="no_device_found">Ekkert tæki fannst</string>
     <string name="path">Slóð</string>
-    <string name="renamebookmark">Breyta bókamerki</string>
+    <string name="rename_bookmark">Breyta bókamerki</string>
     <string name="cut">Klippa</string>
     <string name="search">Leita</string>
     <string name="invalid_name">Ógilt heiti</string>
@@ -298,7 +298,7 @@
     <string name="stop_ftp">Stöðva</string>
     <string name="ftp_status_running">Í gangi</string>
     <string name="ftp_status_not_running">Ekki í gangi</string>
-    <string name="ftp_no_wifi">Gakktu úr skugga um að þú sért tengdur við þráðlaust WiFi-net</string>
+    <string name="ftp_no_wifi">Gakktu úr skugga um að þú sért tengdur við þráðlaust Wi-Fi-net</string>
     <string name="domain">Lén</string>
     <string name="invalid">Ógilt %s</string>
     <string name="ftp_notif_starting">FTP-þjónn er að ræsast</string>
@@ -317,7 +317,7 @@
     <string name="translate_summary">Þýða Amaze á tungumálið þitt</string>
   <string name="easter_egg_title">Stúdíóhamur</string>
     <string name="paypal_copy_message">Paypal auðkenni afritað á klippispjald</string>
-    <string name="searchingdevices">Leita að tækjum...</string>
+    <string name="searching_devices">Leita að tækjum...</string>
     <string name="use_custom_ip">Nota sérsniðið IP-vistfang</string>
     <string name="bookmark_lost">Bókamerki fannst ekki, útbý aftur&#8230;</string>
 
@@ -348,13 +348,13 @@
                         </p>
 
                     <li>
-                        <b>Gakktu úr skugga um að bæði tækin séu á sama WiFi-netinu</b>\n
+                        <b>Gakktu úr skugga um að bæði tækin séu á sama Wi-Fi-netinu</b>\n
                     </li>
                     <p style='margin-left: 40px'>
                         Þessi eiginleiki gerir skrár tiltækar á staðarnetinu, þannig að tölvan þín og snjalltæki
                         verða að vera á sama staðarneti. Þú getur ekki fengið aðgang að sameiginlegri Windows-möppu
                         í gegnum Internetið eða þegar farsíminn er tengdur í gegnum símkerfið — hann verður að
-                        vera tendur í gegnum þráðlausa WiFi-netið.\n\n
+                        vera tendur í gegnum þráðlausa Wi-Fi-netið.\n\n
                     </p>
 
                     <li>
@@ -514,16 +514,16 @@
     <string name="authenticate_password">Settu inn lykilorð</string>
 
     <string name="sidebar_preferences">Hliðarspjald</string>
-    <string name="sidebarfolders_title">Flýtileiðir á hliðarspjaldi</string>
-    <string name="sidebarquickaccess_title">Flýtiaðgangur á hliðarspjaldi</string>
-    <string name="showfolders_pref_title">Birta flýtileiðir</string>
-    <string name="showfolders_pref">Flýtileiðir</string>
-    <string name="showquickaccess_pref_title">Sýna flýtiaðganga</string>
-    <string name="showquickaccess_pref">Flýtiaðgangar</string>
+    <string name="sidebar_folders_title">Flýtileiðir á hliðarspjaldi</string>
+    <string name="sidebar_quick_access_title">Flýtiaðgangur á hliðarspjaldi</string>
+    <string name="show_folders_pref_title">Birta flýtileiðir</string>
+    <string name="show_folders_pref">Flýtileiðir</string>
+    <string name="show_quick_access_pref_title">Sýna flýtiaðganga</string>
+    <string name="show_quick_access_pref">Flýtiaðgangar</string>
     <string name="create_shortcut">Búa til flýtileið</string>
     <string name="edit_shortcut">Breyta flýtileið</string>
     <string name="directory">Mappa</string>
-    <string name="questiondelete_shortcut">Eyða flýtileið?</string>
+    <string name="question_delete_shortcut">Eyða flýtileið?</string>
 
     <string name="cloud_error_plugin">Amaze skýjaviðbótin (cloud plugin) fannst ekki. Náðu í hana úr Play Store safninu.</string>
     <string name="cloud_error_failed_restart">Mistókst að hlaða inn tengingunni.
@@ -537,7 +537,7 @@
     <string name="showHeaders">Sýna hausa</string>
 	
     <!-- FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml -->
-    <string name="noitems">Engin atriði</string>
+    <string name="no_items">Engin atriði</string>
     <string name="item">atriði</string>
     <string name="items">atriði</string>
 	
@@ -555,26 +555,26 @@
     <string name="intent_save_as">Vista sem&#8230;</string>
     <string name="go">Fara</string>
     <string name="advanced">Ítarlegt</string>
-    <string name="typeablepaths_title">Sérsniðnar slóðir</string>
-    <string name="typeablepaths_summary">Ýttu lengi á slóðastikuna til að skrifa sérsniðna slóð</string>
+    <string name="typeable_paths_title">Sérsniðnar slóðir</string>
+    <string name="typeable_paths_summary">Ýttu lengi á slóðastikuna til að skrifa sérsniðna slóð</string>
     <string name="send_email_to">Senda tölvupóst til</string>
     <string name="text_editor">Stillingar textaritils</string>
     <string name="preference_newstack_title">Opna skrár sem nýtt verk</string>
     <string name="preference_newstack_summary">Gerir þér kleift að opna skrár sem aðskilin verk. Þannig er hægt að komast í þau af kerfisskjánum yfir nýleg verk.</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="developers">Forritarar</string>
-    <string name="nobitcoinapp">Endilega settu upp rafmyntaveski</string>
-    <string name="channelname_normal">Amaze tilkynningar</string>
-    <string name="channeldescription_normal">Tilkynningar frá Amaze skráastjóranum</string>
-    <string name="channelname_ftp">Amaze FTP-þjónn</string>
-    <string name="channeldescription_ftp">Tilkynningar frá FTP-þjóni Amaze skráastjórans</string>
+    <string name="no_bitcoin_app">Endilega settu upp rafmyntaveski</string>
+    <string name="channel_name_normal">Amaze tilkynningar</string>
+    <string name="channel_description_normal">Tilkynningar frá Amaze skráastjóranum</string>
+    <string name="channel_name_ftp">Amaze FTP-þjónn</string>
+    <string name="channel_description_ftp">Tilkynningar frá FTP-þjóni Amaze skráastjórans</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Í vinnslu&#8230;</string>
     <string name="failed_no_connection">Gat ekki hlaðið inn skrám. Athugaðu hvort allt sé í lagi með nettenginguna.</string>
 
     <string name="update">UPPFÆRA</string>
-    <string name="scp_con">SCP/SFTP tenging</string>
+    <string name="scp_connection">SCP/SFTP tenging</string>
     <string name="scp_port">Gátt</string>
     <string name="ssh_host_key_verification_prompt">Ekki var hægt að sannvotta auðkenni \'%1$s\'.\n\nFingrafar %2$s dulritunarlykilsins er %3$s.\n\nÝttu á \"Já\" til að staðfesta auðkenni; annars skaltu ýta á \"Nei\".</string>
     <string name="ssh_host_key_verification_prompt_title">Sannreyna hýsiþjón</string>
@@ -591,12 +591,12 @@
         Hafðu samband við kerfisstjórann þinn eða útbúðu nýja tengingu áður en þú heldur áfram að tengjast þjóninum.
     </string>
     <string name="ssh_key_prompt_passphrase">Settu inn aðgangssetningu dulritunarlykilsins.</string>
-    <string name="addshortcut_not_supported_by_launcher">Gerð flýtileiða er ekki studd í ræsinum þínum</string>
+    <string name="add_shortcut_not_supported_by_launcher">Gerð flýtileiða er ekki studd í ræsinum þínum</string>
 
-    <string name="selectcolorconfig">Veldu litauppsetningu</string>
+    <string name="select_color_config">Veldu litauppsetningu</string>
     <string name="customize">Sérsníða</string>
     <string name="custom">Sérsniðið</string>
-    <string name="preselectedconfigs_title">Forvaldar uppsetningar</string>
+    <string name="preselected_configs_title">Forvaldar uppsetningar</string>
     <string name="orange">Appelsínu</string>
     <string name="blue">Blátt</string>
     <string name="green">Grænt</string>
@@ -634,5 +634,5 @@
     <string name="multiple_invalid_archive_entries">Ekki var hægt að afþjappa allar skrár í safnskránni; hún gæti verið skemmd eða af vafasömum uppruna.</string>
     <string name="saf_otg_explanation">Af öryggisástæðum ferðu núna á skráakerfi Android. Veldu USB-tækið úr listanum til vinstri.</string>
     <string name="donation_thanks">Takk kærlega fyrir framlagið, þetta heldur okkur við efnið! (:</string>
-    <string name="enableMarqueeFilename">Virkja áherslubrellu fyrir skráaheiti</string>
+    <string name="enable_marquee_filename">Virkja áherslubrellu fyrir skráaheiti</string>
 </resources>

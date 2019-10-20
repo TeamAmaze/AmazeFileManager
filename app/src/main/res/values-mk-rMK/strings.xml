@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Големина</string>
+  <string name="sort_size">Големина</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Верзија</string>

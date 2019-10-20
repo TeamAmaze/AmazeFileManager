@@ -27,14 +27,14 @@
   <string name="ftp">FTP Serveris</string>
     <string name="setting">Nustatymai</string>
   <string name="select">Pasirinkti elementą</string>
-  <string name="pressagain">Paspauskite dar kart, kad išeitumėte</string>
+  <string name="press_again">Paspauskite dar kart, kad išeitumėte</string>
   <string name="open">Atidaryti</string>
   <string name="backup">Atsarginė kopija</string>
   <string name="uninstall">Išinstaliuoti</string>
   <string name="play">Play parduotuvė</string>
   <string name="properties">Ypatybės</string>
   <string name="copyingapk">Kopijuoja apk į </string>
-    <string name="addtobook">Pridėti į žymą</string>
+    <string name="add_to_bookmarks">Pridėti į žymą</string>
   <string name="enterpath">Įvesti kelią</string>
   <string name="cancel">ATŠAUKTI</string>
   <string name="create">SUKURTI</string>
@@ -43,14 +43,14 @@
   <string name="error">Klaida</string>
     <string name="rename">Pervardinti</string>
   <string name="save">Išsaugoti</string>
-    <string name="bookmarksadded">Žymos pridėtos</string>
+    <string name="bookmarks_added">Žymos pridėtos</string>
   <string name="fileexist">Byla tokiu pačiu pavadinimu jau yra </string>
     <string name="name">Pavadinimas: </string>
   <string name="date">Data: </string>
   <string name="location">Vieta: </string>
   <string name="size_capitalized">Dydis</string>
     <string name="enterzipname">Įvesti Zip Pavadinimą</string>
-  <string name="noappfound">Nerasta programėlė, kuri atidarytų šią bylą</string>
+  <string name="no_app_found">Nerasta programėlė, kuri atidarytų šią bylą</string>
   <string name="copying">Kopijuojama</string>
   <string name="moving">Perkeliama</string>
     <string name="file">Byla</string>
@@ -59,8 +59,8 @@
   <string name="entername">Įvesti pavadinimą</string>
   <string name="extracting">Išskleidžiama</string>
   <string name="stopping">Stabdoma</string>
-    <string name="openparent">Atidaryti tėvinę direktoriją</string>
-  <string name="openwith">Atidaryti naudojant</string>
+    <string name="open_parent">Atidaryti tėvinę direktoriją</string>
+  <string name="open_with">Atidaryti naudojant</string>
   <string name="share">Pasidalinti</string>
   <string name="about">Apie</string>
   <string name="extract">Išskleisti</string>
@@ -70,9 +70,9 @@
   <string name="dialog_delete_disclaimer">Ar Jūs tikrai norite ištrinti šias bylas?</string>
   <string name="dialog_delete_title">Patvirtinti</string>
   <string name="deleting">Ištrinama</string>
-  <string name="questionset">Ar Jūs norite nustatyti dabartinį kelią kaip namų šiai kortelei?</string>
+  <string name="question_set_path_as_home">Ar Jūs norite nustatyti dabartinį kelią kaip namų šiai kortelei?</string>
     <string name="directorysort">Direktorijos rūšiavimo rėžimas</string>
-  <string name="sortby">Rūšiuoti pagal</string>
+  <string name="sort_by">Rūšiuoti pagal</string>
   <string name="theme">Tema</string>
     <string name="random">Atsitiktinis apvalkalas</string>
   <string name="random_summary">Nustato atsitiktinę pirminę spalvą paleidžiant</string>
@@ -82,12 +82,12 @@
   <string name="paste">Įklijuoti</string>
     <string name="history">Istorija</string>
     <string name="copy">Kopijuoti</string>
-  <string name="rootmode">Root aplankalų naršyklė</string>
-  <string name="rootmodesummary">Tik įrenginiui su root teisėmis. Pažymėti tai, jei esate ištikrųjų tikri dėl to.</string>
-    <string name="rootfailure">Root priėjimas nepatvirtintas</string>
-  <string name="selectall">Pasirinkti viską</string>
+  <string name="root_mode">Root aplankalų naršyklė</string>
+  <string name="root_mode_summary">Tik įrenginiui su root teisėmis. Pažymėti tai, jei esate ištikrųjų tikri dėl to.</string>
+    <string name="root_failure">Root priėjimas nepatvirtintas</string>
+  <string name="select_all">Pasirinkti viską</string>
   <string name="delete">Ištrinti</string>
-  <string name="setashome">Nustatyti kaip namų</string>
+  <string name="set_as_home">Nustatyti kaip namų</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -99,11 +99,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Aplankalai viršuje</string>
   <string name="filesOnTop">Bylos viršuje</string>
-  <string name="noneOnTop">Nieko viršuje</string>
+  <string name="none_on_top">Nieko viršuje</string>
   <!--SortBy-->
-  <string name="sortName">Pavadinimas</string>
+  <string name="sort_name">Pavadinimas</string>
   <string name="lastModified">Paskiausiai pakeista</string>
-  <string name="sortSize">Dydis</string>
+  <string name="sort_size">Dydis</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pasirinti bylą</string>
@@ -118,7 +118,7 @@
   <string name="enablerootmde">Įgalinti root rėžimą</string>
   <string name="goback">Eiti atgal</string>
     <string name="newfile">Nauja byla</string>
-  <string name="nofiles">Nėra bylų</string>
+  <string name="no_files">Nėra bylų</string>
     <string name="listview">Sąrašo peržiūra</string>
   <string name="gridview">Tinklelio peržiūra</string>
     <string name="permission">Leidimai</string>
@@ -126,7 +126,7 @@
   <string name="exit">Išeiti</string>
     <string name="doforall">Daryti visiems elementams</string>
   <string name="gridcolumnno">Stulpelių skaičius tinklelio peržiūroje</string>
-    <string name="setRandom">Pakeitimai įsigalios paleidus programėlę iš naujo</string>
+    <string name="set_random">Pakeitimai įsigalios paleidus programėlę iš naujo</string>
   <string name="authors">Autoriai</string>
   <string name="changelog">Pakeitimų žurnalas</string>
     <string name="ok">Gerai</string>

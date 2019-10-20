@@ -28,7 +28,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Hajmi</string>
+  <string name="sort_size">Hajmi</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Qo‘shish</string>

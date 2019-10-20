@@ -19,8 +19,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="aboutFileManager">Om Amaze File Manager</string>
-  <string name="addtobook">Legg til i bokmerkene</string>
+  <string name="about_amaze_file_manager_label">Om Amaze File Manager</string>
+  <string name="add_to_bookmarks">Legg til i bokmerkene</string>
   <string name="apks">APK-er</string>
   <string name="apps">App-behandler</string>
   <string name="ascending">Stigende</string>
@@ -76,8 +76,8 @@
   <string name="no">Nei</string>
   <string name="ok">OK</string>
   <string name="open">Åpne</string>
-  <string name="openas">Åpne som</string>
-  <string name="openwith">Åpne med</string>
+  <string name="open_as">Åpne som</string>
+  <string name="open_with">Åpne med</string>
   <string name="other">Annet</string>
   <string name="password">Passord</string>
   <string name="paste">Lim inn</string>
@@ -93,20 +93,20 @@
   <string name="quick">Hurtigtilgang</string>
   <string name="recent">Nylige filer</string>
   <string name="rename">Gi nytt navn</string>
-  <string name="rootmode">Root-utforsker</string>
-  <string name="rootmodesummary">Kun for rootede enheter. Velg dette kun dersom du er sikker på det.</string>
+  <string name="root_mode">Root-utforsker</string>
+  <string name="root_mode_summary">Kun for rootede enheter. Velg dette kun dersom du er sikker på det.</string>
   <string name="save">Lagre</string>
   <string name="search_hint">Skriv for å søke &#8230;</string>
-  <string name="setashome">Gjør til startside</string>
+  <string name="set_as_home">Gjør til startside</string>
   <string name="setting">Innstillinger</string>
   <string name="share">Del</string>
   <string name="sidebar_preferences">Sidelinjen</string>
   <string name="size_capitalized">Størrelse</string>
-  <string name="sizePref">Vis størrelser</string>
+  <string name="size_pref">Vis størrelser</string>
   <string name="sort">Sorter</string>
-  <string name="sortby">Sorter etter</string>
-  <string name="sortName">Navn</string>
-  <string name="sortSize">Størrelse</string>
+  <string name="sort_by">Sorter etter</string>
+  <string name="sort_name">Navn</string>
+  <string name="sort_size">Størrelse</string>
   <string name="text">Tekst</string>
   <string name="theme">Tema</string>
   <string name="ui">Grensesnitt</string>

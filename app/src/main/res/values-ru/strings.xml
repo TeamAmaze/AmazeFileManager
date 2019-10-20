@@ -26,7 +26,7 @@
     <string name="ftp">FTP сервер</string>
     <string name="setting">Настройки</string>
     <string name="select">Выбрать элемент</string>
-    <string name="pressagain">Нажмите ещё раз, чтобы выйти.</string>
+    <string name="press_again">Нажмите ещё раз, чтобы выйти.</string>
     <string name="open">Запустить</string>
     <string name="backup">Резервная копия</string>
     <string name="uninstall">Удалить</string>
@@ -34,7 +34,7 @@
     <string name="properties">Свойства</string>
     <string name="copyingapk">Копирование apk в </string>
     <string name="delbook">Удалить закладку</string>
-    <string name="addtobook">Добавить в закладки</string>
+    <string name="add_to_bookmarks">Добавить в закладки</string>
     <string name="enterpath">Введите путь</string>
     <string name="cancel">Отмена</string>
     <string name="create">Создать</string>
@@ -43,7 +43,7 @@
     <string name="error">Ошибка</string>
     <string name="rename">Переименовать</string>
     <string name="save">Сохранить</string>
-    <string name="bookmarksadded">Добавлено в закладки</string>
+    <string name="bookmarks_added">Добавлено в закладки</string>
     <string name="fileexist">Файл с таким именем уже существует</string>
     <string name="name">Имя</string>
     <string name="date">Дата</string>
@@ -51,7 +51,7 @@
     <string name="size_capitalized">Размер</string>
     <string name="size">размер папки</string>
     <string name="enterzipname">Введите имя zip-архива</string>
-    <string name="noappfound">Нет приложений для открытия этого файла</string>
+    <string name="no_app_found">Нет приложений для открытия этого файла</string>
     <string name="copying">Копирование...</string>
     <string name="moving">Перемещение</string>
     <string name="file">Файл</string>
@@ -60,8 +60,8 @@
     <string name="entername">Введите имя</string>
     <string name="extracting">Извлечение...</string>
     <string name="stopping">Остановка</string>
-    <string name="openparent">Открыть родительскую директорию</string>
-    <string name="openwith">Открыть с помощью</string>
+    <string name="open_parent">Открыть родительскую директорию</string>
+    <string name="open_with">Открыть с помощью</string>
     <string name="share">Отправить</string>
     <string name="about">О приложении</string>
     <string name="extract">Извлечь</string>
@@ -73,9 +73,9 @@
     <string name="dialog_delete_disclaimer">Вы уверены, что хотите удалить выбранные файлы?</string>
     <string name="dialog_delete_title">Подтвердите</string>
     <string name="deleting">Удаление...</string>
-    <string name="questionset">Вы хотите установить текущий путь как домашний для этой вкладки?</string>
+    <string name="question_set_path_as_home">Вы хотите установить текущий путь как домашний для этой вкладки?</string>
     <string name="directorysort">Режим сортировки каталога</string>
-    <string name="sortby">Сортировать</string>
+    <string name="sort_by">Сортировать</string>
     <string name="theme">Темы</string>
     <string name="random">Случайный скин</string>
     <string name="random_summary">Устанавливает случайную тему при запуске</string>
@@ -85,12 +85,12 @@
     <string name="paste">Вставить</string>
     <string name="history">История</string>
     <string name="copy">Копировать</string>
-    <string name="rootmode">Root Explorer</string>
-    <string name="rootmodesummary">Только для устройств с рут правами. Используйте с осторожностью, если уверены в своих действиях.</string>
-    <string name="rootfailure">Рут доступ не предоставлен</string>
-    <string name="selectall">Выбрать все</string>
+    <string name="root_mode">Root Explorer</string>
+    <string name="root_mode_summary">Только для устройств с рут правами. Используйте с осторожностью, если уверены в своих действиях.</string>
+    <string name="root_failure">Рут доступ не предоставлен</string>
+    <string name="select_all">Выбрать все</string>
     <string name="delete">Удалить</string>
-    <string name="setashome">Сделать домашней папкой</string>
+    <string name="set_as_home">Сделать домашней папкой</string>
     <!-- New -->
     <!-- Array -->
     <!-- UI -->
@@ -102,11 +102,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Папки на вершине</string>
     <string name="filesOnTop">Файлы на вершине</string>
-    <string name="noneOnTop">Ни один на вершине</string>
+    <string name="none_on_top">Ни один на вершине</string>
     <!--SortBy-->
-    <string name="sortName">Имя</string>
+    <string name="sort_name">Имя</string>
     <string name="lastModified">Дата последнего изменения</string>
-    <string name="sortSize">Размер</string>
+    <string name="sort_size">Размер</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Выбрать файл</string>
@@ -121,7 +121,7 @@
     <string name="enablerootmde">Включите режим рут прав</string>
     <string name="goback">Вернуться</string>
     <string name="newfile">Новый файл</string>
-    <string name="nofiles">Нет файлов</string>
+    <string name="no_files">Нет файлов</string>
     <string name="used">используемое пространство</string>
     <string name="used_by_others">используемые другими</string>
     <string name="free">свободное пространство</string>
@@ -132,43 +132,43 @@
     <string name="exit">Выход</string>
     <string name="doforall">Выполнить для всех элементов</string>
     <string name="gridcolumnno">Количество колонок в сетке</string>
-    <string name="setRandom">Изменения будут использованы после перезапуска приложения</string>
+    <string name="set_random">Изменения будут использованы после перезапуска приложения</string>
     <string name="authors">Авторы</string>
     <string name="changelog">История изменений</string>
     <string name="ok">Да</string>
     <string name="ui">Интерфейс</string>
     <string name="general">Общие</string>
-    <string name="thumbSummary">Показывать миниатюры приложений и образов</string>
+    <string name="thumb_summary">Показывать миниатюры приложений и образов</string>
     <string name="thumb">Показать миниатюры</string>
     <string name="hidden">Показать скрытые файлы и папки</string>
     <string name="lastModifiedSummary">Показывать дату и время, когда файл был изменен в последний раз</string>
     <string name="lastModifiedPref">Показать последние изменения</string>
-    <string name="sizePrefSummary">Показывать размер файлов и количество элементов в папках</string>
-    <string name="sizePref">Показать размеры</string>
+    <string name="size_pref_summary">Показывать размер файлов и количество элементов в папках</string>
+    <string name="size_pref">Показать размеры</string>
     <string name="miscellaneous">Прочее</string>
-    <string name="rootPrefSummary">Показывать разрешения для файлов и папок</string>
-    <string name="rootPref">Показать разрешения</string>
-    <string name="aboutFileManager">Об Amaze File Manager</string>
+    <string name="root_pref_summary">Показывать разрешения для файлов и папок</string>
+    <string name="root_pref">Показать разрешения</string>
+    <string name="about_amaze_file_manager_label">Об Amaze File Manager</string>
     <string name="version">Версия</string>
     <string name="rate">Оцените приложение</string>
     <string name="feedback">Отправить отзыв</string>
     <string name="hiddenfiles">Скрытые файлы</string>
     <string name="type">Тип</string>
-    <string name="rootdirectory">Рут</string>
-    <string name="addshortcut">Добавить ярлык</string>
-    <string name="unsavedchanges">Несохранённые изменения</string>
-    <string name="unsavedchangesdesc">У Вас есть не сохранённые изменения, вы хотите сохранить их перед выходом?</string>
+    <string name="root_directory">Рут</string>
+    <string name="add_shortcut">Добавить ярлык</string>
+    <string name="unsaved_changes">Несохранённые изменения</string>
+    <string name="unsaved_changes_description">У Вас есть не сохранённые изменения, вы хотите сохранить их перед выходом?</string>
     <string name="saving">Сохранение</string>
-    <string name="packageinstaller">Установщик пакетов</string>
+    <string name="package_installer">Установщик пакетов</string>
     <string name="view">Просмотр</string>
     <string name="install">Установка</string>
     <string name="archive">Архивы</string>
-    <string name="archtext">Это архив. Какое действие вы хотели бы выполнить?</string>
-    <string name="pitext">Это пакет установщика. Какое действие вы хотели бы выполнить?</string>
+    <string name="archive_text">Это архив. Какое действие вы хотели бы выполнить?</string>
+    <string name="package_installer_text">Это пакет установщика. Какое действие вы хотели бы выполнить?</string>
     <string name="xda_title">Тема на XDA</string>
     <string name="xda_summary">Q&amp;A, Помощь и Устранение неисправностей</string>
-    <string name="circularimages">Использовать круглые иконки для изображений и видео</string>
-    <string name="circularicons">Использовать круглые иконки</string>
+    <string name="circular_images">Использовать круглые иконки для изображений и видео</string>
+    <string name="circular_icons">Использовать круглые иконки</string>
     <string name="back_title">Кнопка назад</string>
     <string name="back_summary">Кнопка назад в верхней части списка</string>
     <string name="details">Подробнее</string>
@@ -202,19 +202,19 @@
     <string name="zip_create_folder">Папка для новых архивов</string>
     <string name="archive_summary">Файлы из архивов будут распакованы в указанную папку. По умолчанию это папка, в которой находятся zip-файлы</string>
     <string name="zip_summary">Новые zip-архивы будут создаваться в указанной папке. По умолчанию это папка, в которой находятся файлы</string>
-    <string name="openas">Открыть как</string>
+    <string name="open_as">Открыть как</string>
     <string name="text">Текст</string>
     <string name="audio">Аудио</string>
     <string name="video">Видео</string>
     <string name="other">Прочее</string>
     <string name="image">Изображение</string>
     <string name="contributors">Авторы</string>
-    <string name="savepaths">Помнить расположение</string>
-    <string name="savepathsummary">После старта на каждой вкладке будет отображена последняя просмотренная папка</string>
+    <string name="save_paths">Помнить расположение</string>
+    <string name="save_path_summary">После старта на каждой вкладке будет отображена последняя просмотренная папка</string>
     <string name="select_intent">Выбрать</string>
     <string name="database">База данных</string>
-    <string name="colourednavigation">Цветная панель навигации</string>
-    <string name="colourednavigationsum">Окраска панели навигации вместе со скином</string>
+    <string name="colored_navigation">Цветная панель навигации</string>
+    <string name="colored_navigvation_sum">Окраска панели навигации вместе со скином</string>
     <string name="color_title">Цвет</string>
     <string name="color_summary">Установить цвет для различных компонентов UI</string>
     <string name="primary_color_title">Основной цвет (Левая вкладка)</string>
@@ -227,11 +227,11 @@
   <string name="files">Файлы</string>
     <string name="textreader">Просмотр текста</string>
     <string name="databasereader">Просмотрщик баз данных</string>
-    <string name="showDividers">Показать разделители</string>
-    <string name="needsaccess">Необходим доступ к записи</string>
-    <string name="needsaccesssummary">Пожалуйста, выберите корневую папку\t</string>
-    <string name="needsaccesssummary1">\tпредоставлять доступ на запись для работы</string>
-    <string name="smb_con">SMB соединение</string>
+    <string name="show_dividers">Показать разделители</string>
+    <string name="needs_access">Необходим доступ к записи</string>
+    <string name="needs_access_summary">Пожалуйста, выберите корневую папку\t</string>
+    <string name="needs_access_summary1">\tпредоставлять доступ на запись для работы</string>
+    <string name="smb_connection">SMB соединение</string>
     <string name="smb_server">IP-адрес сервера</string>
     <string name="username">Имя пользователя</string>
     <string name="password">Пароль</string>
@@ -252,7 +252,7 @@
     <string name="descending">По убыванию</string>
     <string name="defualt">По умолчанию</string>
     <string name="doit">Сделай это</string>
-    <string name="wanthelp"><u>Нужна помощь?</u></string>
+    <string name="want_help"><u>Нужна помощь?</u></string>
     <string name="quick">Быстрый доступ</string>
     <string name="recent">Недавние файлы</string>
     <string name="edit">Редактировать</string>
@@ -261,16 +261,16 @@
     <string name="grantper">Предоставление разрешения</string>
     <string name="grantfailed"> Разрешение не предоставляется</string>
     <string name="grant_storage_permission">Приложению требуется разрешение хранения для продолжения. Закрытие этого диалога завершит приложение.</string>
-    <string name="operationunsuccesful">Операция безуспешна</string>
+    <string name="operation_unsuccesful">Операция безуспешна</string>
     <string name="creatingfile">Создание файла</string>
     <string name="creatingfolder">Создание папки</string>
     <string name="renaming">Переименование</string>
-    <string name="cantbeempty">%s не может быть пустым</string>
+    <string name="cant_be_empty">%s не может быть пустым</string>
     <string name="ip">Адрес</string>
-    <string name="connectionname">Название соединения</string>
-    <string name="nodevicefound">Устройств не найдено</string>
+    <string name="connection_name">Название соединения</string>
+    <string name="no_device_found">Устройств не найдено</string>
     <string name="path">Путь</string>
-    <string name="renamebookmark">Изменить закладку</string>
+    <string name="rename_bookmark">Изменить закладку</string>
     <string name="cut">Вырезать</string>
     <string name="search">Поиск</string>
     <string name="invalid_name">Неправильное имя</string>
@@ -285,7 +285,7 @@
     <string name="stop_ftp">Стоп</string>
     <string name="ftp_status_running">Включен</string>
     <string name="ftp_status_not_running">Выключен</string>
-    <string name="ftp_no_wifi">Убедитесь, что вы подключены к WiFi</string>
+    <string name="ftp_no_wifi">Убедитесь, что вы подключены к Wi-Fi</string>
     <string name="domain">Домен</string>
     <string name="invalid">Неверный %s</string>
     <string name="ftp_notif_starting">FTP сервер включается</string>
@@ -304,7 +304,7 @@
     <string name="translate_summary">Перевести Amaze на ваш язык</string>
   <string name="easter_egg_title">Студийный режим</string>
     <string name="paypal_copy_message">Paypal id скопирован в буфер обмена</string>
-    <string name="searchingdevices">Поиск устройств</string>
+    <string name="searching_devices">Поиск устройств</string>
     <string name="use_custom_ip">Использовать другой IP</string>
     <string name="bookmark_lost">Закладка не найдена, пересоздание&#8230;</string>
     <string name="smb_instructions">
@@ -340,7 +340,7 @@
                         Откройте командную строку. Введите \'ipconfig\' и нажмите Enter. Найдите                         \"IPv4-адрес\" адаптера, через который Windows и Android устройства подключены к одной сети.\n\n
                     </p>
 
-                    <b>Enter details in smb dialog box</b>\n
+                    <b>Enter details in SMB dialog box</b>\n
                 </ul>
             </body>
         </html>    </string>
@@ -482,16 +482,16 @@
     <string name="crypt_decryption_fail_password">Неверный пароль!</string>
     <string name="crypt_fingerprint_authenticate">Коснитесь сенсора для продолжения</string>
     <string name="authenticate_password">Введите пароль</string>
-    <string name="sidebarfolders_title">Быстрые клавиши на боковой панели</string>
-    <string name="sidebarquickaccess_title">Боковая панель быстрого доступа</string>
-    <string name="showfolders_pref_title">Показать ярлыки</string>
-    <string name="showfolders_pref">Ярлыки</string>
-    <string name="showquickaccess_pref_title">Показать быстрый доступ</string>
-    <string name="showquickaccess_pref">Быстрый доступ</string>
+    <string name="sidebar_folders_title">Быстрые клавиши на боковой панели</string>
+    <string name="sidebar_quick_access_title">Боковая панель быстрого доступа</string>
+    <string name="show_folders_pref_title">Показать ярлыки</string>
+    <string name="show_folders_pref">Ярлыки</string>
+    <string name="show_quick_access_pref_title">Показать быстрый доступ</string>
+    <string name="show_quick_access_pref">Быстрый доступ</string>
     <string name="create_shortcut">Создать ярлык</string>
     <string name="edit_shortcut">Редактировать ярлык</string>
     <string name="directory">Директория</string>
-    <string name="questiondelete_shortcut">Удалить ярлык?</string>
+    <string name="question_delete_shortcut">Удалить ярлык?</string>
     <string name="cloud_error_plugin">Плагин Amaze Cloud не найден. Пожалуйста загрузите его из Play Маркета.</string>
     <string name="cloud_error_failed_restart">Не удалось установить соединение.        Пожалуйста откройте Amaze Cloud.</string>
     <string name="cloud_remove">Вы хотите удалить облачное соединение?</string>
@@ -502,7 +502,7 @@
     <string name="monofont">Моноширинный Шрифт</string>
     <string name="showHeaders">Показывать Заголовки</string>
     <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-    <string name="noitems">Ничего нет</string>
+    <string name="no_items">Ничего нет</string>
     <string name="item">Элемент</string>
     <string name="items">Элементы</string>
     <string name="byte_singular">байт</string>
@@ -510,6 +510,6 @@
     <!-- end of plurals -->
     <string name="no_name">Файл должен иметь имя</string>
     <string name="add_item">Добавить элемент</string>
-    <string name="addshortcut_not_supported_by_launcher">Создание ярлыков не поддерживается Вашим лаунчером.</string>
-    <string name="enableMarqueeFilename">Включить эффект бегущей строки для имён файлов</string>
+    <string name="add_shortcut_not_supported_by_launcher">Создание ярлыков не поддерживается Вашим лаунчером.</string>
+    <string name="enable_marquee_filename">Включить эффект бегущей строки для имён файлов</string>
 </resources>

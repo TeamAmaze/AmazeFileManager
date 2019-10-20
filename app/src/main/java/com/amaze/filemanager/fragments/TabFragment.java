@@ -242,7 +242,7 @@ public class TabFragment extends Fragment
     String parsePathForName(String path, OpenMode openmode) {
         Resources resources = getActivity().getResources();
         if ("/".equals(path)) {
-            return resources.getString(R.string.rootdirectory);
+            return resources.getString(R.string.root_directory);
         } else if (openmode == OpenMode.SMB && path.startsWith("smb:/")) {
             return (new File(parseSmbPath(path)).getName());
         } else if ("/storage/emulated/0".equals(path)) {

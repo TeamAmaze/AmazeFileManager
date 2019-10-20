@@ -128,7 +128,7 @@ public class FtpServerFragment extends Fragment {
                         || FtpService.isEnabledWifiHotspot(getContext()))
                     startServer();
                 else {
-                    // no wifi and no eth, we shouldn't be here in the first place, because of broadcast
+                    // no Wi-Fi and no eth, we shouldn't be here in the first place, because of broadcast
                     // receiver, but just to be sure
                     statusText.setText(spannedStatusNoConnection);
                 }
@@ -318,10 +318,10 @@ public class FtpServerFragment extends Fragment {
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
             if ((netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET))
                     || FtpService.isEnabledWifiHotspot(getContext())) {
-                // connected to wifi or eth
+                // connected to Wi-Fi or eth
                 ftpBtn.setEnabled(true);
             } else {
-                // wifi or eth connection lost
+                // Wi-Fi or eth connection lost
                 stopServer();
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(true);

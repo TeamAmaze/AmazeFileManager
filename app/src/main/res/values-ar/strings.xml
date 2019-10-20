@@ -27,7 +27,7 @@
   <string name="ftp">خادم بروتوكول نقل الملفات</string>
     <string name="setting">الإعدادات</string>
   <string name="select">تحديد عنصر</string>
-  <string name="pressagain">اضغط مرة أخرى للخروج</string>
+  <string name="press_again">اضغط مرة أخرى للخروج</string>
   <string name="open">فتح</string>
   <string name="backup">نسخ إحتياطي</string>
   <string name="uninstall">إلغاء التثبيت</string>
@@ -35,7 +35,7 @@
   <string name="properties">خصائص</string>
   <string name="copyingapk">جاري نسخ ملفات apk إلى</string>
     <string name="delbook">حذف الإشارة المرجعية</string>
-  <string name="addtobook">إضافة للمفضلة</string>
+  <string name="add_to_bookmarks">إضافة للمفضلة</string>
   <string name="enterpath">أدخل المسار</string>
   <string name="cancel">إلغاء</string>
   <string name="create">إنشاء</string>
@@ -43,7 +43,7 @@
   <string name="error">خطأ</string>
     <string name="rename">إعادة تسمية</string>
   <string name="save">حفظ</string>
-    <string name="bookmarksadded">تمت الإضافة للمفضلة</string>
+    <string name="bookmarks_added">تمت الإضافة للمفضلة</string>
   <string name="fileexist">يوجد ملف بنفس الإسم</string>
     <string name="name">الإسم:</string>
   <string name="date">تاريخ:</string>
@@ -51,7 +51,7 @@
   <string name="size_capitalized">الحجم</string>
   <string name="size">حجم المجلد</string>
     <string name="enterzipname">أدخل إسم الملف المضغوط</string>
-  <string name="noappfound">لم يتم إيجاد تطبيق لفتح هذا الملف</string>
+  <string name="no_app_found">لم يتم إيجاد تطبيق لفتح هذا الملف</string>
   <string name="copying">جاري النسخ</string>
   <string name="moving">جاري النقل</string>
     <string name="file">ملف</string>
@@ -60,8 +60,8 @@
   <string name="entername">ادخل الإسم</string>
   <string name="extracting">جاري الإستخراج</string>
   <string name="stopping">جاري الإيقاف</string>
-    <string name="openparent">فتح الدليل الرئيسي</string>
-  <string name="openwith">فتح بـ</string>
+    <string name="open_parent">فتح الدليل الرئيسي</string>
+  <string name="open_with">فتح بـ</string>
   <string name="share">مشاركة</string>
   <string name="about">حول</string>
   <string name="extract">إستخراج</string>
@@ -72,7 +72,7 @@
   <string name="dialog_delete_disclaimer">هل تريد حقًا حذف الملفات التالية ؟</string>
   <string name="dialog_delete_title">تأكيد</string>
   <string name="deleting">جاري الحذف</string>
-    <string name="sortby">ترتيب حسب</string>
+    <string name="sort_by">ترتيب حسب</string>
   <string name="theme">السمة</string>
     <string name="random">لون مظهر عشوائي</string>
   <string name="random_summary">عيّن لون مظهر عشوائي عند كل تشغيل</string>
@@ -82,12 +82,12 @@
   <string name="paste">لصق</string>
     <string name="history">المحفوظات</string>
     <string name="copy">نسخ</string>
-  <string name="rootmode">متصفح الجذر</string>
-  <string name="rootmodesummary">للأجهزة التي بها صلاحيات الروت ( الجذر ) اضغط للتأكد من توفر الروت.</string>
-    <string name="rootfailure">لم يتم منح الوصول للجذر</string>
-  <string name="selectall">تحديد الكل</string>
+  <string name="root_mode">متصفح الجذر</string>
+  <string name="root_mode_summary">للأجهزة التي بها صلاحيات الروت ( الجذر ) اضغط للتأكد من توفر الروت.</string>
+    <string name="root_failure">لم يتم منح الوصول للجذر</string>
+  <string name="select_all">تحديد الكل</string>
   <string name="delete">حذف</string>
-  <string name="setashome">تعيين كمجلد رئيسي</string>
+  <string name="set_as_home">تعيين كمجلد رئيسي</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -99,11 +99,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">المجلدات أولًا</string>
   <string name="filesOnTop">الملفات أولًا</string>
-  <string name="noneOnTop">بدون ترتيب</string>
+  <string name="none_on_top">بدون ترتيب</string>
   <!--SortBy-->
-  <string name="sortName">الإسم</string>
+  <string name="sort_name">الإسم</string>
   <string name="lastModified">حسب أخر تعديل</string>
-  <string name="sortSize">الحجم</string>
+  <string name="sort_size">الحجم</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">إختيار ملف</string>
@@ -118,7 +118,7 @@
   <string name="enablerootmde">تفعيل وضع الروت</string>
   <string name="goback">عد للخلف</string>
     <string name="newfile">ملف جديد</string>
-  <string name="nofiles">لا توجد ملفات</string>
+  <string name="no_files">لا توجد ملفات</string>
     <string name="listview">عرض قائمة</string>
   <string name="gridview">عرض شبكي</string>
     <string name="permission">الأذونات</string>
@@ -126,43 +126,43 @@
   <string name="exit">خروج</string>
     <string name="doforall">قم بالأمر لكل العناصر</string>
   <string name="gridcolumnno">عدد الأعمدة في العرض الشبكي</string>
-    <string name="setRandom">سيتم إجراء التغيرات بعد إعادة تشغيل التطبيق</string>
+    <string name="set_random">سيتم إجراء التغيرات بعد إعادة تشغيل التطبيق</string>
   <string name="authors">المؤلفون</string>
   <string name="changelog">سجل التغيرات</string>
     <string name="ok">موافق</string>
     <string name="ui">واجهة المستخدم</string>
   <string name="general">عام</string>
-  <string name="thumbSummary">عرض مصغرات للتطبيقات والصور</string>
+  <string name="thumb_summary">عرض مصغرات للتطبيقات والصور</string>
   <string name="thumb">عرض مصغرات</string>
   <string name="hidden">عرض الملفات والمجلدات المخفية</string>
   <string name="lastModifiedSummary">عرض التاريخ والوقت الذي تم فيه تعديل الملف لأخر مرة</string>
   <string name="lastModifiedPref">عرض الملفات المعدلة مؤخرًا</string>
-  <string name="sizePrefSummary">عرض أحجام الملفات وعدد العناصر في المجلدات</string>
-  <string name="sizePref">عرض الأحجام</string>
+  <string name="size_pref_summary">عرض أحجام الملفات وعدد العناصر في المجلدات</string>
+  <string name="size_pref">عرض الأحجام</string>
   <string name="miscellaneous">خيارات متقدمة</string>
-  <string name="rootPrefSummary">عرض أذونات الملفات والمجلدات</string>
-  <string name="rootPref">عرض الأذونات</string>
-  <string name="aboutFileManager">حول مدير الملفات Amaze</string>
+  <string name="root_pref_summary">عرض أذونات الملفات والمجلدات</string>
+  <string name="root_pref">عرض الأذونات</string>
+  <string name="about_amaze_file_manager_label">حول مدير الملفات Amaze</string>
   <string name="version">الإصدار</string>
   <string name="rate">قيّم التطبيق</string>
   <string name="feedback">أرسل ملاحظاتك</string>
   <string name="hiddenfiles">الملفات المخفية</string>
   <string name="type">النوع</string>
-    <string name="rootdirectory">الجذر</string>
-    <string name="addshortcut">إضافة إختصار</string>
-  <string name="unsavedchanges">لم يتم حفظ التغيرات</string>
-  <string name="unsavedchangesdesc">لم تقم بحفظ التغيرات ، هل تريد حفظها قبل الخروج ؟</string>
+    <string name="root_directory">الجذر</string>
+    <string name="add_shortcut">إضافة إختصار</string>
+  <string name="unsaved_changes">لم يتم حفظ التغيرات</string>
+  <string name="unsaved_changes_description">لم تقم بحفظ التغيرات ، هل تريد حفظها قبل الخروج ؟</string>
   <string name="saving">جاري الحفظ</string>
-  <string name="packageinstaller">مثبت الحزم</string>
+  <string name="package_installer">مثبت الحزم</string>
   <string name="view">عرض</string>
   <string name="install">تثبيت</string>
   <string name="archive">الإرشيف</string>
-  <string name="archtext">هذا ملف إرشيف ، ما هو الأمر الذي تريد تنفيذة ؟</string>
-  <string name="pitext">هذا مثبت الحزم ، ماهو الأمر الذي تريد تأديته ؟</string>
+  <string name="archive_text">هذا ملف إرشيف ، ما هو الأمر الذي تريد تنفيذة ؟</string>
+  <string name="package_installer_text">هذا مثبت الحزم ، ماهو الأمر الذي تريد تأديته ؟</string>
   <string name="xda_title">منتدى المطورين</string>
   <string name="xda_summary">الأسئلة المتكررة ، المساعدة</string>
-    <string name="circularimages">إستخدام أيقونات دائرة للصور والفيديو</string>
-  <string name="circularicons">إستخدام أيقونات دائرية</string>
+    <string name="circular_images">إستخدام أيقونات دائرة للصور والفيديو</string>
+  <string name="circular_icons">إستخدام أيقونات دائرية</string>
   <string name="back_title">زر رجوع</string>
   <string name="back_summary">تفعيل زر رجوع مخصص بأعلى القائمة</string>
   <string name="details">التفاصيل</string>
@@ -178,15 +178,15 @@
   <string name="zip_create_folder">إنشاء مجلد للملفات المضغوطة</string>
   <string name="archive_summary">ملفات الإرشيف ستوضع في هذا المجلد . الوضع الإفتراضي هو حفظ الملف المستخرج في نفس مجلد الإرشيف</string>
   <string name="zip_summary">سيتم إنشاء الملفات المضغوطة الجديدة في هذا المجلد ، الوجهة الإفتراضية للملفات المضغوطة هي نفس المجلد الذي توجد به</string>
-  <string name="openas">فتح كـ</string>
+  <string name="open_as">فتح كـ</string>
   <string name="text">نص</string>
   <string name="audio">الصوت</string>
   <string name="video">الفيديو</string>
   <string name="other">أخرى</string>
   <string name="image">صورة</string>
   <string name="contributors">المساهمين</string>
-  <string name="savepaths">تذكر المسارات</string>
-  <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
+  <string name="save_paths">تذكر المسارات</string>
+  <string name="save_path_summary">When starting up,the most recently viewed folder for each tab will be displayed</string>
   <string name="color_title">اللون</string>
     <string name="files">الملفات</string>
   <string name="password">كلمة المرور</string>

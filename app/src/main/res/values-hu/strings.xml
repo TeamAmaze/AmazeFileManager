@@ -30,7 +30,7 @@
     <string name="ftp">FTP-kiszolgáló</string>
     <string name="setting">Beállítások</string>
     <string name="select">Válasszon elemet</string>
-    <string name="pressagain">Nyomja meg újra a kilépéshez</string>
+    <string name="press_again">Nyomja meg újra a kilépéshez</string>
     <string name="open">Megnyitás</string>
     <string name="backup">Biztonsági mentés</string>
     <string name="uninstall">Eltávolítás</string>
@@ -38,17 +38,17 @@
     <string name="properties">Tulajdonságok</string>
     <string name="copyingapk">Apk másolása ide:</string>
     <string name="delbook">Könyvjelző törlése</string>
-    <string name="addtobook">Hozzáadás a könyvjelzőkhöz</string>
+    <string name="add_to_bookmarks">Hozzáadás a könyvjelzőkhöz</string>
     <string name="enterpath">Adja meg az elérési útvonalat</string>
     <string name="cancel">MÉGSE</string>
     <string name="create">LÉTREHOZÁS</string>
     <string name="loading">Betöltés&#8230;</string>
     <string name="file_empty">A fájl üres</string>
     <string name="error">Hiba</string>
-    <string name="searchresults">A(z) %s keresési eredményei</string>
+    <string name="search_results">A(z) %s keresési eredményei</string>
     <string name="rename">Átnevezés</string>
     <string name="save">Mentés</string>
-    <string name="bookmarksadded">Könyvjelzők hozzáadva</string>
+    <string name="bookmarks_added">Könyvjelzők hozzáadva</string>
     <string name="fileexist">Ilyen nevű fájl már létezik</string>
     <string name="name">Név</string>
     <string name="date">Dátum</string>
@@ -56,7 +56,7 @@
     <string name="size_capitalized">Méret</string>
     <string name="size">mappa mérete</string>
     <string name="enterzipname">Adja meg a zip nevét</string>
-    <string name="noappfound">Nincs megfelelő alkalmazás a fájl megnyitására</string>
+    <string name="no_app_found">Nincs megfelelő alkalmazás a fájl megnyitására</string>
     <string name="copying">Másolás</string>
     <string name="moving">Áthelyezés</string>
     <string name="file">Fájl</string>
@@ -65,8 +65,8 @@
     <string name="entername">Adja meg a nevet</string>
     <string name="extracting">Kicsomagolás</string>
     <string name="stopping">Leállítás</string>
-    <string name="openparent">Szülőkönyvtár megnyitása</string>
-    <string name="openwith">Megnyitás a következővel…</string>
+    <string name="open_parent">Szülőkönyvtár megnyitása</string>
+    <string name="open_with">Megnyitás a következővel…</string>
     <string name="share">Megosztás</string>
     <string name="about">Névjegy</string>
     <string name="extract">Kibontás</string>
@@ -78,9 +78,9 @@
     <string name="dialog_delete_disclaimer">Az alábbi elemek törlése véglegesen eltávolítja azokat a készülékről, és nem lehet őket visszaállítani.</string>
     <string name="dialog_delete_title">Véglegesen törli az elemeket?</string>
     <string name="deleting">Törlés</string>
-    <string name="questionset">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
+    <string name="question_set_path_as_home">Beállítja az aktuális útvonalat kezdőlapként ezen a fülön?</string>
     <string name="directorysort">Könyvtár rendezési mód</string>
-    <string name="sortby">Elrendezés</string>
+    <string name="sort_by">Elrendezés</string>
     <string name="sort_only_this">Csak ez a mappa</string>
     <string name="theme">Téma</string>
     <string name="random">Véletlenszerű felszín</string>
@@ -91,12 +91,12 @@
     <string name="paste">Beillesztés</string>
     <string name="history">Előzmények</string>
     <string name="copy">Másolás</string>
-    <string name="rootmode">Root-kezelő</string>
-    <string name="rootmodesummary">Csak rootolt eszközökre. Csak akkor aktiválja, ha biztos benne</string>
-    <string name="rootfailure">A root hozzáférés nincs megadva</string>
-    <string name="selectall">Összes kijelölése</string>
+    <string name="root_mode">Root-kezelő</string>
+    <string name="root_mode_summary">Csak rootolt eszközökre. Csak akkor aktiválja, ha biztos benne</string>
+    <string name="root_failure">A root hozzáférés nincs megadva</string>
+    <string name="select_all">Összes kijelölése</string>
     <string name="delete">Törlés</string>
-    <string name="setashome">Beállítás kezdőkönyvtárként</string>
+    <string name="set_as_home">Beállítás kezdőkönyvtárként</string>
 
     <!-- New -->
     <!-- Array -->
@@ -111,11 +111,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Mappák felülre</string>
     <string name="filesOnTop">Fájlok felülre</string>
-    <string name="noneOnTop">Nincs felül</string>
+    <string name="none_on_top">Nincs felül</string>
     <!--SortBy-->
-    <string name="sortName">Név</string>
+    <string name="sort_name">Név</string>
     <string name="lastModified">Utoljára módosítva</string>
-    <string name="sortSize">Méret</string>
+    <string name="sort_size">Méret</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Válasszon egy fájlt</string>
@@ -131,7 +131,7 @@
     <string name="enablerootmde">Root mód engedélyezése</string>
     <string name="goback">Vissza</string>
     <string name="newfile">Új fájl</string>
-    <string name="nofiles">Nincsenek fájlok</string>
+    <string name="no_files">Nincsenek fájlok</string>
     <string name="used">használt terület</string>
     <string name="used_by_others">mások által használt</string>
     <string name="free">szabad terület</string>
@@ -142,43 +142,43 @@
     <string name="exit">Kilépés</string>
     <string name="doforall">Alkalmazza az összes elemre</string>
     <string name="gridcolumnno">Oszlopok száma rácsnézetben</string>
-    <string name="setRandom">A változások az alkalmazás újraindítása után lépnek érvénybe</string>
+    <string name="set_random">A változások az alkalmazás újraindítása után lépnek érvénybe</string>
     <string name="authors">Készítők</string>
     <string name="changelog">Változásnapló</string>
     <string name="ok">Rendben</string>
     <string name="ui">Felület</string>
     <string name="general">Általános</string>
-    <string name="thumbSummary">Alkalmazás és kép miniatűrök megjelenítése</string>
+    <string name="thumb_summary">Alkalmazás és kép miniatűrök megjelenítése</string>
     <string name="thumb">Miniatűrök megjelenítése</string>
     <string name="hidden">Rejtett fájlok és mappák megjelenítése</string>
     <string name="lastModifiedSummary">Megjeleníti a fájl utolsó módosítási dátumát és idejét</string>
     <string name="lastModifiedPref">Utolsó módosítás megjelenítése</string>
-    <string name="sizePrefSummary">Megjeleníti a fájlok méretét és a mappában lévő elemek számát</string>
-    <string name="sizePref">Méret megjelenítése</string>
+    <string name="size_pref_summary">Megjeleníti a fájlok méretét és a mappában lévő elemek számát</string>
+    <string name="size_pref">Méret megjelenítése</string>
     <string name="miscellaneous">Egyéb</string>
-    <string name="rootPrefSummary">Fájl és mappa engedélyek megjelenítése</string>
-    <string name="rootPref">Engedélyek megjelenítése</string>
-    <string name="aboutFileManager">Amaze File Manager névjegy</string>
+    <string name="root_pref_summary">Fájl és mappa engedélyek megjelenítése</string>
+    <string name="root_pref">Engedélyek megjelenítése</string>
+    <string name="about_amaze_file_manager_label">Amaze File Manager névjegy</string>
     <string name="version">Verzió</string>
     <string name="rate">Alkalmazás értékelése</string>
     <string name="feedback">Visszajelzés küldése</string>
     <string name="hiddenfiles">Rejtett fájlok</string>
     <string name="type">Típus</string>
-    <string name="rootdirectory">Gyökérkönyvtár</string>
-    <string name="addshortcut">Parancsikon hozzáadása</string>
-    <string name="unsavedchanges">Nem mentett módosítások</string>
-    <string name="unsavedchangesdesc">Nem mentett el minden módosítást. Szeretné elmenteni azokat, mielőtt kilép?</string>
+    <string name="root_directory">Gyökérkönyvtár</string>
+    <string name="add_shortcut">Parancsikon hozzáadása</string>
+    <string name="unsaved_changes">Nem mentett módosítások</string>
+    <string name="unsaved_changes_description">Nem mentett el minden módosítást. Szeretné elmenteni azokat, mielőtt kilép?</string>
     <string name="saving">Mentés</string>
-    <string name="packageinstaller">Csomagtelepítő</string>
+    <string name="package_installer">Csomagtelepítő</string>
     <string name="view">Nézet</string>
     <string name="install">Telepítés</string>
     <string name="archive">Archívum</string>
-    <string name="archtext">Ez egy archívum. Milyen műveletet szeretne végrehajtani?</string>
-    <string name="pitext">Ez egy csomagtelepítő. Milyen műveletet szeretne végrehajtani?</string>
+    <string name="archive_text">Ez egy archívum. Milyen műveletet szeretne végrehajtani?</string>
+    <string name="package_installer_text">Ez egy csomagtelepítő. Milyen műveletet szeretne végrehajtani?</string>
     <string name="xda_title">XDA</string>
     <string name="xda_summary">Kérdések/válaszok, súgó és hibaelhárítás</string>
-    <string name="circularimages">Kör alakú ikonok használata a képeknél és videóknál</string>
-    <string name="circularicons">Kerek ikonok használata</string>
+    <string name="circular_images">Kör alakú ikonok használata a képeknél és videóknál</string>
+    <string name="circular_icons">Kerek ikonok használata</string>
     <string name="back_title">Visszaléptetés</string>
     <string name="back_summary">Egyéni visszaléptetési lehetőség engedélyezése a lista tetején</string>
     <string name="details">Részletek</string>
@@ -212,19 +212,19 @@
     <string name="zip_create_folder">Zip mappa létrehozása</string>
     <string name="archive_summary">Az archivált fájlok ebbe a mappába lesznek kicsomagolva. Az lesz az alapértelmezett könyvtár, amelyben az archívum jelen van</string>
     <string name="zip_summary">Az új zip fájlokat ebbe a mappába hozza létre. Ez alapértelmezettként az a könyvtár, amelyben a fájlok vannak</string>
-    <string name="openas">Megnyitás mint</string>
+    <string name="open_as">Megnyitás mint</string>
     <string name="text">Szöveg</string>
     <string name="audio">Zene</string>
     <string name="video">Videó</string>
     <string name="other">Egyéb</string>
     <string name="image">Kép</string>
     <string name="contributors">Közreműködők</string>
-    <string name="savepaths">Útvonalak megjegyzése</string>
-    <string name="savepathsummary">Indításkor az utoljára megtekintett mappa fog megjelenni minden lapon</string>
+    <string name="save_paths">Útvonalak megjegyzése</string>
+    <string name="save_path_summary">Indításkor az utoljára megtekintett mappa fog megjelenni minden lapon</string>
     <string name="select_intent">Kiválasztás</string>
     <string name="database">Adatbázis</string>
-    <string name="colourednavigation">Színes navigációs sáv</string>
-    <string name="colourednavigationsum">Függetlenül attól, hogy a felszínben a rendszer navigációs sáv színezett</string>
+    <string name="colored_navigation">Színes navigációs sáv</string>
+    <string name="colored_navigvation_sum">Függetlenül attól, hogy a felszínben a rendszer navigációs sáv színezett</string>
  
     <string name="color_title">Szín</string>
     <string name="color_summary">Állítsa be a különböző kezelőfelületi elemek színét</string>
@@ -238,11 +238,11 @@
   <string name="files">fájl</string>
     <string name="textreader">Szövegolvasó</string>
     <string name="databasereader">Adatbázis-olvasó</string>
-    <string name="showDividers">Elválasztók megjelenítése</string>
-    <string name="needsaccess">Írási hozzáférés szükséges</string>
-    <string name="needsaccesssummary">Kérjük, válassza ki a(z) 	 gyökérkönyvtárát</string>
-    <string name="needsaccesssummary1">	az írási hozzáférés biztosításához </string>
-    <string name="smb_con">SMB-kapcsolat</string>
+    <string name="show_dividers">Elválasztók megjelenítése</string>
+    <string name="needs_access">Írási hozzáférés szükséges</string>
+    <string name="needs_access_summary">Kérjük, válassza ki a(z) 	 gyökérkönyvtárát</string>
+    <string name="needs_access_summary1">	az írási hozzáférés biztosításához </string>
+    <string name="smb_connection">SMB-kapcsolat</string>
     <string name="smb_server">Kiszolgáló IP-címe</string>
     <string name="username">Felhasználónév</string>
     <string name="password">Jelszó</string>
@@ -264,7 +264,7 @@
     <string name="descending">Csökkenő</string>
     <string name="defualt">Alapértelmezett</string>
     <string name="doit">Hajtsa végre</string>
-    <string name="wanthelp">Segítségre van szüksége?</string>
+    <string name="want_help">Segítségre van szüksége?</string>
     <string name="quick">Gyorselérés</string>
     <string name="recent">Legutóbbi fájlok</string>
     <string name="edit">Szerkesztés</string>
@@ -273,16 +273,16 @@
     <string name="grantper">Engedély megadása</string>
     <string name="grantfailed">Az engedély nincs megadva</string>
     <string name="grant_storage_permission">Tárolási engedélyre van szüksége az alkalmazásnak a folytatáshoz. A párbeszédpanel megszakításakor az alkalmazás kilép.</string>
-    <string name="operationunsuccesful">A művelet sikertelen volt</string>
+    <string name="operation_unsuccesful">A művelet sikertelen volt</string>
     <string name="creatingfile">Fájl létrehozása</string>
     <string name="creatingfolder">Mappa létrehozása</string>
     <string name="renaming">Átnevezés</string>
-    <string name="cantbeempty">A(z) %s nem lehet üres</string>
+    <string name="cant_be_empty">A(z) %s nem lehet üres</string>
     <string name="ip">Cím</string>
-    <string name="connectionname">Kapcsolat neve</string>
-    <string name="nodevicefound">Nem található eszköz</string>
+    <string name="connection_name">Kapcsolat neve</string>
+    <string name="no_device_found">Nem található eszköz</string>
     <string name="path">Hely</string>
-    <string name="renamebookmark">Könyvjelző módosítása</string>
+    <string name="rename_bookmark">Könyvjelző módosítása</string>
     <string name="cut">Kivágás</string>
     <string name="search">Keresés</string>
     <string name="invalid_name">Érvénytelen név</string>
@@ -297,7 +297,7 @@
     <string name="stop_ftp">Leállítás</string>
     <string name="ftp_status_running">Fut</string>
     <string name="ftp_status_not_running">Nem fut</string>
-    <string name="ftp_no_wifi">Győződjön meg róla, hogy csatlakozik a WiFi-hez</string>
+    <string name="ftp_no_wifi">Győződjön meg róla, hogy csatlakozik a Wi-Fi-hez</string>
     <string name="domain">Tartomány</string>
     <string name="invalid">%s érvénytelen</string>
     <string name="ftp_notif_starting">FTP-kiszolgáló indítása</string>
@@ -316,14 +316,14 @@
     <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
   <string name="easter_egg_title">Stúdió mód</string>
     <string name="paypal_copy_message">A Paypal id a vágólapra lett másolva</string>
-    <string name="searchingdevices">Eszközök keresése</string>
+    <string name="searching_devices">Eszközök keresése</string>
     <string name="use_custom_ip">Egyéni IP használata</string>
     <string name="bookmark_lost">Nem található könyvjelző, létrehozás újra&#8230;</string>
 
     <string name="smb_instructions">
         <html>
             <body>
-                <h1>Hogyan érhető el a megosztott windows mappa androidon (smb)</h1>\n\n
+                <h1>Hogyan érhető el a megosztott Windows mappa androidon (SMB)</h1>\n\n
                 <ul>
                     <li>
                         <b>Engedélyezze a fájlmegosztást</b>\n
@@ -366,7 +366,7 @@
                         megtalálásához.\n\n
                     </p>
 
-                    <b>Adja meg a részleteket az smb párbeszédablakban</b>\n
+                    <b>Adja meg a részleteket az SMB párbeszédablakban</b>\n
                 </ul>
             </body>
         </html>
@@ -518,16 +518,16 @@
     <string name="authenticate_password">Adja meg a jelszót</string>
 
     <string name="sidebar_preferences">Oldalsáv</string>
-    <string name="sidebarfolders_title">Oldalsáv parancsikonjai</string>
-    <string name="sidebarquickaccess_title">Oldalsáv gyorselérés</string>
-    <string name="showfolders_pref_title">Parancsikonok megjelenítése</string>
-    <string name="showfolders_pref">Parancsikonok</string>
-    <string name="showquickaccess_pref_title">Gyorselérés megjelenítése</string>
-    <string name="showquickaccess_pref">Gyorselérés</string>
+    <string name="sidebar_folders_title">Oldalsáv parancsikonjai</string>
+    <string name="sidebar_quick_access_title">Oldalsáv gyorselérés</string>
+    <string name="show_folders_pref_title">Parancsikonok megjelenítése</string>
+    <string name="show_folders_pref">Parancsikonok</string>
+    <string name="show_quick_access_pref_title">Gyorselérés megjelenítése</string>
+    <string name="show_quick_access_pref">Gyorselérés</string>
     <string name="create_shortcut">Parancsikon létrehozása</string>
     <string name="edit_shortcut">Parancsikon szerkesztése</string>
     <string name="directory">Könyvtár</string>
-    <string name="questiondelete_shortcut">Törli a parancsikont?</string>
+    <string name="question_delete_shortcut">Törli a parancsikont?</string>
 
     <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
@@ -541,7 +541,7 @@
     <string name="showHeaders">Fejlécek megjelenítése</string>
 
     <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-    <string name="noitems">Nincsenek elemek</string>
+    <string name="no_items">Nincsenek elemek</string>
     <string name="item">elem</string>
     <string name="items">elem</string>
 
@@ -559,8 +559,8 @@
     <string name="intent_save_as">Mentés másként&#8230;</string>
     <string name="go">Go</string>
     <string name="advanced">Speciális</string>
-    <string name="typeablepaths_title">Egyéni útvonalak</string>
-    <string name="typeablepaths_summary">Nyomja meg hosszan az útvonal sávot az egyéni elérési útvonal beírásához</string>
+    <string name="typeable_paths_title">Egyéni útvonalak</string>
+    <string name="typeable_paths_summary">Nyomja meg hosszan az útvonal sávot az egyéni elérési útvonal beírásához</string>
     <string name="send_email_to">E-mail küldése</string>
 
     <string name="text_editor">Szövegszerkesztő beállításai</string>
@@ -568,18 +568,18 @@
     <string name="preference_newstack_summary">Lehetővé teszi a fájlok megnyitását különálló feladatokban. Ezeket a rendszer legutóbbi képernyőjéről érheti el.</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="developers">Fejlesztők</string>
-    <string name="nobitcoinapp">Kérjük, telepítse a Bitcoin pénztárcát</string>
-    <string name="channelname_normal">Amaze értesítések</string>
-    <string name="channeldescription_normal">Amaze File Manager értesítései</string>
-    <string name="channelname_ftp">Amaze FTP-kiszolgáló</string>
-    <string name="channeldescription_ftp">Amaze File Manager FTP-kiszolgáló értesítései</string>
+    <string name="no_bitcoin_app">Kérjük, telepítse a Bitcoin pénztárcát</string>
+    <string name="channel_name_normal">Amaze értesítések</string>
+    <string name="channel_description_normal">Amaze File Manager értesítései</string>
+    <string name="channel_name_ftp">Amaze FTP-kiszolgáló</string>
+    <string name="channel_description_ftp">Amaze File Manager FTP-kiszolgáló értesítései</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Feldolgozás&#8230;</string>
     <string name="failed_no_connection">Nem sikerült betölteni a fájlokat. Ellenőrizze a kapcsolatot.</string>
 
     <string name="update">FRISSÍTÉS</string>
-	<string name="scp_con">SCP/SFTP kapcsolat</string>
+	<string name="scp_connection">SCP/SFTP kapcsolat</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">A(z) \'%1$s\' állomás hitelessége nem állapítható meg.\n\n%2$s kulcs ujjlenyomat %3$s.\n\nKérjük, koppintson az \"Igen\"-re az identitás megerősítéséhez; ellenkező esetben koppintson a \"Nem\"-re.</string>
     <string name="ssh_host_key_verification_prompt_title">Állomás ellenőrzése</string>
@@ -596,12 +596,12 @@
         Kérjük, lépjen kapcsolatba a rendszergazdájával, vagy állítson be új kapcsolatot a kiszolgálóhoz való csatlakozás folytatásához.
     </string>
     <string name="ssh_key_prompt_passphrase">Kérjük, adja meg a kulcs-jelszót.</string>
-    <string name="addshortcut_not_supported_by_launcher">Jelenlegi indítóprogramja nem támogatja a parancsikonok létrehozását.</string>
+    <string name="add_shortcut_not_supported_by_launcher">Jelenlegi indítóprogramja nem támogatja a parancsikonok létrehozását.</string>
     
-    <string name="selectcolorconfig">Válasszon szín konfigurációt</string>
+    <string name="select_color_config">Válasszon szín konfigurációt</string>
     <string name="customize">Testreszabás</string>
     <string name="custom">Egyéni</string>
-    <string name="preselectedconfigs_title">Előválasztott konfigurációk</string>
+    <string name="preselected_configs_title">Előválasztott konfigurációk</string>
     <string name="orange">Narancs</string>
     <string name="blue">Kék</string>
     <string name="green">Zöld</string>

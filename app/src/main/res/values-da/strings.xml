@@ -40,7 +40,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Størrelse</string>
+  <string name="sort_size">Størrelse</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">Spring over</string>

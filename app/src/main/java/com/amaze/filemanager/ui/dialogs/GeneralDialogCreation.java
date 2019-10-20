@@ -872,7 +872,7 @@ public class GeneralDialogCreation {
     public static void showPackageDialog(final File f, final MainActivity m) {
         int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
-        mat.title(R.string.packageinstaller).content(R.string.pitext)
+        mat.title(R.string.package_installer).content(R.string.package_installer_text)
                 .positiveText(R.string.install)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
@@ -891,7 +891,7 @@ public class GeneralDialogCreation {
         int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.archive)
-                .content(R.string.archtext)
+                .content(R.string.archive_text)
                 .positiveText(R.string.extract)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
@@ -995,7 +995,7 @@ public class GeneralDialogCreation {
         a.onPositive((dialog, which) -> {
             onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, true);
         });
-        a.title(R.string.sortby);
+        a.title(R.string.sort_by);
         a.build().show();
     }
 
@@ -1043,7 +1043,7 @@ public class GeneralDialogCreation {
             dialog.dismiss();
         });
 
-        a.title(R.string.sortby);
+        a.title(R.string.sort_by);
         a.build().show();
     }
 
@@ -1131,12 +1131,12 @@ public class GeneralDialogCreation {
                         Toast.makeText(context,
                                 mainFrag.getString(R.string.done), Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
+                        Toast.makeText(context, mainFrag.getString(R.string.operation_unsuccesful),
                                 Toast.LENGTH_LONG).show();
                     }
                 });
             } catch (ShellNotRunningException e) {
-                Toast.makeText(context, mainFrag.getString(R.string.rootfailure),
+                Toast.makeText(context, mainFrag.getString(R.string.root_failure),
                         Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }
