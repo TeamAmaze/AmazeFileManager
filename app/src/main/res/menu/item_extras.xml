@@ -9,7 +9,7 @@
         />
     <item
         android:id="@+id/open_with"
-        android:title="@string/openwith"
+        android:title="@string/open_with"
         />
     <item
         android:id="@+id/cut"
@@ -48,5 +48,5 @@
         android:visible="false"/>
     <item
         android:id="@+id/book"
-        android:title="@string/addtobook" />
+        android:title="@string/add_to_bookmarks" />
 </menu>

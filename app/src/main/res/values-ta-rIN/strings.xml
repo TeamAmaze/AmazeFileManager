@@ -31,7 +31,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">அளவு</string>
+  <string name="sort_size">அளவு</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">தவிர்</string>

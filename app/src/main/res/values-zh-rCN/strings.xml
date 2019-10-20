@@ -30,7 +30,7 @@
     <string name="ftp">FTP 服务器</string>
     <string name="setting">设置</string>
     <string name="select">请选择</string>
-    <string name="pressagain">再次点击退出</string>
+    <string name="press_again">再次点击退出</string>
     <string name="open">打开</string>
     <string name="backup">备份</string>
     <string name="uninstall">卸载</string>
@@ -38,17 +38,17 @@
     <string name="properties">属性</string>
     <string name="copyingapk">将 APK 复制到</string>
     <string name="delbook">删除书签</string>
-    <string name="addtobook">添加到书签</string>
+    <string name="add_to_bookmarks">添加到书签</string>
     <string name="enterpath">请输入路径</string>
     <string name="cancel">取消</string>
     <string name="create">新建</string>
     <string name="loading">正在载入&#8230;</string>
     <string name="file_empty">文件是空的</string>
     <string name="error">错误</string>
-    <string name="searchresults">%s 的搜索结果</string>
+    <string name="search_results">%s 的搜索结果</string>
     <string name="rename">重命名</string>
     <string name="save">保存</string>
-    <string name="bookmarksadded">书签已添加</string>
+    <string name="bookmarks_added">书签已添加</string>
     <string name="fileexist">已存在同名文件</string>
     <string name="name">名称</string>
     <string name="date">日期</string>
@@ -56,7 +56,7 @@
     <string name="size_capitalized">大小</string>
     <string name="size">文件夹大小</string>
     <string name="enterzipname">请输入 ZIP 文件名</string>
-    <string name="noappfound">无法找到可以打开此文件的应用</string>
+    <string name="no_app_found">无法找到可以打开此文件的应用</string>
     <string name="copying">正在复制</string>
     <string name="moving">正在移动</string>
     <string name="file">文件</string>
@@ -65,8 +65,8 @@
     <string name="entername">请输入名称</string>
     <string name="extracting">正在解压</string>
     <string name="stopping">正在停止</string>
-    <string name="openparent">打开上一级目录</string>
-    <string name="openwith">打开方式</string>
+    <string name="open_parent">打开上一级目录</string>
+    <string name="open_with">打开方式</string>
     <string name="share">分享</string>
     <string name="about">关于</string>
     <string name="extract">提取</string>
@@ -78,9 +78,9 @@
     <string name="dialog_delete_disclaimer">您确定要永久删除这些文件吗？删除后将无法恢复。</string>
     <string name="dialog_delete_title">永久删除？</string>
     <string name="deleting">正在删除</string>
-    <string name="questionset">您确定要将当前路径设置为此选项卡的默认位置吗？</string>
+    <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的默认位置吗？</string>
     <string name="directorysort">目录排序方式</string>
-    <string name="sortby">排序方式</string>
+    <string name="sort_by">排序方式</string>
     <string name="sort_only_this">仅应用于此目录</string>
     <string name="theme">主题</string>
     <string name="random">随机皮肤</string>
@@ -91,12 +91,12 @@
     <string name="paste">粘贴</string>
     <string name="history">历史记录</string>
     <string name="copy">复制</string>
-    <string name="rootmode">根目录浏览</string>
-    <string name="rootmodesummary">仅供已获取 Root 权限的设备使用，请谨慎启用该选项</string>
-    <string name="rootfailure">未获取 Root 权限</string>
-    <string name="selectall">全选</string>
+    <string name="root_mode">根目录浏览</string>
+    <string name="root_mode_summary">仅供已获取 Root 权限的设备使用，请谨慎启用该选项</string>
+    <string name="root_failure">未获取 Root 权限</string>
+    <string name="select_all">全选</string>
     <string name="delete">删除</string>
-    <string name="setashome">设为首页目录</string>
+    <string name="set_as_home">设为首页目录</string>
     
     <!-- New -->
     <!-- Array -->
@@ -111,11 +111,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">文件夹显示在顶部</string>
     <string name="filesOnTop">文件显示在顶部</string>
-    <string name="noneOnTop">文件与文件夹混合显示</string>
+    <string name="none_on_top">文件与文件夹混合显示</string>
     <!--SortBy-->
-    <string name="sortName">名称</string>
+    <string name="sort_name">名称</string>
     <string name="lastModified">最后修改时间</string>
-    <string name="sortSize">大小</string>
+    <string name="sort_size">大小</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">选择一个文件</string>
@@ -131,7 +131,7 @@
     <string name="enablerootmde">启用 Root 模式</string>
     <string name="goback">返回上一级</string>
     <string name="newfile">新文件</string>
-    <string name="nofiles">没有文件</string>
+    <string name="no_files">没有文件</string>
     <string name="used">已用空间</string>
     <string name="used_by_others">已被其他人使用</string>
     <string name="free">剩余空间</string>
@@ -142,43 +142,43 @@
     <string name="exit">退出应用</string>
     <string name="doforall">为所有项目执行操作</string>
     <string name="gridcolumnno">网格列数</string>
-    <string name="setRandom">更改将在重启应用后生效</string>
+    <string name="set_random">更改将在重启应用后生效</string>
     <string name="authors">开发人员</string>
     <string name="changelog">更新日志</string>
     <string name="ok">确定</string>
     <string name="ui">界面</string>
     <string name="general">通用</string>
-    <string name="thumbSummary">显示应用和图片的缩略图</string>
+    <string name="thumb_summary">显示应用和图片的缩略图</string>
     <string name="thumb">显示缩略图</string>
     <string name="hidden">显示隐藏文件和文件夹</string>
     <string name="lastModifiedSummary">显示文件的最后修改时间</string>
     <string name="lastModifiedPref">显示修改时间</string>
-    <string name="sizePrefSummary">显示文件大小及文件夹内文件数量</string>
-    <string name="sizePref">显示大小</string>
+    <string name="size_pref_summary">显示文件大小及文件夹内文件数量</string>
+    <string name="size_pref">显示大小</string>
     <string name="miscellaneous">其他</string>
-    <string name="rootPrefSummary">显示文件及文件夹的权限</string>
-    <string name="rootPref">显示权限</string>
-    <string name="aboutFileManager">关于 Amaze 文件管理器</string>
+    <string name="root_pref_summary">显示文件及文件夹的权限</string>
+    <string name="root_pref">显示权限</string>
+    <string name="about_amaze_file_manager_label">关于 Amaze 文件管理器</string>
     <string name="version">版本</string>
     <string name="rate">为本应用评分</string>
     <string name="feedback">反馈意见</string>
     <string name="hiddenfiles">已隐藏文件</string>
     <string name="type">类型</string>
-    <string name="rootdirectory">根目录</string>
-    <string name="addshortcut">创建快捷方式</string>
-    <string name="unsavedchanges">未保存修改</string>
-    <string name="unsavedchangesdesc">您已经修改了此文件，是否要在退出前保存您所作的修改？</string>
+    <string name="root_directory">根目录</string>
+    <string name="add_shortcut">创建快捷方式</string>
+    <string name="unsaved_changes">未保存修改</string>
+    <string name="unsaved_changes_description">您已经修改了此文件，是否要在退出前保存您所作的修改？</string>
     <string name="saving">保存</string>
-    <string name="packageinstaller">应用包安装程序</string>
+    <string name="package_installer">应用包安装程序</string>
     <string name="view">查看</string>
     <string name="install">安装</string>
     <string name="archive">压缩包</string>
-    <string name="archtext">这是一个压缩包文件，您要执行哪一项操作？</string>
-    <string name="pitext">这是一个应用安装包，您要执行哪一项操作？</string>
+    <string name="archive_text">这是一个压缩包文件，您要执行哪一项操作？</string>
+    <string name="package_installer_text">这是一个应用安装包，您要执行哪一项操作？</string>
     <string name="xda_title">XDA 论坛</string>
     <string name="xda_summary">寻求帮助或分享心得</string>
-    <string name="circularimages">对图像和视频使用圆形图标</string>
-    <string name="circularicons">使用圆形图标</string>
+    <string name="circular_images">对图像和视频使用圆形图标</string>
+    <string name="circular_icons">使用圆形图标</string>
     <string name="back_title">显示返回选项</string>
     <string name="back_summary">在列表的顶部显示返回选项</string>
     <string name="details">详细信息</string>
@@ -211,19 +211,19 @@
     <string name="zip_create_folder">ZIP 创建目录</string>
     <string name="archive_summary">压缩包内的文件会被解压到此目录，默认解压到压缩包所在目录。</string>
     <string name="zip_summary">新 ZIP 文件会被创建到此目录，默认创建压缩包到当前目录。</string>
-    <string name="openas">打开方式</string>
+    <string name="open_as">打开方式</string>
     <string name="text">文本</string>
     <string name="audio">音乐</string>
     <string name="video">视频</string>
     <string name="other">其他</string>
     <string name="image">图片</string>
     <string name="contributors">贡献者</string>
-    <string name="savepaths">记住路径</string>
-    <string name="savepathsummary">在选项卡中显示最近文件夹</string>
+    <string name="save_paths">记住路径</string>
+    <string name="save_path_summary">在选项卡中显示最近文件夹</string>
     <string name="select_intent">选择</string>
     <string name="database">数据库</string>
-    <string name="colourednavigation">导航栏变色</string>
-    <string name="colourednavigationsum">动态调整导航栏以适应皮肤颜色</string>
+    <string name="colored_navigation">导航栏变色</string>
+    <string name="colored_navigvation_sum">动态调整导航栏以适应皮肤颜色</string>
     <string name="color_title">颜色</string>
     <string name="color_summary">为各种界面组件设置颜色</string>
     <string name="primary_color_title">主色调（左侧面板）</string>
@@ -236,11 +236,11 @@
     <string name="files">文件</string>
     <string name="textreader">文本阅读器</string>
     <string name="databasereader">数据库读取器</string>
-    <string name="showDividers">显示分割线</string>
-    <string name="needsaccess">需要写入权限</string>
-    <string name="needsaccesssummary">请选择根目录下的 \t</string>
-    <string name="needsaccesssummary1">授予当前操作写入权限</string>
-    <string name="smb_con">SMB 共享连接</string>
+    <string name="show_dividers">显示分割线</string>
+    <string name="needs_access">需要写入权限</string>
+    <string name="needs_access_summary">请选择根目录下的 \t</string>
+    <string name="needs_access_summary1">授予当前操作写入权限</string>
+    <string name="smb_connection">SMB 共享连接</string>
     <string name="smb_server">服务器 IP 地址</string>
     <string name="username">用户名</string>
     <string name="password">密码</string>
@@ -262,7 +262,7 @@
     <string name="descending">降序排列</string>
     <string name="defualt">默认</string>
     <string name="doit">确定</string>
-    <string name="wanthelp"><u>需要帮助吗？</u></string>
+    <string name="want_help"><u>需要帮助吗？</u></string>
     <string name="quick">快速访问</string>
     <string name="recent">最近访问文件</string>
     <string name="edit">编辑</string>
@@ -271,16 +271,16 @@
     <string name="grantper">授予权限</string>
     <string name="grantfailed">权限未被授予</string>
     <string name="grant_storage_permission">该应用需要用户授予“读写存储空间”的权限，关闭对话框将退出应用。</string>
-    <string name="operationunsuccesful">操作失败</string>
+    <string name="operation_unsuccesful">操作失败</string>
     <string name="creatingfile">正在创建文件</string>
     <string name="creatingfolder">正在创建文件夹</string>
     <string name="renaming">正在重命名</string>
-    <string name="cantbeempty">%s 不能为空</string>
+    <string name="cant_be_empty">%s 不能为空</string>
     <string name="ip">地址</string>
-    <string name="connectionname">连接名称</string>
-    <string name="nodevicefound">未发现可用设备</string>
+    <string name="connection_name">连接名称</string>
+    <string name="no_device_found">未发现可用设备</string>
     <string name="path">路径</string>
-    <string name="renamebookmark">修改书签</string>
+    <string name="rename_bookmark">修改书签</string>
     <string name="cut">剪切</string>
     <string name="search">搜索</string>
     <string name="invalid_name">无效的名称</string>
@@ -294,7 +294,7 @@
     <string name="stop_ftp">停止</string>
     <string name="ftp_status_running">正在运行</string>
     <string name="ftp_status_not_running">没有运行</string>
-    <string name="ftp_no_wifi">请确保您已连接上可用的 WiFi</string>
+    <string name="ftp_no_wifi">请确保您已连接上可用的 Wi-Fi</string>
     <string name="domain">域名</string>
     <string name="invalid">无效的 %s</string>
     <string name="ftp_notif_starting">FTP 服务器正在启动中</string>
@@ -313,7 +313,7 @@
     <string name="translate_summary">前往 Amaze 本地化系统进行语言翻译</string>
     <string name="easter_egg_title">工作室模式</string>
     <string name="paypal_copy_message">Paypal ID 已复制至剪切板</string>
-    <string name="searchingdevices">正在搜索设备</string>
+    <string name="searching_devices">正在搜索设备</string>
     <string name="use_custom_ip">使用自定义 IP</string>
     <string name="bookmark_lost">无法找到书签，正在重新创建&#8230;</string>
 
@@ -503,16 +503,16 @@
     <string name="crypt_fingerprint_authenticate">请触摸传感器以继续</string>
     <string name="authenticate_password">输入密码</string>
     <string name="sidebar_preferences">侧边栏</string>
-    <string name="sidebarfolders_title">侧边栏快捷方式</string>
-    <string name="sidebarquickaccess_title">侧边栏快速访问</string>
-    <string name="showfolders_pref_title">显示快捷方式</string>
-    <string name="showfolders_pref">快捷方式</string>
-    <string name="showquickaccess_pref_title">显示快速访问</string>
-    <string name="showquickaccess_pref">快速访问</string>
+    <string name="sidebar_folders_title">侧边栏快捷方式</string>
+    <string name="sidebar_quick_access_title">侧边栏快速访问</string>
+    <string name="show_folders_pref_title">显示快捷方式</string>
+    <string name="show_folders_pref">快捷方式</string>
+    <string name="show_quick_access_pref_title">显示快速访问</string>
+    <string name="show_quick_access_pref">快速访问</string>
     <string name="create_shortcut">创建快捷方式</string>
     <string name="edit_shortcut">编辑快捷方式</string>
     <string name="directory">目录</string>
-    <string name="questiondelete_shortcut">是否删除快捷方式？</string>
+    <string name="question_delete_shortcut">是否删除快捷方式？</string>
     <string name="cloud_error_plugin">无法找到 Amaze Cloud 插件，请从应用商店下载。</string>
     <string name="cloud_error_failed_restart">无法加载此连接，请再次打开 Amaze Cloud。</string>
     <string name="cloud_remove">您想要移除此网盘吗？</string>
@@ -524,7 +524,7 @@
     <string name="showHeaders">显示页眉</string>
     
     <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-    <string name="noitems">无项目</string>
+    <string name="no_items">无项目</string>
     <string name="item">项目</string>
     <string name="items">个项目</string>
     
@@ -541,22 +541,22 @@
     <string name="intent_save_as">保存为&#8230;</string>
     <string name="go">进入</string>
     <string name="advanced">高级</string>
-    <string name="typeablepaths_title">自定义地址</string>
-    <string name="typeablepaths_summary">长按地址栏，以输入自定义地址</string>
+    <string name="typeable_paths_title">自定义地址</string>
+    <string name="typeable_paths_summary">长按地址栏，以输入自定义地址</string>
     <string name="send_email_to">发送邮件到</string>
     <string name="text_editor">文本编辑器设置</string>
     <string name="preference_newstack_title">新打开一个任务</string>
     <string name="preference_newstack_summary">新打开一个任务，会出现在最近任务列表里</string>
     <string name="developers">开发者</string>
-    <string name="nobitcoinapp">请安装比特币钱包</string>
-    <string name="channelname_normal">Amaze 通知</string>
-    <string name="channeldescription_normal">Amaze 文件管理器的通知</string>
-    <string name="channelname_ftp">Amaze FTP 服务器</string>
-    <string name="channeldescription_ftp">Amaze 文件管理器 FTP 服务器的通知</string>
+    <string name="no_bitcoin_app">请安装比特币钱包</string>
+    <string name="channel_name_normal">Amaze 通知</string>
+    <string name="channel_description_normal">Amaze 文件管理器的通知</string>
+    <string name="channel_name_ftp">Amaze FTP 服务器</string>
+    <string name="channel_description_ftp">Amaze 文件管理器 FTP 服务器的通知</string>
     <string name="processing">正在处理中&#8230;</string>
     <string name="failed_no_connection">无法加载文件，请查看连接是否有效</string>
     <string name="update">刷新</string>
-    <string name="scp_con">SCP/SFTP 连接</string>
+    <string name="scp_connection">SCP/SFTP 连接</string>
     <string name="scp_port">端口号</string>
     <string name="ssh_host_key_verification_prompt">\'%1$s\' 的远端连接无法建立，%2$s 密钥的指纹为 %3$s，是否确认连接？</string>
     <string name="ssh_host_key_verification_prompt_title">验证远端</string>
@@ -573,11 +573,11 @@
         请与您的系统管理员联系或设置新连接以继续连接到服务器。
     </string>
     <string name="ssh_key_prompt_passphrase">请输入密钥对应的密码</string>
-    <string name="addshortcut_not_supported_by_launcher">你的应用启动器不支持创建快捷方式</string>
-    <string name="selectcolorconfig">选择颜色配置</string>
+    <string name="add_shortcut_not_supported_by_launcher">你的应用启动器不支持创建快捷方式</string>
+    <string name="select_color_config">选择颜色配置</string>
     <string name="customize">自定义</string>
     <string name="custom">自定义</string>
-    <string name="preselectedconfigs_title">上次选择的颜色配置</string>
+    <string name="preselected_configs_title">上次选择的颜色配置</string>
     <string name="orange">橘黄色</string>
     <string name="blue">"蓝色"</string>
     <string name="green">绿色</string>
@@ -615,7 +615,7 @@
     <string name="multiple_invalid_archive_entries">无法解压一些文件，压缩文件已损坏或为恶意文件</string>
     <string name="saf_otg_explanation">你将进入 Android 文件系统，为了系统安全，请从左边 USB 设备列表选择设备。</string>
     <string name="donation_thanks">感谢您无私的捐赠，这将更加有利于我们项目的开发! (:</string>
-    <string name="enableMarqueeFilename">开启文件名滚动效果</string>
+    <string name="enable_marquee_filename">开启文件名滚动效果</string>
     <string name="cannot_extract_archive">不能开启压缩档 \"%s\"： %s</string>
     <string name="archive_unsupported_or_corrupt">不能开启压缩档 \"%s\"。可能是程式库不支援此压缩档，或者压缩档真的坏掉了。</string>
 </resources>

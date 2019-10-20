@@ -28,7 +28,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">အရွယ်အစား</string>
+  <string name="sort_size">အရွယ်အစား</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">ကျော်မည်</string>

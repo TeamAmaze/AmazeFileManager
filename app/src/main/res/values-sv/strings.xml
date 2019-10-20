@@ -26,14 +26,14 @@
   <string name="ftp">FTP-server</string>
     <string name="setting">Inställningar</string>
   <string name="select">Välj objekt</string>
-  <string name="pressagain">Tryck igen för att avsluta</string>
+  <string name="press_again">Tryck igen för att avsluta</string>
   <string name="open">Öppna</string>
   <string name="uninstall">Avinstallera</string>
   <string name="play">Play Store</string>
   <string name="properties">Egenskaper</string>
   <string name="copyingapk">Kopierar APK till </string>
     <string name="delbook">Ta bort bokmärke</string>
-  <string name="addtobook">Lägg till bokmärke</string>
+  <string name="add_to_bookmarks">Lägg till bokmärke</string>
   <string name="enterpath">Ange sökväg</string>
   <string name="cancel">AVBRYT</string>
   <string name="create">SKAPA</string>
@@ -47,7 +47,7 @@
   <string name="date">Datum</string>
   <string name="location">Plats</string>
   <string name="size_capitalized">Storlek</string>
-  <string name="noappfound">Ingen app hittades för att öppna denna fil</string>
+  <string name="no_app_found">Ingen app hittades för att öppna denna fil</string>
   <string name="copying">Kopierar</string>
   <string name="moving">Flyttar</string>
     <string name="file">Fil</string>
@@ -56,7 +56,7 @@
   <string name="entername">Ange namn</string>
   <string name="extracting">Extraherar</string>
   <string name="stopping">Stoppar</string>
-    <string name="openwith">Öppna med</string>
+    <string name="open_with">Öppna med</string>
   <string name="share">Dela</string>
   <string name="about">Om</string>
   <string name="extract">Extrahera</string>
@@ -68,7 +68,7 @@
   <string name="dialog_delete_disclaimer">Vill du verkligen ta bort följande filer?</string>
   <string name="dialog_delete_title">Bekräfta</string>
   <string name="deleting">Tar bort</string>
-    <string name="sortby">Sortera på</string>
+    <string name="sort_by">Sortera på</string>
   <string name="theme">Tema</string>
     <string name="random">Slumpat skinn</string>
   <string name="random_summary">Ställer in slumpad primärfärg vid uppstart</string>
@@ -77,12 +77,12 @@
   <string name="paste">Klistra in</string>
     <string name="history">Historia</string>
     <string name="copy">Kopiera</string>
-  <string name="rootmode">Root Explorer</string>
-  <string name="rootmodesummary">För rootade enheter endast. Kolla in det bara om du är säker på det.</string>
-    <string name="rootfailure">Root-åtkomst inte beviljat</string>
-  <string name="selectall">Markera alla</string>
+  <string name="root_mode">Root Explorer</string>
+  <string name="root_mode_summary">För rootade enheter endast. Kolla in det bara om du är säker på det.</string>
+    <string name="root_failure">Root-åtkomst inte beviljat</string>
+  <string name="select_all">Markera alla</string>
   <string name="delete">Ta bort</string>
-  <string name="setashome">Ange som hem</string>
+  <string name="set_as_home">Ange som hem</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -94,11 +94,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Mappar överst</string>
   <string name="filesOnTop">Filer överst</string>
-  <string name="noneOnTop">Ingen ovanpå</string>
+  <string name="none_on_top">Ingen ovanpå</string>
   <!--SortBy-->
-  <string name="sortName">Namn</string>
+  <string name="sort_name">Namn</string>
   <string name="lastModified">Senast ändrad</string>
-  <string name="sortSize">Storlek</string>
+  <string name="sort_size">Storlek</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Välj en fil</string>
@@ -112,7 +112,7 @@
     <string name="enablerootmde">Aktivera root-läge</string>
   <string name="goback">Gå tillbaka</string>
     <string name="newfile">Ny fil</string>
-  <string name="nofiles">Inga filer</string>
+  <string name="no_files">Inga filer</string>
     <string name="listview">Listvy</string>
   <string name="gridview">Rutnätsvy</string>
   <string name="permission">Behörigheter</string>
@@ -125,32 +125,32 @@
     <string name="ok">OK</string>
   <string name="ui">Gränssnitt</string>
   <string name="general">Allmänt</string>
-  <string name="thumbSummary">Visa miniatyrer av appar och bilder</string>
+  <string name="thumb_summary">Visa miniatyrer av appar och bilder</string>
   <string name="thumb">Visa miniatyrer</string>
   <string name="hidden">Visa dolda filer och mappar</string>
   <string name="lastModifiedPref">Visa senast ändrade</string>
-  <string name="sizePref">Visa storlekar</string>
+  <string name="size_pref">Visa storlekar</string>
   <string name="miscellaneous">Diverse</string>
-  <string name="rootPrefSummary">Visa behörigheter för filer och mappar</string>
-  <string name="rootPref">Visa behörigheter</string>
-  <string name="aboutFileManager">Om Amaze File Manager</string>
+  <string name="root_pref_summary">Visa behörigheter för filer och mappar</string>
+  <string name="root_pref">Visa behörigheter</string>
+  <string name="about_amaze_file_manager_label">Om Amaze File Manager</string>
   <string name="version">Version</string>
   <string name="rate">Betygsätt appen</string>
   <string name="feedback">Skicka feedback</string>
   <string name="hiddenfiles">Dolda filer</string>
   <string name="type">Typ</string>
-  <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Lägg till genväg</string>
-  <string name="unsavedchanges">Osparade ändringar</string>
+  <string name="root_directory">Root</string>
+    <string name="add_shortcut">Lägg till genväg</string>
+  <string name="unsaved_changes">Osparade ändringar</string>
   <string name="saving">Sparar</string>
-  <string name="packageinstaller">Paketinstallerare</string>
+  <string name="package_installer">Paketinstallerare</string>
   <string name="view">Visa</string>
   <string name="install">Installera</string>
   <string name="archive">Arkiv</string>
-  <string name="archtext">Detta är ett arkiv. Vilken åtgärd vill du utföra?</string>
+  <string name="archive_text">Detta är ett arkiv. Vilken åtgärd vill du utföra?</string>
   <string name="xda_title">XDA-tråd</string>
-    <string name="circularimages">Använd cirkulära ikoner för bilder och videor</string>
-  <string name="circularicons">Använd cirkulära ikoner</string>
+    <string name="circular_images">Använd cirkulära ikoner för bilder och videor</string>
+  <string name="circular_icons">Använd cirkulära ikoner</string>
   <string name="details">Information</string>
   <string name="translators">Översättare</string>
   <string name="german_translation_title">Tyska</string>
@@ -174,15 +174,15 @@
   <string name="warning">Varning</string>
   <string name="donate">Donera</string>
   <string name="archive_preferences">Arkiv-alternativ</string>
-  <string name="openas">Öppna som</string>
+  <string name="open_as">Öppna som</string>
   <string name="text">Text</string>
   <string name="audio">Audio</string>
   <string name="video">Video</string>
   <string name="image">Bild</string>
-  <string name="savepaths">Kom ihåg sökvägar</string>
+  <string name="save_paths">Kom ihåg sökvägar</string>
   <string name="select_intent">Markera</string>
     <string name="database">Databas</string>
-  <string name="colourednavigation">Färgat navigationsfält</string>
+  <string name="colored_navigation">Färgat navigationsfält</string>
   <string name="color_title">Färg</string>
   <string name="accent_color_title">Accentfärg</string>
   <string name="icon_color_title">Ikonfärg</string>
@@ -190,10 +190,10 @@
   <string name="files">Filer</string>
     <string name="textreader">Textläsare</string>
   <string name="databasereader">Databasläsare</string>
-  <string name="showDividers">Visa avdelare</string>
-  <string name="needsaccess">Skriv-åtkomst krävs</string>
-  <string name="needsaccesssummary">Välj rot-mappen för \t</string>
-  <string name="smb_con">SMB-anslutning</string>
+  <string name="show_dividers">Visa avdelare</string>
+  <string name="needs_access">Skriv-åtkomst krävs</string>
+  <string name="needs_access_summary">Välj rot-mappen för \t</string>
+  <string name="smb_connection">SMB-anslutning</string>
   <string name="smb_server">Serverns IP-adress</string>
   <string name="username">Användarnamn</string>
   <string name="password">Lösenord</string>
@@ -218,16 +218,16 @@
   <string name="grant">Tillåt</string>
   <string name="grantper">Bevilja behörighet</string>
   <string name="grantfailed">Behörighet inte beviljad</string>
-  <string name="operationunsuccesful">Åtgärd misslyckades</string>
+  <string name="operation_unsuccesful">Åtgärd misslyckades</string>
   <string name="creatingfile">Skapar fil</string>
   <string name="creatingfolder">Skapar mapp</string>
   <string name="renaming">Byter namn</string>
-  <string name="cantbeempty">%s kan inte vara tomt</string>
+  <string name="cant_be_empty">%s kan inte vara tomt</string>
   <string name="ip">Adress</string>
-  <string name="connectionname">Anslutningsnamn</string>
-  <string name="nodevicefound">Ingen enhet hittades</string>
+  <string name="connection_name">Anslutningsnamn</string>
+  <string name="no_device_found">Ingen enhet hittades</string>
   <string name="path">Sökväg</string>
-  <string name="renamebookmark">Modifiera bokmärke</string>
+  <string name="rename_bookmark">Modifiera bokmärke</string>
   <string name="cut">Klipp ut</string>
   <string name="search">Sök</string>
   <string name="invalid_name">Ogiltigt namn</string>
@@ -255,7 +255,7 @@
   <string name="translate_summary">Översätt Amaze till ditt språk</string>
   <string name="easter_egg_title">Studioläge</string>
   <string name="paypal_copy_message">PayPal-UD kopierat till urklipp</string>
-  <string name="searchingdevices">Söker efter enheter</string>
+  <string name="searching_devices">Söker efter enheter</string>
   <string name="use_custom_ip">Använd egen IP</string>
   <string name="bookmark_lost">Bokmärke hittades inte, återskapar&#8230;</string>
   <string name="share_limit">Kan inte dela fler än 100 filer</string>

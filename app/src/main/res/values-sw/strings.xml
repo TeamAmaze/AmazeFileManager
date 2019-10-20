@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Ukubwa</string>
+  <string name="sort_size">Ukubwa</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Toleo</string>

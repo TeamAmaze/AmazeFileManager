@@ -33,7 +33,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Ölçü</string>
+  <string name="sort_size">Ölçü</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">Keç</string>

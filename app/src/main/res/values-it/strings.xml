@@ -27,7 +27,7 @@
   <string name="ftp">Server FTP</string>
     <string name="setting">Impostazioni</string>
   <string name="select">Seleziona elemento</string>
-  <string name="pressagain">Premi di nuovo per uscire</string>
+  <string name="press_again">Premi di nuovo per uscire</string>
   <string name="open">Apri</string>
   <string name="backup">Backup</string>
   <string name="uninstall">Disinstalla</string>
@@ -35,7 +35,7 @@
   <string name="properties">Proprietà</string>
   <string name="copyingapk">Copia APK in corso in</string>
     <string name="delbook">Elimina Preferito</string>
-  <string name="addtobook">Aggiungi a segnalibro</string>
+  <string name="add_to_bookmarks">Aggiungi a segnalibro</string>
   <string name="enterpath">Inserisci percorso</string>
   <string name="cancel">ANNULLA</string>
   <string name="create">CREA</string>
@@ -44,7 +44,7 @@
   <string name="error">Errore</string>
     <string name="rename">Rinomina</string>
   <string name="save">Salva</string>
-    <string name="bookmarksadded">Segnalibri aggiunti</string>
+    <string name="bookmarks_added">Segnalibri aggiunti</string>
   <string name="fileexist">Un file con quel nome esiste già</string>
     <string name="name">Nome</string>
   <string name="date">Data</string>
@@ -52,7 +52,7 @@
   <string name="size_capitalized">Dimensioni</string>
   <string name="size">dimensione della Cartella</string>
     <string name="enterzipname">Inserisci nome file ZIP</string>
-  <string name="noappfound">Nessuna app trovata per aprire questo file</string>
+  <string name="no_app_found">Nessuna app trovata per aprire questo file</string>
   <string name="copying">Copia in corso</string>
   <string name="moving">Spostamento in corso</string>
     <string name="file">File</string>
@@ -61,8 +61,8 @@
   <string name="entername">Inserisci nome</string>
   <string name="extracting">Estrazione</string>
   <string name="stopping">Interruzione</string>
-    <string name="openparent">Apri cartella superiore</string>
-  <string name="openwith">Apri con</string>
+    <string name="open_parent">Apri cartella superiore</string>
+  <string name="open_with">Apri con</string>
   <string name="share">Condividi</string>
   <string name="about">Info</string>
   <string name="extract">Estrai</string>
@@ -74,9 +74,9 @@
   <string name="dialog_delete_disclaimer">Vuoi davvero eliminare i seguenti file?</string>
   <string name="dialog_delete_title">Conferma</string>
   <string name="deleting">Eliminazione</string>
-  <string name="questionset">Vuoi impostare il percorso corrente come home per questa scheda?</string>
+  <string name="question_set_path_as_home">Vuoi impostare il percorso corrente come home per questa scheda?</string>
     <string name="directorysort">Modalità ordinamento cartelle</string>
-  <string name="sortby">Ordina per</string>
+  <string name="sort_by">Ordina per</string>
   <string name="theme">Tema</string>
     <string name="random">Skin casuale</string>
   <string name="random_summary">Imposta colore primario casuale all\'avvio</string>
@@ -86,12 +86,12 @@
   <string name="paste">Incolla</string>
     <string name="history">Cronologia</string>
     <string name="copy">Copia</string>
-  <string name="rootmode">Sfoglia root</string>
-  <string name="rootmodesummary">Solo per dispositivi con root. Abilita quest\'opzione solo se sai quello che stai facendo.</string>
-    <string name="rootfailure">Accesso root non abilitato</string>
-    <string name="selectall">Seleziona tutto</string>
+  <string name="root_mode">Sfoglia root</string>
+  <string name="root_mode_summary">Solo per dispositivi con root. Abilita quest\'opzione solo se sai quello che stai facendo.</string>
+    <string name="root_failure">Accesso root non abilitato</string>
+    <string name="select_all">Seleziona tutto</string>
   <string name="delete">Elimina</string>
-  <string name="setashome">Imposta come home</string>
+  <string name="set_as_home">Imposta come home</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -103,11 +103,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Prima le cartelle</string>
   <string name="filesOnTop">Prima i file</string>
-  <string name="noneOnTop">Non mettere nulla per primo</string>
+  <string name="none_on_top">Non mettere nulla per primo</string>
   <!--SortBy-->
-  <string name="sortName">Nome</string>
+  <string name="sort_name">Nome</string>
   <string name="lastModified">Ultima modifica</string>
-  <string name="sortSize">Dimensioni</string>
+  <string name="sort_size">Dimensioni</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Seleziona un file</string>
@@ -122,7 +122,7 @@
   <string name="enablerootmde">Abilità modalità root</string>
   <string name="goback">Indietro</string>
     <string name="newfile">Nuovo file</string>
-  <string name="nofiles">Nessun file</string>
+  <string name="no_files">Nessun file</string>
     <string name="used">spazio utilizzato</string>
   <string name="used_by_others">utilizzato da altri utenti</string>
   <string name="free">spazio libero</string>
@@ -133,7 +133,7 @@
   <string name="exit">Esci</string>
     <string name="doforall">Per tutti gli elementi</string>
   <string name="gridcolumnno">Numero di colonne nella vista griglia</string>
-    <string name="setRandom">
+    <string name="set_random">
 I cambiamenti saranno effettivi dopo il riavvio dell\'app
 </string>
   <string name="authors">Autori</string>
@@ -141,37 +141,37 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="ok">OK</string>
     <string name="ui">Interfaccia</string>
   <string name="general">Generale</string>
-  <string name="thumbSummary">Mostra anteprime di app ed immagini</string>
+  <string name="thumb_summary">Mostra anteprime di app ed immagini</string>
   <string name="thumb">Mostra anteprime</string>
   <string name="hidden">Mostra file e cartelle nascosti</string>
   <string name="lastModifiedSummary">Mostra la data e l\'ora relative all\'ultima modifica del file</string>
   <string name="lastModifiedPref">Mostra ultima modifica</string>
-  <string name="sizePrefSummary">Mostra dimensioni dei file e numero di elementi nelle cartelle</string>
-  <string name="sizePref">Mostra dimensioni</string>
+  <string name="size_pref_summary">Mostra dimensioni dei file e numero di elementi nelle cartelle</string>
+  <string name="size_pref">Mostra dimensioni</string>
   <string name="miscellaneous">Varie</string>
-  <string name="rootPrefSummary">Mostra permessi di file e cartelle</string>
-  <string name="rootPref">Mostra permessi</string>
-  <string name="aboutFileManager">Informazioni su Amaze File Manager</string>
+  <string name="root_pref_summary">Mostra permessi di file e cartelle</string>
+  <string name="root_pref">Mostra permessi</string>
+  <string name="about_amaze_file_manager_label">Informazioni su Amaze File Manager</string>
   <string name="version">Versione</string>
   <string name="rate">Vota l\'app</string>
   <string name="feedback">Invia feedback</string>
   <string name="hiddenfiles">File nascosti</string>
   <string name="type">Tipo</string>
-    <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Aggiungi collegamento</string>
-  <string name="unsavedchanges">Modifiche non salvate</string>
-  <string name="unsavedchangesdesc">Hai delle modifiche non salvate, vuoi salvarle prima di uscire?</string>
+    <string name="root_directory">Root</string>
+    <string name="add_shortcut">Aggiungi collegamento</string>
+  <string name="unsaved_changes">Modifiche non salvate</string>
+  <string name="unsaved_changes_description">Hai delle modifiche non salvate, vuoi salvarle prima di uscire?</string>
   <string name="saving">Salvataggio in corso</string>
-  <string name="packageinstaller">Installatore pacchetti</string>
+  <string name="package_installer">Installatore pacchetti</string>
   <string name="view">Visualizza</string>
   <string name="install">Installa</string>
   <string name="archive">Archivio</string>
-  <string name="archtext">Questo è un archivio. Quale operazione vorresti effettuare?</string>
-  <string name="pitext">Questo è un package installer. Quale operazione vorresti effettuare?</string>
+  <string name="archive_text">Questo è un archivio. Quale operazione vorresti effettuare?</string>
+  <string name="package_installer_text">Questo è un package installer. Quale operazione vorresti effettuare?</string>
   <string name="xda_title">Thread XDA</string>
   <string name="xda_summary">Q&amp;A, aiuto e risoluzione problemi</string>
-    <string name="circularimages">Usa icone circolari per immagini e video</string>
-  <string name="circularicons">Usa icone circolari</string>
+    <string name="circular_images">Usa icone circolari per immagini e video</string>
+  <string name="circular_icons">Usa icone circolari</string>
   <string name="back_title">Naviga indietro</string>
   <string name="back_summary">Abilita navigazione personalizzata in cima alle liste</string>
   <string name="details">Dettagli</string>
@@ -204,19 +204,19 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="zip_create_folder">Cartella creazione file ZIP</string>
   <string name="archive_summary">Gli archivi verranno estratti in questa cartella. Il valore predefinito è la cartella in cui l\'archivio è presente.</string>
   <string name="zip_summary">I nuovi file ZIP verranno creati in questa cartella. Il valore predefinito è la cartella in cui i file sono presenti.</string>
-  <string name="openas">Apri come</string>
+  <string name="open_as">Apri come</string>
   <string name="text">Testo</string>
   <string name="audio">Audio</string>
   <string name="video">Video</string>
   <string name="other">Altro</string>
   <string name="image">Immagine</string>
   <string name="contributors">Collaboratori</string>
-  <string name="savepaths">Ricorda percorsi</string>
-  <string name="savepathsummary">All\'avvio sarà mostrata la cartella vista più di recente per ogni scheda</string>
+  <string name="save_paths">Ricorda percorsi</string>
+  <string name="save_path_summary">All\'avvio sarà mostrata la cartella vista più di recente per ogni scheda</string>
   <string name="select_intent">Seleziona</string>
     <string name="database">Database</string>
-  <string name="colourednavigation">Barra di navigazione colorata</string>
-  <string name="colourednavigationsum">Specifica se la barra di navigazione di sistema sarà colorata o meno insieme alla ski</string>
+  <string name="colored_navigation">Barra di navigazione colorata</string>
+  <string name="colored_navigvation_sum">Specifica se la barra di navigazione di sistema sarà colorata o meno insieme alla ski</string>
     <string name="color_title">Colori</string>
   <string name="color_summary">Imposta i colori dei vari componenti dell\'interfaccia utente</string>
   <string name="primary_color_title">Colore primario (scheda di sinistra)</string>
@@ -229,11 +229,11 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="files">File</string>
     <string name="textreader">Visualizzatore testo</string>
   <string name="databasereader">Visualizzatore database</string>
-  <string name="showDividers">Mostra divisori</string>
-    <string name="needsaccess">Permessi di scrittura richiesti</string>
-  <string name="needsaccesssummary">Seleziona la cartella root di \t</string>
-  <string name="needsaccesssummary1">\tper permettere la scrittura</string>
-  <string name="smb_con">Connessione SMB</string>
+  <string name="show_dividers">Mostra divisori</string>
+    <string name="needs_access">Permessi di scrittura richiesti</string>
+  <string name="needs_access_summary">Seleziona la cartella root di \t</string>
+  <string name="needs_access_summary1">\tper permettere la scrittura</string>
+  <string name="smb_connection">Connessione SMB</string>
   <string name="smb_server">Indirizzo IP server</string>
   <string name="username">Nome utente</string>
   <string name="password">Password</string>
@@ -254,7 +254,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="descending">Decrescente</string>
   <string name="defualt">Predefinito</string>
   <string name="doit">Fallo</string>
-  <string name="wanthelp">
+  <string name="want_help">
 <u>Serve aiuto?</u>
 </string>
   <string name="quick">Accesso rapido</string>
@@ -265,16 +265,16 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="grantper">Concedi autorizzazione</string>
   <string name="grantfailed">Autorizzazione non concessa</string>
   <string name="grant_storage_permission">L\'app richiede l\'autorizzazione di accedere all\'archiviazione per poter continuare. L\'annullamento di questa finestra di dialogo causerà l\'uscita dall\'app.</string>
-  <string name="operationunsuccesful">Operazione non riuscita</string>
+  <string name="operation_unsuccesful">Operazione non riuscita</string>
   <string name="creatingfile">Creazione file in corso</string>
   <string name="creatingfolder">Creazione cartella in corso</string>
   <string name="renaming">Ridenominazione in corso</string>
-  <string name="cantbeempty">%s non può essere vuoto</string>
+  <string name="cant_be_empty">%s non può essere vuoto</string>
   <string name="ip">Indirizzo</string>
-  <string name="connectionname">Nome connessione</string>
-  <string name="nodevicefound">Nessun dispositivo trovato</string>
+  <string name="connection_name">Nome connessione</string>
+  <string name="no_device_found">Nessun dispositivo trovato</string>
   <string name="path">Percorso</string>
-  <string name="renamebookmark">Modifica segnalibro</string>
+  <string name="rename_bookmark">Modifica segnalibro</string>
   <string name="cut">Taglia</string>
   <string name="search">Cerca</string>
   <string name="invalid_name">Nome non valido</string>
@@ -289,7 +289,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
   <string name="stop_ftp">Ferma</string>
   <string name="ftp_status_running">In esecuzione</string>
   <string name="ftp_status_not_running">Non in esecuzione</string>
-  <string name="ftp_no_wifi">Assicurati di essere connesso al WiFi</string>
+  <string name="ftp_no_wifi">Assicurati di essere connesso al Wi-Fi</string>
   <string name="domain">Dominio</string>
   <string name="invalid">%s non valido</string>
   <string name="ftp_notif_starting">Server FTP in fase di avvio</string>
@@ -308,11 +308,11 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
   <string name="translate_summary">Traduci Amaze nella tua lingua</string>
   <string name="easter_egg_title">Modalità studio</string>
   <string name="paypal_copy_message">ID PayPal copiato negli Appunti</string>
-  <string name="searchingdevices">Ricerca dispositivi in corso</string>
+  <string name="searching_devices">Ricerca dispositivi in corso</string>
   <string name="use_custom_ip">Utilizza IP personalizzato</string>
   <string name="bookmark_lost">Segnalibro non trovato, lo sto creando nuovamente&#8230;</string>
   <string name="smb_instructions">
-<html><body> <h1>Come accedere alla cartella condivisa di windows (smb) android</h1>\n\n <ul><li><b>Abilita condivisione File</b> \n</li> <p style="margin-left: 40px"> aprire il pannello di controllo, fare clic su Scegli Gruppo Home e opzioni in rete e Internet di condivisione e fare clic su Modifica impostazioni di condivisione avanzata. Abilitare la condivisione file e stampanti feature.\n\n</p> <li><b>impostazioni di condivisione di File aggiuntivi</b> \n</li> <p style="margin-left: 40px"> è possibile anche configurare l\'altro avanzate impostazioni condivisione qui. \n ad esempio, è possibile abilitare l\'accesso ai tuoi file senza una password se ti fidi di tutti i dispositivi sulla rete locale. Una volta che condivisione file e stampanti è attivata, si può aprire Esplora File o Esplora risorse di Windows, destro del mouse su una cartella che si desidera condividere e selezionare Proprietà. \n clicca sul pulsante Condividi e rendere la cartella disponibile sulla network.\n\n</p> <li><b>assicurarsi che entrambi i dispositivi siano sulla stessa Wifi</b> \n</li> <p style="margin-left: 40px"> questa caratteristica rende i file disponibili sulla rete locale, quindi il vostro PC e dispositivi mobili devono essere sulla stessa rete locale. Si can \' t accedere una cartella condivisa di Windows su Internet o quando lo smartphone è collegato ai suoi dati mobili — deve essere collegato a Wi-Fi.\n\n</p> <li><b>Trovare IP indirizzo</b> \n</li> <p style="margin-left: 40px"> Open Command Prompt. Digitare \"ipconfig\" e premere INVIO. Guardare per Default Gateway sotto la scheda di rete per l\'indirizzo IP del router. Cercare \"IPv4 Address\" sotto la stessa sezione di adattatore per trovare IP address.\n\n del computer</p> <b>invio dettagli nella finestra di dialogo smb</b> \n</ul></body></html>    </string>
+<html><body> <h1>Come accedere alla cartella condivisa di Windows (smb) android</h1>\n\n <ul><li><b>Abilita condivisione File</b> \n</li> <p style="margin-left: 40px"> aprire il pannello di controllo, fare clic su Scegli Gruppo Home e opzioni in rete e Internet di condivisione e fare clic su Modifica impostazioni di condivisione avanzata. Abilitare la condivisione file e stampanti feature.\n\n</p> <li><b>impostazioni di condivisione di File aggiuntivi</b> \n</li> <p style="margin-left: 40px"> è possibile anche configurare l\'altro avanzate impostazioni condivisione qui. \n ad esempio, è possibile abilitare l\'accesso ai tuoi file senza una password se ti fidi di tutti i dispositivi sulla rete locale. Una volta che condivisione file e stampanti è attivata, si può aprire Esplora File o Esplora risorse di Windows, destro del mouse su una cartella che si desidera condividere e selezionare Proprietà. \n clicca sul pulsante Condividi e rendere la cartella disponibile sulla network.\n\n</p> <li><b>assicurarsi che entrambi i dispositivi siano sulla stessa Wifi</b> \n</li> <p style="margin-left: 40px"> questa caratteristica rende i file disponibili sulla rete locale, quindi il vostro PC e dispositivi mobili devono essere sulla stessa rete locale. Si can \' t accedere una cartella condivisa di Windows su Internet o quando lo smartphone è collegato ai suoi dati mobili — deve essere collegato a Wi-Fi.\n\n</p> <li><b>Trovare IP indirizzo</b> \n</li> <p style="margin-left: 40px"> Open Command Prompt. Digitare \"ipconfig\" e premere INVIO. Guardare per Default Gateway sotto la scheda di rete per l\'indirizzo IP del router. Cercare \"IPv4 Address\" sotto la stessa sezione di adattatore per trovare IP address.\n\n del computer</p> <b>invio dettagli nella finestra di dialogo smb</b> \n</ul></body></html>    </string>
   <string name="share_limit">Impossibile condividere più di 100 file</string>
   <string name="otg_access">Seleziona la radice del dispositivo OTG</string>
   <string name="opening">Apertura in corso..</string>
@@ -450,16 +450,16 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
   <string name="crypt_decryption_fail_password">Password errata!</string>
   <string name="crypt_fingerprint_authenticate">Tocca il sensore per continuare</string>
   <string name="authenticate_password">Inserisci la password</string>
-  <string name="sidebarfolders_title">Collegamenti della barra laterale</string>
-  <string name="sidebarquickaccess_title">Accesso rapido Sidebar</string>
-  <string name="showfolders_pref_title">Visualizzare tasti di scelta rapida</string>
-  <string name="showfolders_pref">Tasti di scelta rapida</string>
-  <string name="showquickaccess_pref_title">Visualizza gli accessi rapidi</string>
-  <string name="showquickaccess_pref">Accessi rapidi</string>
+  <string name="sidebar_folders_title">Collegamenti della barra laterale</string>
+  <string name="sidebar_quick_access_title">Accesso rapido Sidebar</string>
+  <string name="show_folders_pref_title">Visualizzare tasti di scelta rapida</string>
+  <string name="show_folders_pref">Tasti di scelta rapida</string>
+  <string name="show_quick_access_pref_title">Visualizza gli accessi rapidi</string>
+  <string name="show_quick_access_pref">Accessi rapidi</string>
   <string name="create_shortcut">Crea collegamento</string>
   <string name="edit_shortcut">Modificare la scelta rapida</string>
   <string name="directory">Directory</string>
-  <string name="questiondelete_shortcut">Eliminare il collegamento?</string>
+  <string name="question_delete_shortcut">Eliminare il collegamento?</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
   <string name="cloud_error_failed_restart">Impossibile caricare la connessione.         Si prega di aprire una volta Amaze Cloud.</string>
   <string name="cloud_remove">Si desidera rimuovere la connessione cloud?</string>
@@ -469,7 +469,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
   <string name="cloud_token_lost">Token perso, accedi nuovamente</string>
   <string name="showHeaders">Mostra Header</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="noitems">Nessun elemento</string>
+  <string name="no_items">Nessun elemento</string>
   <string name="item">Elemento</string>
   <string name="items">Elementi</string>
   <string name="byte_singular">byte</string>

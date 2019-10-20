@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">ಗಾತ್ರ</string>
+  <string name="sort_size">ಗಾತ್ರ</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">ಆವೃತ್ತಿ</string>

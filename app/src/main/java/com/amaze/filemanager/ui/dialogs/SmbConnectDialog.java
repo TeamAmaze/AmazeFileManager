@@ -95,8 +95,8 @@ public class SmbConnectDialog extends DialogFragment {
         final String path=getArguments().getString("path");
         final String name=getArguments().getString("name");
         context=getActivity();
-        emptyAddress = getString(R.string.cantbeempty,getString(R.string.ip) );
-        emptyName = getString(R.string.cantbeempty,getString(R.string.connectionname) );
+        emptyAddress = getString(R.string.cant_be_empty,getString(R.string.ip) );
+        emptyName = getString(R.string.cant_be_empty,getString(R.string.connection_name) );
         invalidDomain = getString(R.string.invalid,getString(R.string.domain));
         invalidUsername = getString(R.string.invalid,getString(R.string.username).toLowerCase());
         if(getActivity() instanceof SmbConnectionListener){
@@ -104,7 +104,7 @@ public class SmbConnectDialog extends DialogFragment {
         }
         final SharedPreferences sharedPreferences= PreferenceManager.getDefaultSharedPreferences(context);
         final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(context);
-        ba3.title((R.string.smb_con));
+        ba3.title((R.string.smb_connection));
         ba3.autoDismiss(false);
         final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
         final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
@@ -207,7 +207,7 @@ public class SmbConnectDialog extends DialogFragment {
             ip.setText(path);
             user.requestFocus();
         } else {
-            conName.setText(R.string.smb_con);
+            conName.setText(R.string.smb_connection);
             conName.requestFocus();
         }
 

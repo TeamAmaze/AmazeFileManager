@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Saiz</string>
+  <string name="sort_size">Saiz</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Versi</string>

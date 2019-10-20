@@ -31,7 +31,7 @@
     <string name="ftp">FTP zerbitzaria</string>
     <string name="setting">Ezarpenak</string>
     <string name="select">Hautatu elementua</string>
-    <string name="pressagain">Sakatu berriro irteteko</string>
+    <string name="press_again">Sakatu berriro irteteko</string>
     <string name="open">Ireki</string>
     <string name="backup">Babeskopia</string>
     <string name="uninstall">Desinstalatu</string>
@@ -39,17 +39,17 @@
     <string name="properties">Propietateak</string>
     <string name="copyingapk">apk hona kopiatzen </string>
     <string name="delbook">Ezabatu laster-marka</string>
-    <string name="addtobook">Gehitu laster-marka</string>
+    <string name="add_to_bookmarks">Gehitu laster-marka</string>
     <string name="enterpath">Sartu bidea</string>
     <string name="cancel">UTZI</string>
     <string name="create">SORTU</string>
     <string name="loading">Kargatzen&#8230;</string>
     <string name="file_empty">Fitxategia hutsik dago</string>
     <string name="error">Errorea</string>
-    <string name="searchresults">%s(r)en bilaketaren emaitzak</string>
+    <string name="search_results">%s(r)en bilaketaren emaitzak</string>
     <string name="rename">Berrizendatu</string>
     <string name="save">Gorde</string>
-    <string name="bookmarksadded">Laster-markak gehitu dira</string>
+    <string name="bookmarks_added">Laster-markak gehitu dira</string>
     <string name="fileexist">Izen bereko fitxategia existitzen da </string>
     <string name="name">Izena</string>
     <string name="date">Data</string>
@@ -57,7 +57,7 @@
     <string name="size_capitalized">Tamaina</string>
     <string name="size">Karpetaren tamaina</string>
     <string name="enterzipname">Sartu zip fitxategiaren izena</string>
-    <string name="noappfound">Ez da aurkitu fitxategi hau irekitzeko aplikaziorik</string>
+    <string name="no_app_found">Ez da aurkitu fitxategi hau irekitzeko aplikaziorik</string>
     <string name="copying">Kopiatzen</string>
     <string name="moving">Lekuz aldatzen</string>
     <string name="file">Fitxategia</string>
@@ -66,8 +66,8 @@
     <string name="entername">Sartu izena</string>
     <string name="extracting">Erauzten</string>
     <string name="stopping">Gelditzen</string>
-    <string name="openparent">Ireki guraso direktorioa</string>
-    <string name="openwith">Ireki honekin</string>
+    <string name="open_parent">Ireki guraso direktorioa</string>
+    <string name="open_with">Ireki honekin</string>
     <string name="share">Partekatu</string>
     <string name="about">Honi buruz</string>
     <string name="extract">Erauzi</string>
@@ -79,9 +79,9 @@
     <string name="dialog_delete_disclaimer">Beheko elementuak ezabatzean zure gailutik behin betiko kenduko dira eta ezingo dira berreskuratu.</string>
     <string name="dialog_delete_title">Gailuak behin betiko ezabatu?</string>
     <string name="deleting">Ezabatzen</string>
-    <string name="questionset">Uneko bidea fitxa honen etxe bezala ezarri nahi duzu?</string>
+    <string name="question_set_path_as_home">Uneko bidea fitxa honen etxe bezala ezarri nahi duzu?</string>
     <string name="directorysort">Direktorioa sailkatzeko modua</string>
-    <string name="sortby">Sailkatu honen arabera</string>
+    <string name="sort_by">Sailkatu honen arabera</string>
     <string name="sort_only_this">Soilik karpeta hau</string>
     <string name="theme">Gaia</string>
     <string name="random">Ausazko azala</string>
@@ -92,12 +92,12 @@
     <string name="paste">Itsatsi</string>
     <string name="history">Historia</string>
     <string name="copy">Kopiatu</string>
-    <string name="rootmode">Root esploratzailea</string>
-    <string name="rootmodesummary">Root duten gailuentzat soilik. Ziur bazaude bakarrik hautatu.</string>
-    <string name="rootfailure">Root baimenik ez</string>
-    <string name="selectall">Hautatu dena</string>
+    <string name="root_mode">Root esploratzailea</string>
+    <string name="root_mode_summary">Root duten gailuentzat soilik. Ziur bazaude bakarrik hautatu.</string>
+    <string name="root_failure">Root baimenik ez</string>
+    <string name="select_all">Hautatu dena</string>
     <string name="delete">Ezabatu</string>
-    <string name="setashome">Ezarri etxeko karpeta bezala</string>
+    <string name="set_as_home">Ezarri etxeko karpeta bezala</string>
 
     <!-- New -->
     <!-- Array -->
@@ -112,11 +112,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Karpetak gainean</string>
     <string name="filesOnTop">Fitxategiak gainean</string>
-    <string name="noneOnTop">Bat ere ez gainean</string>
+    <string name="none_on_top">Bat ere ez gainean</string>
     <!--SortBy-->
-    <string name="sortName">Izena</string>
+    <string name="sort_name">Izena</string>
     <string name="lastModified">Azken aldaketa</string>
-    <string name="sortSize">Tamaina</string>
+    <string name="sort_size">Tamaina</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Hautatu fitxategi bat</string>
@@ -132,7 +132,7 @@
     <string name="enablerootmde">Gaitu root modua</string>
     <string name="goback">Atzera</string>
     <string name="newfile">Fitxategi berria</string>
-    <string name="nofiles">Fitxategirik ez</string>
+    <string name="no_files">Fitxategirik ez</string>
     <string name="used">erabilita</string>
     <string name="used_by_others">besteek erabilita</string>
     <string name="free">libre</string>
@@ -143,43 +143,43 @@
     <string name="exit">Irten</string>
     <string name="doforall">Egin elementu guztietarako</string>
     <string name="gridcolumnno">Zutabe kopurua sareta ikuspegian</string>
-    <string name="setRandom">Aldaketak aplikazioa berrabiarazterakoan gertatuko dira</string>
+    <string name="set_random">Aldaketak aplikazioa berrabiarazterakoan gertatuko dira</string>
     <string name="authors">Egileak</string>
     <string name="changelog">Aldaketak</string>
     <string name="ok">ADOS</string>
     <string name="ui">Interfazea</string>
     <string name="general">Orokorra</string>
-    <string name="thumbSummary">Erakutsi aplikazioen eta irudien koadro txikiak</string>
+    <string name="thumb_summary">Erakutsi aplikazioen eta irudien koadro txikiak</string>
     <string name="thumb">Erakutsi koadro txikiak</string>
     <string name="hidden">Ezkutuko fitxategi eta karpetak erakutsi</string>
     <string name="lastModifiedSummary">Erakutsi fitxategia azken aldiz aldatu zen data eta ordua</string>
     <string name="lastModifiedPref">Erakutsi azken aldaketa</string>
-    <string name="sizePrefSummary">Erakutsi fitxategien tamaina eta elementu kopurua karpetetan</string>
-    <string name="sizePref">Erakutsi tamainak</string>
+    <string name="size_pref_summary">Erakutsi fitxategien tamaina eta elementu kopurua karpetetan</string>
+    <string name="size_pref">Erakutsi tamainak</string>
     <string name="miscellaneous">Beste batzuk</string>
-    <string name="rootPrefSummary">Erakutsi fitxategi eta karpeten baimenak</string>
-    <string name="rootPref">Erakutsi baimenak</string>
-    <string name="aboutFileManager">Amaze File Manager-i buruz</string>
+    <string name="root_pref_summary">Erakutsi fitxategi eta karpeten baimenak</string>
+    <string name="root_pref">Erakutsi baimenak</string>
+    <string name="about_amaze_file_manager_label">Amaze File Manager-i buruz</string>
     <string name="version">Bertsioa</string>
     <string name="rate">Baloratu aplikazioa</string>
     <string name="feedback">Bidali iritzia</string>
     <string name="hiddenfiles">Ezkutuko fitxategiak</string>
     <string name="type">Mota</string>
-    <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Gehitu lasterbidea</string>
-    <string name="unsavedchanges">Gorde gabeko aldaketak</string>
-    <string name="unsavedchangesdesc">Gorde ez diren aldaketak dituzu, irten baino lehen gorde nahi al dituzu?</string>
+    <string name="root_directory">Root</string>
+    <string name="add_shortcut">Gehitu lasterbidea</string>
+    <string name="unsaved_changes">Gorde gabeko aldaketak</string>
+    <string name="unsaved_changes_description">Gorde ez diren aldaketak dituzu, irten baino lehen gorde nahi al dituzu?</string>
     <string name="saving">Gordetzen</string>
-    <string name="packageinstaller">Pakete instalatzailea</string>
+    <string name="package_installer">Pakete instalatzailea</string>
     <string name="view">Ikusi</string>
     <string name="install">Instalatu</string>
     <string name="archive">Artxiboa</string>
-    <string name="archtext">Hau artxibo bat da. Zer egin nahi duzu?</string>
-    <string name="pitext">Hau pakete instalatzaile bat da. Zer egin nahi duzu?</string>
+    <string name="archive_text">Hau artxibo bat da. Zer egin nahi duzu?</string>
+    <string name="package_installer_text">Hau pakete instalatzaile bat da. Zer egin nahi duzu?</string>
     <string name="xda_title">XDA haria</string>
     <string name="xda_summary">G&amp;E, Laguntza &amp; Arazoen konponketa</string>
-    <string name="circularimages">Erabili ikono zirkularrak irudi eta bideoetan</string>
-    <string name="circularicons">Erabili ikono zirkularrak</string>
+    <string name="circular_images">Erabili ikono zirkularrak irudi eta bideoetan</string>
+    <string name="circular_icons">Erabili ikono zirkularrak</string>
     <string name="back_title">Atzerako nabigazioa</string>
     <string name="back_summary">Atzerako nabigazio pertsonalizatua gaitzen du zerrendaren goiko aldera</string>
     <string name="details">Xehetasunak</string>
@@ -213,19 +213,19 @@
     <string name="zip_create_folder">Zip fitxategiak sortzeko karpeta</string>
     <string name="archive_summary">Artxibo fitxategiak karpeta honetara erauziko dira. Lehenetsitako balioa artxiboaren karpeta bera da</string>
     <string name="zip_summary">Zip fitxategi berriak karpeta honetan sortuko dira. Lehenetsitako balioa fitxategien karpeta bera da</string>
-    <string name="openas">Ireki honela</string>
+    <string name="open_as">Ireki honela</string>
     <string name="text">Testua</string>
     <string name="audio">Audioa</string>
     <string name="video">Bideoa</string>
     <string name="other">Beste bat</string>
     <string name="image">Irudia</string>
     <string name="contributors">Laguntzaileak</string>
-    <string name="savepaths">Gogoratu bideak</string>
-    <string name="savepathsummary">Abiaraztean fitxa bakoitzean azkenengoz ikusitako karpeta bistaratuko da</string>
+    <string name="save_paths">Gogoratu bideak</string>
+    <string name="save_path_summary">Abiaraztean fitxa bakoitzean azkenengoz ikusitako karpeta bistaratuko da</string>
     <string name="select_intent">Hautatu</string>
     <string name="database">Datu-basea</string>
-    <string name="colourednavigation">Nabigazio barra koloreztatua</string>
-    <string name="colourednavigationsum">Sistemaren nabigazio barra azalarekin koloreztatzen den edo ez</string>
+    <string name="colored_navigation">Nabigazio barra koloreztatua</string>
+    <string name="colored_navigvation_sum">Sistemaren nabigazio barra azalarekin koloreztatzen den edo ez</string>
 
     <string name="color_title">Kolorea</string>
     <string name="color_summary">Ezarri UIko hainbat osagairen kolorea</string>
@@ -239,11 +239,11 @@
   <string name="files">Fitxategiak</string>
     <string name="textreader">Testu irakurlea</string>
     <string name="databasereader">Datu-base irakurlea</string>
-    <string name="showDividers">Erakutsi banatzaileak</string>
-    <string name="needsaccess">Idazteko baimena behar da</string>
-    <string name="needsaccesssummary">Mesedez aukera ezazu honen root direktorioa: \t</string>
-    <string name="needsaccesssummary1">\thonekin jarduteko idazteko baimena emateko: </string>
-    <string name="smb_con">SMB konexioa</string>
+    <string name="show_dividers">Erakutsi banatzaileak</string>
+    <string name="needs_access">Idazteko baimena behar da</string>
+    <string name="needs_access_summary">Mesedez aukera ezazu honen root direktorioa: \t</string>
+    <string name="needs_access_summary1">\thonekin jarduteko idazteko baimena emateko: </string>
+    <string name="smb_connection">SMB konexioa</string>
     <string name="smb_server">Zerbitzariaren IP helbidea</string>
     <string name="username">Erabiltzaile-izena</string>
     <string name="password">Pasahitza</string>
@@ -265,7 +265,7 @@
     <string name="descending">Beheranzkoa</string>
     <string name="defualt">Lehenetsia</string>
     <string name="doit">Egin</string>
-    <string name="wanthelp"><u>Laguntzarik behar?</u></string>
+    <string name="want_help"><u>Laguntzarik behar?</u></string>
     <string name="quick">Sarrera azkarra</string>
     <string name="recent">Duela gutxiko fitxategiak</string>
     <string name="edit">Editatu</string>
@@ -274,16 +274,16 @@
     <string name="grantper">Eman baimena</string>
     <string name="grantfailed">Ez da baimenik eman</string>
     <string name="grant_storage_permission">Aplikazioak biltegirako baimena behar du jarraitzeko. Leiho hau ixteak aplikazioa itxiko du.</string>
-    <string name="operationunsuccesful">Eragiketa ez da ongi burutu</string>
+    <string name="operation_unsuccesful">Eragiketa ez da ongi burutu</string>
     <string name="creatingfile">Fitxategia sortzen</string>
     <string name="creatingfolder">Karpeta sortzen</string>
     <string name="renaming">Berrizendatzen</string>
-    <string name="cantbeempty">%s(e)k ezin du hutsik egon</string>
+    <string name="cant_be_empty">%s(e)k ezin du hutsik egon</string>
     <string name="ip">Helbidea</string>
-    <string name="connectionname">Konexioaren izena</string>
-    <string name="nodevicefound">Ez da gailurik aurkitu</string>
+    <string name="connection_name">Konexioaren izena</string>
+    <string name="no_device_found">Ez da gailurik aurkitu</string>
     <string name="path">Bidea</string>
-    <string name="renamebookmark">Aldatu laster-marka</string>
+    <string name="rename_bookmark">Aldatu laster-marka</string>
     <string name="cut">Moztu</string>
     <string name="search">Bilatu</string>
     <string name="invalid_name">Izen baliogabea</string>
@@ -298,7 +298,7 @@
     <string name="stop_ftp">Gelditu</string>
     <string name="ftp_status_running">Exekutatzen</string>
     <string name="ftp_status_not_running">Ez da exekutatzen ari</string>
-    <string name="ftp_no_wifi">Egiaztatu ezazu WiFira konektatuta zaudela</string>
+    <string name="ftp_no_wifi">Egiaztatu ezazu Wi-Fira konektatuta zaudela</string>
     <string name="domain">Domeinua</string>
     <string name="invalid">%s baliogabea</string>
     <string name="ftp_notif_starting">FTP zerbitzaria hasten ari da</string>
@@ -317,14 +317,14 @@
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
   <string name="easter_egg_title">Studio modua</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
-    <string name="searchingdevices">Gailuak bilatzen</string>
+    <string name="searching_devices">Gailuak bilatzen</string>
     <string name="use_custom_ip">Erabili IP pertsonalizatua</string>
     <string name="bookmark_lost">Ez da laster-marka aurkitu, birsortzen&#8230;</string>
 
     <string name="smb_instructions">
         <html>
             <body>
-                <h1>Partekatutako windows karpeta android-en atzitzeko (smb)</h1>\n\n
+                <h1>Partekatutako Windows karpeta android-en atzitzeko (smb)</h1>\n\n
                 <ul>
                     <li>
                         <b>Gaitu fitxategiak partekatzea</b>\n
@@ -519,16 +519,16 @@
     <string name="authenticate_password">Sartu pasahitza</string>
 
     <string name="sidebar_preferences">Alboko barra</string>
-    <string name="sidebarfolders_title">Alboko barrako lasterbideak</string>
-    <string name="sidebarquickaccess_title">Alboko barrara sarbide azkarra</string>
-    <string name="showfolders_pref_title">Erakutsi lasterbideak</string>
-    <string name="showfolders_pref">Lasterbideak</string>
-    <string name="showquickaccess_pref_title">Erakutsi sarbide azkarrak</string>
-    <string name="showquickaccess_pref">Sarbide azkarrak</string>
+    <string name="sidebar_folders_title">Alboko barrako lasterbideak</string>
+    <string name="sidebar_quick_access_title">Alboko barrara sarbide azkarra</string>
+    <string name="show_folders_pref_title">Erakutsi lasterbideak</string>
+    <string name="show_folders_pref">Lasterbideak</string>
+    <string name="show_quick_access_pref_title">Erakutsi sarbide azkarrak</string>
+    <string name="show_quick_access_pref">Sarbide azkarrak</string>
     <string name="create_shortcut">Sortu lasterbidea</string>
     <string name="edit_shortcut">Editatu lasterbidea</string>
     <string name="directory">Direktorioa</string>
-    <string name="questiondelete_shortcut">Ezabatu lasterbidea?</string>
+    <string name="question_delete_shortcut">Ezabatu lasterbidea?</string>
 
     <string name="cloud_error_plugin">Ez da Amaze Cloud plugina aurkitu. Mesedez, deskargatu Play Store-tik.</string>
     <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.
@@ -542,7 +542,7 @@
     <string name="showHeaders">Erakutsi goiburuak</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-	<string name="noitems">Elementurik ez</string>
+	<string name="no_items">Elementurik ez</string>
 	<string name="item">elementu</string>
 	<string name="items">elementu</string>
 	
@@ -560,8 +560,8 @@
     <string name="intent_save_as">Gorde honela&#8230;</string>
     <string name="go">Joan</string>
     <string name="advanced">Aurreratua</string>
-    <string name="typeablepaths_title">Bide pertsonalizatuak</string>
-    <string name="typeablepaths_summary">Mantendu bide-barra sakatuta bide pertsonalizatu bat idazteko</string>
+    <string name="typeable_paths_title">Bide pertsonalizatuak</string>
+    <string name="typeable_paths_summary">Mantendu bide-barra sakatuta bide pertsonalizatu bat idazteko</string>
     <string name="send_email_to">Bidali e-posta honi</string>
 
     <string name="text_editor">Testu-editorearen ezarpenak</string>
@@ -569,18 +569,18 @@
     <string name="preference_newstack_summary">Fixategiak ataza bereizi bezala irekitzea baimentzen du. Sistemaren azkenak pantailatik atzi ditzakezu.</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="developers">Garatzaileak</string>
-    <string name="nobitcoinapp">Instalatu bitcoin diru-zorro bat</string>
-    <string name="channelname_normal">Amaze jakinarazpenak</string>
-    <string name="channeldescription_normal">Amaze fitxategi-kudeatzailearen jakinarazpenak</string>
-    <string name="channelname_ftp">Amaze FTP zerbitzaria</string>
-    <string name="channeldescription_ftp">Amaze fitxategi-kudeatzailearen FTP zerbitzariaren jakinarazpenak</string>
+    <string name="no_bitcoin_app">Instalatu bitcoin diru-zorro bat</string>
+    <string name="channel_name_normal">Amaze jakinarazpenak</string>
+    <string name="channel_description_normal">Amaze fitxategi-kudeatzailearen jakinarazpenak</string>
+    <string name="channel_name_ftp">Amaze FTP zerbitzaria</string>
+    <string name="channel_description_ftp">Amaze fitxategi-kudeatzailearen FTP zerbitzariaren jakinarazpenak</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Prozesatzen&#8230;</string>
     <string name="failed_no_connection">Huts egin du fitxategiak kargatzean. Egiaztatu zure konexioa.</string>
 
     <string name="update">EGUNERATU</string>
-	<string name="scp_con">SCP/SFTP konexioa</string>
+	<string name="scp_connection">SCP/SFTP konexioa</string>
     <string name="scp_port">Ataka</string>
     <string name="ssh_host_key_verification_prompt">Ezin da ostalariaren egiazkotasuna ziurtatu %1$s.n\n%2$s gakoaren hatz-marka %3$s da.\n\nSakatu \"Bai\" identitatea berresteko; bestela, sakatu \"Ez\".</string>
     <string name="ssh_host_key_verification_prompt_title">Egiaztatu ostalaria</string>
@@ -597,12 +597,12 @@
         Jakinarazi zure sistemaren administratzaileari edo konfiguratu konexio berri bat zerbitzarira konektatzeko.
     </string>
     <string name="ssh_key_prompt_passphrase">Sartu gakoaren pasaesaldia.</string>
-    <string name="addshortcut_not_supported_by_launcher">Zure abiarazleak ez du onartzen lasterbideak sortzea.</string>
+    <string name="add_shortcut_not_supported_by_launcher">Zure abiarazleak ez du onartzen lasterbideak sortzea.</string>
     
-    <string name="selectcolorconfig">Hautatu kolore konfigurazioa</string>
+    <string name="select_color_config">Hautatu kolore konfigurazioa</string>
     <string name="customize">Pertsonalizatu</string>
     <string name="custom">Pertsonalizatua</string>
-    <string name="preselectedconfigs_title">Aurrez hautatutako konfigurazioak</string>
+    <string name="preselected_configs_title">Aurrez hautatutako konfigurazioak</string>
     <string name="orange">Laranja</string>
     <string name="blue">Urdina</string>
     <string name="green">Berdea</string>

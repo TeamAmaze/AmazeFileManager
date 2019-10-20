@@ -33,7 +33,7 @@
     <!--Skin-->
     <!--DirectorySortMode-->
     <!--SortBy-->
-    <string name="sortSize">גודל</string>
+    <string name="sort_size">גודל</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="skip">דלג</string>
@@ -78,8 +78,8 @@
     <string name="search">חיפוש</string>
     <string name="copying">מעתיק</string>
     <string name="moving">מעביר</string>
-    <string name="selectall">בחר הכול</string>
-    <string name="sortName">שם</string>
+    <string name="select_all">בחר הכול</string>
+    <string name="sort_name">שם</string>
     <string name="location">מיקום</string>
     <string name="file">קובץ</string>
     <string name="folder">תיקייה</string>
@@ -89,18 +89,18 @@
     <string name="files">קבצים</string>
     <string name="cloud_connection">חיבור רשת</string>
     <string name="archive_preferences">ארכיון</string>
-    <string name="pressagain">ליציאה לחץ שנית</string>
+    <string name="press_again">ליציאה לחץ שנית</string>
     <string name="rate">דרגו אותנו</string>
     <string name="goback">חזרה</string>
     <string name="sort">מיון</string>
     <string name="ascending">סדר עולה</string>
     <string name="descending">סדר יורד</string>
     <string name="type">סוג</string>
-    <string name="sortby">מיון לפי..</string>
+    <string name="sort_by">מיון לפי..</string>
     <string name="sort_only_this">רק תיקייה זאת</string>
     <string name="listview">תצוגת רשימה</string>
     <string name="gridview">תצוגת רשת</string>
-    <string name="setashome">הגדר כדף הבית</string>
+    <string name="set_as_home">הגדר כדף הבית</string>
 
     <!--ActionMode-->
     <string name="cut">חתוך</string>
@@ -109,7 +109,7 @@
     <string name="rename">שנה שם</string>
     <string name="properties">מאפיינים</string>
     <string name="crypt_encrypt">הצפנה</string>
-    <string name="openwith">פתח בעזרת</string>
+    <string name="open_with">פתח בעזרת</string>
     <string name="share">שיתוף</string>
 
     <!--Drawer-->
@@ -136,10 +136,10 @@
     <!--Preference-->
     <string name="theme">ערכת נושא</string>
     <string name="color_title">צבע</string>
-    <string name="aboutFileManager">אודות האפליקצייה</string>
+    <string name="about_amaze_file_manager_label">אודות האפליקצייה</string>
     <string name="feedback">שליחת משוב</string>
     <string name="advanced_search">חיפוש מתקדם</string>
-    <string name="thumbSummary">"הראה תצוגה מקדימה עבור אפליקציות ותמונות"</string>
+    <string name="thumb_summary">"הראה תצוגה מקדימה עבור אפליקציות ותמונות"</string>
     <string name="thumb">"הראה תצוגה מקדימה"</string>
 
     <!--translators-->
@@ -167,21 +167,21 @@
 
     <string name="not_allowed">פעולה לא אפשרית</string>
     <string name="newfile">קובץ חדש</string>
-    <string name="nofiles"> קבצים לא קיימים</string>
+    <string name="no_files"> קבצים לא קיימים</string>
     <string name="authors">מפתחים</string>
     <string name="saving">שומר</string>
     <string name="uninstall">הסרת התקנה</string>
     <string name="play">גוגל פליי</string>
     <string name="delbook">מחק סימנייה</string>
-    <string name="addtobook">הוסף סימנייה</string>
+    <string name="add_to_bookmarks">הוסף סימנייה</string>
     <string name="enterpath">הכנס נתיב</string>
     <string name="error">שגיאה</string>
-    <string name="bookmarksadded">סימנייה נשמרה</string>
+    <string name="bookmarks_added">סימנייה נשמרה</string>
     <string name="fileexist">קיים קובץ עם שם זהה</string>
     <string name="name">שם</string>
     <string name="date">תאריך</string>
     <string name="size">גודל התיקייה</string>
-    <string name="noappfound">לא נמצאה אפליקצייה לפתוח קובץ זה</string>
+    <string name="no_app_found">לא נמצאה אפליקצייה לפתוח קובץ זה</string>
     <string name="newfolder">תיקייה חדשה</string>
     <string name="entername">הכנס שם</string>
     <string name="extracting">מחלץ</string>
@@ -190,17 +190,17 @@
     <string name="dialog_delete_category_files">קבצים</string>
     <string name="dialog_delete_disclaimer">מחיקת הפרטים הבאים היא פעולה בלתי הפיכה ולא ניתנת לשחזור</string>
     <string name="deleting">מוחק</string>
-    <string name="rootmodesummary">למכשירים פרוצים בלבד</string>
-    <string name="rootfailure">גישת מערכת לא ניתנה</string>
+    <string name="root_mode_summary">למכשירים פרוצים בלבד</string>
+    <string name="root_failure">גישת מערכת לא ניתנה</string>
     <string name="foldersOnTop">תיקיות למעלה</string>
     <string name="filesOnTop">קבצים למעלה</string>
-    <string name="noneOnTop">אף אחד למעלה</string>
+    <string name="none_on_top">אף אחד למעלה</string>
     <string name="pick_a_file">בחר קובץ</string>
     <string name="overwrite">מחק קיים</string>
     <string name="permission">הרשאות</string>
     <string name="hide">הסתר</string>
     <string name="doforall">בצע עבור כול הפריטים</string>
-    <string name="setRandom">"השינוי המבוקש יתבצע לאחר אתחול של האפליקצייה"</string>
+    <string name="set_random">"השינוי המבוקש יתבצע לאחר אתחול של האפליקצייה"</string>
 
 
 </resources>

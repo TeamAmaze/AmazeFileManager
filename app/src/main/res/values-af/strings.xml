@@ -34,7 +34,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Grootte</string>
+  <string name="sort_size">Grootte</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">Slaan oor</string>

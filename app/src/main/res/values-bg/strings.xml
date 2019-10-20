@@ -27,7 +27,7 @@
   <string name="ftp">FTP сървър</string>
     <string name="setting">Настройки</string>
   <string name="select">Избери елемент</string>
-  <string name="pressagain">Натиснете отново, за изход</string>
+  <string name="press_again">Натиснете отново, за изход</string>
   <string name="open">Отвори</string>
   <string name="backup">Архивиране</string>
   <string name="uninstall">Деинсталирай</string>
@@ -35,7 +35,7 @@
   <string name="properties">Свойства</string>
   <string name="copyingapk">Копиране на apk към </string>
     <string name="delbook">Изтрий отметка</string>
-  <string name="addtobook">Добави в отметки</string>
+  <string name="add_to_bookmarks">Добави в отметки</string>
   <string name="enterpath">Въведете път</string>
   <string name="cancel">ОТКАЗ</string>
   <string name="create">СЪЗДАЙ</string>
@@ -49,7 +49,7 @@
   <string name="date">Дата</string>
   <string name="location">Местоположение</string>
   <string name="size_capitalized">Размер</string>
-    <string name="noappfound">Не е намерено приложение за този тип файлове</string>
+    <string name="no_app_found">Не е намерено приложение за този тип файлове</string>
   <string name="copying">Копиране</string>
   <string name="moving">Преместване</string>
     <string name="file">Файл</string>
@@ -58,7 +58,7 @@
   <string name="entername">Въведете име</string>
   <string name="extracting">Извличане</string>
   <string name="stopping">Спиране</string>
-    <string name="openwith">Отвори с</string>
+    <string name="open_with">Отвори с</string>
   <string name="share">Споделяне</string>
   <string name="about">Относно</string>
   <string name="extract">Извлечи</string>
@@ -70,8 +70,8 @@
   <string name="dialog_delete_disclaimer">Наистина ли искате да изтриете следните файлове?</string>
   <string name="dialog_delete_title">Потвърждаване</string>
   <string name="deleting">Изтриване</string>
-  <string name="questionset">Искате ли да зададете текущия път като домашен за този раздел?</string>
-    <string name="sortby">Подреждане по</string>
+  <string name="question_set_path_as_home">Искате ли да зададете текущия път като домашен за този раздел?</string>
+    <string name="sort_by">Подреждане по</string>
   <string name="theme">Тема</string>
     <string name="random">Случаен облик</string>
   <string name="random_summary">Задава случаен основен цвят при стартиране</string>
@@ -80,10 +80,10 @@
   <string name="paste">Постави</string>
     <string name="history">История</string>
     <string name="copy">Копирай</string>
-  <string name="rootmode">Root Explorer</string>
-  <string name="rootmodesummary">Само за устройство с root достъп. Изберете само ако сте сигурен в това.</string>
-    <string name="rootfailure">Root достъп не е предоставен</string>
-  <string name="selectall">Избери всички</string>
+  <string name="root_mode">Root Explorer</string>
+  <string name="root_mode_summary">Само за устройство с root достъп. Изберете само ако сте сигурен в това.</string>
+    <string name="root_failure">Root достъп не е предоставен</string>
+  <string name="select_all">Избери всички</string>
   <string name="delete">Изтриване</string>
     <!-- New -->
   <!-- Array -->
@@ -93,9 +93,9 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Папки на върха</string>
   <!--SortBy-->
-  <string name="sortName">Име</string>
+  <string name="sort_name">Име</string>
   <string name="lastModified">Последно променени</string>
-  <string name="sortSize">Размер</string>
+  <string name="sort_size">Размер</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Изберете файл</string>
@@ -109,7 +109,7 @@
   <string name="enablerootmde">Разрешаване на Root режим</string>
   <string name="goback">Назад</string>
     <string name="newfile">Нов файл</string>
-  <string name="nofiles">Няма файлове</string>
+  <string name="no_files">Няма файлове</string>
     <string name="listview">Списъчен изглед</string>
   <string name="gridview">Табличен изглед</string>
   <string name="permission">Разрешения</string>
@@ -127,27 +127,27 @@
   <string name="lastModifiedSummary">Показване на датата и часа, когато файлът е последно променен</string>
   <string name="lastModifiedPref">Последно променени</string>
   <string name="miscellaneous">Разни</string>
-  <string name="rootPrefSummary">Покажи права на файлове и папки</string>
-  <string name="aboutFileManager">Относно Amaze файлов мениджър</string>
+  <string name="root_pref_summary">Покажи права на файлове и папки</string>
+  <string name="about_amaze_file_manager_label">Относно Amaze файлов мениджър</string>
   <string name="version">Версия</string>
   <string name="rate">Оцени Приложението</string>
   <string name="feedback">Изпрати отзив</string>
   <string name="hiddenfiles">Скрити файлове</string>
   <string name="type">Тип</string>
-    <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Добавяне на пряк път</string>
-  <string name="unsavedchanges">Незаписани промени</string>
-  <string name="unsavedchangesdesc">Имате незаписани промени, искате ли да ги запишете преди да излезете?</string>
+    <string name="root_directory">Root</string>
+    <string name="add_shortcut">Добавяне на пряк път</string>
+  <string name="unsaved_changes">Незаписани промени</string>
+  <string name="unsaved_changes_description">Имате незаписани промени, искате ли да ги запишете преди да излезете?</string>
   <string name="saving">Записване</string>
-  <string name="packageinstaller">Инсталационен пакет</string>
+  <string name="package_installer">Инсталационен пакет</string>
   <string name="view">Преглед</string>
   <string name="install">Обнови</string>
   <string name="archive">Архивиране</string>
-  <string name="archtext">Това е архив. Какво действие искате да извършите?</string>
-  <string name="pitext">Това е инсталационен пакет. Какво действие искате да извършите?</string>
+  <string name="archive_text">Това е архив. Какво действие искате да извършите?</string>
+  <string name="package_installer_text">Това е инсталационен пакет. Какво действие искате да извършите?</string>
   <string name="xda_title">XDA нишка</string>
-    <string name="circularimages">Използвай кръгли икони за изображения и видео</string>
-  <string name="circularicons">Използвай кръгли икони</string>
+    <string name="circular_images">Използвай кръгли икони за изображения и видео</string>
+  <string name="circular_icons">Използвай кръгли икони</string>
   <string name="details">Подробности</string>
   <string name="translators">Преводачи</string>
   <string name="german_translation_title">Немски</string>
@@ -175,18 +175,18 @@
   <string name="donate">Дарение</string>
   <string name="archive_preferences">Преференции за Архива</string>
   <string name="archive_extract_folder">Папка за извличане на архива</string>
-  <string name="openas">Отвори като</string>
+  <string name="open_as">Отвори като</string>
   <string name="text">Текст</string>
   <string name="audio">Аудио</string>
   <string name="video">Видео</string>
   <string name="other">Други</string>
   <string name="image">Изображение</string>
   <string name="contributors">Сътрудници</string>
-  <string name="savepaths">Запомни пътищата</string>
-  <string name="savepathsummary">Когато стартира, ще бъдат показани най-наскоро разглежданите папка за всеки раздел</string>
+  <string name="save_paths">Запомни пътищата</string>
+  <string name="save_path_summary">Когато стартира, ще бъдат показани най-наскоро разглежданите папка за всеки раздел</string>
   <string name="select_intent">Избери</string>
     <string name="database">База данни</string>
-  <string name="colourednavigation">Цветна навигационна лента</string>
+  <string name="colored_navigation">Цветна навигационна лента</string>
   <string name="color_title">Цвят</string>
   <string name="primary_color_title">Основен цвят (ляв раздел)</string>
   <string name="accent_color_title">Цвят за акцентиране</string>
@@ -196,9 +196,9 @@
   <string name="files">Файлове</string>
     <string name="textreader">Четец на текст</string>
   <string name="databasereader">Четец на база данни</string>
-  <string name="showDividers">Покажи разделители</string>
-  <string name="needsaccess">Изисква достъп за запис</string>
-  <string name="smb_con">SMB връзка</string>
+  <string name="show_dividers">Покажи разделители</string>
+  <string name="needs_access">Изисква достъп за запис</string>
+  <string name="smb_connection">SMB връзка</string>
   <string name="smb_server">Сървър IP адрес</string>
   <string name="username">Потребителско име</string>
   <string name="password">Парола</string>
@@ -218,7 +218,7 @@
   <string name="descending">Низходящо</string>
   <string name="defualt">Основен</string>
   <string name="doit">Направи го</string>
-  <string name="wanthelp"><u>Нужда от помощ?</u></string>
+  <string name="want_help"><u>Нужда от помощ?</u></string>
   <string name="quick">Бърз достъп</string>
   <string name="recent">Последни файлове</string>
   <string name="edit">Редактиране</string>
@@ -226,14 +226,14 @@
   <string name="grant">Разреши</string>
   <string name="grantper">Даване на разрешение</string>
   <string name="grant_storage_permission">Приложението се нуждае от достъп до хранилище за да продължи. Отменяне на този диалог ще спре приложението.</string>
-  <string name="operationunsuccesful">Неуспешна операция</string>
+  <string name="operation_unsuccesful">Неуспешна операция</string>
   <string name="creatingfile">Създаване на файл</string>
   <string name="creatingfolder">Създаване на папка</string>
   <string name="renaming">Преименуване</string>
-  <string name="cantbeempty">%s не може да е празно</string>
+  <string name="cant_be_empty">%s не може да е празно</string>
   <string name="ip">Адрес</string>
-  <string name="connectionname">Име на връзка</string>
-  <string name="nodevicefound">Няма намерени устройства</string>
+  <string name="connection_name">Име на връзка</string>
+  <string name="no_device_found">Няма намерени устройства</string>
   <string name="path">Път</string>
   <string name="cut">Изрежи</string>
   <string name="search">Търсене</string>
@@ -246,7 +246,7 @@
   <string name="stop_ftp">Стоп</string>
   <string name="ftp_status_running">Изпълнява се</string>
   <string name="ftp_status_not_running">Не се изпълнява</string>
-  <string name="ftp_no_wifi">Уверете се, че сте свързани с WiFi</string>
+  <string name="ftp_no_wifi">Уверете се, че сте свързани с Wi-Fi</string>
   <string name="domain">Домейн</string>
   <string name="invalid">Невалиден %s</string>
   <string name="ftp_notif_starting">FTP сървърът стартира</string>
@@ -263,7 +263,7 @@
   <string name="translate_title">Превод</string>
   <string name="translate_summary">Преведи Amaze на вашия език</string>
   <string name="paypal_copy_message">PayPal id копиран в клипборда</string>
-  <string name="searchingdevices">Търсене на устройства</string>
+  <string name="searching_devices">Търсене на устройства</string>
   <string name="share_limit">Не може да споделяте повече от 100 файла</string>
   <string name="opening">Отваряне..</string>
   <string name="information">Информация</string>

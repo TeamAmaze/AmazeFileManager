@@ -33,7 +33,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">আকার</string>
+  <string name="sort_size">আকার</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">Skip</string>

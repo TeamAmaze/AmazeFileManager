@@ -30,12 +30,12 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="circularimages"
-            android:summary="@string/circularimages"
-            android:title="@string/circularicons"/>
+            android:summary="@string/circular_images"
+            android:title="@string/circular_icons"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showDividers"
-            android:title="@string/showDividers"/>
+            android:title="@string/show_dividers"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showHeaders"
@@ -51,32 +51,32 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="sidebar_folders_enable"
-            android:title="@string/showfolders_pref_title"/>
+            android:title="@string/show_folders_pref_title"/>
         <Preference
             android:dependency="sidebar_folders_enable"
             android:key="sidebar_folders"
-            android:title="@string/showfolders_pref"/>
+            android:title="@string/show_folders_pref"/>
 
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="sidebar_quickaccess_enable"
-            android:title="@string/showquickaccess_pref_title"/>
+            android:title="@string/show_quick_access_pref_title"/>
         <Preference
             android:dependency="sidebar_quickaccess_enable"
             android:key="sidebar_quickaccess"
-            android:title="@string/showquickaccess_pref"/>
+            android:title="@string/show_quick_access_pref"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="savepaths"
-            android:summary="@string/savepathsummary"
-            android:title="@string/savepaths"/>
+            android:summary="@string/save_path_summary"
+            android:title="@string/save_paths"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showThumbs"
-            android:summary="@string/thumbSummary"
+            android:summary="@string/thumb_summary"
             android:title="@string/thumb"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
@@ -90,8 +90,8 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="showFileSize"
-            android:summary="@string/sizePrefSummary"
-            android:title="@string/sizePref"/>
+            android:summary="@string/size_pref_summary"
+            android:title="@string/size_pref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="goBack_checkbox"
@@ -103,7 +103,7 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="enableMarqueeFilename"
-            android:title="@string/enableMarqueeFilename"/>
+            android:title="@string/enable_marquee_filename"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/archive_preferences">
@@ -143,8 +143,8 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="typeablepaths"
-            android:summary="@string/typeablepaths_summary"
-            android:title="@string/typeablepaths_title"/>
+            android:summary="@string/typeable_paths_summary"
+            android:title="@string/typeable_paths_title"/>
 
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
@@ -157,19 +157,19 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="showPermissions"
-            android:summary="@string/rootPrefSummary"
-            android:title="@string/rootPref"/>
+            android:summary="@string/root_pref_summary"
+            android:title="@string/root_pref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
             android:key="rootmode"
-            android:summary="@string/rootmodesummary"
-            android:title="@string/rootmode"/>
+            android:summary="@string/root_mode_summary"
+            android:title="@string/root_mode"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/about">
         <Preference
             android:key="about"
-            android:title="@string/aboutFileManager"
+            android:title="@string/about_amaze_file_manager_label"
             />
         <Preference
             android:key="feedback"

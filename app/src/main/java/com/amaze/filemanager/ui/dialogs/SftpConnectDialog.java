@@ -21,6 +21,8 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static com.amaze.filemanager.filesystem.ssh.SshClientUtils.deriveSftpPathFrom;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -29,14 +31,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
-import com.google.android.material.snackbar.Snackbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.internal.MDButton;
@@ -56,10 +56,7 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.SecurityUtils;
-
+import com.google.android.material.snackbar.Snackbar;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -68,8 +65,8 @@ import java.io.InputStreamReader;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.util.Collections;
-
-import static com.amaze.filemanager.filesystem.ssh.SshClientUtils.deriveSftpPathFrom;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.SecurityUtils;
 
 /**
  * SSH/SFTP connection setup dialog.
@@ -115,7 +112,7 @@ public class SftpConnectDialog extends DialogFragment {
         // If it's new connection setup, set some default values
         // Otherwise, use given Bundle instance for filling in the blanks
         if(!edit) {
-            connectionET.setText(R.string.scp_con);
+            connectionET.setText(R.string.scp_connection);
             portET.setText(Integer.toString(SshConnectionPool.SSH_DEFAULT_PORT));
         } else {
             connectionET.setText(getArguments().getString("name"));
@@ -150,7 +147,7 @@ public class SftpConnectDialog extends DialogFragment {
 
         //Define action for buttons
         final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
-        dialogBuilder.title((R.string.scp_con));
+        dialogBuilder.title((R.string.scp_connection));
         dialogBuilder.autoDismiss(false);
         dialogBuilder.customView(v2, true);
         dialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());

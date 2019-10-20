@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">કદ</string>
+  <string name="sort_size">કદ</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">સંસ્કરણ</string>

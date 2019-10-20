@@ -33,7 +33,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Suurus</string>
+  <string name="sort_size">Suurus</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Versioon</string>
