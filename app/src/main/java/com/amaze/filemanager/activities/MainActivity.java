@@ -767,7 +767,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
         } else {
             this.backPressedToExitOnce = true;
-            showToast(getString(R.string.pressagain));
+            showToast(getString(R.string.press_again));
             new Handler().postDelayed(() -> {
                 backPressedToExitOnce = false;
             }, 2000);
@@ -947,7 +947,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     break;
                 }
                 final MaterialDialog dialog = GeneralDialogCreation.showBasicDialog(mainActivity,
-                       R.string.questionset, R.string.setashome, R.string.yes, R.string.no);
+                       R.string.question_set_path_as_home, R.string.set_as_home, R.string.yes, R.string.no);
                 dialog.getActionButton(DialogAction.POSITIVE).setOnClickListener((v) -> {
                     main.home = main.getCurrentPath();
                     updatePaths(main.no);

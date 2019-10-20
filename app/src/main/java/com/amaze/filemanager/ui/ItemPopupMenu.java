@@ -113,7 +113,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 DataUtils dataUtils = DataUtils.getInstance();
                 dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
                 mainFragment.getMainActivity().getDrawer().refreshDrawer();
-                Toast.makeText(mainFragment.getActivity(), mainFragment.getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
+                Toast.makeText(mainFragment.getActivity(), mainFragment.getString(R.string.bookmarks_added), Toast.LENGTH_LONG).show();
                 return true;
             case R.id.delete:
                 ArrayList<LayoutElementParcelable> positions = new ArrayList<>();

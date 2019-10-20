@@ -27,7 +27,7 @@
   <string name="ftp">Server FTP</string>
     <string name="setting">Nastavení</string>
   <string name="select">Vybrat položku</string>
-  <string name="pressagain">Pro ukončení stiskněte znovu</string>
+  <string name="press_again">Pro ukončení stiskněte znovu</string>
   <string name="open">Otevřít</string>
   <string name="backup">Záloha</string>
   <string name="uninstall">Odinstalovat</string>
@@ -35,7 +35,7 @@
   <string name="properties">Předvolby</string>
   <string name="copyingapk">Kopírování aplikace do </string>
     <string name="delbook">Odstranit záložku</string>
-  <string name="addtobook">Přidat do záložek</string>
+  <string name="add_to_bookmarks">Přidat do záložek</string>
   <string name="enterpath">Zadejte cestu</string>
   <string name="cancel">ZRUŠIT</string>
   <string name="create">VYTVOŘIT</string>
@@ -44,7 +44,7 @@
   <string name="error">Chyba</string>
     <string name="rename">Přejmenovat</string>
   <string name="save">Uložit</string>
-    <string name="bookmarksadded">Založka přidána</string>
+    <string name="bookmarks_added">Založka přidána</string>
   <string name="fileexist">Již existuje soubor se stejným názvem </string>
     <string name="name">Název</string>
   <string name="date">Datum</string>
@@ -52,7 +52,7 @@
   <string name="size_capitalized">Velikost</string>
   <string name="size">velikost složky</string>
     <string name="enterzipname">Zadejte název ZIP souboru</string>
-  <string name="noappfound">K otevření toho souboru nebyla nalezena žádná aplikace</string>
+  <string name="no_app_found">K otevření toho souboru nebyla nalezena žádná aplikace</string>
   <string name="copying">Kopírování</string>
   <string name="moving">Přesun</string>
     <string name="file">Soubor</string>
@@ -61,8 +61,8 @@
   <string name="entername">Zadejte název</string>
   <string name="extracting">Probíhá extrahování</string>
   <string name="stopping">Zastavování</string>
-    <string name="openparent">Otevřít nadřazený adresář</string>
-  <string name="openwith">Otevřít pomocí</string>
+    <string name="open_parent">Otevřít nadřazený adresář</string>
+  <string name="open_with">Otevřít pomocí</string>
   <string name="share">Sdílet</string>
   <string name="about">O</string>
   <string name="extract">Extrahovat</string>
@@ -74,9 +74,9 @@
   <string name="dialog_delete_disclaimer">Vymazání níže uvedených položek je natrvalo odstraní ze zařízení a nebude je možné obnovit.</string>
   <string name="dialog_delete_title">Odstranit položky natrvalo?</string>
   <string name="deleting">Odstraňování</string>
-  <string name="questionset">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
+  <string name="question_set_path_as_home">Chcete nastavit aktuální cestu jako domovskou pro tuto kartu?</string>
     <string name="directorysort">Režim řazení adresářů</string>
-  <string name="sortby">Seřadit podle</string>
+  <string name="sort_by">Seřadit podle</string>
   <string name="theme">Motiv vzhledu</string>
     <string name="random">Náhodný skin</string>
   <string name="random_summary">Nastavit náhodnou základní barvu při spuštění</string>
@@ -86,12 +86,12 @@
   <string name="paste">Vložit</string>
     <string name="history">History</string>
     <string name="copy">Kopírovat</string>
-  <string name="rootmode">Root Explorer</string>
-  <string name="rootmodesummary">Pouze pro zařízení s rootem. Použijte pouze v případě, že jste si o tom jistí.</string>
-    <string name="rootfailure">Root přístup nebyl udělen</string>
-    <string name="selectall">Vybrat Vše</string>
+  <string name="root_mode">Root Explorer</string>
+  <string name="root_mode_summary">Pouze pro zařízení s rootem. Použijte pouze v případě, že jste si o tom jistí.</string>
+    <string name="root_failure">Root přístup nebyl udělen</string>
+    <string name="select_all">Vybrat Vše</string>
   <string name="delete">Smazat</string>
-  <string name="setashome">Nastavit jako domácí</string>
+  <string name="set_as_home">Nastavit jako domácí</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -103,11 +103,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Složky na vrcholu</string>
   <string name="filesOnTop">Soubory na vrcholu</string>
-  <string name="noneOnTop">Nic na vrcholu</string>
+  <string name="none_on_top">Nic na vrcholu</string>
   <!--SortBy-->
-  <string name="sortName">Jméno</string>
+  <string name="sort_name">Jméno</string>
   <string name="lastModified">Naposledy upraveno</string>
-  <string name="sortSize">Rozměry</string>
+  <string name="sort_size">Rozměry</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Vybrat soubor</string>
@@ -122,7 +122,7 @@
   <string name="enablerootmde">Povolit režim s rootem</string>
   <string name="goback">Zpět</string>
     <string name="newfile">Nový soubor</string>
-  <string name="nofiles">Žádné soubory</string>
+  <string name="no_files">Žádné soubory</string>
     <string name="used">využité místo</string>
   <string name="used_by_others">používají ostatní</string>
   <string name="free">volné místo</string>
@@ -133,43 +133,43 @@
   <string name="exit">Konec</string>
     <string name="doforall">U všech položek</string>
   <string name="gridcolumnno">Počet sloupců v zobrazení mřížky</string>
-    <string name="setRandom">Změny se provedou po restartování aplikace</string>
+    <string name="set_random">Změny se provedou po restartování aplikace</string>
   <string name="authors">Autoři</string>
   <string name="changelog">Changelog</string>
     <string name="ok">OK</string>
     <string name="ui">Prostředí</string>
   <string name="general">Obecné</string>
-  <string name="thumbSummary">Zobrazovat miniatury aplikací a obrázků</string>
+  <string name="thumb_summary">Zobrazovat miniatury aplikací a obrázků</string>
   <string name="thumb">Zobrazit náhledy</string>
   <string name="hidden">Zobrazovat skryté soubory a složky</string>
   <string name="lastModifiedSummary">Zobrazit datum a čas poslední změny</string>
   <string name="lastModifiedPref">Zobrazit poslední změny</string>
-  <string name="sizePrefSummary">Zobrazit velikost souborů a počet položek ve složkách</string>
-  <string name="sizePref">Zobrazit velikost</string>
+  <string name="size_pref_summary">Zobrazit velikost souborů a počet položek ve složkách</string>
+  <string name="size_pref">Zobrazit velikost</string>
   <string name="miscellaneous">Různé</string>
-  <string name="rootPrefSummary">Zobrazit oprávnění souborů a složek</string>
-  <string name="rootPref">Zobrazit oprávnění</string>
-  <string name="aboutFileManager">O správci souborů Amaze</string>
+  <string name="root_pref_summary">Zobrazit oprávnění souborů a složek</string>
+  <string name="root_pref">Zobrazit oprávnění</string>
+  <string name="about_amaze_file_manager_label">O správci souborů Amaze</string>
   <string name="version">Verze</string>
   <string name="rate">Ohodnotit aplikaci</string>
   <string name="feedback">Odeslat zpětnou vazbu</string>
   <string name="hiddenfiles">Skryté soubory</string>
   <string name="type">Typ</string>
-    <string name="rootdirectory">Kořenový adresář</string>
-    <string name="addshortcut">Přidat zástupce</string>
-  <string name="unsavedchanges">Neuložené změny</string>
-  <string name="unsavedchangesdesc">Máte neuložené změny, chcete je před ukončením uložit?</string>
+    <string name="root_directory">Kořenový adresář</string>
+    <string name="add_shortcut">Přidat zástupce</string>
+  <string name="unsaved_changes">Neuložené změny</string>
+  <string name="unsaved_changes_description">Máte neuložené změny, chcete je před ukončením uložit?</string>
   <string name="saving">Ukládání</string>
-  <string name="packageinstaller">Instalátor balíčků</string>
+  <string name="package_installer">Instalátor balíčků</string>
   <string name="view">Náhled</string>
   <string name="install">Instalovat</string>
   <string name="archive">Archivovat</string>
-  <string name="archtext">Toto je archiv. Jakou akci chcete provést?</string>
-  <string name="pitext">Toto je instalační balíček. Jakou akci chcete provést?</string>
+  <string name="archive_text">Toto je archiv. Jakou akci chcete provést?</string>
+  <string name="package_installer_text">Toto je instalační balíček. Jakou akci chcete provést?</string>
   <string name="xda_title">Vlákno XDA</string>
   <string name="xda_summary">Q&amp;A, pomoc &amp; řešení problémů</string>
-    <string name="circularimages">Používat kruhové ikony pro obrázky a videa</string>
-  <string name="circularicons">Používat kruhové ikony</string>
+    <string name="circular_images">Používat kruhové ikony pro obrázky a videa</string>
+  <string name="circular_icons">Používat kruhové ikony</string>
   <string name="back_title">Tlačítko Zpět</string>
   <string name="back_summary">Tlačítko Zpět na začátku seznamu</string>
   <string name="details">Podrobnosti</string>
@@ -202,19 +202,19 @@
   <string name="zip_create_folder">Složka pro vytváření archivu</string>
   <string name="archive_summary">Archivované soubory budou extrahované do této složky. Výchozí hodnota je složka, ve které je archiv uložen</string>
   <string name="zip_summary">Nové archivované soubory budou vytvořeny v této složce. Výchozí hodnota je složka, ve které jsou soubory uloženy</string>
-  <string name="openas">Otevřít jako</string>
+  <string name="open_as">Otevřít jako</string>
   <string name="text">Text</string>
   <string name="audio">Zvuk</string>
   <string name="video">Video</string>
   <string name="other">Ostatní</string>
   <string name="image">Obraz</string>
   <string name="contributors">Přispěvatelé</string>
-  <string name="savepaths">Zapamatovat cesty</string>
-  <string name="savepathsummary">Při spuštění se zobrazí naposledy zobrazená složka pro každou kartu</string>
+  <string name="save_paths">Zapamatovat cesty</string>
+  <string name="save_path_summary">Při spuštění se zobrazí naposledy zobrazená složka pro každou kartu</string>
   <string name="select_intent">Vybrat</string>
     <string name="database">Databáze</string>
-  <string name="colourednavigation">Barevný navigační panel</string>
-  <string name="colourednavigationsum">Zbarvení navigačního panelu v souladu se skinem</string>
+  <string name="colored_navigation">Barevný navigační panel</string>
+  <string name="colored_navigvation_sum">Zbarvení navigačního panelu v souladu se skinem</string>
     <string name="color_title">Barva</string>
   <string name="color_summary">Nastavit barvu pro různé části uživatelského rozhraní</string>
   <string name="primary_color_title">Primární barva (levá karta)</string>
@@ -227,11 +227,11 @@
   <string name="files">Soubory</string>
     <string name="textreader">Textový prohlížeč</string>
   <string name="databasereader">Prohlížeč databáze</string>
-  <string name="showDividers">Zobrazit oddělovače</string>
-    <string name="needsaccess">Je potřeba oprávnění pro zápis</string>
-  <string name="needsaccesssummary">Prosím, vyberte kořenový adresář \t</string>
-  <string name="needsaccesssummary1">\tto udělit oprávnění pro zápis </string>
-  <string name="smb_con">Připojení SMB</string>
+  <string name="show_dividers">Zobrazit oddělovače</string>
+    <string name="needs_access">Je potřeba oprávnění pro zápis</string>
+  <string name="needs_access_summary">Prosím, vyberte kořenový adresář \t</string>
+  <string name="needs_access_summary1">\tto udělit oprávnění pro zápis </string>
+  <string name="smb_connection">Připojení SMB</string>
   <string name="smb_server">IP adresa serveru</string>
   <string name="username">Uživatelské jméno</string>
   <string name="password">Heslo</string>
@@ -252,7 +252,7 @@
   <string name="descending">Sestupně</string>
   <string name="defualt">Výchozí</string>
   <string name="doit">Vykonat</string>
-  <string name="wanthelp"><u>Potřebujete pomoc?</u></string>
+  <string name="want_help"><u>Potřebujete pomoc?</u></string>
   <string name="quick">Rychlý přístup</string>
   <string name="recent">Nedávné soubory</string>
   <string name="edit">Editace</string>
@@ -261,16 +261,16 @@
   <string name="grantper">Udělit oprávnění</string>
   <string name="grantfailed">Oprávnění není uděleno</string>
   <string name="grant_storage_permission">Aplikace potřebuje pro pokračování udělit přístup k úložišti. Zavřením dialogového okna bude aplikace ukončena.</string>
-  <string name="operationunsuccesful">Operace se nezdařila</string>
+  <string name="operation_unsuccesful">Operace se nezdařila</string>
   <string name="creatingfile">Vytvoření souboru</string>
   <string name="creatingfolder">Vytváření složky</string>
   <string name="renaming">Přejmenování</string>
-  <string name="cantbeempty">%s nemůže být prázdné</string>
+  <string name="cant_be_empty">%s nemůže být prázdné</string>
   <string name="ip">Adresa</string>
-  <string name="connectionname">Název připojení</string>
-  <string name="nodevicefound">Žádná zařízení nenalezena</string>
+  <string name="connection_name">Název připojení</string>
+  <string name="no_device_found">Žádná zařízení nenalezena</string>
   <string name="path">Cesta</string>
-  <string name="renamebookmark">Upravit záložku</string>
+  <string name="rename_bookmark">Upravit záložku</string>
   <string name="cut">Vyjmout</string>
   <string name="search">Hledat</string>
   <string name="invalid_name">Neplatný název</string>
@@ -284,7 +284,7 @@
   <string name="stop_ftp">Konec</string>
   <string name="ftp_status_running">Spuštěno</string>
   <string name="ftp_status_not_running">Není spuštěno</string>
-  <string name="ftp_no_wifi">Ujistěte se, zda jste připojeni k WiFi</string>
+  <string name="ftp_no_wifi">Ujistěte se, zda jste připojeni k Wi-Fi</string>
   <string name="domain">Doména</string>
   <string name="invalid">Neplatné %s</string>
   <string name="ftp_notif_starting">Spouštění serveru FTP</string>
@@ -303,7 +303,7 @@
   <string name="translate_summary">Přeložte Amaze do vašeho jazyka</string>
   <string name="easter_egg_title">Studiový mód</string>
   <string name="paypal_copy_message">Paypal ID bylo zkopírováno do schránky</string>
-  <string name="searchingdevices">Vyhledávání zařízení</string>
+  <string name="searching_devices">Vyhledávání zařízení</string>
   <string name="use_custom_ip">Použít vlastní IP</string>
   <string name="bookmark_lost">Záložka nebyla nalezena, obnovování&#8230;</string>
   <string name="smb_instructions">
@@ -326,7 +326,7 @@
                         </p>
 
                     <li>
-                        <b>Uistěte se, že zařízení jsou ve stejné WiFi síti</b>\n
+                        <b>Uistěte se, že zařízení jsou ve stejné Wi-Fi síti</b>\n
                     </li>
                     <p style="margin-left: 40px">
                        Vaše zařízení Windows a Android musí být na stejné síti. Například, že nemůžete mít přístup ke složce systému Windows na systém Android, když je vaše zařízení Android připojené na mobilní internet!\n\n
@@ -339,7 +339,7 @@
                         Otevřete příkazový řádek. Zadejte \'ipconfig\' a stiskněte Enter. Najděte \"IPv4 adresu\" adaptéru, kterým jsou Windows a Android zařízení připojené ke stejné síti.\n\n
                     </p>
 
-                    <b>Enter details in smb dialog box</b>\n
+                    <b>Enter details in SMB dialog box</b>\n
                 </ul>
             </body>
         </html>    </string>
@@ -480,16 +480,16 @@
   <string name="crypt_decryption_fail_password">Špatné heslo!</string>
   <string name="crypt_fingerprint_authenticate">Stiskněte senzor pro pokračování</string>
   <string name="authenticate_password">Zadejte heslo</string>
-  <string name="sidebarfolders_title">Zkratky postranního panelu</string>
-  <string name="sidebarquickaccess_title">Rychlý přístup k postrannímu panelu</string>
-  <string name="showfolders_pref_title">Zobrazit zkratky</string>
-  <string name="showfolders_pref">Zkratky</string>
-  <string name="showquickaccess_pref_title">Zobrazit Rychlý přístup</string>
-  <string name="showquickaccess_pref">Rychlý přístup</string>
+  <string name="sidebar_folders_title">Zkratky postranního panelu</string>
+  <string name="sidebar_quick_access_title">Rychlý přístup k postrannímu panelu</string>
+  <string name="show_folders_pref_title">Zobrazit zkratky</string>
+  <string name="show_folders_pref">Zkratky</string>
+  <string name="show_quick_access_pref_title">Zobrazit Rychlý přístup</string>
+  <string name="show_quick_access_pref">Rychlý přístup</string>
   <string name="create_shortcut">Vytvořit zástupce</string>
   <string name="edit_shortcut">Upravit zástupce</string>
   <string name="directory">Adresář</string>
-  <string name="questiondelete_shortcut">Odstranit zástupce?</string>
+  <string name="question_delete_shortcut">Odstranit zástupce?</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin nebyl nalezen. Stáhněte si ho z Obchodu Play.</string>
   <string name="cloud_error_failed_restart">Nepodařilo se načíst připojení.         Prosím, otevřete jednou Amaze Cloud.</string>
   <string name="cloud_remove">Chcete odstranit připojení ke cloudu?</string>
@@ -500,7 +500,7 @@
     <string name="monofont">Monospace Font</string>
   <string name="showHeaders">Zobrazit záhlaví</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="noitems">Žádné položky</string>
+  <string name="no_items">Žádné položky</string>
   <string name="item">položka</string>
   <string name="items">položky</string>
   <string name="byte_singular">bajtů</string>

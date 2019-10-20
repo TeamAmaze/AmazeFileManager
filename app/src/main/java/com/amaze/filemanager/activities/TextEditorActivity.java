@@ -232,8 +232,8 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
     private void checkUnsavedChanges() {
         if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
             new MaterialDialog.Builder(this)
-                    .title(R.string.unsavedchanges)
-                    .content(R.string.unsavedchangesdesc)
+                    .title(R.string.unsaved_changes)
+                    .content(R.string.unsaved_changes_description)
                     .positiveText(R.string.yes)
                     .negativeText(R.string.no)
                     .positiveColor(getAccent())
@@ -274,7 +274,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                             Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
                             break;
                         case WriteFileAbstraction.EXCEPTION_SHELL_NOT_RUNNING:
-                            Toast.makeText(getApplicationContext(), R.string.rootfailure, Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getApplicationContext(), R.string.root_failure, Toast.LENGTH_SHORT).show();
                             break;
                     }
         }).execute();

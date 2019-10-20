@@ -47,7 +47,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="select">আইটেম সিলেক্ট করুন</string>
 
-    <string name="pressagain">বের হওয়ার জন্য আবার চাপুন</string>
+    <string name="press_again">বের হওয়ার জন্য আবার চাপুন</string>
 
     <string name="open">খুলুন</string>
 
@@ -61,7 +61,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="copyingapk">এপিকে কপি করা হচ্ছে এ</string>
 
-    <string name="addtobook">বুকমার্কে সংযুক্ত করুন</string>
+    <string name="add_to_bookmarks">বুকমার্কে সংযুক্ত করুন</string>
 
     <string name="enterpath">পাথটি লিখুন</string>
 
@@ -79,7 +79,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="save">সংরক্ষণ করুন</string>
 
-    <string name="bookmarksadded">বুকমার্ক সংযুক্ত হয়েছে</string>
+    <string name="bookmarks_added">বুকমার্ক সংযুক্ত হয়েছে</string>
 
     <string name="fileexist">একই নামে আরেকটি ফাইল আছে</string>
 
@@ -91,7 +91,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="enterzipname">জিপের নামটি দিন</string>
 
-    <string name="noappfound">কোন অ্যাপ পাওয়া যায়নি ফাইলটি খোলার জন্য</string>
+    <string name="no_app_found">কোন অ্যাপ পাওয়া যায়নি ফাইলটি খোলার জন্য</string>
 
     <string name="copying">কপি হচ্ছে</string>
 
@@ -109,9 +109,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="stopping">থামানো হচ্ছে</string>
 
-    <string name="openparent">প্যারেন্ট ডাইরেক্টরিটি খুলুন</string>
+    <string name="open_parent">প্যারেন্ট ডাইরেক্টরিটি খুলুন</string>
 
-    <string name="openwith">ওপেন করুন</string>
+    <string name="open_with">ওপেন করুন</string>
 
     <string name="share">শেয়ার</string>
 
@@ -131,11 +131,11 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="dialog_delete_disclaimer">অাপনি কি নির্ধারিত ফাইলগুলো মুছে ফেলার ব্যাপারে নিশ্চিত?</string>
 
-    <string name="questionset">Do you want to set current path as home for this tab?</string>
+    <string name="question_set_path_as_home">Do you want to set current path as home for this tab?</string>
 
     <string name="directorysort">Directory Sort Mode</string>
 
-    <string name="sortby">Sort By</string>
+    <string name="sort_by">Sort By</string>
 
     <string name="theme">থিম</string>
 
@@ -155,17 +155,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="copy">কপি</string>
 
-    <string name="rootmode">রুট এক্সপ্লোরার</string>
+    <string name="root_mode">রুট এক্সপ্লোরার</string>
 
-    <string name="rootmodesummary">For rooted device only. Check it only if you are sure about it.</string>
+    <string name="root_mode_summary">For rooted device only. Check it only if you are sure about it.</string>
 
-    <string name="rootfailure">রুট প্রবেশ গ্রহণযোগ্য নয়</string>
+    <string name="root_failure">রুট প্রবেশ গ্রহণযোগ্য নয়</string>
 
-    <string name="selectall">সবগুলো নির্বাচন করুন</string>
+    <string name="select_all">সবগুলো নির্বাচন করুন</string>
 
     <string name="delete">বাতিল</string>
 
-    <string name="setashome">হোম হিসাবে নির্ধারণ করুন</string>
+    <string name="set_as_home">হোম হিসাবে নির্ধারণ করুন</string>
 
 
     <!-- New -->
@@ -191,15 +191,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="filesOnTop">ফাইলগুলো সবার উপরে</string>
 
-    <string name="noneOnTop">কোনো কিছুই সবার উপরে না</string>
+    <string name="none_on_top">কোনো কিছুই সবার উপরে না</string>
 
     <!--SortBy-->
 
-    <string name="sortName">নাম</string>
+    <string name="sort_name">নাম</string>
 
     <string name="lastModified">সর্বশেষ পরিবর্তিত হয়েছে</string>
 
-    <string name="sortSize">আকার</string>
+    <string name="sort_size">আকার</string>
 
     <!--ListMode-->
 
@@ -233,7 +233,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="newfile">New File</string>
 
-    <string name="nofiles">No Files</string>
+    <string name="no_files">No Files</string>
 
 
     <string name="listview">List View</string>
@@ -250,7 +250,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="gridcolumnno">Number of columns in grid view</string>
 
-    <string name="setRandom">Changes will take place after you restart the app</string>
+    <string name="set_random">Changes will take place after you restart the app</string>
 
     <string name="authors">Authors</string>
 
@@ -262,7 +262,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="general">General</string>
 
-    <string name="thumbSummary">Show Thumbnails of apps and images</string>
+    <string name="thumb_summary">Show Thumbnails of apps and images</string>
 
     <string name="thumb">Show Thumbnails</string>
 
@@ -272,17 +272,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="lastModifiedPref">Show Last Modified</string>
 
-    <string name="sizePrefSummary">Show size of files and number of items in folders</string>
+    <string name="size_pref_summary">Show size of files and number of items in folders</string>
 
-    <string name="sizePref">Show Sizes</string>
+    <string name="size_pref">Show Sizes</string>
 
     <string name="miscellaneous">Miscellaneous</string>
 
-    <string name="rootPrefSummary">Show Permissions of Files and Folders</string>
+    <string name="root_pref_summary">Show Permissions of Files and Folders</string>
 
-    <string name="rootPref">Show Permissions</string>
+    <string name="root_pref">Show Permissions</string>
 
-    <string name="aboutFileManager">About Amaze File Manager</string>
+    <string name="about_amaze_file_manager_label">About Amaze File Manager</string>
 
     <string name="version">Version</string>
 
@@ -294,17 +294,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="type">Type</string>
 
-    <string name="rootdirectory">Root</string>
+    <string name="root_directory">Root</string>
 
-    <string name="addshortcut">Add Shortcut</string>
+    <string name="add_shortcut">Add Shortcut</string>
 
-    <string name="unsavedchanges">Unsaved Changes</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
 
-    <string name="unsavedchangesdesc">You have unsaved changes, do you want to save them before exiting?</string>
+    <string name="unsaved_changes_description">You have unsaved changes, do you want to save them before exiting?</string>
 
     <string name="saving">Saving</string>
 
-    <string name="packageinstaller">Package Installer</string>
+    <string name="package_installer">Package Installer</string>
 
     <string name="view">View</string>
 
@@ -312,17 +312,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="archive">Archive</string>
 
-    <string name="archtext">This is an archive. What action would you like to perform?</string>
+    <string name="archive_text">This is an archive. What action would you like to perform?</string>
 
-    <string name="pitext">This is a package installer. What action would you like to perform?</string>
+    <string name="package_installer_text">This is a package installer. What action would you like to perform?</string>
 
     <string name="xda_title">XDA</string>
 
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
 
-    <string name="circularimages">Use circular icons for images and videos</string>
+    <string name="circular_images">Use circular icons for images and videos</string>
 
-    <string name="circularicons">Use circular icons</string>
+    <string name="circular_icons">Use circular icons</string>
 
     <string name="back_title">Back navigation</string>
 
@@ -382,7 +382,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
 
-    <string name="openas">Open As</string>
+    <string name="open_as">Open As</string>
 
     <string name="text">Text</string>
 
@@ -396,17 +396,17 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="contributors">Contributors</string>
 
-    <string name="savepaths">Remember paths</string>
+    <string name="save_paths">Remember paths</string>
 
-    <string name="savepathsummary">When starting up,the most recently viewed folder for each tab will be displayed</string>
+    <string name="save_path_summary">When starting up,the most recently viewed folder for each tab will be displayed</string>
 
     <string name="select_intent">Select</string>
 
     <string name="database">Database</string>
 
-    <string name="colourednavigation">Colored Navigation bar</string>
+    <string name="colored_navigation">Colored Navigation bar</string>
 
-    <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+    <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
 
     <string name="color_title">Color</string>
 
@@ -432,15 +432,15 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="databasereader">Database Reader</string>
 
-    <string name="showDividers">Show Dividers</string>
+    <string name="show_dividers">Show Dividers</string>
 
-    <string name="needsaccess">Write Access Required</string>
+    <string name="needs_access">Write Access Required</string>
 
-    <string name="needsaccesssummary">Please choose the root directory of \t</string>
+    <string name="needs_access_summary">Please choose the root directory of \t</string>
 
-    <string name="needsaccesssummary1">\tto grant write access to operate </string>
+    <string name="needs_access_summary1">\tto grant write access to operate </string>
 
-    <string name="smb_con">SMB Connection</string>
+    <string name="smb_connection">SMB Connection</string>
 
     <string name="smb_server">Server IP Address</string>
 
@@ -482,7 +482,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="doit">Do it</string>
 
-    <string name="wanthelp"><u>Need help?</u></string>
+    <string name="want_help"><u>Need help?</u></string>
 
     <string name="quick">Quick Access</string>
 
@@ -500,7 +500,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="grant_storage_permission">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
 
-    <string name="operationunsuccesful">Operation Unsuccessful</string>
+    <string name="operation_unsuccesful">Operation Unsuccessful</string>
 
     <string name="creatingfile">Creating File</string>
 
@@ -508,19 +508,19 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="renaming">Renaming</string>
 
-    <string name="cantbeempty">%s cannot be empty</string>
+    <string name="cant_be_empty">%s cannot be empty</string>
 
     <string name="ip">Address</string>
 
-    <string name="connectionname">Connection name</string>
+    <string name="connection_name">Connection name</string>
 
-    <string name="nodevicefound">No device found</string>
+    <string name="no_device_found">No device found</string>
 
-    <string name="searchingdevices">Searching for devices</string>
+    <string name="searching_devices">Searching for devices</string>
 
     <string name="path">Path</string>
 
-    <string name="renamebookmark">Modify Bookmark</string>
+    <string name="rename_bookmark">Modify Bookmark</string>
 
     <string name="cut">Cut</string>
 
@@ -550,7 +550,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="ftp_status_not_running">Not Running</string>
 
-    <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
+    <string name="ftp_no_wifi">Make sure you\'re connected to Wi-Fi</string>
 
     <string name="domain">Domain</string>
 

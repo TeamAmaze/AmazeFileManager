@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Izmēri</string>
+  <string name="sort_size">Izmēri</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Versija</string>

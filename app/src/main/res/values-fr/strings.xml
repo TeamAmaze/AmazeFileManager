@@ -27,7 +27,7 @@
   <string name="ftp">Serveur FTP</string>
     <string name="setting">Paramètres</string>
   <string name="select">Sélectionner un élément</string>
-  <string name="pressagain">Appuyer de nouveau pour quitter</string>
+  <string name="press_again">Appuyer de nouveau pour quitter</string>
   <string name="open">Ouvrir</string>
   <string name="backup">Sauvegarder</string>
   <string name="uninstall">Désinstaller</string>
@@ -35,7 +35,7 @@
   <string name="properties">Propriétés</string>
   <string name="copyingapk">Copier l\'APK vers</string>
     <string name="delbook">Supprimer le favori</string>
-  <string name="addtobook">Ajouter aux favoris</string>
+  <string name="add_to_bookmarks">Ajouter aux favoris</string>
   <string name="enterpath">Entrer le chemin d\'accès</string>
   <string name="cancel">ANNULER</string>
   <string name="create">CRÉER</string>
@@ -44,7 +44,7 @@
   <string name="error">Erreur</string>
     <string name="rename">Renommer</string>
   <string name="save">Sauvegarder</string>
-    <string name="bookmarksadded">Favoris ajoutés</string>
+    <string name="bookmarks_added">Favoris ajoutés</string>
   <string name="fileexist">Un fichier avec le même nom existe déjà</string>
     <string name="name">Nom : </string>
   <string name="date">Date : </string>
@@ -52,7 +52,7 @@
   <string name="size_capitalized">Dimensions</string>
   <string name="size">taille du dossier</string>
     <string name="enterzipname">Entrer le nom du ZIP</string>
-  <string name="noappfound">Aucune application n\'a été trouvée pour ouvrir ce fichier</string>
+  <string name="no_app_found">Aucune application n\'a été trouvée pour ouvrir ce fichier</string>
   <string name="copying">Copie en cours</string>
   <string name="moving">Déplacement en cours</string>
     <string name="file">Fichier</string>
@@ -61,8 +61,8 @@
   <string name="entername">Entrer le nom</string>
   <string name="extracting">Extraction</string>
   <string name="stopping">Arrêt en cours...</string>
-    <string name="openparent">Ouvrir le répertoire Parent</string>
-  <string name="openwith">Ouvrir avec</string>
+    <string name="open_parent">Ouvrir le répertoire Parent</string>
+  <string name="open_with">Ouvrir avec</string>
   <string name="share">Partager</string>
   <string name="about">À propos</string>
   <string name="extract">Extraire</string>
@@ -74,9 +74,9 @@
   <string name="dialog_delete_disclaimer">Voulez-vous vraiment supprimer les fichiers suivants ?</string>
   <string name="dialog_delete_title">Confirmer</string>
   <string name="deleting">Suppression</string>
-  <string name="questionset">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
+  <string name="question_set_path_as_home">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
     <string name="directorysort">Option de tri des répertoires</string>
-  <string name="sortby">Trier par :</string>
+  <string name="sort_by">Trier par :</string>
   <string name="theme">Thème</string>
     <string name="random">Apparence aléatoire</string>
   <string name="random_summary">Définir une couleur d\'apparence aléatoire au démarrage</string>
@@ -86,12 +86,12 @@
   <string name="paste">Coller</string>
     <string name="history">Historique</string>
     <string name="copy">Copier</string>
-  <string name="rootmode">Mode Root</string>
-  <string name="rootmodesummary">Pour appareil rooté uniquement. Cochez seulement si vous êtes sûr de vous.</string>
-    <string name="rootfailure">Accès root refusé</string>
-    <string name="selectall">Tout sélectionner</string>
+  <string name="root_mode">Mode Root</string>
+  <string name="root_mode_summary">Pour appareil rooté uniquement. Cochez seulement si vous êtes sûr de vous.</string>
+    <string name="root_failure">Accès root refusé</string>
+    <string name="select_all">Tout sélectionner</string>
   <string name="delete">Supprimer</string>
-  <string name="setashome">Définir comme répertoire d\'accueil</string>
+  <string name="set_as_home">Définir comme répertoire d\'accueil</string>
     <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -103,11 +103,11 @@
     <!--DirectorySortMode-->
   <string name="foldersOnTop">Dossier en haut</string>
   <string name="filesOnTop">Fichiers en haut</string>
-  <string name="noneOnTop">Aucun en haut</string>
+  <string name="none_on_top">Aucun en haut</string>
   <!--SortBy-->
-  <string name="sortName">Nom</string>
+  <string name="sort_name">Nom</string>
   <string name="lastModified">Dernière modification</string>
-  <string name="sortSize">Taille</string>
+  <string name="sort_size">Taille</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Choisir un fichier</string>
@@ -122,7 +122,7 @@
   <string name="enablerootmde">Activer le Mode Root</string>
   <string name="goback">Retour</string>
     <string name="newfile">Nouveau fichier</string>
-  <string name="nofiles">Aucun fichier</string>
+  <string name="no_files">Aucun fichier</string>
     <string name="used">l\'espace utilisé</string>
   <string name="used_by_others">utilisées par des tiers</string>
   <string name="free">espace libre</string>
@@ -133,43 +133,43 @@
   <string name="exit">Sortir</string>
     <string name="doforall">Appliquer à tous les éléments</string>
   <string name="gridcolumnno">Nombre de colonnes dans l\'affichage par Grille</string>
-    <string name="setRandom">Les modifications seront effectives après redémarrage de l\'application</string>
+    <string name="set_random">Les modifications seront effectives après redémarrage de l\'application</string>
   <string name="authors">Auteurs</string>
   <string name="changelog">Changlog</string>
     <string name="ok">OK</string>
     <string name="ui">Interface</string>
   <string name="general">Général</string>
-  <string name="thumbSummary">Affiche les miniatures des applications et des images</string>
+  <string name="thumb_summary">Affiche les miniatures des applications et des images</string>
   <string name="thumb">Afficher les miniatures</string>
   <string name="hidden">Afficher les fichiers et dossiers cachés</string>
   <string name="lastModifiedSummary">Affiche la date et l\'heure de la dernière modification du fichier</string>
   <string name="lastModifiedPref">Afficher la dernière Modification</string>
-  <string name="sizePrefSummary">Affiche la taille des fichiers et le nombre d\'éléments dans les dossiers</string>
-  <string name="sizePref">Afficher la taille des fichiers</string>
+  <string name="size_pref_summary">Affiche la taille des fichiers et le nombre d\'éléments dans les dossiers</string>
+  <string name="size_pref">Afficher la taille des fichiers</string>
   <string name="miscellaneous">Divers</string>
-  <string name="rootPrefSummary">Afficher les autorisations des fichiers et des dossiers</string>
-  <string name="rootPref">Afficher les autorisations</string>
-  <string name="aboutFileManager">À propos d\'Amaze File Manager</string>
+  <string name="root_pref_summary">Afficher les autorisations des fichiers et des dossiers</string>
+  <string name="root_pref">Afficher les autorisations</string>
+  <string name="about_amaze_file_manager_label">À propos d\'Amaze File Manager</string>
   <string name="version">Version</string>
   <string name="rate">Évaluer l\'application</string>
   <string name="feedback">Envoyer votre avis</string>
   <string name="hiddenfiles">Fichiers cachés</string>
   <string name="type">Type</string>
-    <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Ajouter un raccourci</string>
-  <string name="unsavedchanges">Modifications annulées</string>
-  <string name="unsavedchangesdesc">Vous avez des modifications en attente de sauvegarde, voulez-vous enregistrer avant de quitter ?</string>
+    <string name="root_directory">Root</string>
+    <string name="add_shortcut">Ajouter un raccourci</string>
+  <string name="unsaved_changes">Modifications annulées</string>
+  <string name="unsaved_changes_description">Vous avez des modifications en attente de sauvegarde, voulez-vous enregistrer avant de quitter ?</string>
   <string name="saving">Sauvegarde</string>
-  <string name="packageinstaller">Programme d\'installation</string>
+  <string name="package_installer">Programme d\'installation</string>
   <string name="view">Voir</string>
   <string name="install">Installer</string>
   <string name="archive">Archive</string>
-  <string name="archtext">Quelle action souhaitez-vous faire ?</string>
-  <string name="pitext">Quelle action souhaitez-vous faire ?</string>
+  <string name="archive_text">Quelle action souhaitez-vous faire ?</string>
+  <string name="package_installer_text">Quelle action souhaitez-vous faire ?</string>
   <string name="xda_title">Forum XDA</string>
   <string name="xda_summary">Questions/Réponses, Support</string>
-    <string name="circularimages">Utilise des icônes circulaires pour les images et vidéos</string>
-  <string name="circularicons">Utiliser des icônes circulaires</string>
+    <string name="circular_images">Utilise des icônes circulaires pour les images et vidéos</string>
+  <string name="circular_icons">Utiliser des icônes circulaires</string>
   <string name="back_title">Ajouter un raccourci de Retour pour naviguer dans l\'application</string>
   <string name="back_summary">Active et affiche le raccourci Retour en haut de la liste</string>
   <string name="details">Détails</string>
@@ -202,19 +202,19 @@
   <string name="zip_create_folder">Créer un dossier ZIP</string>
   <string name="archive_summary">Les fichiers d\'archive seront extraits dans ce dossier. La valeur par défaut est le répertoire dans lequel l\'archive est présente</string>
   <string name="zip_summary">Les nouveaux fichiers zip seront créés dans ce dossier. La valeur par défaut est le répertoire dans lequel les fichiers sont présents</string>
-  <string name="openas">Ouvrir en tant que</string>
+  <string name="open_as">Ouvrir en tant que</string>
   <string name="text">Texte</string>
   <string name="audio">Audio</string>
   <string name="video">Vidéo</string>
   <string name="other">Autre</string>
   <string name="image">Image</string>
   <string name="contributors">Contributeurs</string>
-  <string name="savepaths">Mémoriser les chemins d\'accès</string>
-  <string name="savepathsummary">Au démarrage, le dernier dossier consulter sera affiché pour chaque onglet</string>
+  <string name="save_paths">Mémoriser les chemins d\'accès</string>
+  <string name="save_path_summary">Au démarrage, le dernier dossier consulter sera affiché pour chaque onglet</string>
   <string name="select_intent">Sélectionner</string>
     <string name="database">Base de données</string>
-  <string name="colourednavigation">Barre de navigation colorée</string>
-  <string name="colourednavigationsum">Choisir si la barre de navigation doit être colorée avec l\'habillage</string>
+  <string name="colored_navigation">Barre de navigation colorée</string>
+  <string name="colored_navigvation_sum">Choisir si la barre de navigation doit être colorée avec l\'habillage</string>
     <string name="color_title">Couleur</string>
   <string name="color_summary">Définir une couleur aux divers éléments de l\'UI</string>
   <string name="primary_color_title">Couleur Primaire</string>
@@ -227,11 +227,11 @@
   <string name="files">Fichiers</string>
     <string name="textreader">Lecteur de texte</string>
   <string name="databasereader">Lecteur de bases de données</string>
-  <string name="showDividers">Afficher les séparateurs</string>
-    <string name="needsaccess">Accès en écriture requis</string>
-  <string name="needsaccesssummary">Veuillez choisir l\'emplacement racine de \t</string>
-  <string name="needsaccesssummary1">\taccorder l\'accès en écriture pour effectuer l\'opération</string>
-  <string name="smb_con">Connexion SMB</string>
+  <string name="show_dividers">Afficher les séparateurs</string>
+    <string name="needs_access">Accès en écriture requis</string>
+  <string name="needs_access_summary">Veuillez choisir l\'emplacement racine de \t</string>
+  <string name="needs_access_summary1">\taccorder l\'accès en écriture pour effectuer l\'opération</string>
+  <string name="smb_connection">Connexion SMB</string>
   <string name="smb_server">Adresse IP Serveur</string>
   <string name="username">Nom utilisateur</string>
   <string name="password">Mot de passe</string>
@@ -252,7 +252,7 @@
   <string name="descending">Décroissant</string>
   <string name="defualt">Par défaut</string>
   <string name="doit">Le faire</string>
-  <string name="wanthelp"><u>Besoin d\'aide ?</u></string>
+  <string name="want_help"><u>Besoin d\'aide ?</u></string>
   <string name="quick">Accès rapide</string>
   <string name="recent">Fichiers récents</string>
   <string name="edit">Modifier</string>
@@ -261,16 +261,16 @@
   <string name="grantper">Accorder l\'autorisation</string>
   <string name="grantfailed">Autorisation non accordée</string>
   <string name="grant_storage_permission">L\'application a besoin de l\'autorisation de stockage pour continuer. Annuler ce message fermera l\'application.</string>
-  <string name="operationunsuccesful">Échec de l\'opération</string>
+  <string name="operation_unsuccesful">Échec de l\'opération</string>
   <string name="creatingfile">Création du fichier</string>
   <string name="creatingfolder">Création du dossier</string>
   <string name="renaming">Renommage</string>
-  <string name="cantbeempty">%s ne peut pas être vide</string>
+  <string name="cant_be_empty">%s ne peut pas être vide</string>
   <string name="ip">Adresse</string>
-  <string name="connectionname">Nom de connexion</string>
-  <string name="nodevicefound">Aucun appareil trouvé</string>
+  <string name="connection_name">Nom de connexion</string>
+  <string name="no_device_found">Aucun appareil trouvé</string>
   <string name="path">Emplacement</string>
-  <string name="renamebookmark">Modifier les favoris</string>
+  <string name="rename_bookmark">Modifier les favoris</string>
   <string name="cut">Couper</string>
   <string name="search">Rechercher</string>
   <string name="invalid_name">Nom incorrect</string>
@@ -305,14 +305,14 @@
   <string name="translate_summary">Traduire Amaze dans votre langue</string>
   <string name="easter_egg_title">Mode Studio</string>
   <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
-  <string name="searchingdevices">Recherche d\'appareils</string>
+  <string name="searching_devices">Recherche d\'appareils</string>
   <string name="use_custom_ip">Utiliser une adresse IP modifiée</string>
   <string name="bookmark_lost">Favori non trouvé, reconstitution en cours&#8230;</string>
   <string name="smb_instructions">
         <html>
         <body>
         <center>\\n
-        <h1>Comment accéder à un dossier partager de windows sous Android (smb)</h1>\\n
+        <h1>Comment accéder à un dossier partager de Windows sous Android (SMB)</h1>\\n
         </center>\\n
         <ol>\\n
         <li>\\n
@@ -333,7 +333,7 @@
         <br/>Ouvrez une invite de commande. Tapez \'ipconfig\' et appuyez sur Entrer.
         Regarder la valeur de Passerelle par défaut pour connaitre l\'IP de votre routeur. Regardez \"Adresse IPv4 \" pour connaitre l\'adresse IP de votre ordinateur.
         </li><li/><br/>\\n
-        <b>Entrer les détails dans le fenêtre de configuration de smb</b>\\n
+        <b>Entrer les détails dans le fenêtre de configuration de SMB</b>\\n
         <br/>\\n
         </ol>\\n
         </body>\\n
@@ -476,16 +476,16 @@
   <string name="crypt_decryption_fail_password">Mot de passe incorrect !</string>
   <string name="crypt_fingerprint_authenticate">Appuyez sur le capteur pour continuer</string>
   <string name="authenticate_password">Saisissez le mot de passe</string>
-  <string name="sidebarfolders_title">Raccourcis de la barre latérale</string>
-  <string name="sidebarquickaccess_title">Accès rapide à la barre latérale</string>
-  <string name="showfolders_pref_title">Afficher les raccourcis</string>
-  <string name="showfolders_pref">Raccourcis</string>
-  <string name="showquickaccess_pref_title">Afficher l\'accès rapide</string>
-  <string name="showquickaccess_pref">Accès rapide</string>
+  <string name="sidebar_folders_title">Raccourcis de la barre latérale</string>
+  <string name="sidebar_quick_access_title">Accès rapide à la barre latérale</string>
+  <string name="show_folders_pref_title">Afficher les raccourcis</string>
+  <string name="show_folders_pref">Raccourcis</string>
+  <string name="show_quick_access_pref_title">Afficher l\'accès rapide</string>
+  <string name="show_quick_access_pref">Accès rapide</string>
   <string name="create_shortcut">Créer un raccourci</string>
   <string name="edit_shortcut">Modifier le raccourci</string>
   <string name="directory">Répertoires</string>
-  <string name="questiondelete_shortcut">Supprimer le raccourci ?</string>
+  <string name="question_delete_shortcut">Supprimer le raccourci ?</string>
     <string name="cloud_error_plugin">Le plugin Amaze Cloud est introuvable. Télécharger le sur le Play Store.</string>
   <string name="cloud_error_failed_restart">Échec de chargement de la connexion. Veuillez ouvrir Amaze Cloud à nouveau.</string>
   <string name="cloud_remove">Voulez-vous supprimer la connexion Cloud ?</string>
@@ -496,12 +496,12 @@
     <string name="monofont">Police Monospace</string>
   <string name="showHeaders">Afficher les en-têtes</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="noitems">Aucun éléments</string>
+  <string name="no_items">Aucun éléments</string>
   <string name="item">Élément</string>
   <string name="items">Éléments</string>
   <string name="byte_singular">octet</string>
   <string name="bytes">Octets</string>
-    <string name="preselectedconfigs_title">Couleurs préconfigurées</string>
-  <string name="selectcolorconfig">Configurer les couleurs</string>
+    <string name="preselected_configs_title">Couleurs préconfigurées</string>
+  <string name="select_color_config">Configurer les couleurs</string>
   <!-- end of plurals -->
 </resources>

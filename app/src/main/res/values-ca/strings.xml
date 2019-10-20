@@ -36,7 +36,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Mida</string>
+  <string name="sort_size">Mida</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="skip">Omet</string>

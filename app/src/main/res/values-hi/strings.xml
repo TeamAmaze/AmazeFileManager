@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">आकार</string>
+  <string name="sort_size">आकार</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">वर्शन</string>

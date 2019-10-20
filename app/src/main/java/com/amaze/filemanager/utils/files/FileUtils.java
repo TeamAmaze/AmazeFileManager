@@ -446,7 +446,7 @@ public class FileUtils {
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.openwith));
+                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.open_with));
             } else {
                 activityIntent = chooserIntent;
                 if(useNewStack) applyNewDocFlag(activityIntent);
@@ -456,7 +456,7 @@ public class FileUtils {
                 c.startActivity(activityIntent);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
                 openWith(f, c, useNewStack);
             }
         } else {
@@ -479,7 +479,7 @@ public class FileUtils {
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
-                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.openwith));
+                activityIntent = Intent.createChooser(chooserIntent, c.getString(R.string.open_with));
             } else {
                 activityIntent = chooserIntent;
                 if(useNewStack) applyNewDocFlag(chooserIntent);
@@ -489,7 +489,7 @@ public class FileUtils {
                 c.startActivity(activityIntent);
             } catch (ActivityNotFoundException e) {
                 e.printStackTrace();
-                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
                 openWith(f, c, useNewStack);
             }
         } else {
@@ -598,7 +598,7 @@ public class FileUtils {
      */
     public static void openWith(final File f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a=new MaterialDialog.Builder(c);
-        a.title(c.getString(R.string.openas));
+        a.title(c.getString(R.string.open_as));
         String[] items=new String[]{c.getString(R.string.text),c.getString(R.string.image),c.getString(R.string.video),c.getString(R.string.audio),c.getString(R.string.database),c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
@@ -631,7 +631,7 @@ public class FileUtils {
             try {
                 c.startActivity(intent);
             } catch (Exception e) {
-                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
                 openWith(f, c, useNewStack);
             }
         });
@@ -644,7 +644,7 @@ public class FileUtils {
 
     public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
         MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.title(c.getString(R.string.openas));
+        a.title(c.getString(R.string.open_as));
         String[] items = new String[]{c.getString(R.string.text), c.getString(R.string.image), c.getString(R.string.video), c.getString(R.string.audio), c.getString(R.string.database), c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
@@ -676,7 +676,7 @@ public class FileUtils {
             try {
                 c.startActivity(intent);
             } catch (Exception e) {
-                Toast.makeText(c, R.string.noappfound, Toast.LENGTH_SHORT).show();
+                Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
                 openWith(f, c, useNewStack);
             }
         });
@@ -803,7 +803,7 @@ public class FileUtils {
             try {
                 openunknown(f, m, false, useNewStack);
             } catch (Exception e) {
-                Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+                Toast.makeText(m, m.getString(R.string.no_app_found),Toast.LENGTH_LONG).show();
                 openWith(f, m, useNewStack);
             }
         }
@@ -829,7 +829,7 @@ public class FileUtils {
         try {
             openunknown(f, m, false, useNewStack);
         } catch (Exception e) {
-            Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
+            Toast.makeText(m, m.getString(R.string.no_app_found),Toast.LENGTH_LONG).show();
             openWith(f, m, useNewStack);
         }
 

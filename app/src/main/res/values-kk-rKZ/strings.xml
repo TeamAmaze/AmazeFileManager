@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Өлшем</string>
+  <string name="sort_size">Өлшем</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Нұсқа</string>

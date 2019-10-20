@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">పరిమాణం</string>
+  <string name="sort_size">పరిమాణం</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">సంస్కరణ</string>

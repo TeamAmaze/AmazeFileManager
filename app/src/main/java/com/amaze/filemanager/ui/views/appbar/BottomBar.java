@@ -326,7 +326,7 @@ public class BottomBar implements View.OnTouchListener{
         if (!results) {
             pathText.setText(mainActivity.getString(R.string.folderfilecount, folderCount, fileCount));
         } else {
-            fullPathText.setText(mainActivity.getString(R.string.searchresults, query));
+            fullPathText.setText(mainActivity.getString(R.string.search_results, query));
             pathText.setText("");
             return;
         }

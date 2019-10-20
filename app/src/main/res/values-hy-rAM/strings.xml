@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Չափը</string>
+  <string name="sort_size">Չափը</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Տարբերակը</string>

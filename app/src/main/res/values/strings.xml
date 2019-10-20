@@ -30,25 +30,25 @@
     <string name="ftp">FTP Server</string>
     <string name="setting">Settings</string>
     <string name="select">Select Item</string>
-    <string name="pressagain">Press again to exit</string>
+    <string name="press_again">Press again to exit</string>
     <string name="open">Open</string>
     <string name="backup">Backup</string>
     <string name="uninstall">Uninstall</string>
     <string name="play">Play store</string>
     <string name="properties">Properties</string>
-    <string name="copyingapk">Copying apk to </string>
+    <string name="copyingapk">"Copying APK to "</string>
     <string name="delbook">Delete Bookmark</string>
-    <string name="addtobook">Add to Bookmark</string>
+    <string name="add_to_bookmarks">Add to Bookmarks</string>
     <string name="enterpath">Enter Path</string>
     <string name="cancel">CANCEL</string>
     <string name="create">CREATE</string>
     <string name="loading">Loading&#8230;</string>
     <string name="file_empty">File is empty</string>
     <string name="error">Error</string>
-    <string name="searchresults">Search results of %s</string>
+    <string name="search_results">Search results of %s</string>
     <string name="rename">Rename</string>
     <string name="save">Save</string>
-    <string name="bookmarksadded">Bookmarks Added</string>
+    <string name="bookmarks_added">Bookmarks Added</string>
     <string name="fileexist">File with same name already exists </string>
     <string name="name">Name</string>
     <string name="date">Date</string>
@@ -56,7 +56,7 @@
     <string name="size_capitalized">Size</string>
     <string name="size">size of folder</string>
     <string name="enterzipname">Enter Zip Name</string>
-    <string name="noappfound">No App found to open this file</string>
+    <string name="no_app_found">No App found to open this file</string>
     <string name="copying">Copying</string>
     <string name="moving">Moving</string>
     <string name="file">File</string>
@@ -65,8 +65,8 @@
     <string name="entername">Enter Name</string>
     <string name="extracting">Extracting</string>
     <string name="stopping">Stopping</string>
-    <string name="openparent">Open Parent Directory</string>
-    <string name="openwith">Open with</string>
+    <string name="open_parent">Open Parent Directory</string>
+    <string name="open_with">Open with</string>
     <string name="share">Share</string>
     <string name="about">About</string>
     <string name="extract">Extract</string>
@@ -78,9 +78,9 @@
     <string name="dialog_delete_disclaimer">Deleting the items below will permanently remove them from your device and they cannot be recovered.</string>
     <string name="dialog_delete_title">Delete items permanently?</string>
     <string name="deleting">Deleting</string>
-    <string name="questionset">Do you want to set current path as home for this tab?</string>
+    <string name="question_set_path_as_home">Do you want to set current path as home for this tab?</string>
     <string name="directorysort">Directory Sort Mode</string>
-    <string name="sortby">Sort By</string>
+    <string name="sort_by">Sort By</string>
     <string name="sort_only_this">Only this folder</string>
     <string name="theme">Theme</string>
     <string name="random">Random Skin</string>
@@ -91,12 +91,12 @@
     <string name="paste">Paste</string>
     <string name="history">History</string>
     <string name="copy">Copy</string>
-    <string name="rootmode">Root Explorer</string>
-    <string name="rootmodesummary">For rooted device only. Check it only if you are sure about it.</string>
-    <string name="rootfailure">Root Access not granted</string>
-    <string name="selectall">Select All</string>
+    <string name="root_mode">Root Explorer</string>
+    <string name="root_mode_summary">For rooted device only. Check it only if you are sure about it.</string>
+    <string name="root_failure">Root Access not granted</string>
+    <string name="select_all">Select All</string>
     <string name="delete">Delete</string>
-    <string name="setashome">Set As Home</string>
+    <string name="set_as_home">Set As Home</string>
 
     <!-- New -->
     <!-- Array -->
@@ -111,11 +111,11 @@
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folders On Top</string>
     <string name="filesOnTop">Files On Top</string>
-    <string name="noneOnTop">None On Top</string>
+    <string name="none_on_top">None On Top</string>
     <!--SortBy-->
-    <string name="sortName">Name</string>
+    <string name="sort_name">Name</string>
     <string name="lastModified">Last Modified</string>
-    <string name="sortSize">Size</string>
+    <string name="sort_size">Size</string>
     <!--ListMode-->
     <!--Folder-->
     <string name="pick_a_file">Pick a file</string>
@@ -131,7 +131,7 @@
     <string name="enablerootmde">Enable Root Mode</string>
     <string name="goback">Go Back</string>
     <string name="newfile">New File</string>
-    <string name="nofiles">No Files</string>
+    <string name="no_files">No Files</string>
     <string name="used">used space</string>
     <string name="used_by_others">used by others</string>
     <string name="free">free space</string>
@@ -142,43 +142,43 @@
     <string name="exit">Exit</string>
     <string name="doforall">Do for all items</string>
     <string name="gridcolumnno">Number of columns in grid view</string>
-    <string name="setRandom">Changes will take place after you restart the app</string>
+    <string name="set_random">Changes will take place after you restart the app</string>
     <string name="authors">Authors</string>
     <string name="changelog">Changelog</string>
     <string name="ok">OK</string>
     <string name="ui">Interface</string>
     <string name="general">General</string>
-    <string name="thumbSummary">Show Thumbnails of apps and images</string>
+    <string name="thumb_summary">Show Thumbnails of apps and images</string>
     <string name="thumb">Show Thumbnails</string>
     <string name="hidden">Show Hidden Files and Folders</string>
     <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
     <string name="lastModifiedPref">Show Last Modified Date and Time</string>
-    <string name="sizePrefSummary">Show size of files and number of items in folders</string>
-    <string name="sizePref">Show Sizes</string>
+    <string name="size_pref_summary">Show size of files and number of items in folders</string>
+    <string name="size_pref">Show Sizes</string>
     <string name="miscellaneous">Miscellaneous</string>
-    <string name="rootPrefSummary">Show Permissions of Files and Folders</string>
-    <string name="rootPref">Show Permissions</string>
-    <string name="aboutFileManager">About Amaze File Manager</string>
+    <string name="root_pref_summary">Show Permissions of Files and Folders</string>
+    <string name="root_pref">Show Permissions</string>
+    <string name="about_amaze_file_manager_label">About Amaze File Manager</string>
     <string name="version">Version</string>
     <string name="rate">Rate the app</string>
     <string name="feedback">Send Feedback</string>
     <string name="hiddenfiles">Hidden Files</string>
     <string name="type">Type</string>
-    <string name="rootdirectory">Root</string>
-    <string name="addshortcut">Add Shortcut</string>
-    <string name="unsavedchanges">Unsaved Changes</string>
-    <string name="unsavedchangesdesc">You have unsaved changes, do you want to save them before exiting?</string>
+    <string name="root_directory">Root</string>
+    <string name="add_shortcut">Add Shortcut</string>
+    <string name="unsaved_changes">Unsaved Changes</string>
+    <string name="unsaved_changes_description">You have unsaved changes, do you want to save them before exiting?</string>
     <string name="saving">Saving</string>
-    <string name="packageinstaller">Package Installer</string>
+    <string name="package_installer">Package Installer</string>
     <string name="view">View</string>
     <string name="install">Install</string>
     <string name="archive">Archive</string>
-    <string name="archtext">This is an archive. What action would you like to perform?</string>
-    <string name="pitext">This is a package installer. What action would you like to perform?</string>
+    <string name="archive_text">This is an archive. What action would you like to perform?</string>
+    <string name="package_installer_text">This is a package installer. What action would you like to perform?</string>
     <string name="xda_title">XDA thread</string>
     <string name="xda_summary">Q&amp;A, Help &amp; Troubleshooting</string>
-    <string name="circularimages">Use circular icons for images and videos</string>
-    <string name="circularicons">Use circular icons</string>
+    <string name="circular_images">Use circular icons for images and videos</string>
+    <string name="circular_icons">Use circular icons</string>
     <string name="back_title">Back navigation</string>
     <string name="back_summary">Enables custom back navigation at top of the list</string>
     <string name="details">Details</string>
@@ -212,19 +212,19 @@
     <string name="zip_create_folder">Zip Create Folder</string>
     <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present.</string>
     <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present.</string>
-    <string name="openas">Open As</string>
+    <string name="open_as">Open As</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>
     <string name="video">Video</string>
     <string name="other">Other</string>
     <string name="image">Image</string>
     <string name="contributors">Contributors</string>
-    <string name="savepaths">Remember paths</string>
-    <string name="savepathsummary">When starting up, the most recently viewed folder for each tab will be displayed</string>
+    <string name="save_paths">Remember paths</string>
+    <string name="save_path_summary">When starting up, the most recently viewed folder for each tab will be displayed</string>
     <string name="select_intent">Select</string>
     <string name="database">Database</string>
-    <string name="colourednavigation">Colored Navigation bar</string>
-    <string name="colourednavigationsum">Whether or not the system navigation bar is colored with the skin</string>
+    <string name="colored_navigation">Colored Navigation bar</string>
+    <string name="colored_navigvation_sum">Whether or not the system navigation bar is colored with the skin</string>
 
     <string name="color_title">Color</string>
     <string name="color_summary">Set color to various UI components</string>
@@ -238,11 +238,11 @@
     <string name="files">Files</string>
     <string name="textreader">Text Reader</string>
     <string name="databasereader">Database Reader</string>
-    <string name="showDividers">Show Dividers</string>
-    <string name="needsaccess">Write Access Required</string>
-    <string name="needsaccesssummary">Please choose the root directory of \t</string>
-    <string name="needsaccesssummary1">\tto grant write access to operate </string>
-    <string name="smb_con">SMB Connection</string>
+    <string name="show_dividers">Show Dividers</string>
+    <string name="needs_access">Write Access Required</string>
+    <string name="needs_access_summary">Please choose the root directory of \t</string>
+    <string name="needs_access_summary1">\tto grant write access to operate </string>
+    <string name="smb_connection">SMB Connection</string>
     <string name="smb_server">Server IP Address</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -252,7 +252,7 @@
     <string name="folders">Folders</string>
     <string name="folderfilecount">%1$d folders and %2$d files</string>
     <string name="videos">Videos</string>
-    <string name="apks">Apks</string>
+    <string name="apks">APKs</string>
     <string name="documents">Documents</string>
     <string name="images">Images</string>
     <string name="clear">Clear</string>
@@ -264,7 +264,7 @@
     <string name="descending">Descending</string>
     <string name="defualt">Default</string>
     <string name="doit">Do it</string>
-    <string name="wanthelp"><u>Need help?</u></string>
+    <string name="want_help"><u>Need help?</u></string>
     <string name="quick">Quick access</string>
     <string name="recent">Recent files</string>
     <string name="edit">Edit</string>
@@ -273,16 +273,16 @@
     <string name="grantper">Grant permission</string>
     <string name="grantfailed">Permission not granted</string>
     <string name="grant_storage_permission">App needs storage permission to continue. Canceling this dialog will exit the app.</string>
-    <string name="operationunsuccesful">Operation Unsuccessful</string>
+    <string name="operation_unsuccesful">Operation Unsuccessful</string>
     <string name="creatingfile">Creating File</string>
     <string name="creatingfolder">Creating Folder</string>
     <string name="renaming">Renaming</string>
-    <string name="cantbeempty">%s cannot be empty</string>
+    <string name="cant_be_empty">%s cannot be empty</string>
     <string name="ip">Address</string>
-    <string name="connectionname">Connection name</string>
-    <string name="nodevicefound">No device found</string>
+    <string name="connection_name">Connection name</string>
+    <string name="no_device_found">No devices found</string>
     <string name="path">Path</string>
-    <string name="renamebookmark">Modify Bookmark</string>
+    <string name="rename_bookmark">Modify Bookmark</string>
     <string name="cut">Cut</string>
     <string name="search">Search</string>
     <string name="invalid_name">Invalid Name</string>
@@ -297,7 +297,7 @@
     <string name="stop_ftp">Stop</string>
     <string name="ftp_status_running">Running</string>
     <string name="ftp_status_not_running">Not Running</string>
-    <string name="ftp_no_wifi">Make sure you\'re connected to WiFi</string>
+    <string name="ftp_no_wifi">Make sure you\'re connected to Wi-Fi</string>
     <string name="domain">Domain</string>
     <string name="invalid">Invalid %s</string>
     <string name="ftp_notif_starting">FTP Server is starting</string>
@@ -316,23 +316,23 @@
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>
     <string name="easter_egg_title">Studio Mode</string>
-    <string name="paypal_copy_message">Paypal id copied to clipboard</string>
-    <string name="searchingdevices">Searching for devices</string>
+    <string name="paypal_copy_message">PayPal ID copied to clipboard</string>
+    <string name="searching_devices">Searching for devices</string>
     <string name="use_custom_ip">Use custom IP</string>
     <string name="bookmark_lost">Bookmark not found, recreating&#8230;</string>
 
     <string name="smb_instructions">
         <html>
             <body>
-                <h1>How to access shared windows folder on android (smb)</h1>\n\n
+                <h1>How to access shared Windows folder on Android (SMB)</h1>\n\n
                 <ul>
                     <li>
-                        <b>Enable File Sharing</b>\n
+                        <b>Enable File Sharing on Windows</b>\n
                     </li>
                     <p style='margin-left: 40px'>
-                        Open the Control Panel, click Choose homegroup and sharing options under Network
-                        and Internet, and click Change advanced sharing settings. Enable the file and
-                        printer sharing feature.\n\n
+                        Open the Control Panel, click Choose HomeGroup and Sharing options under Network
+                        and Internet, and click "Change Advanced Sharing Settings," enable the "File and
+                        Printer Sharing" feature.\n\n
                     </p>
 
                     <li>
@@ -341,7 +341,7 @@
                     <p style='margin-left: 40px'>
                         You may also want to configure the other advanced sharing settings here. \n
                         For example, you could enable access to your files without a password if you trust all
-                        the devices on your local network.Once file and printer sharing is enabled, you can
+                        the devices on your local network. Once file and printer sharing is enabled, you can
                         open File Explorer or Windows Explorer, right-click a folder you want to share, and
                         select Properties. \n
                         Click the Share button and make the folder available on the network.\n\n
@@ -367,7 +367,7 @@
                         address.\n\n
                     </p>
 
-                    <b>Enter details in smb dialog box</b>\n
+                    <b>Enter details in SMB dialog box</b>\n
                 </ul>
             </body>
         </html>
@@ -519,16 +519,16 @@
     <string name="authenticate_password">Enter password</string>
 
     <string name="sidebar_preferences">Sidebar</string>
-    <string name="sidebarfolders_title">Sidebar shortcuts</string>
-    <string name="sidebarquickaccess_title">Sidebar quick access</string>
-    <string name="showfolders_pref_title">Show shortcuts</string>
-    <string name="showfolders_pref">Shortcuts</string>
-    <string name="showquickaccess_pref_title">Show quick accesses</string>
-    <string name="showquickaccess_pref">Quick accesses</string>
+    <string name="sidebar_folders_title">Sidebar shortcuts</string>
+    <string name="sidebar_quick_access_title">Sidebar quick access</string>
+    <string name="show_folders_pref_title">Show shortcuts</string>
+    <string name="show_folders_pref">Shortcuts</string>
+    <string name="show_quick_access_pref_title">Show quick accesses</string>
+    <string name="show_quick_access_pref">Quick accesses</string>
     <string name="create_shortcut">Create shortcut</string>
     <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>
-    <string name="questiondelete_shortcut">Delete shortcut?</string>
+    <string name="question_delete_shortcut">Delete shortcut?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.
@@ -542,7 +542,7 @@
     <string name="showHeaders">Show Headers</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-	<string name="noitems">No items</string>
+	<string name="no_items">No items</string>
 	<string name="item">item</string>
 	<string name="items">items</string>
 	
@@ -560,8 +560,8 @@
     <string name="intent_save_as">Save as&#8230;</string>
     <string name="go">Go</string>
     <string name="advanced">Advanced</string>
-    <string name="typeablepaths_title">Custom paths</string>
-    <string name="typeablepaths_summary">Long press path bar to type a custom path</string>
+    <string name="typeable_paths_title">Custom paths</string>
+    <string name="typeable_paths_summary">Long press path bar to type a custom path</string>
     <string name="send_email_to">Send an e-mail to</string>
 
     <string name="text_editor">Text editor settings</string>
@@ -569,18 +569,18 @@
     <string name="preference_newstack_summary">Allows you to open files in separate tasks. Access them from system recents screen.</string>
     <string name="github" translatable="false">GitHub</string>
     <string name="developers">Developers</string>
-    <string name="nobitcoinapp">Please install a bitcoin wallet</string>
-    <string name="channelname_normal">Amaze Notifications</string>
-    <string name="channeldescription_normal">Amaze File Manager\'s Notifications</string>
-    <string name="channelname_ftp">Amaze FTP Server</string>
-    <string name="channeldescription_ftp">Amaze File Manager FTP Server\'s Notifications</string>
+    <string name="no_bitcoin_app">Please install a Bitcoin Wallet app</string>
+    <string name="channel_name_normal">Amaze Notifications</string>
+    <string name="channel_description_normal">Amaze File Manager\'s Notifications</string>
+    <string name="channel_name_ftp">Amaze FTP Server</string>
+    <string name="channel_description_ftp">Amaze File Manager FTP Server\'s Notifications</string>
 
     <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Processing&#8230;</string>
     <string name="failed_no_connection">Failed to load files. Please check your connection.</string>
 
     <string name="update">UPDATE</string>
-	<string name="scp_con">SCP/SFTP Connection</string>
+	<string name="scp_connection">SCP/SFTP Connection</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">The authenticity of host \'%1$s\' can\'t be established.\n\n%2$s key fingerprint is %3$s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>
@@ -597,12 +597,12 @@
         Please contact your system administrator or setup a new connection to continue connecting to the server.
     </string>
     <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
-    <string name="addshortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
+    <string name="add_shortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
     
-    <string name="selectcolorconfig">Select color config</string>
+    <string name="select_color_config">Select color config</string>
     <string name="customize">Customize</string>
     <string name="custom">Custom</string>
-    <string name="preselectedconfigs_title">Preselected configs</string>
+    <string name="preselected_configs_title">Preselected configs</string>
     <string name="orange">Orange</string>
     <string name="blue">Blue</string>
     <string name="green">Green</string>
@@ -640,7 +640,7 @@
     <string name="multiple_invalid_archive_entries">Some files in the archive cannot be extracted; archive may be damaged or came from malicious source.</string>
     <string name="saf_otg_explanation">You\'ll now go to Android\'s filesystem for security reasons. Please select the USB device from the list on the left.</string>
     <string name="donation_thanks">Thank you for the donation, this keeps us motivated! (:</string>
-    <string name="enableMarqueeFilename">Enable marquee effect for file names</string>
+    <string name="enable_marquee_filename">Enable marquee effect for file names</string>
     <string name="archive_password_prompt">Please enter archive password:</string>
     <string name="empty_string" translatable="false" />
     <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>

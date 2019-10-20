@@ -42,19 +42,19 @@
     <string-array name="directorysortmode">
         <item>@string/foldersOnTop</item>
         <item>@string/filesOnTop</item>
-        <item>@string/noneOnTop</item>
+        <item>@string/none_on_top</item>
     </string-array>
     <string-array name="sortby">
-        <item>@string/sortName</item>
+        <item>@string/sort_name</item>
         <item>@string/lastModified</item>
-        <item>@string/sortSize</item>
+        <item>@string/sort_size</item>
         <item>@string/type</item>
     </string-array>
 
     <string-array name="sortbyApps">
-        <item>@string/sortName</item>
+        <item>@string/sort_name</item>
         <item>@string/lastModified</item>
-        <item>@string/sortSize</item>
+        <item>@string/sort_size</item>
     </string-array>
 
 </resources>

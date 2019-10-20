@@ -28,7 +28,7 @@
   <string name="ftp">FTP 伺服器</string>
   <string name="setting">設定</string>
   <string name="select">選擇項目</string>
-  <string name="pressagain">再按一次即可退出</string>
+  <string name="press_again">再按一次即可退出</string>
   <string name="open">開啟</string>
   <string name="backup">備份</string>
   <string name="uninstall">解除安裝</string>
@@ -36,7 +36,7 @@
   <string name="properties">屬性</string>
   <string name="copyingapk">將 APK 複製到</string>
   <string name="delbook">刪除書籤</string>
-  <string name="addtobook">新增至書籤</string>
+  <string name="add_to_bookmarks">新增至書籤</string>
   <string name="enterpath">輸入路徑</string>
   <string name="cancel">取消</string>
   <string name="create">新增</string>
@@ -45,7 +45,7 @@
   <string name="error">錯誤</string>
   <string name="rename">重新命名</string>
   <string name="save">儲存</string>
-  <string name="bookmarksadded">已新增書籤</string>
+  <string name="bookmarks_added">已新增書籤</string>
   <string name="fileexist">存在同樣名稱的檔案</string>
   <string name="name">名稱</string>
   <string name="date">日期</string>
@@ -53,7 +53,7 @@
   <string name="size_capitalized">大小</string>
   <string name="size">資料夾大小</string>
   <string name="enterzipname">請輸入 ZIP 檔案名稱</string>
-  <string name="noappfound">找不到關聯該檔案的應用程式</string>
+  <string name="no_app_found">找不到關聯該檔案的應用程式</string>
   <string name="copying">正在複製</string>
   <string name="moving">正在移動</string>
   <string name="file">檔案</string>
@@ -62,8 +62,8 @@
   <string name="entername">請輸入名稱</string>
   <string name="extracting">正在解壓縮</string>
   <string name="stopping">正在停止</string>
-  <string name="openparent">開啟上層目錄</string>
-  <string name="openwith">開啟方式</string>
+  <string name="open_parent">開啟上層目錄</string>
+  <string name="open_with">開啟方式</string>
   <string name="share">分享</string>
   <string name="about">關於</string>
   <string name="extract">解壓縮</string>
@@ -75,9 +75,9 @@
   <string name="dialog_delete_disclaimer">刪除以下項目將永久將其從裝置中刪除，並且無法恢復。</string>
   <string name="dialog_delete_title">永久刪除項目？</string>
   <string name="deleting">正在刪除</string>
-  <string name="questionset">您要將此頁籤的目前路徑設為首頁嗎？</string>
+  <string name="question_set_path_as_home">您要將此頁籤的目前路徑設為首頁嗎？</string>
   <string name="directorysort">目錄排序方式</string>
-  <string name="sortby">排序方式</string>
+  <string name="sort_by">排序方式</string>
   <string name="sort_only_this">僅應用於此目錄</string>
   <string name="theme">主題</string>
   <string name="random">隨機色彩</string>
@@ -88,12 +88,12 @@
   <string name="paste">貼上</string>
   <string name="history">歷史記錄</string>
   <string name="copy">複製</string>
-  <string name="rootmode">Root 檔案總管</string>
-  <string name="rootmodesummary">僅供已獲取 root 權限的裝置使用</string>
-  <string name="rootfailure">無法取得 Root 權限</string>
-  <string name="selectall">選擇全部</string>
+  <string name="root_mode">Root 檔案總管</string>
+  <string name="root_mode_summary">僅供已獲取 root 權限的裝置使用</string>
+  <string name="root_failure">無法取得 Root 權限</string>
+  <string name="select_all">選擇全部</string>
   <string name="delete">刪除</string>
-  <string name="setashome">設為為首頁目錄</string>
+  <string name="set_as_home">設為為首頁目錄</string>
   <!-- New -->
   <!-- Array -->
   <!-- UI -->
@@ -105,11 +105,11 @@
   <!--DirectorySortMode-->
   <string name="foldersOnTop">資料夾顯示在頂部</string>
   <string name="filesOnTop">資料夾顯示在底部</string>
-  <string name="noneOnTop">檔案與資料夾混合顯示</string>
+  <string name="none_on_top">檔案與資料夾混合顯示</string>
   <!--SortBy-->
-  <string name="sortName">名稱</string>
+  <string name="sort_name">名稱</string>
   <string name="lastModified">最後修改時間</string>
-  <string name="sortSize">大小</string>
+  <string name="sort_size">大小</string>
   <!--ListMode-->
   <!--Folder-->
   <string name="pick_a_file">選擇一個檔案</string>
@@ -124,7 +124,7 @@
   <string name="enablerootmde">啟用 Root 模式</string>
   <string name="goback">返回上一層</string>
   <string name="newfile">新增檔案</string>
-  <string name="nofiles">無檔案</string>
+  <string name="no_files">無檔案</string>
   <string name="used">已使用空間</string>
   <string name="used_by_others">已被其他人使用</string>
   <string name="free">可用空間</string>
@@ -135,43 +135,43 @@
   <string name="exit">退出</string>
   <string name="doforall">為所有項目執行操作</string>
   <string name="gridcolumnno">網格模式列數</string>
-  <string name="setRandom">您更改將會在重新啟動應用程式後生效。</string>
+  <string name="set_random">您更改將會在重新啟動應用程式後生效。</string>
   <string name="authors">開發人員</string>
   <string name="changelog">更新日誌</string>
   <string name="ok">確定</string>
   <string name="ui">介面</string>
   <string name="general">一般</string>
-  <string name="thumbSummary">顯示應用程式和圖片的縮圖</string>
+  <string name="thumb_summary">顯示應用程式和圖片的縮圖</string>
   <string name="thumb">顯示縮圖</string>
   <string name="hidden">顯示隱藏檔案</string>
   <string name="lastModifiedSummary">顯示檔案的最後修改時間</string>
   <string name="lastModifiedPref">顯示修改時間</string>
-  <string name="sizePrefSummary">顯示檔案大小及資料夾內檔案數量</string>
-  <string name="sizePref">顯示大小</string>
+  <string name="size_pref_summary">顯示檔案大小及資料夾內檔案數量</string>
+  <string name="size_pref">顯示大小</string>
   <string name="miscellaneous">更多其他</string>
-  <string name="rootPrefSummary">顯示檔案及資料夾的權限</string>
-  <string name="rootPref">顯示權限</string>
-  <string name="aboutFileManager">關於</string>
+  <string name="root_pref_summary">顯示檔案及資料夾的權限</string>
+  <string name="root_pref">顯示權限</string>
+  <string name="about_amaze_file_manager_label">關於</string>
   <string name="version">應用程式版本</string>
   <string name="rate">為本應用程式評分</string>
   <string name="feedback">回饋</string>
   <string name="hiddenfiles">隱藏檔案</string>
   <string name="type">類型</string>
-  <string name="rootdirectory">根目錄</string>
-  <string name="addshortcut">新增捷徑</string>
-  <string name="unsavedchanges">更改未被儲存</string>
-  <string name="unsavedchangesdesc">您已經修改了該檔案，是否要在退出前儲存您所作的修改？</string>
+  <string name="root_directory">根目錄</string>
+  <string name="add_shortcut">新增捷徑</string>
+  <string name="unsaved_changes">更改未被儲存</string>
+  <string name="unsaved_changes_description">您已經修改了該檔案，是否要在退出前儲存您所作的修改？</string>
   <string name="saving">儲存</string>
-  <string name="packageinstaller">套件安裝程式</string>
+  <string name="package_installer">套件安裝程式</string>
   <string name="view">檢視</string>
   <string name="install">安裝</string>
   <string name="archive">壓縮檔</string>
-  <string name="archtext">這是一個壓縮檔，您要執行哪一項操作？</string>
-  <string name="pitext">這是一個套件安裝程式，您要執行哪一項操作？</string>
+  <string name="archive_text">這是一個壓縮檔，您要執行哪一項操作？</string>
+  <string name="package_installer_text">這是一個套件安裝程式，您要執行哪一項操作？</string>
   <string name="xda_title">XDA 超連結</string>
   <string name="xda_summary">問與答、説明和疑難排解</string>
-  <string name="circularimages">對圖片和影片使用圓形圖示</string>
-  <string name="circularicons">使用圓形圖示</string>
+  <string name="circular_images">對圖片和影片使用圓形圖示</string>
+  <string name="circular_icons">使用圓形圖示</string>
   <string name="back_title">顯示返回導覽</string>
   <string name="back_summary">在清單的頂部顯示返回導覽</string>
   <string name="details">詳細資料</string>
@@ -204,19 +204,19 @@
   <string name="zip_create_folder">Zip 新增資料夾</string>
   <string name="archive_summary">壓縮檔將會被解壓縮到該資料夾，預設解壓縮到壓縮檔所在資料夾</string>
   <string name="zip_summary">新 Zip 檔案將會新增到該資料夾，預設新增壓縮檔到目前的資料夾</string>
-  <string name="openas">開啟方式</string>
+  <string name="open_as">開啟方式</string>
   <string name="text">文字</string>
   <string name="audio">音訊</string>
   <string name="video">影片</string>
   <string name="other">其他</string>
   <string name="image">圖片</string>
   <string name="contributors">貢獻者</string>
-  <string name="savepaths">記得路徑</string>
-  <string name="savepathsummary">當您開啟 Amaze 檔案管理員時，每個頁籤將會顯示您上次檢視的資料夾</string>
+  <string name="save_paths">記得路徑</string>
+  <string name="save_path_summary">當您開啟 Amaze 檔案管理員時，每個頁籤將會顯示您上次檢視的資料夾</string>
   <string name="select_intent">選擇</string>
   <string name="database">資料庫</string>
-  <string name="colourednavigation">導覽列變色</string>
-  <string name="colourednavigationsum">設定導覽列是否跟隨色彩樣式變色</string>
+  <string name="colored_navigation">導覽列變色</string>
+  <string name="colored_navigvation_sum">設定導覽列是否跟隨色彩樣式變色</string>
   <string name="color_title">顏色</string>
   <string name="color_summary">將顏色設定為不同的使用者介面元件</string>
   <string name="primary_color_title">主顏色 (左側頁籤)</string>
@@ -229,11 +229,11 @@
   <string name="files">近期檔案</string>
   <string name="textreader">文字閱讀器</string>
   <string name="databasereader">資料庫讀取器</string>
-  <string name="showDividers">顯示分隔線</string>
-  <string name="needsaccess">需要寫入的權限</string>
-  <string name="needsaccesssummary">請選擇根目錄下的 \t</string>
-  <string name="needsaccesssummary1">\t 以授予寫入的權限</string>
-  <string name="smb_con">SMB 連線</string>
+  <string name="show_dividers">顯示分隔線</string>
+  <string name="needs_access">需要寫入的權限</string>
+  <string name="needs_access_summary">請選擇根目錄下的 \t</string>
+  <string name="needs_access_summary1">\t 以授予寫入的權限</string>
+  <string name="smb_connection">SMB 連線</string>
   <string name="smb_server">伺服器 IP 位址</string>
   <string name="username">使用者名稱</string>
   <string name="password">密碼</string>
@@ -254,7 +254,7 @@
   <string name="descending">遞減</string>
   <string name="defualt">預設</string>
   <string name="doit">執行吧！</string>
-  <string name="wanthelp"><u>需要幫助嗎？</u></string>
+  <string name="want_help"><u>需要幫助嗎？</u></string>
   <string name="quick">快速存取</string>
   <string name="recent">最近檔案</string>
   <string name="edit">編輯</string>
@@ -263,16 +263,16 @@
   <string name="grantper">授予權限</string>
   <string name="grantfailed">未授予權限</string>
   <string name="grant_storage_permission">應用程式需要儲存的權限才能繼續。取消此對話方塊將退出應用程式。</string>
-  <string name="operationunsuccesful">操作失敗</string>
+  <string name="operation_unsuccesful">操作失敗</string>
   <string name="creatingfile">建立檔案</string>
   <string name="creatingfolder">正在建立資料夾</string>
   <string name="renaming">重新命名中</string>
-  <string name="cantbeempty">%s 不能為空</string>
+  <string name="cant_be_empty">%s 不能為空</string>
   <string name="ip">位址</string>
-  <string name="connectionname">連線名稱</string>
-  <string name="nodevicefound">找不到裝置</string>
+  <string name="connection_name">連線名稱</string>
+  <string name="no_device_found">找不到裝置</string>
   <string name="path">路徑</string>
-  <string name="renamebookmark">編輯書籤</string>
+  <string name="rename_bookmark">編輯書籤</string>
   <string name="cut">剪下</string>
   <string name="search">搜尋</string>
   <string name="invalid_name">無效名稱</string>
@@ -305,13 +305,13 @@
   <string name="translate_summary">用您的語言翻譯 Amaze</string>
   <string name="easter_egg_title">工作室模式</string>
   <string name="paypal_copy_message">Paypal ID 已複製到剪貼簿</string>
-  <string name="searchingdevices">正在搜尋裝置</string>
+  <string name="searching_devices">正在搜尋裝置</string>
   <string name="use_custom_ip">使用自訂的 IP</string>
   <string name="bookmark_lost">找不到，重新建立書籤......</string>
   <string name="smb_instructions">
 <html>
             <body>
-                <h1>如何存取共用的 windows 資料夾上的 android (smb)</h1>\n\n
+                <h1>如何從 Android 上存取共用的 Windows 資料夾 (SMB)</h1>\n\n
                 <ul>
                     <li>
                         <b>啟用檔案共用</b>\n
@@ -486,16 +486,16 @@
   <string name="crypt_decryption_fail_password">密碼錯誤 ！</string>
   <string name="crypt_fingerprint_authenticate">繼續觸控感應器</string>
   <string name="authenticate_password">請輸入密碼</string>
-  <string name="sidebarfolders_title">側欄捷徑</string>
-  <string name="sidebarquickaccess_title">側欄快速存取</string>
-  <string name="showfolders_pref_title">顯示捷徑</string>
-  <string name="showfolders_pref">捷徑</string>
-  <string name="showquickaccess_pref_title">顯示快速存取</string>
-  <string name="showquickaccess_pref">快速存取</string>
+  <string name="sidebar_folders_title">側欄捷徑</string>
+  <string name="sidebar_quick_access_title">側欄快速存取</string>
+  <string name="show_folders_pref_title">顯示捷徑</string>
+  <string name="show_folders_pref">捷徑</string>
+  <string name="show_quick_access_pref_title">顯示快速存取</string>
+  <string name="show_quick_access_pref">快速存取</string>
   <string name="create_shortcut">建立捷徑</string>
   <string name="edit_shortcut">編輯捷徑</string>
   <string name="directory">目錄</string>
-  <string name="questiondelete_shortcut">刪除捷徑？</string>
+  <string name="question_delete_shortcut">刪除捷徑？</string>
   <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
   <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
   <string name="cloud_remove">您想要移除此雲端連線嗎？</string>
@@ -506,7 +506,7 @@
   <string name="monofont">等寬字型</string>
   <string name="showHeaders">顯示標頭</string>
   <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-  <string name="noitems">無項目</string>
+  <string name="no_items">無項目</string>
   <string name="item">項目</string>
   <string name="items">個項目</string>
   <string name="byte_singular">位元組</string>
@@ -523,12 +523,12 @@
   <string name="orange">橙色</string>
   <string name="ssh_key_prompt_passphrase">請輸入私鑰密碼。</string>
   <string name="update">更新</string>
-  <string name="scp_con">SCP/SFTP連線</string>
+  <string name="scp_connection">SCP/SFTP連線</string>
   <string name="ssh_select_pem_button">SSH私鑰</string>
   <string name="password_unchanged">（未變更）</string>
   <string name="ssh_connect_failed_host_key_changed_title">警告：遠端伺服器的公鑰已變更！</string>
-  <string name="channelname_normal">Amaze通知</string>
-  <string name="channeldescription_normal">Amaze檔案管理員的通知</string>
+  <string name="channel_name_normal">Amaze通知</string>
+  <string name="channel_description_normal">Amaze檔案管理員的通知</string>
   <string name="advanced">進階</string>
   <string name="processing">正在處理中&#8230;</string>
   <string name="customize">自訂</string>
@@ -538,15 +538,15 @@
   <string name="ssh_pem_key_parse_error">不能讀取所選擇的 PEM檔： %s</string>
   <string name="developers">開發人員</string>
   <string name="intent_save_as">儲存為&#8230;</string>
-  <string name="typeablepaths_title">自訂路徑</string>
+  <string name="typeable_paths_title">自訂路徑</string>
   <string name="text_editor">文字編輯器設定</string>
   <string name="go">去</string>
   <string name="local_inet_addr_error">無法取得本機 IP位址</string>
-  <string name="typeablepaths_summary">長按路徑列以輸入路徑</string>
+  <string name="typeable_paths_summary">長按路徑列以輸入路徑</string>
   <string name="sidebar_preferences">邊欄</string>
-  <string name="searchresults">%s 的搜尋結果</string>
+  <string name="search_results">%s 的搜尋結果</string>
   <string name="searching">搜尋中：%s</string>
-  <string name="nobitcoinapp">請安裝比特幣錢包</string>
+  <string name="no_bitcoin_app">請安裝比特幣錢包</string>
   <string name="folderfilecount">%1$d 個檔案夾和 %2$d個檔案</string>
   <string name="preference_newstack_title">以新工作開啟檔案</string>
   <string name="preference_newstack_summary">可以新工作開啟檔案，它會出現在系統的總覽畫面。</string>
@@ -554,9 +554,9 @@
   <string name="ssh_authentication_failure_password">登入失敗：未能以所設用戶名稱及密碼登入。</string>
   <string name="ssh_authentication_failure_key">登入失敗：未能以所設用戶名稱及私鑰登入。</string>
   <string name="failed_no_connection">無法載入檔案。請檢查網路連線。</string>
-  <string name="addshortcut_not_supported_by_launcher">你的 Launcher不支援建立捷徑。</string>
-  <string name="selectcolorconfig">選擇配色</string>
-  <string name="preselectedconfigs_title">已選擇的配色</string>
+  <string name="add_shortcut_not_supported_by_launcher">你的 Launcher不支援建立捷徑。</string>
+  <string name="select_color_config">選擇配色</string>
+  <string name="preselected_configs_title">已選擇的配色</string>
   <string name="ssh_host_key_verification_prompt_title">確認遠端主機</string>
   <string name="ssh_host_key_verification_prompt">未能確認遠端主機\'%1$s\'的身份。\n\n%2$s的公鑰指紋碼為 %3$s.\n\n請按「是」以確認其身份；否則請按「否」。</string>
   <string name="ssh_connect_failed_host_key_changed_message">
@@ -575,8 +575,8 @@
   <string name="password_no_match">密碼不符。</string>
   <string name="password_repeat">重複密碼</string>
   <string name="no_obtainable_info">沒有關於此檔案的資料</string>
-  <string name="channelname_ftp">Amaze FTP 伺服器</string>
-  <string name="channeldescription_ftp">來自 Amaze FTP 伺服器的通知</string>
+  <string name="channel_name_ftp">Amaze FTP 伺服器</string>
+  <string name="channel_description_ftp">來自 Amaze FTP 伺服器的通知</string>
   <string name="extracted">已解壓</string>
   <string name="compressed">已壓縮</string>
   <string name="processed">已處理</string>

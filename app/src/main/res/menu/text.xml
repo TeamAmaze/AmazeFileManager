@@ -36,7 +36,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/openwith"
-        android:title="@string/openwith" />
+        android:title="@string/open_with" />
     <item
         android:id="@+id/monofont"
         android:title="@string/monofont"
