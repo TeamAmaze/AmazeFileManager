@@ -21,6 +21,10 @@
  */
 package com.amaze.filemanager.ui.dialogs;
 
+import static android.os.Build.VERSION_CODES.M;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,17 +35,12 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.widget.AppCompatButton;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -50,7 +49,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -95,7 +98,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-
+import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -107,10 +110,6 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static android.os.Build.VERSION_CODES.M;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
-import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
-
 /**
  * Here are a lot of function that create material dialogs
  *
@@ -119,6 +118,7 @@ import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
  */
 
 public class GeneralDialogCreation {
+    private static final String TAG = "GeneralDialogCreation";
 
     public static MaterialDialog showBasicDialog(ThemedActivity themedActivity, @StringRes int content,
                                                  @StringRes int title,
@@ -380,12 +380,15 @@ public class GeneralDialogCreation {
                 name = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
 
+        File nomediaFile = baseFile.isDirectory()? new File(baseFile.getPath() + "/" + FileUtils.NOMEDIA_FILE) : null;
+
         MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
         builder.title(c.getString(R.string.properties));
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
         TextView itemsText = v.findViewById(R.id.t7);
+        CheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
 
         /*View setup*/
         {
@@ -411,6 +414,15 @@ public class GeneralDialogCreation {
             ((TextView) v.findViewById(R.id.t6)).setText(parent);
             itemsText.setText(items);
             ((TextView) v.findViewById(R.id.t8)).setText(date);
+
+            if (baseFile.isDirectory()) {
+                nomediaCheckBox.setVisibility(View.VISIBLE);
+                if (nomediaFile != null) {
+                    nomediaCheckBox.setChecked(nomediaFile.exists());
+                }
+            } else {
+                nomediaCheckBox.setVisibility(View.INVISIBLE);
+            }
 
             LinearLayout mNameLinearLayout = v.findViewById(R.id.properties_dialog_name);
             LinearLayout mLocationLinearLayout = v.findViewById(R.id.properties_dialog_location);
@@ -537,6 +549,38 @@ public class GeneralDialogCreation {
         builder.positiveText(base.getString(R.string.ok));
         builder.positiveColor(accentColor);
         builder.dismissListener(dialog -> executor.shutdown());
+        builder.onPositive((dialog, which) -> {
+            if (baseFile.isDirectory()) {
+                if (nomediaFile != null) {
+                    if (nomediaCheckBox.isChecked()) {
+                        // checkbox is checked, create .nomedia
+                        try {
+                            if (!nomediaFile.createNewFile()) {
+                                // failed operation
+                                Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath()
+                                        + " failed!");
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    } else {
+                        // checkbox is unchecked, delete .nomedia
+                        if (!nomediaFile.delete()) {
+                            // failed operation
+                            Log.w(TAG,
+                                    "'.nomedia' file deletion in " + baseFile.getPath()
+                                            + " failed!");
+                        }
+                    }
+                } else {
+                    // this should never happen
+                    Log.wtf(TAG,
+                            "'.nomedia' inside '" + baseFile.getPath() + "' shouldn't be null!");
+                    throw new NullPointerException(
+                            "'.nomedia' inside '" + baseFile.getPath() + "' shouldn't be null!");
+                }
+            }
+        });
 
         MaterialDialog materialDialog = builder.build();
         materialDialog.show();
