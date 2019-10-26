@@ -420,8 +420,6 @@ public class GeneralDialogCreation {
                 if (nomediaFile != null) {
                     nomediaCheckBox.setChecked(nomediaFile.exists());
                 }
-            } else {
-                nomediaCheckBox.setVisibility(View.INVISIBLE);
             }
 
             LinearLayout mNameLinearLayout = v.findViewById(R.id.properties_dialog_name);
@@ -550,34 +548,26 @@ public class GeneralDialogCreation {
         builder.positiveColor(accentColor);
         builder.dismissListener(dialog -> executor.shutdown());
         builder.onPositive((dialog, which) -> {
-            if (baseFile.isDirectory()) {
-                if (nomediaFile != null) {
-                    if (nomediaCheckBox.isChecked()) {
-                        // checkbox is checked, create .nomedia
-                        try {
-                            if (!nomediaFile.createNewFile()) {
-                                // failed operation
-                                Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath()
-                                        + " failed!");
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-                    } else {
-                        // checkbox is unchecked, delete .nomedia
-                        if (!nomediaFile.delete()) {
+            if (baseFile.isDirectory() && nomediaFile != null) {
+                if (nomediaCheckBox.isChecked()) {
+                    // checkbox is checked, create .nomedia
+                    try {
+                        if (!nomediaFile.createNewFile()) {
                             // failed operation
-                            Log.w(TAG,
-                                    "'.nomedia' file deletion in " + baseFile.getPath()
-                                            + " failed!");
+                            Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath()
+                                    + " failed!");
                         }
+                    } catch (IOException e) {
+                        e.printStackTrace();
                     }
                 } else {
-                    // this should never happen
-                    Log.wtf(TAG,
-                            "'.nomedia' inside '" + baseFile.getPath() + "' shouldn't be null!");
-                    throw new NullPointerException(
-                            "'.nomedia' inside '" + baseFile.getPath() + "' shouldn't be null!");
+                    // checkbox is unchecked, delete .nomedia
+                    if (!nomediaFile.delete()) {
+                        // failed operation
+                        Log.w(TAG,
+                                "'.nomedia' file deletion in " + baseFile.getPath()
+                                        + " failed!");
+                    }
                 }
             }
         });
