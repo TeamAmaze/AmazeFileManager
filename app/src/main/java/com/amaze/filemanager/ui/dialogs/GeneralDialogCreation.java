@@ -415,7 +415,7 @@ public class GeneralDialogCreation {
             itemsText.setText(items);
             ((TextView) v.findViewById(R.id.t8)).setText(date);
 
-            if (baseFile.isDirectory()) {
+            if (baseFile.isDirectory() && baseFile.isLocal()) {
                 nomediaCheckBox.setVisibility(View.VISIBLE);
                 if (nomediaFile != null) {
                     nomediaCheckBox.setChecked(nomediaFile.exists());
