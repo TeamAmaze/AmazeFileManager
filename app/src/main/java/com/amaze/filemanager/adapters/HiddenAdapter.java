@@ -3,11 +3,13 @@ package com.amaze.filemanager.adapters;
 import android.app.Activity;
 import android.content.Context;
 import android.content.SharedPreferences;
-import androidx.recyclerview.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
+import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentActivity;
+import androidx.recyclerview.widget.RecyclerView;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -19,37 +21,43 @@ import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.files.FileUtils;
-
 import java.io.File;
 import java.util.ArrayList;
 
 
 /**
- * Created by Arpit on 16-11-2014 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ * This Adapter contains all logic related to showing the list of hidden files.
+ *
+ * Created by Arpit on 16-11-2014 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>.
+ *
+ * @author Bowie Chen on 2019-10-26.
+ * @see com.amaze.filemanager.adapters.holders.HiddenViewHolder
  */
 public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
+    private static final String TAG = "HiddenAdapter";
 
     private SharedPreferences sharedPrefs;
-    private MainFragment context;
-    private Context c;
-    private ArrayList<HybridFile> items;
+    private MainFragment mainFragment;
+    private Context context;
+    private ArrayList<HybridFile> hiddenFiles;
     private MaterialDialog materialDialog;
     private boolean hide;
     private DataUtils dataUtils = DataUtils.getInstance();
 
     public HiddenAdapter(Context context, MainFragment mainFrag, SharedPreferences sharedPreferences,
-                         ArrayList<HybridFile> items, MaterialDialog materialDialog, boolean hide) {
-        this.c = context;
-        this.context = mainFrag;
+                         ArrayList<HybridFile> hiddenFiles, MaterialDialog materialDialog, boolean hide) {
+        this.context = context;
+        this.mainFragment = mainFrag;
         sharedPrefs = sharedPreferences;
-        this.items = new ArrayList<>(items);
+        this.hiddenFiles = new ArrayList<>(hiddenFiles);
         this.hide = hide;
         this.materialDialog = materialDialog;
     }
 
     @Override
-    public HiddenViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        LayoutInflater mInflater = (LayoutInflater) c
+    @NonNull
+    public HiddenViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         View view = mInflater.inflate(R.layout.bookmarkrow, parent, false);
 
@@ -57,43 +65,56 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
     }
 
     @Override
+    @SuppressWarnings("unchecked") // suppress varargs warnings
     public void onBindViewHolder(HiddenViewHolder holder, int position) {
-        HybridFile file = items.get(position);
+        HybridFile file = hiddenFiles.get(position);
 
-        holder.txtTitle.setText(file.getName());
-        String a = file.getReadablePath(file.getPath());
-        holder.txtDesc.setText(a);
+        holder.textTitle.setText(file.getName(context));
+        holder.textDescription.setText(file.getReadablePath(file.getPath()));
 
         if (hide) {
-            holder.image.setVisibility(View.GONE);
+            holder.deleteButton.setVisibility(View.GONE);
         }
 
-        // TODO: move the listeners to the constructor
-        holder.image.setOnClickListener(view -> {
-            if (!file.isSmb() && file.isDirectory()) {
-                ArrayList<HybridFileParcelable> a1 = new ArrayList<>();
-                HybridFileParcelable baseFile = new HybridFileParcelable(items.get(position).getPath() + "/.nomedia");
-                baseFile.setMode(OpenMode.FILE);
-                a1.add(baseFile);
-                new DeleteTask(c).execute((a1));
+        holder.deleteButton.setOnClickListener(view -> {
+            // if the user taps on the delete button, un-hide the file.
+            // TODO: the "hide files" feature just hide files from view in Amaze and not create .nomedia
+
+            if (!file.isSmb() && file.isDirectory(context)) {
+                HybridFileParcelable nomediaFile = new HybridFileParcelable(
+                        hiddenFiles.get(position).getPath() + "/" + FileUtils.NOMEDIA_FILE);
+                nomediaFile.setMode(OpenMode.FILE);
+
+                ArrayList<HybridFileParcelable> filesToDelete = new ArrayList<>();
+                filesToDelete.add(nomediaFile);
+
+                DeleteTask task = new DeleteTask(context);
+                task.execute(filesToDelete);
             }
-            dataUtils.removeHiddenFile(items.get(position).getPath());
-            items.remove(items.get(position));
+
+            dataUtils.removeHiddenFile(hiddenFiles.get(position).getPath());
+            hiddenFiles.remove(hiddenFiles.get(position));
             notifyDataSetChanged();
         });
         holder.row.setOnClickListener(view -> {
+            // if the user taps on the hidden file, take the user there.
             materialDialog.dismiss();
             new Thread(() -> {
-                if (file.isDirectory()) {
-                    context.getActivity().runOnUiThread(() -> {
-                        context.loadlist(file.getPath(), false, OpenMode.UNKNOWN);
-                    });
+                FragmentActivity fragmentActivity = mainFragment.getActivity();
+                if (fragmentActivity == null) {
+                    // nullity check
+                    return;
+                }
+
+                if (file.isDirectory(context)) {
+                    fragmentActivity.runOnUiThread(
+                            () -> mainFragment.loadlist(file.getPath(), false, OpenMode.UNKNOWN));
+                } else if (!file.isSmb()) {
+                    fragmentActivity.runOnUiThread(() -> FileUtils
+                            .openFile(new File(file.getPath()), (MainActivity) fragmentActivity,
+                                    sharedPrefs));
                 } else {
-                    if (!file.isSmb()) {
-                        context.getActivity().runOnUiThread(() -> {
-                            FileUtils.openFile(new File(file.getPath()), (MainActivity) context.getActivity(), sharedPrefs);
-                        });
-                    }
+                    Log.w(TAG, "User tapped on a directory but conditions not met; nothing is done.");
                 }
             }).start();
         });
@@ -110,7 +131,7 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
 
     @Override
     public int getItemCount() {
-        return items.size();
+        return hiddenFiles.size();
     }
 
 }

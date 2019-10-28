@@ -96,6 +96,8 @@ import jcifs.smb.SmbFile;
  */
 public class FileUtils {
 
+    public static final String NOMEDIA_FILE = ".nomedia";
+
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
         long length = 0;
         try {
