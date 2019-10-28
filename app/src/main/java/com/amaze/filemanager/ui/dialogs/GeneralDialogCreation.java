@@ -21,6 +21,10 @@
  */
 package com.amaze.filemanager.ui.dialogs;
 
+import static android.os.Build.VERSION_CODES.M;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,12 +35,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.preference.PreferenceManager;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import com.google.android.material.textfield.TextInputEditText;
-import androidx.appcompat.widget.AppCompatButton;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -50,7 +48,11 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -95,7 +97,7 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-
+import com.google.android.material.textfield.TextInputEditText;
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -106,10 +108,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
-import static android.os.Build.VERSION_CODES.M;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
-import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -1072,21 +1070,28 @@ public class GeneralDialogCreation {
 
     public static void showHiddenDialog(DataUtils dataUtils, SharedPreferences sharedPrefs,
                                         final MainFragment m, AppTheme appTheme) {
+        if (m == null || m.getActivity() == null) {
+            return;
+        }
+
         int accentColor = m.getMainActivity().getAccent();
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);
-        a.positiveColor(accentColor);
-        a.title(R.string.hiddenfiles);
-        a.theme(appTheme.getMaterialDialogTheme());
-        a.autoDismiss(true);
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(m.getActivity());
+        builder.positiveText(R.string.ok);
+        builder.positiveColor(accentColor);
+        builder.title(R.string.hiddenfiles);
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
                 FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()), null, false);
-        a.adapter(adapter, null);
-        a.dividerColor(Color.GRAY);
-        MaterialDialog x = a.build();
-        adapter.updateDialog(x);
-        x.show();
-
+        builder.adapter(adapter, null);
+        builder.dividerColor(Color.GRAY);
+        MaterialDialog materialDialog = builder.build();
+        adapter.updateDialog(materialDialog);
+        // add listener for refreshing on dialog dismissal
+        materialDialog.setOnDismissListener(
+                dialogInterface -> m.getMainActivity().getCurrentMainFragment()
+                        .loadlist(m.getCurrentPath(), false, OpenMode.UNKNOWN));
+        materialDialog.show();
     }
 
     public static void setPermissionsDialog(final View v, View but, final HybridFile file,
