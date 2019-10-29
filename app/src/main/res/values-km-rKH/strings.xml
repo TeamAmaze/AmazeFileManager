@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">ទំហំ</string>
+  <string name="sort_size">ទំហំ</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">កំណែ</string>

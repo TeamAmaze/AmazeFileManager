@@ -28,7 +28,7 @@ import java.util.LinkedList;
 /**
  * Created by Vishal on 29-05-2017.
  * Class handles database with tables having list of various utilities like
- * history, hidden files, list paths, grid paths, bookmarks, smb entry
+ * history, hidden files, list paths, grid paths, bookmarks, SMB entry
  *
  * Try to use these functions from a background thread
  */

@@ -208,7 +208,7 @@ public class FoldersPref extends PreferenceFragment implements Preference.OnPref
         int fab_skin = activity.getAccent();
 
         final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.questiondelete_shortcut)
+                .title(R.string.question_delete_shortcut)
                 .theme(activity.getAppTheme().getMaterialDialogTheme())
                 .positiveColor(fab_skin)
                 .positiveText(getString(R.string.delete).toUpperCase())// TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?

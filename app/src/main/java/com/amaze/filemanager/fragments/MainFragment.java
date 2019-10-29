@@ -523,7 +523,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             mode.setTitle(positions.size() + "");
             hideOption(R.id.openmulti, menu);
             menu.findItem(R.id.all).setTitle(positions.size() == folder_count + file_count ?
-                    R.string.deselect_all : R.string.selectall);
+                    R.string.deselect_all : R.string.select_all);
 
             if (openMode != OpenMode.FILE) {
                 hideOption(R.id.addshortcut, menu);
@@ -688,7 +688,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 case R.id.all:
                     if (adapter.areAllChecked(CURRENT_PATH)) {
                         adapter.toggleChecked(false, CURRENT_PATH);
-                        item.setTitle(R.string.selectall);
+                        item.setTitle(R.string.select_all);
                     } else {
                         adapter.toggleChecked(true, CURRENT_PATH);
                         item.setTitle(R.string.deselect_all);
@@ -1575,7 +1575,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
         if (!ShortcutManagerCompat.isRequestPinShortcutSupported(ctx)) {
             Toast.makeText(getActivity(),
-                getString(R.string.addshortcut_not_supported_by_launcher),
+                getString(R.string.add_shortcut_not_supported_by_launcher),
                 Toast.LENGTH_SHORT).show();
             return;
         }
@@ -1646,7 +1646,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             public void onPostExecute(Void c) {
                 reloadListElements(true, true, !IS_LIST);// TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's createHeaders()
                 getMainActivity().getAppbar().getBottomBar().setPathText("");
-                getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.searchresults, query));
+                getMainActivity().getAppbar().getBottomBar().setFullPathText(getString(R.string.search_results, query));
             }
         }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

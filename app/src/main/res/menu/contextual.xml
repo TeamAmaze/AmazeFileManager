@@ -38,7 +38,7 @@
     <item
         android:id="@+id/openparent"
         android:visible="false"
-        android:title="@string/openparent" />
+        android:title="@string/open_parent" />
     <item
         android:id="@+id/cut"
         android:title="@string/cut"
@@ -46,7 +46,7 @@
         app:showAsAction="always" />
     <item
         android:id="@+id/all"
-        android:title="@string/selectall"
+        android:title="@string/select_all"
         android:icon="@drawable/ic_select_all_white_36dp"
         app:showAsAction="ifRoom" />
     <item
@@ -58,13 +58,13 @@
 
     <item
         android:id="@+id/openwith"
-        android:title="@string/openwith"/>
+        android:title="@string/open_with"/>
     <item
         android:id="@+id/hide"
         android:title="@string/hide" />
     <item
         android:id="@+id/addshortcut"
-        android:title="@string/addshortcut" />
+        android:title="@string/add_shortcut" />
 
     <item
         android:id="@+id/ex"

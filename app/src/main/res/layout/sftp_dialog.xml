@@ -15,7 +15,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textUri"
-            android:hint="@string/connectionname"
+            android:hint="@string/connection_name"
             android:id="@+id/connectionET"
             android:layout_gravity="center_horizontal" />
     </com.google.android.material.textfield.TextInputLayout>

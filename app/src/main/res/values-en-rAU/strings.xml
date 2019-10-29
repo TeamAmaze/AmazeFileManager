@@ -43,7 +43,7 @@
   <string name="donate">Donate</string>
   <string name="other">Other</string>
   <string name="color_title">Colour</string>
-  <string name="defualt">Default</string>
+  <string name="default_string">Default</string>
   <string name="start_ftp">Start</string>
   <!-- reference to file accessed date -->
   <!-- reference to file modified date -->

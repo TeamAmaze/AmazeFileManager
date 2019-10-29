@@ -4,7 +4,7 @@
         android:title="@string/color_title">
         <Preference
             android:key="selectcolorconfig"
-            android:title="@string/selectcolorconfig"/>
+            android:title="@string/select_color_config"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:key="coloriseIcons"
             android:defaultValue="true"
@@ -13,8 +13,8 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:key="colorednavigation"
             android:defaultValue="false"
-            android:title="@string/colourednavigation"
-            android:summary="@string/colourednavigationsum"
+            android:title="@string/colored_navigation"
+            android:summary="@string/colored_navigvation_sum"
             android:enabled="false" />
     </PreferenceCategory>
 </PreferenceScreen>

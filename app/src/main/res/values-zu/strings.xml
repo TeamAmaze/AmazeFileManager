@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Usayizi</string>
+  <string name="sort_size">Usayizi</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Inguqulo</string>

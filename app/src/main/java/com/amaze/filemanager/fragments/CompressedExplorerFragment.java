@@ -296,7 +296,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
             ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
             ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
             menu.findItem(R.id.all).setTitle(positions.size() == folder + file ?
-                    R.string.deselect_all : R.string.selectall);
+                    R.string.deselect_all : R.string.select_all);
 
             return false; // Return false if nothing is done
         }
@@ -309,7 +309,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                     boolean shouldDeselectAll = positions.size() != folder + file;
                     compressedExplorerAdapter.toggleChecked(shouldDeselectAll);
                     mode.invalidate();
-                    item.setTitle(shouldDeselectAll ? R.string.deselect_all : R.string.selectall);
+                    item.setTitle(shouldDeselectAll ? R.string.deselect_all : R.string.select_all);
                     if(!shouldDeselectAll)
                     {
                         selection = false;

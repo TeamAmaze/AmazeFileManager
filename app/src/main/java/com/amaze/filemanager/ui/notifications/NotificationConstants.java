@@ -80,9 +80,9 @@ public class NotificationConstants {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if(mNotificationManager.getNotificationChannel(CHANNEL_FTP_ID) == null) {
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_FTP_ID,
-                    context.getString(R.string.channelname_ftp), NotificationManager.IMPORTANCE_HIGH);
+                    context.getString(R.string.channel_name_ftp), NotificationManager.IMPORTANCE_HIGH);
             // Configure the notification channel.
-            mChannel.setDescription(context.getString(R.string.channeldescription_ftp));
+            mChannel.setDescription(context.getString(R.string.channel_description_ftp));
             mNotificationManager.createNotificationChannel(mChannel);
         }
     }
@@ -96,9 +96,9 @@ public class NotificationConstants {
         NotificationManager mNotificationManager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         if(mNotificationManager.getNotificationChannel(CHANNEL_NORMAL_ID) == null) {
             NotificationChannel mChannel = new NotificationChannel(CHANNEL_NORMAL_ID,
-                    context.getString(R.string.channelname_normal), NotificationManager.IMPORTANCE_MIN);
+                    context.getString(R.string.channel_name_normal), NotificationManager.IMPORTANCE_MIN);
             // Configure the notification channel.
-            mChannel.setDescription(context.getString(R.string.channeldescription_normal));
+            mChannel.setDescription(context.getString(R.string.channel_description_normal));
             mNotificationManager.createNotificationChannel(mChannel);
         }
     }

@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">ਆਕਾਰ</string>
+  <string name="sort_size">ਆਕਾਰ</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">ਵਰਜਨ</string>
