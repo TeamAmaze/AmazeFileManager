@@ -37,9 +37,8 @@ See our [Privacy Policy](https://github.com/TeamAmaze/AmazeFileManager/wiki/Priv
 Translators
 ----
 Want to help translate Amaze to your language?  
-Find the folder `values-` for your language [here](https://github.com/TeamAmaze/AmazeFileManager/tree/master/app/src/main/res), and edit the `strings.xml` inside, add the [xml elements](https://www.w3schools.com/xml/xml_syntax.asp) from [here](https://github.com/TeamAmaze/AmazeFileManager/blob/master/app/src/main/res/values/strings.xml) and translate the text inside.
 
-[Transifex translation method](https://www.transifex.com/amaze/amaze-file-manager-1/) is on pause, _maintainer required!_
+See [Transifex translation](https://www.transifex.com/amaze/amaze-file-manager/).
 
 Vendors/Developers
 ----
