@@ -320,6 +320,9 @@ public class FtpService extends Service implements Runnable {
                 Enumeration<InetAddress> addresses = netinterface.getInetAddresses();
                 while (addresses.hasMoreElements()) {
                     InetAddress address = addresses.nextElement();
+                    if (address == null) {
+                        continue;
+                    }
 
                     if(address.getHostAddress().startsWith(WIFI_AP_ADDRESS_PREFIX) && isEnabledWifiHotspot(context))
                         return address;
