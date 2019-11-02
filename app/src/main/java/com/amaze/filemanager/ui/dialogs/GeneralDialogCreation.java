@@ -1075,7 +1075,7 @@ public class GeneralDialogCreation {
 
         int accentColor = m.getMainActivity().getAccent();
         final MaterialDialog.Builder builder = new MaterialDialog.Builder(m.getActivity());
-        builder.positiveText(R.string.ok);
+        builder.positiveText(R.string.close);
         builder.positiveColor(accentColor);
         builder.title(R.string.hiddenfiles);
         builder.theme(appTheme.getMaterialDialogTheme());
