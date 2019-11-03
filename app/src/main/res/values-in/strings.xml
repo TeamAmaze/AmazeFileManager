@@ -639,4 +639,9 @@
     <string name="saf_otg_explanation">Untuk alasan keamanan, anda harus mengunjungi filesystem Android. Silakan pilih perangkat USB dari daftar di sebelah kiri.</string>
     <string name="donation_thanks">Terima kasih atas donasi anda, ini membuat kami tetap termotivasi! (:</string>
     <string name="enable_marquee_filename">Aktifkan efek marquee untuk nama berkas</string>
+    <string name="archive_password_prompt">Silakan masukkan sandi arsip:</string>
+    <string name="empty_string" translatable="false" />
+    <string name="cannot_extract_archive">Tidak bisa mengekstrak arsip \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Tidak bisa membuka arsip \"%s\". Arsip rusak, atau aplikasi memang tidak bisa membuka arsip.</string>
+    <string name="hide_media">Sembunyikan dari pengelola media</string>
 </resources>
