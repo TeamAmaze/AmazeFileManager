@@ -642,5 +642,6 @@
     <string name="archive_password_prompt">נא להקליד את הססמה של הארכיון:</string>
     <string name="cannot_extract_archive">לא ניתן לחלץ את הארכיון „%s”: %s</string>
     <string name="archive_unsupported_or_corrupt">לא ניתן לפתוח את הארכיון „%s”. או שאין אפשרות לפתוח את הארכיון או שהוא פגום.</string>
+    <string name="hide_media">הסתרה מסיירי מדיה</string>
 </resources>
 
