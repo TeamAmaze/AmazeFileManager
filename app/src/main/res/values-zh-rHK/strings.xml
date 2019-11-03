@@ -78,7 +78,7 @@
   <string name="directorysort">目錄排序方式</string>
   <string name="sort_by">排序方式</string>
   <string name="theme">主題</string>
-  <string name="random">隨機皮膚</string>
+  <string name="random">隨機主題</string>
   <string name="random_summary">每次啟動都顯示隨機主題</string>
   <string name="colorize">多彩圖示</string>
   <string name="colorize_summary">設定靜態圖示的顏色</string>
