@@ -1,0 +1,155 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">अमेज़ फाइल मैनेजर</string>
+    <string name="drawer_open">नैविगेशन ड्रावर खोले </string>
+    <string name="drawer_close">नैविगेशन ड्रावर बंद करे</string>
+    <string name="icon">आइकन</string>
+    <string name="apps">एप्लीकेशन मेनेजर</string>
+    <string name="ftp">FTP सर्वर</string>
+    <string name="setting">सेटिंग्स</string>
+    <string name="select">चुने</string>
+    <string name="open">ओपन</string>
+    <string name="backup">बैकअप</string>
+    <string name="uninstall">अनइन्सटॉल</string>
+    <string name="play">गूगल प्ले स्टोर</string>
+    <string name="properties">फाइल प्रॉपर्टीज</string>
+    <string name="delbook">बुकमार्क हटाये</string>
+    <string name="enterpath">पाथ दीजिये</string>
+    <string name="cancel">कैंसल</string>
+    <string name="create">बनाए</string>
+    <string name="loading">लोड हो रहा है&#8230;</string>
+    <string name="file_empty">फ़ाइल खाली है</string>
+    <string name="error">एरर</string>
+    <string name="rename">नाम बदले</string>
+    <string name="save">सेव</string>
+    <string name="bookmarks_added">बुकमार्क्स एडेड</string>
+    <string name="fileexist">एक ही नाम वाली फाइल पहले से मौजूद है</string>
+    <string name="name">नाम</string>
+    <string name="date">तारीख</string>
+    <string name="location">स्थान</string>
+    <string name="enterzipname">ZIP का नाम डाले</string>
+    <string name="no_app_found">इस फाइल को खोलने के लिए कोई एप्लिकेशन नहीं मिला</string>
+    <string name="copying">प्रतिलिपिकरण</string>
+    <string name="moving">स्थानांतरण</string>
+    <string name="file">फाइल</string>
+    <string name="folder">फोल्डर</string>
+    <string name="newfolder">नया फोल्डर</string>
+    <string name="entername">नाम डाले</string>
+    <string name="extracting">फाइल खुल रही है</string>
+    <string name="stopping">बंद</string>
+    <string name="open_parent">पैरेंट डिरेक्ट्री</string>
+    <string name="open_with">ओपन विथ</string>
+    <string name="share">शेयर</string>
+    <string name="about">अबाउट</string>
+    <string name="extract">एक्सट्रेक्ट</string>
+    <string name="compress">कंप्रेस</string>
+    <string name="yes">हा</string>
+    <string name="no">नहीं</string>
+    <string name="deleting">डिलीट हो रहा है</string>
+    <string name="question_set_path_as_home">आप इस टैब के लिए होम रूप में वर्तमान पाथ को सेट करना चाहते हैं?</string>
+    <string name="directorysort">डिरेक्ट्री मोड</string>
+    <string name="sort_by">सॉर्ट बाय</string>
+    <string name="theme">थीम</string>
+    <string name="random">रैंडम स्किन</string>
+    <string name="random_summary">रैंडम कलर सेट करे</string>
+    <string name="colorize">आइकॉनस को कलर करे</string>
+    <string name="colorize_summary">आइकॉनस को एक ही कलर करे.</string>
+    <string name="home">होम</string>
+    <string name="paste">पेस्ट</string>
+    <string name="history">हिस्ट्री</string>
+    <string name="copy">कॉपी</string>
+    <string name="root_mode">रुट एक्स्प्लोरर</string>
+    <string name="root_mode_summary">केवल रूटेड मोबाइल्स के लिए. सुनिश्चित होने पर ही सेलेक्ट करे.</string>
+    <string name="root_failure">रुट परमिशन उपलब्ध नहीं</string>
+    <string name="select_all">सभी सेलेक्ट करे</string>
+    <string name="delete">डिलीट</string>
+    <string name="set_as_home">होम टैब बनाये</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <!-- Theme -->
+    <string name="light">लाइट मटेरियल थीम</string>
+    <string name="dark">डार्क मटेरियल थीम</string>
+    <string name="daytime">दिवस समय</string>
+    <!--SortBy-->
+    <string name="sort_name">नाम</string>
+    <string name="lastModified">पिछला बदलाव</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">फाइल चुने</string>
+    <string name="skip">छोड़ें</string>
+    <string name="done">समाप्त</string>
+    <string name="goback">वापस जाएँ</string>
+    <string name="newfile">नयी फाइल</string>
+    <string name="no_files">कोई फाइल नहीं</string>
+    <string name="listview">सूचीबद्ध</string>
+    <string name="hide">छुपायें</string>
+    <string name="exit">बंद करें</string>
+    <string name="set_random">एप को फिर से शुरू करने पर बदलाव दिखेंगे</string>
+    <string name="authors">लेखक</string>
+    <string name="changelog">परिवर्तन लॉग  </string>
+    <string name="ok">ठीक है</string>
+    <string name="general">सामान्य</string>
+    <string name="miscellaneous">अन्य </string>
+    <string name="feedback">फीडबैक दें</string>
+    <string name="hiddenfiles">छुपी फाइल</string>
+    <string name="root_directory">रूट</string>
+    <string name="unsaved_changes">असंरक्षित बदलाव</string>
+    <string name="saving">संरक्षित हो रहा है</string>
+    <string name="view">देखें</string>
+    <string name="install">इनस्टॉल</string>
+    <string name="german_translation_title">जर्मन</string>
+    <string name="italian_translation_title">इटालियन</string>
+    <string name="french_translation_title">फ्रेंच</string>
+    <string name="russian_translation_title">रुसी</string>
+    <string name="japanese_translation_title">जापानी</string>
+    <string name="tamil_translation_title">तमिल</string>
+
+    <string name="warning">चेतावनी</string>
+    <string name="other">अन्य</string>
+    <string name="database">डेटाबेस</string>
+    <string name="icon_color_title">आइकॉन का रंग</string>
+    <string name="ftp_notif_starting_title">FTP सर्वर</string>
+    <string name="ftp_port_change_success">FTP पोर्ट सफलतापूर्ण बदला</string>
+    <string name="year">वर्ष</string>
+    <string name="comment">टिप्पणी</string>
+    <string name="bitrate">बिट रेट </string>
+    <string name="dimensions">आयाम</string>
+    <string name="frame_rate">फ्रेम रेट</string>
+    <string name="width">चौड़ाई</string>
+    <string name="height">ऊंचाई</string>
+    <string name="date_modified">बदलाव की तारिख</string>
+    <string name="software">सॉफ्टवेर</string>
+    <string name="author">लेखक </string>
+    <string name="pages">पेजों की संख्या</string>
+    <string name="permission_group">समूह</string>
+    <string name="permission_other">अन्य</string>
+    <string name="contributors_6_summary">FTP सर्वर</string>
+    <string name="orange">नारंगी</string>
+    <string name="blue">नीला</string>
+    <string name="green">हरा</string>
+    </resources>
+
