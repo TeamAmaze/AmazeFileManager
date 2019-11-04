@@ -13,35 +13,32 @@ import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+
 /**
  * Created by vishal on 1/1/17.
  */
 
 @TargetApi(Build.VERSION_CODES.N)
 public class FtpTileService extends TileService {
-    private BroadcastReceiver ftpReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateTileState();
-        }
-    };
+
+    @Subscribe
+    public void onFtpReceiverActions(FtpService.FtpReceiverActions signal) {
+        updateTileState();
+    }
 
     @Override
     public void onStartListening() {
         super.onStartListening();
-
-        IntentFilter f = new IntentFilter();
-        f.addAction(FtpService.ACTION_STARTED);
-        f.addAction(FtpService.ACTION_STOPPED);
-        registerReceiver(ftpReceiver, f);
+        EventBus.getDefault().register(this);
         updateTileState();
     }
 
     @Override
     public void onStopListening() {
         super.onStopListening();
-
-        unregisterReceiver(ftpReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

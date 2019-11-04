@@ -75,6 +75,7 @@ import org.apache.ftpserver.ssl.ClientAuth;
 import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration;
 import org.apache.ftpserver.usermanager.impl.BaseUser;
 import org.apache.ftpserver.usermanager.impl.WritePermission;
+import org.greenrobot.eventbus.EventBus;
 
 public class FtpService extends Service implements Runnable {
 
@@ -95,10 +96,13 @@ public class FtpService extends Service implements Runnable {
     private static final String WIFI_AP_ADDRESS_PREFIX = "192.168.43.";
     private static final char[] KEYSTORE_PASSWORD = "vishal007".toCharArray();
 
-    // Service will (global) broadcast when server start/stop
-    static public final String ACTION_STARTED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED";
-    static public final String ACTION_STOPPED = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED";
-    static public final String ACTION_FAILEDTOSTART = "com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_FAILEDTOSTART";
+    // Service will broadcast via event bus when server start/stop
+    public enum FtpReceiverActions {
+        STARTED,
+        STARTED_FROM_TILE,
+        STOPPED,
+        FAILED_TO_START
+    }
 
     // RequestStartStopReceiver listens for these actions to start/stop this server
     static public final String ACTION_START_FTPSERVER = "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER";
@@ -220,10 +224,9 @@ public class FtpService extends Service implements Runnable {
         try {
             server = serverFactory.createServer();
             server.start();
-
-            sendBroadcast(new Intent(FtpService.ACTION_STARTED).setPackage(getPackageName()).putExtra(TAG_STARTED_BY_TILE, isStartedByTile));
+            EventBus.getDefault().post(isStartedByTile ? FtpReceiverActions.STARTED_FROM_TILE : FtpReceiverActions.STARTED);
         } catch (Exception e) {
-            sendBroadcast(new Intent(FtpService.ACTION_FAILEDTOSTART).setPackage(getPackageName()));
+            EventBus.getDefault().post(FtpReceiverActions.FAILED_TO_START);
         }
     }
 
@@ -242,7 +245,7 @@ public class FtpService extends Service implements Runnable {
         }
         if (server != null) {
             server.stop();
-            sendBroadcast(new Intent(FtpService.ACTION_STOPPED).setPackage(getPackageName()));
+            EventBus.getDefault().post(FtpReceiverActions.STOPPED);
         }
     }
 

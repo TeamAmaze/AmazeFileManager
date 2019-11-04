@@ -207,15 +207,6 @@
             </intent-filter>
         </receiver>
 
-        <receiver
-            android:name="com.amaze.filemanager.ui.notifications.FtpNotification"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STARTED" />
-                <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.FTPSERVER_STOPPED" />
-            </intent-filter>
-        </receiver>
-        
         <provider
             android:authorities="${applicationId}.FILE_PROVIDER"
             android:name=".utils.GenericFileProvider"
