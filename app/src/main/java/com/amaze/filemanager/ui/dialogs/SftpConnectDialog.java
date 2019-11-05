@@ -32,6 +32,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -117,7 +118,7 @@ public class SftpConnectDialog extends DialogFragment {
         } else {
             connectionET.setText(getArguments().getString("name"));
             addressET.setText(getArguments().getString("address"));
-            portET.setText(getArguments().getString("port"));
+            portET.setText(Integer.toString(getArguments().getInt("port")));
             usernameET.setText(getArguments().getString("username"));
             if(getArguments().getBoolean("hasPassword")) {
                 passwordET.setHint(R.string.password_unchanged);
@@ -240,12 +241,22 @@ public class SftpConnectDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 int port = portET.getText().toString().length() > 0 ? Integer.parseInt(portET.getText().toString()) : -1;
+                boolean hasCredential = false;
+                if(edit) {
+                    if(passwordET.getText().length() > 0 || !TextUtils.isEmpty(getArguments().getString("password")))
+                        hasCredential = true;
+                    else {
+                        hasCredential = !TextUtils.isEmpty(selectedParsedKeyPairName);
+                    }
+                } else {
+                    hasCredential = passwordET.getText().length() > 0 || selectedParsedKeyPair != null;
+                }
                 okBTN.setEnabled(
-                        (connectionET.getText().length() > 0
+                        connectionET.getText().length() > 0
                      && addressET.getText().length() > 0
                      && port > 0 && port < 65536
                      && usernameET.getText().length() > 0
-                     && (passwordET.getText().length() > 0 || selectedParsedKeyPair != null))
+                     && hasCredential
                 );
             }
         };
@@ -336,7 +347,13 @@ public class SftpConnectDialog extends DialogFragment {
                 return false;
             }
         } else {
-            DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(path));
+            String originalPath = deriveSftpPathFrom(getArguments().getString("address"),
+                    getArguments().getInt("port"),
+                    getArguments().getString("username"),
+                    getArguments().getString("password"),
+                    selectedParsedKeyPair);
+
+            DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(originalPath));
             DataUtils.getInstance().addServer(new String[]{connectionName, path});
             Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
             ((MainActivity) getActivity()).getDrawer().refreshDrawer();
