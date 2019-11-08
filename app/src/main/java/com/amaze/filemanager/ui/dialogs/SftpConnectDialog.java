@@ -163,8 +163,8 @@ public class SftpConnectDialog extends DialogFragment {
             final String hostname = addressET.getText().toString();
             final int port = Integer.parseInt(portET.getText().toString());
             final String username = usernameET.getText().toString();
-            final String password = passwordET.getText() != null ?
-                    passwordET.getText().toString() : null;
+            final String password = !TextUtils.isEmpty(passwordET.getText()) ?
+                    passwordET.getText().toString() : getArguments().getString("password", null);
 
             String sshHostKey = utilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port,
                     username, password, selectedParsedKeyPair));
@@ -306,9 +306,6 @@ public class SftpConnectDialog extends DialogFragment {
                                           String selectedParsedKeyPairName,
                                           KeyPair selectedParsedKeyPair, boolean isEdit) {
 
-        if(isEdit)
-            password = getArguments().getString("password", null);
-
         final String path = deriveSftpPathFrom(hostname, port, username, password,
                 selectedParsedKeyPair);
 
@@ -361,6 +358,7 @@ public class SftpConnectDialog extends DialogFragment {
             AppConfig.runInBackground(() -> {
                 utilsHandler.updateSsh(connectionName,
                         getArguments().getString("name"), encryptedPath,
+                        hostKeyFingerprint,
                         selectedParsedKeyPairName, getPemContents());
             });
 
