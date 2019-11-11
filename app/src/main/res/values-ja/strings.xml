@@ -584,11 +584,7 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="ssh_authentication_failure_key">ログインに失敗しました：指定されたユーザー名と秘密鍵で認証できません。</string>
     <string name="ssh_connect_failed">%1$s:%2$d に接続できません：%3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">警告: リモートホストのIDが変更されました!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">
-誰かがおかしなことをしている可能性があります!\n\n
-誰かがあなたを盗聴している可能性があります (中間者攻撃)! ホスト鍵が変更された可能性もあります。 リモートホストから送信された公開鍵の指紋が、Amazeに保存されているものと一致しません。\n\n
-サーバへの接続を続行するには、システム管理者に連絡するか、新しい接続を設定してください。
-</string>
+    <string name="ssh_connect_failed_host_key_changed_message">誰かがおかしなことをしている可能性があります!\n\n誰かがあなたを盗聴している可能性があります (中間者攻撃)! ホスト鍵が変更された可能性もあります。 リモートホストから送信された公開鍵の指紋が、Amazeに保存されているものと一致しません。\n\nサーバへの接続を続行するには、システム管理者に連絡するか、新しい接続を設定してください。</string>
     <string name="ssh_key_prompt_passphrase">鍵のパスフレーズを入力ください。</string>
     <string name="add_shortcut_not_supported_by_launcher">ショートカットの作成はランチャーでサポートしておりません。</string>
     
@@ -637,5 +633,8 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="archive_password_prompt">アーカイブのパスワードを入力ください。</string>
     <string name="cannot_extract_archive">アーカイブ \"%s\" を抽出できません: %s</string>
     <string name="archive_unsupported_or_corrupt">アーカイブ \"%s\" を開くことができません。 アーカイブを開くことができないか、アーカイブが破損しています。</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">誰かがおかしなことをしている可能性があります!\n\n誰かがあなたを盗聴している可能性があります (中間者攻撃)! ホスト鍵が変更された可能性もあります。 リモートホストから送信された公開鍵の指紋が、Amazeに保存されているものと一致しません。\n\nホスト鍵の更新を続行するか、SSH接続設定の更新をキャンセルする。</string>
+    <string name="update_host_key">ホスト鍵を更新</string>
+    <string name="cancel_recommended">キャンセル（推奨）</string>
 </resources>
 
