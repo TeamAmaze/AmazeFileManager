@@ -29,6 +29,4 @@ public class FtpReceiver extends BroadcastReceiver {
             Log.e(TAG, "Failed to start/stop on intent " + e.getMessage());
         }
     }
-
-
 }
