@@ -21,6 +21,7 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static android.text.TextUtils.isEmpty;
 import static com.amaze.filemanager.filesystem.ssh.SshClientUtils.deriveSftpPathFrom;
 
 import android.app.Activity;
@@ -32,7 +33,6 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.text.Editable;
-import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
@@ -163,15 +163,16 @@ public class SftpConnectDialog extends DialogFragment {
             final String hostname = addressET.getText().toString();
             final int port = Integer.parseInt(portET.getText().toString());
             final String username = usernameET.getText().toString();
-            final String password = !TextUtils.isEmpty(passwordET.getText()) ?
-                    passwordET.getText().toString() : getArguments().getString("password", null);
+            final String password = isEmpty(passwordET.getText()) ?
+                    getArguments().getString("password", null) :
+                    passwordET.getText().toString();
 
             //Get original SSH host key
             String sshHostKey = utilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port,
                     username, getArguments().getString("password", null),
                     selectedParsedKeyPair));
 
-            if (!TextUtils.isEmpty(sshHostKey)) {
+            if (!isEmpty(sshHostKey)) {
                 SshConnectionPool.getInstance().removeConnection(
                         SshClientUtils.deriveSftpPathFrom(hostname, port, username, password,
                                 selectedParsedKeyPair));
@@ -272,10 +273,10 @@ public class SftpConnectDialog extends DialogFragment {
                 int port = portET.getText().toString().length() > 0 ? Integer.parseInt(portET.getText().toString()) : -1;
                 boolean hasCredential = false;
                 if(edit) {
-                    if(passwordET.getText().length() > 0 || !TextUtils.isEmpty(getArguments().getString("password")))
+                    if(passwordET.getText().length() > 0 || !isEmpty(getArguments().getString("password")))
                         hasCredential = true;
                     else {
-                        hasCredential = !TextUtils.isEmpty(selectedParsedKeyPairName);
+                        hasCredential = !isEmpty(selectedParsedKeyPairName);
                     }
                 } else {
                     hasCredential = passwordET.getText().length() > 0 || selectedParsedKeyPair != null;
