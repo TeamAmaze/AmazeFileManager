@@ -103,11 +103,12 @@ public class TabFragment extends Fragment
 
         mSectionsPagerAdapter = new ScreenSlidePagerAdapter(getActivity().getSupportFragmentManager());
         if (savedInstanceState == null) {
-            int l = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-            MainActivity.currentTab = l;
-            List<Tab> tabs1 = tabHandler.getAllTabs();
-            int i = tabs1.size();
-            if (i == 0) {// creating tabs in db for the first time, probably the first launch of app
+            int lastOpenTab = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
+            MainActivity.currentTab = lastOpenTab;
+            Tab tab1 = tabHandler.findTab(1);
+            Tab tab2 = tabHandler.findTab(2);
+
+            if (tabHandler.getAllTabs().isEmpty() || tab1 == null || tab2 == null) {// creating tabs in db for the first time, probably the first launch of app, or something got corrupted
                 if (mainActivity.getDrawer().getFirstPath() != null) {
                     addNewTab(1, mainActivity.getDrawer().getFirstPath());
                 } else {
@@ -126,25 +127,25 @@ public class TabFragment extends Fragment
                 }
             } else {
                 if (path != null && path.length() != 0) {
-                    if (l == 1) {
-                        addTab(tabHandler.findTab(1), "");
+                    if (lastOpenTab == 0) {
+                        addTab(tab1, path);
+                        addTab(tab2, "");
                     }
 
-                    addTab(tabHandler.findTab(l + 1), path);
-
-                    if (l == 0) {
-                        addTab(tabHandler.findTab(2), "");
+                    if (lastOpenTab == 1) {
+                        addTab(tab1, "");
+                        addTab(tab2, path);
                     }
                 } else {
-                    addTab(tabHandler.findTab(1), "");
-                    addTab(tabHandler.findTab(2), "");
+                    addTab(tab1, "");
+                    addTab(tab2, "");
                 }
             }
 
             mViewPager.setAdapter(mSectionsPagerAdapter);
 
             try {
-                mViewPager.setCurrentItem(l, true);
+                mViewPager.setCurrentItem(lastOpenTab, true);
                 if (circleDrawable1 != null && circleDrawable2 != null) {
                     updateIndicator(mViewPager.getCurrentItem());
                 }
