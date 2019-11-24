@@ -82,7 +82,7 @@ public class FtpService extends Service implements Runnable {
     public static final int DEFAULT_PORT = 2211;
     public static final String DEFAULT_USERNAME = "";
     public static final int DEFAULT_TIMEOUT = 600;   // default timeout, in sec
-    public static final boolean DEFAULT_SECURE = false;
+    public static final boolean DEFAULT_SECURE = true;
     public static final String PORT_PREFERENCE_KEY = "ftpPort";
     public static final String KEY_PREFERENCE_PATH = "ftp_path";
     public static final String KEY_PREFERENCE_USERNAME = "ftp_username";
