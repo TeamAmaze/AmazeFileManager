@@ -32,7 +32,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Laki</string>
+  <string name="sort_size">Laki</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Bersyon</string>

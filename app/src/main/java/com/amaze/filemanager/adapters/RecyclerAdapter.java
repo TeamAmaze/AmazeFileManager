@@ -506,7 +506,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (p == getItemCount() - 1) {
                     holder.rl.setMinimumHeight((int) minRowHeight);
                     if (itemsDigested.size() == (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)? 1:0))
-                        holder.txtTitle.setText(R.string.nofiles);
+                        holder.txtTitle.setText(R.string.no_files);
                     else {
                         holder.txtTitle.setText("");
                     }

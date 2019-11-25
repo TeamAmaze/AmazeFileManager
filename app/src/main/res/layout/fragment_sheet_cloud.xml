@@ -46,7 +46,7 @@
                 />
 
             <com.amaze.filemanager.ui.views.ThemedTextView
-                android:text="@string/smb_con"
+                android:text="@string/smb_connection"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/material_generic_title"
                 android:layout_width="wrap_content"
@@ -70,7 +70,7 @@
                 />
 
             <com.amaze.filemanager.ui.views.ThemedTextView
-                android:text="@string/scp_con"
+                android:text="@string/scp_connection"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/material_generic_title"
                 android:layout_width="wrap_content"

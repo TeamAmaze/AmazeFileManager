@@ -30,6 +30,8 @@ import com.amaze.filemanager.database.models.Tab;
 import java.util.ArrayList;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+
 /**
  * Created by Vishal on 9/17/2014.
  */
@@ -117,6 +119,7 @@ public class TabHandler extends SQLiteOpenHelper {
         }
     }
 
+    @Nullable
     public Tab findTab(int tabNo) {
         String query = "Select * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + "= \"" + tabNo + "\"";
         SQLiteDatabase sqLiteDatabase = this.getWritableDatabase();

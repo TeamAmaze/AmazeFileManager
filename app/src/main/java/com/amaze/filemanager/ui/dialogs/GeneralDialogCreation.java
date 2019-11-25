@@ -40,6 +40,7 @@ import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
@@ -117,6 +118,7 @@ import java.util.concurrent.Executors;
  */
 
 public class GeneralDialogCreation {
+    private static final String TAG = "GeneralDialogCreation";
 
     public static MaterialDialog showBasicDialog(ThemedActivity themedActivity, @StringRes int content,
                                                  @StringRes int title,
@@ -378,12 +380,15 @@ public class GeneralDialogCreation {
                 name = baseFile.getName(),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
 
+        File nomediaFile = baseFile.isDirectory()? new File(baseFile.getPath() + "/" + FileUtils.NOMEDIA_FILE) : null;
+
         MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
         builder.title(c.getString(R.string.properties));
         builder.theme(appTheme.getMaterialDialogTheme());
 
         View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
         TextView itemsText = v.findViewById(R.id.t7);
+        CheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
 
         /*View setup*/
         {
@@ -409,6 +414,13 @@ public class GeneralDialogCreation {
             ((TextView) v.findViewById(R.id.t6)).setText(parent);
             itemsText.setText(items);
             ((TextView) v.findViewById(R.id.t8)).setText(date);
+
+            if (baseFile.isDirectory() && baseFile.isLocal()) {
+                nomediaCheckBox.setVisibility(View.VISIBLE);
+                if (nomediaFile != null) {
+                    nomediaCheckBox.setChecked(nomediaFile.exists());
+                }
+            }
 
             LinearLayout mNameLinearLayout = v.findViewById(R.id.properties_dialog_name);
             LinearLayout mLocationLinearLayout = v.findViewById(R.id.properties_dialog_location);
@@ -535,6 +547,30 @@ public class GeneralDialogCreation {
         builder.positiveText(base.getString(R.string.ok));
         builder.positiveColor(accentColor);
         builder.dismissListener(dialog -> executor.shutdown());
+        builder.onPositive((dialog, which) -> {
+            if (baseFile.isDirectory() && nomediaFile != null) {
+                if (nomediaCheckBox.isChecked()) {
+                    // checkbox is checked, create .nomedia
+                    try {
+                        if (!nomediaFile.createNewFile()) {
+                            // failed operation
+                            Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath()
+                                    + " failed!");
+                        }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // checkbox is unchecked, delete .nomedia
+                    if (!nomediaFile.delete()) {
+                        // failed operation
+                        Log.w(TAG,
+                                "'.nomedia' file deletion in " + baseFile.getPath()
+                                        + " failed!");
+                    }
+                }
+            }
+        });
 
         MaterialDialog materialDialog = builder.build();
         materialDialog.show();
@@ -870,7 +906,7 @@ public class GeneralDialogCreation {
     public static void showPackageDialog(final File f, final MainActivity m) {
         int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
-        mat.title(R.string.packageinstaller).content(R.string.pitext)
+        mat.title(R.string.package_installer).content(R.string.package_installer_text)
                 .positiveText(R.string.install)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
@@ -889,7 +925,7 @@ public class GeneralDialogCreation {
         int accentColor = m.getAccent();
         MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
         mat.title(R.string.archive)
-                .content(R.string.archtext)
+                .content(R.string.archive_text)
                 .positiveText(R.string.extract)
                 .negativeText(R.string.view)
                 .neutralText(R.string.cancel)
@@ -993,7 +1029,7 @@ public class GeneralDialogCreation {
         a.onPositive((dialog, which) -> {
             onSortTypeSelected(m, sharedPref, onlyThisFloders, dialog, true);
         });
-        a.title(R.string.sortby);
+        a.title(R.string.sort_by);
         a.build().show();
     }
 
@@ -1041,7 +1077,7 @@ public class GeneralDialogCreation {
             dialog.dismiss();
         });
 
-        a.title(R.string.sortby);
+        a.title(R.string.sort_by);
         a.build().show();
     }
 
@@ -1132,12 +1168,12 @@ public class GeneralDialogCreation {
                         Toast.makeText(context,
                                 mainFrag.getString(R.string.done), Toast.LENGTH_LONG).show();
                     } else {
-                        Toast.makeText(context, mainFrag.getString(R.string.operationunsuccesful),
+                        Toast.makeText(context, mainFrag.getString(R.string.operation_unsuccesful),
                                 Toast.LENGTH_LONG).show();
                     }
                 });
             } catch (ShellNotRunningException e) {
-                Toast.makeText(context, mainFrag.getString(R.string.rootfailure),
+                Toast.makeText(context, mainFrag.getString(R.string.root_failure),
                         Toast.LENGTH_LONG).show();
                 e.printStackTrace();
             }

@@ -258,10 +258,10 @@ public class PreferencesActivity extends ThemedActivity {
                 loadPrefFragment(new ColorPref(), R.string.color_title);
                 break;
             case FOLDERS_PREFERENCE:
-                loadPrefFragment(new FoldersPref(), R.string.sidebarfolders_title);
+                loadPrefFragment(new FoldersPref(), R.string.sidebar_folders_title);
                 break;
             case QUICKACCESS_PREFERENCE:
-                loadPrefFragment(new QuickAccessPref(), R.string.sidebarquickaccess_title);
+                loadPrefFragment(new QuickAccessPref(), R.string.sidebar_quick_access_title);
                 break;
             case ADVANCEDSEARCH_PREFERENCE:
                 loadPrefFragment(new AdvancedSearchPref(), R.string.advanced_search);

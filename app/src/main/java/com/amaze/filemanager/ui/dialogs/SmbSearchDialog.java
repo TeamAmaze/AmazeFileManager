@@ -56,7 +56,7 @@ public class SmbSearchDialog extends DialogFragment {
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-        builder.title(R.string.searchingdevices);
+        builder.title(R.string.searching_devices);
         builder.negativeColor(accentColor);
         builder.negativeText(R.string.cancel);
         builder.onNegative((dialog, which) -> {
@@ -95,7 +95,7 @@ public class SmbSearchDialog extends DialogFragment {
                     getActivity().runOnUiThread(() -> {
                         if (computers.size() == 1) {
                             dismiss();
-                            Toast.makeText(getActivity(), getString(R.string.nodevicefound), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(getActivity(), getString(R.string.no_device_found), Toast.LENGTH_SHORT).show();
                             MainActivity mainActivity = (MainActivity) getActivity();
                             mainActivity.showSMBDialog("", "", false);
                             return;

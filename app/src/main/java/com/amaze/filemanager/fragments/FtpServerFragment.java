@@ -33,6 +33,8 @@ import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import androidx.annotation.Nullable;
+
+import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.fragment.app.Fragment;
 import androidx.appcompat.widget.AppCompatCheckBox;
@@ -60,10 +62,16 @@ import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.GeneralSecurityException;
+
+import static com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions.STARTED_FROM_TILE;
 
 /**
  * Created by yashwanthreddyg on 10-06-2016.
@@ -128,7 +136,7 @@ public class FtpServerFragment extends Fragment {
                         || FtpService.isEnabledWifiHotspot(getContext()))
                     startServer();
                 else {
-                    // no wifi and no eth, we shouldn't be here in the first place, because of broadcast
+                    // no Wi-Fi and no eth, we shouldn't be here in the first place, because of broadcast
                     // receiver, but just to be sure
                     statusText.setText(spannedStatusNoConnection);
                 }
@@ -318,10 +326,10 @@ public class FtpServerFragment extends Fragment {
             NetworkInfo netInfo = conMan.getActiveNetworkInfo();
             if ((netInfo != null && (netInfo.getType() == ConnectivityManager.TYPE_WIFI || netInfo.getType() == ConnectivityManager.TYPE_ETHERNET))
                     || FtpService.isEnabledWifiHotspot(getContext())) {
-                // connected to wifi or eth
+                // connected to Wi-Fi or eth
                 ftpBtn.setEnabled(true);
             } else {
-                // wifi or eth connection lost
+                // Wi-Fi or eth connection lost
                 stopServer();
                 statusText.setText(spannedStatusNoConnection);
                 ftpBtn.setEnabled(true);
@@ -331,37 +339,35 @@ public class FtpServerFragment extends Fragment {
         }
     };
 
-    private BroadcastReceiver ftpReceiver = new BroadcastReceiver() {
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            updateSpans();
-            switch (intent.getAction()) {
-                case FtpService.ACTION_STARTED:
-                    if (getSecurePreference()) {
-                        statusText.setText(spannedStatusSecure);
-                    } else {
-                        statusText.setText(spannedStatusConnected);
-                    }
-                    url.setText(spannedStatusUrl);
-                    ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
-                    break;
-                case FtpService.ACTION_FAILEDTOSTART:
-                    statusText.setText(spannedStatusNotRunning);
+    @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    public void onFtpReceiveActions(FtpService.FtpReceiverActions signal) {
+        updateSpans();
+        switch (signal) {
+            case STARTED:
+            case STARTED_FROM_TILE:
+                if (getSecurePreference()) {
+                    statusText.setText(spannedStatusSecure);
+                } else {
+                    statusText.setText(spannedStatusConnected);
+                }
+                url.setText(spannedStatusUrl);
+                ftpBtn.setText(getResources().getString(R.string.stop_ftp).toUpperCase());
+                FtpNotification.updateNotification(getContext(), STARTED_FROM_TILE.equals(signal));
+                break;
+            case FAILED_TO_START:
+                statusText.setText(spannedStatusNotRunning);
+                Toast.makeText(getContext(), getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
+                ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+                url.setText("URL: ");
+                break;
 
-                    Toast.makeText(getContext(),
-                            getResources().getString(R.string.unknown_error), Toast.LENGTH_LONG).show();
-
-                    ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
-                    url.setText("URL: ");
-                    break;
-                case FtpService.ACTION_STOPPED:
-                    statusText.setText(spannedStatusNotRunning);
-                    url.setText("URL: ");
-                    ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
-                    break;
-            }
+            case STOPPED:
+                statusText.setText(spannedStatusNotRunning);
+                url.setText("URL: ");
+                ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+                break;
         }
-    };
+    }
 
     /**
      * Sends a broadcast to start ftp server
@@ -384,18 +390,14 @@ public class FtpServerFragment extends Fragment {
         IntentFilter wifiFilter = new IntentFilter();
         wifiFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION);
         getContext().registerReceiver(mWifiReceiver, wifiFilter);
-        IntentFilter ftpFilter = new IntentFilter();
-        ftpFilter.addAction(FtpService.ACTION_STARTED);
-        ftpFilter.addAction(FtpService.ACTION_STOPPED);
-        ftpFilter.addAction(FtpService.ACTION_FAILEDTOSTART);
-        getContext().registerReceiver(ftpReceiver, ftpFilter);
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         getContext().unregisterReceiver(mWifiReceiver);
-        getContext().unregisterReceiver(ftpReceiver);
+        EventBus.getDefault().unregister(this);
     }
 
     /**

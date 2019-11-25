@@ -8,7 +8,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
-
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
@@ -23,7 +22,6 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -34,6 +32,7 @@ import java.util.ArrayList;
  *
  * @author Emmanuel
  *         on 25/5/2017, at 16:39.
+ * Edited by bowiechen on 2019-10-19.
  */
 
 public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
@@ -111,9 +110,12 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                 return true;
             case R.id.book:
                 DataUtils dataUtils = DataUtils.getInstance();
-                dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true);
-                mainFragment.getMainActivity().getDrawer().refreshDrawer();
-                Toast.makeText(mainFragment.getActivity(), mainFragment.getString(R.string.bookmarksadded), Toast.LENGTH_LONG).show();
+                if (dataUtils.addBook(new String[]{rowItem.title, rowItem.desc}, true)) {
+                    mainFragment.getMainActivity().getDrawer().refreshDrawer();
+                    Toast.makeText(mainFragment.getActivity(), mainFragment.getString(R.string.bookmarks_added), Toast.LENGTH_LONG).show();
+                } else {
+                    Toast.makeText(mainFragment.getActivity(), mainFragment.getString(R.string.bookmark_exists), Toast.LENGTH_LONG).show();
+                }
                 return true;
             case R.id.delete:
                 ArrayList<LayoutElementParcelable> positions = new ArrayList<>();

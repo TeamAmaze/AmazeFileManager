@@ -85,7 +85,7 @@
                     android:layout_below="@id/image"
                     android:fontFamily="sans-serif-medium"
                     android:layout_centerHorizontal="true"
-                    android:text="@string/nofiles"/>
+                    android:text="@string/no_files"/>
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

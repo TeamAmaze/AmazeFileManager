@@ -175,7 +175,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
                     .autoDismiss(true)
                     .positiveColor(fab_skin)
                     .neutralColor(fab_skin)
-                    .neutralText(R.string.defualt)
+                    .neutralText(R.string.default_string)
                     .callback(new MaterialDialog.ButtonCallback() {
                         @Override
                         public void onNeutral(MaterialDialog dialog) {
@@ -228,7 +228,7 @@ public class ColorPref extends PreferenceFragment implements Preference.OnPrefer
 
             int colorPickerPref = sharedPref.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, ColorPickerDialog.NO_DATA);
             if(colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
-                Toast.makeText(getActivity(), R.string.setRandom, Toast.LENGTH_LONG).show();
+                Toast.makeText(getActivity(), R.string.set_random, Toast.LENGTH_LONG).show();
             }
         });
 
