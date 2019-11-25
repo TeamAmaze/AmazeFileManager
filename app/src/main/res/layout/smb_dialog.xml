@@ -14,7 +14,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textUri"
-            android:hint="@string/connectionname"
+            android:hint="@string/connection_name"
             android:id="@+id/connectionET"
             android:layout_gravity="center_horizontal" />
     </com.google.android.material.textfield.TextInputLayout>
@@ -86,6 +86,6 @@
         android:layout_width="wrap_content"
         android:id="@+id/wanthelp"
         android:layout_height="wrap_content"
-        android:text="@string/wanthelp"
+        android:text="@string/want_help"
         />
 </LinearLayout>

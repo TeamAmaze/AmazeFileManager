@@ -1,0 +1,647 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<!--
+    Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+
+    This file is part of Amaze File Manager.
+
+    Amaze File Manager is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+    -->
+
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation">
+    <string name="app_name">מנהל הקבצים Amaze</string>
+    <string name="drawer_open">פתיחת תפריט הניווט</string>
+    <string name="drawer_close">סגירת תפריט הניווט</string>
+    <string name="icon">סמל</string>
+    <string name="internalstorage">אחסון פנימי</string>
+    <string name="apps">מנהל היישומונים</string>
+    <string name="ftp">שרת FTP</string>
+    <string name="setting">הגדרות</string>
+    <string name="select">בחירת פריט</string>
+    <string name="press_again">ליציאה נא ללחוץ שוב</string>
+    <string name="open">פתיחה</string>
+    <string name="backup">גיבוי</string>
+    <string name="uninstall">הסרת התקנה</string>
+    <string name="play">חנות Play</string>
+    <string name="properties">מאפיינים</string>
+    <string name="copyingapk">ה־APK מועתק אל</string>
+    <string name="delbook">מחיקת סימנייה</string>
+    <string name="add_to_bookmarks">הוספה לסימניות</string>
+    <string name="enterpath">נא להקליד נתיב</string>
+    <string name="cancel">ביטול</string>
+    <string name="create">יצירה</string>
+    <string name="loading">טעינה&#8230;</string>
+    <string name="file_empty">הקובץ ריק</string>
+    <string name="error">שגיאה</string>
+    <string name="search_results">תוצאות החיפוש אחר %s</string>
+    <string name="rename">שינוי שם</string>
+    <string name="save">שמירה</string>
+    <string name="bookmarks_added">נוספה סימנייה</string>
+    <string name="fileexist">כבר קיים קובץ בשם זה</string>
+    <string name="name">שם</string>
+    <string name="date">תאריך</string>
+    <string name="location">מיקום</string>
+    <string name="size_capitalized">גודל</string>
+    <string name="size">גודל התיקייה</string>
+    <string name="enterzipname">נא להקליד שם Zip</string>
+    <string name="no_app_found">לא נמצא יישומון שיכול לפתוח קובץ זה</string>
+    <string name="copying">מעתיק</string>
+    <string name="moving">מעביר</string>
+    <string name="file">קובץ</string>
+    <string name="folder">תיקיה</string>
+    <string name="newfolder">תיקייה חדשה</string>
+    <string name="entername">להקליד שם</string>
+    <string name="extracting">מחלץ</string>
+    <string name="stopping">עוצר</string>
+    <string name="open_parent">פתיחת תיקיית ההורה</string>
+    <string name="open_with">פתיחה באמצעות</string>
+    <string name="share">שיתוף</string>
+    <string name="about">על אודות</string>
+    <string name="extract">חילוץ</string>
+    <string name="compress">דחיסה</string>
+    <string name="yes">כן</string>
+    <string name="no">לא</string>
+    <string name="dialog_delete_category_directories">תיקיות</string>
+    <string name="dialog_delete_category_files">קבצים</string>
+    <string name="dialog_delete_disclaimer">מחיקת הפריטים שלהלן תסיר אותם לצמיתות מהמכשיר שלך ולא תהיה אפשרות לשחזר אותם.</string>
+    <string name="dialog_delete_title">למחוק את הפריטים לצמיתות?</string>
+    <string name="deleting">מוחק</string>
+    <string name="question_set_path_as_home">להגדיר נתיב זה כנתיב הבית ללשונית זו?</string>
+    <string name="directorysort">מצב מיון תיקייה</string>
+    <string name="sort_by">מיון לפי</string>
+    <string name="sort_only_this">רק תיקייה זו</string>
+    <string name="theme">ערכת נושא</string>
+    <string name="random">ערכת עיצוב אקראית</string>
+    <string name="random_summary">מגדיר צבע ראשי אקראי בהפעלה</string>
+    <string name="colorize">צבע סמלים</string>
+    <string name="colorize_summary">מגדיר צבע סטטי לסמלים. לא יעקוף צבע שהוגדר עבור סמל של ספרייה.</string>
+    <string name="home">בית</string>
+    <string name="paste">הדבקה</string>
+    <string name="history">היסטוריה</string>
+    <string name="copy">העתקה</string>
+    <string name="root_mode">סייר Root</string>
+    <string name="root_mode_summary">למכשירים עם גישת Root בלבד. סמן רק אם אתה בטוח בכך.</string>
+    <string name="root_failure">גישת Root לא הוענקה</string>
+    <string name="select_all">בחר הכל</string>
+    <string name="delete">מחיקה</string>
+    <string name="set_as_home">הגדרה כבית</string>
+
+    <!-- New -->
+    <!-- Array -->
+
+    <!-- UI -->
+    <!-- Theme -->
+    <string name="light">Material בהיר</string>
+    <string name="dark">Material כהה</string>
+    <string name="daytime">לפי שעה ביום</string>
+    <string name="black">שחור (ל־OLED)</string>
+    <!--Skin-->
+    <!--DirectorySortMode-->
+    <string name="foldersOnTop">תיקיות למעלה</string>
+    <string name="filesOnTop">קבצים למעלה</string>
+    <string name="none_on_top">שום דבר למעלה</string>
+    <!--SortBy-->
+    <string name="sort_name">שם</string>
+    <string name="lastModified">שונה לאחרונה</string>
+    <string name="sort_size">גודל</string>
+    <!--ListMode-->
+    <!--Folder-->
+    <string name="pick_a_file">בחירת קובץ</string>
+    <string name="process_viewer">מציג התהליכים</string>
+    <string name="in_safe">אין מספיק שטח פנוי</string>
+    <string name="no_file_overwrite">לא הוחלף אף קובץ</string>
+    <string name="skip">דילוג</string>
+    <string name="overwrite">החלפה</string>
+    <string name="not_allowed">אסור</string>
+    <string name="searching">בחיפוש אחר %s</string>
+    <string name="done">בוצע</string>
+    <string name="set">הגדרה</string>
+    <string name="enablerootmde">הפעלת מצב Root</string>
+    <string name="goback">חזרה אחורה</string>
+    <string name="newfile">קובץ חדש</string>
+    <string name="no_files">אין קבצים</string>
+    <string name="used">שטח מנוצל</string>
+    <string name="used_by_others">בשימוש ע״י אחרים</string>
+    <string name="free">מקום פנוי</string>
+    <string name="listview">תצוגת רשימה</string>
+    <string name="gridview">תצוגת רשת</string>
+    <string name="permission">הרשאות</string>
+    <string name="hide">הסתרה</string>
+    <string name="exit">יציאה</string>
+    <string name="doforall">לבצע על כל הפריטים</string>
+    <string name="gridcolumnno">מספר העמודות בתצוגת רשת</string>
+    <string name="set_random">השינויים ייכנסו לתוקף עם הפעלת היישומון מחדש</string>
+    <string name="authors">מחברים</string>
+    <string name="changelog">יומן שינויים</string>
+    <string name="ok">אישור</string>
+    <string name="ui">ממשק</string>
+    <string name="general">כללי</string>
+    <string name="thumb_summary">הצג תמונות ממוזערות של אפליקציות ותמונות</string>
+    <string name="thumb">הצג תמונות ממוזערות</string>
+    <string name="hidden">הצג תיקיות וקבצים מוסתרים</string>
+    <string name="lastModifiedSummary">הצג את התאריך והשעה שבהם הקובץ שונה לאחרונה</string>
+    <string name="lastModifiedPref">הצגת מועד השינוי האחרון</string>
+    <string name="size_pref_summary">הצג גודל של קבצים, ומספר פריטים בתיקיות</string>
+    <string name="size_pref">הצג גדלים</string>
+    <string name="miscellaneous">שונות</string>
+    <string name="root_pref_summary">הצג הרשאות של קבצים ותיקיות</string>
+    <string name="root_pref">הצג הרשאות</string>
+    <string name="about_amaze_file_manager_label">אודות מנהל הקבצים Amaze</string>
+    <string name="version">גרסה</string>
+    <string name="rate">דרג את האפליקציה</string>
+    <string name="feedback">שלח משוב</string>
+    <string name="hiddenfiles">קבצים מוסתרים</string>
+    <string name="type">סוג</string>
+    <string name="root_directory">שורש</string>
+    <string name="add_shortcut">הוסף קיצור דרך</string>
+    <string name="unsaved_changes">שינויים שלא נשמרו</string>
+    <string name="unsaved_changes_description">קיימים שינויים שלא נשמרו, האם ברצונך לשמור אותם לפני שתצא?</string>
+    <string name="saving">שומר</string>
+    <string name="package_installer">מתקין החבילה</string>
+    <string name="view">הצג</string>
+    <string name="install">התקן</string>
+    <string name="archive">ארכיון</string>
+    <string name="archive_text">זהו ארכיון. איזו פעולה ברצונך לבצע?</string>
+    <string name="package_installer_text">זהו קובץ חבילה. איזו פעולה ברצונך לבצע?</string>
+    <string name="xda_title">אשכול בפורום XDA</string>
+    <string name="xda_summary">קבל תשובות לשאלות ועזרה בפתרון בעיות</string>
+    <string name="circular_images">השתמש בסמלים עגולים עבור תמונות וסרטונים</string>
+    <string name="circular_icons">השתמש בסמלים עגולים</string>
+    <string name="back_title">ניווט אחורה</string>
+    <string name="back_summary">הפעל קיצור לחזרה אחורה בראש כל תיקיה</string>
+    <string name="details">פרטים</string>
+    <string name="translators">מתרגמים</string>
+    <string name="german_translation_title">גרמנית</string>
+    <string name="italian_translation_title">איטלקית</string>
+    <string name="french_translation_title">צרפתית</string>
+    <string name="russian_translation_title">רוסית</string>
+    <string name="spanish_translation_title">ספרדית</string>
+    <string name="basque_translation_title">באסקית</string>
+    <string name="chinese_translation_title">סינית</string>
+    <string name="serbian_translation_title">סרבית</string>
+    <string name="turkish_translation_title">טורקית</string>
+    <string name="ukrainian_translation_title">אוקראינית</string>
+    <string name="portuguese_translation_title">פורטוגלית</string>
+    <string name="polish_translation_title">פולנית</string>
+    <string name="korean_translation_title">קוריאנית</string>
+    <string name="greek_translation_title">יוונית</string>
+    <string name="dutch_translation_title">הולנדית</string>
+    <string name="romanian_translation_title">רומנית</string>
+    <string name="vietnamese_translation_title">וייטנאמית</string>
+    <string name="japanese_translation_title">יפנית</string>
+    <string name="tamil_translation_title">טמילית</string>
+
+    <string name="zip_viewer">מציג Zip</string>
+    <string name="unin_system_apk">זוהי אפליקציית מערכת, ולכן מחיקתה עלולה להוביל לאי יציבות. האם להמשיך?</string>
+    <string name="warning">אזהרה</string>
+    <string name="donate">תרומה</string>
+    <string name="archive_preferences">העדפות ארכיון</string>
+    <string name="archive_extract_folder">תיקייה לחילוץ מארכיון</string>
+    <string name="zip_create_folder">תיקייה ליצירת Zip</string>
+    <string name="archive_summary">קובצי ארכיון יחולצו לתיקייה זו. ערך בררת המחדל היא התיקייה בה נמצא הארכיון.</string>
+    <string name="zip_summary">קובצי zip חדשים יווצרו בתיקייה זו. ערך בררת המחדל היא התיקייה בה הקבצים נמצאים.</string>
+    <string name="open_as">פתח כ...</string>
+    <string name="text">טקסט</string>
+    <string name="audio">שמע</string>
+    <string name="video">וידאו</string>
+    <string name="other">אחר</string>
+    <string name="image">תמונה</string>
+    <string name="contributors">תורמים</string>
+    <string name="save_paths">זכור נתיב אחרון</string>
+    <string name="save_path_summary">בהפעלה, התיקיה האחרונה שהוצגה בכל כרטיסייה תוצג.</string>
+    <string name="select_intent">בחר</string>
+    <string name="database">מסד נתונים</string>
+    <string name="colored_navigation">שורת ניווט בצבע</string>
+    <string name="colored_navigvation_sum">קובע אם שורת הניווט היא באותו הצבע כמו ערכת הנושא</string>
+
+    <string name="color_title">צבע</string>
+    <string name="color_summary">הגדר צבעים לחלקים שונים בממשק</string>
+    <string name="primary_color_title">צבע ראשי (כרטיסייה שמאלית)</string>
+    <string name="primary_color_summary">הגדר את הצבע לרכיבים גדולים של הממשק בכרטיסייה השמאלית</string>
+    <string name="accent_color_title">צבע הדגשה</string>
+    <string name="accent_color_summary">הגדר את הצבע המשני, אשר יהיה הצבע של כפתור הפעולה המרחף ורכיבים קטנים נוספים בממשק</string>
+    <string name="icon_color_title">צבע סמלים</string>
+    <string name="icon_color_summary">הגדר את הצבע לסמלים</string>
+    <string name="choose_color">בחר צבע</string>
+    <string name="files">קבצים</string>
+    <string name="textreader">קורא טקסט</string>
+    <string name="databasereader">קורא מסד נתונים</string>
+    <string name="show_dividers">הצג מפרידים</string>
+    <string name="needs_access">גישת כתיבה דרושה</string>
+    <string name="needs_access_summary">בחר בספריית השורש של \\t</string>
+    <string name="needs_access_summary1">\\tto הענק גישת כתיבה כדי להפעיל.</string>
+    <string name="smb_connection">חיבור SMB</string>
+    <string name="smb_server">כתובת IP של השרת</string>
+    <string name="username">שם משתמש</string>
+    <string name="password">סיסמה</string>
+    <string name="anonymous">אנונימי</string>
+    <string name="bluetooth">Bluetooth</string>
+    <string name="extstorage">אחסון חיצוני</string>
+    <string name="folders">תיקיות</string>
+    <string name="folderfilecount">%1$d תיקיות ו־%2$d קבצים</string>
+    <string name="videos">וידאו</string>
+    <string name="apks">חבילות APK</string>
+    <string name="documents">מסמכים</string>
+    <string name="images">תמונות</string>
+    <string name="clear">נקה</string>
+    <string name="md5">MD5</string>
+    <string name="total">סה״כ:</string>
+    <string name="calculating">מחשב</string>
+    <string name="sort">מיין</string>
+    <string name="ascending">בסדר עולה</string>
+    <string name="descending">בסדר יורד</string>
+    <string name="default_string">ברירת מחדל</string>
+    <string name="doit">עשה זאת</string>
+    <string name="want_help"><u>צריך עזרה?</u></string>
+    <string name="quick">גישה מהירה</string>
+    <string name="recent">קבצים אחרונים</string>
+    <string name="edit">עריכה</string>
+    <string name="find">מצא בעמוד</string>
+    <string name="grant">הענק</string>
+    <string name="grantper">הענק הרשאה</string>
+    <string name="grantfailed">הרשאה לא הוענקה</string>
+    <string name="grant_storage_permission">מנהל הקבצים זקוק להרשאה כדי לגשת לאחסון המכשיר. בלי הרשאה זו, הוא לא יוכל להמשיך לעבוד ולכן ייסגר.</string>
+    <string name="operation_unsuccesful">הפעולה נכשלה</string>
+    <string name="creatingfile">יוצר קובץ</string>
+    <string name="creatingfolder">יוצר תיקיה</string>
+    <string name="renaming">משנה שם</string>
+    <string name="cant_be_empty">%s לא יכול להיות ריק</string>
+    <string name="ip">כתובת</string>
+    <string name="connection_name">שם החיבור</string>
+    <string name="no_device_found">לא נמצאו מכשירים</string>
+    <string name="path">נתיב</string>
+    <string name="rename_bookmark">ערוך סימנייה</string>
+    <string name="cut">גזור</string>
+    <string name="search">חפש</string>
+    <string name="invalid_name">שם לא חוקי</string>
+    <string name="search_hint">הקלד כדי לחפש&#8230;</string>
+    <string name="advanced_search">חיפוש מתקדם</string>
+    <string name="regular_expression">ביטוי רגולרי</string>
+    <string name="regular_expression_summary">חפש באמצעות regular expression בסגנון BASH</string>
+    <string name="match_content">התאם לתוכן החיפוש</string>
+    <string name="match_content_summary">אם מופעל, הביטוי הרגולרי יותאם לשם הקובץ כולו,
+        אחרת יוכל להיות רק חלק משם הקובץ.</string>
+    <string name="start_ftp">התחל</string>
+    <string name="stop_ftp">עצור</string>
+    <string name="ftp_status_running">פועל</string>
+    <string name="ftp_status_not_running">לא פועל</string>
+    <string name="ftp_no_wifi">נא לוודא שהתחברת לרשת אלחוטית</string>
+    <string name="domain">דומיין</string>
+    <string name="invalid">%s לא חוקי</string>
+    <string name="ftp_notif_starting">מתחיל את שרת ה-FTP</string>
+    <string name="ftp_notif_starting_title">שרת FTP</string>
+    <string name="ftp_notif_title">שרת FTP של Amaze פועל</string>
+    <string name="ftp_notif_text">ב-%s</string>
+    <string name="ftp_notif_stop_server">עצור</string>
+    <string name="ftp_port_edit_menu_title">פורט FTP</string>
+    <string name="ftp_port_change_success">פורט FTP שונה בהצלחה</string>
+    <string name="ftp_port_change_error_invalid">מספר הפורט שנבחר אינו חוקי</string>
+    <string name="primary_two_title">צבע ראשי (כרטיסייה ימנית)</string>
+    <string name="primary_two_summary">הגדר את הצבע לרכיבים גדולים של הממשק בכרטיסייה הימנית</string>
+    <string name="support_development">תמוך בפיתוח</string>
+    <string name="report_bugs_title">דווח על באגים</string>
+    <string name="report_bugs_summary">דווח על באגים, או בקש תכונות חדשות</string>
+    <string name="translate_title">תרגום</string>
+    <string name="translate_summary">תרגם את Amaze לשפה שלך</string>
+    <string name="easter_egg_title">מצב סטודיו</string>
+    <string name="paypal_copy_message">מזהה ה־PayPal הועתק ללוח הגזירים</string>
+    <string name="searching_devices">מחפש התקנים</string>
+    <string name="use_custom_ip">השתמש בכתובת IP מותאמת אישית</string>
+    <string name="bookmark_lost">הסימניה לא נמצאה, יוצר מחדש את &#8230;</string>
+
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>איך לגשת לתיקיית Windows משותפת דרךAndroid (SMB)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>הפעלת שיתוף קבצים ב־Windows</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        עליך לפתוח את לוח הבקרה, ללחוץ על בחירת קבוצה ביתית ואפשרויות שיתוף תחת רשת
+                        ואינטרנט, וללחוץ על „שינוי הגדרות שיתוף מתקדמות”, להפעיל את התכונה „שיתוף
+                        קבצים ומדפסות”.\n\n
+                    </p>
+
+                    <li>
+                        <b>הגדרות שיתוף קבצים נוספות</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        אולי גם יעניין אותך להגדיר הגדרות שיתוף קבצים נוספות. \n
+                        כמו למשל להפעיל גישה לקבצים שלך ללא ססמה אם כל המכשירים
+                        ברשת המקומית שלך מהימנים. לאחר ששיתוף קבצים ומדפסות פעיל, ניתן לפתוח
+                        סייר הקבצים או סייר Windows, ללחוץ עם המקש הימני על תיקייה שברצונך לשתף,
+                        לבחור במאפיינים. \n
+                        ללחוץ על כפתור השיתוף ולאפשר את הגישה לתיקייה דרך הרשת..\n\n
+                        </p>
+
+                    <li>
+                        <b>יש לוודא ששני המכשירים באותה הרשת</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        תכונה זו מאפשרת לשתף קבצים דרך רשת מקומית, לכן על המחשב ועל הטלפון הנייד שלך
+                        להיות מחוברים לאותה רשת מקומית. אין לך אפשרות לגשת לתיקיית ה־Windows המשותפת
+                        דרך האינטרנט או כאשר הטלפון שלך מחובר לתקשורת נתונים סלולרית — יש
+                        לחבר אותו לרשת האלחוטית.\n\n
+                    </p>
+
+                    <li>
+                        <b>איתור כתובת ה־IP</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        יש לפתוח את מסוף הפקודות. להקליד ‚ipconfig’ ואז Enter. להסתכל על שער בררת המחדל
+                        תחת מתאם הרשת של כתובת ה־IP של הנתב שלך. יש לחפש כתובת
+                        \\\"IPv4\\\" תחת הסעיף של אותו המתאם כדי למצוא את כתובת ה־IP של המחשב
+                        שלך.\n\n
+                    </p>
+
+                    <b>נא להכניס את הפרטים בתיבה של ה־SMB</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
+    <string name="share_limit">לא ניתן לשתף יותר מ-100 קבצים</string>
+    <string name="otg_access">בחר את השורש של התקן ה-OTG</string>
+    <string name="opening">פותח...</string>
+    <string name="information">מידע</string>
+    <!-- reference to file accessed date -->
+    <string name="accessed">נצפה</string>
+    <!-- reference to file modified date -->
+    <string name="modified">שונה</string>
+
+    <string name="title">כותרת</string>
+    <string name="artist">אמן</string>
+    <string name="album">אלבום</string>
+    <string name="year">שנה</string>
+    <string name="duration">אורך</string>
+    <string name="comment">הערה</string>
+    <!-- reference to audio/video file -->
+    <string name="container">תסדיר</string>
+    <string name="codec">מקודד</string>
+    <string name="channels">ערוצים</string>
+    <string name="sample_rate">קצב דגימת שמע</string>
+    <string name="bitrate">קצב סיביות</string>
+    <string name="dimensions">מימדים</string>
+    <string name="frame_rate">קצב פריימים</string>
+    <string name="image_type">סוג תמונה</string>
+    <string name="width">רוחב</string>
+    <string name="height">גובה</string>
+    <string name="date_modified">תאריך שינוי אחרון</string>
+    <string name="software">שם תוכנית</string>
+    <string name="creator">יוצר</string>
+    <string name="camera_brand">יצרן מצלמה</string>
+    <string name="camera_model">דגם מצלמה</string>
+    <string name="date_taken">תאריך צילום</string>
+    <string name="exposure_time">זמן חשיפה</string>
+    <string name="aperture_value">ערך צמצם</string>
+    <string name="image_iso">מהירות ISO</string>
+    <string name="flash_fired">מצב פלאש</string>
+    <string name="focal_length">מרחק מהמוקד</string>
+    <string name="subject">נושא</string>
+    <string name="author">מחבר</string>
+    <string name="keywords">מילות מפתח</string>
+    <string name="producer">מפיק</string>
+    <string name="created">נוצר</string>
+    <string name="format">סוג</string>
+    <string name="pages">מספר עמודים</string>
+    <!-- reference to a document file -->
+    <string name="optimized">מותאם</string>
+    <string name="security">אבטחה</string>
+    <string name="paper_size">גודל דף</string>
+
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">קבצים מסוימים לא %sו בהצלחה</string>
+    <string name="copied">הועתק</string>
+    <string name="moved">הועבר</string>
+    <string name="copy_complete">ההעתקה הושלמה</string>
+    <string name="waiting_title">מחכה</string>
+    <string name="waiting_content">מחכה שהפעולה תושלם</string>
+    <string name="extract_complete">החילוץ הושלם</string>
+    <string name="compression_complete">הדחיסה הושלמה</string>
+    <string name="compressing">דוחס</string>
+    <string name="cancelled">בוטל</string>
+    <!-- reference to - 'Written #bytes out of #bytes' in process viewer -->
+    <string name="written">נכתב</string>
+    <string name="out_of">אזל ה</string>
+    <!-- reference to - 'Processing file # of #' in process viewer -->
+    <string name="of">מתוך</string>
+    <string name="processing_file">מעבד קובץ</string>
+    <string name="current_speed">מהירות נוכחית</string>
+    <string name="smb_launch_error">תצטרך להעתיק קובץ זה לאחסון הפנימי כדי לפתוח אותו</string>
+    <string name="error_file_not_found">שגיאה: הקובץ לא נמצא</string>
+    <string name="error_io">שגיאת I/O</string>
+    <string name="medium_text">טקסט בינוני</string>
+    <string name="permission_read">קריאה</string>
+    <string name="permission_write">כתיבה</string>
+    <string name="permission_execute">בצע</string>
+    <string name="permission_owner">בעלים</string>
+    <string name="permission_group">קבוצה</string>
+    <string name="permission_other">אחר</string>
+    <string name="clipboard_path_copy">הנתיב הועתק ללוח</string>
+    <string name="service_timer">זמן שחלף</string>
+    <string name="please_wait">נא להמתין</string>
+
+    <string name="cloud_connection">חיבור לענן</string>
+    <string name="cloud_connection_new">חיבור חדש לענן</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Box</string>
+    <string name="cloud_get">הורדת תוסף ענן</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">אין יישומים</string>
+    <string name="ftp_path">נתיב משותף</string>
+    <string name="ftp_path_hint">נתיב לשורש התיקייה המיועדת לשיתוף</string>
+    <string name="change">החלפה</string>
+    <string name="unknown_error">שוד ושבר, משהו השתבש!</string>
+
+    <string name="ftp_path_change_success">נתיב ה־FTP השתנה בהצלחה</string>
+    <string name="ftp_path_change_error_invalid">נתיב שגוי</string>
+    <string name="ftp_status_no_connection">אין חיבור</string>
+    <string name="ftp_status_secure_connection">חיבור מאובטח</string>
+    <string name="ftp_status_title">מצב</string>
+    <string name="ftp_port">פתחה</string>
+    <string name="ftp_login">כניסה</string>
+    <string name="field_empty">השדה לא יכול להישאר ריק</string>
+    <string name="ftp_timeout">זמן לתפוגת ההמתנה</string>
+    <string name="ftp_seconds">שניות</string>
+    <string name="intellihide_toolbar_title">סרגל כלים עם הסתרה חכמה</string>
+    <string name="intellihide_toolbar_summary">להסתיר את סרגל הכלים אוטומטית בעת גלילה</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">הועתק ללוח הגזירים</string>
+    <string name="contributors_1_summary">תרגום</string>
+    <string name="contributors_2_summary">סמל וכותרות</string>
+    <string name="contributors_3_summary">מנוע ערכות עיצוב</string>
+    <string name="contributors_4_summary">צללית מאחורי ה־FAB</string>
+    <string name="contributors_5_summary">החלפת צבעים בעת מעבר בין לשוניות</string>
+    <string name="contributors_6_summary">שרת FTP</string>
+    <string name="contributors_7_summary">הפעלת מעטפת אינטראקטיבית</string>
+    <string name="connection_exists">החיבור כבר קיים</string>
+
+    <string name="crypt_encrypting">הצפנה</string>
+    <string name="crypt_decrypting">פענוח</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">הוצפנו</string>
+    <string name="crypt_decrypted">פוענחו</string>
+    <string name="crypt_encrypt">הצפנה</string>
+    <string name="crypt_decrypt">פענוח</string>
+    <string name="operation_fail_following">הפעולה כשלה על הקבצים הבאים</string>
+    <string name="crypt_pref_master_password_title">ססמה ראשית</string>
+    <string name="crypt_pref_master_password_summary">כאן ניתן להגדיר ססמה ראשית להצפנה.
+        שדה ריק ישבית את הססמה.</string>
+    <string name="crypt_pref_fingerprint_title">טביעת אצבע</string>
+    <string name="crypt_pref_fingerprint_summary">שימוש בטביעת אצבע כדי לאמת הצפנה</string>
+    <string name="crypt_fingerprint_no_permission">חסרות הרשאות לטביעת אצבע</string>
+    <string name="crypt_fingerprint_not_enrolled">לא נרשמה טביעת אצבע</string>
+    <string name="crypt_fingerprint_no_security">לא נמצאה אבטחה בצורת מסך נעילה</string>
+    <string name="crypt_warning_key">לתשומת לבך, לאחר שינוי תבנית האבטחה דרך
+        הגדרות המערכת, לא תהיה לך אפשרות לפענח את התוכן הזה.</string>
+    <string name="warning_never_show">לא להודיע לי שוב</string>
+    <string name="warning_confirm">הבנתי!</string>
+    <string name="crypt_encryption_fail">ההצפנה נכשלה</string>
+    <string name="crypt_decryption_fail">הפענוח נכשל</string>
+    <string name="crypt_decryption_fail_password">ססמה שגויה!</string>
+    <string name="crypt_fingerprint_authenticate">יש לגעת בחיישן כדי להמשיך</string>
+    <string name="authenticate_password">נא להקליד ססמה</string>
+
+    <string name="sidebar_preferences">סרגל צד</string>
+    <string name="sidebar_folders_title">קיצורי דרך בסרגל הצד</string>
+    <string name="sidebar_quick_access_title">גישה מהירה מסרגל הצד</string>
+    <string name="show_folders_pref_title">הצגת קיצורי דרך</string>
+    <string name="show_folders_pref">קיצורי דרך</string>
+    <string name="show_quick_access_pref_title">הצגת פריטי גישה מהירה</string>
+    <string name="show_quick_access_pref">פריטי גישה מהירה</string>
+    <string name="create_shortcut">יצירת קיצור דרך</string>
+    <string name="edit_shortcut">עריכת קיצור דרך</string>
+    <string name="directory">תיקייה</string>
+    <string name="question_delete_shortcut">למחוק קיצור דרך?</string>
+
+    <string name="cloud_error_plugin">תוסף הענן של Amaze לא נמצא. נא להוריד מהחנות Play.</string>
+    <string name="cloud_error_failed_restart">טעינת החיבור נכשלה.
+        נא לפתוח את Amaze Cloud לפחות פעם אחת.</string>
+    <string name="cloud_remove">להסיר את החיבור לענן?</string>
+    <string name="cloud_fail_authenticate">האימות נכשל</string>
+    <string name="cloud_share_copied">קישור לצורכי שיתוף הועתק ללוח הגזירים</string>
+    <string name="copy_low_memory">הזיכרון אוזל, נא לפנות קצת</string>
+    <string name="cloud_token_lost">האסימון אבד, נא להיכנס שוב</string>
+    <string name="monofont">גופן ברוחב אחיד</string>
+    <string name="showHeaders">הצגת כותרות</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">אין פריטים</string>
+	<string name="item">פריט</string>
+	<string name="items">פריטים</string>
+	
+	<string name="byte_singular">בית</string>
+	<string name="bytes">בתים</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">לקובץ אמור להיות שם</string>
+    <string name="add_item">הוספת פריט</string>
+    <string name="failed_smb_decrypt_path">טעינת החיבור לשיתוף קבצים ברשת נכשלה</string>
+    <string name="failed_cloud_new_connection">הוספת חיבור ענן חדש נכשל</string>
+    <string name="failed_cloud_api_key">אימות תוסף הענן נכשל</string>
+
+    <string name="local_inet_addr_error">קבלת כתובת החיבור המקומית נכשלה</string>
+    <string name="intent_save_as">שמירה בשם&#8230;</string>
+    <string name="go">לגשת</string>
+    <string name="advanced">מתקדם</string>
+    <string name="typeable_paths_title">נתיבים מותאמים אישית</string>
+    <string name="typeable_paths_summary">לחיצה ארוכה על הנתיב כדי לשנות אותו</string>
+    <string name="send_email_to">שליחת דוא״ל אל</string>
+
+    <string name="text_editor">הגדרות עורך טקסט</string>
+    <string name="preference_newstack_title">פתיחת קבצים כמשימה חדשה</string>
+    <string name="preference_newstack_summary">מאפשר לך לפתוח קבצים במשימות נפרדות. גם לגשת אליהם ממסך האחרונים של המערכת.</string>
+    <string name="developers">מפתחים</string>
+    <string name="no_bitcoin_app">נא להתקין יישומון ארנק ביטקוין</string>
+    <string name="channel_name_normal">התראות Amaze</string>
+    <string name="channel_description_normal">ההתראות של מנהל הקבצים Amaze</string>
+    <string name="channel_name_ftp">שרת FTP של Amaze</string>
+    <string name="channel_description_ftp">התראות שרת ה־FTP של מנהל הקבצים Amaze</string>
+
+    <string name="processing">בהליכי עיבוד&#8230;</string>
+    <string name="failed_no_connection">טעינת הקבצים נכשלה. נא לבדוק את החיבור שלך</string>
+
+    <string name="update">עדכון</string>
+	<string name="scp_connection">חיבור SCP/SFTP</string>
+    <string name="scp_port">פתחה</string>
+    <string name="ssh_host_key_verification_prompt">לא ניתן לאמת את מהימנות המארח ‚%1$s’.\n\nטביעת האצבע של המפתח ה%2$s היא %3$s.\n\nנא לגעת בכפתור „כן” כדי לאמת זהות, אחרת יש ללחוץ על „לא”.</string>
+    <string name="ssh_host_key_verification_prompt_title">אימות מארח</string>
+    <string name="ssh_select_pem_button">מפתח SSH פרטי</string>
+    <string name="ssh_pem_key_parse_error">לא ניתן לקרוא את ה־PEM הנבחר: %s</string>
+    <string name="password_unchanged">(ללא שינוי)</string>
+    <string name="ssh_authentication_failure_password">הכניסה נכשלה: לא ניתן לבצע אימות עם שם המשתמש והססמה שסופקו.</string>
+    <string name="ssh_authentication_failure_key">הכניסה נכשלה: לא ניתן לבצע אימות עם שם המשתמש והמפתח הפרטי שסופקו.</string>
+    <string name="ssh_connect_failed">לא ניתן להתחבר אל %1$s:%2$d: %3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">אזהרה: מזהה המארח המרוחק השתנה!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">
+        יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\n
+        יכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\n
+        נא ליצור קשר עם הנהלת המערכת או להקים חיבור חדש כדי להמשיך ולהתחבר לשרת.
+    </string>
+    <string name="ssh_key_prompt_passphrase">נא להקליד את מילת הצופן של המפתח.</string>
+    <string name="add_shortcut_not_supported_by_launcher">למסך ההפעלה שלך אין תמיכה ביצירת קיצורי דרך.</string>
+    
+    <string name="select_color_config">בחירת הגדרות צבע</string>
+    <string name="customize">התאמה אישית</string>
+    <string name="custom">מותאם אישית</string>
+    <string name="preselected_configs_title">תצורות שנבחרו מראש</string>
+    <string name="orange">כתום</string>
+    <string name="blue">כחול</string>
+    <string name="green">ירוק</string>
+    <string name="password_no_match">הססמה אינה תואמת</string>
+    <string name="deselect_all">ביטול הבחירה</string>
+    <string name="filename">שם קובץ</string>
+    <string name="compress_file_suggest_zip_extension">מומלץ להשתמש ב־„‎.zip” כסיומת לקובץ.</string>
+    <string name="about_amaze">מנהל קבצים עם עיצוב Material ל־Android</string>
+    <string name="license">רישיון</string>
+    <string name="libraries">ספריות</string>
+    <string name="password_repeat">חזרה על הססמה</string>
+    <string name="create_file_suggest_txt_extension">מומלץ להשתמש ב־„‎.txt” כסיומת לקובץ.</string>
+    <string name="ssh_select_pem">נא לבחור מפתח פרטי לאימות</string>
+    <string name="ssh_key_invalid_passphrase">מילת צופן שגויה למפתח.</string>
+    <string name="encryption_fail_copy">עדכון רשומת ההצפנה במסד הנתונים נכשל</string>
+    <string name="extracted">חולץ</string>
+    <string name="compressed">דחוס</string>
+    <string name="processed">בהליכי עיבוד</string>
+    <string name="no_obtainable_info">אין מידע על הקובץ הזה</string>
+    <string name="reopen_from_source">אי אפשר, נא לפתוח מהיישומון האחרון</string>
+    <string name="no_file_error">משהו השתבש, אין מה לפתו</string>
+    <string name="file_read_only">הקובץ שנפתח הוא לקריאה בלבד.</string>
+    <string name="got_it">הבנתי!</string>
+    <string name="encrypt_file_save_as">שמירת קובץ מוצפן בשם&#8230;</string>
+    <string name="encrypt_folder_save_as">שמירת תיקייה מוצפנת בשם&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">מומלץ להשתמש ב־„‎.ace” כסיומת לקובץ.</string>
+    <string name="cannot_overwrite">לא ניתן לשכתב על קובץ.</string>
+    <string name="saved_single_file">קובץ נשמר בשם ‚%s’.</string>
+    <string name="saved_multi_files">%d קבצים נשמרו.</string>
+    <string name="create_hidden_file_warn">הקובץ שנוצר יוסתר מרשימת הקבצים.</string>
+    <string name="grant_apkinstall_permission">היישומון צריך הרשאות כדי להמשיך בהתקנת יישומונים.</string>
+    <string name="time_remaining">זמן שנותר</string>
+    <string name="transfer_rate">קצב העברה</string>
+    <string name="unknown">לא ידוע</string>
+    <string name="multiple_invalid_archive_entries">לא ניתן לחלץ חלק מהקבצים שבארכיון, יכול להיות שהארכיון פגום או שהגיע ממקור זדוני.</string>
+    <string name="saf_otg_explanation">כעת תתבצע העברה למערכת הקבצים של Android מטעמי אבטחה. נא לבחור את התקן ה־USB מהרשימה שמימין.</string>
+    <string name="donation_thanks">תודה על התרומה, זה מעלה לנו את המוטיבציה! :)</string>
+    <string name="enable_marquee_filename">הפעלת אפקט גלילה לשמות קבצים</string>
+    <string name="archive_password_prompt">נא להקליד את הססמה של הארכיון:</string>
+    <string name="cannot_extract_archive">לא ניתן לחלץ את הארכיון „%s”: %s</string>
+    <string name="archive_unsupported_or_corrupt">לא ניתן לפתוח את הארכיון „%s”. או שאין אפשרות לפתוח את הארכיון או שהוא פגום.</string>
+    <string name="hide_media">הסתרה מסיירי מדיה</string>
+</resources>
+

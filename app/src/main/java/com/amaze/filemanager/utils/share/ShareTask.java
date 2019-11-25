@@ -103,7 +103,7 @@ public class ShareTask extends AsyncTask<String, String, Void> {
             shareAdapter.updateMatDialog(b);
             b.show();
         } else {
-            Toast.makeText(contextc, R.string.noappfound, Toast.LENGTH_SHORT).show();
+            Toast.makeText(contextc, R.string.no_app_found, Toast.LENGTH_SHORT).show();
         }
     }
 }

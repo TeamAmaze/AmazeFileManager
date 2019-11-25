@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">سائز</string>
+  <string name="sort_size">سائز</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">ورژن</string>

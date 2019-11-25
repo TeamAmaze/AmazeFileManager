@@ -40,7 +40,7 @@
         android:title="@string/sort"
         android:icon="@drawable/ic_sort_white_24dp">
         <menu >
-            <item android:title="@string/sortby"
+            <item android:title="@string/sort_by"
                 android:id="@+id/sortby"/>
             <item android:title="@string/directorysort"
                 android:id="@+id/dsort"/>
@@ -60,7 +60,7 @@
         android:title="@string/hiddenfiles" />
     <item
         android:id="@+id/sethome"
-        android:title="@string/setashome"/>
+        android:title="@string/set_as_home"/>
     <item
         android:id="@+id/extract"
         android:title="@string/extract"

@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Stærð</string>
+  <string name="sort_size">Stærð</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Útgáfa</string>

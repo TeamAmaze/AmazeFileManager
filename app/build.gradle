@@ -156,7 +156,8 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
     implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
 
-    //implementation 'com.jcraft:jsch:0.1.53'
+    implementation 'org.greenrobot:eventbus:3.1.1'
+
     implementation 'com.android.volley:volley:1.1.1'
 
     implementation 'eu.chainfire:libsuperuser:1.0.0.+'

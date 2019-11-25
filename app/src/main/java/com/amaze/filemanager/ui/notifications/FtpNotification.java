@@ -22,19 +22,7 @@ import java.net.InetAddress;
  *
  * Edited by zent-co on 30-07-2019
  */
-public class FtpNotification extends BroadcastReceiver {
-
-    @Override
-    public void onReceive(Context context, Intent intent) {
-        switch(intent.getAction()){
-            case FtpService.ACTION_STARTED:
-                updateNotification(context, intent.getBooleanExtra(FtpService.TAG_STARTED_BY_TILE, false));
-                break;
-            case FtpService.ACTION_STOPPED:
-                removeNotification(context);
-                break;
-        }
-    }
+public class FtpNotification {
 
     private static NotificationCompat.Builder buildNotification(Context context,
                                                                 @StringRes int contentTitleRes,
@@ -78,7 +66,7 @@ public class FtpNotification extends BroadcastReceiver {
         return builder.build();
     }
 
-    private static void updateNotification(Context context, boolean noStopButton) {
+    public static void updateNotification(Context context, boolean noStopButton) {
         String notificationService = Context.NOTIFICATION_SERVICE;
         NotificationManager notificationManager = (NotificationManager) context.getSystemService(notificationService);
 
@@ -88,12 +76,17 @@ public class FtpNotification extends BroadcastReceiver {
 
         InetAddress address = FtpService.getLocalInetAddress(context);
 
-        String iptext = (secureConnection ? FtpService.INITIALS_HOST_SFTP : FtpService.INITIALS_HOST_FTP)
-                + address.getHostAddress() + ":"
-                + port + "/";
+        String address_text = "Address not found";
+
+        if (address != null) {
+            address_text = (secureConnection ? FtpService.INITIALS_HOST_SFTP : FtpService.INITIALS_HOST_FTP)
+                    + address.getHostAddress() + ":"
+                    + port + "/";
+        }
+
 
         NotificationCompat.Builder builder = buildNotification(context,
-                R.string.ftp_notif_title, context.getString(R.string.ftp_notif_text, iptext), noStopButton);
+                R.string.ftp_notif_title, context.getString(R.string.ftp_notif_text, address_text), noStopButton);
 
         notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
     }

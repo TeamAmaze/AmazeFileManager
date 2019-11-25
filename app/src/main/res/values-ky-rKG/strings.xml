@@ -27,7 +27,7 @@
   <!--Skin-->
     <!--DirectorySortMode-->
   <!--SortBy-->
-  <string name="sortSize">Өлчөмү</string>
+  <string name="sort_size">Өлчөмү</string>
   <!--ListMode-->
   <!--Folder-->
     <string name="version">Версиясы</string>
