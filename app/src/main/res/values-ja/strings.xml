@@ -637,6 +637,7 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="archive_password_prompt">アーカイブのパスワードを入力ください。</string>
     <string name="cannot_extract_archive">アーカイブ \"%s\" を抽出できません: %s</string>
     <string name="archive_unsupported_or_corrupt">アーカイブ \"%s\" を開くことができません。 アーカイブを開くことができないか、アーカイブが破損しています。</string>
+    <string name="bookmark_exists">ブックマークは存在します</string>
     <string name="hide_media">メディアブラウザーから非表示</string>
 </resources>
 
