@@ -36,7 +36,7 @@
     <string name="uninstall">Copot</string>
     <string name="play">Play store</string>
     <string name="properties">Properti</string>
-    <string name="copyingapk">Menyalin apk ke </string>
+    <string name="copyingapk">Menyalin APK ke</string>
     <string name="delbook">Hapus Markah</string>
     <string name="add_to_bookmarks">Tambah ke Markah</string>
     <string name="enterpath">Masukkan Jalur</string>
@@ -92,8 +92,8 @@
     <string name="history">Riwayat</string>
     <string name="copy">Salin</string>
     <string name="root_mode">Root Explorer</string>
-    <string name="root_mode_summary">Hanya untuk perangkat yang diroot. Hanya aktifkan jika anda benar-benar yakin.</string>
-    <string name="root_failure">Akses root tidak diizinkan</string>
+    <string name="root_mode_summary">Hanya untuk perangkat dengan akses root. Hanya aktifkan jika anda benar-benar yakin.</string>
+    <string name="root_failure">Akses Root tidak diizinkan</string>
     <string name="select_all">Pilih Semua</string>
     <string name="delete">Hapus</string>
     <string name="set_as_home">Atur Sebagai Beranda</string>
@@ -641,6 +641,7 @@
     <string name="archive_password_prompt">Silakan masukkan sandi arsip:</string>
     <string name="cannot_extract_archive">Tidak bisa mengekstrak arsip \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Tidak bisa membuka arsip \"%s\". Arsip rusak, atau aplikasi memang tidak bisa membuka arsip.</string>
+    <string name="bookmark_exists">Markah sudah ada</string>
     <string name="hide_media">Sembunyikan dari pengelola media</string>
 </resources>
 
