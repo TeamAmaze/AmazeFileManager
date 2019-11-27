@@ -645,6 +645,7 @@
     <string name="empty_string" translatable="false" />
     <string name="cannot_extract_archive">Cannot extract archive \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Cannot open archive \"%s\". Either we cannot open the archive, or the archive was damaged.</string>
+    <string name="close">Close</string>
     <string name="bookmark_exists">Bookmark exists</string>
     <string name="hide_media">Hide from media browsers</string>
 </resources>

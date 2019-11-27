@@ -1094,7 +1094,6 @@ public class GeneralDialogCreation {
         a.onNegative((dialog, which) -> dataUtils.clearHistory());
         a.theme(appTheme.getMaterialDialogTheme());
 
-        a.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
                 toHybridFileArrayList(dataUtils.getHistory()), null, true);
         a.adapter(adapter, null);
@@ -1106,20 +1105,24 @@ public class GeneralDialogCreation {
 
     public static void showHiddenDialog(DataUtils dataUtils, SharedPreferences sharedPrefs,
                                         final MainFragment m, AppTheme appTheme) {
+        if (m == null || m.getActivity() == null) {
+            return;
+        }
+
         int accentColor = m.getMainActivity().getAccent();
-        final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-        a.positiveText(R.string.cancel);
-        a.positiveColor(accentColor);
-        a.title(R.string.hiddenfiles);
-        a.theme(appTheme.getMaterialDialogTheme());
-        a.autoDismiss(true);
+        final MaterialDialog.Builder builder = new MaterialDialog.Builder(m.getActivity());
+        builder.positiveText(R.string.close);
+        builder.positiveColor(accentColor);
+        builder.title(R.string.hiddenfiles);
+        builder.theme(appTheme.getMaterialDialogTheme());
+        builder.autoDismiss(true);
         HiddenAdapter adapter = new HiddenAdapter(m.getActivity(), m, sharedPrefs,
                 FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()), null, false);
-        a.adapter(adapter, null);
-        a.dividerColor(Color.GRAY);
-        MaterialDialog x = a.build();
-        adapter.updateDialog(x);
-        x.show();
+        builder.adapter(adapter, null);
+        builder.dividerColor(Color.GRAY);
+        MaterialDialog materialDialog = builder.build();
+        adapter.updateDialog(materialDialog);
+        materialDialog.show();
 
     }
 
