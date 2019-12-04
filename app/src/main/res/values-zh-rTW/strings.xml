@@ -598,7 +598,4 @@
   <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
   <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
   <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>
-  <string name="ssh_connect_failed_host_key_changed_prompt">似乎有人有不軌企圖！\n\n可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n你可以已更新的遠端主機公鑰，或者取消更新 SSH連線設定。</string>
-  <string name="update_host_key">更新遠端主機公鑰</string>
-  <string name="cancel_recommended">取消（建議）</string>
 </resources>
