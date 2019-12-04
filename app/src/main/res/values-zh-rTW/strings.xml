@@ -559,11 +559,7 @@
   <string name="preselected_configs_title">已選擇的配色</string>
   <string name="ssh_host_key_verification_prompt_title">確認遠端主機</string>
   <string name="ssh_host_key_verification_prompt">未能確認遠端主機\'%1$s\'的身份。\n\n%2$s的公鑰指紋碼為 %3$s.\n\n請按「是」以確認其身份；否則請按「否」。</string>
-  <string name="ssh_connect_failed_host_key_changed_message">
-        似乎有人有不軌企圖！\n\n
-        可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n
-        請聯絡你的系統管理員，或重新設定連線。
-    </string>
+  <string name="ssh_connect_failed_host_key_changed_message">似乎有人有不軌企圖！\n\n可能有人在竊聽你的連線（中間人攻擊）！也有可能遠端主機的公鑰真的改變了。遠端主機傳來的公鑰指紋碼和 Amaze記錄的並不相符。\n\n請聯絡你的系統管理員，或重新設定連線。</string>
   <string name="deselect_all">取消全選</string>
   <string name="about_amaze">Material設計風格的 Android檔案管理員</string>
   <string name="license">版權宣告</string>
@@ -594,11 +590,11 @@
   <string name="saved_multi_files">儲存了 %d 個檔案。</string>
   <string name="create_hidden_file_warn">此檔案將會從檔案列表中隱藏。</string>
   <string name="multiple_invalid_archive_entries">壓縮檔有部份檔案未能解壓；壓縮檔可能已損壞或來自不明的來源。</string>
-    <string name="unknown">未知</string>
+  <string name="unknown">未知</string>
   <string name="transfer_rate">傳輸速率</string>
   <string name="time_remaining">剩餘時間</string>
   <string name="grant_apkinstall_permission">程式需要安裝程式的權限以繼續。</string>
-    <string name="internalstorage">內部儲存空間</string>
+  <string name="internalstorage">內部儲存空間</string>
   <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
   <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
   <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>

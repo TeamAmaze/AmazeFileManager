@@ -57,13 +57,14 @@ import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT
  * @see SSHClient#authPassword(String, String)
  * @see SSHClient#authPublickey(String, KeyProvider...)
  * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#authenticateAndSaveSetup(String, String, int, String, String, String, String, KeyPair, boolean)
- * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(Uri)
+ * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool#create(String)
  */
 public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>
 {
     private final String hostname;
     private final int port;
     private final String hostKey;
+    private final String existingHostKey;
 
     private final String username;
     private final String password;
@@ -89,6 +90,24 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
         this.hostname = hostname;
         this.port = port;
         this.hostKey = hostKey;
+        this.existingHostKey = null;
+        this.username = username;
+        this.password = password;
+        this.privateKey = privateKey;
+    }
+
+    public SshAuthenticationTask(@NonNull String hostname,
+                                 @NonNull int port,
+                                 @NonNull String hostKey,
+                                 @NonNull String existingHostKey,
+                                 @NonNull String username,
+                                 String password,
+                                 KeyPair privateKey)
+    {
+        this.hostname = hostname;
+        this.port = port;
+        this.hostKey = hostKey;
+        this.existingHostKey = existingHostKey;
         this.username = username;
         this.password = password;
         this.privateKey = privateKey;
