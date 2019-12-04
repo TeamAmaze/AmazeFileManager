@@ -1659,7 +1659,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         Bundle bundle = new Bundle();
         bundle.putString("name", name);
         bundle.putString("address", uri.getHost());
-        bundle.putString("port", Integer.toString(uri.getPort()));
+        bundle.putInt("port", uri.getPort());
         bundle.putString("path", path);
         bundle.putString("username", userinfo.indexOf(':') > 0 ?
                 userinfo.substring(0, userinfo.indexOf(':')) : userinfo);

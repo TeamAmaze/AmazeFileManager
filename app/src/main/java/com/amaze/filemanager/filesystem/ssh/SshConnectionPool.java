@@ -80,6 +80,24 @@ public class SshConnectionPool
     }
 
     /**
+     * Remove a SSH connection from connection pool. Disconnects from server before removing.
+     *
+     * For updating SSH connection settings.
+     *
+     * This method will silently end without feedback if the specified SSH connection URI does not
+     * exist in the connection pool.
+     *
+     * @param url SSH connection URI
+     */
+    public void removeConnection(@NonNull String url) {
+        url = SshClientUtils.extractBaseUriFrom(url);
+
+        if(connections.containsKey(url)) {
+            SshClientUtils.tryDisconnect(connections.remove(url));
+        }
+    }
+
+    /**
      * Obtain a {@link SSHClient} connection from the underlying connection pool.
      *
      * Beneath it will return the connection if it exists; otherwise it will create a new one and

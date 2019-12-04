@@ -591,11 +591,7 @@
     <string name="ssh_authentication_failure_key">Logon failure: Unable to authenticate with supplied username and private key.</string>
     <string name="ssh_connect_failed">Unable to connect to %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">
-        IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\n
-        Someone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\n
-        Please contact your system administrator or setup a new connection to continue connecting to the server.
-    </string>
+    <string name="ssh_connect_failed_host_key_changed_message">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\nSomeone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\nPlease contact your system administrator or setup a new connection to continue connecting to the server.</string>
     <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
     <string name="add_shortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
     
@@ -648,5 +644,8 @@
     <string name="close">Close</string>
     <string name="bookmark_exists">Bookmark exists</string>
     <string name="hide_media">Hide from media browsers</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\nSomeone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\nYou may proceed with updating host fingerprint or cancel updating SSH connection settings.</string>
+    <string name="update_host_key">Update Host Key</string>
+    <string name="cancel_recommended">Cancel (Recommended)</string>
 </resources>
 

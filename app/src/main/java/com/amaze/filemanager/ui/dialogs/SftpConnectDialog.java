@@ -21,6 +21,7 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static android.text.TextUtils.isEmpty;
 import static com.amaze.filemanager.filesystem.ssh.SshClientUtils.deriveSftpPathFrom;
 
 import android.app.Activity;
@@ -117,7 +118,7 @@ public class SftpConnectDialog extends DialogFragment {
         } else {
             connectionET.setText(getArguments().getString("name"));
             addressET.setText(getArguments().getString("address"));
-            portET.setText(getArguments().getString("port"));
+            portET.setText(Integer.toString(getArguments().getInt("port")));
             usernameET.setText(getArguments().getString("username"));
             if(getArguments().getBoolean("hasPassword")) {
                 passwordET.setHint(R.string.password_unchanged);
@@ -162,15 +163,45 @@ public class SftpConnectDialog extends DialogFragment {
             final String hostname = addressET.getText().toString();
             final int port = Integer.parseInt(portET.getText().toString());
             final String username = usernameET.getText().toString();
-            final String password = passwordET.getText() != null ?
-                    passwordET.getText().toString() : null;
+            final String password = isEmpty(passwordET.getText()) ?
+                    getArguments().getString("password", null) :
+                    passwordET.getText().toString();
 
+            //Get original SSH host key
             String sshHostKey = utilsHandler.getSshHostKey(deriveSftpPathFrom(hostname, port,
-                    username, password, selectedParsedKeyPair));
+                    username, getArguments().getString("password", null),
+                    selectedParsedKeyPair));
 
-            if (sshHostKey != null) {
-                authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey, username,
-                        password, selectedParsedKeyPairName, selectedParsedKeyPair, edit);
+            if (!isEmpty(sshHostKey)) {
+                SshConnectionPool.getInstance().removeConnection(
+                        SshClientUtils.deriveSftpPathFrom(hostname, port, username, password,
+                                selectedParsedKeyPair));
+
+                //Verify SSH host key fingerprint by hand, prompt user to override if not match
+                new GetSshHostFingerprintTask(hostname, port, taskResult -> {
+                    PublicKey hostKey = taskResult.result;
+                    if(hostKey != null) {
+                        final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
+                        if(hostKeyFingerprint.equals(sshHostKey)){
+                            authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey,
+                                username, password, selectedParsedKeyPairName,
+                                selectedParsedKeyPair, edit);
+                        } else {
+                            new AlertDialog.Builder(context)
+                                .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
+                                .setMessage(R.string.ssh_connect_failed_host_key_changed_prompt)
+                                .setPositiveButton(R.string.update_host_key, (dialog1, which1) -> {
+                                    authenticateAndSaveSetup(connectionName, hostname, port,
+                                        hostKeyFingerprint, username, password,
+                                        selectedParsedKeyPairName, selectedParsedKeyPair, edit);
+                                })
+                                .setNegativeButton(R.string.cancel_recommended, (dialog1, which1) -> dialog1.dismiss())
+                                .show();
+                        }
+                    }
+                }).execute();
+                
+
             } else {
                 new GetSshHostFingerprintTask(hostname, port, taskResult -> {
                     PublicKey hostKey = taskResult.result;
@@ -240,12 +271,22 @@ public class SftpConnectDialog extends DialogFragment {
             @Override
             public void afterTextChanged(Editable s) {
                 int port = portET.getText().toString().length() > 0 ? Integer.parseInt(portET.getText().toString()) : -1;
+                boolean hasCredential = false;
+                if(edit) {
+                    if(passwordET.getText().length() > 0 || !isEmpty(getArguments().getString("password")))
+                        hasCredential = true;
+                    else {
+                        hasCredential = !isEmpty(selectedParsedKeyPairName);
+                    }
+                } else {
+                    hasCredential = passwordET.getText().length() > 0 || selectedParsedKeyPair != null;
+                }
                 okBTN.setEnabled(
-                        (connectionET.getText().length() > 0
+                        connectionET.getText().length() > 0
                      && addressET.getText().length() > 0
                      && port > 0 && port < 65536
                      && usernameET.getText().length() > 0
-                     && (passwordET.getText().length() > 0 || selectedParsedKeyPair != null))
+                     && hasCredential
                 );
             }
         };
@@ -295,9 +336,6 @@ public class SftpConnectDialog extends DialogFragment {
                                           String selectedParsedKeyPairName,
                                           KeyPair selectedParsedKeyPair, boolean isEdit) {
 
-        if(isEdit)
-            password = getArguments().getString("password", null);
-
         final String path = deriveSftpPathFrom(hostname, port, username, password,
                 selectedParsedKeyPair);
 
@@ -336,7 +374,13 @@ public class SftpConnectDialog extends DialogFragment {
                 return false;
             }
         } else {
-            DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(path));
+            String originalPath = deriveSftpPathFrom(getArguments().getString("address"),
+                    getArguments().getInt("port"),
+                    getArguments().getString("username"),
+                    getArguments().getString("password"),
+                    selectedParsedKeyPair);
+
+            DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(originalPath));
             DataUtils.getInstance().addServer(new String[]{connectionName, path});
             Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
             ((MainActivity) getActivity()).getDrawer().refreshDrawer();
@@ -344,6 +388,7 @@ public class SftpConnectDialog extends DialogFragment {
             AppConfig.runInBackground(() -> {
                 utilsHandler.updateSsh(connectionName,
                         getArguments().getString("name"), encryptedPath,
+                        hostKeyFingerprint,
                         selectedParsedKeyPairName, getPemContents());
             });
 
