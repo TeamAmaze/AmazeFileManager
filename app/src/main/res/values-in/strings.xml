@@ -579,20 +579,16 @@
     <string name="update">PERBARUI</string>
 	<string name="scp_connection">Koneksi SCP/SFTP</string>
     <string name="scp_port">Porta</string>
-    <string name="ssh_host_key_verification_prompt">Keaslian host \'%1$s\' tidak bisa diverifikasi.\n\nSidik jari %2$s adalah %3$s.\n\nSilakan ketuk \"Ya\" untuk konfirmasi identitas; jika tidak, silakan ketuk \"Tidak\".</string>
-    <string name="ssh_host_key_verification_prompt_title">Verifikasi Host</string>
+    <string name="ssh_host_key_verification_prompt">Keaslian hos \'%1$s\' tidak bisa diverifikasi.\n\nSidik jari %2$s adalah %3$s.\n\nSilakan ketuk \"Ya\" untuk konfirmasi identitas; jika tidak, silakan ketuk \"Tidak\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Verifikasi Hos</string>
     <string name="ssh_select_pem_button">Kunci Privat SSH</string>
     <string name="ssh_pem_key_parse_error">Tidak bisa membaca PEM yang dipilih: %s</string>
     <string name="password_unchanged">(tidak berubah)</string>
     <string name="ssh_authentication_failure_password">Gagal masuk: Tidak bisa autentikasi dengan nama dan sandi yang diberikan.</string>
     <string name="ssh_authentication_failure_key">Gagal masuk: Tidak bisa autentikasi dengan nama dan kunci privat yang diberikan.</string>
     <string name="ssh_connect_failed">Tidak bisa menyambung ke %1$s:%2$d: %3$s</string>
-    <string name="ssh_connect_failed_host_key_changed_title">PERINGATAN: IDENTIFIKASI HOST REMOTE TELAH BERUBAH!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">
-        SANGAT MUNGKIN ADA SESEORANG YANG MELAKUKAN HAL YANG TIDAK BAIK!\n\n
-        Seseorang bisa saja sedang memata-matai anda saat ini (serangan man-in-the-middle)! Ada kemungkinan juga kunci host memang telah berubah dengan sendirinya. Sidik jari untuk kunci publik yang dikirim oleh host remote tidak cocok dengan yang disimpan di dalam Amaze.\n\n
-        Silakan hubungi administrator sistem anda atau buat koneksi baru untuk terus tersambung ke server.
-    </string>
+    <string name="ssh_connect_failed_host_key_changed_title">PERINGATAN: IDENTIFIKASI HOS REMOTE TELAH BERUBAH!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">SANGAT MUNGKIN ADA SESEORANG YANG MELAKUKAN HAL YANG TIDAK BAIK!\n\n Seseorang bisa saja sedang memata-matai anda saat ini (serangan man-in-the-middle)! Ada kemungkinan juga kunci hos memang telah berubah. Sidik jari untuk kunci publik yang dikirim oleh hos remote tidak cocok dengan yang disimpan di dalam Amaze.\n\n Silakan hubungi administrator sistem anda atau buat koneksi baru untuk terus tersambung ke server.</string>
     <string name="ssh_key_prompt_passphrase">Silakan masukkan frasa sandi.</string>
     <string name="add_shortcut_not_supported_by_launcher">Pembuatan pintasan tidak didukung oleh launcher anda.</string>
     
@@ -641,7 +637,11 @@
     <string name="archive_password_prompt">Silakan masukkan sandi arsip:</string>
     <string name="cannot_extract_archive">Tidak bisa mengekstrak arsip \"%s\": %s</string>
     <string name="archive_unsupported_or_corrupt">Tidak bisa membuka arsip \"%s\". Arsip rusak, atau aplikasi memang tidak bisa membuka arsip.</string>
+    <string name="close">Tutup</string>
     <string name="bookmark_exists">Markah sudah ada</string>
     <string name="hide_media">Sembunyikan dari pengelola media</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">SANGAT MUNGKIN ADA SESEORANG YANG MELAKUKAN HAL YANG TIDAK BAIK!\n\nSeseorang bisa saja sedang memata-matai anda saat ini (serangan man-in-the-middle)! Ada kemungkinan juga kunci hos memang telah berubah. Sidik jari untuk kunci publik yang dikirim oleh host remote tidak cocok dengan yang disimpan di dalam Amaze.\n\nAnda bisa melanjutkan dengan cara memperbarui hos, sidik jari atau membatalkan pembaruan pengaturan koneksi SSH.</string>
+    <string name="update_host_key">Perbarui Kunci Hos</string>
+    <string name="cancel_recommended">Batal (Direkomendasikan)</string>
 </resources>
 
