@@ -589,11 +589,7 @@
     <string name="ssh_authentication_failure_key">הכניסה נכשלה: לא ניתן לבצע אימות עם שם המשתמש והמפתח הפרטי שסופקו.</string>
     <string name="ssh_connect_failed">לא ניתן להתחבר אל %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">אזהרה: מזהה המארח המרוחק השתנה!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">
-        יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\n
-        יכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\n
-        נא ליצור קשר עם הנהלת המערכת או להקים חיבור חדש כדי להמשיך ולהתחבר לשרת.
-    </string>
+    <string name="ssh_connect_failed_host_key_changed_message">יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\nיכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\nנא ליצור קשר עם הנהלת המערכת או להקים חיבור חדש כדי להמשיך ולהתחבר לשרת.</string>
     <string name="ssh_key_prompt_passphrase">נא להקליד את מילת הצופן של המפתח.</string>
     <string name="add_shortcut_not_supported_by_launcher">למסך ההפעלה שלך אין תמיכה ביצירת קיצורי דרך.</string>
     
@@ -642,6 +638,11 @@
     <string name="archive_password_prompt">נא להקליד את הססמה של הארכיון:</string>
     <string name="cannot_extract_archive">לא ניתן לחלץ את הארכיון „%s”: %s</string>
     <string name="archive_unsupported_or_corrupt">לא ניתן לפתוח את הארכיון „%s”. או שאין אפשרות לפתוח את הארכיון או שהוא פגום.</string>
+    <string name="close">סגירה</string>
+    <string name="bookmark_exists">הסימנייה קיימת</string>
     <string name="hide_media">הסתרה מסיירי מדיה</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\nיכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\nניתן להמשיך ולעדכן את טביעת האצבע של השרת או לבטל את עדכון הגדרות חיבור ה־SSH.</string>
+    <string name="update_host_key">עדכון מפתח מארח</string>
+    <string name="cancel_recommended">ביטול (עדיף)</string>
 </resources>
 
