@@ -1,7 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
- Locale: is, Icelandic
--->
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -205,6 +202,7 @@
     <string name="vietnamese_translation_title">Víetnamska</string>
     <string name="japanese_translation_title">Japanska</string>
     <string name="tamil_translation_title">Tamílska</string>
+
     <string name="zip_viewer">ZIP-lesari</string>
     <string name="unin_system_apk">Þetta er kerfisforrit, ef því er eytt gæti kerfið orðið óstöðugt.\nHalda áfram?</string>
     <string name="warning">Aðvörun</string>
@@ -227,6 +225,7 @@
     <string name="database">Gagnagrunnur</string>
     <string name="colored_navigation">Lituð flakkstika</string>
     <string name="colored_navigvation_sum">Hvort flakkstika kerfisins taki lit frá skinni</string>
+
     <string name="color_title">Litur</string>
     <string name="color_summary">Stilla lit á ýmsa viðmótshluta</string>
     <string name="primary_color_title">Aðallitur (vinstri flipi)</string>
@@ -236,7 +235,7 @@
     <string name="icon_color_title">Litur táknmyndar</string>
     <string name="icon_color_summary">Stilla lit á táknmyndir</string>
     <string name="choose_color">Veldu lit</string>
-  <string name="files">Skrár</string>
+    <string name="files">Skrár</string>
     <string name="textreader">Textalesari</string>
     <string name="databasereader">Gagnagrunnslesari</string>
     <string name="show_dividers">Sýna aðgreina</string>
@@ -302,6 +301,7 @@
     <string name="domain">Lén</string>
     <string name="invalid">Ógilt %s</string>
     <string name="ftp_notif_starting">FTP-þjónn er að ræsast</string>
+    <string name="ftp_notif_starting_title">FTP-þjónn</string>
     <string name="ftp_notif_title">Amaze FTP-þjónn er í gangi</string>
     <string name="ftp_notif_text">á %s</string>
     <string name="ftp_notif_stop_server">STÖÐVA</string>
@@ -310,12 +310,12 @@
     <string name="ftp_port_change_error_invalid">Ógilt númer á gátt var valið</string>
     <string name="primary_two_title">Aðallitur (hægri flipi)</string>
     <string name="primary_two_summary">Stilla lit á stærri viðmótshluta flipans til hægri</string>
-  <string name="support_development">Styðja áframhaldandi þróun</string>
+    <string name="support_development">Styðja áframhaldandi þróun</string>
     <string name="report_bugs_title">Tilkynna villur</string>
     <string name="report_bugs_summary">Tilkynna villur eða biðja um nýja eiginleika</string>
     <string name="translate_title">Þýða</string>
     <string name="translate_summary">Þýða Amaze á tungumálið þitt</string>
-  <string name="easter_egg_title">Stúdíóhamur</string>
+    <string name="easter_egg_title">Stúdíóhamur</string>
     <string name="paypal_copy_message">Paypal auðkenni afritað á klippispjald</string>
     <string name="searching_devices">Leita að tækjum...</string>
     <string name="use_custom_ip">Nota sérsniðið IP-vistfang</string>
@@ -380,6 +380,7 @@
     <string name="accessed">Síðast notað</string>
     <!-- reference to file modified date -->
     <string name="modified">Breytt</string>
+
     <string name="title">Titill</string>
     <string name="artist">Flytjandi</string>
     <string name="album">Hljómplata</string>
@@ -419,6 +420,7 @@
     <string name="optimized">Bestað</string>
     <string name="security">Öryggi</string>
     <string name="paper_size">Pappírsstærð</string>
+
     <!-- %s will be replaced with either copied or moved -->
     <string name="copy_error">Sumar skrár tókst ekki að %s</string>
     <string name="copied">afrita</string>
@@ -450,6 +452,7 @@
     <string name="clipboard_path_copy">Slóð afrituð á klippispjald</string>
     <string name="service_timer">Tími liðinn</string>
     <string name="please_wait">Bíddu aðeins</string>
+
     <string name="cloud_connection">Skýjatenging</string>
     <string name="cloud_connection_new">Ný tenging við tölvuský</string>
     <string name="cloud_dropbox">Dropbox</string>
@@ -464,6 +467,7 @@
     <string name="ftp_path_hint">Slóð að rótarmöppu sem á að deila</string>
     <string name="change">Breyta</string>
     <string name="unknown_error">Úbbs, eitthvað fór úrskeiðis!</string>
+
     <string name="ftp_path_change_success">Tókst að breyta FTP-slóð</string>
     <string name="ftp_path_change_error_invalid">Ógild slóð</string>
     <string name="ftp_status_no_connection">Engin tenging</string>
@@ -487,6 +491,7 @@
     <string name="contributors_6_summary">FTP-þjónn</string>
     <string name="contributors_7_summary">Ræsi upp gagnvirka skel</string>
     <string name="connection_exists">Tenging er þegar til staðar</string>
+
     <string name="crypt_encrypting">Dulrita</string>
     <string name="crypt_decrypting">Afkóða</string>
     <!-- references to 'Some files weren't successfully %s -->
@@ -536,13 +541,13 @@
     <string name="monofont">Jafnbreitt letur</string>
     <string name="showHeaders">Sýna hausa</string>
 	
-    <!-- FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml -->
-    <string name="no_items">Engin atriði</string>
-    <string name="item">atriði</string>
-    <string name="items">atriði</string>
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">Engin atriði</string>
+	<string name="item">atriði</string>
+	<string name="items">atriði</string>
 	
-    <string name="byte_singular">bæti</string>
-    <string name="bytes">bæti</string>
+	<string name="byte_singular">bæti</string>
+	<string name="bytes">bæti</string>
     <!-- end of plurals -->
 
     <string name="no_name">Skrá ætti að heita eitthvað</string>
@@ -558,10 +563,10 @@
     <string name="typeable_paths_title">Sérsniðnar slóðir</string>
     <string name="typeable_paths_summary">Ýttu lengi á slóðastikuna til að skrifa sérsniðna slóð</string>
     <string name="send_email_to">Senda tölvupóst til</string>
+
     <string name="text_editor">Stillingar textaritils</string>
     <string name="preference_newstack_title">Opna skrár sem nýtt verk</string>
     <string name="preference_newstack_summary">Gerir þér kleift að opna skrár sem aðskilin verk. Þannig er hægt að komast í þau af kerfisskjánum yfir nýleg verk.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Forritarar</string>
     <string name="no_bitcoin_app">Endilega settu upp rafmyntaveski</string>
     <string name="channel_name_normal">Amaze tilkynningar</string>
@@ -569,12 +574,11 @@
     <string name="channel_name_ftp">Amaze FTP-þjónn</string>
     <string name="channel_description_ftp">Tilkynningar frá FTP-þjóni Amaze skráastjórans</string>
 
-    <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Í vinnslu&#8230;</string>
     <string name="failed_no_connection">Gat ekki hlaðið inn skrám. Athugaðu hvort allt sé í lagi með nettenginguna.</string>
 
     <string name="update">UPPFÆRA</string>
-    <string name="scp_connection">SCP/SFTP tenging</string>
+	<string name="scp_connection">SCP/SFTP tenging</string>
     <string name="scp_port">Gátt</string>
     <string name="ssh_host_key_verification_prompt">Ekki var hægt að sannvotta auðkenni \'%1$s\'.\n\nFingrafar %2$s dulritunarlykilsins er %3$s.\n\nÝttu á \"Já\" til að staðfesta auðkenni; annars skaltu ýta á \"Nei\".</string>
     <string name="ssh_host_key_verification_prompt_title">Sannreyna hýsiþjón</string>
@@ -592,7 +596,7 @@
     </string>
     <string name="ssh_key_prompt_passphrase">Settu inn aðgangssetningu dulritunarlykilsins.</string>
     <string name="add_shortcut_not_supported_by_launcher">Gerð flýtileiða er ekki studd í ræsinum þínum</string>
-
+    
     <string name="select_color_config">Veldu litauppsetningu</string>
     <string name="customize">Sérsníða</string>
     <string name="custom">Sérsniðið</string>
@@ -635,4 +639,11 @@
     <string name="saf_otg_explanation">Af öryggisástæðum ferðu núna á skráakerfi Android. Veldu USB-tækið úr listanum til vinstri.</string>
     <string name="donation_thanks">Takk kærlega fyrir framlagið, þetta heldur okkur við efnið! (:</string>
     <string name="enable_marquee_filename">Virkja áherslubrellu fyrir skráaheiti</string>
+    <string name="archive_password_prompt">Settu inn lykilorð safnskrárinnar:</string>
+    <string name="cannot_extract_archive">Gat ekki afþjappað safnskrána \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Gat ekki opnað safnskrána \"%s\". Annað hvort er ekki hægt að opna hana, eða þá að safnskráin er skemmd.</string>
+    <string name="close">Loka</string>
+    <string name="bookmark_exists">Bókamerki er þegar til</string>
+    <string name="hide_media">Fela fyrir margmiðlunarvöfrum</string>
 </resources>
+
