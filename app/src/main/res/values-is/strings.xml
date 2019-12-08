@@ -589,11 +589,7 @@
     <string name="ssh_authentication_failure_key">Innskráning mistókst: get ekki skráð inn með uppgefnu notandanafni og einkalykli.</string>
     <string name="ssh_connect_failed">Ekki tókst að tengjast %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">AÐVÖRUN: AUÐKENNING HÝSILVÉLAR HEFUR BREYST!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">
-        ÞAÐ ER HUGSANLEGT AÐ EINHVER SÉ AÐ GERA EITTHVAÐ Í LEYNI!\n\n
-        Einhver gæti verið að njósna um þig akkúrat núna (maður-á-milli árás)! Það er líka mögulegt að dulritunarlykli á hýsilvélinni hafi verið breytt. Fingrafar dreifilykilsins sem fjartengda vélin sendi samsvarar ekki því sem Amaze geymir.\n\n
-        Hafðu samband við kerfisstjórann þinn eða útbúðu nýja tengingu áður en þú heldur áfram að tengjast þjóninum.
-    </string>
+    <string name="ssh_connect_failed_host_key_changed_message">ÞAÐ ER HUGSANLEGT AÐ EINHVER SÉ AÐ GERA EITTHVAÐ Í LEYNI!\n\nEinhver gæti verið að njósna um þig akkúrat núna (maður-á-milli árás)! Það er líka mögulegt að dulritunarlykli á hýsilvélinni hafi verið breytt. Fingrafar dreifilykilsins sem fjartengda vélin sendi samsvarar ekki því sem Amaze geymir.\n\nHafðu samband við kerfisstjórann þinn eða útbúðu nýja tengingu áður en þú heldur áfram að tengjast þjóninum.    </string>
     <string name="ssh_key_prompt_passphrase">Settu inn aðgangssetningu dulritunarlykilsins.</string>
     <string name="add_shortcut_not_supported_by_launcher">Gerð flýtileiða er ekki studd í ræsinum þínum</string>
     
@@ -645,5 +641,8 @@
     <string name="close">Loka</string>
     <string name="bookmark_exists">Bókamerki er þegar til</string>
     <string name="hide_media">Fela fyrir margmiðlunarvöfrum</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">ÞAÐ ER HUGSANLEGT AÐ EINHVER SÉ AÐ GERA EITTHVAÐ Í LEYNI!\n\nEinhver gæti verið að njósna um þig akkúrat núna (maður-á-milli árás)! Það er líka mögulegt að dulritunarlykli á hýsilvélinni hafi verið breytt. Fingrafar dreifilykilsins sem fjartengda vélin sendi samsvarar ekki því sem Amaze geymir.\n\nÞú getur haldið áfram að uppfæra fingrafar hýsilvélar eða hætt við að uppfæra stillingar SSH-tengingarinnar.    </string>
+    <string name="update_host_key">Uppfæra lykil hýsilvélar</string>
+    <string name="cancel_recommended">Hætta við (mælt með þessu)</string>
 </resources>
 
