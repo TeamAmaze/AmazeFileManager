@@ -13,7 +13,7 @@ public abstract class AbstractRepeatingRunnable implements Runnable {
 
     public AbstractRepeatingRunnable(long initialDelay, long period, @NonNull TimeUnit unit, boolean startImmediately) {
         if(!startImmediately) {
-            throw new UnsupportedOperationException("RepeatingRunnables are immediatly excecuted!");
+            throw new UnsupportedOperationException("RepeatingRunnables are immediately executed!");
         }
 
         ScheduledExecutorService threadExcecutor = Executors.newScheduledThreadPool(0);
@@ -26,9 +26,9 @@ public abstract class AbstractRepeatingRunnable implements Runnable {
 
     /**
      *
-     * @param immediatly sets if the cancellation occurt right now, or after the run() function returns
+     * @param immediately sets if the cancellation occurt right now, or after the run() function returns
      */
-    public void cancel(boolean immediatly) {
-        handle.cancel(immediatly);
+    public void cancel(boolean immediately) {
+        handle.cancel(immediately);
     }
 }
