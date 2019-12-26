@@ -647,5 +647,7 @@
     <string name="ssh_connect_failed_host_key_changed_prompt">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\nSomeone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\nYou may proceed with updating host fingerprint or cancel updating SSH connection settings.</string>
     <string name="update_host_key">Update Host Key</string>
     <string name="cancel_recommended">Cancel (Recommended)</string>
+    <string name="cloud_plugin_google_play_uri" translatable="false">market://details?id=com.filemanager.amazecloud</string>
+    <string name="cloud_plugin_google_play_web_uri" translatable="false">https://play.google.com/store/apps/details?id=com.filemanager.amazecloud</string>
 </resources>
 
