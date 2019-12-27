@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
- *                      Emmanuel Messulam <emmanuelbendavid@gmail.com>
+ * Copyright (C) 2014-2019 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -138,7 +139,7 @@ public class ProcessViewerFragment extends Fragment {
 
         setRetainInstance(true);
         mainActivity.getAppbar().setTitle(R.string.process_viewer);
-        mainActivity.floatingActionButton.getMenuButton().hide();
+        mainActivity.floatingActionButton.hide();
         mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
 

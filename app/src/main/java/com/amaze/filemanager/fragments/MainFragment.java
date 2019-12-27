@@ -1,7 +1,9 @@
 /* Diego Felipe Lassa <diegoflassa@gmail.com>
  *
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                          Emmanuel Messulam <emmanuelbendavid@gmail.com>, Jens Klingenberg <mail@jensklingenberg.de>
+ * Copyright (C) 2014-2019 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Jens Klingenberg <mail@jensklingenberg.de>, Raymond Lai <airwave209gt at gmail.com> and
+ * contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -484,7 +486,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             mode.setCustomView(actionModeView);
 
             getMainActivity().setPagingEnabled(false);
-            getMainActivity().floatingActionButton.getMenuButton().hide();
+            getMainActivity().floatingActionButton.hide();
 
             // translates the drawable content down
             // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
@@ -757,7 +759,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             // translates the drawer content up
             //if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
-            getMainActivity().floatingActionButton.getMenuButton().show();
+            getMainActivity().floatingActionButton.show();
             if (!results) adapter.toggleChecked(false, CURRENT_PATH);
             else adapter.toggleChecked(false);
             getMainActivity().setPagingEnabled(true);
