@@ -44,7 +44,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -193,6 +193,11 @@ public class ZipService extends AbstractProgressiveService {
     @Override
     protected ProgressHandler getProgressHandler() {
         return progressHandler;
+    }
+
+    @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
     }
 
     public class CompressAsyncTask extends AsyncTask<Void, Void, Void> {

@@ -54,7 +54,7 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileUtils;
@@ -91,7 +91,6 @@ public class CopyService extends AbstractProgressiveService {
     private boolean isRootExplorer;
     private long totalSize = 0L;
     private int totalSourceFiles = 0;
-    private int sourceProgress = 0;
 
     @Override
     public void onCreate() {
@@ -102,7 +101,6 @@ public class CopyService extends AbstractProgressiveService {
 
     @Override
     public int onStartCommand(Intent intent, int flags, final int startId) {
-
         Bundle b = new Bundle();
         isRootExplorer = intent.getBooleanExtra(TAG_IS_ROOT_EXPLORER ,false);
         ArrayList<HybridFileParcelable> files = intent.getParcelableArrayListExtra(TAG_COPY_SOURCES);
@@ -212,6 +210,11 @@ public class CopyService extends AbstractProgressiveService {
         return progressHandler;
     }
 
+    @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
+    }
+
     public void onDestroy() {
         this.unregisterReceiver(receiver3);
     }
@@ -223,6 +226,7 @@ public class CopyService extends AbstractProgressiveService {
         private String targetPath;
         private OpenMode openMode;
         private boolean isRootExplorer;
+        private int sourceProgress = 0;
 
         private DoInBackground(boolean isRootExplorer) {
             this.isRootExplorer = isRootExplorer;

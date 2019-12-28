@@ -49,7 +49,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import net.lingala.zip4j.exception.ZipException;
@@ -197,6 +197,11 @@ public class ExtractService extends AbstractProgressiveService {
     @Override
     protected ProgressHandler getProgressHandler() {
         return progressHandler;
+    }
+
+    @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
     }
 
     @Override

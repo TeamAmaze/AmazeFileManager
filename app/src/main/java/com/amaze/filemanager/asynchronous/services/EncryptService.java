@@ -26,7 +26,7 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 
 import java.util.ArrayList;
 
@@ -165,6 +165,11 @@ public class EncryptService extends AbstractProgressiveService {
     @Override
     protected ProgressHandler getProgressHandler() {
         return progressHandler;
+    }
+
+    @Override
+    protected void clearDataPackages() {
+        dataPackages.clear();
     }
 
     class BackgroundTask extends AsyncTask<Void, Void, Void> {

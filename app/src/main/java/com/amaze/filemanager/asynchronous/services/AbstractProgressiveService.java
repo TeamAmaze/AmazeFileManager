@@ -16,7 +16,7 @@ import com.amaze.filemanager.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 
 import java.util.ArrayList;
@@ -26,7 +26,7 @@ import java.util.ArrayList;
  *         on 28/11/2017, at 19:32.
  */
 
-public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceWatcherInteractionInterface {
+public abstract class AbstractProgressiveService extends Service implements ServiceWatcherUtil.ServiceStatusCallbacks {
 
     private boolean isNotificationTitleSet = false;
 
@@ -57,6 +57,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
     protected abstract ArrayList<DatapointParcelable> getDataPackages();
 
     protected abstract ProgressHandler getProgressHandler();
+
+    protected abstract void clearDataPackages();
 
     @Override
     public void progressHalted() {
@@ -100,7 +102,7 @@ public abstract class AbstractProgressiveService extends Service implements Serv
                 isNotificationTitleSet = true;
             }
 
-            if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceWatcherInteractionInterface.STATE_HALTED) {
+            if (ServiceWatcherUtil.state != ServiceWatcherUtil.ServiceStatusCallbacks.STATE_HALTED) {
 
                 String written = Formatter.formatFileSize(this, writtenSize) + "/" +
                         Formatter.formatFileSize(this, totalSize);
@@ -230,6 +232,8 @@ public abstract class AbstractProgressiveService extends Service implements Serv
      * Displays a notification, sends intent and cancels progress if there were some failures
      */
     void finalizeNotification(ArrayList<HybridFile> failedOps, boolean move) {
+        clearDataPackages();
+
         if (!move) getNotificationManager().cancelAll();
 
         if(failedOps.size()==0)return;
