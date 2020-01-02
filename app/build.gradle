@@ -209,6 +209,26 @@ configurations.all {
     }
 }
 
+task supportOldLangCodes
+
+[['id', 'in'], ['yi', 'ji'], ['he', 'iw']].forEach { sourceCode, destinationCode ->
+    def copyTask = tasks.create('copyStrings' + sourceCode + 'Into' + destinationCode, Copy) {
+        description('copying values-' + sourceCode + ' strings into values-' + destinationCode)
+        from('src/main/res/values-' + sourceCode)
+        into('src/main/res/values-' + destinationCode)
+        include('strings.xml')
+    }
+    supportOldLangCodes.dependsOn copyTask
+}
+
+project.afterEvaluate {
+    preBuild.dependsOn supportOldLangCodes
+}
+
+clean.dependsOn supportOldLangCodes
+clean.mustRunAfter supportOldLangCodes
+
+
 Properties props = new Properties()
 def propFile = new File('signing.properties')
 
