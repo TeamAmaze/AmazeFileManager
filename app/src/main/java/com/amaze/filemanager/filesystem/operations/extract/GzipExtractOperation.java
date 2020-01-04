@@ -1,5 +1,5 @@
 /*
- * GzipExtractor.java
+ * GzipExtractOperation.java
  *
  * Copyright (C) 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
  * Raymond Lai <airwave209gt@gmail.com>.
@@ -20,15 +20,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
+package com.amaze.filemanager.filesystem.operations.extract;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
@@ -42,10 +40,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class GzipExtractor extends Extractor {
+public class GzipExtractOperation extends AbstractExtractOperation {
 
-    public GzipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public GzipExtractOperation(@NonNull Context context, @NonNull String filePath,
+                                @NonNull String outputPath, @NonNull OnUpdate listener,
+                                Filter filter) {
+        super(context, filePath, outputPath, listener, filter);
     }
 
     @Override

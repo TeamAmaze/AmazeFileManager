@@ -1,5 +1,5 @@
 /*
- * XzExtractor.java
+ * XzExtractOperation.java
  *
  * Copyright © 2018 Raymond Lai <airwave209gt at gmail.com>.
  *
@@ -18,14 +18,13 @@
  * You should have received a copy of the GNU General Public License
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
-package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
+package com.amaze.filemanager.filesystem.operations.extract;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
 
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
@@ -38,10 +37,12 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class XzExtractor extends Extractor {
+public class XzExtractOperation extends AbstractExtractOperation {
 
-    public XzExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public XzExtractOperation(@NonNull Context context, @NonNull String filePath,
+                              @NonNull String outputPath, @NonNull OnUpdate listener,
+                              Filter filter) {
+        super(context, filePath, outputPath, listener, filter);
     }
 
     @Override

@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
@@ -57,27 +58,22 @@ public abstract class AbstractExtractorTest {
 
     @Test
     public void testFixEntryName() throws Exception {
-        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
-                .newInstance(RuntimeEnvironment.application,
-                        getArchiveFile().getAbsolutePath(),
-                        Environment.getExternalStorageDirectory().getAbsolutePath(), null);
-
-        assertEquals("test.txt", extractor.fixEntryName("test.txt"));
-        assertEquals("test.txt", extractor.fixEntryName("/test.txt"));
-        assertEquals("test.txt", extractor.fixEntryName("/////////test.txt"));
-        assertEquals("test/", extractor.fixEntryName("/test/"));
-        assertEquals("test/a/b/c/d/e/", extractor.fixEntryName("/test/a/b/c/d/e/"));
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("a/b/c/d/e/test.txt"));
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("/a/b/c/d/e/test.txt"));
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("///////a/b/c/d/e/test.txt"));
+        assertEquals("test.txt", AbstractExtractOperation.fixEntryName("test.txt"));
+        assertEquals("test.txt", AbstractExtractOperation.fixEntryName("/test.txt"));
+        assertEquals("test.txt", AbstractExtractOperation.fixEntryName("/////////test.txt"));
+        assertEquals("test/", AbstractExtractOperation.fixEntryName("/test/"));
+        assertEquals("test/a/b/c/d/e/", AbstractExtractOperation.fixEntryName("/test/a/b/c/d/e/"));
+        assertEquals("a/b/c/d/e/test.txt", AbstractExtractOperation.fixEntryName("a/b/c/d/e/test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", AbstractExtractOperation.fixEntryName("/a/b/c/d/e/test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", AbstractExtractOperation.fixEntryName("///////a/b/c/d/e/test.txt"));
 
         //It is known redundant slashes inside path components are NOT tampered.
-        assertEquals("a/b/c//d//e//test.txt", extractor.fixEntryName("a/b/c//d//e//test.txt"));
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("a/b/c/d/e/test.txt"));
-        assertEquals("test.txt", extractor.fixEntryName("\\test.txt"));
-        assertEquals("test.txt", extractor.fixEntryName("\\\\\\\\\\\\\\\\\\\\test.txt"));
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("\\a\\b\\c\\d\\e\\test.txt"));
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("\\a\\b/c\\d\\e/test.txt"));
+        assertEquals("a/b/c//d//e//test.txt", AbstractExtractOperation.fixEntryName("a/b/c//d//e//test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", AbstractExtractOperation.fixEntryName("a/b/c/d/e/test.txt"));
+        assertEquals("test.txt", AbstractExtractOperation.fixEntryName("\\test.txt"));
+        assertEquals("test.txt", AbstractExtractOperation.fixEntryName("\\\\\\\\\\\\\\\\\\\\test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", AbstractExtractOperation.fixEntryName("\\a\\b\\c\\d\\e\\test.txt"));
+        assertEquals("a/b/c/d/e/test.txt", AbstractExtractOperation.fixEntryName("\\a\\b/c\\d\\e/test.txt"));
     }
 
     @Test
@@ -87,10 +83,10 @@ public abstract class AbstractExtractorTest {
 
     protected void doTestExtractFiles() throws Exception {
         CountDownLatch latch = new CountDownLatch(1);
-        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
+        Extractor extractor = extractorClass().getConstructor(Context.class, String.class, String.class, AbstractExtractOperation.OnUpdate.class)
                 .newInstance(RuntimeEnvironment.application,
                         getArchiveFile().getAbsolutePath(),
-                        Environment.getExternalStorageDirectory().getAbsolutePath(), new Extractor.OnUpdate() {
+                        Environment.getExternalStorageDirectory().getAbsolutePath(), new AbstractExtractOperation.OnUpdate() {
 
                             @Override
                             public void onStart(long totalBytes, String firstEntryName) {

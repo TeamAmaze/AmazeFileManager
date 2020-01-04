@@ -1,16 +1,16 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
 import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
-import com.amaze.filemanager.filesystem.operations.extract.GzipExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.LzmaExtractOperation;
 
-public class TgzExtractorTest extends AbstractExtractorTest {
+public class LzmaExtractOperationTest extends AbstractExtractorTest {
     @Override
     protected String getArchiveType() {
-        return "tgz";
+        return "tar.lzma";
     }
 
     @Override
     protected Class<? extends AbstractExtractOperation> extractorClass() {
-        return GzipExtractOperation.class;
+        return LzmaExtractOperation.class;
     }
 }

@@ -7,7 +7,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.ZipHelperTask;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.operations.extract.ZipExtractOperation;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
@@ -65,7 +65,7 @@ public class B0rkenZipTest {
 
     @Test
     public void testExtractZipWithWrongPathUnix() throws Exception{
-        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile1.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        Extractor extractor = new ZipExtractOperation(RuntimeEnvironment.application, zipfile1.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
         extractor.extractEverything();
         assertEquals(1, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());
@@ -73,7 +73,7 @@ public class B0rkenZipTest {
 
     @Test
     public void testExtractZipWithWrongPathWindows() throws Exception{
-        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile2.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        Extractor extractor = new ZipExtractOperation(RuntimeEnvironment.application, zipfile2.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
         extractor.extractEverything();
         assertEquals(1, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());
@@ -81,7 +81,7 @@ public class B0rkenZipTest {
 
     @Test
     public void testExtractZipWithSlashPrefixEntry() throws Exception{
-        Extractor extractor = new ZipExtractor(RuntimeEnvironment.application, zipfile3.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
+        Extractor extractor = new ZipExtractOperation(RuntimeEnvironment.application, zipfile3.getAbsolutePath(), Environment.getExternalStorageDirectory().getAbsolutePath(), emptyListener);
         extractor.extractFiles(new String[]{"/test.txt"});
         assertEquals(0, extractor.getInvalidArchiveEntries().size());
         assertTrue(new File(Environment.getExternalStorageDirectory(), "test.txt").exists());

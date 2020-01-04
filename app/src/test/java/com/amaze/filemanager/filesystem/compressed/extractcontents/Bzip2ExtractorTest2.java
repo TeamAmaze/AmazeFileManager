@@ -1,6 +1,6 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
+import com.amaze.filemanager.filesystem.operations.extract.Bzip2ExtractOperation;
 
 public class Bzip2ExtractorTest2 extends AbstractExtractorTest {
     @Override
@@ -9,7 +9,7 @@ public class Bzip2ExtractorTest2 extends AbstractExtractorTest {
     }
 
     @Override
-    protected Class<? extends Extractor> extractorClass() {
-        return Bzip2Extractor.class;
+    protected Class<? extends AbstractOperationExtract> extractorClass() {
+        return Bzip2ExtractOperation.class;
     }
 }

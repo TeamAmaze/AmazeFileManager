@@ -44,6 +44,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
@@ -262,7 +263,7 @@ public class ExtractService extends AbstractProgressiveService {
 
                 final Extractor extractor =
                     CompressedHelper.getExtractorInstance(extractService.getApplicationContext(),
-                        f, extractionPath, new Extractor.OnUpdate() {
+                        f, extractionPath, new AbstractExtractOperation.OnUpdate() {
                             private int sourceFilesProcessed = 0;
 
                             @Override

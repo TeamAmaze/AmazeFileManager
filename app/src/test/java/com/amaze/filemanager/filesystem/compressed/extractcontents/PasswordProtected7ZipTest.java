@@ -1,6 +1,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
+import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.SevenZipExtractOperation;
 
 import org.apache.commons.compress.PasswordRequiredException;
 import org.tukaani.xz.CorruptedInputException;
@@ -8,8 +9,8 @@ import org.tukaani.xz.CorruptedInputException;
 public class PasswordProtected7ZipTest extends AbstractExtractorPasswordProtectedArchivesTest {
 
     @Override
-    protected Class<? extends Extractor> extractorClass() {
-        return SevenZipExtractor.class;
+    protected Class<? extends AbstractExtractOperation> extractorClass() {
+        return SevenZipExtractOperation.class;
     }
 
     @Override

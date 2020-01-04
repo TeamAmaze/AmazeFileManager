@@ -1,6 +1,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
+import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.GzipExtractOperation;
 
 public class TarGzExtractorTest extends AbstractExtractorTest {
     @Override
@@ -9,7 +10,7 @@ public class TarGzExtractorTest extends AbstractExtractorTest {
     }
 
     @Override
-    protected Class<? extends Extractor> extractorClass() {
-        return GzipExtractor.class;
+    protected Class<? extends AbstractExtractOperation> extractorClass() {
+        return GzipExtractOperation.class;
     }
 }

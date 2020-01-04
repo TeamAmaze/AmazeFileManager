@@ -1,5 +1,5 @@
 /*
- * Bzip2Extractor.java
+ * LzmaExtractOperation.java
  *
  * Copyright © 2018 Raymond Lai <airwave209gt at gmail.com>.
  *
@@ -18,20 +18,18 @@
  * You should have received a copy of the GNU General Public License
  * along with AmazeFileManager. If not, see <http ://www.gnu.org/licenses/>.
  */
-package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
+package com.amaze.filemanager.filesystem.operations.extract;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -39,10 +37,13 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class Bzip2Extractor extends Extractor {
+public class LzmaExtractOperation extends AbstractExtractOperation {
 
-    public Bzip2Extractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public LzmaExtractOperation(@NonNull Context context, @NonNull String filePath,
+                                @NonNull String outputPath, @NonNull OnUpdate listener,
+                                Filter filter) {
+
+        super(context, filePath, outputPath, listener, filter);
     }
 
     @Override
@@ -50,7 +51,7 @@ public class Bzip2Extractor extends Extractor {
         long totalBytes = 0;
         ArrayList<TarArchiveEntry> archiveEntries = new ArrayList<>();
         TarArchiveInputStream inputStream = new TarArchiveInputStream(
-                new BZip2CompressorInputStream(new FileInputStream(filePath)));
+                new LZMACompressorInputStream(new FileInputStream(filePath)));
 
         TarArchiveEntry tarArchiveEntry;
 
@@ -64,7 +65,7 @@ public class Bzip2Extractor extends Extractor {
         listener.onStart(totalBytes, archiveEntries.get(0).getName());
 
         inputStream.close();
-        inputStream = new TarArchiveInputStream(new BZip2CompressorInputStream(new FileInputStream(filePath)));
+        inputStream = new TarArchiveInputStream(new LZMACompressorInputStream(new FileInputStream(filePath)));
 
         for (TarArchiveEntry entry : archiveEntries) {
             if (!listener.isCancelled()) {

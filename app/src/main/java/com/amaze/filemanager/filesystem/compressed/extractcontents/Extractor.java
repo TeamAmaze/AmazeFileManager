@@ -22,8 +22,7 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
+import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,23 +30,15 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR_CHAR;
+import androidx.annotation.NonNull;
 
-public abstract class Extractor {
+public class Extractor<T extends AbstractExtractOperation> {
 
-    protected Context context;
-    protected String filePath, outputPath;
-    protected OnUpdate listener;
-    protected List<String> invalidArchiveEntries;
+    private final FunctionOperation operationCtor;
+    protected List<String> invalidArchiveEntries = new ArrayList<>();
 
-    public Extractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath,
-                     @NonNull Extractor.OnUpdate listener) {
-        this.context = context;
-        this.filePath = filePath;
-        this.outputPath = outputPath;
-        this.listener = listener;
-        this.invalidArchiveEntries = new ArrayList<>();
+    public Extractor(FunctionOperation operationCtor) {
+        this.operationCtor = operationCtor;
     }
 
     public void extractFiles(String[] files) throws IOException {
@@ -77,27 +68,13 @@ public abstract class Extractor {
         return invalidArchiveEntries;
     }
 
-    protected abstract void extractWithFilter(@NonNull Filter filter) throws IOException;
-
-    protected interface Filter {
-        boolean shouldExtract(String relativePath, boolean isDirectory);
+    protected void extractWithFilter(@NonNull AbstractExtractOperation.Filter filter) throws IOException {
+        AbstractExtractOperation extract = operationCtor.filter(filter);
+        extract.start();
+        invalidArchiveEntries.addAll(extract.getInvalidArchiveEntries());
     }
 
-    public interface OnUpdate {
-        void onStart(long totalBytes, String firstEntryName);
-        void onUpdate(String entryPath);
-        void onFinish();
-        boolean isCancelled();
-    }
-
-    protected String fixEntryName(String entryName){
-        if(entryName.indexOf('\\') >= 0) {
-            return fixEntryName(entryName.replaceAll("\\\\", SEPARATOR));
-        } else if(entryName.indexOf(SEPARATOR_CHAR) == 0) {
-            //if entryName starts with "/" (e.g. "/test.txt"), strip the prefixing "/"s
-            return entryName.replaceAll("^/+", "");
-        } else {
-            return entryName;
-        }
+    public interface FunctionOperation<T extends AbstractExtractOperation> {
+        T filter(AbstractExtractOperation.Filter f);
     }
 }

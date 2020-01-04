@@ -1,5 +1,5 @@
 /*
- * SevenZipExtractor.java
+ * SevenZipExtractOperation.java
  *
  * Copyright (C) 2017-2019 N00byKing <N00byKing@hotmail.de>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt@gmail.com> and Contributors.
@@ -19,7 +19,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
+package com.amaze.filemanager.filesystem.operations.extract;
 
 import android.content.Context;
 import androidx.annotation.NonNull;
@@ -27,7 +27,6 @@ import androidx.annotation.NonNull;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
@@ -37,10 +36,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class SevenZipExtractor extends Extractor {
+public class SevenZipExtractOperation extends AbstractExtractOperation {
 
-    public SevenZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+    public SevenZipExtractOperation(@NonNull Context context, @NonNull String filePath,
+                                    @NonNull String outputPath, @NonNull OnUpdate listener,
+                                    Filter filter) {
+        super(context, filePath, outputPath, listener, filter);
     }
 
     @Override

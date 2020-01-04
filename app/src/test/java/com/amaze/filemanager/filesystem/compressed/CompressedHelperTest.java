@@ -4,14 +4,14 @@ import android.content.Context;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.LzmaExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.XzExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
+import com.amaze.filemanager.filesystem.operations.extract.Bzip2ExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.GzipExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.LzmaExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.RarExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.SevenZipExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.TarExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.XzExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.ZipExtractOperation;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.Bzip2Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDecompressor;
@@ -66,42 +66,42 @@ public class CompressedHelperTest {
      */
     @Test
     public void getExtractorInstance() {
-        File file = new File("/test/test.zip");//.zip used by ZipExtractor
+        File file = new File("/test/test.zip");//.zip used by ZipExtractOperation
         Extractor result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(),ZipExtractor.class);
-        file = new File("/test/test.jar");//.jar used by ZipExtractor
+        assertEquals(result.getClass(), ZipExtractOperation.class);
+        file = new File("/test/test.jar");//.jar used by ZipExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(),ZipExtractor.class);
-        file = new File("/test/test.apk");//.apk used by ZipExtractor
+        assertEquals(result.getClass(), ZipExtractOperation.class);
+        file = new File("/test/test.apk");//.apk used by ZipExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(),ZipExtractor.class);
-        file = new File("/test/test.tar");//.tar used by TarExtractor
+        assertEquals(result.getClass(), ZipExtractOperation.class);
+        file = new File("/test/test.tar");//.tar used by TarExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(),TarExtractor.class);
-        file = new File("/test/test.tar.gz");//.tar.gz used by GzipExtractor
+        assertEquals(result.getClass(), TarExtractOperation.class);
+        file = new File("/test/test.tar.gz");//.tar.gz used by GzipExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(), GzipExtractor.class);
-        file = new File("/test/test.tgz");//.tgz used by GzipExtractor
+        assertEquals(result.getClass(), GzipExtractOperation.class);
+        file = new File("/test/test.tgz");//.tgz used by GzipExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(), GzipExtractor.class);
-        file = new File("/test/test.rar");//.rar used by RarExtractor
+        assertEquals(result.getClass(), GzipExtractOperation.class);
+        file = new File("/test/test.rar");//.rar used by RarExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(),RarExtractor.class);
-        file = new File("/test/test.tar.bz2");//.rar used by RarExtractor
+        assertEquals(result.getClass(), RarExtractOperation.class);
+        file = new File("/test/test.tar.bz2");//.rar used by RarExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(), Bzip2Extractor.class);
-        file = new File("/test/test.tbz");//.rar used by RarExtractor
+        assertEquals(result.getClass(), Bzip2ExtractOperation.class);
+        file = new File("/test/test.tbz");//.rar used by RarExtractOperation
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(), Bzip2Extractor.class);
+        assertEquals(result.getClass(), Bzip2ExtractOperation.class);
         file = new File("/test/test.7z");
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(),SevenZipExtractor.class);
+        assertEquals(result.getClass(), SevenZipExtractOperation.class);
         file = new File("/test/test.tar.xz");
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(), XzExtractor.class);
+        assertEquals(result.getClass(), XzExtractOperation.class);
         file = new File("/test/test.tar.lzma");
         result = CompressedHelper.getExtractorInstance(context, file,"/test2",emptyUpdateListener);
-        assertEquals(result.getClass(), LzmaExtractor.class);
+        assertEquals(result.getClass(), LzmaExtractOperation.class);
     }
 
     /**

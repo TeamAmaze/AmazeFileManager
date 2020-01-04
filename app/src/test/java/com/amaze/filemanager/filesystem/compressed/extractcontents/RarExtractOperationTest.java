@@ -1,16 +1,16 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
 import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
-import com.amaze.filemanager.filesystem.operations.extract.GzipExtractOperation;
+import com.amaze.filemanager.filesystem.operations.extract.RarExtractOperation;
 
-public class TgzExtractorTest extends AbstractExtractorTest {
+public class RarExtractOperationTest extends AbstractExtractorTest {
     @Override
     protected String getArchiveType() {
-        return "tgz";
+        return "rar";
     }
 
     @Override
     protected Class<? extends AbstractExtractOperation> extractorClass() {
-        return GzipExtractOperation.class;
+        return RarExtractOperation.class;
     }
 }
