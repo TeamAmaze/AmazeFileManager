@@ -1153,7 +1153,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         if(!isInformationUpdated) {
             SingletonUsbOtg.getInstance().resetUsbOtgRoot();
             drawer.refreshDrawer();
-            goToMain(null);
         }
 
         // Registering intent filter for OTG

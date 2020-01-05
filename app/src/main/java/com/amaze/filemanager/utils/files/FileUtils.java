@@ -41,14 +41,13 @@ import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
-import androidx.annotation.NonNull;
-import androidx.core.content.FileProvider;
-import androidx.documentfile.provider.DocumentFile;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
+import androidx.annotation.NonNull;
+import androidx.core.content.FileProvider;
+import androidx.documentfile.provider.DocumentFile;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
@@ -59,8 +58,8 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -76,7 +75,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-
+import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -89,10 +88,6 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
-
-import jcifs.smb.SmbFile;
-
-import static androidx.core.content.FileProvider.getUriForFile;
 
 /**
  * Functions that deal with files
@@ -420,15 +415,23 @@ public class FileUtils {
             permissionsActivity.requestInstallApkPermission(() -> installApk(f, permissionsActivity));
         }
 
-        Intent chooserIntent = new Intent();
-        chooserIntent.setAction(Intent.ACTION_INSTALL_PACKAGE);
-        chooserIntent.setData(Uri.fromFile(f));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        String type = "application/vnd.android.package-archive";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), "com.amaze.filemanager", f);
+            intent.setDataAndType(downloadedApk, type);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.setDataAndType(Uri.fromFile(f), type);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
         try {
-            permissionsActivity.startActivity(chooserIntent);
-        } catch (ActivityNotFoundException e) {
+            permissionsActivity.startActivity(intent);
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(permissionsActivity, R.string.error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(permissionsActivity, R.string.failed_install_apk, Toast.LENGTH_SHORT).show();
         }
     }
 
