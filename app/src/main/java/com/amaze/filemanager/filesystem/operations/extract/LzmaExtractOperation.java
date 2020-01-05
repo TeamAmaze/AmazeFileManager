@@ -68,12 +68,12 @@ public class LzmaExtractOperation extends AbstractExtractOperation {
         inputStream = new TarArchiveInputStream(new LZMACompressorInputStream(new FileInputStream(filePath)));
 
         for (TarArchiveEntry entry : archiveEntries) {
-            if (!listener.isCancelled()) {
-                listener.onUpdate(entry.getName());
-                //TAR is sequential, you need to walk all the way to the file you want
-                while (entry.hashCode() != inputStream.getNextTarEntry().hashCode());
-                extractEntry(context, inputStream, entry, outputPath);
-            }
+            crashOnCancelled();
+
+            listener.onUpdate(entry.getName());
+            //TAR is sequential, you need to walk all the way to the file you want
+            while (entry.hashCode() != inputStream.getNextTarEntry().hashCode()) ;
+            extractEntry(context, inputStream, entry, outputPath);
         }
         inputStream.close();
 

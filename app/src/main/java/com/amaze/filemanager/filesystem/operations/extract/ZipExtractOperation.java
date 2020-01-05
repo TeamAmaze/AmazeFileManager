@@ -78,10 +78,10 @@ public class ZipExtractOperation extends AbstractExtractOperation {
             listener.onStart(totalBytes, entriesToExtract.get(0).getFileName());
 
             for (FileHeader entry : entriesToExtract) {
-                if (!listener.isCancelled()) {
-                    listener.onUpdate(entry.getFileName());
-                    extractEntry(context, zipfile, entry, outputPath);
-                }
+                crashOnCancelled();
+
+                listener.onUpdate(entry.getFileName());
+                extractEntry(context, zipfile, entry, outputPath);
             }
             listener.onFinish();
         } catch (ZipException e) {
@@ -125,10 +125,10 @@ public class ZipExtractOperation extends AbstractExtractOperation {
             int len;
             byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
             while ((len = inputStream.read(buf)) != -1) {
-                if (!listener.isCancelled()) {
-                    outputStream.write(buf, 0, len);
-                    ServiceWatcherUtil.position += len;
-                } else break;
+                crashOnCancelled();
+
+                outputStream.write(buf, 0, len);
+                ServiceWatcherUtil.position += len;
             }
         } finally {
             outputStream.close();

@@ -19,6 +19,10 @@ public abstract class AbstractOperation {
 
 	@WorkerThread
 	public boolean start() {
+		if (started) {
+			throw new IllegalStateException("Operations cannot be run twice!");
+		}
+
 		for (AbstractOperation operation : requiredOperations) {
 			if(!operation.check()) {
 				revert(new IOException("Check for " + operation + "did not succeed!"));
@@ -31,13 +35,14 @@ public abstract class AbstractOperation {
 			} catch (IOException e) {
 				revert(e);
 			}
+
 		}
 
 		return true;
 	}
 
 	@WorkerThread
-	public void revert(@Nullable IOException e) {
+	private void revert(@Nullable IOException e) {
 		for (int i = requiredOperations.size()-1; i >= 0; i--) {
 			AbstractOperation operation = requiredOperations.get(i);
 

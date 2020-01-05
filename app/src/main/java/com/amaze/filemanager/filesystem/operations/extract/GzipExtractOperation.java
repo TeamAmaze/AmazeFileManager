@@ -74,12 +74,12 @@ public class GzipExtractOperation extends AbstractExtractOperation {
         inputStream = new TarArchiveInputStream(new GzipCompressorInputStream(new FileInputStream(filePath)));
 
         for (TarArchiveEntry entry : archiveEntries) {
-            if (!listener.isCancelled()) {
-                listener.onUpdate(entry.getName());
-                //TAR is sequential, you need to walk all the way to the file you want
-                while (entry.hashCode() != inputStream.getNextTarEntry().hashCode());
-                extractEntry(context, inputStream, entry, outputPath);
-            }
+            crashOnCancelled();
+
+            listener.onUpdate(entry.getName());
+            //TAR is sequential, you need to walk all the way to the file you want
+            while (entry.hashCode() != inputStream.getNextTarEntry().hashCode()) ;
+            extractEntry(context, inputStream, entry, outputPath);
         }
         inputStream.close();
 
@@ -109,10 +109,10 @@ public class GzipExtractOperation extends AbstractExtractOperation {
             int len;
             byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
             while ((len = inputStream.read(buf)) != -1) {
-                if (!listener.isCancelled()) {
-                    outputStream.write(buf, 0, len);
-                    ServiceWatcherUtil.position += len;
-                } else break;
+                crashOnCancelled();
+
+                outputStream.write(buf, 0, len);
+                ServiceWatcherUtil.position += len;
             }
         } finally {
             outputStream.close();

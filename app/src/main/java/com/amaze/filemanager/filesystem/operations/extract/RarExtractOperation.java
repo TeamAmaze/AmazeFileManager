@@ -69,10 +69,10 @@ public class RarExtractOperation extends AbstractExtractOperation {
             listener.onStart(totalBytes, arrayList.get(0).getFileNameString());
 
             for (FileHeader entry : arrayList) {
-                if (!listener.isCancelled()) {
-                    listener.onUpdate(entry.getFileNameString());
-                    extractEntry(context, rarFile, entry, outputPath);
-                }
+                crashOnCancelled();
+
+                listener.onUpdate(entry.getFileNameString());
+                extractEntry(context, rarFile, entry, outputPath);
             }
             listener.onFinish();
         } catch (RarException e) {
@@ -106,10 +106,10 @@ public class RarExtractOperation extends AbstractExtractOperation {
             int len;
             byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
             while ((len = inputStream.read(buf)) != -1) {
-                if (!listener.isCancelled()) {
-                    outputStream.write(buf, 0, len);
-                    ServiceWatcherUtil.position += len;
-                } else break;
+                crashOnCancelled();
+
+                outputStream.write(buf, 0, len);
+                ServiceWatcherUtil.position += len;
             }
         } finally {
             outputStream.close();

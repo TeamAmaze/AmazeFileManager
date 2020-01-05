@@ -3,6 +3,7 @@ package com.amaze.filemanager.filesystem.operations.extract;
 import android.content.Context;
 
 import com.amaze.filemanager.filesystem.operations.AbstractOperation;
+import com.amaze.filemanager.filesystem.operations.exceptions.CancellationIOException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -55,6 +56,12 @@ public abstract class AbstractExtractOperation extends AbstractOperation {
 	}
 
 	protected abstract void extractWithFilter(@NonNull AbstractExtractOperation.Filter filter) throws IOException;
+
+	protected final void crashOnCancelled() throws CancellationIOException {
+		if (listener.isCancelled()) {
+			throw new CancellationIOException();
+		}
+	}
 
 	public interface Filter {
 		boolean shouldExtract(String relativePath, boolean isDirectory);

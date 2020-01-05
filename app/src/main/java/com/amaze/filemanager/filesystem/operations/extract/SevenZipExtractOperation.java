@@ -69,10 +69,11 @@ public class SevenZipExtractOperation extends AbstractExtractOperation {
             if (!arrayList.contains(entry)) {
                 continue;
             }
-            if (!listener.isCancelled()) {
-                listener.onUpdate(entry.getName());
-                extractEntry(context, sevenzFile, entry, outputPath);
-            }
+
+            crashOnCancelled();
+
+            listener.onUpdate(entry.getName());
+            extractEntry(context, sevenzFile, entry, outputPath);
         }
         sevenzFile.close();
         listener.onFinish(); 
