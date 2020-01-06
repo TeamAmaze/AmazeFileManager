@@ -135,6 +135,7 @@ import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -214,7 +215,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     private AppBarLayout appBarLayout;
 
-    private View fabBgView;
+    private SpeedDialOverlayLayout fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
     private CloudLoaderAsyncTask cloudLoaderAsyncTask;
@@ -1427,7 +1428,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         indicator_layout = findViewById(R.id.indicator_layout);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        fabBgView = findViewById(R.id.fab_bg);
+        fabBgView = findViewById(R.id.fabs_overlay_layout);
 
         switch (getAppTheme().getSimpleTheme()) {
             case DARK:
@@ -1516,13 +1517,18 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 .setFabBackgroundColor(iconSkin);
 
         switch (getAppTheme().getSimpleTheme()) {
+            case LIGHT:
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
+                break;
             case DARK:
                 builder.setLabelBackgroundColor(Utils.getColor(this, R.color.holo_dark_background))
                         .setLabelColor(Utils.getColor(this, R.color.text_dark));
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
                 break;
             case BLACK:
                 builder.setLabelBackgroundColor(Color.BLACK)
                         .setLabelColor(Utils.getColor(this, R.color.text_dark));
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_black);
                 break;
         }
 
@@ -1663,11 +1669,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
      * It covers the fragment.
      */
     public void showSmokeScreen() {
-        FileUtils.revealShow(fabBgView, true);
+        fabBgView.show();
     }
 
     public void hideSmokeScreen() {
-        FileUtils.revealShow(fabBgView, false);
+        fabBgView.hide();
     }
 
     @Override
