@@ -6,66 +6,19 @@ import java.util.LinkedList;
 import java.util.List;
 
 import androidx.annotation.CallSuper;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 public abstract class AbstractOperation {
-	private boolean started;
-	private boolean failed;
-	private final List<AbstractOperation> requiredOperations = new ArrayList<>();
+	private Operator operator;
 
-	public AbstractOperation() {
-		requiredOperations.add(this);
+	/* package-protected */ void setOperator(@NonNull Operator operator) {
+		this.operator = operator;
 	}
 
-	@WorkerThread
-	public boolean start() {
-		if (started) {
-			throw new IllegalStateException("Operations cannot be run twice!");
-		}
-
-		for (AbstractOperation operation : requiredOperations) {
-			if(!operation.check()) {
-				revert(new IOException("Check for " + operation + "did not succeed!"));
-			}
-
-			operation.started = true;
-
-			try {
-				operation.operate();
-			} catch (IOException e) {
-				operation.failed = true;
-				revert(e);
-			}
-
-		}
-
-		return true;
-	}
-
-	@WorkerThread
-	private void revert(@Nullable IOException e) {
-		for (int i = requiredOperations.size()-1; i >= 0; i--) {
-			AbstractOperation operation = requiredOperations.get(i);
-
-			if (!operation.started) {
-				continue;
-			}
-
-			if (e == null) {
-				operation.undo();
-			} else {
-				operation.errorUndo(e);
-			}
-		}
-	}
-
-	public boolean hasFailed() {
-		return failed;
-	}
-
-	protected final void requires(AbstractOperation operation) {
-		requiredOperations.add(operation);
+	protected final Operator getOperator() {
+		return operator;
 	}
 
 	/**

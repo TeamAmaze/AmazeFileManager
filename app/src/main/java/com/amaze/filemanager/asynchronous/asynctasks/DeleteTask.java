@@ -33,6 +33,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.operations.DeleteOperation;
+import com.amaze.filemanager.filesystem.operations.Operator;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
@@ -73,7 +74,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
         this.files = files[0];
 
         for (HybridFileParcelable file : this.files) {
-            DeleteOperation deleteOperation = new DeleteOperation(context, rootMode, file);
+            Operator deleteOperation = new Operator(new DeleteOperation(context, rootMode, file));
             deleteOperation.start();
             success = success && deleteOperation.hasFailed();
         }

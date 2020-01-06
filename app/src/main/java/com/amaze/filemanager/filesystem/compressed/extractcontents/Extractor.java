@@ -22,6 +22,7 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
+import com.amaze.filemanager.filesystem.operations.Operator;
 import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
 
 import java.io.IOException;
@@ -70,7 +71,8 @@ public class Extractor<T extends AbstractExtractOperation> {
 
     protected void extractWithFilter(@NonNull AbstractExtractOperation.Filter filter) throws IOException {
         AbstractExtractOperation extract = operationCtor.filter(filter);
-        extract.start();
+        Operator operator = new Operator(extract);
+        operator.start();
         invalidArchiveEntries.addAll(extract.getInvalidArchiveEntries());
     }
 
