@@ -1,9 +1,10 @@
-package com.amaze.filemanager.filesystem.operations.extract;
+package com.amaze.filemanager.filesystem.operations;
 
 import android.content.Context;
 
-import com.amaze.filemanager.filesystem.operations.AbstractOperation;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.operations.exceptions.CancellationIOException;
+import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -48,7 +49,12 @@ public abstract class AbstractExtractOperation extends AbstractOperation {
 	}
 
 	protected void undo() {
-
+		AbstractOperation operation = new DeleteOperation(context, false, new HybridFile(OpenMode.UNKNOWN, outputPath));
+		try {
+			operation.operate();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
 	public List<String> getInvalidArchiveEntries() {

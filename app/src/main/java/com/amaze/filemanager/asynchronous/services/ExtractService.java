@@ -44,7 +44,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;

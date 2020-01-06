@@ -43,7 +43,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZip
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
-import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 import com.amaze.filemanager.utils.Utils;
 
 import java.io.File;

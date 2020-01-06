@@ -23,7 +23,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
 import com.amaze.filemanager.filesystem.operations.Operator;
-import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 
 import java.io.IOException;
 import java.util.ArrayList;

@@ -29,6 +29,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import java.io.BufferedOutputStream;

@@ -25,6 +25,7 @@ import androidx.annotation.NonNull;
 
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;

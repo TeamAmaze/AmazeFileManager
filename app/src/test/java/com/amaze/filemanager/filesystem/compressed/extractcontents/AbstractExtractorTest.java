@@ -5,7 +5,7 @@ import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
-import com.amaze.filemanager.filesystem.operations.extract.AbstractExtractOperation;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;

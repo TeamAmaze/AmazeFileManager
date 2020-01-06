@@ -29,6 +29,7 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.filesystem.operations.AbstractExtractOperation;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import net.lingala.zip4j.core.ZipFile;
@@ -130,6 +131,8 @@ public class ZipExtractOperation extends AbstractExtractOperation {
                 outputStream.write(buf, 0, len);
                 ServiceWatcherUtil.position += len;
             }
+
+            throw new IOException();
         } finally {
             outputStream.close();
             inputStream.close();
