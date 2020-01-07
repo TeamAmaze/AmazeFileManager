@@ -1,4 +1,4 @@
-package com.amaze.filemanager.filesystem.operations;
+package com.amaze.filemanager.filesystem.operations.singlefile;
 
 import android.content.Context;
 import android.os.Build;
@@ -7,6 +7,7 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.operations.AbstractOperation;
 import com.amaze.filemanager.filesystem.operations.exceptions.ShellNotRunningIOException;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -94,7 +95,7 @@ public class CreateFolderOperation extends AbstractOperation {
 			cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, file.getPath()));
 		} else {
 			if (file.isLocal() || file.isRoot()) {
-				int mode = checkFolder(new File(file.getParent()), context);
+				int mode = Operations.checkFolder(new File(file.getParent()), context);
 
 				if (mode == 2) {
 					errorCallBack.launchSAF(file);
@@ -109,7 +110,7 @@ public class CreateFolderOperation extends AbstractOperation {
 					file.setMode(OpenMode.ROOT);
 					if (file.exists()) {
 						errorCallBack.exists(file);
-						throw new IOException("Created folder doesn't actually exist!");
+						throw new IOException("The file already exists!");
 					}
 
 					try {
@@ -136,37 +137,6 @@ public class CreateFolderOperation extends AbstractOperation {
 		//You either have the file or you don't,
 		//in the first case it is already undone, in the second the operation succeeded,
 		//there's nothing to undo
-	}
-
-	private static int checkFolder(final File folder, Context context) {
-		boolean lol = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
-		if (lol) {
-
-			boolean ext = FileUtil.isOnExtSdCard(folder, context);
-			if (ext) {
-
-				if (!folder.exists() || !folder.isDirectory()) {
-					return 0;
-				}
-
-				// On Android 5, trigger storage access framework.
-				if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
-					return 2;
-				}
-				return 1;
-			}
-		} else if (Build.VERSION.SDK_INT == 19) {
-			// Assume that Kitkat workaround works
-			if (FileUtil.isOnExtSdCard(folder, context)) return 1;
-
-		}
-
-		// file not on external sd card
-		if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-			return 1;
-		} else {
-			return 0;
-		}
 	}
 
 }

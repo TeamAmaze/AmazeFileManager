@@ -7,8 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.filesystem.operations.CreateFileOperation;
-import com.amaze.filemanager.filesystem.operations.CreateFolderOperation;
+import com.amaze.filemanager.filesystem.operations.singlefile.CreateFolderOperation;
 import com.amaze.filemanager.filesystem.operations.Operator;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
@@ -391,7 +390,7 @@ public class Operations {
 
     }
 
-    private static int checkFolder(final File folder, Context context) {
+    public static int checkFolder(final File folder, Context context) {
         boolean lol = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
         if (lol) {
 

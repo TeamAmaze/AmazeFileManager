@@ -1,4 +1,4 @@
-package com.amaze.filemanager.filesystem.operations;
+package com.amaze.filemanager.filesystem.operations.singlefile;
 
 import android.content.ContentResolver;
 import android.content.Context;

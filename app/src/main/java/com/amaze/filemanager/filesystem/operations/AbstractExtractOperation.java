@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.operations.exceptions.CancellationIOException;
+import com.amaze.filemanager.filesystem.operations.singlefile.DeleteOperation;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.io.IOException;

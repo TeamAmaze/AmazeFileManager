@@ -20,19 +20,16 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
 import android.app.NotificationManager;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
-import android.provider.MediaStore;
 import android.widget.Toast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.operations.DeleteOperation;
+import com.amaze.filemanager.filesystem.operations.singlefile.DeleteOperation;
 import com.amaze.filemanager.filesystem.operations.Operator;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
