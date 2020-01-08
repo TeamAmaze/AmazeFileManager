@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Marcin Zasuwa <marcinadd@gmail.com>
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Marcin Zasuwa <marcinadd@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -99,6 +100,7 @@ import static androidx.core.content.FileProvider.getUriForFile;
  */
 public class FileUtils {
 
+    public static final String FILE_PROVIDER_AUTHORITY = "com.amaze.filemanager";
     public static final String NOMEDIA_FILE = ".nomedia";
 
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
@@ -384,7 +386,7 @@ public class FileUtils {
         ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
-            uris.add(Uri.fromFile(f));
+            uris.add(FileProvider.getUriForFile(c, FILE_PROVIDER_AUTHORITY, f));
         }
 
         String mime = MimeTypes.getMimeType(a.get(0).getPath(), a.get(0).isDirectory());
@@ -550,7 +552,7 @@ public class FileUtils {
         }
 
         chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        return FileProvider.getUriForFile(context, "com.amaze.filemanager", file);
+        return FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, file);
     }
 
     private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {
