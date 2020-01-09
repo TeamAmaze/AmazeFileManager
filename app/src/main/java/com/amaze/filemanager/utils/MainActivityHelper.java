@@ -1,7 +1,7 @@
 /*
  * MainActivityHelper.java
  *
- * Copyright (C) 2015-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2015-2019 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -30,16 +30,16 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.StringRes;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -55,7 +55,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
-import com.amaze.filemanager.fragments.CloudSheetFragment;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.fragments.TabFragment;
@@ -63,6 +62,7 @@ import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.files.CryptUtil;
+import com.leinardi.android.speeddial.SpeedDialView;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -72,13 +72,12 @@ import java.util.ArrayList;
  */
 public class MainActivityHelper {
 
-    public static final int NEW_FOLDER = 0, NEW_FILE = 1, NEW_SMB = 2, NEW_CLOUD = 3;
-
     private static final String NEW_FILE_TXT_EXTENSION = ".txt";
 
     private MainActivity mainActivity;
     private DataUtils dataUtils = DataUtils.getInstance();
     private int accentColor;
+    private SpeedDialView.OnActionSelectedListener fabActionListener;
 
     /*
      * A static string which saves the last searched query. Used to retain search task after
@@ -134,7 +133,7 @@ public class MainActivityHelper {
      * @param path     current path at which directory to create
      * @param ma       {@link MainFragment} current fragment
      */
-    void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
+    public void mkdir(final OpenMode openMode, final String path, final MainFragment ma) {
         mk(R.string.newfolder, "", (dialog, which) -> {
             EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
             mkDir(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
@@ -160,7 +159,7 @@ public class MainActivityHelper {
      * @param path     current path at which file to create
      * @param ma       {@link MainFragment} current fragment
      */
-    void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
+    public void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
         mk(R.string.newfile,  NEW_FILE_TXT_EXTENSION, (dialog, which) -> {
             EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
             mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
@@ -202,25 +201,6 @@ public class MainActivityHelper {
             mainActivity.getResources().getString(R.string.cancel),
             null, onPositiveAction, validator)
             .show();
-    }
-
-    public void add(int pos) {
-        final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getCurrentTabFragment();
-        final String path = ma.getCurrentPath();
-
-        switch (pos) {
-            case NEW_FOLDER:
-                mkdir(ma.openMode, path, ma);
-                break;
-            case NEW_FILE:
-                mkfile(ma.openMode, path, ma);
-                break;
-            case NEW_CLOUD:
-                BottomSheetDialogFragment fragment = new CloudSheetFragment();
-                fragment.show(ma.getActivity().getSupportFragmentManager(),
-                        CloudSheetFragment.TAG_FRAGMENT);
-                break;
-        }
     }
 
     public String getIntegralNames(String path) {
@@ -664,5 +644,4 @@ public class MainActivityHelper {
     public static boolean isNewDirectoryRecursive(HybridFile file) {
         return file.getName().equals(file.getParentName());
     }
-
 }

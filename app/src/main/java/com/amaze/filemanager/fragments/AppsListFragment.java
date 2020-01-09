@@ -1,5 +1,6 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014-2019 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -79,7 +80,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
         setRetainInstance(true);
         MainActivity mainActivity = (MainActivity) getActivity();
         mainActivity.getAppbar().setTitle(R.string.apps);
-        mainActivity.floatingActionButton.getMenuButton().hide();
+        mainActivity.floatingActionButton.hide();
         mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
         vl = getListView();
