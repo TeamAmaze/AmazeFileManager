@@ -56,14 +56,6 @@
                 app:currentPageIndicatorColor="?attr/colorAccent"
                 />
         </LinearLayout>
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fab_bg"
-            android:visibility="gone"
-            android:clickable="true"
-            android:background="@drawable/fab_shadow_light"
-            />
 
         <include layout="@layout/layout_fab"/>
 

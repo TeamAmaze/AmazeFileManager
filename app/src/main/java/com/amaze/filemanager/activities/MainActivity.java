@@ -1,7 +1,7 @@
 /*
  * MainActivity.java
  *
- * Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2019 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -46,11 +46,17 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.service.quicksettings.TileService;
 import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
+
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -128,6 +134,9 @@ import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
+import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
+import com.leinardi.android.speeddial.SpeedDialView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import java.io.File;
@@ -138,9 +147,6 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import eu.chainfire.libsuperuser.Shell;
-import jahirfiquitiva.libs.fabsmenu.FABsMenu;
-import jahirfiquitiva.libs.fabsmenu.FABsMenuListener;
-import jahirfiquitiva.libs.fabsmenu.TitleFAB;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
@@ -163,7 +169,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     public boolean mRingtonePickerIntent = false;
     public int skinStatusBar;
 
-    public FABsMenu floatingActionButton;
+    public SpeedDialView floatingActionButton;
 
     public MainActivityHelper mainActivityHelper;
 
@@ -209,7 +215,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     private AppBarLayout appBarLayout;
 
-    private View fabBgView;
+    private SpeedDialOverlayLayout fabBgView;
     private UtilsHandler utilsHandler;
     private CloudHandler cloudHandler;
     private CloudLoaderAsyncTask cloudLoaderAsyncTask;
@@ -291,8 +297,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         utilsHandler = AppConfig.getInstance().getUtilsHandler();
         cloudHandler = new CloudHandler(this);
 
-        mainActivityHelper = new MainActivityHelper(this);
         initialiseFab();// TODO: 7/12/2017 not init when actionIntent != null
+        mainActivityHelper = new MainActivityHelper(this);
 
         if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -547,12 +553,12 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
      * Initializes the floating action button to act as to save data from an external intent
      */
     private void initFabToSave(final ArrayList<Uri> uris) {
-        floatingActionButton.removeButton(findViewById(R.id.menu_new_folder));
-        floatingActionButton.removeButton(findViewById(R.id.menu_new_file));
-        floatingActionButton.removeButton(findViewById(R.id.menu_new_cloud));
+        floatingActionButton.removeActionItemById(R.id.menu_new_folder);
+        floatingActionButton.removeActionItemById(R.id.menu_new_file);
+        floatingActionButton.removeActionItemById(R.id.menu_new_cloud);
 
-        floatingActionButton.setMenuButtonIcon(R.drawable.ic_file_download_white_24dp);
-        floatingActionButton.getMenuButton().setOnClickListener(v -> {
+        floatingActionButton.getMainFab().setImageResource(R.drawable.ic_file_download_white_24dp);
+        floatingActionButton.getMainFab().setOnClickListener(v -> {
             if(uris != null && uris.size() > 0) {
                 if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     File folder = new File(getCurrentMainFragment().getCurrentPath());
@@ -575,7 +581,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         });
         //Ensure the FAB menu is visible
         floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.getMenuButton().show();
     }
 
     /**
@@ -706,8 +711,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             // hide search view if visible, with an animation
             getAppbar().getSearchView().hideSearchView();
         } else if (fragment instanceof TabFragment) {
-            if (floatingActionButton.isExpanded()) {
-                floatingActionButton.collapse();
+            if (floatingActionButton.isOpen()) {
+                floatingActionButton.close(true);
             } else {
                 getCurrentMainFragment().goBack();
             }
@@ -725,8 +730,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     fragmentTransaction.remove(compressedExplorerFragment);
                     fragmentTransaction.commit();
                     supportInvalidateOptionsMenu();
-                    floatingActionButton.setVisibility(View.VISIBLE);
-                    floatingActionButton.getMenuButton().show();
+                    floatingActionButton.show();
                 }
             } else {
                 compressedExplorerFragment.mActionMode.finish();
@@ -789,8 +793,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         transaction.addToBackStack("tabt" + 1);
         transaction.commitAllowingStateLoss();
         appbar.setTitle(null);
-        floatingActionButton.setVisibility(View.VISIBLE);
-        floatingActionButton.getMenuButton().show();
+        floatingActionButton.show();
         if (openzip && zippath != null) {
             openCompressed(zippath);
             zippath = null;
@@ -1289,7 +1292,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         return null;
     }
 
-    public FABsMenu getFAB() {
+    public SpeedDialView getFAB() {
         return floatingActionButton;
     }
 
@@ -1302,6 +1305,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     }
 
     protected void onActivityResult(int requestCode, int responseCode, Intent intent) {
+        super.onActivityResult(requestCode, responseCode, intent);
         if (requestCode == Drawer.image_selector_request_code) {
             drawer.onActivityResult(requestCode, responseCode, intent);
         } else if (requestCode == 3) {
@@ -1424,7 +1428,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         indicator_layout = findViewById(R.id.indicator_layout);
 
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-        fabBgView = findViewById(R.id.fab_bg);
+        fabBgView = findViewById(R.id.fabs_overlay_layout);
 
         switch (getAppTheme().getSimpleTheme()) {
             case DARK:
@@ -1494,58 +1498,41 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         int colorAccent = getAccent();
 
         floatingActionButton = findViewById(R.id.fabs_menu);
-        floatingActionButton.getMenuButton().setBackgroundColor(colorAccent);
-        floatingActionButton.getMenuButton().setRippleColor(Utils.getColor(this, R.color.white_translucent));
-        floatingActionButton.setAnimationDuration(500);
-        floatingActionButton.setMenuListener(new FABsMenuListener() {
-            @Override
-            public void onMenuExpanded(FABsMenu fabsMenu) {
-                showSmokeScreen();
-            }
+        floatingActionButton.setMainFabClosedBackgroundColor(colorAccent);
+        floatingActionButton.setMainFabOpenedBackgroundColor(colorAccent);
 
-            @Override
-            public void onMenuCollapsed(FABsMenu fabsMenu) {
-                hideSmokeScreen();
-            }
-        });
+        //NOTE: SpeedDial inverts insert index than FABsmenu
+        initFabTitle(R.id.menu_new_cloud, R.string.cloud_connection, R.drawable.ic_cloud_white_24dp);
+        initFabTitle(R.id.menu_new_file, R.string.file, R.drawable.ic_insert_drive_file_white_48dp);
+        initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
-        floatingActionButton.setMenuListener(new FABsMenuListener() {
-            @Override
-            public void onMenuExpanded(FABsMenu fabsMenu) {
-                FileUtils.revealShow(fabBgView, true);
-            }
-
-            @Override
-            public void onMenuCollapsed(FABsMenu fabsMenu) {
-                FileUtils.revealShow(fabBgView, false);
-            }
-        });
-
-        initFabTitle(findViewById(R.id.menu_new_folder), MainActivityHelper.NEW_FOLDER);
-        initFabTitle(findViewById(R.id.menu_new_file), MainActivityHelper.NEW_FILE);
-        initFabTitle(findViewById(R.id.menu_new_cloud), MainActivityHelper.NEW_CLOUD);
+        floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
     }
 
-    private void initFabTitle(TitleFAB fabTitle, int type) {
+    private void initFabTitle(@IdRes int id, @StringRes int fabTitle, @DrawableRes int icon) {
         int iconSkin = getCurrentColorPreference().iconSkin;
 
-        fabTitle.setBackgroundColor(iconSkin);
-        fabTitle.setRippleColor(Utils.getColor(this, R.color.white_translucent));
-        fabTitle.setOnClickListener(view -> {
-            mainActivityHelper.add(type);
-            floatingActionButton.collapse();
-        });
+        SpeedDialActionItem.Builder builder = new SpeedDialActionItem.Builder(id, icon)
+                .setLabel(fabTitle)
+                .setFabBackgroundColor(iconSkin);
 
         switch (getAppTheme().getSimpleTheme()) {
+            case LIGHT:
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
+                break;
             case DARK:
-                fabTitle.setTitleBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-                fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
+                builder.setLabelBackgroundColor(Utils.getColor(this, R.color.holo_dark_background))
+                        .setLabelColor(Utils.getColor(this, R.color.text_dark));
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
                 break;
             case BLACK:
-                fabTitle.setTitleBackgroundColor(Color.BLACK);
-                fabTitle.setTitleTextColor(Utils.getColor(this, R.color.text_dark));
+                builder.setLabelBackgroundColor(Color.BLACK)
+                        .setLabelColor(Utils.getColor(this, R.color.text_dark));
+                fabBgView.setBackgroundResource(R.drawable.fab_shadow_black);
                 break;
         }
+
+        floatingActionButton.addActionItem(builder.create());
     }
 
     public boolean copyToClipboard(Context context, String text) {
@@ -1580,6 +1567,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onNewIntent(Intent i) {
+        super.onNewIntent(i);
         intent = i;
         path = i.getStringExtra("path");
 
@@ -1681,11 +1669,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
      * It covers the fragment.
      */
     public void showSmokeScreen() {
-        FileUtils.revealShow(fabBgView, true);
+        fabBgView.show();
     }
 
     public void hideSmokeScreen() {
-        FileUtils.revealShow(fabBgView, false);
+        fabBgView.hide();
     }
 
     @Override
@@ -1938,5 +1926,39 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+    }
+
+    private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
+
+        MainActivity mainActivity;
+        SpeedDialView floatingActionButton;
+
+        FabActionListener(MainActivity mainActivity) {
+            this.mainActivity = mainActivity;
+            this.floatingActionButton = mainActivity.floatingActionButton;
+        }
+
+        @Override
+        public boolean onActionSelected(SpeedDialActionItem actionItem) {
+            final MainFragment ma = (MainFragment) ((TabFragment) mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame)).getCurrentTabFragment();
+            final String path = ma.getCurrentPath();
+
+            switch (actionItem.getId()) {
+                case R.id.menu_new_folder:
+                    mainActivity.mainActivityHelper.mkdir(ma.openMode, path, ma);
+                    break;
+                case R.id.menu_new_file:
+                    mainActivity.mainActivityHelper.mkfile(ma.openMode, path, ma);
+                    break;
+                case R.id.menu_new_cloud:
+                    BottomSheetDialogFragment fragment = new CloudSheetFragment();
+                    fragment.show(ma.getActivity().getSupportFragmentManager(),
+                            CloudSheetFragment.TAG_FRAGMENT);
+                    break;
+            }
+
+            floatingActionButton.close(true);
+            return true;
+        }
     }
 }

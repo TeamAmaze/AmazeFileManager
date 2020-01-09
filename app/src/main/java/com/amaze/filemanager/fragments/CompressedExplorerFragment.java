@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- *                      Emmanuel Messulam<emmanuelbendavid@gmail.com>
+ * Copyright (C) 2014-2019 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -366,7 +367,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     public void onResume() {
         super.onResume();
 
-        mainActivity.floatingActionButton.getMenuButton().hide();
+        mainActivity.floatingActionButton.hide();
         Intent intent = new Intent(getActivity(), ExtractService.class);
         getActivity().bindService(intent, mServiceConnection, 0);
     }
