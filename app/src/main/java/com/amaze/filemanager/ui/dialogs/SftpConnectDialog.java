@@ -173,34 +173,31 @@ public class SftpConnectDialog extends DialogFragment {
                     selectedParsedKeyPair));
 
             if (!isEmpty(sshHostKey)) {
-                SshConnectionPool.getInstance().removeConnection(
-                        SshClientUtils.deriveSftpPathFrom(hostname, port, username, password,
-                                selectedParsedKeyPair));
-
-                //Verify SSH host key fingerprint by hand, prompt user to override if not match
-                new GetSshHostFingerprintTask(hostname, port, taskResult -> {
-                    PublicKey hostKey = taskResult.result;
-                    if(hostKey != null) {
-                        final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
-                        if(hostKeyFingerprint.equals(sshHostKey)){
-                            authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey,
-                                username, password, selectedParsedKeyPairName,
-                                selectedParsedKeyPair, edit);
-                        } else {
-                            new AlertDialog.Builder(context)
-                                .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
-                                .setMessage(R.string.ssh_connect_failed_host_key_changed_prompt)
-                                .setPositiveButton(R.string.update_host_key, (dialog1, which1) -> {
-                                    authenticateAndSaveSetup(connectionName, hostname, port,
-                                        hostKeyFingerprint, username, password,
-                                        selectedParsedKeyPairName, selectedParsedKeyPair, edit);
-                                })
-                                .setNegativeButton(R.string.cancel_recommended, (dialog1, which1) -> dialog1.dismiss())
-                                .show();
+                SshConnectionPool.getInstance().removeConnection(SshClientUtils.deriveSftpPathFrom(hostname, port, username, password,
+                        selectedParsedKeyPair), () -> {
+                    new GetSshHostFingerprintTask(hostname, port, taskResult -> {
+                        PublicKey hostKey = taskResult.result;
+                        if(hostKey != null) {
+                            final String hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey);
+                            if(hostKeyFingerprint.equals(sshHostKey)){
+                                authenticateAndSaveSetup(connectionName, hostname, port, sshHostKey,
+                                        username, password, selectedParsedKeyPairName,
+                                        selectedParsedKeyPair, edit);
+                            } else {
+                                new AlertDialog.Builder(context)
+                                        .setTitle(R.string.ssh_connect_failed_host_key_changed_title)
+                                        .setMessage(R.string.ssh_connect_failed_host_key_changed_prompt)
+                                        .setPositiveButton(R.string.update_host_key, (dialog1, which1) -> {
+                                            authenticateAndSaveSetup(connectionName, hostname, port,
+                                                    hostKeyFingerprint, username, password,
+                                                    selectedParsedKeyPairName, selectedParsedKeyPair, edit);
+                                        })
+                                        .setNegativeButton(R.string.cancel_recommended, (dialog1, which1) -> dialog1.dismiss())
+                                        .show();
+                            }
                         }
-                    }
-                }).execute();
-                
+                    }).execute();
+                });
 
             } else {
                 new GetSshHostFingerprintTask(hostname, port, taskResult -> {
