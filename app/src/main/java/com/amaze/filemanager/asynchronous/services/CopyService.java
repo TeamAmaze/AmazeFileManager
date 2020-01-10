@@ -228,7 +228,6 @@ public class CopyService extends AbstractProgressiveService {
         private String targetPath;
         private OpenMode openMode;
         private boolean isRootExplorer;
-        private int sourceProgress = 0;
 
         private DoInBackground(boolean isRootExplorer) {
             this.isRootExplorer = isRootExplorer;
@@ -258,10 +257,10 @@ public class CopyService extends AbstractProgressiveService {
             openMode = OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE));
             copy = new CopyOperation(CopyService.this, watcherUtil, progressHandler,
                     sourceFiles, targetPath, move, openMode, isRootExplorer);
-            new Operator(copy).start();
+            Operator operator = new Operator(copy);
+            operator.start();
 
-            if (copy.getFailedFiles().size() == 0) {
-
+            if (!operator.hasFailed()) {
                 // adding/updating new encrypted db entry if any encrypted file was copied/moved
                 for (HybridFileParcelable sourceFile : sourceFiles) {
                     try {
