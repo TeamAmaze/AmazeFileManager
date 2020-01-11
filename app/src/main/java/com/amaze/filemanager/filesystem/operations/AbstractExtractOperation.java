@@ -51,11 +51,9 @@ public abstract class AbstractExtractOperation extends AbstractOperation {
 
 	protected void undo() {
 		AbstractOperation operation = new DeleteOperation(context, false, new HybridFile(OpenMode.UNKNOWN, outputPath));
-		try {
-			operation.operate();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Operator operator = new Operator(operation);
+		operator.setDoNothingOnRevert(true);
+		operator.start();
 	}
 
 	public List<String> getInvalidArchiveEntries() {

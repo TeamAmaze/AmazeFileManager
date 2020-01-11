@@ -3,20 +3,32 @@ package com.amaze.filemanager.filesystem.operations;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+/**
+ * Handles and runs AbstractOperations
+ */
 public final class Operator {
 	private boolean started;
 	private boolean failed;
+	private boolean doNothingOnRevert;
 	private final List<AbstractOperation> requiredOperations = new ArrayList<>();
 
+	/**
+	 * Creates and operator with an AbstractOperation as its first required operation
+	 */
 	public Operator(AbstractOperation operation) {
 		operation.setOperator(this);
 		requiredOperations.add(operation);
 	}
 
+	/**
+	 * Starts the AbstractOperations added as required for this Operator
+	 * Should not be run on main thread
+	 */
 	@WorkerThread
 	public void start() {
 		if (started) {
@@ -43,8 +55,16 @@ public final class Operator {
 		}
 	}
 
+	/**
+	 * Starts reversal of every AbstractOperation,
+	 *  in reverse.
+	 */
 	@WorkerThread
 	private void revert(@Nullable IOException e) {
+		if(doNothingOnRevert) {
+			return;
+		}
+
 		for (int i = requiredOperations.size()-1; i >= 0; i--) {
 			AbstractOperation operation = requiredOperations.get(i);
 
@@ -60,12 +80,21 @@ public final class Operator {
 		}
 	}
 
+	/**
+	 * Adds a required AbstractOperation to this Operator,
+	 *  it is guaranteed to be run, in the future.
+	 */
 	public void addRequiredOperation(AbstractOperation operation) {
 		requiredOperations.add(operation);
+		operation.setOperator(this);
 	}
 
 	public boolean hasFailed() {
 		return failed;
+	}
+
+	public void setDoNothingOnRevert(boolean doNothingOnRevert) {
+		this.doNothingOnRevert = doNothingOnRevert;
 	}
 
 }

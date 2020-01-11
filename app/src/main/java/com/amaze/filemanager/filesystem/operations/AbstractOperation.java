@@ -10,14 +10,22 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+/**
+ * Any task that needs an undo can be encapsulated with an AbstractOperation,
+ *  this, with the Operator, allows for easy sequencing of recursive operations,
+ *  by just calling requires()
+ */
 public abstract class AbstractOperation {
 	private Operator operator;
 
+	/**
+	 * To be used only by the Operator for dependency injection
+	 */
 	/* package-protected */ void setOperator(@NonNull Operator operator) {
 		this.operator = operator;
 	}
 
-	protected final Operator getOperator() {
+	private Operator getOperator() {
 		return operator;
 	}
 
@@ -35,8 +43,9 @@ public abstract class AbstractOperation {
 
 	/**
 	 * This must return the file system to the state before the operation was started.
-	 * It must not call any "reverse()" operations, every required operation by this operation
-	 * has already been reversed.
+	 * It must not call any "reverse()" operations.
+	 * It is assured that every required AbstractOperation by this AbstractOperation
+	 *  has already been reversed.
 	 */
 	protected abstract void undo();
 
@@ -46,5 +55,13 @@ public abstract class AbstractOperation {
 	@CallSuper
 	protected void errorUndo(@Nullable IOException e) {
 		undo();
+	}
+
+	/**
+	 * Adds a required AbstractOperation to the Operator running this AbstractOperation,
+	 *  it is guaranteed to be run, in the future.
+	 */
+	protected void requires(AbstractOperation operation) {
+		getOperator().addRequiredOperation(operation);
 	}
 }

@@ -142,7 +142,7 @@ public class CopyOperation extends AbstractOperation {
 			for (HybridFileParcelable a : sourceFiles) {
 				if (!failedFOps.contains(a)) {
 					DeleteOperation delete = new DeleteOperation(context, isRootExplorer, a);
-					getOperator().addRequiredOperation(delete);
+					requires(delete);
 				}
 			}
 		}
@@ -188,7 +188,7 @@ public class CopyOperation extends AbstractOperation {
 				CopyOperation childOperation = new CopyOperation(copyService, watcherUtil,
 						progressHandler, Collections.singletonList(file), targetFile.getPath(), move,
 						targetFile.getMode(), isRootExplorer);
-				getOperator().addRequiredOperation(childOperation);
+				requires(childOperation);
 			});
 		} else {
 			if (!Operations.isFileNameValid(sourceFile.getName())) {
@@ -204,12 +204,9 @@ public class CopyOperation extends AbstractOperation {
 
 	@Override
 	protected void undo() {
-		try {
-			AbstractOperation delete = new DeleteOperation(context, isRootExplorer, new HybridFileParcelable(targetPath));
-			delete.operate();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
+		Operator operator = new Operator(new DeleteOperation(context, isRootExplorer, new HybridFileParcelable(targetPath)));
+		operator.setDoNothingOnRevert(true);
+		operator.start();
 	}
 
 	public ArrayList<HybridFile> getFailedFiles() {
