@@ -1,3 +1,28 @@
+/*
+ * SmbSearchDialog.java
+ *
+ * Copyright (C) 2016-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Rémi Piotaix <remi.piotaix@gmail.com>, pyler <pyler@azet.sk>, Joe Page <jpage4500@gmail.com>,
+ * John Carlson <jawnnypoo@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com>, Bowie Chen <bowiechen@users.noreply.github.com>
+ * and contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.ui.dialogs;
 
 import android.app.Activity;
@@ -6,6 +31,8 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -50,7 +77,7 @@ public class SmbSearchDialog extends DialogFragment {
     public void dismiss() {
         super.dismiss();
         if (subnetScanner != null)
-            subnetScanner.interrupt();
+            subnetScanner.cancel(true);
     }
 
     @Override
@@ -61,12 +88,12 @@ public class SmbSearchDialog extends DialogFragment {
         builder.negativeText(R.string.cancel);
         builder.onNegative((dialog, which) -> {
             if (subnetScanner != null)
-                subnetScanner.interrupt();
+                subnetScanner.cancel(true);
             dismiss();
         });
         builder.onPositive((dialog, which) -> {
             if (subnetScanner != null)
-                subnetScanner.interrupt();
+                subnetScanner.cancel(true);
             if (getActivity() != null && getActivity() instanceof MainActivity) {
                 dismiss();
                 MainActivity mainActivity = (MainActivity) getActivity();
@@ -106,7 +133,7 @@ public class SmbSearchDialog extends DialogFragment {
                 }
             }
         });
-        subnetScanner.start();
+        subnetScanner.execute();
 
         builder.adapter(listViewAdapter, null);
         return builder.build();
@@ -119,14 +146,14 @@ public class SmbSearchDialog extends DialogFragment {
         private ArrayList<ComputerParcelable> items;
         private LayoutInflater mInflater;
 
-        public ListViewAdapter(Context context, List<ComputerParcelable> objects) {
+        ListViewAdapter(Context context, List<ComputerParcelable> objects) {
             items = new ArrayList<>(objects);
             mInflater = (LayoutInflater) context
                 .getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
         }
 
-        @Override
-        public ElementViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        @Override @NonNull
+        public ElementViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             View view;
             switch (viewType) {
                 case VIEW_PROGRESSBAR:
@@ -140,7 +167,7 @@ public class SmbSearchDialog extends DialogFragment {
         }
 
         @Override
-        public void onBindViewHolder(ElementViewHolder holder, int position) {
+        public void onBindViewHolder(@NonNull ElementViewHolder holder, int position) {
             int viewType = getItemViewType(position);
             if (viewType == VIEW_PROGRESSBAR) {
                 return;
@@ -150,7 +177,7 @@ public class SmbSearchDialog extends DialogFragment {
 
             holder.rootView.setOnClickListener(v -> {
                 if (subnetScanner != null)
-                    subnetScanner.interrupt();
+                    subnetScanner.cancel(true);
                 if (getActivity() != null && getActivity() instanceof MainActivity) {
                     dismiss();
                     MainActivity mainActivity = (MainActivity) getActivity();
