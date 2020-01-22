@@ -24,7 +24,7 @@ import android.widget.ImageView;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
@@ -79,7 +79,7 @@ public class TabFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
 
-        tabHandler = new TabHandler(getContext());
+        tabHandler = new TabHandler();
         fragmentManager = getActivity().getSupportFragmentManager();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -105,6 +105,7 @@ public class TabFragment extends Fragment
         if (savedInstanceState == null) {
             int lastOpenTab = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
             MainActivity.currentTab = lastOpenTab;
+
             Tab tab1 = tabHandler.findTab(1);
             Tab tab2 = tabHandler.findTab(2);
 
@@ -209,7 +210,7 @@ public class TabFragment extends Fragment
 
     public void updatepaths(int pos) {
         if (tabHandler == null)
-            tabHandler = new TabHandler(getActivity());
+            tabHandler = new TabHandler();
         int i = 1;
 
         // Getting old path from database before clearing

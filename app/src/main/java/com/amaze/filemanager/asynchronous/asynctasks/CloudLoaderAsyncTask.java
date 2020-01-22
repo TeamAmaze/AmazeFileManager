@@ -8,7 +8,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.models.CloudEntry;
+import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
@@ -89,7 +89,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                                 // we already have the entry and saved state, get it
 
                                 try {
-                                    cloudStorageDrive.loadAsString(savedCloudEntryGdrive.getPersistData());
+                                    cloudStorageDrive.loadAsString(savedCloudEntryGdrive.getPersistData().value);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                     // we need to update the persist string as existing one is been compromised
@@ -157,7 +157,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             if ((savedCloudEntryDropbox = cloudHandler.findEntry(OpenMode.DROPBOX)) != null) {
                                 // we already have the entry and saved state, get it
                                 try {
-                                    cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData());
+                                    cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData().value);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                     // we need to persist data again
@@ -221,7 +221,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             if ((savedCloudEntryBox = cloudHandler.findEntry(OpenMode.BOX)) != null) {
                                 // we already have the entry and saved state, get it
                                 try {
-                                    cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData());
+                                    cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData().value);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                     // we need to persist data again
@@ -282,7 +282,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                             if ((savedCloudEntryOnedrive = cloudHandler.findEntry(OpenMode.ONEDRIVE)) != null) {
                                 // we already have the entry and saved state, get it
                                 try {
-                                    cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData());
+                                    cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData().value);
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                     // we need to persist data again

@@ -1,6 +1,7 @@
 /*
- * Copyright (C) 2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
- * Copyright (C) 2014 Vishal Nehra <vishalmeham2@gmail.com>
+ * StringWrapper.java
+ *
+ * Copyright (C) 2020 Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -20,30 +21,16 @@
 
 package com.amaze.filemanager.database.models;
 
-import android.content.SharedPreferences;
+public class StringWrapper {
 
-import com.amaze.filemanager.utils.files.FileUtils;
+    public final String value;
 
-/**
- * Created by Vishal on 9/17/2014
- */
-public class Tab {
-    public final int tabNumber;
-    public final String path;
-    public final String home;
-
-    public Tab(int tabNo, String path, String home) {
-        this.tabNumber = tabNo;
-        this.path = path;
-        this.home = home;
+    public StringWrapper(String value) {
+        this.value = value;
     }
 
-    public String getOriginalPath(boolean savePaths, SharedPreferences sharedPreferences){
-        if(savePaths && FileUtils.isPathAccessible(path, sharedPreferences)) {
-            return path;
-        } else {
-            return home;
-        }
+    @Override
+    public String toString() {
+        return value;
     }
-
 }

@@ -35,7 +35,10 @@ import androidx.appcompat.app.AppCompatDelegate;
 
 import android.widget.Toast;
 
+import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.ExplorerDatabase;
+import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.utils.LruBitmapCache;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
@@ -72,6 +75,11 @@ public class AppConfig extends GlideApplication {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);//selector in srcCompat isn't supported without this
         sBackgroundHandlerThread = new HandlerThread("app_background");
         mInstance = this;
+
+        android.util.Log.d("TEST", "AppConfig.init");
+        CustomSshJConfig.init();
+        ExplorerDatabase.initialize(this);
+        UtilitiesDatabase.initialize(this);
 
         utilsProvider = new UtilitiesProvider(this);
         mUtilsHandler = new UtilsHandler(this);

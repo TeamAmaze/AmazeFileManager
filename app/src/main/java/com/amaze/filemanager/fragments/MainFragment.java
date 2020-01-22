@@ -83,8 +83,8 @@ import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.SortHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
-import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -949,7 +949,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
      */
     private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
 
-        CryptHandler handler = new CryptHandler(context);
+        CryptHandler handler = new CryptHandler();
 
         EncryptedEntry matchedEntry = null;
         // find closest path which matches with database entry

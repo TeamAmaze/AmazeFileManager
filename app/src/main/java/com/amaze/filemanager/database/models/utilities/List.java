@@ -1,6 +1,9 @@
 /*
- * Copyright (C) 2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
- * Copyright (C) 2014 Vishal Nehra <vishalmeham2@gmail.com>
+ * List.java
+ *
+ * Copyright (C) 2020 Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
+ * and contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -18,18 +21,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.models;
+package com.amaze.filemanager.database.models.utilities;
 
-/**
- * Created by Ning on 5/28/2018.
- */
-public class Sort {
-    public final String path;
-    public final int type;
+import androidx.room.Entity;
 
-    public Sort(String path, int type) {
-        this.path = path;
-        this.type = type;
+import com.amaze.filemanager.database.UtilitiesDatabase;
+
+@Entity(tableName = UtilitiesDatabase.TABLE_LIST)
+public class List extends OperationData {
+
+    public List(String path) {
+        super(path);
     }
 
 }

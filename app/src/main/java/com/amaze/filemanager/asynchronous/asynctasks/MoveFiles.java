@@ -27,7 +27,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -182,7 +182,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                         if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                             try {
 
-                                CryptHandler cryptHandler = new CryptHandler(context);
+                                CryptHandler cryptHandler = new CryptHandler();
                                 EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
                                 EncryptedEntry newEntry = new EncryptedEntry();
                                 newEntry.setId(oldEntry.getId());

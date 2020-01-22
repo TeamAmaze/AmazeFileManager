@@ -12,7 +12,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.DecryptService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
@@ -45,7 +45,7 @@ public class EncryptDecryptUtils {
      */
     public static void startEncryption(Context c, final String path, final String password,
                                        Intent intent) throws GeneralSecurityException, IOException {
-        CryptHandler cryptHandler = new CryptHandler(c);
+        CryptHandler cryptHandler = new CryptHandler();
         String destPath = path.substring(0, path.lastIndexOf('/')+1)
                 .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
 
@@ -102,7 +102,7 @@ public class EncryptDecryptUtils {
             return;
         }
 
-        switch (encryptedEntry.getPassword()) {
+        switch (encryptedEntry.getPassword().value) {
             case PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT:
                 try {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -128,7 +128,7 @@ public class EncryptDecryptUtils {
                 break;
             default:
                 GeneralDialogCreation.showDecryptDialog(c, mainActivity, decryptIntent,
-                        utilsProvider.getAppTheme(), encryptedEntry.getPassword(),
+                        utilsProvider.getAppTheme(), encryptedEntry.getPassword().value,
                         decryptButtonCallbackInterface);
                 break;
         }
@@ -142,7 +142,7 @@ public class EncryptDecryptUtils {
      */
     private static EncryptedEntry findEncryptedEntry(Context context, String path) throws GeneralSecurityException, IOException {
 
-        CryptHandler handler = new CryptHandler(context);
+        CryptHandler handler = new CryptHandler();
 
         EncryptedEntry matchedEntry = null;
         // find closest path which matches with database entry

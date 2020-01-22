@@ -88,6 +88,7 @@ ext {
     glideVersion = '4.9.0'
     sshjVersion = '0.26.0'
     fabSpeedDialVersion = '3.1.1'
+    roomVersion = '2.2.4'
 }
 
 dependencies {
@@ -101,6 +102,8 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.android.billingclient:billing:1.2'
+    implementation "androidx.room:room-runtime:$roomVersion"
+    annotationProcessor "androidx.room:room-compiler:$roomVersion"
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
 
     //For tests

@@ -160,7 +160,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
         // delete file entry from encrypted database
         for (HybridFileParcelable file : files) {
             if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                CryptHandler handler = new CryptHandler(cd);
+                CryptHandler handler = new CryptHandler();
                 handler.clear(file.getPath());
             }
         }

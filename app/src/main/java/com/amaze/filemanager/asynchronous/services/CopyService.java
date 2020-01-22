@@ -41,7 +41,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -306,7 +306,7 @@ public class CopyService extends AbstractProgressiveService {
                 if (sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     try {
 
-                        CryptHandler cryptHandler = new CryptHandler(getApplicationContext());
+                        CryptHandler cryptHandler = new CryptHandler();
                         EncryptedEntry oldEntry = cryptHandler.findEntry(sourceFile.getPath());
                         EncryptedEntry newEntry = new EncryptedEntry();
 
