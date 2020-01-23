@@ -637,7 +637,8 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="bookmark_exists">ブックマークは存在します</string>
     <string name="hide_media">メディアブラウザーから非表示</string>
     <string name="ssh_connect_failed_host_key_changed_prompt">誰かが変なことをしている可能性があります!\n\n誰かがあなたを盗聴している可能性があります (中間者攻撃)! ホスト鍵が変更された可能性もあります。 リモートホストから送信された公開鍵のフィンガープリントが、Amazeに保存されているものと一致しません。\n\nホストのフィンガープリントを更新して続行するか、SSH接続設定の更新をキャンセルできます。</string>
-    <string name="update_host_key">ホストキーの更新</string>
+    <string name="update_host_key">ホスト鍵の更新</string>
     <string name="cancel_recommended">キャンセル (推奨)</string>
+    <string name="failed_install_apk">インストールに失敗しました</string>
 </resources>
 
