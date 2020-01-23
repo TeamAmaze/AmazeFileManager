@@ -644,5 +644,6 @@
     <string name="ssh_connect_failed_host_key_changed_prompt">יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\nיכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\nניתן להמשיך ולעדכן את טביעת האצבע של השרת או לבטל את עדכון הגדרות חיבור ה־SSH.</string>
     <string name="update_host_key">עדכון מפתח מארח</string>
     <string name="cancel_recommended">ביטול (עדיף)</string>
+    <string name="failed_install_apk">ההתקנה נכשלה</string>
 </resources>
 
