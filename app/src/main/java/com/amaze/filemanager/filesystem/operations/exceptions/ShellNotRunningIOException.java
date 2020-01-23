@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class ShellNotRunningIOException extends IOException {
 
-	public ShellNotRunningIOException(ShellNotRunningException e) {
-		super(e);
-	}
+    public ShellNotRunningIOException(ShellNotRunningException e) {
+        super(e);
+    }
 }

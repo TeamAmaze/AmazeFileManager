@@ -6,7 +6,7 @@ import java.io.IOException;
 
 public class ZipIOException extends IOException {
 
-	public ZipIOException(ZipException e) {
-		super(e);
-	}
+    public ZipIOException(ZipException e) {
+        super(e);
+    }
 }

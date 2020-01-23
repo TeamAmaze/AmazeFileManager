@@ -92,7 +92,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
             Toast.makeText(context, context.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
         }
 
-        if (compressedExplorerFragment!=null) {
+        if (compressedExplorerFragment != null) {
             compressedExplorerFragment.files.clear();
         }
 
