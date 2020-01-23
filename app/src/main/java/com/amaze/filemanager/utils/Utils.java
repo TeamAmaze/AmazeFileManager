@@ -33,6 +33,7 @@ import android.os.Build;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
@@ -43,6 +44,7 @@ import android.widget.Toast;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.util.concurrent.TimeUnit;
@@ -215,7 +217,7 @@ public class Utils {
             case ROOT:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-                    return GenericFileProvider.getUriForFile(context, GenericFileProvider.PROVIDER_NAME,
+                    return FileProvider.getUriForFile(context, FileUtils.FILE_PROVIDER_AUTHORITY,
                             new File(baseFile.getPath()));
                 } else {
                     return Uri.fromFile(new File(baseFile.getPath()));

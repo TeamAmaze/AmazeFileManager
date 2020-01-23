@@ -1,3 +1,26 @@
+/*
+ * Copyright (C) 2015-2020 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Rémi Piotaix <remi.piotaix@gmail.com>,
+ * John Carlson <jawnnypoo@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * James Downs <james.j.downs@gmail.com>, Bowie Chen <bowiechen@users.noreply.github.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils.share;
 
 import android.app.Activity;
@@ -53,9 +76,9 @@ public class ShareTask extends AsyncTask<String, String, Void> {
                 arrayList1.add(resInfo.loadLabel(packageManager).toString());
                 if (packageName.contains("android.bluetooth")) bluetooth_present = true;
                 Intent intent = new Intent();
-                System.out.println(resInfo.activityInfo.packageName + "\t" + resInfo.activityInfo.name);
                 intent.setComponent(new ComponentName(packageName, resInfo.activityInfo.name));
                 intent.setAction(Intent.ACTION_SEND_MULTIPLE);
+                intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 intent.setType(mime);
                 intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayList);
                 intent.setPackage(packageName);

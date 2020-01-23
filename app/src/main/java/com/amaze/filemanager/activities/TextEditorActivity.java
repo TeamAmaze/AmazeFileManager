@@ -193,6 +193,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
         } else {
             Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
             finish();
+            return;
         }
 
         getSupportActionBar().setTitle(mFile.name);

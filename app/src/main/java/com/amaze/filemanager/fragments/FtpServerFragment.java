@@ -153,7 +153,7 @@ public class FtpServerFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         setRetainInstance(true);
         mainActivity.getAppbar().setTitle(R.string.ftp);
-        mainActivity.floatingActionButton.getMenuButton().hide();
+        mainActivity.floatingActionButton.hide();
         mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
         mainActivity.supportInvalidateOptionsMenu();
 

@@ -62,14 +62,6 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:id="@+id/fab_bg"
-            android:visibility="gone"
-            android:clickable="true"
-            android:src="@drawable/fab_shadow_light"/>
-        
         <include layout="@layout/layout_fab"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
     <com.amaze.filemanager.ui.views.drawer.CustomNavigationView

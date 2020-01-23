@@ -138,6 +138,7 @@ public final class MimeTypes {
         MIME_TYPES.put("ogv", "video/ogg");
         MIME_TYPES.put("flv", "video/x-flv");
         MIME_TYPES.put("mkv", "video/x-matroska");
+        MIME_TYPES.put("mts", "video/mp2t");
 
         MIME_TYPES.put(CryptUtil.CRYPT_EXTENSION.replace(".", ""), "crypt/aze");
     }
