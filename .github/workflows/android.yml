@@ -18,6 +18,6 @@ jobs:
         java-version: 1.8
     - name: Build with Gradle
       run: |
-        ./gradlew build
+        ./gradlew assembledebug
         ./gradlew test
         ./gradlew connectedAndroidTest
