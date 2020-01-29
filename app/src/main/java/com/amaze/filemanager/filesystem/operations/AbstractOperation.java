@@ -11,6 +11,7 @@ import androidx.annotation.WorkerThread;
 
 public abstract class AbstractOperation {
 	private boolean started;
+	private boolean failed;
 	private final List<AbstractOperation> requiredOperations = new ArrayList<>();
 
 	public AbstractOperation() {
@@ -33,6 +34,7 @@ public abstract class AbstractOperation {
 			try {
 				operation.operate();
 			} catch (IOException e) {
+				operation.failed = true;
 				revert(e);
 			}
 
@@ -56,6 +58,10 @@ public abstract class AbstractOperation {
 				operation.errorUndo(e);
 			}
 		}
+	}
+
+	public boolean hasFailed() {
+		return failed;
 	}
 
 	protected final void requires(AbstractOperation operation) {
