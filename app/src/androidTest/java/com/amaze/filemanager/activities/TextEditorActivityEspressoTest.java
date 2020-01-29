@@ -8,6 +8,7 @@ import androidx.test.filters.SmallTest;
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.runner.AndroidJUnit4;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -48,8 +49,8 @@ public class TextEditorActivityEspressoTest {
             waiter.await();
         }
         waiter.countDown();
-        assertNotEquals("", activityRule.getActivity().mInput.getText());
-        assertNotEquals("foobar", activityRule.getActivity().mInput.getText());
+        Assert.assertNotEquals("", activityRule.getActivity().mInput.getText());
+        Assert.assertNotEquals("foobar", activityRule.getActivity().mInput.getText());
         //Add extra time for you to see the Activity did load, and text is actually there
         //Thread.sleep(1000);
     }

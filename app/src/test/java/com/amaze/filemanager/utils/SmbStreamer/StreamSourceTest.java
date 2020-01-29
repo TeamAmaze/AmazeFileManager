@@ -1,42 +1,29 @@
 package com.amaze.filemanager.utils.SmbStreamer;
 
 import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
-
-import org.junit.*;
+import jcifs.smb.SmbFile;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
-import org.robolectric.shadows.ShadowUsbManager;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.UnknownHostException;
 import java.util.Arrays;
 
-import jcifs.smb.NtlmPasswordAuthentication;
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
-import jcifs.smb.SmbFileInputStream;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Rustam Khadipash on 30/3/2018.
  */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
+@Config(shadows = {ShadowSmbFile.class})
 public class StreamSourceTest {
     private SmbFile file;
     private StreamSource ss;

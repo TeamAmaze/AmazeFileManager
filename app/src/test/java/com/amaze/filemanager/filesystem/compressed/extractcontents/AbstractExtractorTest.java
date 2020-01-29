@@ -2,10 +2,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 
 import android.content.Context;
 import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
-
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -15,7 +12,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,7 +27,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 14, maxSdk = 27)
+@Config(minSdk = 14, maxSdk = 27)
 public abstract class AbstractExtractorTest {
 
     protected abstract Class<? extends Extractor> extractorClass();

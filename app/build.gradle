@@ -84,7 +84,7 @@ android {
 }
 
 ext {
-    robolectricVersion = '3.8'
+    robolectricVersion = '4.3.1'
     glideVersion = '4.9.0'
     sshjVersion = '0.26.0'
     fabSpeedDialVersion = '3.1.1'

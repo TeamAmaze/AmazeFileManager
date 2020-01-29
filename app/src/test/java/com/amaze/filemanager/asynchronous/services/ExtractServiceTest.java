@@ -3,10 +3,7 @@ package com.amaze.filemanager.asynchronous.services;
 import android.content.Intent;
 import android.os.Environment;
 import androidx.annotation.NonNull;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
-
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
 import org.junit.Before;
@@ -16,10 +13,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowToast;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,7 +26,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class ExtractServiceTest {
 
     private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");

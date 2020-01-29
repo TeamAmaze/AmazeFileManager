@@ -6,11 +6,8 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.widget.TextView;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.utils.application.AppConfig;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -19,10 +16,8 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.android.controller.ActivityController;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowEnvironment;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -35,7 +30,6 @@ import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class TextEditorActivityTest {
 
     private final String fileContents = "fsdfsdfs";

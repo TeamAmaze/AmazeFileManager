@@ -1,10 +1,7 @@
 package com.amaze.filemanager.filesystem.ssh;
 
 import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
-
 import org.apache.sshd.common.config.keys.KeyUtils;
 import org.apache.sshd.common.file.FileSystemFactory;
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
@@ -17,15 +14,12 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public abstract class AbstractSftpServerTest {
 
     protected SshServer server;

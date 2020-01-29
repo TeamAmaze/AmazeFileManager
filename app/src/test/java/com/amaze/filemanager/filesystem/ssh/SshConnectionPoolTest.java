@@ -2,14 +2,10 @@ package com.amaze.filemanager.filesystem.ssh;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.test.ShadowCryptUtil;
-
 import net.schmizz.sshj.common.SecurityUtils;
-
 import org.apache.sshd.server.SshServer;
 import org.apache.sshd.server.auth.pubkey.AcceptAllPublickeyAuthenticator;
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
@@ -20,7 +16,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -30,7 +25,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(shadows = {ShadowCryptUtil.class})
 public class SshConnectionPoolTest {
 
     private SshServer server;

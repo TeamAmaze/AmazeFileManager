@@ -1,17 +1,14 @@
 package com.amaze.filemanager.filesystem;
 
 import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.test.ShadowShellInteractive;
-
+import eu.chainfire.libsuperuser.Shell;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -23,12 +20,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import eu.chainfire.libsuperuser.Shell;
-
 import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
+@Config(shadows = {ShadowShellInteractive.class})
 public class RootHelperTest {
 
     private static final File sysroot = new File(Environment.getExternalStorageDirectory(), "sysroot");

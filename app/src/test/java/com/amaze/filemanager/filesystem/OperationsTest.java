@@ -1,25 +1,22 @@
 package com.amaze.filemanager.filesystem;
 
 import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.utils.OpenMode;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(maxSdk = 27, constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
+@Config(maxSdk = 27)
 public class OperationsTest {
 
     private File storageRoot = Environment.getExternalStorageDirectory();

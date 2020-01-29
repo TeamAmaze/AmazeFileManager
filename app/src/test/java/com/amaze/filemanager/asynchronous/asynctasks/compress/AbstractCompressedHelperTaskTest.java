@@ -1,23 +1,16 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
-import com.amaze.filemanager.filesystem.compressed.TestArchives;
-
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -27,7 +20,7 @@ import java.util.ArrayList;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 27, maxSdk = 27)
+@Config(minSdk = 27, maxSdk = 27)
 public abstract class AbstractCompressedHelperTaskTest {
 
     @Before
