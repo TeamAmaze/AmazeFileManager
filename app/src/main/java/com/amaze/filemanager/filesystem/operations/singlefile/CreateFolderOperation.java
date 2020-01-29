@@ -56,7 +56,7 @@ public class CreateFolderOperation extends AbstractOperation {
     }
 
     @Override
-    protected void operate() throws IOException {
+    protected void execute() throws IOException {
         if (file.isSftp()) {
             file.mkdir(context);
         } else if (file.isSmb()) {

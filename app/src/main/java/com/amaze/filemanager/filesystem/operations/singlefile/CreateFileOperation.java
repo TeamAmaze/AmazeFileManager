@@ -61,7 +61,7 @@ public class CreateFileOperation extends AbstractOperation {
     }
 
     @Override
-    protected void operate() throws IOException {
+    protected void execute() throws IOException {
         if (file.isSftp()) {
             OutputStream out = file.getOutputStream(context);
             if (out == null) {

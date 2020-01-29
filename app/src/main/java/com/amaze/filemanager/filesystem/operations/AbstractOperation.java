@@ -30,7 +30,7 @@ public abstract class AbstractOperation {
     }
 
     /**
-     * If this check passes the operation will be started,
+     * If this check passes the operation will be executed,
      * nothing here is reversable and this operation can have no side effects!
      */
     protected abstract boolean check();
@@ -39,7 +39,7 @@ public abstract class AbstractOperation {
      * The proper operation,
      * if another operation is required to be started call requires() and it will eventually start
      */
-    protected abstract void operate() throws IOException;
+    protected abstract void execute() throws IOException;
 
     /**
      * This must return the file system to the state before the operation was started.

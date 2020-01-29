@@ -46,7 +46,7 @@ public class DeleteOperation extends AbstractOperation {
     }
 
     @Override
-    protected void operate() throws IOException {
+    protected void execute() throws IOException {
         boolean hasSucceed = deleteFile();
         if (!hasSucceed) {
             throw new IOException("Delete has failed!");

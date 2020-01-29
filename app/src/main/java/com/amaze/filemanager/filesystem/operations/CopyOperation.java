@@ -69,7 +69,7 @@ public class CopyOperation extends AbstractOperation {
     }
 
     @Override
-    protected void operate() throws IOException {
+    protected void execute() throws IOException {
         // initial start of copy, initiate the watcher
         watcherUtil.watch(copyService);
 

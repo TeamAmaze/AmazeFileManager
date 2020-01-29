@@ -3,7 +3,6 @@ package com.amaze.filemanager.filesystem.operations;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -46,7 +45,7 @@ public final class Operator {
             started = true;
 
             try {
-                operation.operate();
+                operation.execute();
             } catch (IOException e) {
                 failed = true;
                 revert(e);
