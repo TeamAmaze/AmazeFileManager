@@ -28,37 +28,39 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
+import android.widget.RemoteViews;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
-import android.widget.RemoteViews;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
-import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.io.ZipOutputStream;
-import net.lingala.zip4j.model.ZipParameters;
-import net.lingala.zip4j.util.Zip4jConstants;
-
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipException;
+import java.util.zip.ZipOutputStream;
 
 public class ZipService extends AbstractProgressiveService {
 
@@ -268,12 +270,13 @@ public class ZipService extends AbstractProgressiveService {
                     progressHandler.setSourceFilesProcessed(++fileProgress);
                     compressFile(file, "");
                 }
-            } catch (IOException | ZipException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             } finally {
                 try {
                     zos.flush();
                     zos.close();
+                    context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE).setData(Uri.fromFile(zipDirectory)));
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
@@ -286,11 +289,18 @@ public class ZipService extends AbstractProgressiveService {
             if (!file.isDirectory()) {
                 byte[] buf = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
                 int len;
-                ZipParameters parameters = new ZipParameters();
-                parameters.setCompressionLevel(Zip4jConstants.DEFLATE_LEVEL_NORMAL);
-                parameters.setFileNameInZip(path + "/" + file.getName());
-                zos.putNextEntry(file, parameters);
-                ServiceWatcherUtil.position += file.length();
+                BufferedInputStream in = new BufferedInputStream(new FileInputStream(file));
+                zos.putNextEntry(new ZipEntry(path + "/" + file.getName()));
+                try {
+                    while ((len = in.read(buf)) > 0) {
+                        if (!progressHandler.getCancelled()) {
+                            zos.write(buf, 0, len);
+                            ServiceWatcherUtil.position += len;
+                        } else break;
+                    }
+                } finally {
+                    in.close();
+                }
                 return;
             }
 
