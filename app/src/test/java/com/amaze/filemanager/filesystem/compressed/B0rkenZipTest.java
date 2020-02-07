@@ -35,6 +35,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
+import com.amaze.filemanager.test.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -47,9 +48,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import android.os.Environment;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public class B0rkenZipTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");

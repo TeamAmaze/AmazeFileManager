@@ -32,6 +32,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
+import com.amaze.filemanager.test.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.activities.MainActivity;
@@ -42,9 +43,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import android.text.TextUtils;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public class UsbOtgTest {
 
   @Test

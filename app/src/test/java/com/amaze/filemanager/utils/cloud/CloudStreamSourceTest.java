@@ -20,6 +20,15 @@
 
 package com.amaze.filemanager.utils.cloud;
 
+import android.os.Environment;
+
+import com.amaze.filemanager.BuildConfig;
+
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.annotation.Config;
+import com.amaze.filemanager.test.ShadowMultiDex;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
@@ -45,9 +54,7 @@ import android.os.Environment;
 
 /** Created by Rustam Khadipash on 31/3/2018. */
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public class CloudStreamSourceTest {
   private CloudStreamSource cs;
   private String testFilePath;

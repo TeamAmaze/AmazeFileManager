@@ -23,6 +23,16 @@ package com.amaze.filemanager.utils.SmbStreamer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
+import org.junit.*;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.Shadows;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
+import org.robolectric.shadows.ShadowUsbManager;
+import com.amaze.filemanager.test.ShadowMultiDex;
+
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -46,9 +56,7 @@ import jcifs.smb.SmbFile;
 
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowSmbFile.class}, maxSdk = 27)
 public class StreamSourceTest {
   private SmbFile file;
   private StreamSource ss;
