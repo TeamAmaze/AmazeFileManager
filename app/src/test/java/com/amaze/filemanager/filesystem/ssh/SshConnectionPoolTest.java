@@ -51,9 +51,7 @@ import androidx.annotation.Nullable;
 import net.schmizz.sshj.common.SecurityUtils;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowCryptUtil.class}, maxSdk = 27)
 public class SshConnectionPoolTest {
 
   private SshServer server;

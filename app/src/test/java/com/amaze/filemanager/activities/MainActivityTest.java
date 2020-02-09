@@ -32,9 +32,7 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.test.ShadowMultiDex;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
 public class MainActivityTest {
 
     @Test @Ignore

@@ -39,7 +39,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import android.net.Uri;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk=24, maxSdk = 27)
 public class SingletonUsbOtgTest {
   @Test
   @Config(minSdk = KITKAT)

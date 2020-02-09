@@ -43,7 +43,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import android.text.TextUtils;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 24, maxSdk = 27)
 public class UsbOtgTest {
 
   @Test

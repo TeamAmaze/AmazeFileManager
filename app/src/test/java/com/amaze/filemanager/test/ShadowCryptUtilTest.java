@@ -39,9 +39,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowCryptUtil.class}, maxSdk = 27)
 public class ShadowCryptUtilTest {
 
   @Test
