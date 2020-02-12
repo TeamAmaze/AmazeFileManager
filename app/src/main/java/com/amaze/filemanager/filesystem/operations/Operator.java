@@ -8,7 +8,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 /**
- * Handles and runs AbstractOperations
+ * Handles and runs {@link AbstractOperation}s
  */
 public final class Operator {
     private boolean started;
@@ -17,7 +17,7 @@ public final class Operator {
     private final List<AbstractOperation> requiredOperations = new ArrayList<>();
 
     /**
-     * Creates and operator with an AbstractOperation as its first required operation
+     * Creates and operator with an {@link AbstractOperation} as its first required operation
      */
     public Operator(AbstractOperation operation) {
         operation.setOperator(this);
@@ -25,7 +25,7 @@ public final class Operator {
     }
 
     /**
-     * Starts the AbstractOperations added as required for this Operator
+     * Starts the {@link AbstractOperation} added as required for this Operator
      * Should not be run on main thread
      */
     @WorkerThread
@@ -55,8 +55,9 @@ public final class Operator {
     }
 
     /**
-     * Starts reversal of every AbstractOperation,
-     * in reverse.
+     * Starts reversal of every {@link AbstractOperation}, in reverse.
+     *
+     * If {@link Operator#doNothingOnRevert} this function does nothing
      */
     @WorkerThread
     private void revert(@Nullable IOException e) {
@@ -80,7 +81,7 @@ public final class Operator {
     }
 
     /**
-     * Adds a required AbstractOperation to this Operator,
+     * Adds a required {@link AbstractOperation} to this Operator,
      * it is guaranteed to be run, in the future.
      */
     public void addRequiredOperation(AbstractOperation operation) {
@@ -92,6 +93,9 @@ public final class Operator {
         return failed;
     }
 
+    /**
+     * {@link Operator#revert(IOException)} does nothing
+     */
     public void setDoNothingOnRevert(boolean doNothingOnRevert) {
         this.doNothingOnRevert = doNothingOnRevert;
     }
