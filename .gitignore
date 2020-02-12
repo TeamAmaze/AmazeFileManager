@@ -52,3 +52,5 @@ projectFilesBackup
 captures
 *.iml
 
+/app/src/main/res/values-in/strings.xml
+/app/src/main/res/values-iw/strings.xml
