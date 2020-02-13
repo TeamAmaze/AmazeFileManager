@@ -3,7 +3,6 @@ package com.amaze.filemanager.filesystem.operations;
 import android.content.Context;
 import android.util.Log;
 
-import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
@@ -142,7 +141,7 @@ public class CopyOperation extends AbstractOperation {
             for (HybridFileParcelable a : sourceFiles) {
                 if (!failedFOps.contains(a)) {
                     DeleteOperation delete = new DeleteOperation(context, isRootExplorer, a);
-                    requires(delete);
+                    executeEventually(delete);
                 }
             }
         }
@@ -188,7 +187,7 @@ public class CopyOperation extends AbstractOperation {
                 CopyOperation childOperation = new CopyOperation(copyService, watcherUtil,
                         progressHandler, Collections.singletonList(file), targetFile.getPath(), move,
                         targetFile.getMode(), isRootExplorer);
-                requires(childOperation);
+                executeEventually(childOperation);
             });
         } else {
             if (!Operations.isFileNameValid(sourceFile.getName())) {

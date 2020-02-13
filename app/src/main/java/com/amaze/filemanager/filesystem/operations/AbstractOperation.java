@@ -1,19 +1,15 @@
 package com.amaze.filemanager.filesystem.operations;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.WorkerThread;
 
 /**
  * Any task that needs an undo can be encapsulated with an {@link AbstractOperation},
  * this, with the {@link Operator}, allows for easy sequencing of recursive operations,
- * by just calling {@link AbstractOperation#requires}
+ * by just calling {@link AbstractOperation#executeEventually}
  */
 public abstract class AbstractOperation {
     private Operator operator;
@@ -37,14 +33,14 @@ public abstract class AbstractOperation {
 
     /**
      * The proper operation,
-     * if another operation is required to be started call {@link AbstractOperation#requires}
+     * if another operation is required to be started call {@link AbstractOperation#executeEventually}
      * and it will eventually start (in the future)
      */
     protected abstract void execute() throws IOException;
 
     /**
      * This must return the file system to the state before the operation was started.
-     * It must not call any "{@link AbstractOperation#requires}" operations.
+     * It must not call any "{@link AbstractOperation#executeEventually}" operations.
      * It is assured that every required {@link AbstractOperation} by this {@link AbstractOperation}
      * has already been reversed.
      */
@@ -62,7 +58,7 @@ public abstract class AbstractOperation {
      * Adds a required {@link AbstractOperation} to the {@link Operator}
      * running this {@link AbstractOperation}, it is guaranteed to be run, in the future.
      */
-    protected void requires(AbstractOperation operation) {
+    protected void executeEventually(AbstractOperation operation) {
         getOperator().addRequiredOperation(operation);
     }
 }

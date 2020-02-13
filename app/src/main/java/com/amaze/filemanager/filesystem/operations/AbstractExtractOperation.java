@@ -43,7 +43,7 @@ public abstract class AbstractExtractOperation extends AbstractOperation {
 
     /**
      * The proper operation,
-     * if another operation is required to be started call requires() and it will eventually start
+     * if another operation is required to be started call {@link AbstractOperation#executeEventually(AbstractOperation)} and it will eventually start
      */
     protected final void execute() throws IOException {
         extractWithFilter(filter);

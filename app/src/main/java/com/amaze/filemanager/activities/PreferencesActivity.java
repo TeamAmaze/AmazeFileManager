@@ -245,7 +245,7 @@ public class PreferencesActivity extends ThemedActivity {
     }
 
     /**
-     * When a Preference (that requires an independent fragment) is selected this is called.
+     * When a Preference (that executeEventually an independent fragment) is selected this is called.
      * @param item the Preference in question
      */
     public void selectItem(int item) {
