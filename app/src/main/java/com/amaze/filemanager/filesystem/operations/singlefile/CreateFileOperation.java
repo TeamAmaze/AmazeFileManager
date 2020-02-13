@@ -165,6 +165,8 @@ public class CreateFileOperation extends AbstractOperation {
 
     @Override
     protected void undo() {
-
+        //You either have the file or you don't,
+        //in the first case the operation succeded, in the second the operation is already undone,
+        //there's nothing to undo
     }
 }
