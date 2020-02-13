@@ -42,7 +42,7 @@ public class DeleteOperation extends AbstractOperation {
 
     @Override
     protected boolean check() {
-        return true;
+        return file.exists(context);
     }
 
     @Override
