@@ -25,6 +25,9 @@ allprojects {
         maven { url "https://jcenter.bintray.com" }
         mavenCentral()
     }
+    tasks.withType(Test) {
+        maxParallelForks = Runtime.runtime.availableProcessors()
+    }
 }
 
 spotless {
