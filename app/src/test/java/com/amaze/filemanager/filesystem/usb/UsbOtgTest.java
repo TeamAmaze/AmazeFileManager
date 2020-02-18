@@ -46,12 +46,10 @@ import android.text.TextUtils;
 @Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 24, maxSdk = 27)
 public class UsbOtgTest {
 
-  @Test
-  @Config(minSdk = KITKAT)
-  public void usbConnectionTest() {
-    ActivityController<MainActivity> controller =
-        Robolectric.buildActivity(MainActivity.class).create();
-    MainActivity activity = controller.get();
+    @Test
+    public void usbConnectionTest() {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class).create();
+        MainActivity activity = controller.get();
 
     addUsbOtgDevice(activity);
 

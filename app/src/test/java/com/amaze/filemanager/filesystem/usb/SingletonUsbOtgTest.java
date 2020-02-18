@@ -41,11 +41,9 @@ import android.net.Uri;
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk=24, maxSdk = 27)
 public class SingletonUsbOtgTest {
-  @Test
-  @Config(minSdk = KITKAT)
-  public void usbConnectionTest() {
-    ActivityController<MainActivity> controller =
-        Robolectric.buildActivity(MainActivity.class).create();
+    @Test
+    public void usbConnectionTest() {
+        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class).create();
 
     addUsbOtgDevice(controller.get());
 
