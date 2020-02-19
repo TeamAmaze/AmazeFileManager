@@ -45,9 +45,11 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
@@ -75,7 +77,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-import jcifs.smb.SmbFile;
+
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -88,6 +90,8 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
+
+import jcifs.smb.SmbFile;
 
 /**
  * Functions that deal with files
@@ -394,7 +398,7 @@ public class FileUtils {
         String type = "application/vnd.android.package-archive";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), permissionsActivity.getPackageName(), f);
+            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), "com.amaze.filemanager", f);
             intent.setDataAndType(downloadedApk, type);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
