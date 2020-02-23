@@ -1,5 +1,10 @@
 /*
- * Copyright (C) 2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+ * TabHandler.java
+ *
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Rémi Piotaix <remi.piotaix@inria.fr>,
+ * John Carlson <jawnnypoo@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * ning <ning.xyw@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *

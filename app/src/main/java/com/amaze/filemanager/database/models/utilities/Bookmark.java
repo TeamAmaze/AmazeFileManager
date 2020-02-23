@@ -27,6 +27,11 @@ import androidx.room.Entity;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 
+/**
+ * {@link Entity} representation of <code>bookmark</code> table in utilities.db.
+ *
+ * @see UtilitiesDatabase
+ */
 @Entity(tableName = UtilitiesDatabase.TABLE_BOOKMARKS)
 public class Bookmark extends OperationDataWithName {
     public Bookmark(String name, String path) {

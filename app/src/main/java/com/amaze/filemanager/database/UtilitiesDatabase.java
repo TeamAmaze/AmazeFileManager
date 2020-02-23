@@ -1,9 +1,7 @@
 /*
  * UtilitiesDatabase.java
  *
- * Copyright (C) 2020 Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
- * and contributors.
+ * Copyright (C) 2020 Raymond Lai <airwave209gt at gmail.com> and contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -47,6 +45,12 @@ import com.amaze.filemanager.database.models.utilities.List;
 import com.amaze.filemanager.database.models.utilities.SftpEntry;
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
 
+/**
+ * Repository for {@link Bookmark}, {@link Grid}, {@link Hidden}, {@link History}, {@link List},
+ * {@link SmbEntry}, {@link SftpEntry} objects in utilities.db in Amaze.
+ *
+ * @see RoomDatabase
+ */
 @Database(entities = {Bookmark.class, Grid.class, Hidden.class, History.class, List.class, SmbEntry.class, SftpEntry.class}, version = 4, exportSchema = false)
 public abstract class UtilitiesDatabase extends RoomDatabase {
 

@@ -21,6 +21,9 @@
 
 package com.amaze.filemanager.database.models;
 
+/**
+ * Simple StringWrapper.
+ */
 public class StringWrapper {
 
     public final String value;

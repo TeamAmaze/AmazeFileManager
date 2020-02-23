@@ -24,9 +24,18 @@
 package com.amaze.filemanager.database.models.utilities;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 
+/**
+ * Base class {@link Entity} representation of tables in utilities.db.
+ *
+ * <p>This class is the base class extending {@link OperationData} adding the <code>name</code> column.</p>
+ *
+ * @see OperationData
+ * @see UtilitiesDatabase
+ */
 public abstract class OperationDataWithName extends OperationData {
 
     @ColumnInfo(name = UtilitiesDatabase.COLUMN_NAME)

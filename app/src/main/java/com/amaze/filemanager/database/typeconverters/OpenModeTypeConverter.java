@@ -25,6 +25,9 @@ import androidx.room.TypeConverter;
 
 import com.amaze.filemanager.utils.OpenMode;
 
+/**
+ * {@link TypeConverter} for {@link OpenMode} objects to database columns.
+ */
 public class OpenModeTypeConverter {
 
     @TypeConverter

@@ -21,12 +21,21 @@
 
 package com.amaze.filemanager.database.typeconverters;
 
+import android.content.Context;
+
 import androidx.room.TypeConverter;
 
 import com.amaze.filemanager.database.models.StringWrapper;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
+/**
+ * {@link TypeConverter} for password strings encrypted by {@link CryptUtil}.
+ *
+ * @see StringWrapper
+ * @see CryptUtil#encryptPassword(Context, String)
+ * @see CryptUtil#decryptPassword(Context, String)
+ */
 public class EncryptedStringTypeConverter {
 
     private static final String TAG = EncryptedStringTypeConverter.class.getSimpleName();

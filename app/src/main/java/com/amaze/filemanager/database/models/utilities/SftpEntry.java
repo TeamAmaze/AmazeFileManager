@@ -30,6 +30,11 @@ import androidx.room.Entity;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 
+/**
+ * {@link Entity} representation of <code>sftp</code> table in utilities.db.
+ *
+ * @see UtilitiesDatabase
+ */
 @Entity(tableName = UtilitiesDatabase.TABLE_SFTP)
 public class SftpEntry extends OperationDataWithName {
 

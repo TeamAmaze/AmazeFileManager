@@ -24,10 +24,18 @@
 package com.amaze.filemanager.database.models.utilities;
 
 import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 
+/**
+ * Base class {@link Entity} representation of tables in utilities.db.
+ *
+ * <p>This class is the base classwith <code>id</code>, <code>path</code> columns common to all tables.</p>
+ *
+ * @see UtilitiesDatabase
+ */
 public abstract class OperationData {
 
     @PrimaryKey(autoGenerate = true)

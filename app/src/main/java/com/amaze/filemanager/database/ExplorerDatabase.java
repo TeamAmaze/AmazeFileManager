@@ -41,6 +41,12 @@ import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.database.models.explorer.Tab;
 
+/**
+ * Repository for {@link Tab}, {@link Sort}, {@link EncryptedEntry}, {@link CloudEntry} in
+ * explorer.db in Amaze.
+ *
+ * @see RoomDatabase
+ */
 @Database(entities = {Tab.class, Sort.class, EncryptedEntry.class, CloudEntry.class}, version = 7, exportSchema = false)
 public abstract class ExplorerDatabase extends RoomDatabase {
 
