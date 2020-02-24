@@ -1035,7 +1035,7 @@ public class GeneralDialogCreation {
 
     private static void onSortTypeSelected(MainFragment m, SharedPreferences sharedPref, Set<String> onlyThisFloders, MaterialDialog dialog, boolean desc) {
         final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
-        SortHandler sortHandler = new SortHandler();
+        SortHandler sortHandler = SortHandler.getInstance();
         if (onlyThisFloders.contains(m.getCurrentPath())) {
             Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
             Sort newSort = new Sort(m.getCurrentPath(), sortType);

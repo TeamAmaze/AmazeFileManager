@@ -2,24 +2,24 @@ package com.amaze.filemanager.fragments;
 
 import android.animation.ArgbEvaluator;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.viewpager.widget.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.ViewPager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -34,15 +34,13 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Arpit on 15-12-2014.
  */
-public class TabFragment extends Fragment
-        implements ViewPager.OnPageChangeListener {
+public class TabFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
     public List<Fragment> fragments = new ArrayList<>();
     public ScreenSlidePagerAdapter mSectionsPagerAdapter;
@@ -79,7 +77,7 @@ public class TabFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
 
-        tabHandler = new TabHandler();
+        tabHandler = TabHandler.getInstance();
         fragmentManager = getActivity().getSupportFragmentManager();
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -108,8 +106,9 @@ public class TabFragment extends Fragment
 
             Tab tab1 = tabHandler.findTab(1);
             Tab tab2 = tabHandler.findTab(2);
+            Tab[] tabs = tabHandler.getAllTabs();
 
-            if (tabHandler.getAllTabs().isEmpty() || tab1 == null || tab2 == null) {// creating tabs in db for the first time, probably the first launch of app, or something got corrupted
+            if (tabs == null || tabs.length < 1 || tab1 == null || tab2 == null) {// creating tabs in db for the first time, probably the first launch of app, or something got corrupted
                 if (mainActivity.getDrawer().getFirstPath() != null) {
                     addNewTab(1, mainActivity.getDrawer().getFirstPath());
                 } else {
@@ -200,22 +199,14 @@ public class TabFragment extends Fragment
     public void onDestroyView() {
         sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).apply();
         super.onDestroyView();
-        try {
-            if (tabHandler != null)
-                tabHandler.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     public void updatepaths(int pos) {
-        if (tabHandler == null)
-            tabHandler = new TabHandler();
-        int i = 1;
 
         // Getting old path from database before clearing
-
         tabHandler.clear();
+
+        int i = 1;
         for (Fragment fragment : fragments) {
             if (fragment instanceof MainFragment) {
                 MainFragment m = (MainFragment) fragment;
@@ -232,27 +223,6 @@ public class TabFragment extends Fragment
 
                 i++;
             }
-        }
-    }
-
-    String parseSmbPath(String a) {
-        if (a.contains("@"))
-            return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-        else return a;
-    }
-
-    String parsePathForName(String path, OpenMode openmode) {
-        Resources resources = getActivity().getResources();
-        if ("/".equals(path)) {
-            return resources.getString(R.string.root_directory);
-        } else if (openmode == OpenMode.SMB && path.startsWith("smb:/")) {
-            return (new File(parseSmbPath(path)).getName());
-        } else if ("/storage/emulated/0".equals(path)) {
-            return resources.getString(R.string.internalstorage);
-        } else if (openmode == OpenMode.CUSTOM) {
-            return new MainActivityHelper(mainActivity).getIntegralNames(path);
-        } else {
-            return new File(path).getName();
         }
     }
 
@@ -296,7 +266,7 @@ public class TabFragment extends Fragment
             sharedPrefs.edit().putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab).commit();
         }
 
-        Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
+        Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab, new Exception());
 
         Fragment fragment = fragments.get(p1);
         if (fragment != null && fragment instanceof MainFragment) {

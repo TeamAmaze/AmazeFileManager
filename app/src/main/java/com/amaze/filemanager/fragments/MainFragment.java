@@ -949,7 +949,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
      */
     private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
 
-        CryptHandler handler = new CryptHandler();
+        CryptHandler handler = CryptHandler.getInstance();
 
         EncryptedEntry matchedEntry = null;
         // find closest path which matches with database entry

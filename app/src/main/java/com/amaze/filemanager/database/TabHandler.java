@@ -39,8 +39,16 @@ public class TabHandler {
 
     private final ExplorerDatabase database;
 
-    public TabHandler() {
-        database = ExplorerDatabase.getInstance();
+    private TabHandler(){
+        this.database = ExplorerDatabase.getInstance();
+    }
+
+    private static class TabHandlerHolder {
+        private static final TabHandler INSTANCE = new TabHandler();
+    }
+
+    public static TabHandler getInstance() {
+        return TabHandlerHolder.INSTANCE;
     }
 
     public void addTab(@NonNull Tab tab) {
@@ -56,11 +64,7 @@ public class TabHandler {
         return database.tabDao().find(tabNo);
     }
 
-    public List<Tab> getAllTabs() {
-        return Arrays.asList(database.tabDao().list());
-    }
-
-    public void close() {
-        database.close();
+    public Tab[] getAllTabs() {
+        return database.tabDao().list();
     }
 }

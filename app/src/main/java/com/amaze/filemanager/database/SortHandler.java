@@ -25,9 +25,11 @@ package com.amaze.filemanager.database;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+
 import androidx.annotation.Nullable;
 
 import com.amaze.filemanager.database.models.explorer.Sort;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,6 +44,18 @@ public class SortHandler {
 
     private final ExplorerDatabase database;
 
+    private SortHandler() {
+        database = ExplorerDatabase.getInstance();
+    }
+
+    private static class SortHandlerHolder {
+        private static final SortHandler INSTANCE = new SortHandler();
+    }
+
+    public static SortHandler getInstance() {
+        return SortHandlerHolder.INSTANCE;
+    }
+
     public static int getSortType(Context context, String path) {
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
         final Set<String> onlyThisFloders = sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, new HashSet<>());
@@ -50,28 +64,23 @@ public class SortHandler {
         if (!onlyThis) {
             return globalSortby;
         }
-        SortHandler sortHandler = new SortHandler();
-        Sort sort = sortHandler.findEntry(path);
+        Sort sort = SortHandler.getInstance().findEntry(path);
         if (sort == null) {
             return globalSortby;
         }
         return sort.type;
     }
 
-    public SortHandler() {
-        database = ExplorerDatabase.getInstance();
-    }
-
     public void addEntry(Sort sort) {
-        database.sortDao().insert(sort);
+        AppConfig.runInBackground(() -> database.sortDao().insert(sort));
     }
 
     public void clear(String path) {
-        database.sortDao().clear(database.sortDao().find(path));
+        AppConfig.runInBackground(() -> database.sortDao().clear(path));
     }
 
     public void updateEntry(Sort oldSort, Sort newSort) {
-        database.sortDao().update(newSort);
+        AppConfig.runInBackground(() -> database.sortDao().update(newSort));
     }
 
     @Nullable

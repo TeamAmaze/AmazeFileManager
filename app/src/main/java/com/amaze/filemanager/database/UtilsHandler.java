@@ -173,7 +173,7 @@ public class UtilsHandler  {
             entry.sshKey = sshKey;
         }
 
-        UtilitiesDatabase.getInstance().sftpEntryDao().update(entry);
+        AppConfig.runInBackground(() -> UtilitiesDatabase.getInstance().sftpEntryDao().update(entry));
     }
 
     public LinkedList<String> getHistoryLinkedList() {
@@ -307,12 +307,14 @@ public class UtilsHandler  {
     }
 
     public void clearTable(Operation table) {
-        switch(table) {
-            case HISTORY:
-                UtilitiesDatabase.getInstance().historyEntryDao().clear();
-                break;
-            default:
-                break;
-        }
+        AppConfig.runInBackground(() -> {
+            switch (table) {
+                case HISTORY:
+                    UtilitiesDatabase.getInstance().historyEntryDao().clear();
+                    break;
+                default:
+                    break;
+            }
+        });
     }
 }

@@ -85,9 +85,10 @@ import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -209,8 +210,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     private Intent intent;
     private View indicator_layout;
 
-    private TabHandler tabHandler;
-
     private AppBarLayout appBarLayout;
 
     private SpeedDialOverlayLayout fabBgView;
@@ -281,7 +280,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
         dataUtils.registerOnDataChangedListener(this);
 
-
         AppConfig.getInstance().setMainActivityContext(this);
 
         setContentView(R.layout.main_toolbar);
@@ -291,7 +289,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             }
         });
         initialiseViews();
-        tabHandler = new TabHandler();
         utilsHandler = AppConfig.getInstance().getUtilsHandler();
         cloudHandler = new CloudHandler(this);
 
@@ -440,6 +437,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
                 //reset home and current paths according to new storages
                 if (b) {
+                    TabHandler tabHandler = TabHandler.getInstance();
                     tabHandler.clear();
 
                     if (drawer.getPhoneStorageCount() > 1) {
@@ -762,6 +760,13 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
 
     public void exit() {
         if (backPressedToExitOnce) {
+
+//            if(ExplorerDatabase.getInstance() != null && ExplorerDatabase.getInstance().isOpen())
+//                ExplorerDatabase.getInstance().close();
+//
+//            if(UtilitiesDatabase.getInstance() != null && UtilitiesDatabase.getInstance().isOpen())
+//                UtilitiesDatabase.getInstance().close();
+
             SshConnectionPool.getInstance().expungeAllConnections();
             finish();
             if (isRootExplorer()) {
@@ -1205,7 +1210,11 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
         closeInteractiveShell();
 
-        ExplorerDatabase.getInstance().close();
+//        if(ExplorerDatabase.getInstance() != null && ExplorerDatabase.getInstance().isOpen())
+//            ExplorerDatabase.getInstance().close();
+//
+//        if(UtilitiesDatabase.getInstance() != null && UtilitiesDatabase.getInstance().isOpen())
+//            UtilitiesDatabase.getInstance().close();
 
         SshConnectionPool.getInstance().expungeAllConnections();
     }

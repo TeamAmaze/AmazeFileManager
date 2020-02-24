@@ -22,9 +22,9 @@
 package com.amaze.filemanager.database.daos;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
@@ -49,8 +49,9 @@ public interface EncryptedEntryDao {
     @Update
     public void update(EncryptedEntry entry);
 
-    @Delete
-    public void delete(EncryptedEntry entry);
+    @Transaction
+    @Query("DELETE FROM encrypted WHERE path = :path")
+    public void delete(String path);
 
     @Query("SELECT * FROM encrypted")
     public EncryptedEntry[] list();

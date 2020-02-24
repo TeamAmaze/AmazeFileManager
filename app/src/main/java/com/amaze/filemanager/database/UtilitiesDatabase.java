@@ -240,7 +240,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
 
     public synchronized static void initialize(@NonNull Context context){
         android.util.Log.d("ROOM", "Initialize utilities.db");
-        if(INSTANCE == null) {
+        if(INSTANCE == null || !INSTANCE.isOpen()) {
             INSTANCE = Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
                     .allowMainThreadQueries()
                     .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
@@ -251,4 +251,5 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
     public static final UtilitiesDatabase getInstance(){
         return INSTANCE;
     }
+
 }

@@ -25,6 +25,7 @@ import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Transaction;
 
 import com.amaze.filemanager.database.models.explorer.Tab;
 
@@ -41,6 +42,7 @@ public interface TabDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     public void insertTab(Tab tab);
 
+    @Transaction
     @Query("DELETE FROM tab WHERE tab_no IN (1,2);")
     public void clear();
 

@@ -45,7 +45,7 @@ public class EncryptDecryptUtils {
      */
     public static void startEncryption(Context c, final String path, final String password,
                                        Intent intent) throws GeneralSecurityException, IOException {
-        CryptHandler cryptHandler = new CryptHandler();
+        CryptHandler cryptHandler = CryptHandler.getInstance();
         String destPath = path.substring(0, path.lastIndexOf('/')+1)
                 .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
 
@@ -142,7 +142,7 @@ public class EncryptDecryptUtils {
      */
     private static EncryptedEntry findEncryptedEntry(Context context, String path) throws GeneralSecurityException, IOException {
 
-        CryptHandler handler = new CryptHandler();
+        CryptHandler handler = CryptHandler.getInstance();
 
         EncryptedEntry matchedEntry = null;
         // find closest path which matches with database entry

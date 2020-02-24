@@ -22,9 +22,9 @@
 package com.amaze.filemanager.database.daos;
 
 import androidx.room.Dao;
-import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
+import androidx.room.Transaction;
 import androidx.room.Update;
 
 import com.amaze.filemanager.database.models.explorer.Sort;
@@ -49,8 +49,9 @@ public interface SortDao {
 //    @Query("SELECT * FROM sort")
 //    public Sort[] list();
 
-    @Delete
-    public void clear(Sort entity);
+    @Transaction
+    @Query("DELETE FROM sort WHERE path = :path")
+    public void clear(String path);
 
     @Update
     public void update(Sort entity);

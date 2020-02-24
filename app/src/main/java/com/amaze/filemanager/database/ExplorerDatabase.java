@@ -120,7 +120,7 @@ public abstract class ExplorerDatabase extends RoomDatabase {
 
     public synchronized static void initialize(@NonNull Context context){
         android.util.Log.d("ROOM", "Initialize explorer.db");
-        if(INSTANCE == null) {
+        if(INSTANCE == null || !INSTANCE.isOpen()) {
             INSTANCE = Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME)
                     .addMigrations(MIGRATION_6_7)
                     .allowMainThreadQueries()
