@@ -74,9 +74,15 @@ public class CloudStreamSourceTest {
     cs = new CloudStreamSource(fn, len, new FileInputStream(testFile));
   }
 
-  private File createFile() throws IOException {
-    File testFile = new File(Environment.getExternalStorageDirectory(), fn);
-    testFile.createNewFile();
+    @After
+    public void tearDown() {
+        if(cs != null)
+            cs.close();
+    }
+
+    private File createFile() throws IOException {
+        File testFile = new File(Environment.getExternalStorageDirectory(), fn);
+        testFile.createNewFile();
 
     OutputStream is = new FileOutputStream(testFile);
     for (int i = 0; i < 20; i++) is.write("a".getBytes());

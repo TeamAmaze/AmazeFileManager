@@ -125,13 +125,16 @@ public class ExtractServiceTest {
     service = Robolectric.setupService(ExtractService.class);
   }
 
-  @After
-  public void tearDown() throws Exception {
-    File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
-    Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
-        .map(Path::toFile)
-        .forEach(File::delete);
-  }
+    @After
+    public void tearDown() throws Exception {
+        File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
+        Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
+                .map(Path::toFile)
+                .forEach(File::delete);
+
+        service.stopSelf();
+        service.onDestroy();
+    }
 
   @Test
   public void testExtractZipSlip() {

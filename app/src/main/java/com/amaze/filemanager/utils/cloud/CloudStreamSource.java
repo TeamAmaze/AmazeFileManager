@@ -78,14 +78,16 @@ public class CloudStreamSource extends RandomAccessStream {
     return read;
   }
 
-  @Override
-  public void close() {
-    try {
-      inputStream.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    @Override
+    public void close() {
+        if(inputStream != null) {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-  }
 
   public String getName() {
     return name;

@@ -67,10 +67,12 @@ public class SshConnectionPoolTest {
         userKeyProvider = new TestKeyProvider();
     }
 
-  @After
-  public void tearDown() {
-    if (server != null && server.isOpen()) server.close(true);
-  }
+    @After
+    public void tearDown() throws IOException {
+        if(server != null && server.isOpen()) {
+            server.stop(true);
+        }
+    }
 
     @Test
     public void testGetConnectionWithUsernameAndPassword() throws IOException {

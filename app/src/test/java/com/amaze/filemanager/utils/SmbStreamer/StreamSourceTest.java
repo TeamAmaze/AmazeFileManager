@@ -72,9 +72,15 @@ public class StreamSourceTest {
     ss = new StreamSource(file, file.length());
   }
 
-  private SmbFile createFile() throws IOException {
-    File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
-    testFile.createNewFile();
+    @After
+    public void tearDown() {
+        if(ss != null)
+            ss.close();
+    }
+
+    private SmbFile createFile() throws IOException {
+        File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
+        testFile.createNewFile();
 
     OutputStream is = new FileOutputStream(testFile);
     is.write(text);

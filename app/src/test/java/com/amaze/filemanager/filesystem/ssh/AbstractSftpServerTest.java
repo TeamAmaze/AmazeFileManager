@@ -65,11 +65,13 @@ public abstract class AbstractSftpServerTest {
         prepareSshConnection();
     }
 
-  @After
-  public void tearDown() {
-    SshConnectionPool.getInstance().expungeAllConnections();
-    if (server != null && server.isOpen()) server.close(true);
-  }
+    @After
+    public void tearDown() throws IOException {
+        SshConnectionPool.getInstance().expungeAllConnections();
+        if(server != null && server.isOpen()) {
+            server.stop(true);
+        }
+    }
 
     protected final void prepareSshConnection() {
         String hostFingerprint = KeyUtils.getFingerPrint(hostKeyProvider.getKeyPair().getPublic());

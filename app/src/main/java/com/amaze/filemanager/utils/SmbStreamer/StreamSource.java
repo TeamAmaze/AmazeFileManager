@@ -95,18 +95,19 @@ public class StreamSource extends RandomAccessStream {
     fp = position;
   }
 
-  @Override
-  public void close() {
-    try {
-      input.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    @Override
+    public void close() {
+        if(input != null) {
+            try {
+                input.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
-  }
-
-  public String getMimeType() {
-    return mime;
-  }
+    public String getMimeType(){
+        return mime;
+    }
 
   public String getName() {
     return name;
