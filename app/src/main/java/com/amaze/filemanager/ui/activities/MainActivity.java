@@ -61,6 +61,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.compressed.CompressedMimeParsing;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -171,7 +172,6 @@ public class MainActivity extends PermissionsActivity
 
   public String path = "";
   public boolean mReturnIntent = false;
-  public boolean openzip = false;
   public boolean mRingtonePickerIntent = false;
   public int skinStatusBar;
 
@@ -449,69 +449,79 @@ public class MainActivity extends PermissionsActivity
     String actionIntent = intent.getAction();
     String type = intent.getType();
 
-    if (actionIntent != null) {
-      if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
-        // file picker intent
-        mReturnIntent = true;
-        Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+    if (actionIntent == null) {
+      return;
+    }
 
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when picking file
-        Utils.disableScreenRotation(this);
-      } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-        // ringtone picker intent
-        mReturnIntent = true;
-        mRingtonePickerIntent = true;
-        Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+    if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
+      // file picker intent
+      mReturnIntent = true;
+      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
 
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when picking file
-        Utils.disableScreenRotation(this);
-      } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
-        // zip viewer intent
-        Uri uri = intent.getData();
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when picking file
+      Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+      // ringtone picker intent
+      mReturnIntent = true;
+      mRingtonePickerIntent = true;
+      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
 
-        if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
-          // support for syncting or intents from external apps that
-          // need to start file manager from a specific path
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when picking file
+      Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
+      // zip viewer intent
+      Uri uri = intent.getData();
 
-          if (uri != null) {
+      if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
+        // support for syncting or intents from external apps that
+        // need to start file manager from a specific path
 
-            path = Utils.sanitizeInput(uri.getPath());
-          } else {
-            // no data field, open home for the tab in later processing
-            path = null;
-          }
+        if (uri != null) {
+
+          path = Utils.sanitizeInput(uri.getPath());
         } else {
-          // we don't have folder resource mime type set, supposed to be zip/rar
-          openzip = true;
-          zippath = Utils.sanitizeInput(uri.toString());
+          // no data field, open home for the tab in later processing
+          path = null;
+        }
+      } else if (CompressedMimeParsing.isFileCompressed(type) && uri != null) {
+        if (uri.toString().startsWith("content")) {
+          Snackbar.make(
+                  findViewById(R.id.content_frame),
+                  "This type of URI isn't supported yet",
+                  Snackbar.LENGTH_SHORT)
+              .show();
+          return;
         }
 
-      } else if (actionIntent.equals(Intent.ACTION_SEND)) {
-        if (type.equals("text/plain")) {
-          initFabToSave(null);
-        } else {
-          // save a single file to filesystem
-          Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-          ArrayList<Uri> uris = new ArrayList<>();
-          uris.add(uri);
-          initFabToSave(uris);
-        }
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when saving a file
-        Utils.disableScreenRotation(this);
-
-      } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
-        // save multiple files to filesystem
-
-        ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        initFabToSave(arrayList);
-
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when saving a file
-        Utils.disableScreenRotation(this);
+        String zippath = Utils.sanitizeInput(uri.getPath());
+        GeneralDialogCreation.showArchiveDialog(new File(zippath), this);
       }
+
+    } else if (actionIntent.equals(Intent.ACTION_SEND)) {
+      if (type.equals("text/plain")) {
+        initFabToSave(null);
+      } else {
+        // save a single file to filesystem
+        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        ArrayList<Uri> uris = new ArrayList<>();
+        uris.add(uri);
+        initFabToSave(uris);
+      }
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when saving a file
+      Utils.disableScreenRotation(this);
+
+    } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
+      // save multiple files to filesystem
+
+      ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+      initFabToSave(arrayList);
+
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when saving a file
+      Utils.disableScreenRotation(this);
     }
   }
 
@@ -786,9 +796,6 @@ public class MainActivity extends PermissionsActivity
       if (compressedExplorerFragment.mActionMode == null) {
         if (compressedExplorerFragment.canGoBack()) {
           compressedExplorerFragment.goBack();
-        } else if (openzip) {
-          openzip = false;
-          finish();
         } else {
           FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
           fragmentTransaction.setCustomAnimations(R.anim.slide_out_bottom, R.anim.slide_out_bottom);
@@ -858,10 +865,6 @@ public class MainActivity extends PermissionsActivity
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
     floatingActionButton.show();
-    if (openzip && zippath != null) {
-      openCompressed(zippath);
-      zippath = null;
-    }
   }
 
   @Override
