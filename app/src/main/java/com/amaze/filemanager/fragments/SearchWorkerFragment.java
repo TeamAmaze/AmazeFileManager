@@ -2,6 +2,8 @@ package com.amaze.filemanager.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -36,7 +38,7 @@ public class SearchWorkerFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // hold instance of activity as there is a change in device configuration
