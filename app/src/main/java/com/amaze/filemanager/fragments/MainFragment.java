@@ -856,8 +856,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchAsyncTask.cancel(true);
+                if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    fragment.searchAsyncTask.cancel(true);
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             }
@@ -1332,8 +1332,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             FragmentManager fm = getActivity().getSupportFragmentManager();
             SearchWorkerFragment fragment = (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchAsyncTask.cancel(true);
+                if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    fragment.searchAsyncTask.cancel(true);
                 }
             }
             loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);
