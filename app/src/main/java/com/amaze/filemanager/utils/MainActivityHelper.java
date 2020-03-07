@@ -599,8 +599,8 @@ public class MainActivityHelper {
                 (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
 
         if (fragment != null) {
-            if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                fragment.mSearchAsyncTask.cancel(true);
+            if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                fragment.searchAsyncTask.cancel(true);
             }
             fm.beginTransaction().remove(fragment).commit();
         }
