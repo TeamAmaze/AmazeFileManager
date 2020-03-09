@@ -94,7 +94,6 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 public class FileUtils {
 
-    public static final String FILE_PROVIDER_AUTHORITY = "com.amaze.filemanager";
     public static final String NOMEDIA_FILE = ".nomedia";
 
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
@@ -355,7 +354,7 @@ public class FileUtils {
         ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
-            uris.add(FileProvider.getUriForFile(c, FILE_PROVIDER_AUTHORITY, f));
+            uris.add(FileProvider.getUriForFile(c, c.getPackageName(), f));
         }
 
         String mime = MimeTypes.getMimeType(a.get(0).getPath(), a.get(0).isDirectory());
@@ -395,7 +394,7 @@ public class FileUtils {
         String type = "application/vnd.android.package-archive";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), "com.amaze.filemanager", f);
+            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), permissionsActivity.getPackageName(), f);
             intent.setDataAndType(downloadedApk, type);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
@@ -529,7 +528,7 @@ public class FileUtils {
         }
 
         chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        return FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, file);
+        return FileProvider.getUriForFile(context, context.getPackageName(), file);
     }
 
     private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {

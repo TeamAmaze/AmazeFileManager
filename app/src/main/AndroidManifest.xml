@@ -23,7 +23,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager">
 
-    <permission android:name="com.amaze.filemanager.permission.CONTROL_FTP_SERVER"
+    <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
 
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -190,7 +190,7 @@
             android:name=".asynchronous.services.ftp.FtpService"
             android:enabled="true"
             android:exported="true"
-            android:permission="com.amaze.filemanager.permission.CONTROL_FTP_SERVER"/>
+            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER"/>
 
         <service android:name=".asynchronous.services.ftp.FtpTileService"
             android:icon="@drawable/ic_ftp_dark"
@@ -205,7 +205,7 @@
         <receiver
             android:name=".asynchronous.services.ftp.FtpReceiver"
             android:exported="true"
-            android:permission="com.amaze.filemanager.permission.CONTROL_FTP_SERVER">
+            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER">
             <intent-filter>
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_START_FTPSERVER" />
                 <action android:name="com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER" />
@@ -214,7 +214,7 @@
 
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="com.amaze.filemanager"
+            android:authorities="${applicationId}"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

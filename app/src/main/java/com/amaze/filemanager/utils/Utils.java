@@ -217,7 +217,7 @@ public class Utils {
             case ROOT:
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
 
-                    return FileProvider.getUriForFile(context, FileUtils.FILE_PROVIDER_AUTHORITY,
+                    return FileProvider.getUriForFile(context, context.getPackageName(),
                             new File(baseFile.getPath()));
                 } else {
                     return Uri.fromFile(new File(baseFile.getPath()));
