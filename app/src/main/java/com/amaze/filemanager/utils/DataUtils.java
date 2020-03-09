@@ -22,6 +22,7 @@
  */
 package com.amaze.filemanager.utils;
 
+import android.text.TextUtils;
 import android.view.MenuItem;
 import androidx.annotation.Nullable;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
@@ -426,7 +427,8 @@ public class DataUtils {
 
     public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
         menuMetadataMap.put(item, metadata);
-        if(metadata.path != null) tree.put(metadata.path, item.getItemId());
+        if(!TextUtils.isEmpty(metadata.path))
+            tree.put(metadata.path, item.getItemId());
     }
 
     /**
