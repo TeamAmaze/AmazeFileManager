@@ -94,13 +94,13 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
-    implementation 'androidx.vectordrawable:vectordrawable-animated:1.0.0'
+    implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    implementation 'com.google.android.material:material:1.0.0'
-    implementation 'androidx.appcompat:appcompat:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
-    implementation 'com.android.billingclient:billing:1.2'
+    implementation 'com.android.billingclient:billing:2.1.0'
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
 
     //For tests
@@ -111,10 +111,10 @@ dependencies {
 
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
 
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
-    debugImplementation 'androidx.test:runner:1.1.0'
-    androidTestImplementation 'androidx.test:rules:1.1.0'
-    androidTestImplementation 'androidx.annotation:annotation:1.0.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    debugImplementation 'androidx.test:runner:1.2.0'
+    androidTestImplementation 'androidx.test:rules:1.2.0'
+    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
     androidTestImplementation 'commons-net:commons-net:3.6'
 
     //Detect memory leaks
