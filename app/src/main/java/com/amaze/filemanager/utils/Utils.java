@@ -22,6 +22,7 @@
 
 package com.amaze.filemanager.utils;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.ActivityInfo;
@@ -35,6 +36,8 @@ import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
+
+import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -47,6 +50,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
+import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -264,5 +268,17 @@ public class Utils {
         final long min = TimeUnit.SECONDS.toMinutes(timerInSeconds);
         final long sec = TimeUnit.SECONDS.toSeconds(timerInSeconds - TimeUnit.MINUTES.toSeconds(min));
         return String.format("%02d:%02d", min, sec);
+    }
+
+    @TargetApi(Build.VERSION_CODES.N)
+    public static File getVolumeDirectory(StorageVolume volume) {
+        try {
+            Field f = StorageVolume.class.getDeclaredField("mPath");
+            f.setAccessible(true);
+            return (File) f.get(volume);
+        } catch (Exception e) {
+            // This shouldn't fail, as mPath has been there in every version
+            throw new RuntimeException(e);
+        }
     }
 }
