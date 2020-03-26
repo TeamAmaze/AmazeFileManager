@@ -1142,7 +1142,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
 
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
             unregisterReceiver(mOtgReceiver);
         }
         killToast();
@@ -1166,7 +1166,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
 
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
             updateUsbInformation();
         }
     }
