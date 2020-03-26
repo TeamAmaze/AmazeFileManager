@@ -34,6 +34,8 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
+
+import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.google.android.material.navigation.NavigationView;
 import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.fragment.app.FragmentTransaction;
@@ -86,6 +88,7 @@ import com.cloudrail.si.services.OneDrive;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
@@ -255,34 +258,25 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         actionViewStateManager.deselectCurrentActionView();
 
         int order = 0;
-        ArrayList<String> storageDirectories = mainActivity.getStorageDirectories();
+        ArrayList<StorageDirectoryParcelable> storageDirectories = mainActivity.getStorageDirectories();
+        ArrayList<String> storageDirectoryPaths = new ArrayList<>();
         phoneStorageCount = 0;
-        for (String file : storageDirectories) {
+        for (StorageDirectoryParcelable storageDirectory : storageDirectories) {
+            String file = storageDirectory.path;
+            File f = new File(file);
+            String name = storageDirectory.name;
+            int icon = storageDirectory.iconRes;
+
+            storageDirectoryPaths.add(file);
+
             if (file.contains(OTGUtil.PREFIX_OTG)) {
                 addNewItem(menu, STORAGES_GROUP, order++, "OTG", new MenuMetadata(file),
                         R.drawable.ic_usb_white_24dp, R.drawable.ic_show_chart_black_24dp);
                 continue;
             }
 
-            File f = new File(file);
-            String name;
-            @DrawableRes int icon1;
-            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
-                name = resources.getString(R.string.internalstorage);
-                icon1 = R.drawable.ic_phone_android_white_24dp;
-            } else if ("/storage/sdcard1".equals(file)) {
-                name = resources.getString(R.string.extstorage);
-                icon1 = R.drawable.ic_sd_storage_white_24dp;
-            } else if ("/".equals(file)) {
-                name = resources.getString(R.string.root_directory);
-                icon1 = R.drawable.ic_drawer_root_white;
-            } else {
-                name = f.getName();
-                icon1 = R.drawable.ic_sd_storage_white_24dp;
-            }
-
             if (f.isDirectory() || f.canExecute()) {
-                addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon1,
+                addNewItem(menu, STORAGES_GROUP, order++, name, new MenuMetadata(file), icon,
                         R.drawable.ic_show_chart_black_24dp);
                 if(phoneStorageCount == 0) firstPath = file;
                 else if(phoneStorageCount == 1) secondPath = file;
@@ -290,7 +284,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                 phoneStorageCount++;
             }
         }
-        dataUtils.setStorages(storageDirectories);
+        dataUtils.setStorages(storageDirectoryPaths);
 
         if (dataUtils.getServers().size() > 0) {
             Collections.sort(dataUtils.getServers(), new BookSorter());
