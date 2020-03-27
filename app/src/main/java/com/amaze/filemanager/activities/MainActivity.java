@@ -632,7 +632,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
             StorageManager sm = getSystemService(StorageManager.class);
             for (StorageVolume volume : sm.getStorageVolumes()) {
                 Log.i("MainActivity", "Volume: " + volume + "");
-                if (!volume.getState().equals(Environment.MEDIA_MOUNTED)) {
+                if (!volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED) && !volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED_READ_ONLY)) {
                     continue;
                 }
                 File path = Utils.getVolumeDirectory (volume);
