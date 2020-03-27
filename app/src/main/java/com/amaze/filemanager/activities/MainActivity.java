@@ -652,7 +652,12 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 icon = R.drawable.ic_phone_android_white_24dp;
             } else {
                 // There is no reliable way to distinguish USB and SD external storage
-                icon = R.drawable.ic_sd_storage_white_24dp;
+                // However it is often enough to check for "USB" String
+                if (name.toUpperCase().contains("USB") || path.getPath().toUpperCase().contains("USB")) {
+                    icon = R.drawable.ic_usb_white_24dp;
+                } else {
+                    icon = R.drawable.ic_sd_storage_white_24dp;
+                }
             }
             volumes.add(new StorageDirectoryParcelable(path.getPath(), name, icon));
         }
