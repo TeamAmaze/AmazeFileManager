@@ -22,6 +22,7 @@
 
 package com.amaze.filemanager.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -616,133 +617,151 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     }
 
     /**
-     * Returns all available SD-Cards in the system (include emulated)
-     * <p>
-     * Warning: Hack! Based on Android source code of version 4.3 (API 18)
-     * Because there is no standard way to get it.
-     * TODO: Test on future Android versions 4.4+
-     *
-     * @return paths to all available SD-Cards in the system (include emulated)
+     * @return paths to all available volumes in the system (include emulated)
      */
     public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectories() {
-        // Final set of paths
-        ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
-
+        ArrayList<StorageDirectoryParcelable> volumes;
         if (SDK_INT >= Build.VERSION_CODES.N) {
-            StorageManager sm = getSystemService(StorageManager.class);
-            for (StorageVolume volume : sm.getStorageVolumes()) {
-                Log.i("MainActivity", "Volume: " + volume + "");
-                if (!volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED) && !volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED_READ_ONLY)) {
-                    continue;
-                }
-                File path = Utils.getVolumeDirectory (volume);
-                String name = volume.getDescription(this);
-                int icon = R.drawable.ic_sd_storage_white_24dp;
-                if (!volume.isRemovable()) {
-                    icon = R.drawable.ic_phone_android_white_24dp;
-                } else if (volume.isRemovable()) {
-                    // Can I distinguish USB and SD?
-                    icon = R.drawable.ic_sd_storage_white_24dp;
-                }
-                volumes.add(new StorageDirectoryParcelable(path.getPath(), name, icon));
-            }
-
+            volumes = getStorageDirectoriesNew();
         } else {
-            List<String> rv = new ArrayList<>();
-
-            // Primary physical SD-CARD (not emulated)
-            final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
-            // All Secondary SD-CARDs (all exclude primary) separated by ":"
-            final String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
-            // Primary emulated SD-CARD
-            final String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
-            if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
-                // Device has physical external storage; use plain paths.
-                if (TextUtils.isEmpty(rawExternalStorage)) {
-                    // EXTERNAL_STORAGE undefined; falling back to default.
-                    // Check for actual existence of the directory before adding to list
-                    if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
-                        rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
-                    } else {
-                        //We know nothing else, use Environment's fallback
-                        rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
-                    }
-                } else {
-                    rv.add(rawExternalStorage);
-                }
-            } else {
-                // Device has emulated storage; external storage paths should have
-                // userId burned into them.
-                final String rawUserId;
-                if (SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
-                    rawUserId = "";
-                } else {
-                    final String path = Environment.getExternalStorageDirectory().getAbsolutePath();
-                    final String[] folders = DIR_SEPARATOR.split(path);
-                    final String lastFolder = folders[folders.length - 1];
-                    boolean isDigit = false;
-                    try {
-                        Integer.valueOf(lastFolder);
-                        isDigit = true;
-                    } catch (NumberFormatException ignored) {
-                    }
-                    rawUserId = isDigit ? lastFolder : "";
-                }
-                // /storage/emulated/0[1,2,...]
-                if (TextUtils.isEmpty(rawUserId)) {
-                    rv.add(rawEmulatedStorageTarget);
-                } else {
-                    rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
-                }
-            }
-            // Add all secondary storages
-            if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
-                // All Secondary SD-CARDs splited into array
-                final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
-                Collections.addAll(rv, rawSecondaryStorages);
-            }
-            if (SDK_INT >= Build.VERSION_CODES.M && checkStoragePermission())
-                rv.clear();
-            if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
-                for (String s : strings) {
-                    File f = new File(s);
-                    if (!rv.contains(s) && FileUtils.canListFiles(f))
-                        rv.add(s);
-                }
-            }
-            File usb = getUsbDrive();
-            if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
-
-            if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
-                if (SingletonUsbOtg.getInstance().isDeviceConnected()) {
-                    rv.add(OTGUtil.PREFIX_OTG + "/");
-                }
-            }
-
-            for (String file : rv) {
-                File f = new File(file);
-                String name;
-                @DrawableRes int icon;
-                if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
-                    name = getResources().getString(R.string.internalstorage);
-                    icon = R.drawable.ic_phone_android_white_24dp;
-                } else if ("/storage/sdcard1".equals(file)) {
-                    name = getResources().getString(R.string.extstorage);
-                    icon = R.drawable.ic_sd_storage_white_24dp;
-                } else if ("/".equals(file)) {
-                    name = getResources().getString(R.string.root_directory);
-                    icon = R.drawable.ic_drawer_root_white;
-                } else {
-                    name = f.getName();
-                    icon = R.drawable.ic_sd_storage_white_24dp;
-                }
-                volumes.add(new StorageDirectoryParcelable(file, name, icon));
-            }
+            volumes = getStorageDirectoriesLegacy();
         }
         if (isRootExplorer()) {
             volumes.add(new StorageDirectoryParcelable("/", getResources().getString(R.string.root_directory), R.drawable.ic_drawer_root_white));
         }
+        return volumes;
+    }
+
+    /**
+     * @return All available storage volumes (including internal storage, SD-Cards and USB devices)
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesNew() {
+        // Final set of paths
+        ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
+        StorageManager sm = getSystemService(StorageManager.class);
+        for (StorageVolume volume : sm.getStorageVolumes()) {
+            Log.i("MainActivity", "Volume: " + volume + "");
+            if (!volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED) && !volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+                continue;
+            }
+            File path = Utils.getVolumeDirectory(volume);
+            String name = volume.getDescription(this);
+            int icon = R.drawable.ic_sd_storage_white_24dp;
+            if (!volume.isRemovable()) {
+                icon = R.drawable.ic_phone_android_white_24dp;
+            } else {
+                // There is no reliable way to distinguish USB and SD external storage
+                icon = R.drawable.ic_sd_storage_white_24dp;
+            }
+            volumes.add(new StorageDirectoryParcelable(path.getPath(), name, icon));
+        }
+        return volumes;
+    }
+
+    /**
+     * Returns all available SD-Cards in the system (include emulated)
+     * <p>
+     * Warning: Hack! Based on Android source code of version 4.3 (API 18)
+     * Because there was no standard way to get it before android N
+     *
+     * @return All available SD-Cards in the system (include emulated)
+     */
+    public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesLegacy() {
+        List<String> rv = new ArrayList<>();
+
+        // Primary physical SD-CARD (not emulated)
+        final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
+        // All Secondary SD-CARDs (all exclude primary) separated by ":"
+        final String rawSecondaryStoragesStr = System.getenv("SECONDARY_STORAGE");
+        // Primary emulated SD-CARD
+        final String rawEmulatedStorageTarget = System.getenv("EMULATED_STORAGE_TARGET");
+        if (TextUtils.isEmpty(rawEmulatedStorageTarget)) {
+            // Device has physical external storage; use plain paths.
+            if (TextUtils.isEmpty(rawExternalStorage)) {
+                // EXTERNAL_STORAGE undefined; falling back to default.
+                // Check for actual existence of the directory before adding to list
+                if(new File(DEFAULT_FALLBACK_STORAGE_PATH).exists()) {
+                    rv.add(DEFAULT_FALLBACK_STORAGE_PATH);
+                } else {
+                    //We know nothing else, use Environment's fallback
+                    rv.add(Environment.getExternalStorageDirectory().getAbsolutePath());
+                }
+            } else {
+                rv.add(rawExternalStorage);
+            }
+        } else {
+            // Device has emulated storage; external storage paths should have
+            // userId burned into them.
+            final String rawUserId;
+            if (SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+                rawUserId = "";
+            } else {
+                final String path = Environment.getExternalStorageDirectory().getAbsolutePath();
+                final String[] folders = DIR_SEPARATOR.split(path);
+                final String lastFolder = folders[folders.length - 1];
+                boolean isDigit = false;
+                try {
+                    Integer.valueOf(lastFolder);
+                    isDigit = true;
+                } catch (NumberFormatException ignored) {
+                }
+                rawUserId = isDigit ? lastFolder : "";
+            }
+            // /storage/emulated/0[1,2,...]
+            if (TextUtils.isEmpty(rawUserId)) {
+                rv.add(rawEmulatedStorageTarget);
+            } else {
+                rv.add(rawEmulatedStorageTarget + File.separator + rawUserId);
+            }
+        }
+        // Add all secondary storages
+        if (!TextUtils.isEmpty(rawSecondaryStoragesStr)) {
+            // All Secondary SD-CARDs splited into array
+            final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
+            Collections.addAll(rv, rawSecondaryStorages);
+        }
+        if (SDK_INT >= Build.VERSION_CODES.M && checkStoragePermission())
+            rv.clear();
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
+            for (String s : strings) {
+                File f = new File(s);
+                if (!rv.contains(s) && FileUtils.canListFiles(f))
+                    rv.add(s);
+            }
+        }
+        File usb = getUsbDrive();
+        if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
+
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            if (SingletonUsbOtg.getInstance().isDeviceConnected()) {
+                rv.add(OTGUtil.PREFIX_OTG + "/");
+            }
+        }
+
+        // Assign a label and icon to each directory
+        ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
+        for (String file : rv) {
+            File f = new File(file);
+            String name;
+            @DrawableRes int icon;
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
+                name = getResources().getString(R.string.internalstorage);
+                icon = R.drawable.ic_phone_android_white_24dp;
+            } else if ("/storage/sdcard1".equals(file)) {
+                name = getResources().getString(R.string.extstorage);
+                icon = R.drawable.ic_sd_storage_white_24dp;
+            } else if ("/".equals(file)) {
+                name = getResources().getString(R.string.root_directory);
+                icon = R.drawable.ic_drawer_root_white;
+            } else {
+                name = f.getName();
+                icon = R.drawable.ic_sd_storage_white_24dp;
+            }
+            volumes.add(new StorageDirectoryParcelable(file, name, icon));
+        }
+
         return volumes;
     }
 
