@@ -49,7 +49,6 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -95,6 +94,7 @@ import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.filesystem.StorageNaming;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -641,17 +641,16 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
         StorageManager sm = getSystemService(StorageManager.class);
         for (StorageVolume volume : sm.getStorageVolumes()) {
-            Log.i("MainActivity", "Volume: " + volume + "");
             if (!volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED) && !volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED_READ_ONLY)) {
                 continue;
             }
             File path = Utils.getVolumeDirectory(volume);
             String name = volume.getDescription(this);
-            int icon = R.drawable.ic_sd_storage_white_24dp;
+            int icon;
             if (!volume.isRemovable()) {
                 icon = R.drawable.ic_phone_android_white_24dp;
             } else {
-                // There is no reliable way to distinguish USB and SD external storage
+                // HACK: There is no reliable way to distinguish USB and SD external storage
                 // However it is often enough to check for "USB" String
                 if (name.toUpperCase().contains("USB") || path.getPath().toUpperCase().contains("USB")) {
                     icon = R.drawable.ic_usb_white_24dp;
@@ -749,21 +748,19 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
         for (String file : rv) {
             File f = new File(file);
-            String name;
             @DrawableRes int icon;
+
             if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
-                name = getResources().getString(R.string.internalstorage);
                 icon = R.drawable.ic_phone_android_white_24dp;
             } else if ("/storage/sdcard1".equals(file)) {
-                name = getResources().getString(R.string.extstorage);
                 icon = R.drawable.ic_sd_storage_white_24dp;
             } else if ("/".equals(file)) {
-                name = getResources().getString(R.string.root_directory);
                 icon = R.drawable.ic_drawer_root_white;
             } else {
-                name = f.getName();
                 icon = R.drawable.ic_sd_storage_white_24dp;
             }
+
+            String name = StorageNaming.getDeviceDescriptionLegacy(this, f);
             volumes.add(new StorageDirectoryParcelable(file, name, icon));
         }
 

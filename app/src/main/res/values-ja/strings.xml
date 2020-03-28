@@ -25,7 +25,6 @@
     <string name="drawer_open">ナビゲーションドロワーを開く</string>
     <string name="drawer_close">ナビゲーションドロワーを閉じる</string>
     <string name="icon">アイコン</string>
-    <string name="internalstorage">内部ストレージ</string>
     <string name="apps">アプリマネージャー</string>
     <string name="ftp">FTP サーバー</string>
     <string name="setting">設定</string>
@@ -248,7 +247,6 @@
     <string name="password">パスワード</string>
     <string name="anonymous">匿名</string>
     <string name="bluetooth">ブルートゥース</string>
-    <string name="extstorage">外部ストレージ</string>
     <string name="folders">フォルダー</string>
     <string name="folderfilecount">%1$d フォルダと %2$d ファイル</string>
     <string name="videos">ビデオ</string>
