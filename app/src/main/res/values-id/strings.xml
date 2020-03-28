@@ -25,7 +25,6 @@
     <string name="drawer_open">Buka laci navigasi</string>
     <string name="drawer_close">Tutup laci navigasi</string>
     <string name="icon">ikon</string>
-    <string name="internalstorage">Penyimpanan Internal</string>
     <string name="apps">Pengelola Aplikasi</string>
     <string name="ftp">Server FTP</string>
     <string name="setting">Pengaturan</string>
@@ -248,7 +247,6 @@
     <string name="password">Sandi</string>
     <string name="anonymous">Anonim</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Penyimpanan Eksternal</string>
     <string name="folders">Folder</string>
     <string name="folderfilecount">%1$d folder dan %2$d berkas</string>
     <string name="videos">Video</string>

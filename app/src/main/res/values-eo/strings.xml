@@ -246,7 +246,6 @@
     <string name="password">Pasvorto</string>
     <string name="anonymous">Sennoma</string>
     <string name="bluetooth">Bludenta</string>
-    <string name="extstorage">Ekstera memoro</string>
     <string name="folders">Dosierujoj</string>
     <string name="folderfilecount">%1$d dosierujoj kaj %2$d dosieroj</string>
     <string name="videos">Videoj</string>
