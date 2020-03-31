@@ -20,7 +20,10 @@
 
 package com.amaze.filemanager.utils.files;
 
-import static org.junit.Assert.*;
+import android.content.Context;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -35,9 +38,9 @@ public class CryptUtilTest {
 
   private Context context;
 
-  public void setUp() {
-    context = InstrumentationRegistry.getInstrumentation().getTargetContext();
-  }
+    public void setUp(){
+        context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    }
 
   @Test
   public void testEncryptDecrypt() throws Exception {

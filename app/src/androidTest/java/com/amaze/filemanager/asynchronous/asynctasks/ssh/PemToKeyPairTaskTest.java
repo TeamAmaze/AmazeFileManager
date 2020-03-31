@@ -20,18 +20,18 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 
-import static org.junit.Assert.assertNotNull;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import java.lang.reflect.Field;
-import java.util.concurrent.CountDownLatch;
+import net.schmizz.sshj.userauth.password.PasswordFinder;
+import net.schmizz.sshj.userauth.password.Resource;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import androidx.test.runner.AndroidJUnit4;
+import java.lang.reflect.Field;
+import java.util.concurrent.CountDownLatch;
 
-import net.schmizz.sshj.userauth.password.PasswordFinder;
-import net.schmizz.sshj.userauth.password.Resource;
+import static org.junit.Assert.assertNotNull;
 
 @RunWith(AndroidJUnit4.class)
 public class PemToKeyPairTaskTest {

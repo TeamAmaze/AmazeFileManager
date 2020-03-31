@@ -20,7 +20,14 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static org.junit.Assert.*;
+import android.os.Parcel;
+
+import com.amaze.filemanager.utils.OpenMode;
+
+import org.junit.Before;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 import org.junit.*;
 

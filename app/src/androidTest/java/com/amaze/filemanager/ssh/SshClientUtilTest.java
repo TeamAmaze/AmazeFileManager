@@ -20,6 +20,13 @@
 
 package com.amaze.filemanager.ssh;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 

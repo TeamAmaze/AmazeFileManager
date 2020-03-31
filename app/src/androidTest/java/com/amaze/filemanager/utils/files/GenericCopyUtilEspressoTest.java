@@ -20,8 +20,15 @@
 
 package com.amaze.filemanager.utils.files;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+
+import com.amaze.filemanager.utils.test.DummyFileGenerator;
+import com.amaze.filemanager.utils.ProgressHandler;
+
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -51,16 +58,14 @@ public class GenericCopyUtilEspressoTest {
 
   private File file1, file2;
 
-  @Before
-  public void setUp() throws IOException {
-    copyUtil =
-        new GenericCopyUtil(
-            InstrumentationRegistry.getInstrumentation().getTargetContext(), new ProgressHandler());
-    file1 = File.createTempFile("test", "bin");
-    file2 = File.createTempFile("test", "bin");
-    file1.deleteOnExit();
-    file2.deleteOnExit();
-  }
+    @Before
+    public void setUp() throws IOException {
+        copyUtil = new GenericCopyUtil(InstrumentationRegistry.getInstrumentation().getTargetContext(), new ProgressHandler());
+        file1 = File.createTempFile("test", "bin");
+        file2 = File.createTempFile("test", "bin");
+        file1.deleteOnExit();
+        file2.deleteOnExit();
+    }
 
   @Test
   public void testCopyFile1() throws IOException, NoSuchAlgorithmException {
