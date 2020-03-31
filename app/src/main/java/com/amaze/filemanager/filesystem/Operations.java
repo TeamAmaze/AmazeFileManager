@@ -1,8 +1,33 @@
+/*
+ * Operations.java
+ *
+ * Copyright (C) 2016-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, John Carlson <jawnnypoo@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.filesystem;
 
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
+import android.text.TextUtils;
+
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
@@ -28,9 +53,6 @@ import java.net.MalformedURLException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-/**
- * Created by arpitkh996 on 13-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
- */
 public class Operations {
 
     // reserved characters by OS, shall not be allowed in file names
@@ -291,7 +313,7 @@ public class Operations {
 
                     DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
                     if (parentDirectory.isDirectory()) {
-                        parentDirectory.createFile(file.getName(context).substring(file.getName().lastIndexOf(".")),
+                        parentDirectory.createFile(file.getName(context).substring(file.getName(context).lastIndexOf(".")),
                                 file.getName(context));
                         errorCallBack.done(file, true);
                     } else errorCallBack.done(file, false);
@@ -537,10 +559,15 @@ public class Operations {
      * @return boolean if the file name is valid or invalid
      */
     public static boolean isFileNameValid(String fileName) {
-        //String fileName = builder.substring(builder.lastIndexOf("/")+1, builder.length());
 
-        // TODO: check file name validation only for FAT filesystems
-        return !(fileName.contains(ASTERISK) || fileName.contains(BACKWARD_SLASH) ||
+        //Trim the trailing slash if there is one.
+        if(fileName.endsWith("/"))
+            fileName = fileName.substring(0, fileName.lastIndexOf('/')-1);
+        //Trim the leading slashes if there is any.
+        if(fileName.contains("/"))
+            fileName = fileName.substring(fileName.lastIndexOf('/')+1);
+
+        return !TextUtils.isEmpty(fileName) && !(fileName.contains(ASTERISK) || fileName.contains(BACKWARD_SLASH) ||
                 fileName.contains(COLON) || fileName.contains(FOREWARD_SLASH) ||
                 fileName.contains(GREATER_THAN) || fileName.contains(LESS_THAN) ||
                 fileName.contains(QUESTION_MARK) || fileName.contains(QUOTE));

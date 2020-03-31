@@ -2,10 +2,12 @@ package com.amaze.filemanager.asynchronous.services;
 
 import android.content.Intent;
 import android.os.Environment;
+
 import androidx.annotation.NonNull;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
@@ -19,7 +21,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowToast;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileOutputStream;

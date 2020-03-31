@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import org.junit.After;
@@ -22,7 +23,6 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowEnvironment;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;

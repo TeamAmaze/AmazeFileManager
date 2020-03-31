@@ -165,7 +165,7 @@ public class CryptUtil {
         if (sourceFile.isDirectory()) {
 
             final HybridFile hFile = new HybridFile(targetDirectory.getMode(), targetDirectory.getPath(),
-                    sourceFile.getName().replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
+                    sourceFile.getName(context).replace(CRYPT_EXTENSION, ""), sourceFile.isDirectory());
             FileUtil.mkdirs(context, hFile);
 
             sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), file -> {
@@ -186,10 +186,10 @@ public class CryptUtil {
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
             HybridFile targetFile = new HybridFile(targetDirectory.getMode(),
-                    targetDirectory.getPath(), sourceFile.getName().replace(CRYPT_EXTENSION, ""),
+                    targetDirectory.getPath(), sourceFile.getName(context).replace(CRYPT_EXTENSION, ""),
                     sourceFile.isDirectory());
 
-            progressHandler.setFileName(sourceFile.getName());
+            progressHandler.setFileName(sourceFile.getName(context));
 
             BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);
@@ -222,14 +222,14 @@ public class CryptUtil {
 
             sourceFile.forEachChildrenFile(context, sourceFile.isRoot(), file -> {
                 try {
-                    encrypt(context, file, hFile, file.getName().concat(CRYPT_EXTENSION));
+                    encrypt(context, file, hFile, file.getName(context).concat(CRYPT_EXTENSION));
                 } catch (IOException | GeneralSecurityException e) {
                     throw new IllegalStateException(e);//throw unchecked exception, no throws needed
                 }
             });
         } else {
 
-            if (sourceFile.getName().endsWith(CRYPT_EXTENSION)) {
+            if (sourceFile.getName(context).endsWith(CRYPT_EXTENSION)) {
                 failedOps.add(sourceFile);
                 return;
             }
@@ -242,7 +242,7 @@ public class CryptUtil {
                     targetDirectory.getPath(), targetFilename,
                     sourceFile.isDirectory());
 
-            progressHandler.setFileName(sourceFile.getName());
+            progressHandler.setFileName(sourceFile.getName(context));
 
             BufferedOutputStream outputStream = new BufferedOutputStream(targetFile.getOutputStream(context),
                     GenericCopyUtil.DEFAULT_BUFFER_SIZE);

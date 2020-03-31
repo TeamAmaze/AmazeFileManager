@@ -3,6 +3,7 @@ package com.amaze.filemanager.filesystem;
 import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
 
 import org.junit.Test;
@@ -10,19 +11,30 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(maxSdk = 27, constants = BuildConfig.class, shadows = {ShadowMultiDex.class})
 public class OperationsTest {
 
     private File storageRoot = Environment.getExternalStorageDirectory();
+
+    @Test
+    public void testIsFileNameValid(){
+        assertTrue(Operations.isFileNameValid("file.txt"));
+        assertTrue(Operations.isFileNameValid("/storage/emulated/0/Documents/file.txt"));
+        assertTrue(Operations.isFileNameValid("/system/etc/file.txt"));
+        assertTrue(Operations.isFileNameValid("smb://127.0.0.1/trancelove/file.txt"));
+        assertTrue(Operations.isFileNameValid("ssh://127.0.0.1:54225/home/trancelove/file.txt"));
+        assertTrue(Operations.isFileNameValid("ftp://127.0.0.1:3721/pub/Incoming/file.txt"));
+        assertTrue(Operations.isFileNameValid("content://com.amaze.filemanager/storage_root/storage/emulated/0/Documents/file.txt"));
+    }
 
     @Test
     public void testMkdir() throws InterruptedException

@@ -137,7 +137,7 @@ public class DecryptService extends AbstractProgressiveService {
                 publishResults(speed, false, false));
             serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
 
-            addFirstDatapoint(baseFile.getName(), 1, totalSize, false);// we're using encrypt as move flag false
+            addFirstDatapoint(baseFile.getName(context), 1, totalSize, false);// we're using encrypt as move flag false
 
             if (FileUtil.checkFolder(baseFileFolder, context) == 1) {
                 serviceWatcherUtil.watch(DecryptService.this);

@@ -91,16 +91,16 @@ public class MainActivityHelper {
         accentColor = mainActivity.getAccent();
     }
 
-    public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, Context contextc) {
-        MaterialDialog.Builder mat=new MaterialDialog.Builder(contextc);
-        mat.title(contextc.getString(R.string.operation_unsuccesful));
+    public void showFailedOperationDialog(ArrayList<HybridFileParcelable> failedOps, Context context) {
+        MaterialDialog.Builder mat=new MaterialDialog.Builder(context);
+        mat.title(context.getString(R.string.operation_unsuccesful));
         mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
         mat.positiveColor(accentColor);
         mat.positiveText(R.string.cancel);
-        String content = contextc.getString(R.string.operation_fail_following);
+        String content = context.getString(R.string.operation_fail_following);
         int k=1;
         for(HybridFileParcelable s:failedOps){
-            content=content+ "\n" + (k) + ". " + s.getName();
+            content=content+ "\n" + (k) + ". " + s.getName(context);
             k++;
         }
         mat.content(content);
@@ -325,7 +325,7 @@ public class MainActivityHelper {
                 context.runOnUiThread(() -> {
                     if (toast != null) toast.cancel();
                     Toast.makeText(context, context.getString(R.string.invalid_name) + ": "
-                            + file.getName(), Toast.LENGTH_LONG).show();
+                            + file.getName(context), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -441,7 +441,7 @@ public class MainActivityHelper {
                 ma.getActivity().runOnUiThread(() -> {
                     if (toast != null) toast.cancel();
                     Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
-                            + ": " + file.getName(), Toast.LENGTH_LONG).show();
+                            + ": " + file.getName(ma.getMainActivity()), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -499,7 +499,7 @@ public class MainActivityHelper {
 
                     if (toast != null) toast.cancel();
                     Toast.makeText(ma.getActivity(), ma.getString(R.string.invalid_name)
-                            + ": " + file.getName(), Toast.LENGTH_LONG).show();
+                            + ": " + file.getName(ma.getMainActivity()), Toast.LENGTH_LONG).show();
                 });
             }
         });
@@ -635,14 +635,5 @@ public class MainActivityHelper {
 
         fragment.setArguments(args);
         fragmentManager.beginTransaction().add(fragment, MainActivity.TAG_ASYNC_HELPER).commit();
-    }
-
-    /**
-     * Check whether creation of new directory is inside the same directory with the same name or not
-     * Directory inside the same directory with similar filename shall not be allowed
-     * Doesn't work at an OTG path
-     */
-    public static boolean isNewDirectoryRecursive(HybridFile file) {
-        return file.getName().equals(file.getParentName());
     }
 }

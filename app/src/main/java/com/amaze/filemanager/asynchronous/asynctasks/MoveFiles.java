@@ -91,7 +91,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                     for (HybridFileParcelable f : files.get(i)) {
                         try {
                             SmbFile source = new SmbFile(f.getPath());
-                            SmbFile dest = new SmbFile(paths.get(i) + "/" + f.getName());
+                            SmbFile dest = new SmbFile(paths.get(i) + "/" + f.getName(context));
                             source.renameTo(dest);
                         } catch (MalformedURLException e) {
                             e.printStackTrace();
@@ -106,14 +106,14 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
             case FILE:
                 for (int i = 0; i < paths.size(); i++) {
                     for (HybridFileParcelable f : files.get(i)) {
-                        File dest = new File(paths.get(i) + "/" + f.getName());
+                        File dest = new File(paths.get(i) + "/" + f.getName(context));
                         File source = new File(f.getPath());
                         if (!source.renameTo(dest)) {
 
                             // check if we have root
                             if (mainFrag.getMainActivity().isRootExplorer()) {
                                 try {
-                                    if (!RootUtils.rename(f.getPath(), paths.get(i) + "/" + f.getName()))
+                                    if (!RootUtils.rename(f.getPath(), paths.get(i) + "/" + f.getName(context)))
                                         return false;
                                 } catch (ShellNotRunningException e) {
                                     e.printStackTrace();
@@ -134,7 +134,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                         DataUtils dataUtils = DataUtils.getInstance();
 
                         CloudStorage cloudStorage = dataUtils.getAccount(mode);
-                        String targetPath = paths.get(i) + "/" + baseFile.getName();
+                        String targetPath = paths.get(i) + "/" + baseFile.getName(context);
                         if (baseFile.getMode() == mode) {
                             // source and target both in same filesystem, use API method
                             try {
@@ -171,7 +171,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
             for (int i = 0; i < paths.size(); i++) {
                 for (HybridFileParcelable f : files.get(i)) {
                     FileUtils.scanFile(f.getFile(), context);
-                    FileUtils.scanFile(new File(paths.get(i) + "/" + f.getName()), context);
+                    FileUtils.scanFile(new File(paths.get(i) + "/" + f.getName(context)), context);
                 }
             }
 
@@ -179,7 +179,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
             AppConfig.runInBackground(() -> {
                 for (int i = 0; i < paths.size(); i++) {
                     for (HybridFileParcelable file : files.get(i)) {
-                        if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                        if (file.getName(context).endsWith(CryptUtil.CRYPT_EXTENSION)) {
                             try {
 
                                 CryptHandler cryptHandler = new CryptHandler(context);
@@ -187,7 +187,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                                 EncryptedEntry newEntry = new EncryptedEntry();
                                 newEntry.setId(oldEntry.getId());
                                 newEntry.setPassword(oldEntry.getPassword());
-                                newEntry.setPath(paths.get(i) + "/" + file.getName());
+                                newEntry.setPath(paths.get(i) + "/" + file.getName(context));
                                 cryptHandler.updateEntry(oldEntry, newEntry);
                             } catch (Exception e) {
                                 e.printStackTrace();

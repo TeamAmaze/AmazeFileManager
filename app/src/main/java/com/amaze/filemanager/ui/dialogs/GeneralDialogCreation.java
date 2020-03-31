@@ -377,7 +377,7 @@ public class GeneralDialogCreation {
         long last = baseFile.getDate();
         final String date = Utils.getDate(base, last),
                 items = c.getString(R.string.calculating),
-                name = baseFile.getName(),
+                name = baseFile.getName(c),
                 parent = baseFile.getReadablePath(baseFile.getParent(c));
 
         File nomediaFile = baseFile.isDirectory()? new File(baseFile.getPath() + "/" + FileUtils.NOMEDIA_FILE) : null;
@@ -683,7 +683,7 @@ public class GeneralDialogCreation {
         HybridFileParcelable intentParcelable = intent.getParcelableExtra(EncryptService.TAG_SOURCE);
         MaterialDialog saveAsDialog = showNameDialog(main,
                 "",
-                intentParcelable.getName().concat(CryptUtil.CRYPT_EXTENSION),
+                intentParcelable.getName(c).concat(CryptUtil.CRYPT_EXTENSION),
                 c.getString(intentParcelable.isDirectory() ? R.string.encrypt_folder_save_as : R.string.encrypt_file_save_as),
                 c.getString(R.string.ok),
                 null,
@@ -731,7 +731,7 @@ public class GeneralDialogCreation {
         WarnableTextInputLayout textInputLayoutEncryptSaveAs = rootView.findViewById(R.id.til_encrypt_save_as);
 
         HybridFileParcelable intentParcelable = intent.getParcelableExtra(EncryptService.TAG_SOURCE);
-        encryptSaveAsEditText.setText(intentParcelable.getName().concat(CryptUtil.CRYPT_EXTENSION));
+        encryptSaveAsEditText.setText(intentParcelable.getName(c).concat(CryptUtil.CRYPT_EXTENSION));
         textInputLayoutEncryptSaveAs.setHint(intentParcelable.isDirectory() ?
                 c.getString(R.string.encrypt_folder_save_as) :
                 c.getString(R.string.encrypt_file_save_as));
