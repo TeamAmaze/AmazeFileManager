@@ -231,7 +231,7 @@
   <string name="password">Mật khẩu</string>
   <string name="anonymous">Ẩn danh</string>
   <string name="bluetooth">Bluetooth</string>
-    <string name="folders">Thư mục</string>
+  <string name="folders">Thư mục</string>
   <string name="videos">Video</string>
   <string name="apks">Các tệp Apk</string>
   <string name="documents">Tài liệu</string>
