@@ -227,7 +227,7 @@
   <string name="password">رمز عبور</string>
   <string name="anonymous">نامشخص</string>
   <string name="bluetooth">بلوث</string>
-    <string name="folders">پوشه ها</string>
+  <string name="folders">پوشه ها</string>
   <string name="videos">ویدئوها</string>
   <string name="apks">برنامه ها</string>
   <string name="documents">اسناد</string>

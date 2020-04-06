@@ -233,7 +233,7 @@
   <string name="password">Hasło</string>
   <string name="anonymous">Anonimowy</string>
   <string name="bluetooth">Bluetooth</string>
-    <string name="folders">Katalogi</string>
+  <string name="folders">Katalogi</string>
   <string name="videos">Filmy</string>
   <string name="apks">Aplikacje</string>
   <string name="documents">Dokumenty</string>
