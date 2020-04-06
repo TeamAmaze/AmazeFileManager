@@ -25,7 +25,6 @@
     <string name="drawer_open">פתיחת תפריט הניווט</string>
     <string name="drawer_close">סגירת תפריט הניווט</string>
     <string name="icon">סמל</string>
-    <string name="internalstorage">אחסון פנימי</string>
     <string name="apps">מנהל היישומונים</string>
     <string name="ftp">שרת FTP</string>
     <string name="setting">הגדרות</string>
@@ -248,7 +247,6 @@
     <string name="password">סיסמה</string>
     <string name="anonymous">אנונימי</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">אחסון חיצוני</string>
     <string name="folders">תיקיות</string>
     <string name="folderfilecount">%1$d תיקיות ו־%2$d קבצים</string>
     <string name="videos">וידאו</string>

@@ -25,7 +25,6 @@
     <string name="drawer_open">Navigációs fiók megnyitása</string>
     <string name="drawer_close">Navigációs fiók bezárása</string>
     <string name="icon">ikon</string>
-    <string name="internalstorage">Belső tároló</string>
     <string name="apps">Alkalmazáskezelő</string>
     <string name="ftp">FTP-kiszolgáló</string>
     <string name="setting">Beállítások</string>
@@ -248,7 +247,6 @@
     <string name="password">Jelszó</string>
     <string name="anonymous">Névtelen</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Külső tároló</string>
     <string name="folders">mappa</string>
     <string name="folderfilecount">%1$d mappa és %2$d fájl</string>
     <string name="videos">Videók</string>
