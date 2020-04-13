@@ -29,7 +29,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowMimeTypeMap;
-import com.amaze.filemanager.test.ShadowMultiDex;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;

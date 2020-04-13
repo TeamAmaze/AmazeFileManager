@@ -37,7 +37,7 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import com.amaze.filemanager.test.ShadowMultiDex;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import java.io.IOException;
 import java.net.BindException;

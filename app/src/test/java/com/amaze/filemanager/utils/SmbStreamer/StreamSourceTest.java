@@ -30,7 +30,7 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 import org.robolectric.shadows.ShadowUsbManager;
-import com.amaze.filemanager.test.ShadowMultiDex;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import java.io.BufferedReader;
 import java.io.File;

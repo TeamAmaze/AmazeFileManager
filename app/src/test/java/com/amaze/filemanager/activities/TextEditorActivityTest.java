@@ -25,10 +25,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import org.junit.After;
 import org.junit.Test;

@@ -22,7 +22,7 @@ package com.amaze.filemanager.utils.files;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-import com.amaze.filemanager.test.ShadowMultiDex;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
 
 import org.junit.Test;

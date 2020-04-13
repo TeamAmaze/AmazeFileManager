@@ -41,7 +41,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowToast;
-import com.amaze.filemanager.test.ShadowMultiDex;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;

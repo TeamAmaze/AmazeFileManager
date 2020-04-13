@@ -24,6 +24,7 @@ import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowShellInteractive;
 
 import org.junit.Before;
@@ -31,7 +32,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import com.amaze.filemanager.test.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileOutputStream;
