@@ -33,7 +33,7 @@ public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelP
     @Override
     @NonNull
     public List<IconDataParcelable> getPreloadItems(int position) {
-        IconDataParcelable iconData = urisToLoad.get(position);
+        IconDataParcelable iconData = position < urisToLoad.size() ? urisToLoad.get(position) : null;
         if (iconData == null) return Collections.emptyList();
         return Collections.singletonList(iconData);
     }
