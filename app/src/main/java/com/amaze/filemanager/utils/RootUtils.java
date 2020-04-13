@@ -1,12 +1,29 @@
+/*
+ * RootHelper.java
+ *
+ * Copyright (C) 2016-2020 Arpit Khurana <arpitkh96@gmail.com>,
+ * Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * John Carlson <jawnnypoo@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package com.amaze.filemanager.utils;
 
-/**
- * Created by arpitkh996 on 25-01-2016.
- */
+import android.os.Build;
 
-import android.widget.Toast;
-
-import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.RootHelper;
 
@@ -41,27 +58,41 @@ public class RootUtils {
     private static String mountFileSystemRW(String path) throws ShellNotRunningException {
         String command = "mount";
         ArrayList<String> output = RootHelper.runShellCommandToList(command);
-        String mountPoint = "", types = null;
+        String mountPoint = "", types = null, mountArgument = null;
         for (String line : output) {
             String[] words = line.split(" ");
 
-            if (path.contains(words[2])) {
+            // mount command output for older Androids
+            // <code>/dev/block/vda /system ext4 ro,seclabel,relatime,data=ordered 0 0</code>
+            String mountPointOutputFromShell = words[1];
+            String mountPointFileSystemTypeFromShell = words[2];
+            String mountPointArgumentFromShell = words[3];
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                // mount command output for Android version >= 7
+                // <code>/dev/block/bootdevice/by-name/system on /system type ext4 (ro,seclabel,relatime,data=ordered)</code>
+                mountPointOutputFromShell = words[2];
+                mountPointFileSystemTypeFromShell = words[4];
+                mountPointArgumentFromShell = words[5];
+            }
+
+            if (path.startsWith(mountPointOutputFromShell)) {
                 // current found point is bigger than last one, hence not a conflicting one
                 // we're finding the best match, this omits for eg. / and /sys when we're actually
                 // looking for /system
-                if (words[2].length() > mountPoint.length()) {
-                    mountPoint = words[2];
-                    types = words[5];
+                if (mountPointOutputFromShell.length() > mountPoint.length()) {
+                    mountPoint = mountPointOutputFromShell;
+                    types = mountPointFileSystemTypeFromShell;
+                    mountArgument = mountPointArgumentFromShell;
                 }
             }
         }
 
-        if (!mountPoint.equals("") && types != null) {
+        if (!mountPoint.equals("") && types != null && mountArgument != null) {
             // we have the mountpoint, check for mount options if already rw
-            if (types.contains("rw")) {
+            if (mountArgument.contains("rw")) {
                 // already a rw filesystem return
                 return null;
-            } else if (types.contains("ro")) {
+            } else if (mountArgument.contains("ro")) {
                 // read-only file system, remount as rw
                 String mountCommand = "mount -o rw,remount " + mountPoint;
                 ArrayList<String> mountOutput = RootHelper.runShellCommandToList(mountCommand);
