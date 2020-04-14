@@ -2,6 +2,8 @@ package com.amaze.filemanager.fragments;
 
 import android.content.Context;
 import android.os.Bundle;
+
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -23,9 +25,9 @@ public class SearchWorkerFragment extends Fragment {
     public static final String KEY_REGEX = "regex";
     public static final String KEY_REGEX_MATCHES = "matches";
 
-    public SearchAsyncTask mSearchAsyncTask;
+    public SearchAsyncTask searchAsyncTask;
 
-    private HelperCallbacks mCallbacks;
+    private HelperCallbacks callbacks;
 
     // interface for activity to communicate with asynctask
     public interface HelperCallbacks {
@@ -36,11 +38,11 @@ public class SearchWorkerFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
         // hold instance of activity as there is a change in device configuration
-        mCallbacks = (HelperCallbacks) context;
+        callbacks = (HelperCallbacks) context;
     }
 
     @Override
@@ -48,16 +50,16 @@ public class SearchWorkerFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setRetainInstance(true);
-        String mPath = getArguments().getString(KEY_PATH);
-        String mInput = getArguments().getString(KEY_INPUT);
-        OpenMode mOpenMode = OpenMode.getOpenMode(getArguments().getInt(KEY_OPEN_MODE));
-        boolean mRootMode = getArguments().getBoolean(KEY_ROOT_MODE);
+        String path = getArguments().getString(KEY_PATH);
+        String input = getArguments().getString(KEY_INPUT);
+        OpenMode openMode = OpenMode.getOpenMode(getArguments().getInt(KEY_OPEN_MODE));
+        boolean rootMode = getArguments().getBoolean(KEY_ROOT_MODE);
         boolean isRegexEnabled = getArguments().getBoolean(KEY_REGEX);
         boolean isMatchesEnabled = getArguments().getBoolean(KEY_REGEX_MATCHES);
 
-        mSearchAsyncTask = new SearchAsyncTask(getActivity(), mCallbacks, mInput, mOpenMode,
-                mRootMode, isRegexEnabled, isMatchesEnabled);
-        mSearchAsyncTask.execute(mPath);
+        searchAsyncTask = new SearchAsyncTask(getActivity(), callbacks, input, openMode,
+                rootMode, isRegexEnabled, isMatchesEnabled);
+        searchAsyncTask.execute(path);
     }
 
     @Override
@@ -65,7 +67,7 @@ public class SearchWorkerFragment extends Fragment {
         super.onDetach();
 
         // to avoid activity instance leak while changing activity configurations
-        mCallbacks = null;
+        callbacks = null;
     }
 
 }
