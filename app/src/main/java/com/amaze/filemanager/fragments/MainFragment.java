@@ -739,8 +739,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    boolean useNewStack = sharedPref.getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(new File(checkedItems.get(0).desc), getActivity(), true, useNewStack);
+                    FileUtils.openFile(new File(checkedItems.get(0).desc), getMainActivity(), sharedPref);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));

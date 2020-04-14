@@ -377,7 +377,7 @@ public class TextEditorActivity extends ThemedActivity implements TextWatcher, V
                     File currentFile = mFile.hybridFileParcelable.getFile();
                     if (currentFile.exists()) {
                         boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
-                        FileUtils.openunknown(currentFile, this, false, useNewStack);
+                        FileUtils.openWith(currentFile, this, useNewStack);
                     } else {
                         Toast.makeText(this, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                     }
