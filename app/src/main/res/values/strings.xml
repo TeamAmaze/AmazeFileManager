@@ -652,7 +652,7 @@
 
     <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
     <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
-    <string name="storage_internal">Internal shared storage</string>
+    <string name="storage_internal">Internal Storage</string>
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD card</string>
 </resources>
