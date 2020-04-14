@@ -1504,7 +1504,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(getContext(), f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true,
-                        mFile.getDate() + "", false,
+                        mFile.getDate() + "", true,
                         getBoolean(PREFERENCE_SHOW_THUMB), mFile.getMode());
 
                 LIST_ELEMENTS.add(layoutElement);
