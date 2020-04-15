@@ -172,9 +172,6 @@ dependencies {
     //SFTP
     implementation "com.hierynomus:sshj:$sshjVersion"
 
-    implementation 'com.madgag.spongycastle:bcpkix-jdk15on:1.58.0.0'
-    implementation 'com.madgag.spongycastle:prov:1.58.0.0'
-
     //Glide: loads icons seemlessly
     implementation "com.github.bumptech.glide:glide:$glideVersion"
     implementation ("com.github.bumptech.glide:recyclerview-integration:$glideVersion") {
