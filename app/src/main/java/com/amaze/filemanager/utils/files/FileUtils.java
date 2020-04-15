@@ -26,28 +26,25 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.core.content.FileProvider;
 import androidx.documentfile.provider.DocumentFile;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.DatabaseViewerActivity;
@@ -75,7 +72,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-import jcifs.smb.SmbFile;
+
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -89,6 +86,8 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import jcifs.smb.SmbFile;
+
 /**
  * Functions that deal with files
  */
@@ -96,7 +95,6 @@ public class FileUtils {
 
     private static final String TAG = FileUtils.class.getSimpleName();
 
-    public static final String FILE_PROVIDER_AUTHORITY = "com.amaze.filemanager";
     public static final String FILE_PROVIDER_PREFIX = "storage_root";
     public static final String NOMEDIA_FILE = ".nomedia";
 
@@ -358,7 +356,7 @@ public class FileUtils {
         ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
-            uris.add(FileProvider.getUriForFile(c, FILE_PROVIDER_AUTHORITY, f));
+            uris.add(FileProvider.getUriForFile(c, c.getPackageName(), f));
         }
 
         String mime = MimeTypes.getMimeType(a.get(0).getPath(), a.get(0).isDirectory());
@@ -398,7 +396,7 @@ public class FileUtils {
         String type = "application/vnd.android.package-archive";
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), "com.amaze.filemanager", f);
+            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), permissionsActivity.getPackageName(), f);
             intent.setDataAndType(downloadedApk, type);
             intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         } else {
@@ -454,7 +452,7 @@ public class FileUtils {
      * Method supports showing a UI to ask user to open a file without any extension/mime
      */
     public static void openWith(final File f, final Context c, final boolean useNewStack) {
-        openWithInternal(FileProvider.getUriForFile(c, FILE_PROVIDER_AUTHORITY, f), c, useNewStack);
+        openWithInternal(FileProvider.getUriForFile(c, c.getPackageName(), f), c, useNewStack);
     }
 
     public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
@@ -624,7 +622,7 @@ public class FileUtils {
                 m.startActivity(intent);
         } else {
             try {
-                openUnknownInternal(FileProvider.getUriForFile(m, FILE_PROVIDER_AUTHORITY, f), MimeTypes.getMimeType(f.getAbsolutePath(), false), m, false, useNewStack);
+                openUnknownInternal(FileProvider.getUriForFile(m, m.getPackageName(), f), MimeTypes.getMimeType(f.getAbsolutePath(), false), m, false, useNewStack);
             } catch (Exception e) {
                 Toast.makeText(m, m.getString(R.string.no_app_found),Toast.LENGTH_LONG).show();
                 openWith(f, m, useNewStack);
