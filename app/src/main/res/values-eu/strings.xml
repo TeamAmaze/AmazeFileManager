@@ -26,7 +26,6 @@
     <string name="drawer_open">Ireki nabigazio tiradera</string>
     <string name="drawer_close">Itxi nabigazio tiradera</string>
     <string name="icon">ikonoa</string>
-    <string name="internalstorage">Barneko biltegia</string>
     <string name="apps">Aplikazio kudeatzailea</string>
     <string name="ftp">FTP zerbitzaria</string>
     <string name="setting">Ezarpenak</string>
@@ -249,7 +248,6 @@
     <string name="password">Pasahitza</string>
     <string name="anonymous">Anonimoa</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Kanpoko biltegia</string>
     <string name="folders">Karpetak</string>
     <string name="folderfilecount">%1$d karpeta eta %2$d fitxategi</string>
     <string name="videos">Bideoak</string>

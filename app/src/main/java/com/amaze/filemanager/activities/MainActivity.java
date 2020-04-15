@@ -22,6 +22,7 @@
 
 package com.amaze.filemanager.activities;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
@@ -44,24 +45,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
-import androidx.annotation.ColorInt;
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
-
-import androidx.annotation.StringRes;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -75,14 +61,29 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.PermissionsActivity;
+import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
@@ -93,14 +94,15 @@ import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.filesystem.StorageNaming;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.fragments.AppsListFragment;
 import com.amaze.filemanager.fragments.CloudSheetFragment;
@@ -128,12 +130,14 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.cloudrail.si.CloudRail;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -613,17 +617,63 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     }
 
     /**
+     * @return paths to all available volumes in the system (include emulated)
+     */
+    public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectories() {
+        ArrayList<StorageDirectoryParcelable> volumes;
+        if (SDK_INT >= Build.VERSION_CODES.N) {
+            volumes = getStorageDirectoriesNew();
+        } else {
+            volumes = getStorageDirectoriesLegacy();
+        }
+        if (isRootExplorer()) {
+            volumes.add(new StorageDirectoryParcelable("/", getResources().getString(R.string.root_directory), R.drawable.ic_drawer_root_white));
+        }
+        return volumes;
+    }
+
+    /**
+     * @return All available storage volumes (including internal storage, SD-Cards and USB devices)
+     */
+    @TargetApi(Build.VERSION_CODES.N)
+    public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesNew() {
+        // Final set of paths
+        ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
+        StorageManager sm = getSystemService(StorageManager.class);
+        for (StorageVolume volume : sm.getStorageVolumes()) {
+            if (!volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED) && !volume.getState().equalsIgnoreCase(Environment.MEDIA_MOUNTED_READ_ONLY)) {
+                continue;
+            }
+            File path = Utils.getVolumeDirectory(volume);
+            String name = volume.getDescription(this);
+            int icon;
+            if (!volume.isRemovable()) {
+                icon = R.drawable.ic_phone_android_white_24dp;
+            } else {
+                // HACK: There is no reliable way to distinguish USB and SD external storage
+                // However it is often enough to check for "USB" String
+                if (name.toUpperCase().contains("USB") || path.getPath().toUpperCase().contains("USB")) {
+                    icon = R.drawable.ic_usb_white_24dp;
+                } else {
+                    icon = R.drawable.ic_sd_storage_white_24dp;
+                }
+            }
+            volumes.add(new StorageDirectoryParcelable(path.getPath(), name, icon));
+        }
+        return volumes;
+    }
+
+    /**
      * Returns all available SD-Cards in the system (include emulated)
      * <p>
      * Warning: Hack! Based on Android source code of version 4.3 (API 18)
-     * Because there is no standard way to get it.
-     * TODO: Test on future Android versions 4.4+
+     * Because there was no standard way to get it before android N
      *
-     * @return paths to all available SD-Cards in the system (include emulated)
+     * @return All available SD-Cards in the system (include emulated)
      */
-    public synchronized ArrayList<String> getStorageDirectories() {
-        // Final set of paths
-        final ArrayList<String> rv = new ArrayList<>();
+    public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesLegacy() {
+        List<String> rv = new ArrayList<>();
+
         // Primary physical SD-CARD (not emulated)
         final String rawExternalStorage = System.getenv("EXTERNAL_STORAGE");
         // All Secondary SD-CARDs (all exclude primary) separated by ":"
@@ -685,9 +735,6 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                     rv.add(s);
             }
         }
-        if (isRootExplorer()){
-            rv.add("/");
-        }
         File usb = getUsbDrive();
         if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
@@ -696,7 +743,28 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
                 rv.add(OTGUtil.PREFIX_OTG + "/");
             }
         }
-        return rv;
+
+        // Assign a label and icon to each directory
+        ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
+        for (String file : rv) {
+            File f = new File(file);
+            @DrawableRes int icon;
+
+            if ("/storage/emulated/legacy".equals(file) || "/storage/emulated/0".equals(file) || "/mnt/sdcard".equals(file)) {
+                icon = R.drawable.ic_phone_android_white_24dp;
+            } else if ("/storage/sdcard1".equals(file)) {
+                icon = R.drawable.ic_sd_storage_white_24dp;
+            } else if ("/".equals(file)) {
+                icon = R.drawable.ic_drawer_root_white;
+            } else {
+                icon = R.drawable.ic_sd_storage_white_24dp;
+            }
+
+            String name = StorageNaming.getDeviceDescriptionLegacy(this, f);
+            volumes.add(new StorageDirectoryParcelable(file, name, icon));
+        }
+
+        return volumes;
     }
 
     @Override
@@ -1095,7 +1163,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         unregisterReceiver(mainActivityHelper.mNotificationReceiver);
         unregisterReceiver(receiver2);
 
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
             unregisterReceiver(mOtgReceiver);
         }
         killToast();
@@ -1119,7 +1187,7 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
         registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
 
-        if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+        if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
             updateUsbInformation();
         }
     }

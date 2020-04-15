@@ -239,7 +239,6 @@
   <string name="password">密碼</string>
   <string name="anonymous">匿名</string>
   <string name="bluetooth">藍牙裝置</string>
-  <string name="extstorage">外部儲存空間</string>
   <string name="folders">資料夾</string>
   <string name="videos">影片</string>
   <string name="apks">Apks</string>
@@ -594,8 +593,7 @@
   <string name="transfer_rate">傳輸速率</string>
   <string name="time_remaining">剩餘時間</string>
   <string name="grant_apkinstall_permission">程式需要安裝程式的權限以繼續。</string>
-  <string name="internalstorage">內部儲存空間</string>
-  <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
+    <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
   <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
   <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>
   <string name="close">關閉</string>
