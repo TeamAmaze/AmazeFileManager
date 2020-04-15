@@ -1,3 +1,26 @@
+/*
+ * Billing.java
+ *
+ * Copyright (C) Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
+ * and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils;
 
 import android.content.Context;
@@ -17,6 +40,8 @@ import com.amaze.filemanager.adapters.holders.DonationViewHolder;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;
+import com.android.billingclient.api.BillingResult;
+import com.android.billingclient.api.ConsumeParams;
 import com.android.billingclient.api.ConsumeResponseListener;
 import com.android.billingclient.api.Purchase;
 import com.android.billingclient.api.PurchasesUpdatedListener;
@@ -58,15 +83,17 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
 
 
     @Override
-    public void onPurchasesUpdated(int responseCode, @Nullable List<Purchase> purchases) {
-        if (responseCode == BillingClient.BillingResponse.OK
+    public void onPurchasesUpdated(BillingResult response, @Nullable List<Purchase> purchases) {
+        if (response.getResponseCode() == BillingClient.BillingResponseCode.OK
                 && purchases != null) {
             for (Purchase purchase : purchases) {
                 ConsumeResponseListener listener = (responseCode1, purchaseToken) -> {
                     // we consume the purchase, so that user can perform purchase again
                     Toast.makeText(activity, R.string.donation_thanks, Toast.LENGTH_LONG).show();
                 };
-                billingClient.consumeAsync(purchase.getPurchaseToken(), listener);
+                ConsumeParams consumeParams = ConsumeParams.newBuilder()
+                        .setPurchaseToken(purchase.getPurchaseToken()).build();
+                billingClient.consumeAsync(consumeParams, listener);
             }
         }
     }
@@ -91,11 +118,11 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
 
     /**
      * Got products list from play store, pop their details
-     * @param responseCode
+     * @param response
      * @param skuDetailsList
      */
-    private void popProductsList(int responseCode, List<SkuDetails> skuDetailsList) {
-        if (responseCode == BillingClient.BillingResponse.OK
+    private void popProductsList(BillingResult response, List<SkuDetails> skuDetailsList) {
+        if (response.getResponseCode() == BillingClient.BillingResponseCode.OK
                 && skuDetailsList != null) {
             showPaymentsDialog(activity);
         }
@@ -169,10 +196,10 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
     private void startServiceConnection(final Runnable executeOnSuccess) {
         billingClient.startConnection(new BillingClientStateListener() {
             @Override
-            public void onBillingSetupFinished(@BillingClient.BillingResponse int billingResponseCode) {
-                Log.d(Billing.this.getClass().getSimpleName(), "Setup finished. Response code: " + billingResponseCode);
+            public void onBillingSetupFinished(BillingResult billingResponse) {
+                Log.d(Billing.this.getClass().getSimpleName(), "Setup finished. Response code: " + billingResponse);
 
-                if (billingResponseCode == BillingClient.BillingResponse.OK) {
+                if (billingResponse.getResponseCode() == BillingClient.BillingResponseCode.OK) {
                     isServiceConnected = true;
                     if (executeOnSuccess != null) {
                         executeOnSuccess.run();
