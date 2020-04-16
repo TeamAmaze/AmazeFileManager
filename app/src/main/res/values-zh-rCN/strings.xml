@@ -616,4 +616,15 @@
     <string name="enable_marquee_filename">开启文件名滚动效果</string>
     <string name="cannot_extract_archive">不能开启压缩档 \"%s\"： %s</string>
     <string name="archive_unsupported_or_corrupt">不能开启压缩档 \"%s\"。可能是程式库不支援此压缩档，或者压缩档真的坏掉了。</string>
+    <string name="close">关闭</string>
+    <string name="bookmark_exists">书签已经存在</string>
+    <string name="hide_media">在多媒体浏览中隐藏</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">SSH 密钥验证失败，注意系统可能被侵入</string>
+    <string name="update_host_key">更新密钥</string>
+    <string name="cancel_recommended">取消 (推荐选项)</string>
+    <string name="failed_install_apk">安装失败</string>
+    <string name="storage_internal">内部存储</string>
+    <string name="storage_sd_card">SD 存储卡</string>
+    <string name="archive_password_prompt">请输入解压密码</string>
+    <string name="ftp_notif_starting_title">FTP 服务器</string>
 </resources>
