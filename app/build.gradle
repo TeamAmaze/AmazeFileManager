@@ -88,6 +88,7 @@ ext {
     glideVersion = '4.9.0'
     sshjVersion = '0.26.0'
     fabSpeedDialVersion = '3.1.1'
+    bouncyCastleVersion = '1.65'
 }
 
 dependencies {
@@ -172,8 +173,8 @@ dependencies {
     //SFTP
     implementation "com.hierynomus:sshj:$sshjVersion"
 
-    implementation 'com.madgag.spongycastle:bcpkix-jdk15on:1.58.0.0'
-    implementation 'com.madgag.spongycastle:prov:1.58.0.0'
+    implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
+    implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
 
     //Glide: loads icons seemlessly
     implementation "com.github.bumptech.glide:glide:$glideVersion"
