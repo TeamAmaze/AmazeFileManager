@@ -26,7 +26,7 @@ public class ShadowCryptUtil {
 
     static {
         try {
-            KeyGenerator keyGen = KeyGenerator.getInstance("AES", "BC");
+            KeyGenerator keyGen = KeyGenerator.getInstance("AES");
             keyGen.init(128);
             secretKey = keyGen.generateKey();
         } catch (GeneralSecurityException e) {
@@ -56,7 +56,7 @@ public class ShadowCryptUtil {
     private static String aesEncryptPassword(String plainTextPassword)
             throws GeneralSecurityException {
 
-        Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
+        Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
         byte[] encodedBytes = cipher.doFinal(plainTextPassword.getBytes());
@@ -69,7 +69,7 @@ public class ShadowCryptUtil {
      */
     private static String aesDecryptPassword(String cipherPassword) throws GeneralSecurityException {
 
-        Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
+        Cipher cipher = Cipher.getInstance(ALGO_AES);
         GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
         cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
         byte[] decryptedBytes = cipher.doFinal(Base64.decode(cipherPassword, Base64.DEFAULT));
