@@ -43,10 +43,8 @@ public class CustomSshJConfig extends DefaultConfig
     // BouncyCastle before registering SpongyCastle's provider
     public static void init() {
         Security.removeProvider("BC");
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(),
-                Security.getProviders().length+1);
         Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(),
-                Security.getProviders().length+1);
+                0);
     }
 
     // don't add ECDSA
