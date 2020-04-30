@@ -77,7 +77,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder> imple
 
         layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        billingClient = BillingClient.newBuilder(activity).setListener(this).build();
+        billingClient = BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases().build();
         initiatePurchaseFlow();
     }
 
