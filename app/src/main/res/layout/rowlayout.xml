@@ -142,14 +142,17 @@
                 android:layout_marginEnd="10dip"
                 android:textColor="?android:attr/textColorTertiary"
                 />
+<!--            Divyansh Dwivedi <justdvnsh2208@gmail.com> added maxLines=1 and layout_below=@+id/date;
+                removed -> layout_toEndOf = @+id/date & layout_toRightOf = @+id/date
+-->
             <TextView
                 android:id="@+id/secondLine"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/date"
-                android:layout_toEndOf="@id/date"
                 android:textSize="13sp"
                 android:textColor="?android:attr/textColorTertiary"
+                android:maxLines="1"
+                android:layout_below="@+id/date"
                 />
 
             <TextView
