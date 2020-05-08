@@ -212,9 +212,10 @@
             </intent-filter>
         </receiver>
 
+<!--        Divyansh Dwivedi <justdvnsh2208@gmail.com> Changed the android:authorities=${applicationId} to com.amaze.filemanager-->
         <provider
             android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}"
+            android:authorities="com.amaze.filemanager"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

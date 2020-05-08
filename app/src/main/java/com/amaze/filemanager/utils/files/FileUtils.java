@@ -96,6 +96,7 @@ public class FileUtils {
 
     private static final String TAG = FileUtils.class.getSimpleName();
 
+//    Divyansh Dwivedi<justdvnsh2208@gmail.com>
     public static final String FILE_PROVIDER_AUTHORITY = "com.amaze.filemanager";
     public static final String FILE_PROVIDER_PREFIX = "storage_root";
     public static final String NOMEDIA_FILE = ".nomedia";
