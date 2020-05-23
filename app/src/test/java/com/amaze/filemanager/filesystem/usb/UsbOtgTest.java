@@ -6,7 +6,6 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OTGUtil;
 
 import org.junit.Test;
