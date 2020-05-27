@@ -9,32 +9,32 @@
               android:paddingRight="24dp"
               android:paddingStart="24dp">
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.amaze.filemanager.ui.views.WarnableTextInputLayout
         android:id="@+id/text_input1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:errorEnabled="false">
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <EditText
             android:id="@+id/text1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:inputType="text"/>
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.amaze.filemanager.ui.views.WarnableTextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
+    <com.amaze.filemanager.ui.views.WarnableTextInputLayout
         android:id="@+id/text_input2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:errorEnabled="true">
 
-        <androidx.appcompat.widget.AppCompatEditText
+        <EditText
             android:id="@+id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:inputType="text"/>
-    </com.google.android.material.textfield.TextInputLayout>
+    </com.amaze.filemanager.ui.views.WarnableTextInputLayout>
 
 </LinearLayout>

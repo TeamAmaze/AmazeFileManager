@@ -4,6 +4,7 @@ import android.text.TextUtils;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.utils.OTGUtil;
 
 import org.junit.Test;
@@ -38,9 +39,9 @@ public class UsbOtgTest {
         activity = controller.resume().get();
 
         boolean hasOtgStorage = false;
-        ArrayList<String> storageDirectories = activity.getStorageDirectories();
-        for (String file : storageDirectories) {
-            if (file.startsWith(OTGUtil.PREFIX_OTG)) {
+        ArrayList<StorageDirectoryParcelable> storageDirectories = activity.getStorageDirectories();
+        for (StorageDirectoryParcelable storageDirectory : storageDirectories) {
+            if (storageDirectory.path.startsWith(OTGUtil.PREFIX_OTG)) {
                 hasOtgStorage = true;
                 break;
             }

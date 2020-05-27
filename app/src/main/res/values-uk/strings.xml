@@ -21,7 +21,6 @@
     <string name="drawer_open">Відкрити меню навігації</string>
     <string name="drawer_close">Закрити меню навігації</string>
     <string name="icon">іконка</string>
-    <string name="internalstorage">Внутрішня пам\'ять</string>
     <string name="apps">Менеджер додатків</string>
     <string name="ftp">FTP Сервер</string>
     <string name="setting">Налаштування</string>
@@ -233,7 +232,6 @@
     <string name="password">Пароль</string>
     <string name="anonymous">Анонім</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Зовнішнє сховище</string>
     <string name="folders">Теки</string>
     <string name="videos">Відео</string>
     <string name="apks">Apk</string>

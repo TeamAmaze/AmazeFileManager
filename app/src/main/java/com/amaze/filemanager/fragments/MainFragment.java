@@ -739,8 +739,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                     mode.finish();
                     return true;
                 case R.id.openwith:
-                    boolean useNewStack = sharedPref.getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-                    FileUtils.openunknown(new File(checkedItems.get(0).desc), getActivity(), true, useNewStack);
+                    FileUtils.openFile(new File(checkedItems.get(0).desc), getMainActivity(), sharedPref);
                     return true;
                 case R.id.addshortcut:
                     addShortcut(checkedItems.get(0));
@@ -856,8 +855,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             SearchWorkerFragment fragment = (SearchWorkerFragment) fragmentManager
                     .findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchAsyncTask.cancel(true);
+                if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    fragment.searchAsyncTask.cancel(true);
                 }
                 getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
             }
@@ -1332,8 +1331,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             FragmentManager fm = getActivity().getSupportFragmentManager();
             SearchWorkerFragment fragment = (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
             if (fragment != null) {
-                if (fragment.mSearchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
-                    fragment.mSearchAsyncTask.cancel(true);
+                if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
+                    fragment.searchAsyncTask.cancel(true);
                 }
             }
             loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);
@@ -1504,7 +1503,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(getContext(), f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true,
-                        mFile.getDate() + "", false,
+                        mFile.getDate() + "", true,
                         getBoolean(PREFERENCE_SHOW_THUMB), mFile.getMode());
 
                 LIST_ELEMENTS.add(layoutElement);

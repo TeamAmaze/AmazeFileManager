@@ -32,7 +32,7 @@ import java.security.Security;
 /**
  * sshj {@link net.schmizz.sshj.Config} for our own use.
  *
- * Borrowed from original AndroidConfig, but also use SpongyCastle from the start altogether.
+ * Borrowed from original AndroidConfig, but also use vanilla BouncyCastle from the start altogether.
  *
  * @see net.schmizz.sshj.Config
  * @see net.schmizz.sshj.AndroidConfig
@@ -40,13 +40,11 @@ import java.security.Security;
 public class CustomSshJConfig extends DefaultConfig
 {
     // This is where we different from the original AndroidConfig. Found it only work if we remove
-    // BouncyCastle before registering SpongyCastle's provider
+    // BouncyCastle bundled with Android before registering our BouncyCastle provider
     public static void init() {
         Security.removeProvider("BC");
-        Security.insertProviderAt(new org.spongycastle.jce.provider.BouncyCastleProvider(),
-                Security.getProviders().length+1);
         Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(),
-                Security.getProviders().length+1);
+                0);
     }
 
     // don't add ECDSA

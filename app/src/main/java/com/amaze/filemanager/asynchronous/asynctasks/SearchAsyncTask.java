@@ -7,68 +7,61 @@ import android.util.Log;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
-
-/**
- * @author Emmanuel
- *         on 15/8/2017, at 19:47.
- */
 
 public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void> {
 
     private static final String TAG = "SearchAsyncTask";
 
     private WeakReference<Activity> activity;
-    private SearchWorkerFragment.HelperCallbacks mCallbacks;
-    private String mInput;
-    private OpenMode mOpenMode;
-    private boolean mRootMode, isRegexEnabled, isMatchesEnabled;
+    private SearchWorkerFragment.HelperCallbacks callbacks;
+    private String input;
+    private OpenMode openMode;
+    private boolean rootMode, isRegexEnabled, isMatchesEnabled;
 
     public SearchAsyncTask(Activity a, SearchWorkerFragment.HelperCallbacks l,
                            String input, OpenMode openMode, boolean root, boolean regex,
                            boolean matches) {
         activity = new WeakReference<>(a);
-        mCallbacks = l;
-        mInput = input;
-        mOpenMode = openMode;
-        mRootMode = root;
+        callbacks = l;
+        this.input = input;
+        this.openMode = openMode;
+        rootMode = root;
         isRegexEnabled = regex;
         isMatchesEnabled = matches;
     }
 
     @Override
     protected void onPreExecute() {
-            /*
-            * Note that we need to check if the callbacks are null in each
-            * method in case they are invoked after the Activity's and
-            * Fragment's onDestroy() method have been called.
-             */
-        if (mCallbacks != null) {
-            mCallbacks.onPreExecute(mInput);
+        /*
+        * Note that we need to check if the callbacks are null in each
+        * method in case they are invoked after the Activity's and
+        * Fragment's onDestroy() method have been called.
+         */
+        if (callbacks != null) {
+            callbacks.onPreExecute(input);
         }
     }
 
-    // mCallbacks not checked for null because of possibility of
+    // callbacks not checked for null because of possibility of
     // race conditions b/w worker thread main thread
     @Override
     protected Void doInBackground(String... params) {
-
         String path = params[0];
-        HybridFile file = new HybridFile(mOpenMode, path);
+        HybridFile file = new HybridFile(openMode, path);
         file.generateMode(activity.get());
         if (file.isSmb()) return null;
 
         // level 1
         // if regex or not
         if (!isRegexEnabled) {
-            search(file, mInput);
+            search(file, input);
         } else {
             // compile the regular expression in the input
-            Pattern pattern = Pattern.compile(bashRegexToJava(mInput));
+            Pattern pattern = Pattern.compile(bashRegexToJava(input));
             // level 2
             if (!isMatchesEnabled) searchRegExFind(file, pattern);
             else searchRegExMatch(file, pattern);
@@ -78,20 +71,20 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
 
     @Override
     public void onPostExecute(Void c) {
-        if (mCallbacks != null) {
-            mCallbacks.onPostExecute(mInput);
+        if (callbacks != null) {
+            callbacks.onPostExecute(input);
         }
     }
 
     @Override
     protected void onCancelled() {
-        if (mCallbacks != null) mCallbacks.onCancelled();
+        if (callbacks != null) callbacks.onCancelled();
     }
 
     @Override
     public void onProgressUpdate(HybridFileParcelable... val) {
-        if (!isCancelled() && mCallbacks != null) {
-            mCallbacks.onProgressUpdate(val[0], mInput);
+        if (!isCancelled() && callbacks != null) {
+            callbacks.onProgressUpdate(val[0], input);
         }
     }
 
@@ -102,7 +95,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
      */
     private void search(HybridFile directory, final SearchFilter filter) {
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
-            directory.forEachChildrenFile(activity.get(), mRootMode, file -> {
+            directory.forEachChildrenFile(activity.get(), rootMode, file -> {
                 if (!isCancelled()) {
                     if (filter.searchFilter(file.getName())) {
                         publishProgress(file);

@@ -26,22 +26,17 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
-import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.database.Cursor;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
 import android.preference.PreferenceManager;
-import android.provider.BaseColumns;
-import android.provider.MediaStore;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -98,7 +93,9 @@ import jcifs.smb.SmbFile;
  */
 public class FileUtils {
 
-    public static final String FILE_PROVIDER_AUTHORITY = "com.amaze.filemanager";
+    private static final String TAG = FileUtils.class.getSimpleName();
+
+    public static final String FILE_PROVIDER_PREFIX = "storage_root";
     public static final String NOMEDIA_FILE = ".nomedia";
 
     public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
@@ -359,7 +356,7 @@ public class FileUtils {
         ArrayList<Uri> uris = new ArrayList<>();
         boolean b = true;
         for (File f : a) {
-            uris.add(FileProvider.getUriForFile(c, FILE_PROVIDER_AUTHORITY, f));
+            uris.add(FileProvider.getUriForFile(c, c.getPackageName(), f));
         }
 
         String mime = MimeTypes.getMimeType(a.get(0).getPath(), a.get(0).isDirectory());
@@ -395,67 +392,33 @@ public class FileUtils {
             permissionsActivity.requestInstallApkPermission(() -> installApk(f, permissionsActivity));
         }
 
-        Intent chooserIntent = new Intent();
-        chooserIntent.setAction(Intent.ACTION_INSTALL_PACKAGE);
-        chooserIntent.setData(Uri.fromFile(f));
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        String type = "application/vnd.android.package-archive";
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            Uri downloadedApk = FileProvider.getUriForFile(permissionsActivity.getApplicationContext(), permissionsActivity.getPackageName(), f);
+            intent.setDataAndType(downloadedApk, type);
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        } else {
+            intent.setDataAndType(Uri.fromFile(f), type);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        }
 
         try {
-            permissionsActivity.startActivity(chooserIntent);
-        } catch (ActivityNotFoundException e) {
+            permissionsActivity.startActivity(intent);
+        } catch (Exception e) {
             e.printStackTrace();
-            Toast.makeText(permissionsActivity, R.string.error, Toast.LENGTH_SHORT).show();
+            Toast.makeText(permissionsActivity, R.string.failed_install_apk, Toast.LENGTH_SHORT).show();
         }
     }
 
-    /**
-     * Open a file not supported by Amaze
-     *
-     * @param f the file
-     * @param forcechooser force the chooser to show up even when set default by user
-     */
-    public static void openunknown(File f, Context c, boolean forcechooser, boolean useNewStack) {
-        Intent intent = new Intent();
-        intent.setAction(Intent.ACTION_VIEW);
-
-        String type = MimeTypes.getMimeType(f.getPath(), f.isDirectory());
-        if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
-            Uri uri = fileToContentUri(c, f, intent);
-
-            intent.setDataAndType(uri, type);
-
-            Intent activityIntent;
-            if (forcechooser) {
-                if(useNewStack) applyNewDocFlag(intent);
-                activityIntent = Intent.createChooser(intent, c.getString(R.string.open_with));
-            } else {
-                activityIntent = intent;
-                if(useNewStack) applyNewDocFlag(activityIntent);
-            }
-
-            try {
-                c.startActivity(activityIntent);
-            } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
-                Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
-                openWith(f, c, useNewStack);
-            }
-        } else {
-            // failed to load mime type
-            openWith(f, c, useNewStack);
-        }
-    }
-
-    /**
-     * Open file from OTG
-     */
-    public static void openunknown(DocumentFile f, Context c, boolean forcechooser, boolean useNewStack) {
+    private static void openUnknownInternal(Uri contentUri, String type, Context c, boolean forcechooser, boolean useNewStack) {
         Intent chooserIntent = new Intent();
         chooserIntent.setAction(Intent.ACTION_VIEW);
         chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-        String type = f.getType();
         if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
-            chooserIntent.setDataAndType(f.getUri(), type);
+            chooserIntent.setDataAndType(contentUri, type);
             Intent activityIntent;
             if (forcechooser) {
                 if(useNewStack) applyNewDocFlag(chooserIntent);
@@ -468,12 +431,12 @@ public class FileUtils {
             try {
                 c.startActivity(activityIntent);
             } catch (ActivityNotFoundException e) {
-                e.printStackTrace();
+                android.util.Log.e(TAG, e.getMessage(), e);
                 Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
-                openWith(f, c, useNewStack);
+                openWithInternal(contentUri, c, useNewStack);
             }
         } else {
-            openWith(f, c, useNewStack);
+            openWithInternal(contentUri, c, useNewStack);
         }
     }
 
@@ -481,116 +444,33 @@ public class FileUtils {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             i.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT);
         } else {
-
-            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME
-                | Intent.FLAG_ACTIVITY_RETAIN_IN_RECENTS);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_TASK_ON_HOME);
         }
-    }
-
-    private static final String INTERNAL_VOLUME = "internal";
-    public static final String EXTERNAL_VOLUME = "external";
-
-    private static final String EMULATED_STORAGE_SOURCE = System.getenv("EMULATED_STORAGE_SOURCE");
-    private static final String EMULATED_STORAGE_TARGET = System.getenv("EMULATED_STORAGE_TARGET");
-    private static final String EXTERNAL_STORAGE = System.getenv("EXTERNAL_STORAGE");
-    public static String normalizeMediaPath(String path) {
-        // Retrieve all the paths and check that we have this environment vars
-        if (TextUtils.isEmpty(EMULATED_STORAGE_SOURCE) ||
-                TextUtils.isEmpty(EMULATED_STORAGE_TARGET) ||
-                TextUtils.isEmpty(EXTERNAL_STORAGE)) {
-            return path;
-        }
-
-        // We need to convert EMULATED_STORAGE_SOURCE -> EMULATED_STORAGE_TARGET
-        if (path.startsWith(EMULATED_STORAGE_SOURCE)) {
-            path = path.replace(EMULATED_STORAGE_SOURCE, EMULATED_STORAGE_TARGET);
-        }
-        return path;
-    }
-
-    @NonNull
-    public static Uri fileToContentUri(Context context, File file, Intent chooserIntent) {
-        // Normalize the path to ensure media search
-        final String normalizedPath = normalizeMediaPath(file.getAbsolutePath());
-
-        // Check in external and internal storages
-        Uri uri = fileToContentUri(context, normalizedPath, file.isDirectory(), EXTERNAL_VOLUME);
-        if (uri != null) {
-            return uri;
-        }
-
-        uri = fileToContentUri(context, normalizedPath, file.isDirectory(), INTERNAL_VOLUME);
-        if (uri != null) {
-            return uri;
-        }
-
-        chooserIntent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
-        return FileProvider.getUriForFile(context, FILE_PROVIDER_AUTHORITY, file);
-    }
-
-    private static Uri fileToContentUri(Context context, String path, boolean isDirectory, String volume) {
-        final String where = MediaStore.MediaColumns.DATA + " = ?";
-        Uri baseUri;
-        String[] projection;
-        int mimeType = Icons.getTypeOfFile(path, isDirectory);
-
-        switch (mimeType) {
-            case Icons.IMAGE:
-                baseUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            case Icons.VIDEO:
-                baseUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            case Icons.AUDIO:
-                baseUri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-                projection = new String[]{BaseColumns._ID};
-                break;
-            default:
-                baseUri = MediaStore.Files.getContentUri(volume);
-                projection = new String[]{BaseColumns._ID, MediaStore.Files.FileColumns.MEDIA_TYPE};
-        }
-
-        ContentResolver cr = context.getContentResolver();
-        Cursor c = cr.query(baseUri, projection, where, new String[]{path}, null);
-        try {
-            if (c != null && c.moveToNext()) {
-                boolean isValid = false;
-                if (mimeType == Icons.IMAGE || mimeType == Icons.VIDEO || mimeType == Icons.AUDIO) {
-                    isValid = true;
-                } else {
-                    int type = c.getInt(c.getColumnIndexOrThrow(MediaStore.Files.FileColumns.MEDIA_TYPE));
-                    isValid = type != 0;
-                }
-
-                if (isValid) {
-                    // Do not force to use content uri for no media files
-                    long id = c.getLong(c.getColumnIndexOrThrow(BaseColumns._ID));
-                    return Uri.withAppendedPath(baseUri, String.valueOf(id));
-                }
-            }
-        } finally {
-            if (c != null) {
-                c.close();
-            }
-        }
-        return null;
     }
 
     /**
      * Method supports showing a UI to ask user to open a file without any extension/mime
      */
     public static void openWith(final File f, final Context c, final boolean useNewStack) {
-        MaterialDialog.Builder a=new MaterialDialog.Builder(c);
+        openWithInternal(FileProvider.getUriForFile(c, c.getPackageName(), f), c, useNewStack);
+    }
+
+    public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
+        openWithInternal(f.getUri(), c, useNewStack);
+    }
+
+    private static void openWithInternal(final Uri uri, final Context c, final boolean useNewStack) {
+        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
         a.title(c.getString(R.string.open_as));
-        String[] items=new String[]{c.getString(R.string.text),c.getString(R.string.image),c.getString(R.string.video),c.getString(R.string.audio),c.getString(R.string.database),c.getString(R.string.other)};
+        String[] items = new String[]{c.getString(R.string.text), c.getString(R.string.image), c.getString(R.string.video), c.getString(R.string.audio), c.getString(R.string.database), c.getString(R.string.other)};
 
         a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
             Intent intent = new Intent();
-            Uri uri = fileToContentUri(c, f, intent);
             intent.setAction(Intent.ACTION_VIEW);
-
+            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_RETAIN_IN_RECENTS);
+            }
             switch (i) {
                 case 0:
                     if(useNewStack) applyNewDocFlag(intent);
@@ -607,7 +487,8 @@ public class FileUtils {
                     break;
                 case 4:
                     intent = new Intent(c, DatabaseViewerActivity.class);
-                    intent.putExtra("path", f.getPath());
+                    //DatabaseViewerActivity only accepts java.io.File paths, need to strip the URI to file's absolute path
+                    intent.putExtra("path", uri.getPath().substring(uri.getPath().indexOf(FILE_PROVIDER_PREFIX)-1, FILE_PROVIDER_PREFIX.length()+1));
                     break;
                 case 5:
                     intent.setDataAndType(uri, "*/*");
@@ -617,52 +498,7 @@ public class FileUtils {
                 c.startActivity(intent);
             } catch (Exception e) {
                 Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
-                openWith(f, c, useNewStack);
-            }
-        });
-        try {
-            a.build().show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    public static void openWith(final DocumentFile f, final Context c, final boolean useNewStack) {
-        MaterialDialog.Builder a = new MaterialDialog.Builder(c);
-        a.title(c.getString(R.string.open_as));
-        String[] items = new String[]{c.getString(R.string.text), c.getString(R.string.image), c.getString(R.string.video), c.getString(R.string.audio), c.getString(R.string.database), c.getString(R.string.other)};
-
-        a.items(items).itemsCallback((materialDialog, view, i, charSequence) -> {
-            Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            switch (i) {
-                case 0:
-                    if(useNewStack) applyNewDocFlag(intent);
-                    intent.setDataAndType(f.getUri(), "text/*");
-                    break;
-                case 1:
-                    intent.setDataAndType(f.getUri(), "image/*");
-                    break;
-                case 2:
-                    intent.setDataAndType(f.getUri(), "video/*");
-                    break;
-                case 3:
-                    intent.setDataAndType(f.getUri(), "audio/*");
-                    break;
-                case 4:
-                    intent = new Intent(c, DatabaseViewerActivity.class);
-                    intent.putExtra("path", f.getUri());
-                    break;
-                case 5:
-                    intent.setDataAndType(f.getUri(), "*/*");
-                    break;
-            }
-            try {
-                c.startActivity(intent);
-            } catch (Exception e) {
-                Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
-                openWith(f, c, useNewStack);
+                openWithInternal(uri, c, useNewStack);
             }
         });
 
@@ -786,7 +622,7 @@ public class FileUtils {
                 m.startActivity(intent);
         } else {
             try {
-                openunknown(f, m, false, useNewStack);
+                openUnknownInternal(FileProvider.getUriForFile(m, m.getPackageName(), f), MimeTypes.getMimeType(f.getAbsolutePath(), false), m, false, useNewStack);
             } catch (Exception e) {
                 Toast.makeText(m, m.getString(R.string.no_app_found),Toast.LENGTH_LONG).show();
                 openWith(f, m, useNewStack);
@@ -812,64 +648,11 @@ public class FileUtils {
     public static void openFile(final DocumentFile f, final MainActivity m, SharedPreferences sharedPrefs) {
         boolean useNewStack = sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
         try {
-            openunknown(f, m, false, useNewStack);
+            openUnknownInternal(f.getUri(), MimeTypes.getMimeType(f.getUri().toString(), false), m, false, useNewStack);
         } catch (Exception e) {
             Toast.makeText(m, m.getString(R.string.no_app_found),Toast.LENGTH_LONG).show();
             openWith(f, m, useNewStack);
         }
-
-        // not supporting inbuilt activities for now
-        /*if (f.getName().toLowerCase().endsWith(".zip") ||
-                f.getName().toLowerCase().endsWith(".jar") ||
-                f.getName().toLowerCase().endsWith(".rar")||
-                f.getName().toLowerCase().endsWith(".tar") ||
-                f.getName().toLowerCase().endsWith(".tar.gz")) {
-            //showArchiveDialog(f, m);
-        } else if(f.getName().toLowerCase().endsWith(".apk")) {
-            //showPackageDialog(f, m);
-        } else if (f.getName().toLowerCase().endsWith(".db")) {
-            Intent intent = new Intent(m, DatabaseViewerActivity.class);
-            intent.putExtra("path", f.getUri());
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            m.startActivity(intent);
-        }  else if (Icons.isAudio(f.getName())) {
-            final int studio_count = sharedPref.getInt("studio", 0);
-            final Intent intent = new Intent();
-            intent.setAction(Intent.ACTION_VIEW);
-            intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-            intent.setDataAndType(f.getUri(), "audio*//*");
-
-            // Behold! It's the  legendary easter egg!
-            if (studio_count!=0) {
-                new CountDownTimer(studio_count, 1000) {
-                    @Override
-                    public void onTick(long millisUntilFinished) {
-                        int sec = (int)millisUntilFinished/1000;
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-                        studioCount.show();
-                    }
-
-                    @Override
-                    public void onFinish() {
-                        if (studioCount!=null)
-                            studioCount.cancel();
-                        studioCount = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
-                        studioCount.show();
-                        m.startActivity(intent);
-                    }
-                }.start();
-            } else
-                m.startActivity(intent);
-        } else {
-            try {
-                openunknown(f, m, false);
-            } catch (Exception e) {
-                Toast.makeText(m, m.getString(R.string.noappfound),Toast.LENGTH_LONG).show();
-                openWith(f, m);
-            }
-        }*/
     }
 
     public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(ConcurrentRadixTree<VoidValue> a) {

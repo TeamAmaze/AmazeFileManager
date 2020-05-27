@@ -25,7 +25,6 @@
     <string name="drawer_open">Opna leiðsagnarsleða</string>
     <string name="drawer_close">Loka leiðsagnarsleða</string>
     <string name="icon">táknmynd</string>
-    <string name="internalstorage">Innbyggð geymsla</string>
     <string name="apps">Smáforritastjórnun</string>
     <string name="ftp">FTP-þjónn</string>
     <string name="setting">Stillingar</string>
@@ -248,7 +247,6 @@
     <string name="password">Lykilorð</string>
     <string name="anonymous">Nafnlaus notandi</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Ytri gagnageymsla</string>
     <string name="folders">Möppur</string>
     <string name="folderfilecount">%1$d möppur og %2$d skrár</string>
     <string name="videos">Myndskeið</string>

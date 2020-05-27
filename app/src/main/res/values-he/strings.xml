@@ -25,7 +25,6 @@
     <string name="drawer_open">פתיחת תפריט הניווט</string>
     <string name="drawer_close">סגירת תפריט הניווט</string>
     <string name="icon">סמל</string>
-    <string name="internalstorage">אחסון פנימי</string>
     <string name="apps">מנהל היישומונים</string>
     <string name="ftp">שרת FTP</string>
     <string name="setting">הגדרות</string>
@@ -248,7 +247,6 @@
     <string name="password">סיסמה</string>
     <string name="anonymous">אנונימי</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">אחסון חיצוני</string>
     <string name="folders">תיקיות</string>
     <string name="folderfilecount">%1$d תיקיות ו־%2$d קבצים</string>
     <string name="videos">וידאו</string>
@@ -644,5 +642,6 @@
     <string name="ssh_connect_failed_host_key_changed_prompt">יכול להיות שמשהו פסול מתנהל מאחורי הקלעים!\n\nיכול להיות שמדובר בהאזנה שמתרחשת כרגע (סוכן אמצע)! יכול גם להיות שמפתח המארח השתנה ממש כרגע. טביעת האצבע של המפתח הציבורי שנשלח מצד המארח המרוחק אינו תואם לזו שמאוחסנת ב־Amaze.\n\nניתן להמשיך ולעדכן את טביעת האצבע של השרת או לבטל את עדכון הגדרות חיבור ה־SSH.</string>
     <string name="update_host_key">עדכון מפתח מארח</string>
     <string name="cancel_recommended">ביטול (עדיף)</string>
+    <string name="failed_install_apk">ההתקנה נכשלה</string>
 </resources>
 

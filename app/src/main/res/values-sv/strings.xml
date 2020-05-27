@@ -25,7 +25,6 @@
     <string name="drawer_open">Öppna navigationsfält</string>
     <string name="drawer_close">Stäng navigationspanel</string>
     <string name="icon">ikon</string>
-    <string name="internalstorage">Intern Lagring</string>
     <string name="apps">Apphanterare</string>
     <string name="ftp">FTP-server</string>
     <string name="setting">Inställningar</string>
@@ -248,7 +247,6 @@
     <string name="password">Lösenord</string>
     <string name="anonymous">Anonymt</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Extern lagring</string>
     <string name="folders">Mappar</string>
     <string name="folderfilecount">%1$d mappar och %2$d filer</string>
     <string name="videos">Videor</string>

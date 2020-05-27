@@ -199,7 +199,7 @@ public class FtpService extends Service implements Runnable {
         if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
 
             try {
-                KeyStore keyStore = KeyStore.getInstance("BKS", "BC");
+                KeyStore keyStore = KeyStore.getInstance("BKS");
                 keyStore.load(getResources().openRawResource(R.raw.key), KEYSTORE_PASSWORD);
 
                 KeyManagerFactory keyManagerFactory = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm());

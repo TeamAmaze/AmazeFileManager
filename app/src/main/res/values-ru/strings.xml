@@ -21,7 +21,6 @@
     <string name="drawer_open">Открыть меню навигации</string>
     <string name="drawer_close">Закрыть меню навигации</string>
     <string name="icon">значок</string>
-    <string name="internalstorage">Внутренняя память</string>
     <string name="apps">Менеджер приложений</string>
     <string name="ftp">FTP сервер</string>
     <string name="setting">Настройки</string>
@@ -237,7 +236,6 @@
     <string name="password">Пароль</string>
     <string name="anonymous">Анонимно</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Внешний накопитель</string>
     <string name="folders">Папки</string>
     <string name="videos">Видео</string>
     <string name="apks">Apk</string>

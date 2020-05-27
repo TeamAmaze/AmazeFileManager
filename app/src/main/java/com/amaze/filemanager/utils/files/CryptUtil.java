@@ -384,7 +384,7 @@ public class CryptUtil {
     private void rsaEncrypt(Context context, BufferedInputStream inputStream, BufferedOutputStream outputStream)
             throws GeneralSecurityException, IOException {
 
-        Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
+        Cipher cipher = Cipher.getInstance(ALGO_AES);
         RSAKeygen keygen = new RSAKeygen(context);
 
         IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
@@ -414,7 +414,7 @@ public class CryptUtil {
     private void rsaDecrypt(Context context, BufferedInputStream inputStream,
                                    BufferedOutputStream outputStream) throws GeneralSecurityException, IOException {
 
-        Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
+        Cipher cipher = Cipher.getInstance(ALGO_AES);
         RSAKeygen keygen = new RSAKeygen(context);
 
         IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
@@ -443,7 +443,7 @@ public class CryptUtil {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private static String rsaEncryptPassword(Context context, String password) throws GeneralSecurityException, IOException {
 
-        Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
+        Cipher cipher = Cipher.getInstance(ALGO_AES);
         RSAKeygen keygen = new RSAKeygen(context);
 
         IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
@@ -455,7 +455,7 @@ public class CryptUtil {
     @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
     private static String rsaDecryptPassword(Context context, String cipherText) throws GeneralSecurityException, IOException {
 
-        Cipher cipher = Cipher.getInstance(ALGO_AES, "BC");
+        Cipher cipher = Cipher.getInstance(ALGO_AES);
         RSAKeygen keygen = new RSAKeygen(context);
         IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
         cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
@@ -498,7 +498,7 @@ public class CryptUtil {
             GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
         } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            cipher = Cipher.getInstance(ALGO_AES, "BC");
+            cipher = Cipher.getInstance(ALGO_AES);
             RSAKeygen keygen = new RSAKeygen(context);
 
             cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());

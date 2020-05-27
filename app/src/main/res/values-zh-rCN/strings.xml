@@ -25,7 +25,6 @@
     <string name="drawer_open">打开导航抽屉</string>
     <string name="drawer_close">关闭导航抽屉</string>
     <string name="icon">图标</string>
-    <string name="internalstorage">Internal Storage</string>
     <string name="apps">应用管理</string>
     <string name="ftp">FTP 服务器</string>
     <string name="setting">设置</string>
@@ -246,7 +245,6 @@
     <string name="password">密码</string>
     <string name="anonymous">匿名用户</string>
     <string name="bluetooth">蓝牙</string>
-    <string name="extstorage">外置存储</string>
     <string name="folders">文件夹</string>
     <string name="folderfilecount">%1$d 个文件夹，%2$d 个文件</string>
     <string name="videos">视频</string>

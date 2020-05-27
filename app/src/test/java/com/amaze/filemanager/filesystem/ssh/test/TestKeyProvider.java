@@ -12,7 +12,7 @@ public class TestKeyProvider implements KeyPairProvider {
     private KeyPair keyPair;
 
     public TestKeyProvider() throws Exception {
-        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", "BC");
+        KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
         keyPairGenerator.initialize(1024, new SecureRandom());
         keyPair = keyPairGenerator.generateKeyPair();
     }
