@@ -178,7 +178,7 @@ dependencies {
 
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
-    
+
     implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
 
     //Glide: loads icons seemlessly
