@@ -31,12 +31,6 @@ import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import androidx.annotation.ColorRes;
-import androidx.annotation.NonNull;
-import androidx.core.content.ContextCompat;
-import androidx.core.content.FileProvider;
-import androidx.core.graphics.drawable.DrawableCompat;
-
 import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
@@ -44,10 +38,14 @@ import android.view.View;
 import android.widget.CheckBox;
 import android.widget.Toast;
 
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
+import androidx.core.content.FileProvider;
+import androidx.core.graphics.drawable.DrawableCompat;
+
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.utils.files.FileUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
@@ -174,14 +172,18 @@ public class Utils {
      * Force disables screen rotation. Useful when we're temporarily in activity because of external intent,
      * and don't have to really deal much with filesystem.
      */
-    public static void disableScreenRotation(MainActivity mainActivity) {
-        int screenOrientation = mainActivity.getResources().getConfiguration().orientation;
+    public static void disableScreenRotation(@NonNull Activity activity) {
+        int screenOrientation = activity.getResources().getConfiguration().orientation;
 
         if (screenOrientation == Configuration.ORIENTATION_LANDSCAPE) {
-            mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         } else if (screenOrientation == Configuration.ORIENTATION_PORTRAIT) {
-            mainActivity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+            activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
+    }
+
+    public static void enableScreenRotation(@NonNull Activity activity) {
+        activity.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
     }
 
     public static boolean isDeviceInLandScape(Activity activity){
