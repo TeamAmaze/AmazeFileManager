@@ -5,6 +5,7 @@ import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import org.apache.commons.compress.utils.IOUtils;
 import org.junit.After;
@@ -15,7 +16,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileInputStream;

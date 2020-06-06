@@ -3,18 +3,17 @@ package com.amaze.filemanager.ui.icons;
 import android.webkit.MimeTypeMap;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowMimeTypeMap;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class})

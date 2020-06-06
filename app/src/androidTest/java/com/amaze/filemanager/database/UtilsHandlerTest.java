@@ -1,8 +1,9 @@
 package com.amaze.filemanager.database;
 
 import androidx.annotation.NonNull;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
@@ -21,7 +22,7 @@ public class UtilsHandlerTest {
 
     @Before
     public void setUp(){
-        utilsHandler = new UtilsHandler(InstrumentationRegistry.getTargetContext());
+        utilsHandler = new UtilsHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
         utilsHandler.onCreate(utilsHandler.getWritableDatabase());
         utilsHandler.getWritableDatabase().execSQL("DELETE FROM sftp;");
     }

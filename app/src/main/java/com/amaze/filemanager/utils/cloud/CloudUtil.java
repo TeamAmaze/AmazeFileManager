@@ -136,7 +136,7 @@ public class CloudUtil {
 
         new Thread(() -> {
             try {
-                streamer.setStreamSrc(baseFile.getInputStream(activity), baseFile.getName(), baseFile.length(activity));
+                streamer.setStreamSrc(baseFile.getInputStream(activity), baseFile.getName(activity), baseFile.length(activity));
                 activity.runOnUiThread(() -> {
                     try {
                         File file = new File(Uri.parse(CloudUtil.stripPath(serviceType, baseFile.getPath())).getPath());

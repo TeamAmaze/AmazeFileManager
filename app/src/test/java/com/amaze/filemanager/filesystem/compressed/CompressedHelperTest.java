@@ -21,6 +21,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZip
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -28,11 +29,12 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)

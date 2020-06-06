@@ -239,7 +239,7 @@ public abstract class SshClientUtils
 
         new Thread(() -> {
             try {
-                streamer.setStreamSrc(baseFile.getInputStream(activity), baseFile.getName(), baseFile.length(activity));
+                streamer.setStreamSrc(baseFile.getInputStream(activity), baseFile.getName(activity), baseFile.length(activity));
                 activity.runOnUiThread(() -> {
                     try {
                         File file = new File(SshClientUtils.extractRemotePathFrom(baseFile.getPath()));

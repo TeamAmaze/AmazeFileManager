@@ -898,7 +898,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
                     encryptBaseFile = new HybridFileParcelable(getActivity().getExternalCacheDir().getPath()
                             + "/"
-                            + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
+                            + e.generateBaseFile().getName(getMainActivity()).replace(CryptUtil.CRYPT_EXTENSION, ""));
                     encryptBaseFiles.add(encryptBaseFile);
 
                     EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
@@ -1208,7 +1208,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     public void rename(final HybridFileParcelable f) {
         MaterialDialog renameDialog = GeneralDialogCreation.showNameDialog(getMainActivity(),
             "",
-            f.getName(),
+            f.getName(getMainActivity()),
             getResources().getString(R.string.rename),
             getResources().getString(R.string.save),
             null,
@@ -1217,10 +1217,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
                 String name1 = textfield.getText().toString();
 
-                if (f.isSmb()){
-                    if (f.isDirectory() && !name1.endsWith("/"))
-                        name1 = name1 + "/";
-                }
                 getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
                         CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
             }, (text)-> {
@@ -1503,7 +1499,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 size = "";
                 LayoutElementParcelable layoutElement = new LayoutElementParcelable(getContext(), f.getPath(), mFile.getPermission(),
                         mFile.getLink(), size, 0, true,
-                        mFile.getDate() + "", false,
+                        mFile.getDate() + "", true,
                         getBoolean(PREFERENCE_SHOW_THUMB), mFile.getMode());
 
                 LIST_ELEMENTS.add(layoutElement);

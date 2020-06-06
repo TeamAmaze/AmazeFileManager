@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
 
 import net.schmizz.sshj.common.SecurityUtils;
@@ -20,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.IOException;
 import java.io.StringWriter;
