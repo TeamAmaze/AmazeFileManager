@@ -2030,9 +2030,9 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
         }
     }
     /**
-     * Invoke {@link FTPServerFragment#changeFTPServerPath(String)} to change FTP server share path.
+     * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
      *
-     * @see FTPServerFragment#changeFTPServerPath(String)
+     * @see FtpServerFragment#changeFTPServerPath(String)
      * @see FolderChooserDialog
      * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
      * @param dialog
@@ -2041,8 +2041,8 @@ public class MainActivity extends PermissionsActivity implements SmbConnectionLi
     @Override
     public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
         switch(dialog.getTag()){
-            case FTPServerFragment.TAG:
-                FTPServerFragment ftpServerFragment = (FTPServerFragment)getFragmentAtFrame();
+            case FtpServerFragment.TAG:
+                FtpServerFragment ftpServerFragment = (FtpServerFragment)getFragmentAtFrame();
                 if (folder.exists() && folder.isDirectory()) {
                     ftpServerFragment.changeFTPServerPath(folder.getPath());
                     Toast.makeText(this, R.string.ftp_path_change_success,

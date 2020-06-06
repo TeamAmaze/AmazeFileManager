@@ -84,7 +84,6 @@ public class FtpServerFragment extends Fragment {
     private TextView statusText, url, username, password, port, sharedPath;
     public static final String TAG = "FTPServerFragment";
 
-    private TextView statusText, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
@@ -199,55 +198,13 @@ public class FtpServerFragment extends Fragment {
                         .show();
                 return true;
             case R.id.ftp_path:
-                MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(getContext());
-                dialogBuilder.title(getString(R.string.ftp_path));
-                dialogBuilder.input(getString(R.string.ftp_path_hint),
-                        getDefaultPathFromPreferences(),
-                        false, (dialog, input) -> {});
-                dialogBuilder.onPositive((dialog, which) -> {
-                    EditText editText = dialog.getInputEditText();
-                    if (editText != null) {
-                        String path = editText.getText().toString();
-
-                        File pathFile = new File(path);
-                        if (pathFile.exists() && pathFile.isDirectory()) {
-
-                            changeFTPServerPath(pathFile.getPath());
-
-                            Toast.makeText(getActivity(), R.string.ftp_path_change_success,
-                                    Toast.LENGTH_SHORT)
-                                    .show();
-                        } else {
-                            // try to get parent
-                            File pathParentFile = new File(pathFile.getParent());
-                            if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-
-                                changeFTPServerPath(pathParentFile.getPath());
-                                Toast.makeText(getActivity(), R.string.ftp_path_change_success,
-                                        Toast.LENGTH_SHORT)
-                                        .show();
-                            } else {
-                                // don't have access, print error
-
-                                Toast.makeText(getActivity(), R.string.ftp_path_change_error_invalid,
-                                        Toast.LENGTH_SHORT)
-                                        .show();
-                            }
-                        }
-                    }
-                });
-
-                dialogBuilder.positiveText(getString(R.string.change).toUpperCase())
-                        .negativeText(R.string.cancel)
-                        .build()
-                        .show();
                 FolderChooserDialog.Builder dialogBuilder = new FolderChooserDialog.Builder(getActivity());
                 dialogBuilder.chooseButton(R.string.choose_folder)
-                        .initialPath(getDefaultPathFromPreferences())
-                        .goUpLabel(getString(R.string.folder_go_up_one_level))
-                        .cancelButton(R.string.cancel)
-                        .tag(TAG)
-                        .build().show(getActivity());
+                  .initialPath(getDefaultPathFromPreferences())
+                  .goUpLabel(getString(R.string.folder_go_up_one_level))
+                  .cancelButton(R.string.cancel)
+                  .tag(TAG)
+                  .build().show(getActivity());
                 return true;
             case R.id.ftp_login:
                 MaterialDialog.Builder loginDialogBuilder = new MaterialDialog.Builder(getContext());
