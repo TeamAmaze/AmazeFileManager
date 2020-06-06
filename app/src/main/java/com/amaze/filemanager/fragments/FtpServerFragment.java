@@ -55,6 +55,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
@@ -66,7 +67,6 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.security.GeneralSecurityException;
@@ -82,6 +82,9 @@ public class FtpServerFragment extends Fragment {
     private MainActivity mainActivity;
 
     private TextView statusText, url, username, password, port, sharedPath;
+    public static final String TAG = "FTPServerFragment";
+
+    private TextView statusText, username, password, port, sharedPath;
     private AppCompatEditText usernameEditText, passwordEditText;
     private TextInputLayout usernameTextInput, passwordTextInput;
     private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
@@ -238,6 +241,13 @@ public class FtpServerFragment extends Fragment {
                         .negativeText(R.string.cancel)
                         .build()
                         .show();
+                FolderChooserDialog.Builder dialogBuilder = new FolderChooserDialog.Builder(getActivity());
+                dialogBuilder.chooseButton(R.string.choose_folder)
+                        .initialPath(getDefaultPathFromPreferences())
+                        .goUpLabel(getString(R.string.folder_go_up_one_level))
+                        .cancelButton(R.string.cancel)
+                        .tag(TAG)
+                        .build().show(getActivity());
                 return true;
             case R.id.ftp_login:
                 MaterialDialog.Builder loginDialogBuilder = new MaterialDialog.Builder(getContext());
@@ -577,7 +587,7 @@ public class FtpServerFragment extends Fragment {
         updateStatus();
     }
 
-    private void changeFTPServerPath(String path) {
+    public void changeFTPServerPath(String path) {
         SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.edit().putString(FtpService.KEY_PREFERENCE_PATH, path).apply();
 
