@@ -1217,10 +1217,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
                 String name1 = textfield.getText().toString();
 
-                if (f.isSmb()){
-                    if (f.isDirectory() && !name1.endsWith("/"))
-                        name1 = name1 + "/";
-                }
                 getMainActivity().mainActivityHelper.rename(openMode, f.getPath(),
                         CURRENT_PATH + "/" + name1, getActivity(), getMainActivity().isRootExplorer());
             }, (text)-> {

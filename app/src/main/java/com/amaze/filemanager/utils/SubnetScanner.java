@@ -1,16 +1,40 @@
+/*
+ * SubnetScanner.java
+ *
+ * Copyright (C) 2016-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * John Carlson <jawnnypoo@gmail.com>, Emmanuel Messulam <emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt at gmail.com> and contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils;
 
 /**
  * Created by arpitkh996 on 16-01-2016.
  */
-
 import android.content.Context;
 import android.net.wifi.WifiManager;
+import android.os.AsyncTask;
 import android.text.format.Formatter;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Properties;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -19,14 +43,18 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 
-import jcifs.Config;
-import jcifs.UniAddress;
-import jcifs.netbios.NbtAddress;
+import jcifs.Address;
+import jcifs.CIFSException;
+import jcifs.NetbiosAddress;
+import jcifs.context.SingletonContext;
 import jcifs.smb.SmbFile;
+import jcifs.netbios.UniAddress;
 
-public class SubnetScanner extends Thread {
+public class SubnetScanner extends AsyncTask<Void, ComputerParcelable, Void> {
 
+    private static final String TAG = SubnetScanner.class.getSimpleName();
     private static final int RETRY_COUNT = 5;
+    private static boolean initialized = false;
 
     private Thread bdThread;
     private final Object mLock;
@@ -38,20 +66,19 @@ public class SubnetScanner extends Thread {
 
     public interface ScanObserver {
         void computerFound(ComputerParcelable computer);
-
         void searchFinished();
     }
 
     class Task implements Callable<ComputerParcelable> {
         String addr;
 
-        public Task(String str) {
+        Task(String str) {
             this.addr = str;
         }
 
         public ComputerParcelable call() {
             try {
-                NbtAddress[] allByAddress = NbtAddress.getAllByAddress(this.addr);
+                NetbiosAddress[] allByAddress = SingletonContext.getInstance().getNameServiceClient().getNbtAllByAddress(this.addr);
                 if (allByAddress == null || allByAddress.length <= 0) {
                     return new ComputerParcelable(null, this.addr);
                 }
@@ -62,15 +89,18 @@ public class SubnetScanner extends Thread {
         }
     }
 
-    static {
-        configure();
-    }
-
-    private static void configure() {
-        Config.setProperty("jcifs.resolveOrder", "BCAST");
-        Config.setProperty("jcifs.smb.client.responseTimeout", "30000");
-        Config.setProperty("jcifs.netbios.retryTimeout", "5000");
-        Config.setProperty("jcifs.netbios.cachePolicy", "-1");
+    public static void init() {
+        Properties props = new Properties();
+        props.setProperty("jcifs.resolveOrder", "BCAST");
+        props.setProperty("jcifs.smb.client.responseTimeout", "30000");
+        props.setProperty("jcifs.netbios.retryTimeout", "5000");
+        props.setProperty("jcifs.netbios.cachePolicy", "-1");
+        try {
+            SingletonContext.init(props);
+            initialized = true;
+        } catch (CIFSException e) {
+            android.util.Log.e(TAG, "Error initializing jcifs", e);
+        }
     }
 
     public SubnetScanner(Context context) {
@@ -81,14 +111,19 @@ public class SubnetScanner extends Thread {
         mResults = new ArrayList<>();
     }
 
-    public void run() {
+    @Override
+    protected Void doInBackground(Void... voids) {
+
+        if(!initialized)
+            init();
+
         int ipAddress = ((WifiManager) context.getApplicationContext().getSystemService(Context.WIFI_SERVICE))
                 .getConnectionInfo().getIpAddress();
         if (ipAddress != 0) {
             tryWithBroadcast();
             String formatIpAddress = Formatter.formatIpAddress(ipAddress);
             String substring = formatIpAddress.substring(0, formatIpAddress.lastIndexOf(46) + 1);
-            if (!isInterrupted()) {
+            if (!isCancelled()) {
                 for (ipAddress = 0; ipAddress < 100; ipAddress++) {
                     this.tasks.add(this.pool.submit(new Task(substring + ipAddress)));
                     this.tasks.add(this.pool.submit(new Task(substring + (ipAddress + 100))));
@@ -100,17 +135,17 @@ public class SubnetScanner extends Thread {
                     int size = this.tasks.size();
                     int i = 0;
                     while (i < size) {
-                        if (!isInterrupted()) {
+                        if (!isCancelled()) {
                             try {
                                 ComputerParcelable computer = (ComputerParcelable) ((Future) this.tasks.get(i)).get(1, TimeUnit.MILLISECONDS);
                                 this.tasks.remove(i);
                                 size--;
                                 if (computer.name != null) {
-                                    onFound(computer);
+                                    publishProgress(computer);
                                 }
                                 ipAddress = size;
                             } catch (InterruptedException e) {
-                                return;
+                                return null;
                             } catch (ExecutionException e2) {
                                 ipAddress = size;
                             } catch (TimeoutException e3) {
@@ -119,7 +154,7 @@ public class SubnetScanner extends Thread {
                             i++;
                             size = ipAddress;
                         } else {
-                            return;
+                            return null;
                         }
                     }
                 }
@@ -128,7 +163,7 @@ public class SubnetScanner extends Thread {
                 } catch (InterruptedException e4) {
                 }
             } else {
-                return;
+                return null;
             }
         }
         synchronized (this.mLock) {
@@ -136,7 +171,8 @@ public class SubnetScanner extends Thread {
                 this.observer.searchFinished();
             }
         }
-        this.pool.shutdown();
+
+        return null;
     }
 
     private void tryWithBroadcast() {
@@ -152,9 +188,9 @@ public class SubnetScanner extends Thread {
                             for (SmbFile files : listFiles2) {
                                 try {
                                     String substring = files.getName().substring(0, files.getName().length() - 1);
-                                    UniAddress byName = UniAddress.getByName(substring);
+                                    Address byName = SingletonContext.getInstance().getNameServiceClient().getByName(substring);
                                     if (byName != null) {
-                                        SubnetScanner.this.onFound(new ComputerParcelable(substring, byName.getHostAddress()));
+                                        publishProgress(new ComputerParcelable(substring, byName.getHostAddress()));
                                     }
                                 } catch (Throwable e) {
 
@@ -170,11 +206,24 @@ public class SubnetScanner extends Thread {
         this.bdThread.start();
     }
 
-    private void onFound(ComputerParcelable computer) {
-        mResults.add(computer);
-        synchronized (this.mLock) {
-            if (this.observer != null) {
-                this.observer.computerFound(computer);
+    @Override
+    protected void onPreExecute() {
+
+    }
+
+    @Override
+    protected void onPostExecute(Void aVoid) {
+        this.pool.shutdown();
+    }
+
+    @Override
+    protected void onProgressUpdate(ComputerParcelable... computers) {
+        for(ComputerParcelable computer : computers) {
+            mResults.add(computer);
+            synchronized (this.mLock) {
+                if (this.observer != null) {
+                    this.observer.computerFound(computer);
+                }
             }
         }
     }
@@ -185,12 +234,13 @@ public class SubnetScanner extends Thread {
         }
     }
 
-    public void interrupt() {
-        super.interrupt();
+    @Override
+    protected void onCancelled(Void aVoid) {
+        super.onCancelled(aVoid);
         try {
             this.pool.shutdownNow();
         } catch (Throwable th) {
-            
+
         }
     }
 
