@@ -97,7 +97,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
         if (directory.isDirectory(activity.get())) {// do you have permission to read this directory?
             directory.forEachChildrenFile(activity.get(), rootMode, file -> {
                 if (!isCancelled()) {
-                    if (filter.searchFilter(file.getName())) {
+                    if (filter.searchFilter(file.getName(activity.get()))) {
                         publishProgress(file);
                     }
                     if (file.isDirectory() && !isCancelled()) {

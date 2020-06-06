@@ -130,7 +130,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
         final ArrayList<HybridFileParcelable> conflictingFiles = new ArrayList<>();
         destination.forEachChildrenFile(context, rootMode, file -> {
             for (HybridFileParcelable j : filesToCopy) {
-                if (file.getName().equals((j).getName())) {
+                if (file.getName(context).equals((j).getName(context))) {
                     conflictingFiles.add(j);
                 }
             }
@@ -185,7 +185,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
 
         // textView
         TextView textView = view.findViewById(R.id.fileNameText);
-        textView.setText(conflictingFiles.get(counter).getName());
+        textView.setText(conflictingFiles.get(counter).getName(context));
 
         // checkBox
         final CheckBox checkBox = view.findViewById(R.id.checkBox);
@@ -329,7 +329,7 @@ public class PrepareCopyTask extends AsyncTask<ArrayList<HybridFileParcelable>, 
                     deleteCopiedFolder.add(new File(conflictingFiles.get(i).getPath()));
 
                     nextNodes.add(new CopyNode(path + "/"
-                            + conflictingFiles.get(i).getName(),
+                            + conflictingFiles.get(i).getName(context),
                             conflictingFiles.get(i).listFiles(context, rootMode)));
 
                     filesToCopy.remove(filesToCopy.indexOf(conflictingFiles.get(i)));

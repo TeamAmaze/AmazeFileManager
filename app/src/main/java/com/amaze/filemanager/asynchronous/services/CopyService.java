@@ -249,7 +249,7 @@ public class CopyService extends AbstractProgressiveService {
 
             watcherUtil = new ServiceWatcherUtil(progressHandler);
 
-            addFirstDatapoint(sourceFiles.get(0).getName(), sourceFiles.size(), totalSize, move);
+            addFirstDatapoint(sourceFiles.get(0).getName(c), sourceFiles.size(), totalSize, move);
 
             targetPath = p1[0].getString(TAG_COPY_TARGET);
             move = p1[0].getBoolean(TAG_COPY_MOVE);
@@ -295,7 +295,7 @@ public class CopyService extends AbstractProgressiveService {
         private void findAndReplaceEncryptedEntry(HybridFileParcelable sourceFile) {
 
             // even directories can end with CRYPT_EXTENSION
-            if (sourceFile.isDirectory() && !sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+            if (sourceFile.isDirectory() && !sourceFile.getName(c).endsWith(CryptUtil.CRYPT_EXTENSION)) {
                 sourceFile.forEachChildrenFile(getApplicationContext(), isRootExplorer, file -> {
                     // iterating each file inside source files which were copied to find instance of
                     // any copied / moved encrypted file
@@ -303,7 +303,7 @@ public class CopyService extends AbstractProgressiveService {
                 });
             } else {
 
-                if (sourceFile.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                if (sourceFile.getName(c).endsWith(CryptUtil.CRYPT_EXTENSION)) {
                     try {
 
                         CryptHandler cryptHandler = new CryptHandler(getApplicationContext());
@@ -311,7 +311,7 @@ public class CopyService extends AbstractProgressiveService {
                         EncryptedEntry newEntry = new EncryptedEntry();
 
                         newEntry.setPassword(oldEntry.getPassword());
-                        newEntry.setPath(targetPath + "/" + sourceFile.getName());
+                        newEntry.setPath(targetPath + "/" + sourceFile.getName(c));
 
                         if (move) {
 
@@ -362,12 +362,12 @@ public class CopyService extends AbstractProgressiveService {
                             if (targetPath.contains(getExternalCacheDir().getPath())) {
                                 // the target open mode is not the one we're currently in!
                                 // we're processing the file for cache
-                                hFile = new HybridFile(OpenMode.FILE, targetPath, sourceFiles.get(i).getName(),
+                                hFile = new HybridFile(OpenMode.FILE, targetPath, sourceFiles.get(i).getName(c),
                                         f1.isDirectory());
                             } else {
 
                                 // the target open mode is where we're currently at
-                                hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(),
+                                hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(c),
                                         f1.isDirectory());
                             }
 
@@ -400,10 +400,10 @@ public class CopyService extends AbstractProgressiveService {
                 } else if (isRootExplorer) {
                     for (int i = 0; i < sourceFiles.size(); i++) {
                         if (!progressHandler.getCancelled()) {
-                            HybridFile hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(),
+                            HybridFile hFile = new HybridFile(mode, targetPath, sourceFiles.get(i).getName(c),
                                     sourceFiles.get(i).isDirectory());
                             progressHandler.setSourceFilesProcessed(++sourceProgress);
-                            progressHandler.setFileName(sourceFiles.get(i).getName());
+                            progressHandler.setFileName(sourceFiles.get(i).getName(c));
                             copyRoot(sourceFiles.get(i), hFile, move);
                             /*if(checkFiles(new HybridFile(sourceFiles.get(i).getMode(),path),
                             new HybridFile(OpenMode.ROOT,targetPath+"/"+name))){
@@ -452,7 +452,7 @@ public class CopyService extends AbstractProgressiveService {
                     // various checks
                     // 1. source file and target file doesn't end up in loop
                     // 2. source file has a valid name or not
-                    if (!Operations.isFileNameValid(sourceFile.getName())
+                    if (!Operations.isFileNameValid(sourceFile.getName(c))
                             || Operations.isCopyLoopPossible(sourceFile, targetFile)) {
                         failedFOps.add(sourceFile);
                         return;
@@ -462,7 +462,7 @@ public class CopyService extends AbstractProgressiveService {
                     if(progressHandler.getCancelled()) return;
                     sourceFile.forEachChildrenFile(c, false, file -> {
                         HybridFile destFile = new HybridFile(targetFile.getMode(), targetFile.getPath(),
-                                file.getName(), file.isDirectory());
+                                file.getName(c), file.isDirectory());
                         try {
                             copyFiles(file, destFile, progressHandler);
                         } catch (IOException e) {
@@ -470,14 +470,14 @@ public class CopyService extends AbstractProgressiveService {
                         }
                     });
                 } else {
-                    if (!Operations.isFileNameValid(sourceFile.getName())) {
+                    if (!Operations.isFileNameValid(sourceFile.getName(c))) {
                         failedFOps.add(sourceFile);
                         return;
                     }
 
                     GenericCopyUtil copyUtil = new GenericCopyUtil(c, progressHandler);
 
-                    progressHandler.setFileName(sourceFile.getName());
+                    progressHandler.setFileName(sourceFile.getName(c));
                     copyUtil.copy(sourceFile, targetFile);
                 }
             }
@@ -495,7 +495,7 @@ public class CopyService extends AbstractProgressiveService {
                 boolean b = true;
                 for (HybridFileParcelable baseFile : baseFiles) {
                     if (!checkFiles(new HybridFile(baseFile.getMode(), baseFile.getPath()),
-                            new HybridFile(hFile2.getMode(), hFile2.getPath() + "/" + (baseFile.getName()))))
+                            new HybridFile(hFile2.getMode(), hFile2.getPath() + "/" + (baseFile.getName(c)))))
                         b = false;
                 }
                 return b;

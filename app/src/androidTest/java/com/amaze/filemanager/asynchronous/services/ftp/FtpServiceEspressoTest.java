@@ -7,8 +7,8 @@ import android.content.Intent;
 import android.os.Environment;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import android.util.Base64;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -192,7 +192,7 @@ public class FtpServiceEspressoTest {
         Class activityThreadClazz = Class.forName("android.app.ActivityThread");
         Method attach = Service.class.getDeclaredMethod("attach", Context.class,
                 activityThreadClazz, String.class, IBinder.class, Application.class, Object.class);
-        attach.invoke(service, InstrumentationRegistry.getTargetContext(),
+        attach.invoke(service, InstrumentationRegistry.getInstrumentation().getTargetContext(),
                 null, service.getClass().getSimpleName(), null, null, null);
         return service;
     }

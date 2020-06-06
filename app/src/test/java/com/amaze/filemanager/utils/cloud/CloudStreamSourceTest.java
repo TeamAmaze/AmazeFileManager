@@ -3,25 +3,25 @@ package com.amaze.filemanager.utils.cloud;
 import android.os.Environment;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.multidex.ShadowMultiDex;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
 
 /**
  * Created by Rustam Khadipash on 31/3/2018.

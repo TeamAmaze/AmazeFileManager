@@ -1,7 +1,7 @@
 package com.amaze.filemanager.utils.files;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import com.amaze.filemanager.utils.test.DummyFileGenerator;
 import com.amaze.filemanager.utils.ProgressHandler;
@@ -33,7 +33,7 @@ public class GenericCopyUtilEspressoTest {
 
     @Before
     public void setUp() throws IOException {
-        copyUtil = new GenericCopyUtil(InstrumentationRegistry.getTargetContext(), new ProgressHandler());
+        copyUtil = new GenericCopyUtil(InstrumentationRegistry.getInstrumentation().getTargetContext(), new ProgressHandler());
         file1 = File.createTempFile("test", "bin");
         file2 = File.createTempFile("test", "bin");
         file1.deleteOnExit();

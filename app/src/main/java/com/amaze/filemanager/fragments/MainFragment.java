@@ -898,7 +898,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
                     encryptBaseFile = new HybridFileParcelable(getActivity().getExternalCacheDir().getPath()
                             + "/"
-                            + e.generateBaseFile().getName().replace(CryptUtil.CRYPT_EXTENSION, ""));
+                            + e.generateBaseFile().getName(getMainActivity()).replace(CryptUtil.CRYPT_EXTENSION, ""));
                     encryptBaseFiles.add(encryptBaseFile);
 
                     EncryptDecryptUtils.decryptFile(getContext(), getMainActivity(), ma, openMode,
@@ -1208,7 +1208,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     public void rename(final HybridFileParcelable f) {
         MaterialDialog renameDialog = GeneralDialogCreation.showNameDialog(getMainActivity(),
             "",
-            f.getName(),
+            f.getName(getMainActivity()),
             getResources().getString(R.string.rename),
             getResources().getString(R.string.save),
             null,

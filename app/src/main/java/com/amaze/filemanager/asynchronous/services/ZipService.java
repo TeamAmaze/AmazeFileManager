@@ -229,7 +229,7 @@ public class ZipService extends AbstractProgressiveService {
                 publishResults(speed, false, false));
 
 
-            zipService.addFirstDatapoint(baseFiles.get(0).getName(), baseFiles.size(), totalBytes, false);
+            zipService.addFirstDatapoint(baseFiles.get(0).getName(getApplicationContext()), baseFiles.size(), totalBytes, false);
 
             execute(zipService.getApplicationContext(), FileUtils.hybridListToFileArrayList(baseFiles), zipPath);
             return null;

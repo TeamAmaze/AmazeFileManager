@@ -5,9 +5,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import android.content.Context;
-import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -27,10 +27,10 @@ public class FtpServiceStaticMethodsTest {
      */
     @Test
     public void testGetLocalInetAddressMustNotBeEmpty(){
-        if(!FtpService.isConnectedToLocalNetwork(InstrumentationRegistry.getTargetContext()))
+        if(!FtpService.isConnectedToLocalNetwork(InstrumentationRegistry.getInstrumentation().getTargetContext()))
             fail("Please connect your device to network to run this test!");
-        assertNotNull(FtpService.getLocalInetAddress(InstrumentationRegistry.getTargetContext()));
-        assertNotNull(FtpService.getLocalInetAddress(InstrumentationRegistry.getTargetContext()).getHostAddress());
+        assertNotNull(FtpService.getLocalInetAddress(InstrumentationRegistry.getInstrumentation().getTargetContext()));
+        assertNotNull(FtpService.getLocalInetAddress(InstrumentationRegistry.getInstrumentation().getTargetContext()).getHostAddress());
     }
 
     /**
@@ -40,9 +40,9 @@ public class FtpServiceStaticMethodsTest {
      */
     @Test
     public void testGetLocalInetAddressMustBeAPAddress(){
-        if(!FtpService.isEnabledWifiHotspot(InstrumentationRegistry.getTargetContext()))
+        if(!FtpService.isEnabledWifiHotspot(InstrumentationRegistry.getInstrumentation().getTargetContext()))
             fail("Please enable Wi-Fi hotspot on your device to run this test!");
 
-        assertEquals("192.168.43.1", FtpService.getLocalInetAddress(InstrumentationRegistry.getTargetContext()).getHostAddress());
+        assertEquals("192.168.43.1", FtpService.getLocalInetAddress(InstrumentationRegistry.getInstrumentation().getTargetContext()).getHostAddress());
     }
 }
