@@ -31,8 +31,8 @@ spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
         target '**/*.java'
-        googleJavaFormat('1.1').aosp()
+        googleJavaFormat('1.1')
         removeUnusedImports() // removes any unused imports
-        importOrder 'java', 'javax', 'org', 'com', ''
+        importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
 }
