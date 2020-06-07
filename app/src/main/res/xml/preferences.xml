@@ -107,16 +107,16 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/archive_preferences">
-        <EditTextPreference
+        <Preference
             android:key="extractpath"
             android:summary="@string/archive_summary"
             android:title="@string/archive_extract_folder">
-        </EditTextPreference>
-        <EditTextPreference
+        </Preference>
+        <Preference
             android:key="zippath"
             android:summary="@string/zip_summary"
             android:title="@string/zip_create_folder">
-        </EditTextPreference>
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/security">
