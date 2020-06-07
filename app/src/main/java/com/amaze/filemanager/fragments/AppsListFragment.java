@@ -32,7 +32,6 @@ import android.view.View;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.BasicActivity;
@@ -44,6 +43,7 @@ import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
@@ -95,7 +95,7 @@ public class AppsListFragment extends ListFragment implements LoaderManager.Load
 
         modelProvider = new AppsAdapterPreloadModel(app);
         ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
-        ListPreloader<String> preloader = new ListPreloader<>(GlideApp.with(app), modelProvider,
+        ListPreloader<String> preloader = new ListPreloader<>(Glide.with(app), modelProvider,
                 sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
 
         adapter = new AppsAdapter(getContext(), (ThemedActivity) getActivity(), utilsProvider, modelProvider, sizeProvider,
