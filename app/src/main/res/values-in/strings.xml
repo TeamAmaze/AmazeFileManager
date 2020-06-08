@@ -649,5 +649,6 @@
     <string name="storage_internal">Penyimpanan Internal</string>
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">Kartu SD</string>
-</resources>
+    <string name="choose_folder">Pilih Folder Ini</string>
+    </resources>
 
