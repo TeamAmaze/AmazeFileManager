@@ -5,9 +5,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -23,11 +22,11 @@ import java.util.List;
 public class RecyclerPreloadModelProvider implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 
     private List<IconDataParcelable> urisToLoad;
-    private GlideRequest<Drawable> request;
+    private RequestBuilder<Drawable> request;
 
     public RecyclerPreloadModelProvider(@NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris) {
         urisToLoad = uris;
-        request = GlideApp.with(fragment).asDrawable().centerCrop();
+        request = Glide.with(fragment).asDrawable().centerCrop();
     }
 
     @Override

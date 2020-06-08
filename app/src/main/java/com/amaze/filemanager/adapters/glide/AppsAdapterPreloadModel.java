@@ -6,8 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import android.widget.ImageView;
 
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.GlideRequest;
+import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -21,11 +20,11 @@ import java.util.List;
 
 public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvider<String> {
 
-    private GlideRequest<Drawable> request;
+    private RequestBuilder<Drawable> request;
     private List<String> items;
 
     public AppsAdapterPreloadModel(Fragment f) {
-        request = GlideApp.with(f).asDrawable().fitCenter();
+        request = Glide.with(f).asDrawable().fitCenter();
     }
 
     public void setItemList(List<String> items) {

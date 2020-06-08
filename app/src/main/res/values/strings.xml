@@ -655,5 +655,7 @@
     <string name="storage_internal">Internal Storage</string>
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD card</string>
+    <string name="choose_folder">Choose This Folder</string>
+    <string name="folder_go_up_one_level" translatable="false">..</string>
 </resources>
 

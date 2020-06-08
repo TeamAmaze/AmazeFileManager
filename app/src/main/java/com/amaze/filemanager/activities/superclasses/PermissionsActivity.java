@@ -1,6 +1,7 @@
 package com.amaze.filemanager.activities.superclasses;
 
 import android.Manifest;
+import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
@@ -27,6 +28,7 @@ public class PermissionsActivity extends ThemedActivity
                                            @NonNull int[] grantResults) {
         if (requestCode == STORAGE_PERMISSION) {
             if (isGranted(grantResults)) {
+                setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
                 permissionCallbacks[STORAGE_PERMISSION].onPermissionGranted();
                 permissionCallbacks[STORAGE_PERMISSION] = null;
             } else {
@@ -51,6 +53,7 @@ public class PermissionsActivity extends ThemedActivity
     }
 
     public void requestStoragePermission(@NonNull final OnPermissionGranted onPermissionGranted) {
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
         final MaterialDialog materialDialog = GeneralDialogCreation.showBasicDialog(this,
                 R.string.grant_storage_permission, R.string.grantper, R.string.grant, R.string.cancel);
         materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> finish());
