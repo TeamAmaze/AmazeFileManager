@@ -13,6 +13,4 @@ android:
 
 script:
   - "./gradlew assembledebug"
-  - "./gradlew spotlessJava"
-  - "./gradlew spotlessJavaCheck"
   - "./gradlew spotlessCheck"
