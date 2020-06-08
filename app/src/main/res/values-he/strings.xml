@@ -20,7 +20,8 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">מנהל הקבצים Amaze</string>
     <string name="drawer_open">פתיחת תפריט הניווט</string>
     <string name="drawer_close">סגירת תפריט הניווט</string>
@@ -643,5 +644,12 @@
     <string name="update_host_key">עדכון מפתח מארח</string>
     <string name="cancel_recommended">ביטול (עדיף)</string>
     <string name="failed_install_apk">ההתקנה נכשלה</string>
-</resources>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">אחסון פנימי</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">כרטיס SD</string>
+    <string name="choose_folder">לבחור בתיקייה זו</string>
+    </resources>
 
