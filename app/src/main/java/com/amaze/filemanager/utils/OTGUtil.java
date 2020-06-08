@@ -1,4 +1,36 @@
+/*
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.utils;
+
+import static android.content.Context.USB_SERVICE;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
 
 import android.content.Context;
 import android.hardware.usb.UsbConstants;
@@ -7,149 +39,140 @@ import android.hardware.usb.UsbManager;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.DocumentsContract;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
-import android.util.Log;
 
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
-import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-
-import static android.content.Context.USB_SERVICE;
-
-/**
- * Created by Vishal on 27-04-2017.
- */
-
+/** Created by Vishal on 27-04-2017. */
 public class OTGUtil {
 
-    public static final String PREFIX_OTG = "otg:/";
+  public static final String PREFIX_OTG = "otg:/";
 
-    /**
-     * Returns an array of list of files at a specific path in OTG
-     *
-     * @param path    the path to the directory tree, starts with prefix 'otg:/'
-     *                Independent of URI (or mount point) for the OTG
-     * @param context context for loading
-     * @return an array of list of files at the path
-     * @deprecated use getDocumentFiles()
-     */
-    public static ArrayList<HybridFileParcelable> getDocumentFilesList(String path, Context context) {
-        final ArrayList<HybridFileParcelable> files = new ArrayList<>();
-        getDocumentFiles(path, context, files::add);
-        return files;
+  /**
+   * Returns an array of list of files at a specific path in OTG
+   *
+   * @param path the path to the directory tree, starts with prefix 'otg:/' Independent of URI (or
+   *     mount point) for the OTG
+   * @param context context for loading
+   * @return an array of list of files at the path
+   * @deprecated use getDocumentFiles()
+   */
+  public static ArrayList<HybridFileParcelable> getDocumentFilesList(String path, Context context) {
+    final ArrayList<HybridFileParcelable> files = new ArrayList<>();
+    getDocumentFiles(path, context, files::add);
+    return files;
+  }
+
+  /**
+   * Get the files at a specific path in OTG
+   *
+   * @param path the path to the directory tree, starts with prefix 'otg:/' Independent of URI (or
+   *     mount point) for the OTG
+   * @param context context for loading
+   */
+  public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
+    Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+    if (rootUriString == null) throw new NullPointerException("USB OTG root not set!");
+
+    DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
+
+    String[] parts = path.split("/");
+    for (String part : parts) {
+      // first omit 'otg:/' before iterating through DocumentFile
+      if (path.equals(OTGUtil.PREFIX_OTG + "/")) break;
+      if (part.equals("otg:") || part.equals("")) continue;
+
+      // iterating through the required path to find the end point
+      rootUri = rootUri.findFile(part);
     }
 
-    /**
-     * Get the files at a specific path in OTG
-     *
-     * @param path    the path to the directory tree, starts with prefix 'otg:/'
-     *                Independent of URI (or mount point) for the OTG
-     * @param context context for loading
-     */
-    public static void getDocumentFiles(String path, Context context, OnFileFound fileFound) {
-        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
-        if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
+    // we have the end point DocumentFile, list the files inside it and return
+    for (DocumentFile file : rootUri.listFiles()) {
+      if (file.exists()) {
+        long size = 0;
+        if (!file.isDirectory()) size = file.length();
+        Log.d(context.getClass().getSimpleName(), "Found file: " + file.getName());
+        HybridFileParcelable baseFile =
+            new HybridFileParcelable(
+                path + "/" + file.getName(),
+                RootHelper.parseDocumentFilePermission(file),
+                file.lastModified(),
+                size,
+                file.isDirectory());
+        baseFile.setName(file.getName());
+        baseFile.setMode(OpenMode.OTG);
+        fileFound.onFileFound(baseFile);
+      }
+    }
+  }
 
-        DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
+  /**
+   * Traverse to a specified path in OTG
+   *
+   * @param createRecursive flag used to determine whether to create new file while traversing to
+   *     path, in case path is not present. Notably useful in opening an output stream.
+   */
+  public static DocumentFile getDocumentFile(
+      String path, Context context, boolean createRecursive) {
+    Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+    if (rootUriString == null) throw new NullPointerException("USB OTG root not set!");
 
-        String[] parts = path.split("/");
-        for (String part : parts) {
-            // first omit 'otg:/' before iterating through DocumentFile
-            if (path.equals(OTGUtil.PREFIX_OTG + "/")) break;
-            if (part.equals("otg:") || part.equals("")) continue;
+    // start with root of SD card and then parse through document tree.
+    DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
 
-            // iterating through the required path to find the end point
-            rootUri = rootUri.findFile(part);
+    String[] parts = path.split("/");
+    for (String part : parts) {
+      if (path.equals("otg:/")) break;
+      if (part.equals("otg:") || part.equals("")) continue;
+
+      // iterating through the required path to find the end point
+      DocumentFile nextDocument = rootUri.findFile(part);
+      if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
+        nextDocument = rootUri.createFile(part.substring(part.lastIndexOf(".")), part);
+      }
+      rootUri = nextDocument;
+    }
+
+    return rootUri;
+  }
+
+  /** Check if the usb uri is still accessible */
+  @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+  public static boolean isUsbUriAccessible(Context context) {
+    Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
+    return DocumentsContract.isDocumentUri(context, rootUriString);
+  }
+
+  /** Checks if there is at least one USB device connected with class MASS STORAGE. */
+  @NonNull
+  public static List<UsbOtgRepresentation> getMassStorageDevicesConnected(
+      @NonNull final Context context) {
+    UsbManager usbManager = (UsbManager) context.getSystemService(USB_SERVICE);
+    if (usbManager == null) return Collections.emptyList();
+
+    HashMap<String, UsbDevice> devices = usbManager.getDeviceList();
+    ArrayList<UsbOtgRepresentation> usbOtgRepresentations = new ArrayList<>();
+
+    for (String deviceName : devices.keySet()) {
+      UsbDevice device = devices.get(deviceName);
+
+      for (int i = 0; i < device.getInterfaceCount(); i++) {
+        if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
+          final @Nullable String serial =
+              Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+                  ? device.getSerialNumber()
+                  : null;
+
+          UsbOtgRepresentation usb =
+              new UsbOtgRepresentation(device.getProductId(), device.getVendorId(), serial);
+          usbOtgRepresentations.add(usb);
         }
-
-        // we have the end point DocumentFile, list the files inside it and return
-        for (DocumentFile file : rootUri.listFiles()) {
-            if (file.exists()) {
-                long size = 0;
-                if (!file.isDirectory()) size = file.length();
-                Log.d(context.getClass().getSimpleName(), "Found file: " + file.getName());
-                HybridFileParcelable baseFile = new HybridFileParcelable(path + "/" + file.getName(),
-                        RootHelper.parseDocumentFilePermission(file), file.lastModified(), size, file.isDirectory());
-                baseFile.setName(file.getName());
-                baseFile.setMode(OpenMode.OTG);
-                fileFound.onFileFound(baseFile);
-            }
-        }
+      }
     }
 
-    /**
-     * Traverse to a specified path in OTG
-     *
-     * @param createRecursive flag used to determine whether to create new file while traversing to path,
-     *                        in case path is not present. Notably useful in opening an output stream.
-     */
-    public static DocumentFile getDocumentFile(String path, Context context, boolean createRecursive) {
-        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
-        if(rootUriString == null) throw new NullPointerException("USB OTG root not set!");
-
-        // start with root of SD card and then parse through document tree.
-        DocumentFile rootUri = DocumentFile.fromTreeUri(context, rootUriString);
-
-        String[] parts = path.split("/");
-        for (String part : parts) {
-            if (path.equals("otg:/")) break;
-            if (part.equals("otg:") || part.equals("")) continue;
-
-            // iterating through the required path to find the end point
-            DocumentFile nextDocument = rootUri.findFile(part);
-            if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
-                nextDocument = rootUri.createFile(part.substring(part.lastIndexOf(".")), part);
-            }
-            rootUri = nextDocument;
-        }
-
-        return rootUri;
-    }
-
-    /**
-     * Check if the usb uri is still accessible
-     */
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static boolean isUsbUriAccessible(Context context) {
-        Uri rootUriString = SingletonUsbOtg.getInstance().getUsbOtgRoot();
-        return DocumentsContract.isDocumentUri(context, rootUriString);
-    }
-
-    /**
-     * Checks if there is at least one USB device connected with class MASS STORAGE.
-     */
-    @NonNull
-    public static List<UsbOtgRepresentation> getMassStorageDevicesConnected(@NonNull final Context context) {
-        UsbManager usbManager = (UsbManager) context.getSystemService(USB_SERVICE);
-        if(usbManager == null) return Collections.emptyList();
-
-        HashMap<String, UsbDevice> devices = usbManager.getDeviceList();
-        ArrayList<UsbOtgRepresentation> usbOtgRepresentations = new ArrayList<>();
-
-        for (String deviceName : devices.keySet()) {
-            UsbDevice device = devices.get(deviceName);
-
-            for (int i = 0; i < device.getInterfaceCount(); i++){
-                if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
-                    final @Nullable String serial =
-                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP? device.getSerialNumber():null;
-
-                    UsbOtgRepresentation usb = new UsbOtgRepresentation(device.getProductId(), device.getVendorId(), serial);
-                    usbOtgRepresentations.add(usb);
-                }
-            }
-        }
-
-        return usbOtgRepresentations;
-    }
-
+    return usbOtgRepresentations;
+  }
 }

@@ -1,8 +1,6 @@
 /*
- * ZipExtractor.java
- *
- * Copyright (C) 2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt@gmail.com>.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,20 +20,6 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
-
-import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
-
-import net.lingala.zip4j.core.ZipFile;
-import net.lingala.zip4j.exception.ZipException;
-import net.lingala.zip4j.model.FileHeader;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -43,96 +27,115 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
+import com.amaze.filemanager.utils.files.GenericCopyUtil;
+
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
+import net.lingala.zip4j.model.FileHeader;
 
 public class ZipExtractor extends Extractor {
 
-    public ZipExtractor(@NonNull Context context, @NonNull String filePath, @NonNull String outputPath, @NonNull OnUpdate listener) {
-        super(context, filePath, outputPath, listener);
+  public ZipExtractor(
+      @NonNull Context context,
+      @NonNull String filePath,
+      @NonNull String outputPath,
+      @NonNull OnUpdate listener) {
+    super(context, filePath, outputPath, listener);
+  }
+
+  @Override
+  protected void extractWithFilter(@NonNull Filter filter) throws IOException {
+    long totalBytes = 0;
+    List<FileHeader> entriesToExtract = new ArrayList<>();
+    try {
+      ZipFile zipfile = new ZipFile(filePath);
+      if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
+        zipfile.setPassword(ArchivePasswordCache.getInstance().get(filePath));
+      }
+
+      // iterating archive elements to find file names that are to be extracted
+      for (Object obj : zipfile.getFileHeaders()) {
+        FileHeader fileHeader = (FileHeader) obj;
+
+        if (CompressedHelper.isEntryPathValid(fileHeader.getFileName())) {
+          if (filter.shouldExtract(fileHeader.getFileName(), fileHeader.isDirectory())) {
+            entriesToExtract.add(fileHeader);
+            totalBytes += fileHeader.getUncompressedSize();
+          }
+        } else {
+          invalidArchiveEntries.add(fileHeader.getFileName());
+        }
+      }
+
+      listener.onStart(totalBytes, entriesToExtract.get(0).getFileName());
+
+      for (FileHeader entry : entriesToExtract) {
+        if (!listener.isCancelled()) {
+          listener.onUpdate(entry.getFileName());
+          extractEntry(context, zipfile, entry, outputPath);
+        }
+      }
+      listener.onFinish();
+    } catch (ZipException e) {
+      throw new IOException(e);
+    }
+  }
+
+  /**
+   * Method extracts {@link FileHeader} from {@link ZipFile}
+   *
+   * @param zipFile zip file from which entriesToExtract are to be extracted
+   * @param entry zip entry that is to be extracted
+   * @param outputDir output directory
+   */
+  private void extractEntry(
+      @NonNull final Context context, ZipFile zipFile, FileHeader entry, String outputDir)
+      throws IOException, ZipException {
+    final File outputFile = new File(outputDir, fixEntryName(entry.getFileName()));
+
+    if (ArchivePasswordCache.getInstance().containsKey(filePath))
+      entry.setPassword(ArchivePasswordCache.getInstance().get(filePath).toCharArray());
+
+    if (!outputFile.getCanonicalPath().startsWith(outputDir)) {
+      throw new IOException("Incorrect ZipEntry path!");
     }
 
-    @Override
-    protected void extractWithFilter(@NonNull Filter filter) throws IOException {
-        long totalBytes = 0;
-        List<FileHeader> entriesToExtract = new ArrayList<>();
-        try {
-            ZipFile zipfile = new ZipFile(filePath);
-            if(ArchivePasswordCache.getInstance().containsKey(filePath)) {
-                zipfile.setPassword(ArchivePasswordCache.getInstance().get(filePath));
-            }
-
-            // iterating archive elements to find file names that are to be extracted
-            for (Object obj : zipfile.getFileHeaders()) {
-                FileHeader fileHeader = (FileHeader)obj;
-
-                if(CompressedHelper.isEntryPathValid(fileHeader.getFileName())) {
-                    if (filter.shouldExtract(fileHeader.getFileName(), fileHeader.isDirectory())) {
-                        entriesToExtract.add(fileHeader);
-                        totalBytes += fileHeader.getUncompressedSize();
-                    }
-                } else {
-                    invalidArchiveEntries.add(fileHeader.getFileName());
-                }
-            }
-
-            listener.onStart(totalBytes, entriesToExtract.get(0).getFileName());
-
-            for (FileHeader entry : entriesToExtract) {
-                if (!listener.isCancelled()) {
-                    listener.onUpdate(entry.getFileName());
-                    extractEntry(context, zipfile, entry, outputPath);
-                }
-            }
-            listener.onFinish();
-        } catch (ZipException e) {
-            throw new IOException(e);
-        }
-    }
-    
-    /**
-     * Method extracts {@link FileHeader} from {@link ZipFile}
-     *
-     * @param zipFile   zip file from which entriesToExtract are to be extracted
-     * @param entry     zip entry that is to be extracted
-     * @param outputDir output directory
-     */
-    private void extractEntry(@NonNull final Context context, ZipFile zipFile, FileHeader entry,
-                              String outputDir) throws IOException, ZipException {
-        final File outputFile = new File(outputDir, fixEntryName(entry.getFileName()));
-
-        if(ArchivePasswordCache.getInstance().containsKey(filePath))
-            entry.setPassword(ArchivePasswordCache.getInstance().get(filePath).toCharArray());
-
-        if (!outputFile.getCanonicalPath().startsWith(outputDir)){
-            throw new IOException("Incorrect ZipEntry path!");
-        }
-
-        if (entry.isDirectory()) {
-            // zip entry is a directory, return after creating new directory
-            FileUtil.mkdir(outputFile, context);
-            return;
-        }
-
-        if (!outputFile.getParentFile().exists()) {
-            // creating directory if not already exists
-            FileUtil.mkdir(outputFile.getParentFile(), context);
-        }
-
-        BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
-        BufferedOutputStream outputStream = new BufferedOutputStream(FileUtil.getOutputStream(outputFile, context));
-
-        try {
-            int len;
-            byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-            while ((len = inputStream.read(buf)) != -1) {
-                if (!listener.isCancelled()) {
-                    outputStream.write(buf, 0, len);
-                    ServiceWatcherUtil.position += len;
-                } else break;
-            }
-        } finally {
-            outputStream.close();
-            inputStream.close();
-        }
+    if (entry.isDirectory()) {
+      // zip entry is a directory, return after creating new directory
+      FileUtil.mkdir(outputFile, context);
+      return;
     }
 
+    if (!outputFile.getParentFile().exists()) {
+      // creating directory if not already exists
+      FileUtil.mkdir(outputFile.getParentFile(), context);
+    }
+
+    BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
+    BufferedOutputStream outputStream =
+        new BufferedOutputStream(FileUtil.getOutputStream(outputFile, context));
+
+    try {
+      int len;
+      byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+      while ((len = inputStream.read(buf)) != -1) {
+        if (!listener.isCancelled()) {
+          outputStream.write(buf, 0, len);
+          ServiceWatcherUtil.position += len;
+        } else break;
+      }
+    } finally {
+      outputStream.close();
+      inputStream.close();
+    }
+  }
 }

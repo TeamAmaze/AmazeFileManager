@@ -1,8 +1,6 @@
 /*
- * CompressedHelperTask.java
- *
- * Copyright (C) 2017-2019 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt@gmail.com>.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,51 +20,57 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
-import android.os.AsyncTask;
-import androidx.annotation.NonNull;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.apache.commons.compress.archivers.ArchiveException;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import org.apache.commons.compress.archivers.ArchiveException;
+import android.os.AsyncTask;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
+import androidx.annotation.NonNull;
 
-public abstract class CompressedHelperTask extends AsyncTask<Void, IOException, AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> {
+public abstract class CompressedHelperTask
+    extends AsyncTask<Void, IOException, AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> {
 
-    private boolean createBackItem;
-    private OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish;
+  private boolean createBackItem;
+  private OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish;
 
-    CompressedHelperTask(boolean goBack, OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
-        createBackItem = goBack;
-        onFinish = l;
+  CompressedHelperTask(
+      boolean goBack,
+      OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> l) {
+    createBackItem = goBack;
+    onFinish = l;
+  }
+
+  @Override
+  protected final AsyncTaskResult<ArrayList<CompressedObjectParcelable>> doInBackground(
+      Void... voids) {
+    AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = null;
+    ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
+    if (createBackItem) elements.add(0, new CompressedObjectParcelable());
+
+    try {
+      addElements(elements);
+      Collections.sort(elements, new CompressedObjectParcelable.Sorter());
+
+      return new AsyncTaskResult<>(elements);
+    } catch (ArchiveException ifArchiveIsCorruptOrInvalid) {
+      return new AsyncTaskResult<>(ifArchiveIsCorruptOrInvalid);
     }
+  }
 
-    @Override
-    protected final AsyncTaskResult<ArrayList<CompressedObjectParcelable>> doInBackground(Void... voids) {
-        AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = null;
-        ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
-        if (createBackItem) elements.add(0, new CompressedObjectParcelable());
+  @Override
+  protected final void onPostExecute(
+      AsyncTaskResult<ArrayList<CompressedObjectParcelable>> zipEntries) {
+    super.onPostExecute(zipEntries);
+    onFinish.onAsyncTaskFinished(zipEntries);
+  }
 
-        try {
-            addElements(elements);
-            Collections.sort(elements, new CompressedObjectParcelable.Sorter());
-
-            return new AsyncTaskResult<>(elements);
-        } catch (ArchiveException ifArchiveIsCorruptOrInvalid) {
-            return new AsyncTaskResult<>(ifArchiveIsCorruptOrInvalid);
-        }
-    }
-
-    @Override
-    protected final void onPostExecute(AsyncTaskResult<ArrayList<CompressedObjectParcelable>> zipEntries) {
-        super.onPostExecute(zipEntries);
-        onFinish.onAsyncTaskFinished(zipEntries);
-    }
-
-    abstract void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements) throws ArchiveException;
-
+  abstract void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements)
+      throws ArchiveException;
 }
