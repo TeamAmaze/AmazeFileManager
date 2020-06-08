@@ -2,6 +2,9 @@ name: Android Main CI
 
 on:
   push:
+    branches:
+      - 'master'
+      - 'release/*'
   pull_request:
     branches:
       - 'master'
