@@ -2,7 +2,7 @@
 #### Issue tracker   
 Fixes will automatically close the related issue
 
-Fixes #  
+Fixes #
 -or-   
 Addresses #
 
