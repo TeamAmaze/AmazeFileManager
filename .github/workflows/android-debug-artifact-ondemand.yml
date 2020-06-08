@@ -7,7 +7,7 @@ on:
 jobs:
   apk:
     runs-on: ubuntu-latest
-    if: github.event.comment.body == 'Build artifact' && {github.actor == 'VishalNehra' || github.actor == 'TranceLove'}
+    if: github.event.comment.body == 'Build artifact' && {{github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess'}}
     steps:
       - uses: actions/checkout@v2
       - name: Set up JDK 1.8
