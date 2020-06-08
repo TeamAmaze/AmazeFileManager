@@ -7,7 +7,7 @@ Fixes #
 Addresses #
 
 #### Release  
-Addresses release/<input type="text" id="name" name="name"/>
+Addresses release/
   
 #### Test cases
 - [ ] Covered
@@ -16,8 +16,8 @@ Addresses release/<input type="text" id="name" name="name"/>
 - [ ] Done  
   
 If yes,  
-Device - <input type="text" id="name" name="name"/>  
-OS - <input type="text" id="name" name="name"/>
+- Device:
+- OS:
 
 #### Build tasks success  
 Successfully running following tasks on local 
