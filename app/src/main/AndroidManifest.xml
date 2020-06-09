@@ -56,7 +56,6 @@
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".activities.MainActivity"
-            android:configChanges="orientation|screenSize"
             android:theme="@style/appCompatLight">
 
             <intent-filter android:label="@string/appbar_name">
