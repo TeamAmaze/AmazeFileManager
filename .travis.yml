@@ -11,4 +11,6 @@ android:
     - android-28
     - extra-google-m2repository
 
-script: "./gradlew assembledebug"
+script:
+  - "./gradlew assembledebug"
+  - "./gradlew spotlessCheck"
