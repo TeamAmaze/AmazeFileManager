@@ -1,6 +1,8 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * ZipDecompressor.java
+ *
+ * Copyright (C) 2017-2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
+ * Raymond Lai <airwave209gt@gmail.com>.
  *
  * This file is part of Amaze File Manager.
  *
@@ -20,27 +22,26 @@
 
 package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 
-import java.util.ArrayList;
+import android.content.Context;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.ZipHelperTask;
+import java.util.ArrayList;
+
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import android.content.Context;
-
 public class ZipDecompressor extends Decompressor {
 
-  public ZipDecompressor(Context context) {
-    super(context);
-  }
+    public ZipDecompressor(Context context) {
+        super(context);
+    }
 
-  @Override
-  public ZipHelperTask changePath(
-      String path,
-      boolean addGoBackItem,
-      OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
-    return new ZipHelperTask(context, filePath, path, addGoBackItem, onFinish);
-  }
+    @Override
+    public ZipHelperTask changePath(String path, boolean addGoBackItem,
+                           OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
+        return new ZipHelperTask(context, filePath, path, addGoBackItem, onFinish);
+    }
+
 }
