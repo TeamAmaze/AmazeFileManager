@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
- * Copyright (C) 2014 Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -20,16 +20,13 @@
 
 package com.amaze.filemanager.database.models;
 
-/**
- * Created by Ning on 5/28/2018.
- */
+/** Created by Ning on 5/28/2018. */
 public class Sort {
-    public final String path;
-    public final int type;
+  public final String path;
+  public final int type;
 
-    public Sort(String path, int type) {
-        this.path = path;
-        this.type = type;
-    }
-
+  public Sort(String path, int type) {
+    this.path = path;
+    this.type = type;
+  }
 }
