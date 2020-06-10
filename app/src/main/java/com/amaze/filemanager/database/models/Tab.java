@@ -1,6 +1,6 @@
 /*
- * Copyright (C) 2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
- * Copyright (C) 2014 Vishal Nehra <vishalmeham2@gmail.com>
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -20,30 +20,27 @@
 
 package com.amaze.filemanager.database.models;
 
-import android.content.SharedPreferences;
-
 import com.amaze.filemanager.utils.files.FileUtils;
 
-/**
- * Created by Vishal on 9/17/2014
- */
+import android.content.SharedPreferences;
+
+/** Created by Vishal on 9/17/2014 */
 public class Tab {
-    public final int tabNumber;
-    public final String path;
-    public final String home;
+  public final int tabNumber;
+  public final String path;
+  public final String home;
 
-    public Tab(int tabNo, String path, String home) {
-        this.tabNumber = tabNo;
-        this.path = path;
-        this.home = home;
+  public Tab(int tabNo, String path, String home) {
+    this.tabNumber = tabNo;
+    this.path = path;
+    this.home = home;
+  }
+
+  public String getOriginalPath(boolean savePaths, SharedPreferences sharedPreferences) {
+    if (savePaths && FileUtils.isPathAccessible(path, sharedPreferences)) {
+      return path;
+    } else {
+      return home;
     }
-
-    public String getOriginalPath(boolean savePaths, SharedPreferences sharedPreferences){
-        if(savePaths && FileUtils.isPathAccessible(path, sharedPreferences)) {
-            return path;
-        } else {
-            return home;
-        }
-    }
-
+  }
 }

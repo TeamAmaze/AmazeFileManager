@@ -1,8 +1,6 @@
 /*
- * GzipDecompressor.java
- *
- * Copyright (C) 2017-2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt@gmail.com>.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,28 +20,28 @@
 
 package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 
-import android.content.Context;
+import java.util.ArrayList;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.CompressedHelperTask;
 import com.amaze.filemanager.asynchronous.asynctasks.compress.GzipHelperTask;
-import com.amaze.filemanager.asynchronous.asynctasks.compress.TarHelperTask;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import java.util.ArrayList;
+import android.content.Context;
 
 public class GzipDecompressor extends Decompressor {
 
-    public GzipDecompressor(Context context) {
-        super(context);
-    }
+  public GzipDecompressor(Context context) {
+    super(context);
+  }
 
-    @Override
-    public CompressedHelperTask changePath(String path, boolean addGoBackItem,
-                                           OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
-        return new GzipHelperTask(context, filePath, path, addGoBackItem, onFinish);
-    }
-
+  @Override
+  public CompressedHelperTask changePath(
+      String path,
+      boolean addGoBackItem,
+      OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
+    return new GzipHelperTask(context, filePath, path, addGoBackItem, onFinish);
+  }
 }

@@ -18,39 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.activities.superclasses;
 
-import java.util.Arrays;
+import android.os.AsyncTask;
 
-public class OneCharacterCharSequence implements CharSequence {
-  private final char value;
-  private final int length;
+public interface BaseAsyncTask {
 
-  public OneCharacterCharSequence(final char value, final int length) {
-    this.value = value;
-    this.length = length;
-  }
-
-  @Override
-  public char charAt(int index) {
-    if (index < length) return value;
-    throw new IndexOutOfBoundsException();
-  }
-
-  @Override
-  public int length() {
-    return length;
-  }
-
-  @Override
-  public CharSequence subSequence(int start, int end) {
-    return new OneCharacterCharSequence(value, (end - start));
-  }
-
-  @Override
-  public String toString() {
-    char[] array = new char[length];
-    Arrays.fill(array, value);
-    return new String(array);
+  /**
+   * Safely fetch an object for null safety, otherwise interrupt the task. Task should implement
+   * {@link AsyncTask#onCancelled()}
+   *
+   * @param t given object to return
+   * @param asyncTask task implementing this interface
+   * @param <T> data type, preferably activities / fragments / contexts which can be null at any
+   *     given point of time while task is running
+   * @return T t
+   */
+  default <T> T nullCheckOrInterrupt(T t, AsyncTask asyncTask) {
+    if (t != null) {
+      return t;
+    } else {
+      asyncTask.cancel(true);
+      return null;
+    }
   }
 }

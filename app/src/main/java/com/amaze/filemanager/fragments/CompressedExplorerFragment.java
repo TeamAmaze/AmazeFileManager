@@ -1,7 +1,6 @@
 /*
- * Copyright (C) 2014-2019 Arpit Khurana <arpitkh96@gmail.com>,
- * Vishal Nehra <vishalmeham2@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt at gmail.com> and contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,33 +20,13 @@
 
 package com.amaze.filemanager.fragments;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.content.SharedPreferences;
-import android.graphics.drawable.ColorDrawable;
-import android.net.Uri;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
-import androidx.annotation.ColorInt;
-import androidx.annotation.Nullable;
-import com.google.android.material.appbar.AppBarLayout;
-import androidx.fragment.app.Fragment;
-import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import android.view.ActionMode;
-import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.widget.TextView;
-import android.widget.Toast;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -70,223 +49,245 @@ import com.amaze.filemanager.utils.files.FileUtils;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.junrar.Archive;
+import com.google.android.material.appbar.AppBarLayout;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.List;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.view.ActionMode;
+import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.widget.TextView;
+import android.widget.Toast;
 
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
+import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
-    public static final String KEY_PATH = "path";
+  public static final String KEY_PATH = "path";
 
-    private static final String KEY_CACHE_FILES = "cache_files";
-    private static final String KEY_URI = "uri";
-    private static final String KEY_FILE = "file";
-    private static final String KEY_WHOLE_LIST = "whole_list";
-    private static final String KEY_ELEMENTS = "elements";
-    private static final String KEY_OPEN = "is_open";
+  private static final String KEY_CACHE_FILES = "cache_files";
+  private static final String KEY_URI = "uri";
+  private static final String KEY_FILE = "file";
+  private static final String KEY_WHOLE_LIST = "whole_list";
+  private static final String KEY_ELEMENTS = "elements";
+  private static final String KEY_OPEN = "is_open";
 
+  public File compressedFile;
 
-    public File compressedFile;
+  /**
+   * files to be deleted from cache with a Map maintaining key - the root of directory created (for
+   * deletion purposes after we exit out of here and value - the path of file to open
+   */
+  public ArrayList<HybridFileParcelable> files;
 
-    /**
-     * files to be deleted from cache
-     * with a Map maintaining key - the root of directory created (for deletion purposes after we exit out of here
-     * and value - the path of file to open
-     */
-    public ArrayList<HybridFileParcelable> files;
-    public boolean selection = false;
-    public String relativeDirectory = "";//Normally this would be "/" but for pathing issues it isn't
-    public @ColorInt int accentColor, iconskin;
-    public String year;
-    public CompressedExplorerAdapter compressedExplorerAdapter;
-    public ActionMode mActionMode;
-    public boolean coloriseIcons, showSize, showLastModified, gobackitem;
-    public Archive archive;
-    public ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
-    public MainActivity mainActivity;
-    public RecyclerView listView;
-    public SwipeRefreshLayout swipeRefreshLayout;
-    public boolean isOpen = false;  // flag states whether to open file after service extracts it
+  public boolean selection = false;
+  public String relativeDirectory =
+      ""; // Normally this would be "/" but for pathing issues it isn't
+  public @ColorInt int accentColor, iconskin;
+  public String year;
+  public CompressedExplorerAdapter compressedExplorerAdapter;
+  public ActionMode mActionMode;
+  public boolean coloriseIcons, showSize, showLastModified, gobackitem;
+  public Archive archive;
+  public ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
+  public MainActivity mainActivity;
+  public RecyclerView listView;
+  public SwipeRefreshLayout swipeRefreshLayout;
+  public boolean isOpen = false; // flag states whether to open file after service extracts it
 
-    private UtilitiesProvider utilsProvider;
-    private Decompressor decompressor;
-    private View rootView;
-    private boolean addheader = true;
-    private LinearLayoutManager mLayoutManager;
-    private DividerItemDecoration dividerItemDecoration;
-    private boolean showDividers;
-    private View mToolbarContainer;
-    private boolean stopAnims = true;
-    private int file = 0, folder = 0;
+  private UtilitiesProvider utilsProvider;
+  private Decompressor decompressor;
+  private View rootView;
+  private boolean addheader = true;
+  private LinearLayoutManager mLayoutManager;
+  private DividerItemDecoration dividerItemDecoration;
+  private boolean showDividers;
+  private View mToolbarContainer;
+  private boolean stopAnims = true;
+  private int file = 0, folder = 0;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
-    }
+  @Override
+  public void onCreate(@Nullable Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
+  }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        rootView = inflater.inflate(R.layout.main_frag, container, false);
-        mainActivity = (MainActivity) getActivity();
-        listView = rootView.findViewById(R.id.listView);
-        listView.setOnTouchListener((view, motionEvent) -> {
-            if(compressedExplorerAdapter != null) {
-                if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
-                    stopAnim();
-                }
-                compressedExplorerAdapter.stoppedAnimation = true;
-
-                stopAnims = false;
+  @Override
+  public View onCreateView(
+      LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    rootView = inflater.inflate(R.layout.main_frag, container, false);
+    mainActivity = (MainActivity) getActivity();
+    listView = rootView.findViewById(R.id.listView);
+    listView.setOnTouchListener(
+        (view, motionEvent) -> {
+          if (compressedExplorerAdapter != null) {
+            if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
+              stopAnim();
             }
-            return false;
-        });
-        swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-        swipeRefreshLayout.setOnRefreshListener(this::refresh);
-        swipeRefreshLayout.setRefreshing(true);
+            compressedExplorerAdapter.stoppedAnimation = true;
 
-        return rootView;
-    }
-
-    public void stopAnim() {
-        for (int j = 0; j < listView.getChildCount(); j++) {
-            View v = listView.getChildAt(j);
-            if (v != null) v.clearAnimation();
-        }
-    }
-
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
-        super.onActivityCreated(savedInstanceState);
-        SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-        compressedFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
-    
-        mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
-        mToolbarContainer.setOnTouchListener((view, motionEvent) ->
-        {
-            if(stopAnims)
-            {
-                if((!compressedExplorerAdapter.stoppedAnimation))
-                {
-                    stopAnim();
-                }
-                compressedExplorerAdapter.stoppedAnimation = true;
-            }
             stopAnims = false;
-            return false;
+          }
+          return false;
         });
-    
-        listView.setVisibility(View.VISIBLE);
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        listView.setLayoutManager(mLayoutManager);
-    
-        if(utilsProvider.getAppTheme().equals(AppTheme.DARK))
-        {
-            rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-        } else if(utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
-            listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-        } else {
-            listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
-        }
+    swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+    swipeRefreshLayout.setOnRefreshListener(this::refresh);
+    swipeRefreshLayout.setRefreshing(true);
 
-        gobackitem = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
-        coloriseIcons = sp.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
-        showSize = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, false);
-        showLastModified = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
-        showDividers = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
-        year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
+    return rootView;
+  }
 
-        accentColor = mainActivity.getAccent();
-        iconskin = mainActivity.getCurrentColorPreference().iconSkin;
+  public void stopAnim() {
+    for (int j = 0; j < listView.getChildCount(); j++) {
+      View v = listView.getChildAt(j);
+      if (v != null) v.clearAnimation();
+    }
+  }
 
-        //mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+  @Override
+  public void onActivityCreated(Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    compressedFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
 
-        if (savedInstanceState == null && compressedFile != null) {
-            files = new ArrayList<>();
-            // adding a cache file to delete where any user interaction elements will be cached
-            String fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
-            String path = getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
-            files.add(new HybridFileParcelable(path));
-            decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
+    mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
+    mToolbarContainer.setOnTouchListener(
+        (view, motionEvent) -> {
+          if (stopAnims) {
+            if ((!compressedExplorerAdapter.stoppedAnimation)) {
+              stopAnim();
+            }
+            compressedExplorerAdapter.stoppedAnimation = true;
+          }
+          stopAnims = false;
+          return false;
+        });
 
-            changePath("");
-        } else {
-            onRestoreInstanceState(savedInstanceState);
-        }
-        mainActivity.supportInvalidateOptionsMenu();
+    listView.setVisibility(View.VISIBLE);
+    mLayoutManager = new LinearLayoutManager(getActivity());
+    listView.setLayoutManager(mLayoutManager);
+
+    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
+      rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+      listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+    } else {
+      listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
+    gobackitem = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
+    coloriseIcons = sp.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
+    showSize = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, false);
+    showLastModified = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
+    showDividers = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
+    year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
 
-        outState.putParcelableArrayList(KEY_ELEMENTS, elements);
-        outState.putString(KEY_PATH, relativeDirectory);
-        outState.putString(KEY_URI, compressedFile.getPath());
-        outState.putString(KEY_FILE, compressedFile.getPath());
-        outState.putParcelableArrayList(KEY_CACHE_FILES, files);
-        outState.putBoolean(KEY_OPEN, isOpen);
+    accentColor = mainActivity.getAccent();
+    iconskin = mainActivity.getCurrentColorPreference().iconSkin;
+
+    // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+
+    if (savedInstanceState == null && compressedFile != null) {
+      files = new ArrayList<>();
+      // adding a cache file to delete where any user interaction elements will be cached
+      String fileName =
+          compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
+      String path = getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
+      files.add(new HybridFileParcelable(path));
+      decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
+
+      changePath("");
+    } else {
+      onRestoreInstanceState(savedInstanceState);
     }
+    mainActivity.supportInvalidateOptionsMenu();
+  }
 
-    private void onRestoreInstanceState(Bundle savedInstanceState) {
-        compressedFile = new File(Uri.parse(savedInstanceState.getString(KEY_URI)).getPath());
-        files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
-        isOpen = savedInstanceState.getBoolean(KEY_OPEN);
-        elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
-        relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
+  @Override
+  public void onSaveInstanceState(Bundle outState) {
+    super.onSaveInstanceState(outState);
 
-        decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
-        createViews(elements, relativeDirectory);
-    }
+    outState.putParcelableArrayList(KEY_ELEMENTS, elements);
+    outState.putString(KEY_PATH, relativeDirectory);
+    outState.putString(KEY_URI, compressedFile.getPath());
+    outState.putString(KEY_FILE, compressedFile.getPath());
+    outState.putParcelableArrayList(KEY_CACHE_FILES, files);
+    outState.putBoolean(KEY_OPEN, isOpen);
+  }
 
-    public ActionMode.Callback mActionModeCallback = new ActionMode.Callback() {
+  private void onRestoreInstanceState(Bundle savedInstanceState) {
+    compressedFile = new File(Uri.parse(savedInstanceState.getString(KEY_URI)).getPath());
+    files = savedInstanceState.getParcelableArrayList(KEY_CACHE_FILES);
+    isOpen = savedInstanceState.getBoolean(KEY_OPEN);
+    elements = savedInstanceState.getParcelableArrayList(KEY_ELEMENTS);
+    relativeDirectory = savedInstanceState.getString(KEY_PATH, "");
+
+    decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
+    createViews(elements, relativeDirectory);
+  }
+
+  public ActionMode.Callback mActionModeCallback =
+      new ActionMode.Callback() {
         private void hideOption(int id, Menu menu) {
-            MenuItem item = menu.findItem(id);
-            item.setVisible(false);
+          MenuItem item = menu.findItem(id);
+          item.setVisible(false);
         }
 
         private void showOption(int id, Menu menu) {
-            MenuItem item = menu.findItem(id);
-            item.setVisible(true);
+          MenuItem item = menu.findItem(id);
+          item.setVisible(true);
         }
 
         View v;
 
         // called when the action mode is created; startActionMode() was called
         public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-            // Inflate a menu resource providing context menu items
-            MenuInflater inflater = mode.getMenuInflater();
-            v = getActivity().getLayoutInflater().inflate(R.layout.actionmode, null);
-            mode.setCustomView(v);
-            // assumes that you have "contexual.xml" menu resources
-            inflater.inflate(R.menu.contextual, menu);
-            hideOption(R.id.cpy, menu);
-            hideOption(R.id.cut, menu);
-            hideOption(R.id.delete, menu);
-            hideOption(R.id.addshortcut, menu);
-            hideOption(R.id.share, menu);
-            hideOption(R.id.openwith, menu);
-            showOption(R.id.all, menu);
-            hideOption(R.id.compress, menu);
-            hideOption(R.id.hide, menu);
-            showOption(R.id.ex, menu);
-            mode.setTitle(getString(R.string.select));
-            mainActivity.updateViews(new ColorDrawable(Utils.getColor(getContext(), R.color.holo_dark_action_mode)));
-            if (Build.VERSION.SDK_INT >= 21) {
+          // Inflate a menu resource providing context menu items
+          MenuInflater inflater = mode.getMenuInflater();
+          v = getActivity().getLayoutInflater().inflate(R.layout.actionmode, null);
+          mode.setCustomView(v);
+          // assumes that you have "contexual.xml" menu resources
+          inflater.inflate(R.menu.contextual, menu);
+          hideOption(R.id.cpy, menu);
+          hideOption(R.id.cut, menu);
+          hideOption(R.id.delete, menu);
+          hideOption(R.id.addshortcut, menu);
+          hideOption(R.id.share, menu);
+          hideOption(R.id.openwith, menu);
+          showOption(R.id.all, menu);
+          hideOption(R.id.compress, menu);
+          hideOption(R.id.hide, menu);
+          showOption(R.id.ex, menu);
+          mode.setTitle(getString(R.string.select));
+          mainActivity.updateViews(
+              new ColorDrawable(Utils.getColor(getContext(), R.color.holo_dark_action_mode)));
+          if (Build.VERSION.SDK_INT >= 21) {
 
-                Window window = getActivity().getWindow();
-                if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
-                    window.setNavigationBarColor(Utils.getColor(getContext(), android.R.color.black));
-            }
-            if (Build.VERSION.SDK_INT < 19) {
-                mainActivity.getAppbar().getToolbar().setVisibility(View.GONE);
-            }
-            return true;
+            Window window = getActivity().getWindow();
+            if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
+              window.setNavigationBarColor(Utils.getColor(getContext(), android.R.color.black));
+          }
+          if (Build.VERSION.SDK_INT < 19) {
+            mainActivity.getAppbar().getToolbar().setVisibility(View.GONE);
+          }
+          return true;
         }
 
         // the following method is called each time
@@ -294,218 +295,248 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
         // onCreateActionMode, but
         // may be called multiple times if the mode is invalidated.
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-            ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
-            ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
-            menu.findItem(R.id.all).setTitle(positions.size() == folder + file ?
-                    R.string.deselect_all : R.string.select_all);
+          ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
+          ((TextView) v.findViewById(R.id.item_count)).setText(positions.size() + "");
+          menu.findItem(R.id.all)
+              .setTitle(
+                  positions.size() == folder + file ? R.string.deselect_all : R.string.select_all);
 
-            return false; // Return false if nothing is done
+          return false; // Return false if nothing is done
         }
 
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-            switch (item.getItemId()) {
-                case R.id.all:
-                    ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
-                    boolean shouldDeselectAll = positions.size() != folder + file;
-                    compressedExplorerAdapter.toggleChecked(shouldDeselectAll);
-                    mode.invalidate();
-                    item.setTitle(shouldDeselectAll ? R.string.deselect_all : R.string.select_all);
-                    if(!shouldDeselectAll)
-                    {
-                        selection = false;
-                        mActionMode.finish();
-                        mActionMode = null;
-                    }
-                    return true;
-                case R.id.ex:
-                    Toast.makeText(getActivity(), getString(R.string.extracting), Toast.LENGTH_SHORT).show();
+          switch (item.getItemId()) {
+            case R.id.all:
+              ArrayList<Integer> positions = compressedExplorerAdapter.getCheckedItemPositions();
+              boolean shouldDeselectAll = positions.size() != folder + file;
+              compressedExplorerAdapter.toggleChecked(shouldDeselectAll);
+              mode.invalidate();
+              item.setTitle(shouldDeselectAll ? R.string.deselect_all : R.string.select_all);
+              if (!shouldDeselectAll) {
+                selection = false;
+                mActionMode.finish();
+                mActionMode = null;
+              }
+              return true;
+            case R.id.ex:
+              Toast.makeText(getActivity(), getString(R.string.extracting), Toast.LENGTH_SHORT)
+                  .show();
 
-                    String[] dirs = new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
-                    for (int i = 0; i < dirs.length; i++) {
-                        dirs[i] = elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).path;
-                    }
+              String[] dirs =
+                  new String[compressedExplorerAdapter.getCheckedItemPositions().size()];
+              for (int i = 0; i < dirs.length; i++) {
+                dirs[i] =
+                    elements.get(compressedExplorerAdapter.getCheckedItemPositions().get(i)).path;
+              }
 
-                    decompressor.decompress(compressedFile.getPath(), dirs);
+              decompressor.decompress(compressedFile.getPath(), dirs);
 
-                    mode.finish();
-                    return true;
-            }
-            return false;
+              mode.finish();
+              return true;
+          }
+          return false;
         }
 
         @Override
         public void onDestroyActionMode(ActionMode actionMode) {
-            if (compressedExplorerAdapter != null) compressedExplorerAdapter.toggleChecked(false);
-            @ColorInt int primaryColor = ColorPreferenceHelper.getPrimary(mainActivity.getCurrentColorPreference(), MainActivity.currentTab);
-            selection = false;
-            mainActivity.updateViews(new ColorDrawable(primaryColor));
-            if (Build.VERSION.SDK_INT >= 21) {
+          if (compressedExplorerAdapter != null) compressedExplorerAdapter.toggleChecked(false);
+          @ColorInt
+          int primaryColor =
+              ColorPreferenceHelper.getPrimary(
+                  mainActivity.getCurrentColorPreference(), MainActivity.currentTab);
+          selection = false;
+          mainActivity.updateViews(new ColorDrawable(primaryColor));
+          if (Build.VERSION.SDK_INT >= 21) {
 
-                Window window = getActivity().getWindow();
-                if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
-                    window.setNavigationBarColor(mainActivity.skinStatusBar);
-            }
-            mActionMode = null;
+            Window window = getActivity().getWindow();
+            if (mainActivity.getBoolean(PREFERENCE_COLORED_NAVIGATION))
+              window.setNavigationBarColor(mainActivity.skinStatusBar);
+          }
+          mActionMode = null;
         }
-    };
+      };
 
-    @Override
-    public void onDestroyView() {
-        super.onDestroyView();
-        mainActivity.supportInvalidateOptionsMenu();
+  @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    mainActivity.supportInvalidateOptionsMenu();
 
-        // needed to remove any extracted file from cache, when onResume was not called
-        // in case of opening any unknown file inside the zip
+    // needed to remove any extracted file from cache, when onResume was not called
+    // in case of opening any unknown file inside the zip
 
-        if (files.get(0).exists()) {
-            new DeleteTask(getActivity(), this).execute(files);
-        }
+    if (files.get(0).exists()) {
+      new DeleteTask(getActivity(), this).execute(files);
     }
+  }
 
-    @Override
-    public void onResume() {
-        super.onResume();
+  @Override
+  public void onResume() {
+    super.onResume();
 
-        mainActivity.floatingActionButton.hide();
-        Intent intent = new Intent(getActivity(), ExtractService.class);
-        getActivity().bindService(intent, mServiceConnection, 0);
-    }
+    mainActivity.floatingActionButton.hide();
+    Intent intent = new Intent(getActivity(), ExtractService.class);
+    getActivity().bindService(intent, mServiceConnection, 0);
+  }
 
-    @Override
-    public void onPause() {
-        super.onPause();
+  @Override
+  public void onPause() {
+    super.onPause();
 
-        getActivity().unbindService(mServiceConnection);
-    }
+    getActivity().unbindService(mServiceConnection);
+  }
 
-    private ServiceConnection mServiceConnection = new ServiceConnection() {
+  private ServiceConnection mServiceConnection =
+      new ServiceConnection() {
         @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-        }
+        public void onServiceConnected(ComponentName name, IBinder service) {}
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
-            // open file if pending
-            if (isOpen) {
-                // open most recent entry added to files to be deleted from cache
-                File cacheFile = new File(files.get(files.size() - 1).getPath());
-                if (cacheFile.exists()) {
-                    FileUtils.openFile(cacheFile, mainActivity, mainActivity.getPrefs());
-                }
-                // reset the flag and cache file, as it's root is already in the list for deletion
-                isOpen = false;
-                files.remove(files.size() - 1);
+          // open file if pending
+          if (isOpen) {
+            // open most recent entry added to files to be deleted from cache
+            File cacheFile = new File(files.get(files.size() - 1).getPath());
+            if (cacheFile.exists()) {
+              FileUtils.openFile(cacheFile, mainActivity, mainActivity.getPrefs());
             }
+            // reset the flag and cache file, as it's root is already in the list for deletion
+            isOpen = false;
+            files.remove(files.size() - 1);
+          }
         }
-    };
+      };
 
-    @Override
-    public void changePath(String folder) {
-        if(folder == null) folder = "";
-        if(folder.startsWith("/")) folder = folder.substring(1);
+  @Override
+  public void changePath(String folder) {
+    if (folder == null) folder = "";
+    if (folder.startsWith("/")) folder = folder.substring(1);
 
-        boolean addGoBackItem = gobackitem && !isRoot(folder);
-        String finalfolder = folder;
-        if(decompressor!=null) {
-            decompressor.changePath(folder, addGoBackItem, result -> {
+    boolean addGoBackItem = gobackitem && !isRoot(folder);
+    String finalfolder = folder;
+    if (decompressor != null) {
+      decompressor
+          .changePath(
+              folder,
+              addGoBackItem,
+              result -> {
                 if (result.exception == null) {
-                    elements = result.result;
-                    createViews(elements, finalfolder);
-                    swipeRefreshLayout.setRefreshing(false);
-                    updateBottomBar();
+                  elements = result.result;
+                  createViews(elements, finalfolder);
+                  swipeRefreshLayout.setRefreshing(false);
+                  updateBottomBar();
                 } else {
-                    archiveCorruptOrUnsupportedToast();
+                  archiveCorruptOrUnsupportedToast();
                 }
-            }).execute();
-            swipeRefreshLayout.setRefreshing(true);
-            updateBottomBar();
-        } else {
-            archiveCorruptOrUnsupportedToast();
-        }
+              })
+          .execute();
+      swipeRefreshLayout.setRefreshing(true);
+      updateBottomBar();
+    } else {
+      archiveCorruptOrUnsupportedToast();
+    }
+  }
+
+  @Override
+  public String getPath() {
+    if (!isRootRelativePath()) return SEPARATOR + relativeDirectory;
+    else return "";
+  }
+
+  @Override
+  public int getRootDrawable() {
+    return R.drawable.ic_compressed_white_24dp;
+  }
+
+  private void refresh() {
+    changePath(relativeDirectory);
+  }
+
+  private void updateBottomBar() {
+    String path =
+        !isRootRelativePath()
+            ? compressedFile.getName() + SEPARATOR + relativeDirectory
+            : compressedFile.getName();
+    mainActivity
+        .getAppbar()
+        .getBottomBar()
+        .updatePath(path, false, null, OpenMode.FILE, folder, file, this);
+  }
+
+  private void createViews(List<CompressedObjectParcelable> items, String dir) {
+    if (compressedExplorerAdapter == null) {
+      compressedExplorerAdapter =
+          new CompressedExplorerAdapter(
+              getActivity(),
+              utilsProvider,
+              items,
+              this,
+              decompressor,
+              PreferenceManager.getDefaultSharedPreferences(getActivity()));
+      listView.setAdapter(compressedExplorerAdapter);
+    } else {
+      compressedExplorerAdapter.generateZip(items);
     }
 
-    @Override
-    public String getPath() {
-        if(!isRootRelativePath()) return SEPARATOR + relativeDirectory;
-        else return "";
+    folder = 0;
+    file = 0;
+    for (CompressedObjectParcelable item : items) {
+      if (item.type == CompressedObjectParcelable.TYPE_GOBACK) continue;
+
+      if (item.directory) folder++;
+      else file++;
     }
 
-    @Override
-    public int getRootDrawable() {
-        return R.drawable.ic_compressed_white_24dp;
+    stopAnims = true;
+    if (!addheader) {
+      listView.removeItemDecoration(dividerItemDecoration);
+      // listView.removeItemDecoration(headersDecor);
+      addheader = true;
+    } else {
+      dividerItemDecoration = new DividerItemDecoration(getActivity(), true, showDividers);
+      listView.addItemDecoration(dividerItemDecoration);
+      // headersDecor = new StickyRecyclerHeadersDecoration(compressedExplorerAdapter);
+      // listView.addItemDecoration(headersDecor);
+      addheader = false;
     }
+    final FastScroller fastScroller = rootView.findViewById(R.id.fastscroll);
+    fastScroller.setRecyclerView(listView, 1);
+    fastScroller.setPressedHandleColor(mainActivity.getAccent());
+    ((AppBarLayout) mToolbarContainer)
+        .addOnOffsetChangedListener(
+            (appBarLayout, verticalOffset) -> {
+              fastScroller.updateHandlePosition(verticalOffset, 112);
+            });
+    listView.stopScroll();
+    relativeDirectory = dir;
+    updateBottomBar();
+    swipeRefreshLayout.setRefreshing(false);
+  }
 
-    private void refresh() {
-        changePath(relativeDirectory);
-    }
+  public boolean canGoBack() {
+    return !isRootRelativePath();
+  }
 
-    private void updateBottomBar() {
-        String path = !isRootRelativePath()? compressedFile.getName() + SEPARATOR + relativeDirectory : compressedFile.getName();
-        mainActivity.getAppbar().getBottomBar().updatePath(path, false, null, OpenMode.FILE, folder, file, this);
-    }
+  public void goBack() {
+    changePath(new File(relativeDirectory).getParent());
+  }
 
-    private void createViews(List<CompressedObjectParcelable> items, String dir) {
-        if (compressedExplorerAdapter == null) {
-            compressedExplorerAdapter = new CompressedExplorerAdapter(getActivity(), utilsProvider, items, this, decompressor,
-                    PreferenceManager.getDefaultSharedPreferences(getActivity()));
-            listView.setAdapter(compressedExplorerAdapter);
-        } else {
-            compressedExplorerAdapter.generateZip(items);
-        }
+  private boolean isRootRelativePath() {
+    return isRoot(relativeDirectory);
+  }
 
-        folder = 0;
-        file = 0;
-        for (CompressedObjectParcelable item : items) {
-            if(item.type == CompressedObjectParcelable.TYPE_GOBACK) continue;
-            
-            if (item.directory) folder++;
-            else file++;
-        }
+  private boolean isRoot(String folder) {
+    return folder == null || folder.isEmpty();
+  }
 
-        stopAnims = true;
-        if (!addheader) {
-            listView.removeItemDecoration(dividerItemDecoration);
-            //listView.removeItemDecoration(headersDecor);
-            addheader = true;
-        } else {
-            dividerItemDecoration = new DividerItemDecoration(getActivity(), true, showDividers);
-            listView.addItemDecoration(dividerItemDecoration);
-            //headersDecor = new StickyRecyclerHeadersDecoration(compressedExplorerAdapter);
-            //listView.addItemDecoration(headersDecor);
-            addheader = false;
-        }
-        final FastScroller fastScroller = rootView.findViewById(R.id.fastscroll);
-        fastScroller.setRecyclerView(listView, 1);
-        fastScroller.setPressedHandleColor(mainActivity.getAccent());
-        ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            fastScroller.updateHandlePosition(verticalOffset, 112);
-        });
-        listView.stopScroll();
-        relativeDirectory = dir;
-        updateBottomBar();
-        swipeRefreshLayout.setRefreshing(false);
-    }
-
-    public boolean canGoBack() {
-        return !isRootRelativePath();
-    }
-
-    public void goBack() {
-        changePath(new File(relativeDirectory).getParent());
-    }
-
-    private boolean isRootRelativePath() {
-        return isRoot(relativeDirectory);
-    }
-
-    private boolean isRoot(String folder) {
-        return folder == null || folder.isEmpty();
-    }
-
-    private void archiveCorruptOrUnsupportedToast(){
-        Toast.makeText(getActivity(), getActivity().getString(R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()), Toast.LENGTH_LONG).show();
-        getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
-    }
-
+  private void archiveCorruptOrUnsupportedToast() {
+    Toast.makeText(
+            getActivity(),
+            getActivity()
+                .getString(
+                    R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()),
+            Toast.LENGTH_LONG)
+        .show();
+    getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+  }
 }
