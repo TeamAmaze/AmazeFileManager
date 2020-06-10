@@ -449,7 +449,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             file_count = savedInstanceState.getInt("file_count", 0);
             results = savedInstanceState.getBoolean("results");
             getMainActivity().getAppbar().getBottomBar().updatePath(CURRENT_PATH, results, MainActivityHelper.SEARCH_TEXT, openMode, folder_count, file_count, this);
-            reloadListElements( true, results, !IS_LIST);
+            if ((LIST_ELEMENTS == null || LIST_ELEMENTS.size() == 0) && !results) {
+                loadlist(home, true, OpenMode.FILE);
+            } else {
+                reloadListElements( true, results, !IS_LIST);
+            }
             if (savedInstanceState.getBoolean("selection")) {
                 for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
                     adapter.toggleChecked(index, null);
@@ -1159,9 +1163,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
             startFileObserver();
         } else {
-            // list loading cancelled
-            // TODO: Add support for cancelling list loading
-            loadlist(home, true, OpenMode.FILE);
+            // fragment not added
+            initNoFileLayout();
         }
     }
 

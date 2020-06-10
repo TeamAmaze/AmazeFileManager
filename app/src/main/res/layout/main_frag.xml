@@ -73,6 +73,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerHorizontal="true"
                     android:layout_centerVertical="true"
+                    android:layout_marginBottom="@dimen/material_generic_medium"
                     android:src="@drawable/ic_insert_drive_file_white_36dp"/>
 
                 <TextView
