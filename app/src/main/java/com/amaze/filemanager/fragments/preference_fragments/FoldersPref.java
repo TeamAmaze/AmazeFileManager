@@ -1,16 +1,27 @@
+/*
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.fragments.preference_fragments;
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import com.google.android.material.textfield.TextInputLayout;
-import androidx.appcompat.widget.AppCompatEditText;
-import android.text.Editable;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.EditText;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,231 +34,266 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.FileUtils;
+import com.google.android.material.textfield.TextInputLayout;
 
-import java.util.HashMap;
-import java.util.Map;
+import android.content.SharedPreferences;
+import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceFragment;
+import android.preference.PreferenceManager;
+import android.text.Editable;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.EditText;
 
-/**
- * @author Emmanuel
- *         on 17/4/2017, at 22:49.
- */
+import androidx.appcompat.widget.AppCompatEditText;
 
-public class FoldersPref extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+/** @author Emmanuel on 17/4/2017, at 22:49. */
+public class FoldersPref extends PreferenceFragment
+    implements Preference.OnPreferenceClickListener {
 
-    private SharedPreferences sharedPrefs;
-    private PreferencesActivity activity;
-    private Map<Preference, Integer> position = new HashMap<>();
-    private DataUtils dataUtils;
-    private UtilsHandler utilsHandler;
+  private SharedPreferences sharedPrefs;
+  private PreferencesActivity activity;
+  private Map<Preference, Integer> position = new HashMap<>();
+  private DataUtils dataUtils;
+  private UtilsHandler utilsHandler;
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        activity = (PreferencesActivity) getActivity();
+  @Override
+  public void onCreate(Bundle savedInstanceState) {
+    super.onCreate(savedInstanceState);
+    activity = (PreferencesActivity) getActivity();
 
-        utilsHandler = new UtilsHandler(getActivity());
-        dataUtils = DataUtils.getInstance();
+    utilsHandler = new UtilsHandler(getActivity());
+    dataUtils = DataUtils.getInstance();
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.folders_prefs);
+    // Load the preferences from an XML resource
+    addPreferencesFromResource(R.xml.folders_prefs);
 
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
+    sharedPrefs = PreferenceManager.getDefaultSharedPreferences(activity);
 
-        findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOnPreferenceClickListener(this);
+    findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOnPreferenceClickListener(this);
 
-        for (int i = 0; i < dataUtils.getBooks().size(); i++) {
-            PathSwitchPreference p = new PathSwitchPreference(getActivity());
-            p.setTitle(dataUtils.getBooks().get(i) [0]);
-            p.setSummary(dataUtils.getBooks().get(i) [1]);
-            p.setOnPreferenceClickListener(this);
+    for (int i = 0; i < dataUtils.getBooks().size(); i++) {
+      PathSwitchPreference p = new PathSwitchPreference(getActivity());
+      p.setTitle(dataUtils.getBooks().get(i)[0]);
+      p.setSummary(dataUtils.getBooks().get(i)[1]);
+      p.setOnPreferenceClickListener(this);
 
-            position.put(p, i);
-            getPreferenceScreen().addPreference(p);
-        }
+      position.put(p, i);
+      getPreferenceScreen().addPreference(p);
+    }
+  }
+
+  @Override
+  public void onResume() {
+    super.onResume();
+    onCreate(null);
+  }
+
+  @Override
+  public boolean onPreferenceClick(final Preference preference) {
+    if (preference instanceof PathSwitchPreference) {
+      PathSwitchPreference p = (PathSwitchPreference) preference;
+      switch (p.getLastItemClicked()) {
+        case PathSwitchPreference.EDIT:
+          loadEditDialog((PathSwitchPreference) preference);
+          break;
+        case PathSwitchPreference.DELETE:
+          loadDeleteDialog((PathSwitchPreference) preference);
+          break;
+        default:
+          break;
+      }
+    } else if (preference.getKey().equals(PreferencesConstants.PREFERENCE_SHORTCUT)) {
+      if (getPreferenceScreen().getPreferenceCount()
+          >= findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).getOrder())
+        findPreference(PreferencesConstants.PREFERENCE_SHORTCUT)
+            .setOrder(getPreferenceScreen().getPreferenceCount() + 10);
+
+      loadCreateDialog();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        onCreate(null);
-    }
+    return false;
+  }
 
-    @Override
-    public boolean onPreferenceClick(final Preference preference) {
-        if (preference instanceof PathSwitchPreference) {
-            PathSwitchPreference p = (PathSwitchPreference) preference;
-            switch (p.getLastItemClicked()) {
-                case PathSwitchPreference.EDIT:
-                    loadEditDialog((PathSwitchPreference) preference);
-                    break;
-                case PathSwitchPreference.DELETE:
-                    loadDeleteDialog((PathSwitchPreference) preference);
-                    break;
-                default:
-                    break;
-            }
-        } else if(preference.getKey().equals(PreferencesConstants.PREFERENCE_SHORTCUT)) {
-            if(getPreferenceScreen().getPreferenceCount() >= findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).getOrder())
-                findPreference(PreferencesConstants.PREFERENCE_SHORTCUT).setOrder(getPreferenceScreen().getPreferenceCount()+10);
+  private void loadCreateDialog() {
+    int fab_skin = activity.getAccent();
 
-            loadCreateDialog();
-        }
+    LayoutInflater li = LayoutInflater.from(activity);
+    final View v =
+        li.inflate(R.layout.dialog_twoedittexts, null); // TODO: 29/4/2017 make this null not null
+    ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
+    ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        return false;
-    }
+    final AppCompatEditText txtShortcutName = v.findViewById(R.id.text1),
+        txtShortcutPath = v.findViewById(R.id.text2);
 
-    private void loadCreateDialog() {
-        int fab_skin = activity.getAccent();
+    final MaterialDialog dialog =
+        new MaterialDialog.Builder(getActivity())
+            .title(R.string.create_shortcut)
+            .theme(activity.getAppTheme().getMaterialDialogTheme())
+            .positiveColor(fab_skin)
+            .positiveText(R.string.create)
+            .negativeColor(fab_skin)
+            .negativeText(android.R.string.cancel)
+            .customView(v, false)
+            .build();
 
-        LayoutInflater li = LayoutInflater.from(activity);
-        final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
-        ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
-        ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
+    dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
 
-        final AppCompatEditText txtShortcutName = v.findViewById(R.id.text1),
-                txtShortcutPath = v.findViewById(R.id.text2);
+    disableButtonIfTitleEmpty(txtShortcutName, dialog);
+    disableButtonIfNotPath(txtShortcutPath, dialog);
 
-        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.create_shortcut)
-                .theme(activity.getAppTheme().getMaterialDialogTheme())
-                .positiveColor(fab_skin)
-                .positiveText(R.string.create)
-                .negativeColor(fab_skin)
-                .negativeText(android.R.string.cancel)
-                .customView(v, false)
-                .build();
+    dialog
+        .getActionButton(DialogAction.POSITIVE)
+        .setOnClickListener(
+            view -> {
+              PathSwitchPreference p = new PathSwitchPreference(getActivity());
+              p.setTitle(txtShortcutName.getText());
+              p.setSummary(txtShortcutPath.getText());
+              p.setOnPreferenceClickListener(FoldersPref.this);
 
-        dialog.getActionButton(DialogAction.POSITIVE).setEnabled(false);
+              position.put(p, dataUtils.getBooks().size());
+              getPreferenceScreen().addPreference(p);
 
-        disableButtonIfTitleEmpty(txtShortcutName, dialog);
-        disableButtonIfNotPath(txtShortcutPath, dialog);
+              String[] values =
+                  new String[] {
+                    txtShortcutName.getText().toString(), txtShortcutPath.getText().toString()
+                  };
 
-        dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener(view -> {
-                    PathSwitchPreference p = new PathSwitchPreference(getActivity());
-                    p.setTitle(txtShortcutName.getText());
-                    p.setSummary(txtShortcutPath.getText());
-                    p.setOnPreferenceClickListener(FoldersPref.this);
+              dataUtils.addBook(values);
+              utilsHandler.saveToDatabase(
+                  new OperationData(
+                      UtilsHandler.Operation.BOOKMARKS,
+                      txtShortcutName.getText().toString(),
+                      txtShortcutPath.getText().toString()));
 
-                    position.put(p, dataUtils.getBooks().size());
-                    getPreferenceScreen().addPreference(p);
+              dialog.dismiss();
+            });
 
-                    String[] values = new String[] {txtShortcutName.getText().toString(),
-                            txtShortcutPath.getText().toString()};
+    dialog.show();
+  }
 
-                    dataUtils.addBook(values);
-                    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
-                            txtShortcutName.getText().toString(), txtShortcutPath.getText().toString()));
+  private void loadEditDialog(final PathSwitchPreference p) {
+    int fab_skin = activity.getAccent();
 
-                    dialog.dismiss();
-                });
+    LayoutInflater li = LayoutInflater.from(activity);
+    final View v =
+        li.inflate(R.layout.dialog_twoedittexts, null); // TODO: 29/4/2017 make this null not null
+    ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
+    ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
 
-        dialog.show();
-    }
+    final EditText editText1 = v.findViewById(R.id.text1), editText2 = v.findViewById(R.id.text2);
+    editText1.setText(p.getTitle());
+    editText2.setText(p.getSummary());
 
-    private void loadEditDialog(final PathSwitchPreference p) {
-        int fab_skin = activity.getAccent();
+    final MaterialDialog dialog =
+        new MaterialDialog.Builder(getActivity())
+            .title(R.string.edit_shortcut)
+            .theme(activity.getAppTheme().getMaterialDialogTheme())
+            .positiveColor(fab_skin)
+            .positiveText(
+                getString(R.string.edit).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase()
+            .negativeColor(fab_skin)
+            .negativeText(android.R.string.cancel)
+            .customView(v, false)
+            .build();
 
-        LayoutInflater li = LayoutInflater.from(activity);
-        final View v = li.inflate(R.layout.dialog_twoedittexts, null);// TODO: 29/4/2017 make this null not null
-        ((TextInputLayout) v.findViewById(R.id.text_input1)).setHint(getString(R.string.name));
-        ((TextInputLayout) v.findViewById(R.id.text_input2)).setHint(getString(R.string.directory));
+    dialog
+        .getActionButton(DialogAction.POSITIVE)
+        .setEnabled(FileUtils.isPathAccessible(editText2.getText().toString(), sharedPrefs));
 
-        final EditText editText1 = v.findViewById(R.id.text1),
-                editText2 = v.findViewById(R.id.text2);
-        editText1.setText(p.getTitle());
-        editText2.setText(p.getSummary());
+    disableButtonIfTitleEmpty(editText1, dialog);
+    disableButtonIfNotPath(editText2, dialog);
 
-        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.edit_shortcut)
-                .theme(activity.getAppTheme().getMaterialDialogTheme())
-                .positiveColor(fab_skin)
-                .positiveText(getString(R.string.edit).toUpperCase())// TODO: 29/4/2017 don't use toUpperCase()
-                .negativeColor(fab_skin)
-                .negativeText(android.R.string.cancel)
-                .customView(v, false)
-                .build();
+    dialog
+        .getActionButton(DialogAction.POSITIVE)
+        .setOnClickListener(
+            view -> {
+              final String oldName = p.getTitle().toString();
+              final String oldPath = p.getSummary().toString();
 
-        dialog.getActionButton(DialogAction.POSITIVE)
-                .setEnabled(FileUtils.isPathAccessible(editText2.getText().toString(), sharedPrefs));
+              dataUtils.removeBook(position.get(p));
+              position.remove(p);
+              getPreferenceScreen().removePreference(p);
 
-        disableButtonIfTitleEmpty(editText1, dialog);
-        disableButtonIfNotPath(editText2, dialog);
+              p.setTitle(editText1.getText());
+              p.setSummary(editText2.getText());
 
-        dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener(view -> {
+              position.put(p, position.size());
+              getPreferenceScreen().addPreference(p);
 
-                    final String oldName = p.getTitle().toString();
-                    final String oldPath = p.getSummary().toString();
+              String[] values =
+                  new String[] {editText1.getText().toString(), editText2.getText().toString()};
 
+              dataUtils.addBook(values);
+              AppConfig.runInBackground(
+                  () ->
+                      utilsHandler.renameBookmark(
+                          oldName,
+                          oldPath,
+                          editText1.getText().toString(),
+                          editText2.getText().toString()));
+              dialog.dismiss();
+            });
 
-                    dataUtils.removeBook(position.get(p));
-                    position.remove(p);
-                    getPreferenceScreen().removePreference(p);
+    dialog.show();
+  }
 
-                    p.setTitle(editText1.getText());
-                    p.setSummary(editText2.getText());
+  private void loadDeleteDialog(final PathSwitchPreference p) {
+    int fab_skin = activity.getAccent();
 
-                    position.put(p, position.size());
-                    getPreferenceScreen().addPreference(p);
+    final MaterialDialog dialog =
+        new MaterialDialog.Builder(getActivity())
+            .title(R.string.question_delete_shortcut)
+            .theme(activity.getAppTheme().getMaterialDialogTheme())
+            .positiveColor(fab_skin)
+            .positiveText(
+                getString(R.string.delete)
+                    .toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
+            .negativeColor(fab_skin)
+            .negativeText(android.R.string.cancel)
+            .build();
 
-                    String[] values = new String[] {editText1.getText().toString(),
-                            editText2.getText().toString()};
+    dialog
+        .getActionButton(DialogAction.POSITIVE)
+        .setOnClickListener(
+            view -> {
+              dataUtils.removeBook(position.get(p));
 
-                    dataUtils.addBook(values);
-                    AppConfig.runInBackground(() -> utilsHandler.renameBookmark(oldName, oldPath,
-                            editText1.getText().toString(),
-                            editText2.getText().toString()));
-                    dialog.dismiss();
-                });
+              utilsHandler.removeFromDatabase(
+                  new OperationData(
+                      UtilsHandler.Operation.BOOKMARKS,
+                      p.getTitle().toString(),
+                      p.getSummary().toString()));
 
-        dialog.show();
-    }
+              getPreferenceScreen().removePreference(p);
+              position.remove(p);
+              dialog.dismiss();
+            });
 
-    private void loadDeleteDialog(final PathSwitchPreference p) {
-        int fab_skin = activity.getAccent();
+    dialog.show();
+  }
 
-        final MaterialDialog dialog = new MaterialDialog.Builder(getActivity())
-                .title(R.string.question_delete_shortcut)
-                .theme(activity.getAppTheme().getMaterialDialogTheme())
-                .positiveColor(fab_skin)
-                .positiveText(getString(R.string.delete).toUpperCase())// TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
-                .negativeColor(fab_skin)
-                .negativeText(android.R.string.cancel)
-                .build();
-
-        dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener(view -> {
-
-                    dataUtils.removeBook(position.get(p));
-
-                    utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.BOOKMARKS,
-                            p.getTitle().toString(), p.getSummary().toString()));
-
-                    getPreferenceScreen().removePreference(p);
-                    position.remove(p);
-                    dialog.dismiss();
-                });
-
-        dialog.show();
-    }
-
-    private void disableButtonIfNotPath(EditText path, final MaterialDialog dialog) {
-        path.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                dialog.getActionButton(DialogAction.POSITIVE)
-                        .setEnabled(FileUtils.isPathAccessible(s.toString(), sharedPrefs));
-            }
+  private void disableButtonIfNotPath(EditText path, final MaterialDialog dialog) {
+    path.addTextChangedListener(
+        new SimpleTextWatcher() {
+          @Override
+          public void afterTextChanged(Editable s) {
+            dialog
+                .getActionButton(DialogAction.POSITIVE)
+                .setEnabled(FileUtils.isPathAccessible(s.toString(), sharedPrefs));
+          }
         });
-    }
+  }
 
-    private void disableButtonIfTitleEmpty(final EditText title, final MaterialDialog dialog) {
-        title.addTextChangedListener(new SimpleTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                dialog.getActionButton(DialogAction.POSITIVE).setEnabled(title.length() > 0);
-            }
+  private void disableButtonIfTitleEmpty(final EditText title, final MaterialDialog dialog) {
+    title.addTextChangedListener(
+        new SimpleTextWatcher() {
+          @Override
+          public void afterTextChanged(Editable s) {
+            dialog.getActionButton(DialogAction.POSITIVE).setEnabled(title.length() > 0);
+          }
         });
-    }
+  }
 }

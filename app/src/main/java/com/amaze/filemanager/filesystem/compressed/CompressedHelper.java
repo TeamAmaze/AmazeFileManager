@@ -1,8 +1,6 @@
 /*
- * CompressedHelper.java
- *
- * Copyright (C) 2017-2019 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt@gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,8 +20,7 @@
 
 package com.amaze.filemanager.filesystem.compressed;
 
-import android.content.Context;
-import androidx.annotation.NonNull;
+import java.io.File;
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
@@ -45,157 +42,169 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecomp
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 import com.amaze.filemanager.utils.Utils;
 
-import java.io.File;
+import android.content.Context;
 
-/**
- * @author Emmanuel
- *         on 23/11/2017, at 17:46.
- */
+import androidx.annotation.NonNull;
 
+/** @author Emmanuel on 23/11/2017, at 17:46. */
 public abstract class CompressedHelper {
 
-    /**
-     * Path separator used by all Decompressors and Extractors.
-     * e.g. rar internally uses '\' but is converted to "/" for the app.
-     */
-    public static final char SEPARATOR_CHAR = '/';
-    public static final String SEPARATOR = String.valueOf(SEPARATOR_CHAR).intern();
+  /**
+   * Path separator used by all Decompressors and Extractors. e.g. rar internally uses '\' but is
+   * converted to "/" for the app.
+   */
+  public static final char SEPARATOR_CHAR = '/';
 
-    public static final String fileExtensionZip = "zip", fileExtensionJar = "jar", fileExtensionApk = "apk";
-    public static final String fileExtensionTar = "tar";
-    public static final String fileExtensionGzipTarLong = "tar.gz", fileExtensionGzipTarShort = "tgz";
-    public static final String fileExtensionBzip2TarLong = "tar.bz2", fileExtensionBzip2TarShort = "tbz";
-    public static final String fileExtensionRar = "rar";
-    public static final String fileExtension7zip = "7z";
-    public static final String fileExtensionLzma = "tar.lzma";
-    public static final String fileExtensionXz = "tar.xz";
+  public static final String SEPARATOR = String.valueOf(SEPARATOR_CHAR).intern();
 
-    /**
-     * To add compatibility with other compressed file types edit this method
-     */
-    public static Extractor getExtractorInstance(@NonNull Context context, @NonNull File file, @NonNull String outputPath,
-                                                 @NonNull Extractor.OnUpdate listener) {
-        Extractor extractor;
-        String type = getExtension(file.getPath());
+  public static final String fileExtensionZip = "zip",
+      fileExtensionJar = "jar",
+      fileExtensionApk = "apk";
+  public static final String fileExtensionTar = "tar";
+  public static final String fileExtensionGzipTarLong = "tar.gz", fileExtensionGzipTarShort = "tgz";
+  public static final String fileExtensionBzip2TarLong = "tar.bz2",
+      fileExtensionBzip2TarShort = "tbz";
+  public static final String fileExtensionRar = "rar";
+  public static final String fileExtension7zip = "7z";
+  public static final String fileExtensionLzma = "tar.lzma";
+  public static final String fileExtensionXz = "tar.xz";
 
-        if (isZip(type)) {
-            extractor = new ZipExtractor(context, file.getPath(), outputPath, listener);
-        } else if (isRar(type)) {
-            extractor = new RarExtractor(context, file.getPath(), outputPath, listener);
-        } else if(isTar(type)) {
-            extractor = new TarExtractor(context, file.getPath(), outputPath, listener);
-        } else if(isGzippedTar(type)) {
-            extractor = new GzipExtractor(context, file.getPath(), outputPath, listener);
-        } else if(isBzippedTar(type)) {
-            extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener);
-        } else if(isXzippedTar(type)) {
-            extractor = new XzExtractor(context, file.getPath(), outputPath, listener);
-        } else if(isLzippedTar(type)) {
-            extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener);
-        } else if(is7zip(type)) {
-            extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener);
-        } else {
-            return null;
-        }
+  /** To add compatibility with other compressed file types edit this method */
+  public static Extractor getExtractorInstance(
+      @NonNull Context context,
+      @NonNull File file,
+      @NonNull String outputPath,
+      @NonNull Extractor.OnUpdate listener) {
+    Extractor extractor;
+    String type = getExtension(file.getPath());
 
-        return extractor;
+    if (isZip(type)) {
+      extractor = new ZipExtractor(context, file.getPath(), outputPath, listener);
+    } else if (isRar(type)) {
+      extractor = new RarExtractor(context, file.getPath(), outputPath, listener);
+    } else if (isTar(type)) {
+      extractor = new TarExtractor(context, file.getPath(), outputPath, listener);
+    } else if (isGzippedTar(type)) {
+      extractor = new GzipExtractor(context, file.getPath(), outputPath, listener);
+    } else if (isBzippedTar(type)) {
+      extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener);
+    } else if (isXzippedTar(type)) {
+      extractor = new XzExtractor(context, file.getPath(), outputPath, listener);
+    } else if (isLzippedTar(type)) {
+      extractor = new LzmaExtractor(context, file.getPath(), outputPath, listener);
+    } else if (is7zip(type)) {
+      extractor = new SevenZipExtractor(context, file.getPath(), outputPath, listener);
+    } else {
+      return null;
     }
 
-    /**
-     * To add compatibility with other compressed file types edit this method
-     */
-    public static Decompressor getCompressorInstance(@NonNull Context context, @NonNull File file) {
-        Decompressor decompressor;
-        String type = getExtension(file.getPath());
+    return extractor;
+  }
 
-        if (isZip(type)) {
-            decompressor = new ZipDecompressor(context);
-        } else if (isRar(type)) {
-            decompressor = new RarDecompressor(context);
-        } else if(isTar(type)) {
-            decompressor = new TarDecompressor(context);
-        } else if(isGzippedTar(type)) {
-            decompressor = new GzipDecompressor(context);
-        } else if(isBzippedTar(type)) {
-            decompressor = new Bzip2Decompressor(context);
-        } else if(isXzippedTar(type)) {
-            decompressor = new XzDecompressor(context);
-        } else if(isLzippedTar(type)) {
-            decompressor = new LzmaDecompressor(context);
-        } else if(is7zip(type)) {
-            decompressor = new SevenZipDecompressor(context);
-        } else {
-            return null;
-        }
+  /** To add compatibility with other compressed file types edit this method */
+  public static Decompressor getCompressorInstance(@NonNull Context context, @NonNull File file) {
+    Decompressor decompressor;
+    String type = getExtension(file.getPath());
 
-        decompressor.setFilePath(file.getPath());
-        return decompressor;
+    if (isZip(type)) {
+      decompressor = new ZipDecompressor(context);
+    } else if (isRar(type)) {
+      decompressor = new RarDecompressor(context);
+    } else if (isTar(type)) {
+      decompressor = new TarDecompressor(context);
+    } else if (isGzippedTar(type)) {
+      decompressor = new GzipDecompressor(context);
+    } else if (isBzippedTar(type)) {
+      decompressor = new Bzip2Decompressor(context);
+    } else if (isXzippedTar(type)) {
+      decompressor = new XzDecompressor(context);
+    } else if (isLzippedTar(type)) {
+      decompressor = new LzmaDecompressor(context);
+    } else if (is7zip(type)) {
+      decompressor = new SevenZipDecompressor(context);
+    } else {
+      return null;
     }
 
-    public static boolean isFileExtractable(String path) {
-        String type = getExtension(path);
+    decompressor.setFilePath(file.getPath());
+    return decompressor;
+  }
 
-        return isZip(type) || isTar(type) || isRar(type) || isGzippedTar(type) || is7zip(type) || isBzippedTar(type) || isXzippedTar(type) || isLzippedTar(type);
-    }
+  public static boolean isFileExtractable(String path) {
+    String type = getExtension(path);
 
-    /**
-     * Gets the name of the file without compression extention.
-     * For example:
-     * "s.tar.gz" to "s"
-     * "s.tar" to "s"
-     */
-    public static String getFileName(String compressedName) {
-        compressedName = compressedName.toLowerCase();
-        if(isZip(compressedName) || isTar(compressedName) || isRar(compressedName) || is7zip(compressedName)
-                || compressedName.endsWith(fileExtensionGzipTarShort) || compressedName.endsWith(fileExtensionBzip2TarShort)) {
-            return compressedName.substring(0, compressedName.lastIndexOf("."));
-        } else if (isGzippedTar(compressedName) || isXzippedTar(compressedName) || isLzippedTar(compressedName) || isBzippedTar(compressedName)) {
-            return compressedName.substring(0,
-                    Utils.nthToLastCharIndex(2, compressedName, '.'));
-        } else {
-            return compressedName;
-        }
-    }
+    return isZip(type)
+        || isTar(type)
+        || isRar(type)
+        || isGzippedTar(type)
+        || is7zip(type)
+        || isBzippedTar(type)
+        || isXzippedTar(type)
+        || isLzippedTar(type);
+  }
 
-    public static final boolean isEntryPathValid(String entryPath){
-        return !entryPath.startsWith("..\\") && !entryPath.startsWith("../") && !entryPath.equals("..");
+  /**
+   * Gets the name of the file without compression extention. For example: "s.tar.gz" to "s" "s.tar"
+   * to "s"
+   */
+  public static String getFileName(String compressedName) {
+    compressedName = compressedName.toLowerCase();
+    if (isZip(compressedName)
+        || isTar(compressedName)
+        || isRar(compressedName)
+        || is7zip(compressedName)
+        || compressedName.endsWith(fileExtensionGzipTarShort)
+        || compressedName.endsWith(fileExtensionBzip2TarShort)) {
+      return compressedName.substring(0, compressedName.lastIndexOf("."));
+    } else if (isGzippedTar(compressedName)
+        || isXzippedTar(compressedName)
+        || isLzippedTar(compressedName)
+        || isBzippedTar(compressedName)) {
+      return compressedName.substring(0, Utils.nthToLastCharIndex(2, compressedName, '.'));
+    } else {
+      return compressedName;
     }
+  }
 
-    private static boolean isZip(String type) {
-        return type.endsWith(fileExtensionZip) || type.endsWith(fileExtensionJar)
-                || type.endsWith(fileExtensionApk);
-    }
+  public static final boolean isEntryPathValid(String entryPath) {
+    return !entryPath.startsWith("..\\") && !entryPath.startsWith("../") && !entryPath.equals("..");
+  }
 
-    private static boolean isTar(String type) {
-         return type.endsWith(fileExtensionTar);
-    }
+  private static boolean isZip(String type) {
+    return type.endsWith(fileExtensionZip)
+        || type.endsWith(fileExtensionJar)
+        || type.endsWith(fileExtensionApk);
+  }
 
-    private static boolean isGzippedTar(String type) {
-         return type.endsWith(fileExtensionGzipTarLong) || type.endsWith(fileExtensionGzipTarShort);
-    }
+  private static boolean isTar(String type) {
+    return type.endsWith(fileExtensionTar);
+  }
 
-    private static boolean isBzippedTar(String type) {
-        return type.endsWith(fileExtensionBzip2TarLong) || type.endsWith(fileExtensionBzip2TarShort);
-    }
+  private static boolean isGzippedTar(String type) {
+    return type.endsWith(fileExtensionGzipTarLong) || type.endsWith(fileExtensionGzipTarShort);
+  }
 
-    private static boolean isRar(String type) {
-        return type.endsWith(fileExtensionRar);
-    }
-    
-    private static boolean is7zip(String type) {
-        return type.endsWith(fileExtension7zip);
-    }
+  private static boolean isBzippedTar(String type) {
+    return type.endsWith(fileExtensionBzip2TarLong) || type.endsWith(fileExtensionBzip2TarShort);
+  }
 
-    private static boolean isXzippedTar(String type) {
-        return type.endsWith(fileExtensionXz);
-    }
+  private static boolean isRar(String type) {
+    return type.endsWith(fileExtensionRar);
+  }
 
-    private static boolean isLzippedTar(String type) {
-        return type.endsWith(fileExtensionLzma);
-    }
+  private static boolean is7zip(String type) {
+    return type.endsWith(fileExtension7zip);
+  }
 
-    private static String getExtension(String path) {
-        return path.substring(path.indexOf('.')+1, path.length()).toLowerCase();
-    }
+  private static boolean isXzippedTar(String type) {
+    return type.endsWith(fileExtensionXz);
+  }
 
+  private static boolean isLzippedTar(String type) {
+    return type.endsWith(fileExtensionLzma);
+  }
+
+  private static String getExtension(String path) {
+    return path.substring(path.indexOf('.') + 1, path.length()).toLowerCase();
+  }
 }
