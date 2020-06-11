@@ -54,7 +54,7 @@ public class PermissionsActivity extends ThemedActivity
       } else {
         Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-          if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)){
+          if (shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             requestStoragePermission(permissionCallbacks[STORAGE_PERMISSION]);
           }
         }
