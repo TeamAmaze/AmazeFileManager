@@ -1,8 +1,6 @@
 /*
- * TarDecompressor.java
- *
- * Copyright (C) 2017-2018 Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt@gmail.com>.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem.compressed.showcontents.helpers;
 
-import android.content.Context;
+import java.util.ArrayList;
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
@@ -30,17 +28,19 @@ import com.amaze.filemanager.asynchronous.asynctasks.compress.TarHelperTask;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import java.util.ArrayList;
+import android.content.Context;
 
 public class TarDecompressor extends Decompressor {
 
-    public TarDecompressor(Context context) {
-        super(context);
-    }
+  public TarDecompressor(Context context) {
+    super(context);
+  }
 
-    @Override
-    public TarHelperTask changePath(String path, boolean addGoBackItem, OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
-        return new TarHelperTask(filePath, path, addGoBackItem, onFinish);
-    }
-
+  @Override
+  public TarHelperTask changePath(
+      String path,
+      boolean addGoBackItem,
+      OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> onFinish) {
+    return new TarHelperTask(filePath, path, addGoBackItem, onFinish);
+  }
 }
