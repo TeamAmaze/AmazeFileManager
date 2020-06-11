@@ -1,6 +1,10 @@
 name: Android Debug artifact ondemand
 
 on:
+  pull_request:
+    branches:
+      - 'master'
+      - 'release/*'
   issue_comment:
     types: [created, edited]
 
