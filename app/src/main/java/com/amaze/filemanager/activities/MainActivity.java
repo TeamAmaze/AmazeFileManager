@@ -306,7 +306,7 @@ public class MainActivity extends PermissionsActivity
     utilsHandler = AppConfig.getInstance().getUtilsHandler();
     cloudHandler = new CloudHandler(this);
 
-    Toast.makeText(this, "Test on-demand PR", Toast.LENGTH_LONG).show();
+    Toast.makeText(this, "Test on-demand PR update", Toast.LENGTH_LONG).show();
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
