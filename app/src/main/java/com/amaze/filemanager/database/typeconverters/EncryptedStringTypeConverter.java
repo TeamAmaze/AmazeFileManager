@@ -1,7 +1,6 @@
 /*
- * EncryptedStringTypeConverter.java
- *
- * Copyright (C) 2020 Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,13 +20,13 @@
 
 package com.amaze.filemanager.database.typeconverters;
 
-import android.content.Context;
-
-import androidx.room.TypeConverter;
-
 import com.amaze.filemanager.database.models.StringWrapper;
 import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
+
+import android.content.Context;
+
+import androidx.room.TypeConverter;
 
 /**
  * {@link TypeConverter} for password strings encrypted by {@link CryptUtil}.
@@ -38,25 +37,26 @@ import com.amaze.filemanager.utils.files.CryptUtil;
  */
 public class EncryptedStringTypeConverter {
 
-    private static final String TAG = EncryptedStringTypeConverter.class.getSimpleName();
+  private static final String TAG = EncryptedStringTypeConverter.class.getSimpleName();
 
-    @TypeConverter
-    public static StringWrapper toPassword(String encryptedStringEntryInDb) {
-        try {
-            return new StringWrapper(CryptUtil.decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb));
-        } catch (Exception e) {
-            android.util.Log.e(TAG, "Error decrypting password", e);
-            return null;
-        }
+  @TypeConverter
+  public static StringWrapper toPassword(String encryptedStringEntryInDb) {
+    try {
+      return new StringWrapper(
+          CryptUtil.decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb));
+    } catch (Exception e) {
+      android.util.Log.e(TAG, "Error decrypting password", e);
+      return null;
     }
+  }
 
-    @TypeConverter
-    public static String fromPassword(StringWrapper unencryptedPasswordString) {
-        try {
-            return CryptUtil.encryptPassword(AppConfig.getInstance(), unencryptedPasswordString.value);
-        } catch (Exception e) {
-            android.util.Log.e(TAG, "Error encrypting password", e);
-            return null;
-        }
+  @TypeConverter
+  public static String fromPassword(StringWrapper unencryptedPasswordString) {
+    try {
+      return CryptUtil.encryptPassword(AppConfig.getInstance(), unencryptedPasswordString.value);
+    } catch (Exception e) {
+      android.util.Log.e(TAG, "Error encrypting password", e);
+      return null;
     }
+  }
 }

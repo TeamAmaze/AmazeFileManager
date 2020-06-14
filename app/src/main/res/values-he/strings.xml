@@ -20,12 +20,12 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">מנהל הקבצים Amaze</string>
     <string name="drawer_open">פתיחת תפריט הניווט</string>
     <string name="drawer_close">סגירת תפריט הניווט</string>
     <string name="icon">סמל</string>
-    <string name="internalstorage">אחסון פנימי</string>
     <string name="apps">מנהל היישומונים</string>
     <string name="ftp">שרת FTP</string>
     <string name="setting">הגדרות</string>
@@ -248,7 +248,6 @@
     <string name="password">סיסמה</string>
     <string name="anonymous">אנונימי</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">אחסון חיצוני</string>
     <string name="folders">תיקיות</string>
     <string name="folderfilecount">%1$d תיקיות ו־%2$d קבצים</string>
     <string name="videos">וידאו</string>
@@ -645,5 +644,12 @@
     <string name="update_host_key">עדכון מפתח מארח</string>
     <string name="cancel_recommended">ביטול (עדיף)</string>
     <string name="failed_install_apk">ההתקנה נכשלה</string>
-</resources>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">אחסון פנימי</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">כרטיס SD</string>
+    <string name="choose_folder">לבחור בתיקייה זו</string>
+    </resources>
 

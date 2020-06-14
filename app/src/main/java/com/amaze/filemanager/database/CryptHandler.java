@@ -1,9 +1,6 @@
 /*
- * CryptHandler.java
- *
- * Copyright (C) 2017-2020 Vishal Nehra <vishalmeham2@gmail.com>,
- * John Carlson <jawnnypoo@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -26,43 +23,40 @@ package com.amaze.filemanager.database;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.utils.application.AppConfig;
 
-/**
- * Created by vishal on 15/4/17.
- */
-
+/** Created by vishal on 15/4/17. */
 public class CryptHandler {
 
-    private final ExplorerDatabase database;
+  private final ExplorerDatabase database;
 
-    private CryptHandler() {
-        database = ExplorerDatabase.getInstance();
-    }
+  private CryptHandler() {
+    database = ExplorerDatabase.getInstance();
+  }
 
-    private static class CryptHandlerHolder {
-        private static final CryptHandler INSTANCE = new CryptHandler();
-    }
+  private static class CryptHandlerHolder {
+    private static final CryptHandler INSTANCE = new CryptHandler();
+  }
 
-    public static CryptHandler getInstance() {
-        return CryptHandlerHolder.INSTANCE;
-    }
+  public static CryptHandler getInstance() {
+    return CryptHandlerHolder.INSTANCE;
+  }
 
-    public void addEntry(EncryptedEntry encryptedEntry) {
-        AppConfig.runInBackground(() -> database.encryptedEntryDao().insert(encryptedEntry));
-    }
+  public void addEntry(EncryptedEntry encryptedEntry) {
+    AppConfig.runInBackground(() -> database.encryptedEntryDao().insert(encryptedEntry));
+  }
 
-    public void clear(String path) {
-        AppConfig.runInBackground(() -> database.encryptedEntryDao().delete(path));
-    }
+  public void clear(String path) {
+    AppConfig.runInBackground(() -> database.encryptedEntryDao().delete(path));
+  }
 
-    public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) {
-        AppConfig.runInBackground(() -> database.encryptedEntryDao().update(newEncryptedEntry));
-    }
+  public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) {
+    AppConfig.runInBackground(() -> database.encryptedEntryDao().update(newEncryptedEntry));
+  }
 
-    public EncryptedEntry findEntry(String path) {
-        return database.encryptedEntryDao().select(path);
-    }
+  public EncryptedEntry findEntry(String path) {
+    return database.encryptedEntryDao().select(path);
+  }
 
-    public EncryptedEntry[] getAllEntries()  {
-        return database.encryptedEntryDao().list();
-    }
+  public EncryptedEntry[] getAllEntries() {
+    return database.encryptedEntryDao().list();
+  }
 }

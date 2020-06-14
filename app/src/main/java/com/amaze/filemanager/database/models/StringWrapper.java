@@ -1,7 +1,6 @@
 /*
- * StringWrapper.java
- *
- * Copyright (C) 2020 Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,19 +20,17 @@
 
 package com.amaze.filemanager.database.models;
 
-/**
- * Simple StringWrapper.
- */
+/** Simple StringWrapper. */
 public class StringWrapper {
 
-    public final String value;
+  public final String value;
 
-    public StringWrapper(String value) {
-        this.value = value;
-    }
+  public StringWrapper(String value) {
+    this.value = value;
+  }
 
-    @Override
-    public String toString() {
-        return value;
-    }
+  @Override
+  public String toString() {
+    return value;
+  }
 }

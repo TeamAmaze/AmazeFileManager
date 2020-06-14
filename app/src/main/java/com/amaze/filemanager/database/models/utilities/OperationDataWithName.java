@@ -1,9 +1,6 @@
 /*
- * OperationDataWithName.java
- *
- * Copyright (C) 2020 Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
- * and contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -23,26 +20,27 @@
 
 package com.amaze.filemanager.database.models.utilities;
 
+import com.amaze.filemanager.database.UtilitiesDatabase;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-
-import com.amaze.filemanager.database.UtilitiesDatabase;
 
 /**
  * Base class {@link Entity} representation of tables in utilities.db.
  *
- * <p>This class is the base class extending {@link OperationData} adding the <code>name</code> column.</p>
+ * <p>This class is the base class extending {@link OperationData} adding the <code>name</code>
+ * column.
  *
  * @see OperationData
  * @see UtilitiesDatabase
  */
 public abstract class OperationDataWithName extends OperationData {
 
-    @ColumnInfo(name = UtilitiesDatabase.COLUMN_NAME)
-    public String name;
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_NAME)
+  public String name;
 
-    public OperationDataWithName(String name, String path) {
-        super(path);
-        this.name = name;
-    }
+  public OperationDataWithName(String name, String path) {
+    super(path);
+    this.name = name;
+  }
 }

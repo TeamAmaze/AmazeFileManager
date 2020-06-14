@@ -1,9 +1,6 @@
 /*
- * EncryptedEntry.java
- *
- * Copyright (C) 2017-2020 Vishal Nehra <vishalmeham2@gmail.com>,
- * John Carlson <jawnnypoo@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
- * and contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -23,60 +20,58 @@
 
 package com.amaze.filemanager.database.models.explorer;
 
+import com.amaze.filemanager.database.ExplorerDatabase;
+import com.amaze.filemanager.database.models.StringWrapper;
+import com.amaze.filemanager.database.typeconverters.EncryptedStringTypeConverter;
+
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 import androidx.room.TypeConverters;
 
-import com.amaze.filemanager.database.ExplorerDatabase;
-import com.amaze.filemanager.database.models.StringWrapper;
-import com.amaze.filemanager.database.typeconverters.EncryptedStringTypeConverter;
-
-/**
- * Created by vishal on 8/4/17.
- */
+/** Created by vishal on 8/4/17. */
 @Entity(tableName = ExplorerDatabase.TABLE_ENCRYPTED)
 public class EncryptedEntry {
 
-    @PrimaryKey(autoGenerate = true)
-    @ColumnInfo(name = ExplorerDatabase.COLUMN_ENCRYPTED_ID)
-    private int _id;
+  @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = ExplorerDatabase.COLUMN_ENCRYPTED_ID)
+  private int _id;
 
-    @ColumnInfo(name = ExplorerDatabase.COLUMN_ENCRYPTED_PATH)
-    private String path;
+  @ColumnInfo(name = ExplorerDatabase.COLUMN_ENCRYPTED_PATH)
+  private String path;
 
-    @ColumnInfo(name = ExplorerDatabase.COLUMN_ENCRYPTED_PASSWORD)
-    @TypeConverters(EncryptedStringTypeConverter.class)
-    private StringWrapper password;
+  @ColumnInfo(name = ExplorerDatabase.COLUMN_ENCRYPTED_PASSWORD)
+  @TypeConverters(EncryptedStringTypeConverter.class)
+  private StringWrapper password;
 
-    public EncryptedEntry() {}
+  public EncryptedEntry() {}
 
-    public EncryptedEntry(String path, String unencryptedPassword) {
-        this.path = path;
-        this.password = new StringWrapper(unencryptedPassword);
-    }
+  public EncryptedEntry(String path, String unencryptedPassword) {
+    this.path = path;
+    this.password = new StringWrapper(unencryptedPassword);
+  }
 
-    public void setId(int _id) {
-        this._id = _id;
-    }
+  public void setId(int _id) {
+    this._id = _id;
+  }
 
-    public int getId() {
-        return this._id;
-    }
+  public int getId() {
+    return this._id;
+  }
 
-    public void setPath(String path) {
-        this.path = path;
-    }
+  public void setPath(String path) {
+    this.path = path;
+  }
 
-    public String getPath() {
-        return this.path;
-    }
+  public String getPath() {
+    return this.path;
+  }
 
-    public void setPassword(StringWrapper password) {
-        this.password = password;
-    }
+  public void setPassword(StringWrapper password) {
+    this.password = password;
+  }
 
-    public StringWrapper getPassword() {
-        return this.password;
-    }
+  public StringWrapper getPassword() {
+    return this.password;
+  }
 }

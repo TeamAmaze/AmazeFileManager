@@ -1,10 +1,6 @@
 /*
- * TabHandler.java
- *
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>,
- * Vishal Nehra <vishalmeham2@gmail.com>, Rémi Piotaix <remi.piotaix@inria.fr>,
- * John Carlson <jawnnypoo@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * ning <ning.xyw@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -24,47 +20,42 @@
 
 package com.amaze.filemanager.database;
 
+import com.amaze.filemanager.database.models.explorer.Tab;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.database.models.explorer.Tab;
-
-import java.util.Arrays;
-import java.util.List;
-
-/**
- * Created by Vishal on 9/17/2014.
- */
+/** Created by Vishal on 9/17/2014. */
 public class TabHandler {
 
-    private final ExplorerDatabase database;
+  private final ExplorerDatabase database;
 
-    private TabHandler(){
-        this.database = ExplorerDatabase.getInstance();
-    }
+  private TabHandler() {
+    this.database = ExplorerDatabase.getInstance();
+  }
 
-    private static class TabHandlerHolder {
-        private static final TabHandler INSTANCE = new TabHandler();
-    }
+  private static class TabHandlerHolder {
+    private static final TabHandler INSTANCE = new TabHandler();
+  }
 
-    public static TabHandler getInstance() {
-        return TabHandlerHolder.INSTANCE;
-    }
+  public static TabHandler getInstance() {
+    return TabHandlerHolder.INSTANCE;
+  }
 
-    public void addTab(@NonNull Tab tab) {
-        database.tabDao().insertTab(tab);
-    }
+  public void addTab(@NonNull Tab tab) {
+    database.tabDao().insertTab(tab);
+  }
 
-    public void clear() {
-        database.tabDao().clear();
-    }
+  public void clear() {
+    database.tabDao().clear();
+  }
 
-    @Nullable
-    public Tab findTab(int tabNo) {
-        return database.tabDao().find(tabNo);
-    }
+  @Nullable
+  public Tab findTab(int tabNo) {
+    return database.tabDao().find(tabNo);
+  }
 
-    public Tab[] getAllTabs() {
-        return database.tabDao().list();
-    }
+  public Tab[] getAllTabs() {
+    return database.tabDao().list();
+  }
 }

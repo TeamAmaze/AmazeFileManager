@@ -1,7 +1,6 @@
 /*
- * OpenModeTypeConverter.java
- *
- * Copyright (C) 2020 Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -21,22 +20,20 @@
 
 package com.amaze.filemanager.database.typeconverters;
 
-import androidx.room.TypeConverter;
-
 import com.amaze.filemanager.utils.OpenMode;
 
-/**
- * {@link TypeConverter} for {@link OpenMode} objects to database columns.
- */
+import androidx.room.TypeConverter;
+
+/** {@link TypeConverter} for {@link OpenMode} objects to database columns. */
 public class OpenModeTypeConverter {
 
-    @TypeConverter
-    public static int fromOpenMode(OpenMode from) {
-        return from.ordinal();
-    }
+  @TypeConverter
+  public static int fromOpenMode(OpenMode from) {
+    return from.ordinal();
+  }
 
-    @TypeConverter
-    public static OpenMode fromDatabaseValue(int from) {
-        return OpenMode.getOpenMode(from);
-    }
+  @TypeConverter
+  public static OpenMode fromDatabaseValue(int from) {
+    return OpenMode.getOpenMode(from);
+  }
 }

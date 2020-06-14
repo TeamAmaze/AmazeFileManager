@@ -20,12 +20,12 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Open navigation drawer</string>
     <string name="drawer_close">Close navigation drawer</string>
     <string name="icon">icon</string>
-    <string name="internalstorage">Internal Storage</string>
     <string name="apps">App Manager</string>
     <string name="ftp">FTP Server</string>
     <string name="setting">Settings</string>
@@ -248,7 +248,6 @@
     <string name="password">Password</string>
     <string name="anonymous">Anonymous</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">External Storage</string>
     <string name="folders">Folders</string>
     <string name="folderfilecount">%1$d folders and %2$d files</string>
     <string name="videos">Videos</string>
@@ -650,5 +649,13 @@
     <string name="cloud_plugin_google_play_uri" translatable="false">market://details?id=com.filemanager.amazecloud</string>
     <string name="cloud_plugin_google_play_web_uri" translatable="false">https://play.google.com/store/apps/details?id=com.filemanager.amazecloud</string>
     <string name="failed_install_apk">Failed to install</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Internal Storage</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD card</string>
+    <string name="choose_folder">Choose This Folder</string>
+    <string name="folder_go_up_one_level" translatable="false">..</string>
 </resources>
 

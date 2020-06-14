@@ -25,7 +25,6 @@
     <string name="drawer_open">Abrir menu de navegação</string>
     <string name="drawer_close">Fechar menu de navegação</string>
     <string name="icon">ícone</string>
-    <string name="internalstorage">Armazenamento interno</string>
     <string name="apps">Gerenciador de Apps</string>
     <string name="ftp">Servidor FTP</string>
     <string name="setting">Configurações</string>
@@ -248,7 +247,6 @@
     <string name="password">Senha</string>
     <string name="anonymous">Anônimo</string>
     <string name="bluetooth">Bluetooth</string>
-    <string name="extstorage">Armazenamento externo</string>
     <string name="folders">Pastas</string>
     <string name="folderfilecount">%1$d pastas e %2$d arquivos</string>
     <string name="videos">Vídeos</string>

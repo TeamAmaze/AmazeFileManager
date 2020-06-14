@@ -1,8 +1,6 @@
 /*
- * SortHandler.java
- *
- * Copyright (C) 2018-2020 ning <ning.xyw@gmail.com>, Emmanuel Messulam<emmanuelbendavid@gmail.com>,
- * Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -22,69 +20,67 @@
 
 package com.amaze.filemanager.database;
 
+import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import com.amaze.filemanager.database.models.explorer.Sort;
+import com.amaze.filemanager.utils.application.AppConfig;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
 import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.database.models.explorer.Sort;
-import com.amaze.filemanager.utils.application.AppConfig;
-
-import java.util.HashSet;
-import java.util.Set;
-
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
-
-/**
- * Created by Ning on 5/28/2018.
- */
-
+/** Created by Ning on 5/28/2018. */
 public class SortHandler {
 
-    private final ExplorerDatabase database;
+  private final ExplorerDatabase database;
 
-    private SortHandler() {
-        database = ExplorerDatabase.getInstance();
-    }
+  private SortHandler() {
+    database = ExplorerDatabase.getInstance();
+  }
 
-    private static class SortHandlerHolder {
-        private static final SortHandler INSTANCE = new SortHandler();
-    }
+  private static class SortHandlerHolder {
+    private static final SortHandler INSTANCE = new SortHandler();
+  }
 
-    public static SortHandler getInstance() {
-        return SortHandlerHolder.INSTANCE;
-    }
+  public static SortHandler getInstance() {
+    return SortHandlerHolder.INSTANCE;
+  }
 
-    public static int getSortType(Context context, String path) {
-        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
-        final Set<String> onlyThisFloders = sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, new HashSet<>());
-        final boolean onlyThis = onlyThisFloders.contains(path);
-        final int globalSortby = Integer.parseInt(sharedPref.getString("sortby", "0"));
-        if (!onlyThis) {
-            return globalSortby;
-        }
-        Sort sort = SortHandler.getInstance().findEntry(path);
-        if (sort == null) {
-            return globalSortby;
-        }
-        return sort.type;
+  public static int getSortType(Context context, String path) {
+    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(context);
+    final Set<String> onlyThisFloders =
+        sharedPref.getStringSet(PREFERENCE_SORTBY_ONLY_THIS, new HashSet<>());
+    final boolean onlyThis = onlyThisFloders.contains(path);
+    final int globalSortby = Integer.parseInt(sharedPref.getString("sortby", "0"));
+    if (!onlyThis) {
+      return globalSortby;
     }
+    Sort sort = SortHandler.getInstance().findEntry(path);
+    if (sort == null) {
+      return globalSortby;
+    }
+    return sort.type;
+  }
 
-    public void addEntry(Sort sort) {
-        AppConfig.runInBackground(() -> database.sortDao().insert(sort));
-    }
+  public void addEntry(Sort sort) {
+    AppConfig.runInBackground(() -> database.sortDao().insert(sort));
+  }
 
-    public void clear(String path) {
-        AppConfig.runInBackground(() -> database.sortDao().clear(path));
-    }
+  public void clear(String path) {
+    AppConfig.runInBackground(() -> database.sortDao().clear(path));
+  }
 
-    public void updateEntry(Sort oldSort, Sort newSort) {
-        AppConfig.runInBackground(() -> database.sortDao().update(newSort));
-    }
+  public void updateEntry(Sort oldSort, Sort newSort) {
+    AppConfig.runInBackground(() -> database.sortDao().update(newSort));
+  }
 
-    @Nullable
-    public Sort findEntry(String path) {
-        return database.sortDao().find(path);
-    }
+  @Nullable
+  public Sort findEntry(String path) {
+    return database.sortDao().find(path);
+  }
 }

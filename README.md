@@ -1,5 +1,5 @@
 # Amaze File Manager
-[![CI](https://travis-ci.org/TeamAmaze/AmazeFileManager.svg?branch=master)](https://travis-ci.org/TeamAmaze/AmazeFileManager)
+![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 

@@ -1,9 +1,6 @@
 /*
- * Bookmark.java
- *
- * Copyright (C) 2020 Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
- * and contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -23,9 +20,9 @@
 
 package com.amaze.filemanager.database.models.utilities;
 
-import androidx.room.Entity;
-
 import com.amaze.filemanager.database.UtilitiesDatabase;
+
+import androidx.room.Entity;
 
 /**
  * {@link Entity} representation of <code>bookmark</code> table in utilities.db.
@@ -34,7 +31,7 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
  */
 @Entity(tableName = UtilitiesDatabase.TABLE_BOOKMARKS)
 public class Bookmark extends OperationDataWithName {
-    public Bookmark(String name, String path) {
-        super(name, path);
-    }
+  public Bookmark(String name, String path) {
+    super(name, path);
+  }
 }

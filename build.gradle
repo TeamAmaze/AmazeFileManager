@@ -13,6 +13,10 @@ buildscript {
     }
 }
 
+plugins {
+    id "com.diffplug.gradle.spotless" version "4.3.0"
+}
+
 allprojects {
     repositories {
         google()
@@ -23,6 +27,12 @@ allprojects {
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+spotless {
+    java {
+        licenseHeaderFile 'spotless.license-java'
+        target 'app/src/**/*.java'
+        googleJavaFormat('1.7')
+        removeUnusedImports() // removes any unused imports
+        importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
+    }
 }

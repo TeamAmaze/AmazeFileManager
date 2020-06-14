@@ -1,9 +1,6 @@
 /*
- * SftpEntry.java
- *
- * Copyright (C) 2020 Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam <emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>
- * and contributors.
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -23,12 +20,12 @@
 
 package com.amaze.filemanager.database.models.utilities;
 
+import com.amaze.filemanager.database.UtilitiesDatabase;
+
 import android.text.TextUtils;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-
-import com.amaze.filemanager.database.UtilitiesDatabase;
 
 /**
  * {@link Entity} representation of <code>sftp</code> table in utilities.db.
@@ -38,32 +35,31 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 @Entity(tableName = UtilitiesDatabase.TABLE_SFTP)
 public class SftpEntry extends OperationDataWithName {
 
-    @ColumnInfo(name = UtilitiesDatabase.COLUMN_HOST_PUBKEY)
-    public String hostKey;
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_HOST_PUBKEY)
+  public String hostKey;
 
-    @ColumnInfo(name = UtilitiesDatabase.COLUMN_PRIVATE_KEY_NAME)
-    public String sshKeyName;
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_PRIVATE_KEY_NAME)
+  public String sshKeyName;
 
-    @ColumnInfo(name = UtilitiesDatabase.COLUMN_PRIVATE_KEY)
-    public String sshKey;
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_PRIVATE_KEY)
+  public String sshKey;
 
-    public SftpEntry(String path, String name, String hostKey, String sshKeyName, String sshKey) {
-        super(name, path);
-        this.hostKey = hostKey;
-        this.sshKeyName = sshKeyName;
-        this.sshKey = sshKey;
-    }
+  public SftpEntry(String path, String name, String hostKey, String sshKeyName, String sshKey) {
+    super(name, path);
+    this.hostKey = hostKey;
+    this.sshKeyName = sshKeyName;
+    this.sshKey = sshKey;
+  }
 
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder(super.toString());
+  @Override
+  public String toString() {
+    StringBuilder sb = new StringBuilder(super.toString());
 
-        if(!TextUtils.isEmpty(hostKey))
-            sb.append(",hostKey=[").append(hostKey).append(']');
+    if (!TextUtils.isEmpty(hostKey)) sb.append(",hostKey=[").append(hostKey).append(']');
 
-        if(!TextUtils.isEmpty(sshKeyName))
-            sb.append(",sshKeyName=[").append(sshKeyName).append("],sshKey=[redacted]");
+    if (!TextUtils.isEmpty(sshKeyName))
+      sb.append(",sshKeyName=[").append(sshKeyName).append("],sshKey=[redacted]");
 
-        return sb.toString();
-    }
+    return sb.toString();
+  }
 }

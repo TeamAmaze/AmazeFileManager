@@ -239,7 +239,6 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
   <string name="password">Password</string>
   <string name="anonymous">Anonimo</string>
   <string name="bluetooth">Bluetooth</string>
-  <string name="extstorage">Archiviazione esterna</string>
   <string name="folders">Cartelle</string>
   <string name="videos">Video</string>
   <string name="apks">File APK</string>

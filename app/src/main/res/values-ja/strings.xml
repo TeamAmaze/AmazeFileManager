@@ -20,12 +20,12 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze ファイルマネージャー</string>
     <string name="drawer_open">ナビゲーションドロワーを開く</string>
     <string name="drawer_close">ナビゲーションドロワーを閉じる</string>
     <string name="icon">アイコン</string>
-    <string name="internalstorage">内部ストレージ</string>
     <string name="apps">アプリマネージャー</string>
     <string name="ftp">FTP サーバー</string>
     <string name="setting">設定</string>
@@ -248,7 +248,6 @@
     <string name="password">パスワード</string>
     <string name="anonymous">匿名</string>
     <string name="bluetooth">ブルートゥース</string>
-    <string name="extstorage">外部ストレージ</string>
     <string name="folders">フォルダー</string>
     <string name="folderfilecount">%1$d フォルダと %2$d ファイル</string>
     <string name="videos">ビデオ</string>
@@ -640,5 +639,11 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="update_host_key">ホスト鍵の更新</string>
     <string name="cancel_recommended">キャンセル (推奨)</string>
     <string name="failed_install_apk">インストールに失敗しました</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">内部ストレージ</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD カード</string>
 </resources>
 
