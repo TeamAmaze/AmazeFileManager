@@ -151,7 +151,7 @@ public class PermissionsActivity extends ThemedActivity
       ActivityCompat.requestPermissions(this, new String[] {permission}, code);
     } else {
       Snackbar.make(
-              getWindow().getDecorView(),
+              findViewById(R.id.content_frame),
               R.string.grantfailed,
               BaseTransientBottomBar.LENGTH_INDEFINITE)
           .setAction(

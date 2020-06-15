@@ -63,8 +63,20 @@
                 android:layout_height="match_parent" />
         </LinearLayout>
 
-        <include layout="@layout/layout_fab"/>
-
+        <com.leinardi.android.speeddial.SpeedDialOverlayLayout
+                android:id="@+id/fabs_overlay_layout"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        <com.leinardi.android.speeddial.SpeedDialView
+                android:id="@+id/fabs_menu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="2dp"
+                app:sdMainFabClosedSrc="@drawable/ic_add_white_24dp"
+                app:sdMainFabOpenedSrc="@drawable/ic_close_white_24dp"
+                app:sdOverlayLayout="@id/fabs_overlay_layout"
+                app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior" />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <View
