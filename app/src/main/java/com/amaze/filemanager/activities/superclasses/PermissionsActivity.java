@@ -25,9 +25,13 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import android.Manifest;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.widget.Toast;
 
@@ -53,7 +57,7 @@ public class PermissionsActivity extends ThemedActivity
         permissionCallbacks[STORAGE_PERMISSION] = null;
       } else {
         Toast.makeText(this, R.string.grantfailed, Toast.LENGTH_SHORT).show();
-        requestStoragePermission(permissionCallbacks[STORAGE_PERMISSION]);
+        requestStoragePermission(permissionCallbacks[STORAGE_PERMISSION], false);
       }
 
     } else if (requestCode == INSTALL_APK_PERMISSION) {
@@ -70,7 +74,8 @@ public class PermissionsActivity extends ThemedActivity
         == PackageManager.PERMISSION_GRANTED;
   }
 
-  public void requestStoragePermission(@NonNull final OnPermissionGranted onPermissionGranted) {
+  public void requestStoragePermission(
+      @NonNull final OnPermissionGranted onPermissionGranted, boolean isInitialStart) {
     Utils.disableScreenRotation(this);
     final MaterialDialog materialDialog =
         GeneralDialogCreation.showBasicDialog(
@@ -86,11 +91,13 @@ public class PermissionsActivity extends ThemedActivity
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
         STORAGE_PERMISSION,
         materialDialog,
-        onPermissionGranted);
+        onPermissionGranted,
+        isInitialStart);
   }
 
   @RequiresApi(api = Build.VERSION_CODES.M)
-  public void requestInstallApkPermission(@NonNull final OnPermissionGranted onPermissionGranted) {
+  public void requestInstallApkPermission(
+      @NonNull final OnPermissionGranted onPermissionGranted, boolean isInitialStart) {
     final MaterialDialog materialDialog =
         GeneralDialogCreation.showBasicDialog(
             this,
@@ -107,7 +114,8 @@ public class PermissionsActivity extends ThemedActivity
         Manifest.permission.REQUEST_INSTALL_PACKAGES,
         INSTALL_APK_PERMISSION,
         materialDialog,
-        onPermissionGranted);
+        onPermissionGranted,
+        isInitialStart);
   }
 
   /**
@@ -118,12 +126,15 @@ public class PermissionsActivity extends ThemedActivity
    * @param rationale MaterialLayout to provide an additional rationale to the user if the
    *     permission was not granted and the user would benefit from additional context for the use
    *     of the permission. For example, if the request has been denied previously.
+   * @param isInitialStart is the permission being requested for the first time in the application
+   *     lifecycle
    */
   public void requestPermission(
       final String permission,
       final int code,
       @NonNull final MaterialDialog rationale,
-      @NonNull final OnPermissionGranted onPermissionGranted) {
+      @NonNull final OnPermissionGranted onPermissionGranted,
+      boolean isInitialStart) {
     permissionCallbacks[code] = onPermissionGranted;
 
     if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
@@ -136,8 +147,21 @@ public class PermissionsActivity extends ThemedActivity
                 rationale.dismiss();
               });
       rationale.show();
-    } else {
+    } else if (isInitialStart) {
       ActivityCompat.requestPermissions(this, new String[] {permission}, code);
+    } else {
+      Snackbar.make(
+              findViewById(R.id.content_frame),
+              R.string.grantfailed,
+              BaseTransientBottomBar.LENGTH_INDEFINITE)
+          .setAction(
+              R.string.grant,
+              v ->
+                  startActivity(
+                      new Intent(
+                          android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                          Uri.parse(String.format("package:%s", getPackageName())))))
+          .show();
     }
   }
 
