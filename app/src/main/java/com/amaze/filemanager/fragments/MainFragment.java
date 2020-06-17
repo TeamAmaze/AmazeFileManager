@@ -86,7 +86,6 @@ import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
-import android.media.MediaScannerConnection;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -177,8 +176,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   /** a list of encrypted base files which are supposed to be deleted */
   private ArrayList<HybridFileParcelable> encryptBaseFiles = new ArrayList<>();
-
-  private MediaScannerConnection mediaScannerConnection;
 
   // defines the current visible tab, default either 0 or 1
   // private int mCurrentTab;
@@ -803,50 +800,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         @Override
         public void onReceive(Context context, Intent intent) {
           // load the list on a load broadcast
-          switch (openMode) {
-            case ROOT:
-            case FILE:
-              // local file system don't need an explicit load, we've set an observer to
-              // take actions on creation/moving/deletion/modification of file on current path
+          // local file system don't need an explicit load, we've set an observer to
+          // take actions on creation/moving/deletion/modification of file on current path
 
-              // run media scanner
-              String[] path = new String[1];
-              String arg = intent.getStringExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE);
-
-              // run media scanner for only one context
-              if (arg != null && getMainActivity().getCurrentMainFragment() == MainFragment.this) {
-
-                if (Build.VERSION.SDK_INT >= 19) {
-
-                  path[0] = arg;
-
-                  MediaScannerConnection.MediaScannerConnectionClient mediaScannerConnectionClient =
-                      new MediaScannerConnection.MediaScannerConnectionClient() {
-                        @Override
-                        public void onMediaScannerConnected() {}
-
-                        @Override
-                        public void onScanCompleted(String path, Uri uri) {
-
-                          Log.d("SCAN completed", path);
-                        }
-                      };
-
-                  if (mediaScannerConnection != null) {
-                    mediaScannerConnection.disconnect();
-                  }
-                  mediaScannerConnection =
-                      new MediaScannerConnection(context, mediaScannerConnectionClient);
-                  // FileUtils.scanFile(context, mediaScannerConnection, path);
-                } else {
-                  FileUtils.scanFile(new File(arg), context);
-                }
-              }
-              // break;
-            default:
-              updateList();
-              break;
-          }
+          updateList();
         }
       };
 
@@ -1548,8 +1505,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   public void onStop() {
     super.onStop();
 
-    if (mediaScannerConnection != null) mediaScannerConnection.disconnect();
-
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
       if (!isEncryptOpen && encryptBaseFiles.size() != 0) {
@@ -1706,7 +1661,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           e.printStackTrace();
         }
       }
-      FileUtils.scanFile(file, getActivity());
+      FileUtils.scanFile(getActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});
     }
   }
 
