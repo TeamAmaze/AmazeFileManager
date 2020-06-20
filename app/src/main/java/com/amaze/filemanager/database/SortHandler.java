@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /** Created by Ning on 5/28/2018. */
@@ -39,12 +40,13 @@ public class SortHandler {
 
   private final ExplorerDatabase database;
 
-  private SortHandler() {
-    database = ExplorerDatabase.getInstance();
+  private SortHandler(@NonNull ExplorerDatabase explorerDatabase) {
+    database = explorerDatabase;
   }
 
   private static class SortHandlerHolder {
-    private static final SortHandler INSTANCE = new SortHandler();
+    private static final SortHandler INSTANCE =
+        new SortHandler(AppConfig.getInstance().getExplorerDatabase());
   }
 
   public static SortHandler getInstance() {

@@ -52,43 +52,45 @@ public class AppConfig extends GlideApplication {
   public static final String TAG = AppConfig.class.getSimpleName();
 
   private UtilitiesProvider utilsProvider;
-  private RequestQueue mRequestQueue;
-  private ImageLoader mImageLoader;
-  private UtilsHandler mUtilsHandler;
+  private RequestQueue requestQueue;
+  private ImageLoader imageLoader;
+  private UtilsHandler utilsHandler;
 
-  private static Handler mApplicationHandler = new Handler();
-  private HandlerThread sBackgroundHandlerThread;
-  private static Handler sBackgroundHandler;
+  private static Handler applicationhandler = new Handler();
+  private HandlerThread backgroundHandlerThread;
+  private static Handler backgroundHandler;
   private WeakReference<Context> mainActivityContext;
   private static ScreenUtils screenUtils;
 
-  private static AppConfig mInstance;
+  private static AppConfig instance;
 
   public UtilitiesProvider getUtilsProvider() {
     return utilsProvider;
   }
+
+  private ExplorerDatabase explorerDatabase;
+  private UtilitiesDatabase utilitiesDatabase;
 
   @Override
   public void onCreate() {
     super.onCreate();
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(
         true); // selector in srcCompat isn't supported without this
-    sBackgroundHandlerThread = new HandlerThread("app_background");
-    mInstance = this;
+    backgroundHandlerThread = new HandlerThread("app_background");
+    instance = this;
 
-    android.util.Log.d("TEST", "AppConfig.init");
     CustomSshJConfig.init();
-    ExplorerDatabase.initialize(this);
-    UtilitiesDatabase.initialize(this);
+    explorerDatabase = ExplorerDatabase.initialize(this);
+    utilitiesDatabase = UtilitiesDatabase.initialize(this);
 
     utilsProvider = new UtilitiesProvider(this);
-    mUtilsHandler = new UtilsHandler(this);
+    utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
     // FIXME: in unit tests when AppConfig is rapidly created/destroyed this call will cause
     // IllegalThreadStateException.
     // Until this gets fixed only one test case can be run in a time. - Raymond, 24/4/2018
-    sBackgroundHandlerThread.start();
-    sBackgroundHandler = new Handler(sBackgroundHandlerThread.getLooper());
+    backgroundHandlerThread.start();
+    backgroundHandler = new Handler(backgroundHandlerThread.getLooper());
 
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -98,17 +100,17 @@ public class AppConfig extends GlideApplication {
   @Override
   public void onTerminate() {
     super.onTerminate();
-    sBackgroundHandlerThread.quit();
+    backgroundHandlerThread.quit();
   }
 
   /**
    * Post a runnable to handler. Use this in case we don't have any restriction to execute after
-   * this runnable is executed, and {@link #runInBackground(CustomAsyncCallbacks)} in case we need
-   * to execute something after execution in background
+   * this runnable is executed, and {@link #runInBackground(Runnable)} in case we need to execute
+   * something after execution in background
    */
   public static void runInBackground(Runnable runnable) {
-    synchronized (sBackgroundHandler) {
-      sBackgroundHandler.post(runnable);
+    synchronized (backgroundHandler) {
+      backgroundHandler.post(runnable);
     }
   }
 
@@ -141,7 +143,7 @@ public class AppConfig extends GlideApplication {
     }
   }
 
-  /** Interface providing callbacks utilized by {@link #runInBackground(CustomAsyncCallbacks)} */
+  /** Interface providing callbacks utilized by {@link #runInBackground(Runnable)} */
   public abstract static class CustomAsyncCallbacks<Params, Result> {
     public final @Nullable Params[] parameters;
 
@@ -218,26 +220,26 @@ public class AppConfig extends GlideApplication {
    * @param r Runnable to run
    */
   public void runInApplicationThread(Runnable r) {
-    mApplicationHandler.post(r);
+    applicationhandler.post(r);
   }
 
   public static synchronized AppConfig getInstance() {
-    return mInstance;
+    return instance;
   }
 
   public ImageLoader getImageLoader() {
-    if (mRequestQueue == null) {
-      mRequestQueue = Volley.newRequestQueue(getApplicationContext());
+    if (requestQueue == null) {
+      requestQueue = Volley.newRequestQueue(getApplicationContext());
     }
 
-    if (mImageLoader == null) {
-      this.mImageLoader = new ImageLoader(mRequestQueue, new LruBitmapCache());
+    if (imageLoader == null) {
+      this.imageLoader = new ImageLoader(requestQueue, new LruBitmapCache());
     }
-    return mImageLoader;
+    return imageLoader;
   }
 
   public UtilsHandler getUtilsHandler() {
-    return mUtilsHandler;
+    return utilsHandler;
   }
 
   public void setMainActivityContext(@NonNull Activity activity) {
@@ -252,5 +254,9 @@ public class AppConfig extends GlideApplication {
   @Nullable
   public Context getMainActivityContext() {
     return mainActivityContext.get();
+  }
+
+  public ExplorerDatabase getExplorerDatabase() {
+    return explorerDatabase;
   }
 }

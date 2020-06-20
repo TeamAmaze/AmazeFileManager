@@ -23,17 +23,20 @@ package com.amaze.filemanager.database;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.utils.application.AppConfig;
 
+import androidx.annotation.NonNull;
+
 /** Created by vishal on 15/4/17. */
 public class CryptHandler {
 
   private final ExplorerDatabase database;
 
-  private CryptHandler() {
-    database = ExplorerDatabase.getInstance();
+  private CryptHandler(@NonNull ExplorerDatabase explorerDatabase) {
+    database = explorerDatabase;
   }
 
   private static class CryptHandlerHolder {
-    private static final CryptHandler INSTANCE = new CryptHandler();
+    private static final CryptHandler INSTANCE =
+        new CryptHandler(AppConfig.getInstance().getExplorerDatabase());
   }
 
   public static CryptHandler getInstance() {

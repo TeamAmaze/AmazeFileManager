@@ -63,7 +63,7 @@ public class FoldersPref extends PreferenceFragment
     super.onCreate(savedInstanceState);
     activity = (PreferencesActivity) getActivity();
 
-    utilsHandler = new UtilsHandler(getActivity());
+    utilsHandler = AppConfig.getInstance().getUtilsHandler();
     dataUtils = DataUtils.getInstance();
 
     // Load the preferences from an XML resource

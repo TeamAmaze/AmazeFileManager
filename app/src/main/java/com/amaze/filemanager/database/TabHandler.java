@@ -21,6 +21,7 @@
 package com.amaze.filemanager.database;
 
 import com.amaze.filemanager.database.models.explorer.Tab;
+import com.amaze.filemanager.utils.application.AppConfig;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -30,12 +31,13 @@ public class TabHandler {
 
   private final ExplorerDatabase database;
 
-  private TabHandler() {
-    this.database = ExplorerDatabase.getInstance();
+  private TabHandler(@NonNull ExplorerDatabase explorerDatabase) {
+    this.database = explorerDatabase;
   }
 
   private static class TabHandlerHolder {
-    private static final TabHandler INSTANCE = new TabHandler();
+    private static final TabHandler INSTANCE =
+        new TabHandler(AppConfig.getInstance().getExplorerDatabase());
   }
 
   public static TabHandler getInstance() {

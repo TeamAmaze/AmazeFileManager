@@ -179,8 +179,6 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
           + " TEXT"
           + ");";
 
-  private static UtilitiesDatabase INSTANCE;
-
   private static final Migration MIGRATION_1_2 =
       new Migration(1, 2) {
         @Override
@@ -344,18 +342,11 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
         }
       };
 
-  public static synchronized void initialize(@NonNull Context context) {
+  public static final UtilitiesDatabase initialize(@NonNull Context context) {
     android.util.Log.d("ROOM", "Initialize utilities.db");
-    if (INSTANCE == null || !INSTANCE.isOpen()) {
-      INSTANCE =
-          Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
-              .allowMainThreadQueries()
-              .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
-              .build();
-    }
-  }
-
-  public static final UtilitiesDatabase getInstance() {
-    return INSTANCE;
+    return Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
+        .allowMainThreadQueries()
+        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+        .build();
   }
 }

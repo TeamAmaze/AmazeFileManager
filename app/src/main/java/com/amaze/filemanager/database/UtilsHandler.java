@@ -48,6 +48,8 @@ import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 /**
  * Created by Vishal on 29-05-2017. Class handles database with tables having list of various
  * utilities like history, hidden files, list paths, grid paths, bookmarks, SMB entry
@@ -56,10 +58,13 @@ import android.widget.Toast;
  */
 public class UtilsHandler {
 
-  private Context context;
+  private final Context context;
 
-  public UtilsHandler(Context context) {
+  private final UtilitiesDatabase utilitiesDatabase;
+
+  public UtilsHandler(@NonNull Context context, @NonNull UtilitiesDatabase utilitiesDatabase) {
     this.context = context;
+    this.utilitiesDatabase = utilitiesDatabase;
   }
 
   public enum Operation {
@@ -77,36 +82,32 @@ public class UtilsHandler {
         () -> {
           switch (operationData.type) {
             case HIDDEN:
-              UtilitiesDatabase.getInstance()
-                  .hiddenEntryDao()
-                  .insert(new Hidden(operationData.path));
+              utilitiesDatabase.hiddenEntryDao().insert(new Hidden(operationData.path));
               break;
             case HISTORY:
-              UtilitiesDatabase.getInstance()
-                  .historyEntryDao()
-                  .insert(new History(operationData.path));
+              utilitiesDatabase.historyEntryDao().insert(new History(operationData.path));
               break;
             case LIST:
-              UtilitiesDatabase.getInstance()
+              utilitiesDatabase
                   .listEntryDao()
                   .insert(
                       new com.amaze.filemanager.database.models.utilities.List(operationData.path));
               break;
             case GRID:
-              UtilitiesDatabase.getInstance().gridEntryDao().insert(new Grid(operationData.path));
+              utilitiesDatabase.gridEntryDao().insert(new Grid(operationData.path));
               break;
             case BOOKMARKS:
-              UtilitiesDatabase.getInstance()
+              utilitiesDatabase
                   .bookmarkEntryDao()
                   .insert(new Bookmark(operationData.name, operationData.path));
               break;
             case SMB:
-              UtilitiesDatabase.getInstance()
+              utilitiesDatabase
                   .smbEntryDao()
                   .insert(new SmbEntry(operationData.name, operationData.path));
               break;
             case SFTP:
-              UtilitiesDatabase.getInstance()
+              utilitiesDatabase
                   .sftpEntryDao()
                   .insert(
                       new SftpEntry(
@@ -127,16 +128,16 @@ public class UtilsHandler {
         () -> {
           switch (operationData.type) {
             case HIDDEN:
-              UtilitiesDatabase.getInstance().hiddenEntryDao().deleteByPath(operationData.path);
+              utilitiesDatabase.hiddenEntryDao().deleteByPath(operationData.path);
               break;
             case HISTORY:
-              UtilitiesDatabase.getInstance().historyEntryDao().deleteByPath(operationData.path);
+              utilitiesDatabase.historyEntryDao().deleteByPath(operationData.path);
               break;
             case LIST:
-              UtilitiesDatabase.getInstance().listEntryDao().deleteByPath(operationData.path);
+              utilitiesDatabase.listEntryDao().deleteByPath(operationData.path);
               break;
             case GRID:
-              UtilitiesDatabase.getInstance().gridEntryDao().deleteByPath(operationData.path);
+              utilitiesDatabase.gridEntryDao().deleteByPath(operationData.path);
               break;
             case BOOKMARKS:
               removeBookmarksPath(operationData.name, operationData.path);
@@ -178,7 +179,7 @@ public class UtilsHandler {
       String sshKeyName,
       String sshKey) {
 
-    SftpEntry entry = UtilitiesDatabase.getInstance().sftpEntryDao().findByName(oldConnectionName);
+    SftpEntry entry = utilitiesDatabase.sftpEntryDao().findByName(oldConnectionName);
 
     entry.name = connectionName;
     entry.path = path;
@@ -189,12 +190,12 @@ public class UtilsHandler {
       entry.sshKey = sshKey;
     }
 
-    AppConfig.runInBackground(() -> UtilitiesDatabase.getInstance().sftpEntryDao().update(entry));
+    AppConfig.runInBackground(() -> utilitiesDatabase.sftpEntryDao().update(entry));
   }
 
   public LinkedList<String> getHistoryLinkedList() {
     LinkedList<String> paths = new LinkedList<>();
-    for (History history : UtilitiesDatabase.getInstance().historyEntryDao().list()) {
+    for (History history : utilitiesDatabase.historyEntryDao().list()) {
       paths.add(history.path);
     }
     return paths;
@@ -204,26 +205,24 @@ public class UtilsHandler {
     ConcurrentRadixTree<VoidValue> paths =
         new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
 
-    for (String path : UtilitiesDatabase.getInstance().hiddenEntryDao().listPaths()) {
+    for (String path : utilitiesDatabase.hiddenEntryDao().listPaths()) {
       paths.put(path, VoidValue.SINGLETON);
     }
     return paths;
   }
 
   public ArrayList<String> getListViewList() {
-    return new ArrayList<>(
-        Arrays.asList(UtilitiesDatabase.getInstance().listEntryDao().listPaths()));
+    return new ArrayList<>(Arrays.asList(utilitiesDatabase.listEntryDao().listPaths()));
   }
 
   public ArrayList<String> getGridViewList() {
-    return new ArrayList<>(
-        Arrays.asList(UtilitiesDatabase.getInstance().gridEntryDao().listPaths()));
+    return new ArrayList<>(Arrays.asList(utilitiesDatabase.gridEntryDao().listPaths()));
   }
 
   public ArrayList<String[]> getBookmarksList() {
 
     ArrayList<String[]> row = new ArrayList<>();
-    for (Bookmark bookmark : UtilitiesDatabase.getInstance().bookmarkEntryDao().list()) {
+    for (Bookmark bookmark : utilitiesDatabase.bookmarkEntryDao().list()) {
       row.add(new String[] {bookmark.name, bookmark.path});
     }
     return row;
@@ -231,7 +230,7 @@ public class UtilsHandler {
 
   public ArrayList<String[]> getSmbList() {
     ArrayList<String[]> retval = new ArrayList<String[]>();
-    for (SmbEntry entry : UtilitiesDatabase.getInstance().smbEntryDao().list()) {
+    for (SmbEntry entry : utilitiesDatabase.smbEntryDao().list()) {
 
       try {
         String path = SmbUtil.getSmbDecryptedPath(context, entry.path);
@@ -252,7 +251,7 @@ public class UtilsHandler {
 
   public List<String[]> getSftpList() {
     ArrayList<String[]> retval = new ArrayList<String[]>();
-    for (SftpEntry entry : UtilitiesDatabase.getInstance().sftpEntryDao().list()) {
+    for (SftpEntry entry : utilitiesDatabase.sftpEntryDao().list()) {
       String path = SshClientUtils.decryptSshPathAsNecessary(entry.path);
 
       if (path == null) {
@@ -271,22 +270,22 @@ public class UtilsHandler {
   public String getSshHostKey(String uri) {
     uri = SshClientUtils.encryptSshPathAsNecessary(uri);
     if (uri != null) {
-      return UtilitiesDatabase.getInstance().sftpEntryDao().getSshHostKey(uri);
+      return utilitiesDatabase.sftpEntryDao().getSshHostKey(uri);
     } else {
       return null;
     }
   }
 
   public String getSshAuthPrivateKeyName(String uri) {
-    return UtilitiesDatabase.getInstance().sftpEntryDao().getSshAuthPrivateKeyName(uri);
+    return utilitiesDatabase.sftpEntryDao().getSshAuthPrivateKeyName(uri);
   }
 
   public String getSshAuthPrivateKey(String uri) {
-    return UtilitiesDatabase.getInstance().sftpEntryDao().getSshAuthPrivateKey(uri);
+    return utilitiesDatabase.sftpEntryDao().getSshAuthPrivateKey(uri);
   }
 
   private void removeBookmarksPath(String name, String path) {
-    UtilitiesDatabase.getInstance().bookmarkEntryDao().deleteByNameAndPath(name, path);
+    utilitiesDatabase.bookmarkEntryDao().deleteByNameAndPath(name, path);
   }
 
   /**
@@ -296,31 +295,29 @@ public class UtilsHandler {
    *     must encrypt it's password fiend first first
    */
   private void removeSmbPath(String name, String path) {
-    if (path.equals("")) UtilitiesDatabase.getInstance().smbEntryDao().deleteByName(name);
-    else UtilitiesDatabase.getInstance().smbEntryDao().deleteByNameAndPath(name, path);
+    if (path.equals("")) utilitiesDatabase.smbEntryDao().deleteByName(name);
+    else utilitiesDatabase.smbEntryDao().deleteByNameAndPath(name, path);
   }
 
   private void removeSftpPath(String name, String path) {
-    if (path.equals("")) UtilitiesDatabase.getInstance().sftpEntryDao().deleteByName(name);
-    else UtilitiesDatabase.getInstance().sftpEntryDao().deleteByNameAndPath(name, path);
+    if (path.equals("")) utilitiesDatabase.sftpEntryDao().deleteByName(name);
+    else utilitiesDatabase.sftpEntryDao().deleteByNameAndPath(name, path);
   }
 
   public void renameBookmark(String oldName, String oldPath, String newName, String newPath) {
-    Bookmark bookmark =
-        UtilitiesDatabase.getInstance().bookmarkEntryDao().findByNameAndPath(oldName, oldPath);
+    Bookmark bookmark = utilitiesDatabase.bookmarkEntryDao().findByNameAndPath(oldName, oldPath);
     bookmark.name = newName;
     bookmark.path = newPath;
 
-    UtilitiesDatabase.getInstance().bookmarkEntryDao().update(bookmark);
+    utilitiesDatabase.bookmarkEntryDao().update(bookmark);
   }
 
   public void renameSMB(String oldName, String oldPath, String newName, String newPath) {
-    SmbEntry smbEntry =
-        UtilitiesDatabase.getInstance().smbEntryDao().findByNameAndPath(oldName, oldPath);
+    SmbEntry smbEntry = utilitiesDatabase.smbEntryDao().findByNameAndPath(oldName, oldPath);
     smbEntry.name = newName;
     smbEntry.path = newPath;
 
-    UtilitiesDatabase.getInstance().smbEntryDao().update(smbEntry);
+    utilitiesDatabase.smbEntryDao().update(smbEntry);
   }
 
   public void clearTable(Operation table) {
@@ -328,7 +325,7 @@ public class UtilsHandler {
         () -> {
           switch (table) {
             case HISTORY:
-              UtilitiesDatabase.getInstance().historyEntryDao().clear();
+              utilitiesDatabase.historyEntryDao().clear();
               break;
             default:
               break;

@@ -48,9 +48,9 @@ public class CloudHandler {
   private final ExplorerDatabase database;
   private final Context context;
 
-  public CloudHandler(@NonNull Context context) {
+  public CloudHandler(@NonNull Context context, @NonNull ExplorerDatabase explorerDatabase) {
     this.context = context;
-    this.database = ExplorerDatabase.getInstance();
+    this.database = explorerDatabase;
   }
 
   public void addEntry(CloudEntry cloudEntry) throws CloudPluginException {
