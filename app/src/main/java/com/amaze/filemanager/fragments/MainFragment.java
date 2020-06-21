@@ -125,8 +125,6 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment implements BottomBarButtonPath {
-  // boolean to know if user is in seaeching mode
-  private boolean isInSearchMode = false;
 
   public ActionMode mActionMode;
   // TODO refactor
@@ -1156,7 +1154,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
 
       if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
-          && !isInSearchMode
           && !CURRENT_PATH.equals("/")
           && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
           && !isOtg
@@ -1164,6 +1161,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           && (LIST_ELEMENTS.size() == 0
               || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))) {
         LIST_ELEMENTS.add(0, getBackElement());
+      }
+
+      if (this.results) {
+        LIST_ELEMENTS.remove(getBackElement());
       }
 
       if (LIST_ELEMENTS.size() == 0 && !results) {
@@ -1773,7 +1774,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       // adding new value to LIST_ELEMENTS
       LayoutElementParcelable layoutElementAdded = addTo(a);
       if (!results) {
-        isInSearchMode = true;
         reloadListElements(false, false, !IS_LIST);
         getMainActivity().getAppbar().getBottomBar().setPathText("");
         getMainActivity()
@@ -1804,7 +1804,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       public void onPostExecute(Void c) {
         reloadListElements(
             true, true, !IS_LIST); // TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's
-        isInSearchMode = false;
         // createHeaders()
         getMainActivity().getAppbar().getBottomBar().setPathText("");
         getMainActivity()
