@@ -41,7 +41,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowToast;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -53,7 +52,10 @@ import android.os.Environment;
 import androidx.annotation.NonNull;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, maxSdk = 27)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class},
+    maxSdk = 27)
 public class ExtractServiceTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");
@@ -125,16 +127,16 @@ public class ExtractServiceTest {
     service = Robolectric.setupService(ExtractService.class);
   }
 
-    @After
-    public void tearDown() throws Exception {
-        File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
-        Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
-                .map(Path::toFile)
-                .forEach(File::delete);
+  @After
+  public void tearDown() throws Exception {
+    File extractedArchiveRoot = new File(Environment.getExternalStorageDirectory(), "test-archive");
+    Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
+        .map(Path::toFile)
+        .forEach(File::delete);
 
-        service.stopSelf();
-        service.onDestroy();
-    }
+    service.stopSelf();
+    service.onDestroy();
+  }
 
   @Test
   public void testExtractZipSlip() {

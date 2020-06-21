@@ -20,19 +20,6 @@
 
 package com.amaze.filemanager.filesystem;
 
-import android.os.Environment;
-
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.test.ShadowShellInteractive;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.annotation.Config;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -59,7 +46,10 @@ import android.os.Environment;
 import eu.chainfire.libsuperuser.Shell;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowShellInteractive.class}, maxSdk = 27)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class},
+    maxSdk = 27)
 public class RootHelperTest {
 
   private static final File sysroot =

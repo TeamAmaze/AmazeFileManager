@@ -20,27 +20,10 @@
 
 package com.amaze.filemanager.asynchronous.services.ftp;
 
-import android.app.Application;
-import android.app.Service;
-import android.content.Context;
-import android.content.Intent;
-import android.os.Environment;
-import android.os.IBinder;
-import android.preference.PreferenceManager;
-import android.util.Base64;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
-
-import org.apache.commons.compress.utils.IOUtils;
-import org.apache.commons.net.ftp.FTP;
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
-import org.apache.commons.net.ftp.FTPSClient;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -59,10 +42,27 @@ import java.net.Socket;
 import java.net.SocketException;
 import java.security.SecureRandom;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import org.apache.commons.compress.utils.IOUtils;
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
+import org.apache.commons.net.ftp.FTPSClient;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import android.app.Application;
+import android.app.Service;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Environment;
+import android.os.IBinder;
+import android.preference.PreferenceManager;
+import android.util.Base64;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 @RunWith(AndroidJUnit4.class)
 public class FtpServiceEspressoTest {
@@ -221,16 +221,29 @@ public class FtpServiceEspressoTest {
     testFile2.delete();
   }
 
-    private FtpService create() throws ReflectiveOperationException {
-        FtpService service = new FtpService();
-        // Trick borrowed from org.robolectric.android.controller.ServiceController
-        Class activityThreadClazz = Class.forName("android.app.ActivityThread");
-        Method attach = Service.class.getDeclaredMethod("attach", Context.class,
-                activityThreadClazz, String.class, IBinder.class, Application.class, Object.class);
-        attach.invoke(service, InstrumentationRegistry.getInstrumentation().getTargetContext(),
-                null, service.getClass().getSimpleName(), null, null, null);
-        return service;
-    }
+  private FtpService create() throws ReflectiveOperationException {
+    FtpService service = new FtpService();
+    // Trick borrowed from org.robolectric.android.controller.ServiceController
+    Class activityThreadClazz = Class.forName("android.app.ActivityThread");
+    Method attach =
+        Service.class.getDeclaredMethod(
+            "attach",
+            Context.class,
+            activityThreadClazz,
+            String.class,
+            IBinder.class,
+            Application.class,
+            Object.class);
+    attach.invoke(
+        service,
+        InstrumentationRegistry.getInstrumentation().getTargetContext(),
+        null,
+        service.getClass().getSimpleName(),
+        null,
+        null,
+        null);
+    return service;
+  }
 
   private void waitForServer() throws IOException {
     boolean available = false;

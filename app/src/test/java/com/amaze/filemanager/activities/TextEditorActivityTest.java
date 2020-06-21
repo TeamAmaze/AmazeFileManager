@@ -25,11 +25,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.application.AppConfig;
-
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,11 +36,11 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowEnvironment;
-import com.amaze.filemanager.test.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.test.ShadowMultiDex;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.content.ContentResolver;
@@ -56,12 +51,16 @@ import android.os.Environment;
 import android.widget.TextView;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 24, maxSdk = 27)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class},
+    minSdk = 24,
+    maxSdk = 27)
 /*
-  Restrict minSdk to 24 since it'd fail at SDK 21-23.
-  This may only be fixed by upgrading to Robolectric 4.
-  See https://github.com/robolectric/robolectric/issues/3947
- */
+ Restrict minSdk to 24 since it'd fail at SDK 21-23.
+ This may only be fixed by upgrading to Robolectric 4.
+ See https://github.com/robolectric/robolectric/issues/3947
+*/
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";

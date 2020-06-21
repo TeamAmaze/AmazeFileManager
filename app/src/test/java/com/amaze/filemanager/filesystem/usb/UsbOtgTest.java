@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.filesystem.usb;
 
-import static android.os.Build.VERSION_CODES.KITKAT;
 import static com.amaze.filemanager.filesystem.usb.ReflectionHelpers.addUsbOtgDevice;
 import static org.junit.Assert.assertTrue;
 
@@ -32,7 +31,6 @@ import org.robolectric.Robolectric;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.activities.MainActivity;
@@ -43,13 +41,18 @@ import com.amaze.filemanager.utils.OTGUtil;
 import android.text.TextUtils;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class}, minSdk = 24, maxSdk = 27)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class},
+    minSdk = 24,
+    maxSdk = 27)
 public class UsbOtgTest {
 
-    @Test
-    public void usbConnectionTest() {
-        ActivityController<MainActivity> controller = Robolectric.buildActivity(MainActivity.class).create();
-        MainActivity activity = controller.get();
+  @Test
+  public void usbConnectionTest() {
+    ActivityController<MainActivity> controller =
+        Robolectric.buildActivity(MainActivity.class).create();
+    MainActivity activity = controller.get();
 
     addUsbOtgDevice(activity);
 

@@ -52,13 +52,6 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZip
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
-
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
-import org.robolectric.annotation.Config;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.Context;

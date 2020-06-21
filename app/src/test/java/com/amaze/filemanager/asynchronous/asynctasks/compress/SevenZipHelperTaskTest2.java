@@ -44,8 +44,10 @@ public class SevenZipHelperTaskTest2 extends AbstractCompressedHelperTaskTest {
     assertEquals(result.result.size(), 0);
   }
 
-    @Test @Override @Ignore("Not testing this one")
-    public void testSublevels(){}
+  @Test
+  @Override
+  @Ignore("Not testing this one")
+  public void testSublevels() {}
 
   @Override
   protected CompressedHelperTask createTask(String relativePath) {

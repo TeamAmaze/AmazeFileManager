@@ -23,22 +23,13 @@ package com.amaze.filemanager.utils.SmbStreamer;
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
-import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.Shadows;
-import org.robolectric.annotation.Config;
-import org.robolectric.shadow.api.Shadow;
-import org.robolectric.shadows.ShadowUsbManager;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import org.junit.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,7 +47,10 @@ import jcifs.smb.SmbFile;
 
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowSmbFile.class}, maxSdk = 27)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
+    maxSdk = 27)
 public class StreamSourceTest {
   private SmbFile file;
   private StreamSource ss;
@@ -72,15 +66,14 @@ public class StreamSourceTest {
     ss = new StreamSource(file, file.length());
   }
 
-    @After
-    public void tearDown() {
-        if(ss != null)
-            ss.close();
-    }
+  @After
+  public void tearDown() {
+    if (ss != null) ss.close();
+  }
 
-    private SmbFile createFile() throws IOException {
-        File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
-        testFile.createNewFile();
+  private SmbFile createFile() throws IOException {
+    File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
+    testFile.createNewFile();
 
     OutputStream is = new FileOutputStream(testFile);
     is.write(text);

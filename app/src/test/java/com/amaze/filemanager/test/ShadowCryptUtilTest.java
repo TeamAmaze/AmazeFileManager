@@ -30,7 +30,6 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -39,7 +38,10 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(constants = BuildConfig.class, shadows = {ShadowMultiDex.class, ShadowCryptUtil.class}, maxSdk = 27)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    maxSdk = 27)
 public class ShadowCryptUtilTest {
 
   @Test
@@ -57,9 +59,10 @@ public class ShadowCryptUtilTest {
     String fingerprint = "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff";
     String url = "ssh://test:test@127.0.0.1:22";
 
-        utilsHandler.addSsh("Test", SshClientUtils.encryptSshPathAsNecessary(url), fingerprint, null, null);
-        assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+    utilsHandler.addSsh(
+        "Test", SshClientUtils.encryptSshPathAsNecessary(url), fingerprint, null, null);
+    assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
 
-        utilsHandler.close();
-    }
+    utilsHandler.close();
+  }
 }

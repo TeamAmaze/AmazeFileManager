@@ -20,10 +20,6 @@
 
 package com.amaze.filemanager.database;
 
-import androidx.annotation.NonNull;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.platform.app.InstrumentationRegistry;
-
 import java.util.List;
 
 import org.junit.Before;
@@ -41,12 +37,13 @@ public class UtilsHandlerTest {
 
   private UtilsHandler utilsHandler;
 
-    @Before
-    public void setUp(){
-        utilsHandler = new UtilsHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
-        utilsHandler.onCreate(utilsHandler.getWritableDatabase());
-        utilsHandler.getWritableDatabase().execSQL("DELETE FROM sftp;");
-    }
+  @Before
+  public void setUp() {
+    utilsHandler =
+        new UtilsHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
+    utilsHandler.onCreate(utilsHandler.getWritableDatabase());
+    utilsHandler.getWritableDatabase().execSQL("DELETE FROM sftp;");
+  }
 
   @Test
   public void testEncodeEncryptUri1() {
