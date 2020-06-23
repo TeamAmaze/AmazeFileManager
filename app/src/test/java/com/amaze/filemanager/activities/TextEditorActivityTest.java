@@ -40,7 +40,6 @@ import org.robolectric.shadows.ShadowEnvironment;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.test.ShadowMultiDex;
 import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.content.ContentResolver;
@@ -49,6 +48,11 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
 import android.widget.TextView;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintWriter;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(

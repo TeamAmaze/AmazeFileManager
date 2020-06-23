@@ -45,6 +45,8 @@ import android.os.Environment;
 
 import eu.chainfire.libsuperuser.Shell;
 
+import static org.junit.Assert.fail;
+
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
