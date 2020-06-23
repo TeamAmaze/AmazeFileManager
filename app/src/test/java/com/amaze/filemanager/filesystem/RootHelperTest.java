@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static org.junit.Assert.fail;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -44,8 +46,6 @@ import com.amaze.filemanager.test.ShadowShellInteractive;
 import android.os.Environment;
 
 import eu.chainfire.libsuperuser.Shell;
-
-import static org.junit.Assert.fail;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(

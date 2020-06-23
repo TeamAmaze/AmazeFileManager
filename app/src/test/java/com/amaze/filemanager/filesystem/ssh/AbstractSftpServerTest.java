@@ -20,8 +20,6 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
-import android.os.Environment;
-
 import java.io.IOException;
 import java.net.BindException;
 import java.nio.file.Paths;
@@ -44,6 +42,8 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+
+import android.os.Environment;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
