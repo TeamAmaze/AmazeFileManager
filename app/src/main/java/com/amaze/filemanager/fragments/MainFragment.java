@@ -1213,6 +1213,22 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     return back;
   }
 
+  /**
+   * Method will resume any decryption tasks like registering decryption receiver or deleting any pending opened files in application cache
+   */
+  private void resumeDecryptOperations() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      (getActivity())
+        .registerReceiver(
+          decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
+      if (!isEncryptOpen && !Utils.isNullOrEmpty(encryptBaseFiles)) {
+        // we've opened the file and are ready to delete it
+        new DeleteTask(getActivity()).execute(encryptBaseFiles);
+        encryptBaseFiles = new ArrayList<>();
+      }
+    }
+  }
+
   private void startFileObserver() {
     switch (openMode) {
       case ROOT:
@@ -1478,13 +1494,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         .registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
 
     getMainActivity().getDrawer().selectCorrectDrawerItemForPath(getPath());
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-      (getActivity())
-          .registerReceiver(
-              decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
-    }
+    resumeDecryptOperations();
     startFileObserver();
   }
 
@@ -1498,19 +1508,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       (getActivity()).unregisterReceiver(decryptReceiver);
-    }
-  }
-
-  @Override
-  public void onStop() {
-    super.onStop();
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-
-      if (!isEncryptOpen && encryptBaseFiles.size() != 0) {
-        // we've opened the file and are ready to delete it
-        new DeleteTask(getActivity()).execute(encryptBaseFiles);
-      }
     }
   }
 

@@ -22,6 +22,8 @@ package com.amaze.filemanager.utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Collection;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.R;
@@ -278,5 +280,9 @@ public class Utils {
       // This shouldn't fail, as mPath has been there in every version
       throw new RuntimeException(e);
     }
+  }
+
+  public static boolean isNullOrEmpty(final Collection<?> list) {
+    return list == null || list.size() == 0;
   }
 }
