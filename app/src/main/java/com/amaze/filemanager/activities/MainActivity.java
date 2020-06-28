@@ -490,7 +490,8 @@ public class MainActivity extends PermissionsActivity
                 if (main1 != null) ((MainFragment) main1).updateList();
               }
             }
-          });
+          },
+          true);
     }
   }
 
