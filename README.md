@@ -1,5 +1,6 @@
 # Amaze File Manager
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
