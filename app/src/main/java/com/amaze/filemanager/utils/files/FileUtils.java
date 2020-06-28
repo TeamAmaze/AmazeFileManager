@@ -375,7 +375,8 @@ public class FileUtils {
       final @NonNull File f, final @NonNull PermissionsActivity permissionsActivity) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
         && !permissionsActivity.getPackageManager().canRequestPackageInstalls()) {
-      permissionsActivity.requestInstallApkPermission(() -> installApk(f, permissionsActivity));
+      permissionsActivity.requestInstallApkPermission(
+          () -> installApk(f, permissionsActivity), true);
     }
 
     Intent intent = new Intent(Intent.ACTION_VIEW);
