@@ -23,7 +23,6 @@ package com.amaze.filemanager.utils;
 import java.io.File;
 import java.lang.reflect.Field;
 import java.util.Collection;
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.R;

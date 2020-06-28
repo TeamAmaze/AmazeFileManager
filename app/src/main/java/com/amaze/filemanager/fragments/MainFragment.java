@@ -1214,13 +1214,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   /**
-   * Method will resume any decryption tasks like registering decryption receiver or deleting any pending opened files in application cache
+   * Method will resume any decryption tasks like registering decryption receiver or deleting any
+   * pending opened files in application cache
    */
   private void resumeDecryptOperations() {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       (getActivity())
-        .registerReceiver(
-          decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
+          .registerReceiver(
+              decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
       if (!isEncryptOpen && !Utils.isNullOrEmpty(encryptBaseFiles)) {
         // we've opened the file and are ready to delete it
         new DeleteTask(getActivity()).execute(encryptBaseFiles);
