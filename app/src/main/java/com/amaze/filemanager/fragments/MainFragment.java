@@ -813,7 +813,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         public void onReceive(Context context, Intent intent) {
 
           if (isEncryptOpen && encryptBaseFile != null) {
-            FileUtils.openFile(new File(encryptBaseFile.getPath()), getMainActivity(), sharedPref);
+            FileUtils.openFile(encryptBaseFile.getFile(), getMainActivity(), sharedPref);
             isEncryptOpen = false;
           }
         }
