@@ -65,6 +65,7 @@ Authors
 
     Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
     Copyright (C) 2017-2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
+    Copyright (C) 2018-2020 Raymond Lai <airwave209gt at gmail.com>
     This file is part of Amaze File Manager.
     Amaze File Manager is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

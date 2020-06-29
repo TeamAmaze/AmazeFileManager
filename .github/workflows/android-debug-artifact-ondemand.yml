@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Github API Request
         id: request
-        uses: octokit/request-action@v2.0.0
+        uses: octokit/request-action@v2.0.2
         with:
           route: ${{ github.event.issue.pull_request.url }}
         env:
@@ -38,7 +38,7 @@ jobs:
       - name: Build with Gradle
         run: |
           echo Run on-demand by ${GITHUB_ACTOR}
-          bash ./gradlew assembleDebug --stacktrace
+          bash ./gradlew testPlayDebugUnitTest assembleDebug --stacktrace
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v2
         with:
