@@ -25,6 +25,14 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import net.schmizz.sshj.userauth.password.PasswordFinder;
 import net.schmizz.sshj.userauth.password.Resource;
 
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import java.lang.reflect.Field;
+import java.util.concurrent.CountDownLatch;
+
+import static org.junit.Assert.assertNotNull;
+
 @RunWith(AndroidJUnit4.class)
 public class PemToKeyPairTaskTest2 {
 
