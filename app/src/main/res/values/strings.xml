@@ -657,5 +657,6 @@
     <string name="storage_sd_card">SD card</string>
     <string name="choose_folder">Choose This Folder</string>
     <string name="folder_go_up_one_level" translatable="false">..</string>
+    <string name="some_files_failed_invalid_operation">Some files failed due to invalid operation</string>
 </resources>
 
