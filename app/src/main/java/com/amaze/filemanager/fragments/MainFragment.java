@@ -1146,6 +1146,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   public void reloadListElements(boolean back, boolean results, boolean grid) {
     if (isAdded()) {
+      this.results = results;
       boolean isOtg = CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/"),
           isOnTheCloud =
               CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
@@ -1159,7 +1160,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           && !isOtg
           && !isOnTheCloud
           && (LIST_ELEMENTS.size() == 0
-              || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))) {
+              || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))
+          && !results) {
         LIST_ELEMENTS.add(0, getBackElement());
       }
 
@@ -1208,10 +1210,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             new DividerItemDecoration(getActivity(), true, getBoolean(PREFERENCE_SHOW_DIVIDERS));
         listView.addItemDecoration(dividerItemDecoration);
         addheader = false;
-      }
-
-      if (!results) {
-        this.results = false;
       }
 
       if (back && scrolls.containsKey(CURRENT_PATH)) {
@@ -1770,13 +1768,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       // adding new value to LIST_ELEMENTS
       LayoutElementParcelable layoutElementAdded = addTo(a);
       if (!results) {
-        reloadListElements(false, false, !IS_LIST);
+        reloadListElements(false, true, !IS_LIST);
         getMainActivity().getAppbar().getBottomBar().setPathText("");
         getMainActivity()
             .getAppbar()
             .getBottomBar()
             .setFullPathText(getString(R.string.searching, query));
-        results = true;
       } else {
         adapter.addItem(layoutElementAdded);
       }
