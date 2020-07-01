@@ -25,6 +25,11 @@ allprojects {
         maven { url "https://jcenter.bintray.com" }
         mavenCentral()
     }
+    tasks.withType(Test) {
+        maxParallelForks = 2
+        maxHeapSize = "2g"
+        forkEvery = 2
+    }
 }
 
 spotless {

@@ -25,6 +25,7 @@ import static org.junit.Assert.assertNull;
 
 import java.io.IOException;
 import java.io.StringWriter;
+import java.net.BindException;
 import java.security.PrivateKey;
 
 import org.apache.sshd.server.SshServer;
@@ -52,7 +53,8 @@ import net.schmizz.sshj.common.SecurityUtils;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    maxSdk = 27)
 public class SshConnectionPoolTest {
 
   private SshServer server;
@@ -61,6 +63,8 @@ public class SshConnectionPoolTest {
 
   private static TestKeyProvider hostKeyProvider, userKeyProvider;
 
+  private int serverPort = 65000;
+
   @BeforeClass
   public static void bootstrap() throws Exception {
     hostKeyProvider = new TestKeyProvider();
@@ -68,18 +72,20 @@ public class SshConnectionPoolTest {
   }
 
   @After
-  public void tearDown() {
-    if (server != null && server.isOpen()) server.close(true);
+  public void tearDown() throws IOException {
+    if (server != null && server.isOpen()) {
+      server.stop(true);
+    }
   }
 
   @Test
   public void testGetConnectionWithUsernameAndPassword() throws IOException {
-    createSshServer("testuser", "testpassword");
+    createSshServer("testuser", "testpassword", this.serverPort);
     assertNotNull(
         SshConnectionPool.getInstance()
             .getConnection(
                 "127.0.0.1",
-                22222,
+                this.serverPort,
                 SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
                 "testuser",
                 "testpassword",
@@ -89,7 +95,7 @@ public class SshConnectionPoolTest {
         SshConnectionPool.getInstance()
             .getConnection(
                 "127.0.0.1",
-                22222,
+                this.serverPort,
                 SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
                 "invaliduser",
                 "invalidpassword",
@@ -98,12 +104,12 @@ public class SshConnectionPoolTest {
 
   @Test
   public void testGetConnectionWithUsernameAndKey() throws IOException {
-    createSshServer("testuser", null);
+    createSshServer("testuser", null, this.serverPort);
     assertNotNull(
         SshConnectionPool.getInstance()
             .getConnection(
                 "127.0.0.1",
-                22222,
+                this.serverPort,
                 SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
                 "testuser",
                 null,
@@ -113,7 +119,7 @@ public class SshConnectionPoolTest {
         SshConnectionPool.getInstance()
             .getConnection(
                 "127.0.0.1",
-                22222,
+                this.serverPort,
                 SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
                 "invaliduser",
                 null,
@@ -123,165 +129,169 @@ public class SshConnectionPoolTest {
   @Test
   public void testGetConnectionWithUrl() throws IOException {
     String validPassword = "testpassword";
-    createSshServer("testuser", validPassword);
+    createSshServer("testuser", validPassword, this.serverPort);
     saveSshConnectionSettings("testuser", validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://testuser:testpassword@127.0.0.1:22222"));
+            .getConnection("ssh://testuser:testpassword@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlAndKeyAuth() throws IOException {
-    createSshServer("testuser", null);
+    createSshServer("testuser", null, this.serverPort);
     saveSshConnectionSettings("testuser", null, userKeyProvider.getKeyPair().getPrivate());
-    assertNotNull(SshConnectionPool.getInstance().getConnection("ssh://testuser@127.0.0.1:22222"));
-    assertNull(SshConnectionPool.getInstance().getConnection("ssh://invaliduser@127.0.0.1:22222"));
+    assertNotNull(
+        SshConnectionPool.getInstance().getConnection("ssh://testuser@127.0.0.1:" + serverPort));
+    assertNull(
+        SshConnectionPool.getInstance().getConnection("ssh://invaliduser@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingComplexPassword1() throws IOException {
     String validPassword = "testP@ssw0rd";
-    createSshServer("testuser", validPassword);
+    createSshServer("testuser", validPassword, this.serverPort);
     saveSshConnectionSettings("testuser", validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://testuser:testP@ssw0rd@127.0.0.1:22222"));
+            .getConnection("ssh://testuser:testP@ssw0rd@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingComplexPassword2() throws IOException {
     String validPassword = "testP@##word";
-    createSshServer("testuser", validPassword);
+    createSshServer("testuser", validPassword, this.serverPort);
     saveSshConnectionSettings("testuser", validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://testuser:testP@##word@127.0.0.1:22222"));
+            .getConnection("ssh://testuser:testP@##word@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingComplexCredential1() throws IOException {
     String validPassword = "testP@##word";
-    createSshServer("testuser", validPassword);
+    createSshServer("testuser", validPassword, this.serverPort);
     saveSshConnectionSettings("testuser", validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://testuser:testP@##word@127.0.0.1:22222"));
+            .getConnection("ssh://testuser:testP@##word@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingComplexCredential2() throws IOException {
     String validPassword = "testP@##word";
-    createSshServer("testuser", validPassword);
+    createSshServer("testuser", validPassword, this.serverPort);
     saveSshConnectionSettings("testuser", validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://testuser:testP@##word@127.0.0.1:22222"));
+            .getConnection("ssh://testuser:testP@##word@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingComplexCredential3() throws IOException {
     String validUsername = "test@example.com";
     String validPassword = "testP@ssw0rd";
-    createSshServer(validUsername, validPassword);
+    createSshServer(validUsername, validPassword, this.serverPort);
     saveSshConnectionSettings(validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://test@example.com:testP@ssw0rd@127.0.0.1:22222"));
+            .getConnection("ssh://test@example.com:testP@ssw0rd@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingComplexCredential4() throws IOException {
     String validUsername = "test@example.com";
     String validPassword = "testP@ssw0##$";
-    createSshServer(validUsername, validPassword);
+    createSshServer(validUsername, validPassword, this.serverPort);
     saveSshConnectionSettings(validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://test@example.com:testP@ssw0##$@127.0.0.1:22222"));
+            .getConnection("ssh://test@example.com:testP@ssw0##$@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingMinusSignInPassword1() throws IOException {
     String validUsername = "test@example.com";
     String validPassword = "abcd-efgh";
-    createSshServer(validUsername, validPassword);
+    createSshServer(validUsername, validPassword, this.serverPort);
     saveSshConnectionSettings(validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://test@example.com:abcd-efgh@127.0.0.1:22222"));
+            .getConnection("ssh://test@example.com:abcd-efgh@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingMinusSignInPassword2() throws IOException {
     String validUsername = "test@example.com";
     String validPassword = "---------------";
-    createSshServer(validUsername, validPassword);
+    createSshServer(validUsername, validPassword, this.serverPort);
     saveSshConnectionSettings(validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://test@example.com:---------------@127.0.0.1:22222"));
+            .getConnection("ssh://test@example.com:---------------@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingMinusSignInPassword3() throws IOException {
     String validUsername = "test@example.com";
     String validPassword = "--agdiuhdpost15";
-    createSshServer(validUsername, validPassword);
+    createSshServer(validUsername, validPassword, this.serverPort);
     saveSshConnectionSettings(validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://test@example.com:--agdiuhdpost15@127.0.0.1:22222"));
+            .getConnection("ssh://test@example.com:--agdiuhdpost15@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
   @Test
   public void testGetConnectionWithUrlHavingMinusSignInPassword4() throws IOException {
     String validUsername = "test@example.com";
     String validPassword = "t-h-i-s-i-s-p-a-s-s-w-o-r-d-";
-    createSshServer(validUsername, validPassword);
+    createSshServer(validUsername, validPassword, this.serverPort);
     saveSshConnectionSettings(validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:22222"));
+            .getConnection(
+                "ssh://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:" + serverPort));
     assertNull(
         SshConnectionPool.getInstance()
-            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            .getConnection("ssh://invaliduser:invalidpassword@127.0.0.1:" + serverPort));
   }
 
-  private void createSshServer(@NonNull String validUsername, @Nullable String validPassword)
+  private int createSshServer(
+      @NonNull String validUsername, @Nullable String validPassword, int serverPort)
       throws IOException {
     server = SshServer.setUpDefaultServer();
     server.setPublickeyAuthenticator(AcceptAllPublickeyAuthenticator.INSTANCE);
-    server.setPort(22222);
+
     server.setHost("127.0.0.1");
     server.setKeyPairProvider(hostKeyProvider);
     if (validPassword != null)
@@ -291,7 +301,14 @@ public class SshConnectionPoolTest {
     server.setPublickeyAuthenticator(
         (username, key, session) ->
             username.equals(validUsername) && key.equals(userKeyProvider.getKeyPair().getPublic()));
-    server.start();
+
+    try {
+      server.setPort(serverPort);
+      server.start();
+      return serverPort;
+    } catch (BindException ifPortIsUnavailable) {
+      return createSshServer(validUsername, validPassword, serverPort + 1);
+    }
   }
 
   private void saveSshConnectionSettings(
@@ -318,7 +335,7 @@ public class SshConnectionPoolTest {
 
     if (validPassword != null) fullUri.append(':').append(validPassword);
 
-    fullUri.append("@127.0.0.1:22222");
+    fullUri.append("@127.0.0.1:" + serverPort);
 
     if (validPassword != null)
       utilsHandler.addSsh(

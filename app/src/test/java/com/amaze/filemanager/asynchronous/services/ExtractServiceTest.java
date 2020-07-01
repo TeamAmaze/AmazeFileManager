@@ -54,7 +54,8 @@ import androidx.annotation.NonNull;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+    shadows = {ShadowMultiDex.class},
+    maxSdk = 27)
 public class ExtractServiceTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");
@@ -132,6 +133,9 @@ public class ExtractServiceTest {
     Files.walk(Paths.get(extractedArchiveRoot.getAbsolutePath()))
         .map(Path::toFile)
         .forEach(File::delete);
+
+    service.stopSelf();
+    service.onDestroy();
   }
 
   @Test

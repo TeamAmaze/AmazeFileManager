@@ -71,7 +71,8 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
 
   private void performVerify() throws InterruptedException {
     List<String> result = new ArrayList<>();
-    HybridFile file = new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:22222");
+    HybridFile file =
+        new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort);
     CountDownLatch waiter = new CountDownLatch(7);
     file.forEachChildrenFile(
         RuntimeEnvironment.application,
@@ -112,7 +113,8 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
           Paths.get(f.getAbsolutePath()));
     }
     List<String> dirs = new ArrayList<>(), files = new ArrayList<>();
-    HybridFile file = new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:22222");
+    HybridFile file =
+        new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort);
     CountDownLatch waiter = new CountDownLatch(15);
     file.forEachChildrenFile(
         RuntimeEnvironment.application,

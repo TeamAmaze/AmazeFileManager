@@ -32,6 +32,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,7 +48,8 @@ import android.os.Environment;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+    shadows = {ShadowMultiDex.class},
+    maxSdk = 27)
 public class CloudStreamSourceTest {
   private CloudStreamSource cs;
   private String testFilePath;
@@ -65,6 +67,11 @@ public class CloudStreamSourceTest {
     len = Files.size(Paths.get(testFilePath));
     text = Files.readAllBytes(Paths.get(testFilePath));
     cs = new CloudStreamSource(fn, len, new FileInputStream(testFile));
+  }
+
+  @After
+  public void tearDown() {
+    if (cs != null) cs.close();
   }
 
   private File createFile() throws IOException {

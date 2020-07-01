@@ -40,7 +40,8 @@ import com.amaze.filemanager.utils.files.CryptUtil;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    maxSdk = 27)
 public class ShadowCryptUtilTest {
 
   @Test
@@ -61,5 +62,7 @@ public class ShadowCryptUtilTest {
     utilsHandler.addSsh(
         "Test", SshClientUtils.encryptSshPathAsNecessary(url), fingerprint, null, null);
     assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+
+    utilsHandler.close();
   }
 }

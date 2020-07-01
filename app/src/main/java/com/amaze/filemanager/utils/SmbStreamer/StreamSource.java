@@ -97,10 +97,12 @@ public class StreamSource extends RandomAccessStream {
 
   @Override
   public void close() {
-    try {
-      input.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    if (input != null) {
+      try {
+        input.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 
