@@ -25,7 +25,7 @@ jobs:
         run: |
           ./gradlew assembledebug --stacktrace
       - name: Run test cases
-        run: ./gradlew testPlayDebugUnitTest --stacktrace
+        run: ./gradlew createPlayDebugCoverageReport --stacktrace
       - name: Publish test cases
         run: |
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
