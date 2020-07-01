@@ -38,7 +38,7 @@ jobs:
       - name: Build with Gradle
         run: |
           echo Run on-demand by ${GITHUB_ACTOR}
-          bash ./gradlew testPlayDebugUnitTest assembleDebug --stacktrace
+          bash ./gradlew assembleDebug --stacktrace
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v2
         with:

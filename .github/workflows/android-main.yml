@@ -21,7 +21,7 @@ jobs:
           java-version: 1.8
       - name: Build with Gradle
         run: |
-          ./gradlew testPlayDebugUnitTest assembledebug
+          ./gradlew testPlayDebugUnitTest assembledebug --stacktrace
       - name: Check formatting using spotless
         run:
           ./gradlew spotlessCheck
