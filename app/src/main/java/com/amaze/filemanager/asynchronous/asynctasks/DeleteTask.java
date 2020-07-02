@@ -26,6 +26,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.CompressedExplorerFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
@@ -157,9 +158,7 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
           delete(cd, f.getPath());
         }
       } catch (Exception e) {
-        for (HybridFileParcelable f : files) {
-          FileUtils.scanFile(f.getFile(), cd);
-        }
+        FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
       }
     }
 

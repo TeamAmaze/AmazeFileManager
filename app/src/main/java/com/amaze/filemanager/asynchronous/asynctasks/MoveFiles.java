@@ -24,6 +24,7 @@ import java.io.File;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
@@ -179,10 +180,12 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
       }
 
       for (int i = 0; i < paths.size(); i++) {
+        List<HybridFile> targetFiles = new ArrayList<>();
         for (HybridFileParcelable f : files.get(i)) {
-          FileUtils.scanFile(f.getFile(), context);
-          FileUtils.scanFile(new File(paths.get(i) + "/" + f.getName(context)), context);
+          targetFiles.add(new HybridFile(OpenMode.FILE, paths.get(i) + "/" + f.getName(context)));
         }
+        FileUtils.scanFile(context, files.toArray(new HybridFileParcelable[files.size()]));
+        FileUtils.scanFile(context, targetFiles.toArray(new HybridFile[targetFiles.size()]));
       }
 
       // updating encrypted db entry if any encrypted file was moved
