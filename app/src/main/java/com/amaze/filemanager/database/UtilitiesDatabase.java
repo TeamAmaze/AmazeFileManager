@@ -64,20 +64,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
     exportSchema = false)
 public abstract class UtilitiesDatabase extends RoomDatabase {
 
-  abstract HiddenEntryDao hiddenEntryDao();
-
-  abstract GridEntryDao gridEntryDao();
-
-  abstract ListEntryDao listEntryDao();
-
-  abstract HistoryEntryDao historyEntryDao();
-
-  abstract BookmarkEntryDao bookmarkEntryDao();
-
-  abstract SmbEntryDao smbEntryDao();
-
-  abstract SftpEntryDao sftpEntryDao();
-
   private static final String DATABASE_NAME = "utilities.db";
 
   public static final String TABLE_HISTORY = "history";
@@ -97,7 +83,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
 
   private static final String TEMP_TABLE_PREFIX = "temp_";
 
-  private static String queryHistory =
+  private static final String queryHistory =
       "CREATE TABLE IF NOT EXISTS "
           + TABLE_HISTORY
           + " ("
@@ -107,7 +93,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
           + " TEXT UNIQUE"
           + ");";
 
-  private static String queryHidden =
+  private static final String queryHidden =
       "CREATE TABLE IF NOT EXISTS "
           + TABLE_HIDDEN
           + " ("
@@ -117,7 +103,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
           + " TEXT UNIQUE"
           + ");";
 
-  private static String queryList =
+  private static final String queryList =
       "CREATE TABLE IF NOT EXISTS "
           + TABLE_LIST
           + " ("
@@ -127,7 +113,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
           + " TEXT UNIQUE"
           + ");";
 
-  private static String queryGrid =
+  private static final String queryGrid =
       "CREATE TABLE IF NOT EXISTS "
           + TABLE_GRID
           + " ("
@@ -137,7 +123,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
           + " TEXT UNIQUE"
           + ");";
 
-  private static String queryBookmarks =
+  private static final String queryBookmarks =
       "CREATE TABLE IF NOT EXISTS "
           + TABLE_BOOKMARKS
           + " ("
@@ -149,7 +135,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
           + " TEXT UNIQUE"
           + ");";
 
-  private static String querySmb =
+  private static final String querySmb =
       "CREATE TABLE IF NOT EXISTS "
           + TABLE_SMB
           + " ("
@@ -342,8 +328,21 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
         }
       };
 
+  protected abstract HiddenEntryDao hiddenEntryDao();
+
+  protected abstract GridEntryDao gridEntryDao();
+
+  protected abstract ListEntryDao listEntryDao();
+
+  protected abstract HistoryEntryDao historyEntryDao();
+
+  protected abstract BookmarkEntryDao bookmarkEntryDao();
+
+  protected abstract SmbEntryDao smbEntryDao();
+
+  protected abstract SftpEntryDao sftpEntryDao();
+
   public static final UtilitiesDatabase initialize(@NonNull Context context) {
-    android.util.Log.d("ROOM", "Initialize utilities.db");
     return Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
         .allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)

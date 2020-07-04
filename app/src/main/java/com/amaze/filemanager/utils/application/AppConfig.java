@@ -64,12 +64,11 @@ public class AppConfig extends GlideApplication {
 
   private static AppConfig instance;
 
+  private ExplorerDatabase explorerDatabase;
+
   public UtilitiesProvider getUtilsProvider() {
     return utilsProvider;
   }
-
-  private ExplorerDatabase explorerDatabase;
-  private UtilitiesDatabase utilitiesDatabase;
 
   @Override
   public void onCreate() {
@@ -81,7 +80,7 @@ public class AppConfig extends GlideApplication {
 
     CustomSshJConfig.init();
     explorerDatabase = ExplorerDatabase.initialize(this);
-    utilitiesDatabase = UtilitiesDatabase.initialize(this);
+    UtilitiesDatabase utilitiesDatabase = UtilitiesDatabase.initialize(this);
 
     utilsProvider = new UtilitiesProvider(this);
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);

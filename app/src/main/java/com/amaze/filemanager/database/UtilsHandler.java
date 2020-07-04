@@ -295,12 +295,12 @@ public class UtilsHandler {
    *     must encrypt it's password fiend first first
    */
   private void removeSmbPath(String name, String path) {
-    if (path.equals("")) utilitiesDatabase.smbEntryDao().deleteByName(name);
+    if ("".equals(path)) utilitiesDatabase.smbEntryDao().deleteByName(name);
     else utilitiesDatabase.smbEntryDao().deleteByNameAndPath(name, path);
   }
 
   private void removeSftpPath(String name, String path) {
-    if (path.equals("")) utilitiesDatabase.sftpEntryDao().deleteByName(name);
+    if ("".equals(path)) utilitiesDatabase.sftpEntryDao().deleteByName(name);
     else utilitiesDatabase.sftpEntryDao().deleteByNameAndPath(name, path);
   }
 

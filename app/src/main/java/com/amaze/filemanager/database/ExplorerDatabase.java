@@ -50,14 +50,6 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
     exportSchema = false)
 public abstract class ExplorerDatabase extends RoomDatabase {
 
-  abstract TabDao tabDao();
-
-  abstract SortDao sortDao();
-
-  abstract EncryptedEntryDao encryptedEntryDao();
-
-  abstract CloudEntryDao cloudEntryDao();
-
   private static final String DATABASE_NAME = "explorer.db";
   private static final int DATABASE_VERSION = 7;
 
@@ -171,8 +163,15 @@ public abstract class ExplorerDatabase extends RoomDatabase {
         }
       };
 
+  protected abstract TabDao tabDao();
+
+  protected abstract SortDao sortDao();
+
+  protected abstract EncryptedEntryDao encryptedEntryDao();
+
+  protected abstract CloudEntryDao cloudEntryDao();
+
   public static synchronized ExplorerDatabase initialize(@NonNull Context context) {
-    android.util.Log.d("ROOM", "Initialize explorer.db");
     return Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME)
         .addMigrations(MIGRATION_6_7)
         .allowMainThreadQueries()
