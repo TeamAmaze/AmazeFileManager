@@ -20,9 +20,11 @@
 
 package com.amaze.filemanager.database;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -74,6 +76,7 @@ public class UtilsHandlerTest {
 
   private void performTest(@NonNull final String origPath) {
     String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
+
     utilsHandler.saveToDatabase(
         new OperationData(
             UtilsHandler.Operation.SFTP,
@@ -83,11 +86,18 @@ public class UtilsHandlerTest {
             null,
             null));
 
-    List<String[]> result = utilsHandler.getSftpList();
-    assertEquals(1, result.size());
-    assertEquals("Test", result.get(0)[0]);
-    assertEquals(origPath, result.get(0)[1]);
-    assertEquals(
-        "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff", utilsHandler.getSshHostKey(origPath));
+    await()
+        .atMost(10, TimeUnit.SECONDS)
+        .until(
+            () -> {
+              List<String[]> result = utilsHandler.getSftpList();
+              assertEquals(1, result.size());
+              assertEquals("Test", result.get(0)[0]);
+              assertEquals(origPath, result.get(0)[1]);
+              assertEquals(
+                  "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
+                  utilsHandler.getSshHostKey(origPath));
+              return true;
+            });
   }
 }

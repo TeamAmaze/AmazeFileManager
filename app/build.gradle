@@ -91,6 +91,7 @@ ext {
     fabSpeedDialVersion = '3.1.1'
     roomVersion = '2.2.5'
     bouncyCastleVersion = '1.65'
+    awaitilityVersion = "3.1.6"
 }
 
 dependencies {
@@ -115,6 +116,7 @@ dependencies {
     testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
 
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     debugImplementation 'androidx.test:runner:1.2.0'
@@ -122,6 +124,7 @@ dependencies {
     androidTestImplementation 'androidx.annotation:annotation:1.1.0'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'commons-net:commons-net:3.6'
+    androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     //Detect memory leaks
     debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'

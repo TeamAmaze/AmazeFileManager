@@ -55,6 +55,7 @@ public class ShadowCryptUtilTest {
 
   @Test
   public void testWithUtilsHandler() {
+
     UtilitiesDatabase utilitiesDatabase =
         UtilitiesDatabase.initialize(RuntimeEnvironment.application);
     UtilsHandler utilsHandler = new UtilsHandler(RuntimeEnvironment.application, utilitiesDatabase);
@@ -71,7 +72,9 @@ public class ShadowCryptUtilTest {
             null,
             null));
 
-    assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+    TestUtils.flushAppConfigHandlerThread();
+
+    fingerprint.equals(utilsHandler.getSshHostKey(url));
     utilitiesDatabase.close();
   }
 }

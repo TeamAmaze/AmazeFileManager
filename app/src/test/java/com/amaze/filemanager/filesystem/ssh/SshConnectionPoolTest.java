@@ -43,6 +43,7 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
+import com.amaze.filemanager.test.TestUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
 
@@ -54,7 +55,8 @@ import net.schmizz.sshj.common.SecurityUtils;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    maxSdk = 27)
 public class SshConnectionPoolTest {
 
   private SshServer server;
@@ -343,5 +345,7 @@ public class SshConnectionPoolTest {
               SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
               "id_rsa",
               privateKeyContents));
+
+    TestUtils.flushAppConfigHandlerThread();
   }
 }
