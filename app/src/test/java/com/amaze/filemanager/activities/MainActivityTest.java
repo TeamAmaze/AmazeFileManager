@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.activities;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -33,10 +34,12 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+    shadows = {ShadowMultiDex.class},
+    maxSdk = 27)
 public class MainActivityTest {
 
   @Test
+  @Ignore
   public void testMainActivity() {
     ActivityController<MainActivity> controller =
         Robolectric.buildActivity(MainActivity.class)

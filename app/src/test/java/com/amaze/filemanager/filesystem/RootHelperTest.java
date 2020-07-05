@@ -50,7 +50,8 @@ import eu.chainfire.libsuperuser.Shell;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
+    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class},
+    maxSdk = 27)
 public class RootHelperTest {
 
   private static final File sysroot =

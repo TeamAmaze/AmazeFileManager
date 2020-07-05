@@ -20,8 +20,9 @@
 
 package com.amaze.filemanager.utils.files;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -35,6 +36,7 @@ public class CryptUtilTest {
 
   private Context context;
 
+  @Before
   public void setUp() {
     context = InstrumentationRegistry.getInstrumentation().getTargetContext();
   }

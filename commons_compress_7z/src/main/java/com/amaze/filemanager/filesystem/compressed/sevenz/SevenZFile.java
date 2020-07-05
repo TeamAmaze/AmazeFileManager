@@ -367,13 +367,12 @@ public class SevenZFile implements Closeable {
         final StartHeader startHeader = new StartHeader();
         // using Stream rather than ByteBuffer for the benefit of the
         // built-in CRC check
-        try (DataInputStream dataInputStream = new DataInputStream(new CRC32VerifyingInputStream(
-                new BoundedFileChannelInputStream(channel, 20), 20, startHeaderCrc))) {
-             startHeader.nextHeaderOffset = Long.reverseBytes(dataInputStream.readLong());
-             startHeader.nextHeaderSize = Long.reverseBytes(dataInputStream.readLong());
-             startHeader.nextHeaderCrc = 0xffffFFFFL & Integer.reverseBytes(dataInputStream.readInt());
-             return startHeader;
-        }
+        DataInputStream dataInputStream = new DataInputStream(new CRC32VerifyingInputStream(
+                new BoundedFileChannelInputStream(channel, 20), 20, startHeaderCrc));
+        startHeader.nextHeaderOffset = Long.reverseBytes(dataInputStream.readLong());
+        startHeader.nextHeaderSize = Long.reverseBytes(dataInputStream.readLong());
+        startHeader.nextHeaderCrc = 0xffffFFFFL & Integer.reverseBytes(dataInputStream.readInt());
+        return startHeader;
     }
 
     private void readHeader(final ByteBuffer header, final Archive archive) throws IOException {
@@ -440,9 +439,8 @@ public class SevenZFile implements Closeable {
                     folder.getUnpackSize(), folder.crc);
         }
         final byte[] nextHeader = new byte[(int)folder.getUnpackSize()];
-        try (DataInputStream nextHeaderInputStream = new DataInputStream(inputStreamStack)) {
-            nextHeaderInputStream.readFully(nextHeader);
-        }
+        DataInputStream nextHeaderInputStream = new DataInputStream(inputStreamStack);
+        nextHeaderInputStream.readFully(nextHeader);
         return ByteBuffer.wrap(nextHeader).order(ByteOrder.LITTLE_ENDIAN);
     }
 
@@ -1067,9 +1065,8 @@ public class SevenZFile implements Closeable {
             // In solid compression mode we need to decompress all leading folder'
             // streams to get access to an entry. We defer this until really needed
             // so that entire blocks can be skipped without wasting time for decompression.
-            try (final InputStream stream = deferredBlockStreams.remove(0)) {
-                IOUtils.skip(stream, Long.MAX_VALUE);
-            }
+            final InputStream stream = deferredBlockStreams.remove(0);
+            IOUtils.skip(stream, Long.MAX_VALUE);
             compressedBytesReadFromCurrentEntry = 0;
         }
 

@@ -198,30 +198,10 @@ public class FileUtils {
   }
 
   /**
-   * Calls {@link #scanFile(Uri, Context)} using {@link Uri}.
-   *
-   * @see {@link #scanFile(Uri, Context)}
-   * @param file File to scan
-   * @param c {@link Context}
-   */
-  public static void scanFile(@NonNull File file, @NonNull Context c) {
-    scanFile(Uri.fromFile(file), c);
-  }
-
-  /**
-   * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
-   *
-   * @param uri File's {@link Uri}
-   * @param c {@link Context}
-   */
-  private static void scanFile(@NonNull Uri uri, @NonNull Context c) {
-    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
-    c.sendBroadcast(mediaScanIntent);
-  }
-
-  /**
-   * Triggers media scanner for multiple paths Don't use filesystem API directly as files might not
-   * be present anymore (eg. move/rename) which may lead to {@link java.io.FileNotFoundException}
+   * Triggers media scanner for multiple paths. The paths must all belong to same filesystem. It's
+   * upto the caller to call the mediastore scan on multiple files or only one source/target
+   * directory. Don't use filesystem API directly as files might not be present anymore (eg.
+   * move/rename) which may lead to {@link java.io.FileNotFoundException}
    *
    * @param hybridFiles
    * @param context
@@ -236,10 +216,9 @@ public class FileUtils {
               paths[i] = hybridFile.getPath();
             }
             MediaScannerConnection.scanFile(context, paths, null, null);
-          } else {
-            for (HybridFile hybridFile : hybridFiles) {
-              scanFile(hybridFile, context);
-            }
+          }
+          for (HybridFile hybridFile : hybridFiles) {
+            scanFile(hybridFile, context);
           }
         });
   }
@@ -248,18 +227,40 @@ public class FileUtils {
    * Triggers media store for the file path
    *
    * @param hybridFile the file which was changed (directory not supported)
-   * @param context
+   * @param context given context
    */
-  public static void scanFile(@NonNull HybridFile hybridFile, Context context) {
+  private static void scanFile(@NonNull HybridFile hybridFile, Context context) {
 
     if ((hybridFile.isLocal() || hybridFile.isOtgFile()) && hybridFile.exists(context)) {
 
-      DocumentFile documentFile = FileUtil.getDocumentFile(hybridFile.getFile(), false, context);
-      // If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
-      if (documentFile == null) documentFile = DocumentFile.fromFile(hybridFile.getFile());
-
-      FileUtils.scanFile(documentFile.getUri(), context);
+      Uri uri = null;
+      if (Build.VERSION.SDK_INT >= 19) {
+        DocumentFile documentFile =
+            FileUtil.getDocumentFile(
+                hybridFile.getFile(), hybridFile.isDirectory(context), context);
+        // If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
+        if (documentFile == null) documentFile = DocumentFile.fromFile(hybridFile.getFile());
+        uri = documentFile.getUri();
+      } else {
+        if (hybridFile.isLocal()) {
+          uri = Uri.fromFile(hybridFile.getFile());
+        }
+      }
+      if (uri != null) {
+        FileUtils.scanFile(uri, context);
+      }
     }
+  }
+
+  /**
+   * Triggers {@link Intent#ACTION_MEDIA_SCANNER_SCAN_FILE} intent to refresh the media store.
+   *
+   * @param uri File's {@link Uri}
+   * @param c {@link Context}
+   */
+  private static void scanFile(@NonNull Uri uri, @NonNull Context c) {
+    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE, uri);
+    c.sendBroadcast(mediaScanIntent);
   }
 
   public static void crossfade(View buttons, final View pathbar) {
@@ -374,7 +375,8 @@ public class FileUtils {
       final @NonNull File f, final @NonNull PermissionsActivity permissionsActivity) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
         && !permissionsActivity.getPackageManager().canRequestPackageInstalls()) {
-      permissionsActivity.requestInstallApkPermission(() -> installApk(f, permissionsActivity));
+      permissionsActivity.requestInstallApkPermission(
+          () -> installApk(f, permissionsActivity), true);
     }
 
     Intent intent = new Intent(Intent.ACTION_VIEW);

@@ -57,7 +57,14 @@ import android.widget.TextView;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+    shadows = {ShadowMultiDex.class},
+    minSdk = 24,
+    maxSdk = 27)
+/*
+ Restrict minSdk to 24 since it'd fail at SDK 21-23.
+ This may only be fixed by upgrading to Robolectric 4.
+ See https://github.com/robolectric/robolectric/issues/3947
+*/
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";

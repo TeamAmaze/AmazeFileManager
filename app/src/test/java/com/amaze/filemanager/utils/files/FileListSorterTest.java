@@ -26,15 +26,26 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowDateFormat;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
 
 /**
  * because of test based on mock-up, extension testing isn't tested so, assume all extension is
  * "*{slash}*"
  */
+@RunWith(RobolectricTestRunner.class)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class, ShadowDateFormat.class},
+    maxSdk = 27)
 public class FileListSorterTest {
   /**
    * Purpose: when dirsOnTop is 0, if file1 is directory && file2 is not directory, result is -1

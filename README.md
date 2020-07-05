@@ -1,5 +1,7 @@
 # Amaze File Manager
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
+[![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 
@@ -62,8 +64,10 @@ Authors
 
 ### License: 
 
-    Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
+    Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>
+    Copyright (C) 2014-2020 Vishal Nehra <vishalmeham2@gmail.com>
     Copyright (C) 2017-2018 Emmanuel Messulam <emmanuelbendavid@gmail.com>
+    Copyright (C) 2018-2020 Raymond Lai <airwave209gt at gmail.com>
     This file is part of Amaze File Manager.
     Amaze File Manager is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by

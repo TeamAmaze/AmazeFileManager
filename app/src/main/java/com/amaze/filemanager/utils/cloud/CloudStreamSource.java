@@ -80,10 +80,12 @@ public class CloudStreamSource extends RandomAccessStream {
 
   @Override
   public void close() {
-    try {
-      inputStream.close();
-    } catch (IOException e) {
-      e.printStackTrace();
+    if (inputStream != null) {
+      try {
+        inputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
     }
   }
 

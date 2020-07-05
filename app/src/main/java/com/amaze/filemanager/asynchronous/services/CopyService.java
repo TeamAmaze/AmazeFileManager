@@ -457,7 +457,7 @@ public class CopyService extends AbstractProgressiveService {
           e.printStackTrace();
           failedFOps.add(sourceFile);
         }
-        FileUtils.scanFile(targetFile.getFile(), c);
+        FileUtils.scanFile(c, new HybridFile[] {targetFile});
       }
 
       private void copyFiles(

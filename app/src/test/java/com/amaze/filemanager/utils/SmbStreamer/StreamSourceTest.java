@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,7 +49,8 @@ import jcifs.smb.SmbFile;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
+    shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
+    maxSdk = 27)
 public class StreamSourceTest {
   private SmbFile file;
   private StreamSource ss;
@@ -62,6 +64,11 @@ public class StreamSourceTest {
     text = textInFile.toString().getBytes();
     file = createFile();
     ss = new StreamSource(file, file.length());
+  }
+
+  @After
+  public void tearDown() {
+    if (ss != null) ss.close();
   }
 
   private SmbFile createFile() throws IOException {

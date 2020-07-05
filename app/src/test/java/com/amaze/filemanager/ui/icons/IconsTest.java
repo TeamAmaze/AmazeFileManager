@@ -38,7 +38,8 @@ import android.webkit.MimeTypeMap;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+    shadows = {ShadowMultiDex.class},
+    maxSdk = 27)
 public class IconsTest {
 
   @Before
