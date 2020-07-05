@@ -41,9 +41,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.SortHandler;
-import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -942,30 +940,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         }
       }
     }
-  }
-
-  /**
-   * Queries database to find entry for the specific path
-   *
-   * @param path the path to match with
-   * @return the entry
-   */
-  private static EncryptedEntry findEncryptedEntry(Context context, String path) throws Exception {
-
-    CryptHandler handler = CryptHandler.getInstance();
-
-    EncryptedEntry matchedEntry = null;
-    // find closest path which matches with database entry
-    for (EncryptedEntry encryptedEntry : handler.getAllEntries()) {
-      if (path.contains(encryptedEntry.getPath())) {
-
-        if (matchedEntry == null
-            || matchedEntry.getPath().length() < encryptedEntry.getPath().length()) {
-          matchedEntry = encryptedEntry;
-        }
-      }
-    }
-    return matchedEntry;
   }
 
   public void updateTabWithDb(Tab tab) {

@@ -193,14 +193,14 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
           () -> {
             for (int i = 0; i < paths.size(); i++) {
               for (HybridFileParcelable file : files.get(i)) {
-                if (file.getName().endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                if (file.getName(context).endsWith(CryptUtil.CRYPT_EXTENSION)) {
                   try {
                     CryptHandler cryptHandler = CryptHandler.getInstance();
                     EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
                     EncryptedEntry newEntry = new EncryptedEntry();
                     newEntry.setId(oldEntry.getId());
                     newEntry.setPassword(oldEntry.getPassword());
-                    newEntry.setPath(paths.get(i) + "/" + file.getName());
+                    newEntry.setPath(paths.get(i) + "/" + file.getName(context));
                     cryptHandler.updateEntry(oldEntry, newEntry);
                   } catch (Exception e) {
                     e.printStackTrace();

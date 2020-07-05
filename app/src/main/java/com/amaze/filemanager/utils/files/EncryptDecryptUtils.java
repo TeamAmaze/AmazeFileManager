@@ -97,7 +97,7 @@ public class EncryptDecryptUtils {
     EncryptedEntry encryptedEntry;
 
     try {
-      encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
+      encryptedEntry = findEncryptedEntry(sourceFile.getPath());
     } catch (GeneralSecurityException | IOException e) {
       e.printStackTrace();
 
@@ -199,7 +199,7 @@ public class EncryptDecryptUtils {
    * @param path the path to match with
    * @return the entry
    */
-  private static EncryptedEntry findEncryptedEntry(Context context, String path)
+  private static EncryptedEntry findEncryptedEntry(String path)
       throws GeneralSecurityException, IOException {
 
     CryptHandler handler = CryptHandler.getInstance();
