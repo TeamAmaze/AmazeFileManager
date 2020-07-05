@@ -39,7 +39,9 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
@@ -57,6 +59,8 @@ public class SshConnectionPoolTest {
 
   private SshServer server;
 
+  private UtilitiesDatabase utilitiesDatabase;
+
   private UtilsHandler utilsHandler;
 
   private static TestKeyProvider hostKeyProvider, userKeyProvider;
@@ -70,6 +74,7 @@ public class SshConnectionPoolTest {
   @After
   public void tearDown() {
     if (server != null && server.isOpen()) server.close(true);
+    if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
   }
 
   @Test
@@ -298,8 +303,8 @@ public class SshConnectionPoolTest {
       @NonNull String validUsername,
       @Nullable String validPassword,
       @Nullable PrivateKey privateKey) {
-    utilsHandler = new UtilsHandler(RuntimeEnvironment.application);
-    utilsHandler.onCreate(utilsHandler.getWritableDatabase());
+    utilitiesDatabase = UtilitiesDatabase.initialize(RuntimeEnvironment.application);
+    utilsHandler = new UtilsHandler(RuntimeEnvironment.application, utilitiesDatabase);
 
     String privateKeyContents = null;
     if (privateKey != null) {
@@ -321,18 +326,22 @@ public class SshConnectionPoolTest {
     fullUri.append("@127.0.0.1:22222");
 
     if (validPassword != null)
-      utilsHandler.addSsh(
-          "test",
-          SshClientUtils.encryptSshPathAsNecessary(fullUri.toString()),
-          SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
-          null,
-          null);
+      utilsHandler.saveToDatabase(
+          new OperationData(
+              UtilsHandler.Operation.SFTP,
+              fullUri.toString(),
+              "Test",
+              SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
+              null,
+              null));
     else
-      utilsHandler.addSsh(
-          "test",
-          fullUri.toString(),
-          SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
-          "id_rsa",
-          privateKeyContents);
+      utilsHandler.saveToDatabase(
+          new OperationData(
+              UtilsHandler.Operation.SFTP,
+              fullUri.toString(),
+              "Test",
+              SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
+              "id_rsa",
+              privateKeyContents));
   }
 }

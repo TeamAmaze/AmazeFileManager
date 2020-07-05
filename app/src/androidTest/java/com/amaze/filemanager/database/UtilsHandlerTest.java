@@ -28,7 +28,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+
+import android.content.Context;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -37,14 +40,16 @@ import androidx.test.platform.app.InstrumentationRegistry;
 @RunWith(AndroidJUnit4.class)
 public class UtilsHandlerTest {
 
+  private UtilitiesDatabase utilitiesDatabase;
+
   private UtilsHandler utilsHandler;
 
   @Before
   public void setUp() {
-    utilsHandler =
-        new UtilsHandler(InstrumentationRegistry.getInstrumentation().getTargetContext());
-    utilsHandler.onCreate(utilsHandler.getWritableDatabase());
-    utilsHandler.getWritableDatabase().execSQL("DELETE FROM sftp;");
+    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
+    utilitiesDatabase = UtilitiesDatabase.initialize(ctx);
+    utilsHandler = new UtilsHandler(ctx, utilitiesDatabase);
+    utilitiesDatabase.getOpenHelper().getWritableDatabase().execSQL("DELETE FROM sftp;");
   }
 
   @Test
@@ -69,8 +74,14 @@ public class UtilsHandlerTest {
 
   private void performTest(@NonNull final String origPath) {
     String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
-    utilsHandler.addSsh(
-        "Test", encryptedPath, "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff", null, null);
+    utilsHandler.saveToDatabase(
+        new OperationData(
+            UtilsHandler.Operation.SFTP,
+            encryptedPath,
+            "Test",
+            "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
+            null,
+            null));
 
     List<String[]> result = utilsHandler.getSftpList();
     assertEquals(1, result.size());
