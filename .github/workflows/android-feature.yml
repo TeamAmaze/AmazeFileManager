@@ -27,3 +27,4 @@ jobs:
         run: |
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
           bash <(curl -Ls https://coverage.codacy.com/get.sh)
+        continue-on-error: true
