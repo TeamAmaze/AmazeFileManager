@@ -42,7 +42,7 @@ public interface TabDao {
   public void insertTab(Tab tab);
 
   @Transaction
-  @Query("DELETE FROM tab WHERE tab_no IN (1,2);")
+  @Query("DELETE FROM tab;")
   public void clear();
 
   @Query("SELECT * FROM tab WHERE tab_no = :tabNo")

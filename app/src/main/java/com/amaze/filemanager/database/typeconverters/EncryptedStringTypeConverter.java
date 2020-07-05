@@ -46,7 +46,7 @@ public class EncryptedStringTypeConverter {
           CryptUtil.decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb));
     } catch (Exception e) {
       android.util.Log.e(TAG, "Error decrypting password", e);
-      return null;
+      return new StringWrapper(encryptedStringEntryInDb);
     }
   }
 
@@ -56,7 +56,7 @@ public class EncryptedStringTypeConverter {
       return CryptUtil.encryptPassword(AppConfig.getInstance(), unencryptedPasswordString.value);
     } catch (Exception e) {
       android.util.Log.e(TAG, "Error encrypting password", e);
-      return null;
+      return unencryptedPasswordString.value;
     }
   }
 }

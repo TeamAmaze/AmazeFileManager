@@ -26,6 +26,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -52,6 +53,11 @@ public class UtilsHandlerTest {
     utilitiesDatabase = UtilitiesDatabase.initialize(ctx);
     utilsHandler = new UtilsHandler(ctx, utilitiesDatabase);
     utilitiesDatabase.getOpenHelper().getWritableDatabase().execSQL("DELETE FROM sftp;");
+  }
+
+  @After
+  public void tearDown() {
+    if (utilitiesDatabase.isOpen()) utilitiesDatabase.close();
   }
 
   @Test

@@ -58,7 +58,7 @@ public class TestUtils {
       f.setAccessible(true);
       Handler h = (Handler) f.get(null);
       Scheduler scheduler = shadowOf(h.getLooper()).getScheduler();
-      scheduler.advanceToNextPostedRunnable();
+      scheduler.advanceToLastPostedRunnable();
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new AssertionError("Unable to access backgroundHandler within AppConfig");
     }

@@ -74,7 +74,7 @@ public class ShadowCryptUtilTest {
 
     TestUtils.flushAppConfigHandlerThread();
 
-    fingerprint.equals(utilsHandler.getSshHostKey(url));
+    assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
     utilitiesDatabase.close();
   }
 }

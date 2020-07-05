@@ -43,9 +43,9 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
-import com.amaze.filemanager.test.TestUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
+import com.amaze.filemanager.test.TestUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -331,7 +331,7 @@ public class SshConnectionPoolTest {
       utilsHandler.saveToDatabase(
           new OperationData(
               UtilsHandler.Operation.SFTP,
-              fullUri.toString(),
+              SshClientUtils.encryptSshPathAsNecessary(fullUri.toString()),
               "Test",
               SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
               null,
@@ -340,7 +340,7 @@ public class SshConnectionPoolTest {
       utilsHandler.saveToDatabase(
           new OperationData(
               UtilsHandler.Operation.SFTP,
-              fullUri.toString(),
+              SshClientUtils.encryptSshPathAsNecessary(fullUri.toString()),
               "Test",
               SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
               "id_rsa",
