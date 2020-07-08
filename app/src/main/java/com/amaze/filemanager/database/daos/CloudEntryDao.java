@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.database.daos;
 
+import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_CLOUD_SERVICE;
+import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_CLOUD_PERSIST;
+
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 
 import androidx.room.Dao;
@@ -42,10 +45,11 @@ public interface CloudEntryDao {
   @Insert
   public void insert(CloudEntry entry);
 
-  @Query("SELECT * FROM cloud WHERE service = :serviceType")
+  @Query(
+      "SELECT * FROM " + TABLE_CLOUD_PERSIST + " WHERE " + COLUMN_CLOUD_SERVICE + " = :serviceType")
   public CloudEntry findByServiceType(int serviceType);
 
-  @Query("SELECT * FROM cloud")
+  @Query("SELECT * FROM " + TABLE_CLOUD_PERSIST)
   public CloudEntry[] list();
 
   @Update

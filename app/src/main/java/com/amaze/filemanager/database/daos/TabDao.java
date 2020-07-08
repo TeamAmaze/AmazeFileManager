@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.database.daos;
 
+import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_TAB_NO;
+import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_TAB;
+
 import com.amaze.filemanager.database.models.explorer.Tab;
 
 import androidx.room.Dao;
@@ -42,12 +45,12 @@ public interface TabDao {
   public void insertTab(Tab tab);
 
   @Transaction
-  @Query("DELETE FROM tab;")
+  @Query("DELETE FROM " + TABLE_TAB)
   public void clear();
 
-  @Query("SELECT * FROM tab WHERE tab_no = :tabNo")
+  @Query("SELECT * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + " = :tabNo")
   public Tab find(int tabNo);
 
-  @Query("SELECT * FROM tab")
+  @Query("SELECT * FROM " + TABLE_TAB)
   public Tab[] list();
 }

@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.database.daos;
 
+import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_PATH;
+import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_ENCRYPTED;
+
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 
 import androidx.room.Dao;
@@ -42,16 +45,16 @@ public interface EncryptedEntryDao {
   @Insert
   public void insert(EncryptedEntry entry);
 
-  @Query("SELECT * FROM encrypted WHERE path = :path")
+  @Query("SELECT * FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_PATH + " = :path")
   public EncryptedEntry select(String path);
 
   @Update
   public void update(EncryptedEntry entry);
 
   @Transaction
-  @Query("DELETE FROM encrypted WHERE path = :path")
+  @Query("DELETE FROM " + TABLE_ENCRYPTED + " WHERE " + COLUMN_PATH + " = :path")
   public void delete(String path);
 
-  @Query("SELECT * FROM encrypted")
+  @Query("SELECT * FROM " + TABLE_ENCRYPTED)
   public EncryptedEntry[] list();
 }

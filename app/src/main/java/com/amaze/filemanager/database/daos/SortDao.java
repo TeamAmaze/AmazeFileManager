@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.database.daos;
 
+import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_PATH;
+import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_SORT;
+
 import com.amaze.filemanager.database.models.explorer.Sort;
 
 import androidx.room.Dao;
@@ -42,14 +45,11 @@ public interface SortDao {
   @Insert
   public void insert(Sort entity);
 
-  @Query("SELECT * FROM sort WHERE path = :path")
+  @Query("SELECT * FROM " + TABLE_SORT + " WHERE " + COLUMN_PATH + " = :path")
   public Sort find(String path);
 
-  //    @Query("SELECT * FROM sort")
-  //    public Sort[] list();
-
   @Transaction
-  @Query("DELETE FROM sort WHERE path = :path")
+  @Query("DELETE FROM " + TABLE_SORT + " WHERE " + COLUMN_PATH + " = :path")
   public void clear(String path);
 
   @Update
