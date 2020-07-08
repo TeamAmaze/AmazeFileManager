@@ -164,7 +164,7 @@ public class ServiceWatcherUtil {
    * avoids posting any callback after service has stopped.
    */
   public void stopWatch() {
-    if (watcherRepeatingRunnable.isAlive()) {
+    if (watcherRepeatingRunnable != null && watcherRepeatingRunnable.isAlive()) {
       watcherRepeatingRunnable.cancel(true);
     }
   }
