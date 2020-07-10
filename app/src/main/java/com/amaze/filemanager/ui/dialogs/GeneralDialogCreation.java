@@ -49,7 +49,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.SortHandler;
-import com.amaze.filemanager.database.models.Sort;
+import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -1209,7 +1209,7 @@ public class GeneralDialogCreation {
       MaterialDialog dialog,
       boolean desc) {
     final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
-    SortHandler sortHandler = new SortHandler(m.getContext());
+    SortHandler sortHandler = SortHandler.getInstance();
     if (onlyThisFloders.contains(m.getCurrentPath())) {
       Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
       Sort newSort = new Sort(m.getCurrentPath(), sortType);

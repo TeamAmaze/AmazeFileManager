@@ -18,42 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.models;
+package com.amaze.filemanager.database.models.utilities;
 
-/** Created by vishal on 8/4/17. */
-public class EncryptedEntry {
+import com.amaze.filemanager.database.UtilitiesDatabase;
 
-  private int _id;
-  private String path, password;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
 
-  public EncryptedEntry() {}
+/**
+ * Base class {@link Entity} representation of tables in utilities.db.
+ *
+ * <p>This class is the base class extending {@link OperationData} adding the <code>name</code>
+ * column.
+ *
+ * @see OperationData
+ * @see UtilitiesDatabase
+ */
+public abstract class OperationDataWithName extends OperationData {
 
-  public EncryptedEntry(String path, String password) {
-    this.path = path;
-    this.password = password;
-  }
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_NAME)
+  public String name;
 
-  public void setId(int _id) {
-    this._id = _id;
-  }
-
-  public int getId() {
-    return this._id;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  public String getPath() {
-    return this.path;
-  }
-
-  public void setPassword(String password) {
-    this.password = password;
-  }
-
-  public String getPassword() {
-    return this.password;
+  public OperationDataWithName(String name, String path) {
+    super(path);
+    this.name = name;
   }
 }

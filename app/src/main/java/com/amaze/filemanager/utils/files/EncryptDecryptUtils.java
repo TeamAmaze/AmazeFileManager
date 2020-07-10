@@ -29,7 +29,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.DecryptService;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.fragments.MainFragment;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
@@ -63,7 +63,7 @@ public class EncryptDecryptUtils {
   public static void startEncryption(
       Context c, final String path, final String password, Intent intent)
       throws GeneralSecurityException, IOException {
-    CryptHandler cryptHandler = new CryptHandler(c);
+    CryptHandler cryptHandler = CryptHandler.getInstance();
     String destPath =
         path.substring(0, path.lastIndexOf('/') + 1)
             .concat(intent.getStringExtra(EncryptService.TAG_ENCRYPT_TARGET));
@@ -97,7 +97,7 @@ public class EncryptDecryptUtils {
     EncryptedEntry encryptedEntry;
 
     try {
-      encryptedEntry = findEncryptedEntry(main.getContext(), sourceFile.getPath());
+      encryptedEntry = findEncryptedEntry(sourceFile.getPath());
     } catch (GeneralSecurityException | IOException e) {
       e.printStackTrace();
 
@@ -138,7 +138,7 @@ public class EncryptDecryptUtils {
       return;
     }
 
-    switch (encryptedEntry.getPassword()) {
+    switch (encryptedEntry.getPassword().value) {
       case PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT:
         try {
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -187,7 +187,7 @@ public class EncryptDecryptUtils {
             mainActivity,
             decryptIntent,
             utilsProvider.getAppTheme(),
-            encryptedEntry.getPassword(),
+            encryptedEntry.getPassword().value,
             decryptButtonCallbackInterface);
         break;
     }
@@ -199,10 +199,10 @@ public class EncryptDecryptUtils {
    * @param path the path to match with
    * @return the entry
    */
-  private static EncryptedEntry findEncryptedEntry(Context context, String path)
+  private static EncryptedEntry findEncryptedEntry(String path)
       throws GeneralSecurityException, IOException {
 
-    CryptHandler handler = new CryptHandler(context);
+    CryptHandler handler = CryptHandler.getInstance();
 
     EncryptedEntry matchedEntry = null;
     // find closest path which matches with database entry

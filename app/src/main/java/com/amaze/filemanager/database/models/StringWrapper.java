@@ -20,27 +20,17 @@
 
 package com.amaze.filemanager.database.models;
 
-import com.amaze.filemanager.utils.files.FileUtils;
+/** Simple StringWrapper. */
+public class StringWrapper {
 
-import android.content.SharedPreferences;
+  public final String value;
 
-/** Created by Vishal on 9/17/2014 */
-public class Tab {
-  public final int tabNumber;
-  public final String path;
-  public final String home;
-
-  public Tab(int tabNo, String path, String home) {
-    this.tabNumber = tabNo;
-    this.path = path;
-    this.home = home;
+  public StringWrapper(String value) {
+    this.value = value;
   }
 
-  public String getOriginalPath(boolean savePaths, SharedPreferences sharedPreferences) {
-    if (savePaths && FileUtils.isPathAccessible(path, sharedPreferences)) {
-      return path;
-    } else {
-      return home;
-    }
+  @Override
+  public String toString() {
+    return value;
   }
 }

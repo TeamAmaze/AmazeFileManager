@@ -18,15 +18,42 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.models;
+package com.amaze.filemanager.database.models.utilities;
 
-/** Created by Ning on 5/28/2018. */
-public class Sort {
-  public final String path;
-  public final int type;
+import com.amaze.filemanager.database.UtilitiesDatabase;
 
-  public Sort(String path, int type) {
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+
+/**
+ * Base class {@link Entity} representation of tables in utilities.db.
+ *
+ * <p>This class is the base classwith <code>id</code>, <code>path</code> columns common to all
+ * tables.
+ *
+ * @see UtilitiesDatabase
+ */
+public abstract class OperationData {
+
+  @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_ID)
+  public int _id;
+
+  @ColumnInfo(name = UtilitiesDatabase.COLUMN_PATH)
+  public String path;
+
+  public OperationData(String path) {
     this.path = path;
-    this.type = type;
+  }
+
+  @Override
+  public String toString() {
+    return new StringBuilder("OperationData type=[")
+        .append(getClass().getSimpleName())
+        .append("],path=[")
+        .append(path)
+        .append("]")
+        .toString();
   }
 }

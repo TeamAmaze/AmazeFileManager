@@ -26,7 +26,7 @@ import java.util.List;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
@@ -43,7 +43,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -96,7 +95,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
 
-    tabHandler = new TabHandler(getContext());
+    tabHandler = TabHandler.getInstance();
     fragmentManager = getActivity().getSupportFragmentManager();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -124,10 +123,13 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
           sharedPrefs.getInt(
               PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
       MainActivity.currentTab = lastOpenTab;
+
       Tab tab1 = tabHandler.findTab(1);
       Tab tab2 = tabHandler.findTab(2);
+      Tab[] tabs = tabHandler.getAllTabs();
 
-      if (tabHandler.getAllTabs().isEmpty()
+      if (tabs == null
+          || tabs.length < 1
           || tab1 == null
           || tab2 == null) { // creating tabs in db for the first time, probably the first launch of
         // app, or something got corrupted
@@ -225,20 +227,14 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         .putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab)
         .apply();
     super.onDestroyView();
-    try {
-      if (tabHandler != null) tabHandler.close();
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   public void updatepaths(int pos) {
-    if (tabHandler == null) tabHandler = new TabHandler(getActivity());
-    int i = 1;
 
     // Getting old path from database before clearing
-
     tabHandler.clear();
+
+    int i = 1;
     for (Fragment fragment : fragments) {
       if (fragment instanceof MainFragment) {
         MainFragment m = (MainFragment) fragment;
@@ -265,11 +261,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         i++;
       }
     }
-  }
-
-  String parseSmbPath(String a) {
-    if (a.contains("@")) return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-    else return a;
   }
 
   @Override
@@ -328,7 +319,8 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
           .commit();
     }
 
-    Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab);
+    //        Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab, new
+    // Exception());
 
     Fragment fragment = fragments.get(p1);
     if (fragment != null && fragment instanceof MainFragment) {

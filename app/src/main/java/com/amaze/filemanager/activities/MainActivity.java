@@ -47,12 +47,13 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.database.models.CloudEntry;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.database.models.Tab;
+import com.amaze.filemanager.database.models.explorer.CloudEntry;
+import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -60,7 +61,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.StorageNaming;
-import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
@@ -218,8 +218,6 @@ public class MainActivity extends PermissionsActivity
   private Intent intent;
   private View indicator_layout;
 
-  private TabHandler tabHandler;
-
   private AppBarLayout appBarLayout;
 
   private SpeedDialOverlayLayout fabBgView;
@@ -288,7 +286,6 @@ public class MainActivity extends PermissionsActivity
 
     dataUtils.registerOnDataChangedListener(this);
 
-    CustomSshJConfig.init();
     AppConfig.getInstance().setMainActivityContext(this);
 
     setContentView(R.layout.main_toolbar);
@@ -302,9 +299,8 @@ public class MainActivity extends PermissionsActivity
               }
             });
     initialiseViews();
-    tabHandler = new TabHandler(this);
     utilsHandler = AppConfig.getInstance().getUtilsHandler();
-    cloudHandler = new CloudHandler(this);
+    cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase());
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
@@ -460,6 +456,7 @@ public class MainActivity extends PermissionsActivity
             boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
             // reset home and current paths according to new storages
             if (b) {
+              TabHandler tabHandler = TabHandler.getInstance();
               tabHandler.clear();
 
               if (drawer.getPhoneStorageCount() > 1) {
@@ -857,6 +854,10 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
+      UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
+      ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
+      if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
+      if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
       SshConnectionPool.getInstance().expungeAllConnections();
       finish();
       if (isRootExplorer()) {
@@ -1330,12 +1331,10 @@ public class MainActivity extends PermissionsActivity
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
 
-    tabHandler.close();
-    utilsHandler.close();
-    cloudHandler.close();
-
-    CryptHandler cryptHandler = new CryptHandler(this);
-    cryptHandler.close();
+    UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
+    ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
+    if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
+    if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
 
     SshConnectionPool.getInstance().expungeAllConnections();
   }

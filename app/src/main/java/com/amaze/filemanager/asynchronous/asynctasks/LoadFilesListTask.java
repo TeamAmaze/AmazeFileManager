@@ -450,7 +450,7 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecent() {
-    UtilsHandler utilsHandler = new UtilsHandler(context);
+    UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
     final LinkedList<String> paths = utilsHandler.getHistoryLinkedList();
     ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
     for (String f : paths) {

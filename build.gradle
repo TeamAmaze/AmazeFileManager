@@ -42,3 +42,65 @@ spotless {
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
 }
+
+configurations {
+    robo16
+    robo17
+    robo18
+    robo19
+    robo21
+    robo22
+    robo23
+    robo24
+    robo25
+    robo26
+    robo27
+}
+
+dependencies {
+    robo16 "org.robolectric:android-all:4.1.2_r1-robolectric-r1"
+    robo17 "org.robolectric:android-all:4.2.2_r1.2-robolectric-r1"
+    robo18 "org.robolectric:android-all:4.3_r2-robolectric-r1"
+    robo19 "org.robolectric:android-all:4.4_r1-robolectric-r2"
+    robo21 "org.robolectric:android-all:5.0.2_r3-robolectric-r0"
+    robo22 "org.robolectric:android-all:5.1.1_r9-robolectric-r2"
+    robo23 "org.robolectric:android-all:6.0.1_r3-robolectric-r1"
+    robo24 "org.robolectric:android-all:7.0.0_r1-robolectric-r1"
+    robo25 "org.robolectric:android-all:7.1.0_r7-robolectric-r1"
+    robo26 "org.robolectric:android-all:8.0.0_r4-robolectric-r1"
+    robo27 "org.robolectric:android-all:8.1.0-robolectric-4611349"
+}
+
+def robolectricDependencies = "${rootProject.buildDir.path}/robolectric"
+
+task fetchRobolectricDependencies(type: Copy) {
+    from configurations.robo16
+    from configurations.robo17
+    from configurations.robo18
+    from configurations.robo19
+    from configurations.robo21
+    from configurations.robo22
+    from configurations.robo23
+    from configurations.robo24
+    from configurations.robo25
+    from configurations.robo26
+    from configurations.robo27
+    into robolectricDependencies
+}
+
+subprojects {
+    afterEvaluate {
+        if (project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) {
+            android {
+                testOptions.unitTests.all {
+                    systemProperty 'robolectric.offline', 'true'
+                    systemProperty 'robolectric.dependency.dir', robolectricDependencies
+                }
+            }
+
+            tasks.withType(Test) {
+                it.dependsOn fetchRobolectricDependencies
+            }
+        }
+    }
+}

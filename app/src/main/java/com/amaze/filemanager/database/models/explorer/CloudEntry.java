@@ -18,22 +18,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.models;
+package com.amaze.filemanager.database.models.explorer;
 
+import com.amaze.filemanager.database.ExplorerDatabase;
+import com.amaze.filemanager.database.models.StringWrapper;
+import com.amaze.filemanager.database.typeconverters.EncryptedStringTypeConverter;
+import com.amaze.filemanager.database.typeconverters.OpenModeTypeConverter;
 import com.amaze.filemanager.utils.OpenMode;
 
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.PrimaryKey;
+import androidx.room.TypeConverters;
+
 /** Created by vishal on 18/4/17. */
+@Entity(tableName = ExplorerDatabase.TABLE_CLOUD_PERSIST)
 public class CloudEntry {
 
+  @PrimaryKey(autoGenerate = true)
+  @ColumnInfo(name = ExplorerDatabase.COLUMN_CLOUD_ID)
   private int _id;
+
+  @ColumnInfo(name = ExplorerDatabase.COLUMN_CLOUD_SERVICE)
+  @TypeConverters(OpenModeTypeConverter.class)
   private OpenMode serviceType;
-  private String persistData;
+
+  @ColumnInfo(name = ExplorerDatabase.COLUMN_CLOUD_PERSIST)
+  @TypeConverters(EncryptedStringTypeConverter.class)
+  private StringWrapper persistData;
 
   public CloudEntry() {}
 
   public CloudEntry(OpenMode serviceType, String persistData) {
     this.serviceType = serviceType;
-    this.persistData = persistData;
+    this.persistData = new StringWrapper(persistData);
   }
 
   public void setId(int _id) {
@@ -44,11 +62,11 @@ public class CloudEntry {
     return this._id;
   }
 
-  public void setPersistData(String persistData) {
+  public void setPersistData(StringWrapper persistData) {
     this.persistData = persistData;
   }
 
-  public String getPersistData() {
+  public StringWrapper getPersistData() {
     return this.persistData;
   }
 

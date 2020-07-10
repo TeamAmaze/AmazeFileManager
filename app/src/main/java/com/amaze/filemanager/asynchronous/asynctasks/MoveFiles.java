@@ -31,7 +31,7 @@ import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -195,8 +195,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
               for (HybridFileParcelable file : files.get(i)) {
                 if (file.getName(context).endsWith(CryptUtil.CRYPT_EXTENSION)) {
                   try {
-
-                    CryptHandler cryptHandler = new CryptHandler(context);
+                    CryptHandler cryptHandler = CryptHandler.getInstance();
                     EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
                     EncryptedEntry newEntry = new EncryptedEntry();
                     newEntry.setId(oldEntry.getId());

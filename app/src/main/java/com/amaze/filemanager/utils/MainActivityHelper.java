@@ -31,7 +31,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -339,8 +339,7 @@ public class MainActivityHelper {
                     // update the database entry to reflect rename for encrypted file
                     if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                       try {
-
-                        CryptHandler cryptHandler = new CryptHandler(context);
+                        CryptHandler cryptHandler = CryptHandler.getInstance();
                         EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
                         EncryptedEntry newEntry = new EncryptedEntry();
                         newEntry.setId(oldEntry.getId());
