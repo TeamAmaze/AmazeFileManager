@@ -42,7 +42,7 @@ public abstract class AbstractRepeatingRunnable implements Runnable {
   }
 
   public boolean isAlive() {
-    return handle.isDone();
+    return !handle.isDone();
   }
 
   /**
