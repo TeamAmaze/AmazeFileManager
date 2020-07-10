@@ -284,4 +284,8 @@ public class Utils {
   public static boolean isNullOrEmpty(final Collection<?> list) {
     return list == null || list.size() == 0;
   }
+
+  public static boolean isNullOrEmpty(final String string) {
+    return string == null || string.length() == 0;
+  }
 }

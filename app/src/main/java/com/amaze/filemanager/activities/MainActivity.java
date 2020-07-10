@@ -53,7 +53,6 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -458,20 +457,8 @@ public class MainActivity extends PermissionsActivity
             if (b) {
               TabHandler tabHandler = TabHandler.getInstance();
               tabHandler.clear();
-
-              if (drawer.getPhoneStorageCount() > 1) {
-                tabHandler.addTab(new Tab(1, drawer.getSecondPath(), "/"));
-              } else {
-                tabHandler.addTab(new Tab(1, "/", "/"));
-              }
-
-              if (drawer.getFirstPath() != null) {
-                String pa = drawer.getFirstPath();
-                tabHandler.addTab(new Tab(2, pa, pa));
-              } else {
-                tabHandler.addTab(new Tab(2, drawer.getSecondPath(), "/"));
-              }
               if (tabFragment != null) {
+                tabFragment.refactorDrawerStorages(false);
                 Fragment main = tabFragment.getFragmentAtIndex(0);
                 if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
                 Fragment main1 = tabFragment.getFragmentAtIndex(1);
