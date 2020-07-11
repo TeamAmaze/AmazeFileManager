@@ -165,7 +165,8 @@ public final class PasteHelper implements Parcelable {
                 ? mainActivity.getString(R.string.copy)
                 : mainActivity.getString(R.string.move));
     operationText = operationText.concat(": ");
-    int foldersCount = 0, filesCount = 0;
+    int foldersCount = 0;
+    int filesCount = 0;
     for (HybridFileParcelable fileParcelable : paths) {
       if (fileParcelable.isDirectory(mainActivity.getApplicationContext())) {
         foldersCount++;
