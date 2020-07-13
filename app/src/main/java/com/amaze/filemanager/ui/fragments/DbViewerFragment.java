@@ -23,8 +23,8 @@ package com.amaze.filemanager.ui.fragments;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.DbViewerTask;
 import com.amaze.filemanager.ui.activities.DatabaseViewerActivity;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 
 import android.database.Cursor;
 import android.graphics.Color;

@@ -30,14 +30,14 @@ import java.util.List;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.theme.AppTheme;
 
 import android.Manifest;
 import android.app.Activity;

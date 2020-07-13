@@ -31,10 +31,10 @@ import java.util.List;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.SmbUtil;
-import com.amaze.filemanager.utils.cloud.CloudStreamer;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;

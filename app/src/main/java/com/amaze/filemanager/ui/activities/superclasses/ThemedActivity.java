@@ -25,7 +25,7 @@ import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.ui.theme.AppTheme;
 
 import android.os.Build;
 import android.os.Bundle;

@@ -35,14 +35,14 @@ import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 import com.google.android.material.snackbar.Snackbar;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 

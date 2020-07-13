@@ -21,7 +21,7 @@
 package com.amaze.filemanager;
 
 import com.amaze.filemanager.adapters.glide.apkimage.ApkImageModelLoaderFactory;
-import com.amaze.filemanager.utils.glide.CloudIconModelFactory;
+import com.amaze.filemanager.filesystem.glide.CloudIconModelFactory;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.Registry;
 import com.bumptech.glide.annotation.GlideModule;

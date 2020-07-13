@@ -22,8 +22,8 @@ package com.amaze.filemanager.ui.activities.superclasses;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.theme.AppTheme;
 
 import androidx.appcompat.app.AppCompatActivity;
 

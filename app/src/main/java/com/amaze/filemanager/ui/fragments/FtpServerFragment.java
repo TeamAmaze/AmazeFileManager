@@ -34,11 +34,11 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.google.android.material.textfield.TextInputLayout;
 
 import android.content.BroadcastReceiver;

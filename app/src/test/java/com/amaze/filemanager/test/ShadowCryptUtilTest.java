@@ -35,9 +35,9 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.files.CryptUtil;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(

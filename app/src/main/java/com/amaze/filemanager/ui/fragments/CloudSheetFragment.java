@@ -25,9 +25,9 @@ import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import android.app.Dialog;

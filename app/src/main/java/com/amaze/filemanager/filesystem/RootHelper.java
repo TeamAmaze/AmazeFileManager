@@ -25,10 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.files.FileUtils;
 
 import androidx.documentfile.provider.DocumentFile;
 
