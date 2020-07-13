@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.fragments;
 
+import static android.provider.Settings.ACTION_WIFI_SETTINGS;
 import static com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions.STARTED_FROM_TILE;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.files.CryptUtil;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import android.content.BroadcastReceiver;
@@ -51,6 +54,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.provider.Settings;
 import android.text.Html;
 import android.text.InputType;
 import android.text.Spanned;
@@ -66,7 +70,9 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
@@ -82,6 +88,7 @@ public class FtpServerFragment extends Fragment {
   private TextView statusText, url, username, password, port, sharedPath;
   public static final String TAG = "FTPServerFragment";
 
+  private View rootView;
   private AppCompatEditText usernameEditText, passwordEditText;
   private TextInputLayout usernameTextInput, passwordTextInput;
   private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
@@ -90,6 +97,7 @@ public class FtpServerFragment extends Fragment {
   private Spanned spannedStatusNoConnection, spannedStatusConnected, spannedStatusUrl;
   private Spanned spannedStatusSecure, spannedStatusNotRunning;
   private ImageButton ftpPasswordVisibleButton;
+  private Snackbar snackbar;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -101,7 +109,7 @@ public class FtpServerFragment extends Fragment {
   @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    View rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
+    rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
     statusText = rootView.findViewById(R.id.text_view_ftp_status);
     url = rootView.findViewById(R.id.text_view_ftp_url);
     username = rootView.findViewById(R.id.text_view_ftp_username);
@@ -317,6 +325,7 @@ public class FtpServerFragment extends Fragment {
               || FtpService.isEnabledWifiHotspot(getContext())) {
             // connected to Wi-Fi or eth
             ftpBtn.setEnabled(true);
+            dismissSnackbar();
           } else {
             // Wi-Fi or eth connection lost
             stopServer();
@@ -324,6 +333,7 @@ public class FtpServerFragment extends Fragment {
             ftpBtn.setEnabled(true);
             ftpBtn.setEnabled(false);
             ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+            promptUserToEnableWireless(netInfo);
           }
         }
       };
@@ -390,6 +400,7 @@ public class FtpServerFragment extends Fragment {
     super.onPause();
     getContext().unregisterReceiver(mWifiReceiver);
     EventBus.getDefault().unregister(this);
+    dismissSnackbar();
   }
 
   /** Update UI widgets after change in shared preferences */
@@ -655,5 +666,39 @@ public class FtpServerFragment extends Fragment {
         .edit()
         .putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)
         .apply();
+  }
+
+  private void promptUserToEnableWireless(@Nullable NetworkInfo ni) {
+    // No wifi, no data, no connection at all
+    if (ni == null || !ni.isConnected()) {
+      showSnackbar(R.string.ftp_server_prompt_connect_to_network, new Intent(ACTION_WIFI_SETTINGS));
+    } else {
+      // Data connection available, but no AP enabled
+      if (ni.getType() == ConnectivityManager.TYPE_MOBILE) {
+        showSnackbar(
+            R.string.ftp_server_prompt_open_ap, new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+      }
+    }
+  }
+
+  private void showSnackbar(@StringRes int message, @NonNull Intent networkSettingIntent) {
+    snackbar =
+        Snackbar.make(
+                getActivity().findViewById(android.R.id.content),
+                message,
+                BaseTransientBottomBar.LENGTH_INDEFINITE)
+            .setAction(
+                R.string.ftp_server_open_settings,
+                v -> {
+                  startActivity(networkSettingIntent);
+                });
+    snackbar.show();
+  }
+
+  private void dismissSnackbar() {
+    if (snackbar != null) {
+      snackbar.dismiss();
+      snackbar = null;
+    }
   }
 }

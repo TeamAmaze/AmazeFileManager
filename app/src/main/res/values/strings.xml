@@ -658,5 +658,8 @@
     <string name="choose_folder">Choose This Folder</string>
     <string name="folder_go_up_one_level" translatable="false">..</string>
     <string name="some_files_failed_invalid_operation">Some files failed due to invalid operation</string>
+    <string name="ftp_server_prompt_connect_to_network">Connect to a network to enable FTP server.</string>
+    <string name="ftp_server_prompt_open_ap">Enable device hotspot to enable FTP server.</string>
+    <string name="ftp_server_open_settings">Open settings</string>
 </resources>
 
