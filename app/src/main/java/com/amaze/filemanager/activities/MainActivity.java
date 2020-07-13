@@ -1330,12 +1330,6 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-
-    UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
-    ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
-    if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
-    if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
-
     SshConnectionPool.getInstance().expungeAllConnections();
   }
 
