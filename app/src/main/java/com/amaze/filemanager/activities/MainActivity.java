@@ -45,9 +45,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
@@ -853,10 +851,6 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
-      UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
-      ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
-      if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
-      if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
       SshConnectionPool.getInstance().expungeAllConnections();
       finish();
       if (isRootExplorer()) {
@@ -1317,12 +1311,6 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-
-    UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
-    ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
-    if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
-    if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
-
     SshConnectionPool.getInstance().expungeAllConnections();
   }
 
