@@ -47,9 +47,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
@@ -854,10 +852,6 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
-      UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
-      ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
-      if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
-      if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
       SshConnectionPool.getInstance().expungeAllConnections();
       finish();
       if (isRootExplorer()) {
