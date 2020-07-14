@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.fragments.preference_fragments;
+package com.amaze.filemanager.ui.fragments.preference_fragments;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 1/1/2018, at 21:16. */
 public class PreferencesConstants {

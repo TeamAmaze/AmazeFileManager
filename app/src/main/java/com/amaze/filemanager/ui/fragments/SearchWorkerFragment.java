@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.fragments;
+package com.amaze.filemanager.ui.fragments;
 
 import com.amaze.filemanager.asynchronous.asynctasks.SearchAsyncTask;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;

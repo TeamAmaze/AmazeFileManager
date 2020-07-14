@@ -21,7 +21,7 @@
 package com.amaze.filemanager.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -29,9 +29,9 @@ import java.util.ArrayList;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.fragments.DbViewerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
+import com.amaze.filemanager.ui.fragments.DbViewerFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;

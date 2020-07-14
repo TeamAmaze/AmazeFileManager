@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.util.ArrayList;
 
-import com.amaze.filemanager.fragments.DbViewerFragment;
+import com.amaze.filemanager.ui.fragments.DbViewerFragment;
 import com.amaze.filemanager.utils.theme.AppTheme;
 
 import android.database.Cursor;

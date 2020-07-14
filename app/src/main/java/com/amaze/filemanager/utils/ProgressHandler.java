@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.utils;
 
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 
 /**
  * Created by arpitkh96 on 18/8/16.
