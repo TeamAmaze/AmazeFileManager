@@ -34,9 +34,9 @@ import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.OTGUtil;
 
 import android.text.TextUtils;

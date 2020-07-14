@@ -18,31 +18,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.activities.superclasses;
+package com.amaze.filemanager.ui.activities;
 
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.theme.AppTheme;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
+import org.robolectric.RobolectricTestRunner;
+import org.robolectric.android.controller.ActivityController;
+import org.robolectric.annotation.Config;
 
-import androidx.appcompat.app.AppCompatActivity;
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
 
-/** Created by rpiotaix on 17/10/16. */
-public class BasicActivity extends AppCompatActivity {
+@RunWith(RobolectricTestRunner.class)
+@Config(
+    constants = BuildConfig.class,
+    shadows = {ShadowMultiDex.class},
+    maxSdk = 27)
+public class MainActivityTest {
 
-  protected AppConfig getAppConfig() {
-    return (AppConfig) getApplication();
-  }
-
-  public ColorPreferenceHelper getColorPreference() {
-    return getAppConfig().getUtilsProvider().getColorPreference();
-  }
-
-  public AppTheme getAppTheme() {
-    return getAppConfig().getUtilsProvider().getAppTheme();
-  }
-
-  public UtilitiesProvider getUtilsProvider() {
-    return getAppConfig().getUtilsProvider();
+  @Test
+  @Ignore
+  public void testMainActivity() {
+    ActivityController<MainActivity> controller =
+        Robolectric.buildActivity(MainActivity.class)
+            .create()
+            .start()
+            .resume()
+            .visible()
+            .pause()
+            .destroy();
   }
 }

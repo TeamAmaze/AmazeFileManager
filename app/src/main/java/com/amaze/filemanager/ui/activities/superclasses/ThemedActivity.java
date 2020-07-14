@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.activities.superclasses;
+package com.amaze.filemanager.ui.activities.superclasses;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;

@@ -29,7 +29,6 @@ import java.util.Date;
 import java.util.LinkedList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.BaseAsyncTask;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.SortHandler;
@@ -38,6 +37,7 @@ import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.ui.activities.superclasses.BaseAsyncTask;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.activities;
+package com.amaze.filemanager.ui.activities;
 
 import static org.junit.Assert.assertNotEquals;
 

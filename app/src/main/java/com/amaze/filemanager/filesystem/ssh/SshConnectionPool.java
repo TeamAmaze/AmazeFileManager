@@ -28,12 +28,12 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.os.AsyncTask;
 import android.util.Log;
@@ -167,7 +167,7 @@ public class SshConnectionPool {
 
   /**
    * Kill any connection that is still in place. Used by {@link
-   * com.amaze.filemanager.activities.MainActivity}.
+   * com.amaze.filemanager.ui.activities.MainActivity}.
    *
    * @see MainActivity#onDestroy()
    * @see MainActivity#exit()

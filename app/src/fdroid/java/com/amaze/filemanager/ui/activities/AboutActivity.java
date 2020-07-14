@@ -18,10 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.activities;
+package com.amaze.filemanager.ui.activities;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.utils.Utils;
 import com.amaze.filemanager.utils.theme.AppTheme;
 import com.google.android.material.appbar.AppBarLayout;

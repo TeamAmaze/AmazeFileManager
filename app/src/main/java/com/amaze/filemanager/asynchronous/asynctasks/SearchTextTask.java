@@ -26,7 +26,7 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.Map;
 
-import com.amaze.filemanager.activities.TextEditorActivity;
+import com.amaze.filemanager.ui.activities.TextEditorActivity;
 import com.amaze.filemanager.utils.ImmutableEntry;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.theme.AppTheme;

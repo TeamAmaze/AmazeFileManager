@@ -21,7 +21,7 @@
 package com.amaze.filemanager.ui.fragments.preference_fragments;
 
 import static com.amaze.filemanager.R.string.feedback;
-import static com.amaze.filemanager.activities.PreferencesActivity.START_PREFERENCE;
+import static com.amaze.filemanager.ui.activities.PreferencesActivity.START_PREFERENCE;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -30,10 +30,10 @@ import java.util.List;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.AboutActivity;
-import com.amaze.filemanager.activities.PreferencesActivity;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.activities.AboutActivity;
+import com.amaze.filemanager.ui.activities.PreferencesActivity;
+import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
