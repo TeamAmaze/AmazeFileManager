@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils.application;
+package com.amaze.filemanager.application;
 
 import java.lang.ref.WeakReference;
 

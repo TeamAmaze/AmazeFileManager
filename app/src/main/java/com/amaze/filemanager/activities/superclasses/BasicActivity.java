@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.activities.superclasses;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.theme.AppTheme;
 

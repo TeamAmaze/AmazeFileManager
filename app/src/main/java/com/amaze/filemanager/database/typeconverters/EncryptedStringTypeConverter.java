@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.database.typeconverters;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.StringWrapper;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.files.CryptUtil;
 
 import android.content.Context;

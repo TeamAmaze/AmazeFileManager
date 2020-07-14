@@ -30,9 +30,9 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.app.AlertDialog;
 import android.os.AsyncTask;

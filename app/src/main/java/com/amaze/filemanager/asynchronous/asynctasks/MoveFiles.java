@@ -28,6 +28,7 @@ import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CryptHandler;
@@ -40,7 +41,6 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.amaze.filemanager.utils.files.CryptUtil;
 import com.amaze.filemanager.utils.files.FileUtils;

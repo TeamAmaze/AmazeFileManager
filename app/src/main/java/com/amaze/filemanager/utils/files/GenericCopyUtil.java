@@ -36,6 +36,7 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -45,7 +46,6 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.cloud.CloudUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 

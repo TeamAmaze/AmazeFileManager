@@ -26,7 +26,7 @@ import java.lang.reflect.Field;
 
 import org.robolectric.util.Scheduler;
 
-import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.application.AppConfig;
 
 import android.os.Handler;
 

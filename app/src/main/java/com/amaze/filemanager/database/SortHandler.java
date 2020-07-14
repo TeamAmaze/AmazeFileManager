@@ -25,8 +25,8 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import java.util.HashSet;
 import java.util.Set;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Sort;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;

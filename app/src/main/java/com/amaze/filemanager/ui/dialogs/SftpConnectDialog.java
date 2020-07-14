@@ -38,6 +38,7 @@ import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -49,7 +50,6 @@ import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.google.android.material.snackbar.Snackbar;
 

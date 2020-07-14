@@ -29,6 +29,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.utilities.Bookmark;
 import com.amaze.filemanager.database.models.utilities.Grid;
@@ -38,7 +39,6 @@ import com.amaze.filemanager.database.models.utilities.SftpEntry;
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;

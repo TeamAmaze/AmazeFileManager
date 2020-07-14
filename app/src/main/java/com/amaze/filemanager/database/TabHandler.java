@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.database;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Tab;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;

@@ -29,11 +29,11 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.os.AsyncTask;
 import android.util.Log;

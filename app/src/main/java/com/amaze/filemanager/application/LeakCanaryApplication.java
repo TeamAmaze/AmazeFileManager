@@ -18,16 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils.application;
+package com.amaze.filemanager.application;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.MemoryCategory;
+import androidx.multidex.MultiDexApplication;
 
-/** @author Emmanuel on 22/11/2017, at 17:18. */
-public class GlideApplication extends LeakCanaryApplication {
+/** @author Emmanuel on 28/8/2017, at 18:12. */
+public class LeakCanaryApplication extends MultiDexApplication {
+
   @Override
   public void onCreate() {
     super.onCreate();
-    Glide.get(this).setMemoryCategory(MemoryCategory.HIGH);
+    /*
+    if (LeakCanary.isInAnalyzerProcess(this)) {
+        // This process is dedicated to LeakCanary for heap analysis.
+        // You should not init your app in this process.
+        return;
+    }
+    LeakCanary.install(this);*/
   }
 }

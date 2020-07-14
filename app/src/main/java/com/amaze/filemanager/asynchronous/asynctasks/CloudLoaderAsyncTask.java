@@ -24,12 +24,12 @@ import java.lang.ref.WeakReference;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.CloudRail;
 import com.cloudrail.si.exceptions.AuthenticationException;
 import com.cloudrail.si.exceptions.ParseException;

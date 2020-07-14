@@ -44,8 +44,8 @@ import org.robolectric.shadows.ShadowEnvironment;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.content.ContentResolver;
 import android.content.Context;
