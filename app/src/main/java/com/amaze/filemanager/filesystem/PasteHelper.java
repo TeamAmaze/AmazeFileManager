@@ -106,12 +106,7 @@ public final class PasteHelper implements Parcelable {
   public void invalidateSnackbar(MainActivity mainActivity, boolean showSnackbar) {
     this.mainActivity = mainActivity;
     if (showSnackbar) {
-      if (snackbar == null) {
-        showSnackbar();
-      } else {
-        snackbar.show();
-      }
-      Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
+      showSnackbar();
     } else {
       dismissSnackbar(false);
     }
@@ -125,6 +120,7 @@ public final class PasteHelper implements Parcelable {
   private void dismissSnackbar(boolean shouldClearPasteData) {
     if (snackbar != null) {
       snackbar.dismiss();
+      snackbar = null;
     }
     if (shouldClearPasteData) {
       mainActivity.setPaste(null);
@@ -154,6 +150,7 @@ public final class PasteHelper implements Parcelable {
                   dismissSnackbar(true);
                 });
     snackbar.show();
+    Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
   }
 
   private Spanned getSnackbarContent() {

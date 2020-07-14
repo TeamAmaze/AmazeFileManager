@@ -744,7 +744,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
                 PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
                 getMainActivity().setPaste(pasteHelper);
-
                 mode.finish();
                 return true;
               }

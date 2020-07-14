@@ -1677,7 +1677,6 @@ public class MainActivity extends PermissionsActivity
 
   public void setPaste(PasteHelper p) {
     pasteHelper = p;
-    supportInvalidateOptionsMenu();
   }
 
   @Override
