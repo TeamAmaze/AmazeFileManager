@@ -26,7 +26,10 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.leinardi.android.speeddial.SpeedDialView;
+import com.leinardi.android.speeddial.UiUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -46,6 +49,7 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -287,5 +291,46 @@ public class Utils {
 
   public static boolean isNullOrEmpty(final String string) {
     return string == null || string.length() == 0;
+  }
+
+  /**
+   * Clears the fab action items and animate the main fab to open/close icon (i.e. without any
+   * background overlay) Generally used in combination with snackbar, to show/hide snackbar using
+   * FAB
+   *
+   * @param mainActivity main activity
+   * @param callback callback, can be null when fab open is false
+   * @param open should open / close the fab
+   */
+  public static void invalidateFab(
+      MainActivity mainActivity, @Nullable Runnable callback, boolean open) {
+    if (open) {
+      mainActivity.clearFabActionItems();
+      mainActivity.getFAB().getMainFab().setImageResource(R.drawable.ic_close_white_24dp);
+      mainActivity
+          .getFAB()
+          .setOnChangeListener(
+              new SpeedDialView.OnChangeListener() {
+                @Override
+                public boolean onMainActionSelected() {
+                  if (callback != null) {
+                    callback.run();
+                  }
+                  return false;
+                }
+
+                @Override
+                public void onToggleChanged(boolean isOpen) {
+                  // do nothing
+                }
+              });
+      // Ensure the FAB menu is visible
+      mainActivity.getFAB().setVisibility(View.VISIBLE);
+    } else {
+      UiUtils.rotateBackward(mainActivity.getFAB().getMainFab(), true);
+      mainActivity.getFAB().getMainFab().setImageResource(R.drawable.ic_add_white_24dp);
+      mainActivity.initializeFabActionViews();
+      mainActivity.getFAB().setOnChangeListener(null);
+    }
   }
 }

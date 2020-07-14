@@ -181,10 +181,15 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
 
       for (int i = 0; i < paths.size(); i++) {
         List<HybridFile> targetFiles = new ArrayList<>();
+        List<HybridFileParcelable> sourcesFiles = new ArrayList<>();
         for (HybridFileParcelable f : files.get(i)) {
           targetFiles.add(new HybridFile(OpenMode.FILE, paths.get(i) + "/" + f.getName(context)));
         }
-        FileUtils.scanFile(context, files.toArray(new HybridFileParcelable[files.size()]));
+        for (List<HybridFileParcelable> hybridFileParcelables : files) {
+          sourcesFiles.addAll(hybridFileParcelables);
+        }
+        FileUtils.scanFile(
+            context, sourcesFiles.toArray(new HybridFileParcelable[sourcesFiles.size()]));
         FileUtils.scanFile(context, targetFiles.toArray(new HybridFile[targetFiles.size()]));
       }
 

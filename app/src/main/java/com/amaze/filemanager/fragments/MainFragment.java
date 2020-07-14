@@ -495,7 +495,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           mode.setCustomView(actionModeView);
 
           getMainActivity().setPagingEnabled(false);
-          getMainActivity().floatingActionButton.hide();
+          getMainActivity().getFAB().hide();
 
           // translates the drawable content down
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
@@ -742,9 +742,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                         ? PasteHelper.OPERATION_COPY
                         : PasteHelper.OPERATION_CUT;
 
-                PasteHelper pasteHelper = new PasteHelper(op, copies);
+                PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
                 getMainActivity().setPaste(pasteHelper);
-
                 mode.finish();
                 return true;
               }
@@ -777,7 +776,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           // translates the drawer content up
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
-          getMainActivity().floatingActionButton.show();
+          getMainActivity().getFAB().show();
           if (!results) adapter.toggleChecked(false, CURRENT_PATH);
           else adapter.toggleChecked(false);
           getMainActivity().setPagingEnabled(true);
