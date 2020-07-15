@@ -88,7 +88,6 @@ public class FtpServerFragment extends Fragment {
   private TextView statusText, url, username, password, port, sharedPath;
   public static final String TAG = "FTPServerFragment";
 
-  private View rootView;
   private AppCompatEditText usernameEditText, passwordEditText;
   private TextInputLayout usernameTextInput, passwordTextInput;
   private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
@@ -109,7 +108,7 @@ public class FtpServerFragment extends Fragment {
   @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
+    View rootView = inflater.inflate(R.layout.fragment_ftp, container, false);
     statusText = rootView.findViewById(R.id.text_view_ftp_status);
     url = rootView.findViewById(R.id.text_view_ftp_url);
     username = rootView.findViewById(R.id.text_view_ftp_username);
