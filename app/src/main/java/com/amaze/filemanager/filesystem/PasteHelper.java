@@ -130,26 +130,24 @@ public final class PasteHelper implements Parcelable {
 
   private void showSnackbar() {
     snackbar =
-        Snackbar.make(
-                mainActivity.findViewById(R.id.content_frame),
-                getSnackbarContent(),
-                BaseTransientBottomBar.LENGTH_INDEFINITE)
-            .setAction(
-                R.string.paste,
-                v -> {
-                  String path = mainActivity.getCurrentMainFragment().getCurrentPath();
-                  ArrayList<HybridFileParcelable> arrayList = new ArrayList<>(Arrays.asList(paths));
-                  boolean move = operation == PasteHelper.OPERATION_CUT;
-                  new PrepareCopyTask(
-                          mainActivity.getCurrentMainFragment(),
-                          path,
-                          move,
-                          mainActivity,
-                          mainActivity.isRootExplorer())
-                      .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-                  dismissSnackbar(true);
-                });
-    snackbar.show();
+        Utils.showThemedSnackbar(
+            mainActivity,
+            getSnackbarContent(),
+            BaseTransientBottomBar.LENGTH_INDEFINITE,
+            R.string.paste,
+            () -> {
+              String path = mainActivity.getCurrentMainFragment().getCurrentPath();
+              ArrayList<HybridFileParcelable> arrayList = new ArrayList<>(Arrays.asList(paths));
+              boolean move = operation == PasteHelper.OPERATION_CUT;
+              new PrepareCopyTask(
+                      mainActivity.getCurrentMainFragment(),
+                      path,
+                      move,
+                      mainActivity,
+                      mainActivity.isRootExplorer())
+                  .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+              dismissSnackbar(true);
+            });
     Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
   }
 

@@ -28,6 +28,8 @@ import java.util.concurrent.TimeUnit;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.utils.theme.AppTheme;
+import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.leinardi.android.speeddial.UiUtils;
 
@@ -332,5 +334,24 @@ public class Utils {
       mainActivity.initializeFabActionViews();
       mainActivity.getFAB().setOnChangeListener(null);
     }
+  }
+
+  public static Snackbar showThemedSnackbar(
+      MainActivity mainActivity,
+      CharSequence text,
+      int length,
+      int actionTextId,
+      Runnable actionCallback) {
+    Snackbar snackbar =
+        Snackbar.make(mainActivity.findViewById(R.id.content_frame), text, length)
+            .setAction(actionTextId, v -> actionCallback.run());
+    if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
+      snackbar
+          .getView()
+          .setBackgroundColor(mainActivity.getResources().getColor(android.R.color.white));
+      snackbar.setTextColor(mainActivity.getResources().getColor(android.R.color.black));
+    }
+    snackbar.show();
+    return snackbar;
   }
 }
