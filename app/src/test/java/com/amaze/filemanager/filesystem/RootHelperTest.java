@@ -39,9 +39,9 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowShellInteractive;
+import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.os.Environment;
 

@@ -26,8 +26,8 @@ import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.leinardi.android.speeddial.UiUtils;
 

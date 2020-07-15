@@ -27,14 +27,14 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;

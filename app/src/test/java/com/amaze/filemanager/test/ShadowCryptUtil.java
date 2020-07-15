@@ -31,7 +31,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 
 import android.content.Context;
 import android.util.Base64;

@@ -20,13 +20,13 @@
 
 package com.amaze.filemanager.database;
 
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Sort;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.content.Context;
 import android.content.SharedPreferences;
