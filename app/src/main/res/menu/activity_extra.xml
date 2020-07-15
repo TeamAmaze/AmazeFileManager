@@ -20,12 +20,6 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/paste"
-        android:title="@string/paste"
-        android:icon="@drawable/ic_content_paste_white_24dp"
-        app:showAsAction="ifRoom|withText"
-        android:visible="false" />
-    <item
         android:id="@+id/search"
         android:title="@string/search"
         android:icon="@drawable/ic_search_white_24dp"

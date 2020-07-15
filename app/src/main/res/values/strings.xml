@@ -661,5 +661,6 @@
     <string name="ftp_server_prompt_connect_to_network">Connect to a network to enable FTP server.</string>
     <string name="ftp_server_prompt_open_ap">Enable device hotspot to enable FTP server.</string>
     <string name="ftp_server_open_settings">Open settings</string>
+    <string name="move">Move</string>
 </resources>
 

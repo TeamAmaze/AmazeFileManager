@@ -374,7 +374,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   public void onResume() {
     super.onResume();
 
-    mainActivity.floatingActionButton.hide();
+    mainActivity.getFAB().hide();
     Intent intent = new Intent(getActivity(), ExtractService.class);
     getActivity().bindService(intent, mServiceConnection, 0);
   }

@@ -28,7 +28,6 @@ import static com.amaze.filemanager.fragments.preference_fragments.PreferencesCo
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -42,14 +41,11 @@ import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
@@ -177,7 +173,7 @@ public class MainActivity extends PermissionsActivity
   public boolean mRingtonePickerIntent = false;
   public int skinStatusBar;
 
-  public SpeedDialView floatingActionButton;
+  private SpeedDialView floatingActionButton;
 
   public MainActivityHelper mainActivityHelper;
 
@@ -561,10 +557,7 @@ public class MainActivity extends PermissionsActivity
 
   /** Initializes the floating action button to act as to save data from an external intent */
   private void initFabToSave(final ArrayList<Uri> uris) {
-    floatingActionButton.removeActionItemById(R.id.menu_new_folder);
-    floatingActionButton.removeActionItemById(R.id.menu_new_file);
-    floatingActionButton.removeActionItemById(R.id.menu_new_cloud);
-
+    clearFabActionItems();
     floatingActionButton.getMainFab().setImageResource(R.drawable.ic_file_download_white_24dp);
     floatingActionButton
         .getMainFab()
@@ -604,6 +597,12 @@ public class MainActivity extends PermissionsActivity
             });
     // Ensure the FAB menu is visible
     floatingActionButton.setVisibility(View.VISIBLE);
+  }
+
+  public void clearFabActionItems() {
+    floatingActionButton.removeActionItemById(R.id.menu_new_folder);
+    floatingActionButton.removeActionItemById(R.id.menu_new_file);
+    floatingActionButton.removeActionItemById(R.id.menu_new_cloud);
   }
 
   /**
@@ -844,20 +843,14 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
-  public void invalidatePasteButton(MenuItem paste) {
+  public void invalidatePasteSnackbar(boolean showSnackbar) {
     if (pasteHelper != null) {
-      paste.setVisible(true);
-    } else {
-      paste.setVisible(false);
+      pasteHelper.invalidateSnackbar(this, showSnackbar);
     }
   }
 
   public void exit() {
     if (backPressedToExitOnce) {
-      UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
-      ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
-      if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
-      if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
       SshConnectionPool.getInstance().expungeAllConnections();
       finish();
       if (isRootExplorer()) {
@@ -931,7 +924,6 @@ public class MainActivity extends PermissionsActivity
   public boolean onPrepareOptionsMenu(Menu menu) {
     MenuItem s = menu.findItem(R.id.view);
     MenuItem search = menu.findItem(R.id.search);
-    MenuItem paste = menu.findItem(R.id.paste);
     Fragment fragment = getFragmentAtFrame();
     if (fragment instanceof TabFragment) {
       appbar.setTitle(R.string.appbar_name);
@@ -959,7 +951,6 @@ public class MainActivity extends PermissionsActivity
 
       appbar.getBottomBar().setClickListener();
 
-      invalidatePasteButton(paste);
       search.setVisible(true);
       if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
       menu.findItem(R.id.search).setVisible(true);
@@ -970,7 +961,7 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.hiddenitems).setVisible(true);
       menu.findItem(R.id.view).setVisible(true);
       menu.findItem(R.id.extract).setVisible(false);
-      invalidatePasteButton(menu.findItem(R.id.paste));
+      invalidatePasteSnackbar(true);
       findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
     } else if (fragment instanceof AppsListFragment
         || fragment instanceof ProcessViewerFragment
@@ -991,7 +982,7 @@ public class MainActivity extends PermissionsActivity
       }
       menu.findItem(R.id.hiddenitems).setVisible(false);
       menu.findItem(R.id.view).setVisible(false);
-      menu.findItem(R.id.paste).setVisible(false);
+      invalidatePasteSnackbar(false);
     } else if (fragment instanceof CompressedExplorerFragment) {
       appbar.setTitle(R.string.appbar_name);
       menu.findItem(R.id.sethome).setVisible(false);
@@ -1003,8 +994,8 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.sort).setVisible(false);
       menu.findItem(R.id.hiddenitems).setVisible(false);
       menu.findItem(R.id.view).setVisible(false);
-      menu.findItem(R.id.paste).setVisible(false);
       menu.findItem(R.id.extract).setVisible(true);
+      invalidatePasteSnackbar(false);
     }
     return super.onPrepareOptionsMenu(menu);
   }
@@ -1146,16 +1137,6 @@ public class MainActivity extends PermissionsActivity
           dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
         }
         ma.switchView();
-        break;
-      case R.id.paste:
-        String path = ma.getCurrentPath();
-        ArrayList<HybridFileParcelable> arrayList =
-            new ArrayList<>(Arrays.asList(pasteHelper.paths));
-        boolean move = pasteHelper.operation == PasteHelper.OPERATION_CUT;
-        new PrepareCopyTask(ma, path, move, mainActivity, isRootExplorer())
-            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-        pasteHelper = null;
-        invalidatePasteButton(item);
         break;
       case R.id.extract:
         Fragment fragment1 = getFragmentAtFrame();
@@ -1330,12 +1311,6 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-
-    UtilitiesDatabase utilitiesDatabase = AppConfig.getInstance().getUtilitiesDatabase();
-    ExplorerDatabase explorerDatabase = AppConfig.getInstance().getExplorerDatabase();
-    if (utilitiesDatabase != null && utilitiesDatabase.isOpen()) utilitiesDatabase.close();
-    if (explorerDatabase != null && explorerDatabase.isOpen()) explorerDatabase.close();
-
     SshConnectionPool.getInstance().expungeAllConnections();
   }
 
@@ -1635,7 +1610,10 @@ public class MainActivity extends PermissionsActivity
     floatingActionButton = findViewById(R.id.fabs_menu);
     floatingActionButton.setMainFabClosedBackgroundColor(colorAccent);
     floatingActionButton.setMainFabOpenedBackgroundColor(colorAccent);
+    initializeFabActionViews();
+  }
 
+  public void initializeFabActionViews() {
     // NOTE: SpeedDial inverts insert index than FABsmenu
     initFabTitle(R.id.menu_new_cloud, R.string.cloud_connection, R.drawable.ic_cloud_white_24dp);
     initFabTitle(R.id.menu_new_file, R.string.file, R.drawable.ic_insert_drive_file_white_48dp);
@@ -1699,7 +1677,6 @@ public class MainActivity extends PermissionsActivity
 
   public void setPaste(PasteHelper p) {
     pasteHelper = p;
-    supportInvalidateOptionsMenu();
   }
 
   @Override
