@@ -25,7 +25,7 @@ import java.util.List;
 
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.fragments.CloudSheetFragment;
+import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.utils.OpenMode;
 
 import android.content.Context;

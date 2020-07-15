@@ -23,8 +23,8 @@ package com.amaze.filemanager.ui.views.appbar;
 import static android.os.Build.VERSION.SDK_INT;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.SharedPreferences;

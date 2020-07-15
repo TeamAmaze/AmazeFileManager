@@ -23,7 +23,7 @@ package com.amaze.filemanager.utils;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
-import com.amaze.filemanager.utils.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 
 import android.content.Context;
 import android.text.TextUtils;

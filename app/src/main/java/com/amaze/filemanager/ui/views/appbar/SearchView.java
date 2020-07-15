@@ -24,7 +24,7 @@ import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;

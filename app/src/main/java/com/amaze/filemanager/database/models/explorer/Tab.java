@@ -21,7 +21,7 @@
 package com.amaze.filemanager.database.models.explorer;
 
 import com.amaze.filemanager.database.ExplorerDatabase;
-import com.amaze.filemanager.utils.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 
 import android.content.SharedPreferences;
 

@@ -55,9 +55,9 @@ import org.apache.ftpserver.usermanager.impl.WritePermission;
 import org.greenrobot.eventbus.EventBus;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.files.CryptUtil;
 
 import android.app.AlarmManager;
 import android.app.Notification;

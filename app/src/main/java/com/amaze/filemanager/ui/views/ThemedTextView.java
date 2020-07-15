@@ -20,9 +20,9 @@
 
 package com.amaze.filemanager.ui.views;
 
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 
 import android.content.Context;
 import android.util.AttributeSet;

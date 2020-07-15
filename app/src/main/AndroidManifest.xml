@@ -45,7 +45,7 @@
         android:required="false" />
 
     <application
-        android:name=".utils.application.AppConfig"
+        android:name=".application.AppConfig"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"
@@ -55,7 +55,7 @@
         <activity
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
-            android:name=".activities.MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:theme="@style/appCompatLight">
 
             <intent-filter android:label="@string/appbar_name">
@@ -118,7 +118,7 @@
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/setting"
-            android:name=".activities.PreferencesActivity"
+            android:name=".ui.activities.PreferencesActivity"
             android:theme="@style/appCompatLight">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
@@ -128,7 +128,7 @@
         </activity>
         <activity
             android:label="@string/textreader"
-            android:name=".activities.TextEditorActivity"
+            android:name=".ui.activities.TextEditorActivity"
             android:theme="@style/appCompatLight">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
@@ -144,7 +144,7 @@
         </activity>
         <activity
             android:label="@string/databasereader"
-            android:name=".activities.DatabaseViewerActivity"
+            android:name=".ui.activities.DatabaseViewerActivity"
             android:theme="@style/appCompatLight"
             android:screenOrientation="locked">
             <intent-filter
@@ -157,7 +157,7 @@
 
         </activity>
 
-        <activity android:name=".activities.AboutActivity"
+        <activity android:name=".ui.activities.AboutActivity"
             android:theme="@style/aboutLight"
             android:label="About"
             />

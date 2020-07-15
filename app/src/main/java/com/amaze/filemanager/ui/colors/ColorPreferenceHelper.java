@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Random;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;

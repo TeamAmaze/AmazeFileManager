@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.SearchWorkerFragment;
+import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.utils.OpenMode;
 
 import android.app.Activity;
