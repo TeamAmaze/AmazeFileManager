@@ -668,15 +668,12 @@ public class FtpServerFragment extends Fragment {
     // No wifi, no data, no connection at all
     if (ni == null || !ni.isConnected()) {
       snackbar =
-          Snackbar.make(
-                  getActivity().findViewById(android.R.id.content),
-                  R.string.ftp_server_prompt_connect_to_network,
-                  BaseTransientBottomBar.LENGTH_INDEFINITE)
-              .setAction(
-                  R.string.ftp_server_open_settings,
-                  v -> {
-                    startActivity(new Intent(ACTION_WIFI_SETTINGS));
-                  });
+          Utils.showThemedSnackbar(
+              (MainActivity) getActivity(),
+              getString(R.string.ftp_server_prompt_connect_to_network),
+              BaseTransientBottomBar.LENGTH_INDEFINITE,
+              R.string.ftp_server_open_settings,
+              () -> startActivity(new Intent(ACTION_WIFI_SETTINGS)));
       snackbar.show();
     }
   }
