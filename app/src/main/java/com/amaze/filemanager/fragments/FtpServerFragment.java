@@ -54,7 +54,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.Settings;
 import android.text.Html;
 import android.text.InputType;
 import android.text.Spanned;
@@ -70,9 +69,7 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.fragment.app.Fragment;
@@ -670,28 +667,18 @@ public class FtpServerFragment extends Fragment {
   private void promptUserToEnableWireless(@Nullable NetworkInfo ni) {
     // No wifi, no data, no connection at all
     if (ni == null || !ni.isConnected()) {
-      showSnackbar(R.string.ftp_server_prompt_connect_to_network, new Intent(ACTION_WIFI_SETTINGS));
-    } else {
-      // Data connection available, but no AP enabled
-      if (ni.getType() == ConnectivityManager.TYPE_MOBILE) {
-        showSnackbar(
-            R.string.ftp_server_prompt_open_ap, new Intent(Settings.ACTION_WIRELESS_SETTINGS));
-      }
+      snackbar =
+          Snackbar.make(
+                  getActivity().findViewById(android.R.id.content),
+                  R.string.ftp_server_prompt_connect_to_network,
+                  BaseTransientBottomBar.LENGTH_INDEFINITE)
+              .setAction(
+                  R.string.ftp_server_open_settings,
+                  v -> {
+                    startActivity(new Intent(ACTION_WIFI_SETTINGS));
+                  });
+      snackbar.show();
     }
-  }
-
-  private void showSnackbar(@StringRes int message, @NonNull Intent networkSettingIntent) {
-    snackbar =
-        Snackbar.make(
-                getActivity().findViewById(android.R.id.content),
-                message,
-                BaseTransientBottomBar.LENGTH_INDEFINITE)
-            .setAction(
-                R.string.ftp_server_open_settings,
-                v -> {
-                  startActivity(networkSettingIntent);
-                });
-    snackbar.show();
   }
 
   private void dismissSnackbar() {
