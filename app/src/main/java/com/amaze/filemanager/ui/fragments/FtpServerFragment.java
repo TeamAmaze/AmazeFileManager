@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static android.provider.Settings.ACTION_WIFI_SETTINGS;
 import static com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions.STARTED_FROM_TILE;
 
 import java.io.IOException;
@@ -39,6 +40,8 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.utils.OneCharacterCharSequence;
 import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
 
 import android.content.BroadcastReceiver;
@@ -90,6 +93,7 @@ public class FtpServerFragment extends Fragment {
   private Spanned spannedStatusNoConnection, spannedStatusConnected, spannedStatusUrl;
   private Spanned spannedStatusSecure, spannedStatusNotRunning;
   private ImageButton ftpPasswordVisibleButton;
+  private Snackbar snackbar;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -317,6 +321,7 @@ public class FtpServerFragment extends Fragment {
               || FtpService.isEnabledWifiHotspot(getContext())) {
             // connected to Wi-Fi or eth
             ftpBtn.setEnabled(true);
+            dismissSnackbar();
           } else {
             // Wi-Fi or eth connection lost
             stopServer();
@@ -324,6 +329,7 @@ public class FtpServerFragment extends Fragment {
             ftpBtn.setEnabled(true);
             ftpBtn.setEnabled(false);
             ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
+            promptUserToEnableWireless(netInfo);
           }
         }
       };
@@ -390,6 +396,7 @@ public class FtpServerFragment extends Fragment {
     super.onPause();
     getContext().unregisterReceiver(mWifiReceiver);
     EventBus.getDefault().unregister(this);
+    dismissSnackbar();
   }
 
   /** Update UI widgets after change in shared preferences */
@@ -655,5 +662,26 @@ public class FtpServerFragment extends Fragment {
         .edit()
         .putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)
         .apply();
+  }
+
+  private void promptUserToEnableWireless(@Nullable NetworkInfo ni) {
+    // No wifi, no data, no connection at all
+    if (ni == null || !ni.isConnected()) {
+      snackbar =
+          Utils.showThemedSnackbar(
+              (MainActivity) getActivity(),
+              getString(R.string.ftp_server_prompt_connect_to_network),
+              BaseTransientBottomBar.LENGTH_INDEFINITE,
+              R.string.ftp_server_open_settings,
+              () -> startActivity(new Intent(ACTION_WIFI_SETTINGS)));
+      snackbar.show();
+    }
+  }
+
+  private void dismissSnackbar() {
+    if (snackbar != null) {
+      snackbar.dismiss();
+      snackbar = null;
+    }
   }
 }
