@@ -25,8 +25,8 @@ import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.adapters.holders.DonationViewHolder;
+import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
 import com.android.billingclient.api.BillingFlowParams;

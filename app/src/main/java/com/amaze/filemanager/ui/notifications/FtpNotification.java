@@ -23,8 +23,8 @@ package com.amaze.filemanager.ui.notifications;
 import java.net.InetAddress;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
+import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.app.Notification;
 import android.app.NotificationManager;

@@ -31,7 +31,7 @@ import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 
 import android.content.Context;
 
