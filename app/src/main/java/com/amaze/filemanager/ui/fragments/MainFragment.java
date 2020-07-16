@@ -1480,6 +1480,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     if (customFileObserver != null) {
       customFileObserver.stopWatching();
     }
+    if (mActionMode != null){
+      mActionMode.finish();
+    }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       (getActivity()).unregisterReceiver(decryptReceiver);
