@@ -291,6 +291,10 @@ public class Utils {
     return list == null || list.size() == 0;
   }
 
+  public static boolean isNullOrEmpty(final String string) {
+    return string == null || string.length() == 0;
+  }
+
   /**
    * Clears the fab action items and animate the main fab to open/close icon (i.e. without any
    * background overlay) Generally used in combination with snackbar, to show/hide snackbar using

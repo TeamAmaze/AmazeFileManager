@@ -35,6 +35,7 @@ import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.Utils;
 
 import android.animation.ArgbEvaluator;
 import android.content.SharedPreferences;
@@ -124,47 +125,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
               PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
       MainActivity.currentTab = lastOpenTab;
 
-      Tab tab1 = tabHandler.findTab(1);
-      Tab tab2 = tabHandler.findTab(2);
-      Tab[] tabs = tabHandler.getAllTabs();
-
-      if (tabs == null
-          || tabs.length < 1
-          || tab1 == null
-          || tab2 == null) { // creating tabs in db for the first time, probably the first launch of
-        // app, or something got corrupted
-        if (mainActivity.getDrawer().getFirstPath() != null) {
-          addNewTab(1, mainActivity.getDrawer().getFirstPath());
-        } else {
-          if (mainActivity.getDrawer().getSecondPath() != null) {
-            addNewTab(1, mainActivity.getDrawer().getSecondPath());
-          } else {
-            sharedPrefs.edit().putBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, true).apply();
-            addNewTab(1, "/");
-          }
-        }
-
-        if (mainActivity.getDrawer().getSecondPath() != null) {
-          addNewTab(2, mainActivity.getDrawer().getSecondPath());
-        } else {
-          addNewTab(2, mainActivity.getDrawer().getFirstPath());
-        }
-      } else {
-        if (path != null && path.length() != 0) {
-          if (lastOpenTab == 0) {
-            addTab(tab1, path);
-            addTab(tab2, "");
-          }
-
-          if (lastOpenTab == 1) {
-            addTab(tab1, "");
-            addTab(tab2, path);
-          }
-        } else {
-          addTab(tab1, "");
-          addTab(tab2, "");
-        }
-      }
+      refactorDrawerStorages(true);
 
       mViewPager.setAdapter(mSectionsPagerAdapter);
 
@@ -378,7 +339,55 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     addTab(new Tab(num, path, path), "");
   }
 
-  public void addTab(@NonNull Tab tab, String path) {
+  /**
+   * Fetches new storage paths from drawer and apply to tabs This method will just create tabs in UI
+   * change paths in database. Calls should implement updating each tab's list for new paths.
+   *
+   * @param addTab whether new tabs should be added to ui or just change values in database
+   */
+  public void refactorDrawerStorages(boolean addTab) {
+    Tab tab1 = tabHandler.findTab(1);
+    Tab tab2 = tabHandler.findTab(2);
+    Tab[] tabs = tabHandler.getAllTabs();
+    String firstTabPath = mainActivity.getDrawer().getFirstPath();
+    String secondTabPath = mainActivity.getDrawer().getSecondPath();
+
+    if (tabs == null
+        || tabs.length < 1
+        || tab1 == null
+        || tab2 == null) { // creating tabs in db for the first time, probably the first launch of
+      // app, or something got corrupted
+      String currentFirstTab = Utils.isNullOrEmpty(firstTabPath) ? "/" : firstTabPath;
+      String currentSecondTab = Utils.isNullOrEmpty(secondTabPath) ? firstTabPath : secondTabPath;
+      if (addTab) {
+        addNewTab(1, currentSecondTab);
+        addNewTab(2, currentFirstTab);
+      }
+      tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab));
+      tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab));
+
+      if (currentFirstTab.equalsIgnoreCase("/")) {
+        sharedPrefs.edit().putBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, true).apply();
+      }
+    } else {
+      if (path != null && path.length() != 0) {
+        if (MainActivity.currentTab == 0) {
+          addTab(tab1, path);
+          addTab(tab2, "");
+        }
+
+        if (MainActivity.currentTab == 1) {
+          addTab(tab1, "");
+          addTab(tab2, path);
+        }
+      } else {
+        addTab(tab1, "");
+        addTab(tab2, "");
+      }
+    }
+  }
+
+  private void addTab(@NonNull Tab tab, String path) {
     Fragment main = new MainFragment();
     Bundle b = new Bundle();
 
