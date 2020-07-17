@@ -51,7 +51,8 @@ We strongly recommend using apk signed by us (either Play Store version or from 
 
 Social
 ---
-Head over to our XDA thread [here](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
+Head over to our XDA thread [here](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)  
+[Official Telegram channel](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)
 
 Support
 ---
