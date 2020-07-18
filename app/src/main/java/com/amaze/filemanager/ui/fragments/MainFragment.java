@@ -1480,7 +1480,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     if (customFileObserver != null) {
       customFileObserver.stopWatching();
     }
-    if (mActionMode != null){
+    if (mActionMode != null) {
       mActionMode.finish();
     }
 
