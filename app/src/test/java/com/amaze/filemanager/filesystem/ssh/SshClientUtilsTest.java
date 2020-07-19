@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
@@ -35,7 +36,17 @@ import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 
-public class SshClientUtilTest {
+public class SshClientUtilsTest {
+
+  @Test
+  public void testDeriveSftpPathFrom() {
+    assertEquals(
+        "ssh://root:toor@127.0.0.1:22/",
+        SshClientUtils.deriveSftpPathFrom("127.0.0.1", 22, null, "root", "toor", null));
+    assertEquals(
+        "ssh://root:toor@127.0.0.1:22",
+        SshClientUtils.deriveSftpPathFrom("127.0.0.1", 22, "", "root", "toor", null));
+  }
 
   @Test
   public void testIsDirectoryNormal() throws IOException {

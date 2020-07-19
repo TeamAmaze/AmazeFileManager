@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -344,5 +345,23 @@ public class SshConnectionPoolTest {
               SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
               "id_rsa",
               privateKeyContents));
+  }
+
+  @Test
+  public void testConnectionInfoCreate() {
+    SshConnectionPool.ConnectionInfo conn =
+        new SshConnectionPool.ConnectionInfo("ssh://toor:root@127.0.0.1:2468");
+    assertEquals("toor", conn.username);
+    assertEquals("root", conn.password);
+    assertEquals("127.0.0.1", conn.host);
+    assertEquals(2468, conn.port);
+    assertNull(conn.defaultPath);
+
+    conn = new SshConnectionPool.ConnectionInfo("ssh://root:root@127.0.0.1:3268/home/root");
+    assertEquals("root", conn.username);
+    assertEquals("root", conn.password);
+    assertEquals("127.0.0.1", conn.host);
+    assertEquals(3268, conn.port);
+    assertEquals("/home/root", conn.defaultPath);
   }
 }

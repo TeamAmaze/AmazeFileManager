@@ -21,10 +21,9 @@
 package com.amaze.filemanager.filesystem.ssh;
 
 import static org.awaitility.Awaitility.await;
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -34,7 +33,6 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
 
@@ -48,7 +46,7 @@ import androidx.test.core.app.ApplicationProvider;
 public class ListFilesOnSshdTest extends AbstractSftpServerTest {
 
   @Test
-  public void testNormalListDirs() throws InterruptedException {
+  public void testNormalListDirs() {
     for (String s : new String[] {"sysroot", "srv", "var", "tmp", "bin", "lib", "usr"}) {
       new File(Environment.getExternalStorageDirectory(), s).mkdir();
     }
@@ -109,7 +107,6 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
     List<String> dirs = new ArrayList<>(), files = new ArrayList<>();
     HybridFile file =
         new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort);
-    CountDownLatch waiter = new CountDownLatch(15);
     file.forEachChildrenFile(
         ApplicationProvider.getApplicationContext(),
         false,
@@ -121,10 +118,8 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
             assertFalse(fileFound.getPath() + " not seen as file", fileFound.isDirectory());
             files.add(fileFound.getName());
           }
-          waiter.countDown();
         });
-    waiter.await();
-    assertEquals(7, dirs.size());
+    await().until(() -> dirs.size() == 7);
     assertThat(dirs, hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr"));
     assertThat(
         files,
@@ -148,5 +143,41 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
                 .getAbsolutePath()),
         Paths.get(new File("/tmp/notfound.file").getAbsolutePath()));
     assertTrue(performVerify());
+  }
+
+  @Test
+  public void testListDirsWithDirectPathToDir() throws Exception {
+    createNecessaryDirsForSymlinkRelatedTests();
+    for (int i = 1; i <= 4; i++) {
+      File f = new File(new File(Environment.getExternalStorageDirectory(), "tmp"), i + ".txt");
+      FileOutputStream out = new FileOutputStream(f);
+      out.write(i);
+      out.close();
+    }
+    List<String> result = new ArrayList<>();
+    HybridFile file =
+        new HybridFile(
+            OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort + "/tmp");
+    file.forEachChildrenFile(
+        ApplicationProvider.getApplicationContext(),
+        false,
+        (fileFound) -> {
+          assertFalse(fileFound.getPath() + " not seen as file", fileFound.isDirectory());
+          result.add(fileFound.getName());
+        });
+    await().until(() -> result.size() == 4);
+    assertThat(result, hasItems("1.txt", "2.txt", "3.txt", "4.txt"));
+    List<String> result2 = new ArrayList<>();
+    file =
+        new HybridFile(OpenMode.SFTP, file.getParent(ApplicationProvider.getApplicationContext()));
+    file.forEachChildrenFile(
+        ApplicationProvider.getApplicationContext(),
+        false,
+        (fileFound) -> {
+          assertTrue(fileFound.getPath() + " not seen as directory", fileFound.isDirectory());
+          result2.add(fileFound.getName());
+        });
+    await().until(() -> result2.size() == 7);
+    assertThat(result2, hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr"));
   }
 }

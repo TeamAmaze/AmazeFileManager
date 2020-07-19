@@ -147,7 +147,7 @@ public class SshConnectionPool {
       @Nullable String password,
       @Nullable KeyPair keyPair) {
 
-    String url = SshClientUtils.deriveSftpPathFrom(host, port, username, password, keyPair);
+    String url = SshClientUtils.deriveSftpPathFrom(host, port, "", username, password, keyPair);
 
     SSHClient client = connections.get(url);
     if (client == null) {
@@ -264,6 +264,7 @@ public class SshConnectionPool {
     final int port;
     final String username;
     final String password;
+    final String defaultPath;
 
     // FIXME: Crude assumption
     ConnectionInfo(@NonNull String url) {
@@ -271,7 +272,15 @@ public class SshConnectionPool {
         throw new IllegalArgumentException("Argument is not a SSH URI: " + url);
 
       this.host = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf(':'));
-      int port = Integer.parseInt(url.substring(url.lastIndexOf(':') + 1));
+      String portAndPath = url.substring(url.lastIndexOf(':') + 1);
+      int port = SSH_DEFAULT_PORT;
+      if (portAndPath.contains("/")) {
+        port = Integer.parseInt(portAndPath.substring(0, portAndPath.indexOf('/')));
+        defaultPath = portAndPath.substring(portAndPath.indexOf('/'));
+      } else {
+        port = Integer.parseInt(portAndPath);
+        defaultPath = null;
+      }
       // If the uri is fetched from the app's database storage, we assume it will never be empty
       String authString = url.substring(SSH_URI_PREFIX.length(), url.lastIndexOf('@'));
       String[] userInfo = authString.split(":");
