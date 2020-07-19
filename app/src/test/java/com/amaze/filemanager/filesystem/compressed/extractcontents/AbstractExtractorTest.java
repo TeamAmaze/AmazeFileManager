@@ -43,7 +43,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
@@ -52,7 +51,6 @@ import android.os.Environment;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
     minSdk = 14,
     maxSdk = 27)

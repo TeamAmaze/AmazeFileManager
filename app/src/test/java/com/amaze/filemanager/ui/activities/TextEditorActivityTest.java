@@ -42,7 +42,6 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowContentResolver;
 import org.robolectric.shadows.ShadowEnvironment;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
@@ -56,7 +55,6 @@ import android.widget.TextView;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
     minSdk = 24,
     maxSdk = 27)

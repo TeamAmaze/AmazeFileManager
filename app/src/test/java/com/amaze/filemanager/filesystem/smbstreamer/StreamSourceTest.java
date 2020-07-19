@@ -37,7 +37,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
 
@@ -48,7 +47,6 @@ import jcifs.smb.SmbFile;
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
     maxSdk = 27)
 public class StreamSourceTest {

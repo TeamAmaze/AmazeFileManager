@@ -30,14 +30,12 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowMimeTypeMap;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.webkit.MimeTypeMap;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
     maxSdk = 27)
 public class IconsTest {

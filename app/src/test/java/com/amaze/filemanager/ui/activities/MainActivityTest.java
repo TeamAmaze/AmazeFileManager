@@ -28,12 +28,10 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
     maxSdk = 27)
 public class MainActivityTest {
