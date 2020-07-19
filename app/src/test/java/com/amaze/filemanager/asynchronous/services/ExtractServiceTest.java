@@ -42,7 +42,6 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowToast;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
@@ -53,7 +52,6 @@ import androidx.annotation.NonNull;
 
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
     maxSdk = 27)
 public class ExtractServiceTest {

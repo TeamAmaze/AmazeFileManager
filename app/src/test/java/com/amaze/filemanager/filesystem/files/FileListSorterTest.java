@@ -32,7 +32,6 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowDateFormat;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
@@ -43,7 +42,6 @@ import com.amaze.filemanager.utils.OpenMode;
  */
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class, ShadowDateFormat.class},
     maxSdk = 27)
 public class FileListSorterTest {

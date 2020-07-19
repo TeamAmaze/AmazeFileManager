@@ -31,7 +31,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.ui.activities.MainActivity;
 
@@ -40,7 +39,6 @@ import android.net.Uri;
 @Ignore("Test skipped due to Robolectric unable to inflate SpeedDialView")
 @RunWith(RobolectricTestRunner.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
     minSdk = 24,
     maxSdk = 27)

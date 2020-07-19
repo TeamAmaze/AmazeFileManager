@@ -33,7 +33,6 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
 
@@ -42,7 +41,6 @@ import android.os.Environment;
 @RunWith(RobolectricTestRunner.class)
 @Config(
     maxSdk = 27,
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class})
 public class OperationsTest {
 
