@@ -33,7 +33,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 
@@ -42,13 +41,15 @@ import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
 
 import android.os.Environment;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import jcifs.smb.SmbFile;
 
 /** Created by Rustam Khadipash on 30/3/2018. */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class StreamSourceTest {
   private SmbFile file;
   private StreamSource ss;

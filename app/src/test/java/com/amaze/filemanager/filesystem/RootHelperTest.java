@@ -35,7 +35,6 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.shadows.ShadowMultiDex;
@@ -44,12 +43,14 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.os.Environment;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import eu.chainfire.libsuperuser.Shell;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowShellInteractive.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class RootHelperTest {
 
   private static final File sysroot =

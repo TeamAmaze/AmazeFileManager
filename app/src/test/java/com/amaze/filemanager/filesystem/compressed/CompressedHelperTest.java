@@ -29,8 +29,6 @@ import java.io.File;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
@@ -55,10 +53,13 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.Context;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class CompressedHelperTest {
 
   private Context context;
@@ -66,7 +67,7 @@ public class CompressedHelperTest {
 
   @Before
   public void setUp() {
-    context = RuntimeEnvironment.application;
+    context = ApplicationProvider.getApplicationContext();
     emptyUpdateListener =
         new Extractor.OnUpdate() {
           @Override

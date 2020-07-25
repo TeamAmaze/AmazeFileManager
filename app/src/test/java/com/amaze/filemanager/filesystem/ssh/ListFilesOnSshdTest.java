@@ -37,12 +37,13 @@ import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
-import org.robolectric.RuntimeEnvironment;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.utils.OpenMode;
 
 import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 public class ListFilesOnSshdTest extends AbstractSftpServerTest {
 
@@ -80,7 +81,7 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
     HybridFile file =
         new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort);
     file.forEachChildrenFile(
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         (fileFound) -> {
           assertTrue(fileFound.getPath() + " not seen as directory", fileFound.isDirectory());
@@ -110,7 +111,7 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
         new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort);
     CountDownLatch waiter = new CountDownLatch(15);
     file.forEachChildrenFile(
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         (fileFound) -> {
           if (!fileFound.getName().endsWith(".txt")) {

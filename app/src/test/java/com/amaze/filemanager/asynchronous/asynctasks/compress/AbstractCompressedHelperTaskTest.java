@@ -32,7 +32,6 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 
@@ -42,11 +41,13 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
     minSdk = 27,
-    maxSdk = 27)
+    maxSdk = 28)
 public abstract class AbstractCompressedHelperTaskTest {
 
   @Before

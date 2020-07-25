@@ -25,7 +25,6 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowMimeTypeMap;
@@ -34,10 +33,12 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.webkit.MimeTypeMap;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class IconsTest {
 
   @Before

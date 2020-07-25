@@ -36,18 +36,19 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 /** Created by Rustam Khadipash on 31/3/2018. */
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class CloudStreamSourceTest {
   private CloudStreamSource cs;
   private String testFilePath;

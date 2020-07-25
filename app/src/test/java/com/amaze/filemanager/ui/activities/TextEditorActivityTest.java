@@ -34,8 +34,6 @@ import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.Shadows;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
@@ -53,11 +51,14 @@ import android.net.Uri;
 import android.os.Environment;
 import android.widget.TextView;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
     minSdk = 24,
-    maxSdk = 27)
+    maxSdk = 28)
 /*
  Restrict minSdk to 24 since it'd fail at SDK 21-23.
  This may only be fixed by upgrading to Robolectric 4.
@@ -88,7 +89,8 @@ public class TextEditorActivityTest {
   public void testOpenContentUri() throws Exception {
     Uri uri = Uri.parse("content://foo.bar.test.streamprovider/temp/thisisatest.txt");
 
-    ContentResolver contentResolver = RuntimeEnvironment.application.getContentResolver();
+    ContentResolver contentResolver =
+        ApplicationProvider.getApplicationContext().getContentResolver();
     ShadowContentResolver shadowContentResolver = Shadows.shadowOf(contentResolver);
     shadowContentResolver.registerInputStream(
         uri, new ByteArrayInputStream(fileContents.getBytes("UTF-8")));
