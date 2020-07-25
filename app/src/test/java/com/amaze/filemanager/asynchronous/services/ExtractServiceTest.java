@@ -36,8 +36,6 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 import org.robolectric.shadows.ShadowToast;
@@ -49,11 +47,13 @@ import android.content.Intent;
 import android.os.Environment;
 
 import androidx.annotation.NonNull;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class ExtractServiceTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");
@@ -140,7 +140,8 @@ public class ExtractServiceTest {
   public void testExtractZipSlip() {
     performTest(zipfile1);
     assertEquals(
-        RuntimeEnvironment.application.getString(R.string.multiple_invalid_archive_entries),
+        ApplicationProvider.getApplicationContext()
+            .getString(R.string.multiple_invalid_archive_entries),
         ShadowToast.getTextOfLatestToast());
   }
 
@@ -148,7 +149,8 @@ public class ExtractServiceTest {
   public void testExtractZipSlipWin() {
     performTest(zipfile2);
     assertEquals(
-        RuntimeEnvironment.application.getString(R.string.multiple_invalid_archive_entries),
+        ApplicationProvider.getApplicationContext()
+            .getString(R.string.multiple_invalid_archive_entries),
         ShadowToast.getTextOfLatestToast());
   }
 
@@ -234,7 +236,7 @@ public class ExtractServiceTest {
 
   private void performTest(@NonNull File archiveFile) {
     Intent intent =
-        new Intent(RuntimeEnvironment.application, ExtractService.class)
+        new Intent(ApplicationProvider.getApplicationContext(), ExtractService.class)
             .putExtra(ExtractService.KEY_PATH_ZIP, archiveFile.getAbsolutePath())
             .putExtra(ExtractService.KEY_ENTRIES_ZIP, new String[0])
             .putExtra(

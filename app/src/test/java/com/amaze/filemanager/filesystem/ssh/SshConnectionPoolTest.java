@@ -34,8 +34,6 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
@@ -48,13 +46,15 @@ import com.amaze.filemanager.test.TestUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import net.schmizz.sshj.common.SecurityUtils;
 
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class SshConnectionPoolTest {
 
   private SshServer server;
@@ -303,8 +303,8 @@ public class SshConnectionPoolTest {
       @NonNull String validUsername,
       @Nullable String validPassword,
       @Nullable PrivateKey privateKey) {
-    utilitiesDatabase = UtilitiesDatabase.initialize(RuntimeEnvironment.application);
-    utilsHandler = new UtilsHandler(RuntimeEnvironment.application, utilitiesDatabase);
+    utilitiesDatabase = UtilitiesDatabase.initialize(ApplicationProvider.getApplicationContext());
+    utilsHandler = new UtilsHandler(ApplicationProvider.getApplicationContext(), utilitiesDatabase);
 
     String privateKeyContents = null;
     if (privateKey != null) {

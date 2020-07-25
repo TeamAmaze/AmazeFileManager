@@ -24,16 +24,17 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class MainActivityTest {
 
   @Test

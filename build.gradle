@@ -55,6 +55,8 @@ configurations {
     robo25
     robo26
     robo27
+    robo28
+//    robo29
 }
 
 dependencies {
@@ -69,6 +71,8 @@ dependencies {
     robo25 "org.robolectric:android-all:7.1.0_r7-robolectric-r1"
     robo26 "org.robolectric:android-all:8.0.0_r4-robolectric-r1"
     robo27 "org.robolectric:android-all:8.1.0-robolectric-4611349"
+    robo28 "org.robolectric:android-all:9-robolectric-4913185-2"
+//    robo29 "org.robolectric:android-all:Q-robolectric-5415296"
 }
 
 def robolectricDependencies = "${rootProject.buildDir.path}/robolectric"
@@ -85,6 +89,8 @@ task fetchRobolectricDependencies(type: Copy) {
     from configurations.robo25
     from configurations.robo26
     from configurations.robo27
+    from configurations.robo28
+//    from configurations.robo29
     into robolectricDependencies
 }
 

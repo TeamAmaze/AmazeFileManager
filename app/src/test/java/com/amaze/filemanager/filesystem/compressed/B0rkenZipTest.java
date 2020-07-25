@@ -31,8 +31,6 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
@@ -45,10 +43,13 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+    maxSdk = 28)
 public class B0rkenZipTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");
@@ -91,7 +92,7 @@ public class B0rkenZipTest {
   public void testExtractZipWithWrongPathUnix() throws Exception {
     Extractor extractor =
         new ZipExtractor(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             zipfile1.getAbsolutePath(),
             Environment.getExternalStorageDirectory().getAbsolutePath(),
             emptyListener);
@@ -104,7 +105,7 @@ public class B0rkenZipTest {
   public void testExtractZipWithWrongPathWindows() throws Exception {
     Extractor extractor =
         new ZipExtractor(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             zipfile2.getAbsolutePath(),
             Environment.getExternalStorageDirectory().getAbsolutePath(),
             emptyListener);
@@ -117,7 +118,7 @@ public class B0rkenZipTest {
   public void testExtractZipWithSlashPrefixEntry() throws Exception {
     Extractor extractor =
         new ZipExtractor(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             zipfile3.getAbsolutePath(),
             Environment.getExternalStorageDirectory().getAbsolutePath(),
             emptyListener);
@@ -130,12 +131,17 @@ public class B0rkenZipTest {
   public void testZipHelperTaskShouldOmitInvalidEntries() throws Exception {
     ZipHelperTask task =
         new ZipHelperTask(
-            RuntimeEnvironment.application, zipfile1.getAbsolutePath(), null, false, (data) -> {});
+            ApplicationProvider.getApplicationContext(),
+            zipfile1.getAbsolutePath(),
+            null,
+            false,
+            (data) -> {});
     List<CompressedObjectParcelable> result = task.execute().get().result;
     assertEquals(1, result.size());
     assertEquals("good.txt", result.get(0).path);
     assertEquals(
-        RuntimeEnvironment.application.getString(R.string.multiple_invalid_archive_entries),
+        ApplicationProvider.getApplicationContext()
+            .getString(R.string.multiple_invalid_archive_entries),
         ShadowToast.getTextOfLatestToast());
   }
 
@@ -143,12 +149,17 @@ public class B0rkenZipTest {
   public void testZipHelperTaskShouldOmitInvalidEntriesWithBackslash() throws Exception {
     ZipHelperTask task =
         new ZipHelperTask(
-            RuntimeEnvironment.application, zipfile2.getAbsolutePath(), null, false, (data) -> {});
+            ApplicationProvider.getApplicationContext(),
+            zipfile2.getAbsolutePath(),
+            null,
+            false,
+            (data) -> {});
     List<CompressedObjectParcelable> result = task.execute().get().result;
     assertEquals(1, result.size());
     assertEquals("good.txt", result.get(0).path);
     assertEquals(
-        RuntimeEnvironment.application.getString(R.string.multiple_invalid_archive_entries),
+        ApplicationProvider.getApplicationContext()
+            .getString(R.string.multiple_invalid_archive_entries),
         ShadowToast.getTextOfLatestToast());
   }
 }
