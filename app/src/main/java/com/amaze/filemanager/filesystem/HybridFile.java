@@ -29,6 +29,8 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
@@ -521,13 +523,14 @@ public class HybridFile {
             });
       case SMB:
         try {
-          isDirectory = new SmbFile(path).isDirectory();
-        } catch (SmbException e) {
+          isDirectory =
+              AppConfig.getInstance()
+                  .execute((Callable<Boolean>) () -> new SmbFile(path).isDirectory())
+                  .get();
+        } catch (InterruptedException | ExecutionException e) {
           isDirectory = false;
-          e.printStackTrace();
-        } catch (MalformedURLException e) {
-          isDirectory = false;
-          e.printStackTrace();
+          if (e.getCause() != null) e.getCause().printStackTrace();
+          else e.printStackTrace();
         }
         break;
       case FILE:

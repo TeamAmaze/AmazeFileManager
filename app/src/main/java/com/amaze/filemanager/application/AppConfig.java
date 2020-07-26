@@ -21,6 +21,10 @@
 package com.amaze.filemanager.application;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.UtilitiesDatabase;
@@ -56,9 +60,13 @@ public class AppConfig extends GlideApplication {
   private ImageLoader imageLoader;
   private UtilsHandler utilsHandler;
 
-  private static Handler applicationhandler = new Handler();
+  private static Handler applicationHandler = new Handler();
+
   private HandlerThread backgroundHandlerThread;
   private static Handler backgroundHandler;
+
+  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
+
   private WeakReference<Context> mainActivityContext;
   private static ScreenUtils screenUtils;
 
@@ -77,7 +85,6 @@ public class AppConfig extends GlideApplication {
     super.onCreate();
     AppCompatDelegate.setCompatVectorFromResourcesEnabled(
         true); // selector in srcCompat isn't supported without this
-    backgroundHandlerThread = new HandlerThread("app_background");
     instance = this;
 
     CustomSshJConfig.init();
@@ -87,9 +94,7 @@ public class AppConfig extends GlideApplication {
     utilsProvider = new UtilitiesProvider(this);
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
-    // FIXME: in unit tests when AppConfig is rapidly created/destroyed this call will cause
-    // IllegalThreadStateException.
-    // Until this gets fixed only one test case can be run in a time. - Raymond, 24/4/2018
+    backgroundHandlerThread = new HandlerThread("app_background");
     backgroundHandlerThread.start();
     backgroundHandler = new Handler(backgroundHandlerThread.getLooper());
 
@@ -102,6 +107,21 @@ public class AppConfig extends GlideApplication {
   public void onTerminate() {
     super.onTerminate();
     backgroundHandlerThread.quit();
+    executorService.shutdownNow();
+  }
+
+  /**
+   * Convenience method to execute code that needs to avoid main thread. Delegate to
+   *
+   * @see ExecutorService#submit(Callable)
+   * @see Future
+   * @param callable {@link Callable} that contains logic that cannot run on main thread, like
+   *     networking, calculation
+   * @param <T> Return value type
+   * @return {@link Future} from submitting the callable to the executor service
+   */
+  public <T> Future<T> execute(Callable<T> callable) {
+    return executorService.submit(callable);
   }
 
   /**
@@ -221,7 +241,7 @@ public class AppConfig extends GlideApplication {
    * @param r Runnable to run
    */
   public void runInApplicationThread(Runnable r) {
-    applicationhandler.post(r);
+    applicationHandler.post(r);
   }
 
   public static synchronized AppConfig getInstance() {

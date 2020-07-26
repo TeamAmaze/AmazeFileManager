@@ -838,7 +838,7 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
-      SshConnectionPool.getInstance().expungeAllConnections();
+      SshConnectionPool.getInstance().shutdown();
       finish();
       if (isRootExplorer()) {
         // TODO close all shells
@@ -1298,7 +1298,7 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-    SshConnectionPool.getInstance().expungeAllConnections();
+    SshConnectionPool.getInstance().shutdown();
   }
 
   /** Closes the interactive shell and threads associated */
