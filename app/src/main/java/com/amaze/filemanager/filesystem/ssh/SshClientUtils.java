@@ -80,7 +80,7 @@ public abstract class SshClientUtils {
           tryDisconnect(client);
         }
       }
-    } else throw new RuntimeException("Unable to execute template");
+    }
     return retval;
   }
 

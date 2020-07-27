@@ -44,15 +44,17 @@ public class CryptHandler {
   }
 
   public void addEntry(EncryptedEntry encryptedEntry) {
-    AppConfig.runInBackground(() -> database.encryptedEntryDao().insert(encryptedEntry));
+    AppConfig.getInstance()
+        .runInBackground(() -> database.encryptedEntryDao().insert(encryptedEntry));
   }
 
   public void clear(String path) {
-    AppConfig.runInBackground(() -> database.encryptedEntryDao().delete(path));
+    AppConfig.getInstance().runInBackground(() -> database.encryptedEntryDao().delete(path));
   }
 
   public void updateEntry(EncryptedEntry oldEncryptedEntry, EncryptedEntry newEncryptedEntry) {
-    AppConfig.runInBackground(() -> database.encryptedEntryDao().update(newEncryptedEntry));
+    AppConfig.getInstance()
+        .runInBackground(() -> database.encryptedEntryDao().update(newEncryptedEntry));
   }
 
   public EncryptedEntry findEntry(String path) {

@@ -78,80 +78,83 @@ public class UtilsHandler {
   }
 
   public void saveToDatabase(OperationData operationData) {
-    AppConfig.runInBackground(
-        () -> {
-          switch (operationData.type) {
-            case HIDDEN:
-              utilitiesDatabase.hiddenEntryDao().insert(new Hidden(operationData.path));
-              break;
-            case HISTORY:
-              utilitiesDatabase.historyEntryDao().insert(new History(operationData.path));
-              break;
-            case LIST:
-              utilitiesDatabase
-                  .listEntryDao()
-                  .insert(
-                      new com.amaze.filemanager.database.models.utilities.List(operationData.path));
-              break;
-            case GRID:
-              utilitiesDatabase.gridEntryDao().insert(new Grid(operationData.path));
-              break;
-            case BOOKMARKS:
-              utilitiesDatabase
-                  .bookmarkEntryDao()
-                  .insert(new Bookmark(operationData.name, operationData.path));
-              break;
-            case SMB:
-              utilitiesDatabase
-                  .smbEntryDao()
-                  .insert(new SmbEntry(operationData.name, operationData.path));
-              break;
-            case SFTP:
-              utilitiesDatabase
-                  .sftpEntryDao()
-                  .insert(
-                      new SftpEntry(
-                          operationData.path,
-                          operationData.name,
-                          operationData.hostKey,
-                          operationData.sshKeyName,
-                          operationData.sshKey));
-              break;
-            default:
-              throw new IllegalStateException("Unidentified operation!");
-          }
-        });
+    AppConfig.getInstance()
+        .runInBackground(
+            () -> {
+              switch (operationData.type) {
+                case HIDDEN:
+                  utilitiesDatabase.hiddenEntryDao().insert(new Hidden(operationData.path));
+                  break;
+                case HISTORY:
+                  utilitiesDatabase.historyEntryDao().insert(new History(operationData.path));
+                  break;
+                case LIST:
+                  utilitiesDatabase
+                      .listEntryDao()
+                      .insert(
+                          new com.amaze.filemanager.database.models.utilities.List(
+                              operationData.path));
+                  break;
+                case GRID:
+                  utilitiesDatabase.gridEntryDao().insert(new Grid(operationData.path));
+                  break;
+                case BOOKMARKS:
+                  utilitiesDatabase
+                      .bookmarkEntryDao()
+                      .insert(new Bookmark(operationData.name, operationData.path));
+                  break;
+                case SMB:
+                  utilitiesDatabase
+                      .smbEntryDao()
+                      .insert(new SmbEntry(operationData.name, operationData.path));
+                  break;
+                case SFTP:
+                  utilitiesDatabase
+                      .sftpEntryDao()
+                      .insert(
+                          new SftpEntry(
+                              operationData.path,
+                              operationData.name,
+                              operationData.hostKey,
+                              operationData.sshKeyName,
+                              operationData.sshKey));
+                  break;
+                default:
+                  throw new IllegalStateException("Unidentified operation!");
+              }
+            });
   }
 
   public void removeFromDatabase(OperationData operationData) {
-    AppConfig.runInBackground(
-        () -> {
-          switch (operationData.type) {
-            case HIDDEN:
-              utilitiesDatabase.hiddenEntryDao().deleteByPath(operationData.path);
-              break;
-            case HISTORY:
-              utilitiesDatabase.historyEntryDao().deleteByPath(operationData.path);
-              break;
-            case LIST:
-              utilitiesDatabase.listEntryDao().deleteByPath(operationData.path);
-              break;
-            case GRID:
-              utilitiesDatabase.gridEntryDao().deleteByPath(operationData.path);
-              break;
-            case BOOKMARKS:
-              removeBookmarksPath(operationData.name, operationData.path);
-              break;
-            case SMB:
-              removeSmbPath(operationData.name, operationData.path);
-              break;
-            case SFTP:
-              removeSftpPath(operationData.name, operationData.path);
-              break;
-            default:
-              throw new IllegalStateException("Unidentified operation!");
-          }
-        });
+    AppConfig.getInstance()
+        .runInBackground(
+            () -> {
+              switch (operationData.type) {
+                case HIDDEN:
+                  utilitiesDatabase.hiddenEntryDao().deleteByPath(operationData.path);
+                  break;
+                case HISTORY:
+                  utilitiesDatabase.historyEntryDao().deleteByPath(operationData.path);
+                  break;
+                case LIST:
+                  utilitiesDatabase.listEntryDao().deleteByPath(operationData.path);
+                  break;
+                case GRID:
+                  utilitiesDatabase.gridEntryDao().deleteByPath(operationData.path);
+                  break;
+                case BOOKMARKS:
+                  removeBookmarksPath(operationData.name, operationData.path);
+                  break;
+                case SMB:
+                  removeSmbPath(operationData.name, operationData.path);
+                  break;
+                case SFTP:
+                  removeSftpPath(operationData.name, operationData.path);
+                  break;
+                default:
+                  throw new IllegalStateException("Unidentified operation!");
+              }
+            });
   }
 
   public void addCommonBookmarks() {
@@ -190,7 +193,7 @@ public class UtilsHandler {
       entry.sshKey = sshKey;
     }
 
-    AppConfig.runInBackground(() -> utilitiesDatabase.sftpEntryDao().update(entry));
+    AppConfig.getInstance().runInBackground(() -> utilitiesDatabase.sftpEntryDao().update(entry));
   }
 
   public LinkedList<String> getHistoryLinkedList() {
@@ -321,15 +324,16 @@ public class UtilsHandler {
   }
 
   public void clearTable(Operation table) {
-    AppConfig.runInBackground(
-        () -> {
-          switch (table) {
-            case HISTORY:
-              utilitiesDatabase.historyEntryDao().clear();
-              break;
-            default:
-              break;
-          }
-        });
+    AppConfig.getInstance()
+        .runInBackground(
+            () -> {
+              switch (table) {
+                case HISTORY:
+                  utilitiesDatabase.historyEntryDao().clear();
+                  break;
+                default:
+                  break;
+              }
+            });
   }
 }

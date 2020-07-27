@@ -173,15 +173,16 @@ public class SshConnectionPool {
    * @see MainActivity#exit()
    */
   public void shutdown() {
-    AppConfig.runInBackground(
-        () -> {
-          if (!connections.isEmpty()) {
-            for (SSHClient connection : connections.values()) {
-              SshClientUtils.tryDisconnect(connection);
-            }
-            connections.clear();
-          }
-        });
+    AppConfig.getInstance()
+        .runInBackground(
+            () -> {
+              if (!connections.isEmpty()) {
+                for (SSHClient connection : connections.values()) {
+                  SshClientUtils.tryDisconnect(connection);
+                }
+                connections.clear();
+              }
+            });
   }
 
   // Logic for creating SSH connection. Depends on password existence in given Uri password or

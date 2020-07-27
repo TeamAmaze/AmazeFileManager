@@ -70,15 +70,15 @@ public class SortHandler {
   }
 
   public void addEntry(Sort sort) {
-    AppConfig.runInBackground(() -> database.sortDao().insert(sort));
+    AppConfig.getInstance().runInBackground(() -> database.sortDao().insert(sort));
   }
 
   public void clear(String path) {
-    AppConfig.runInBackground(() -> database.sortDao().clear(path));
+    AppConfig.getInstance().runInBackground(() -> database.sortDao().clear(path));
   }
 
   public void updateEntry(Sort oldSort, Sort newSort) {
-    AppConfig.runInBackground(() -> database.sortDao().update(newSort));
+    AppConfig.getInstance().runInBackground(() -> database.sortDao().update(newSort));
   }
 
   @Nullable

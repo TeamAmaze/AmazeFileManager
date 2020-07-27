@@ -20,10 +20,12 @@
 
 package com.amaze.filemanager.test;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -74,7 +76,13 @@ public class ShadowCryptUtilTest {
 
     TestUtils.flushAppConfigHandlerThread();
 
-    assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
-    utilitiesDatabase.close();
+    await()
+        .atMost(10, TimeUnit.SECONDS)
+        .until(
+            () -> {
+              assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+              utilitiesDatabase.close();
+              return true;
+            });
   }
 }

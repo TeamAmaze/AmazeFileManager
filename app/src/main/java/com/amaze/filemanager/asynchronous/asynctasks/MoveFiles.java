@@ -194,27 +194,28 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
       }
 
       // updating encrypted db entry if any encrypted file was moved
-      AppConfig.runInBackground(
-          () -> {
-            for (int i = 0; i < paths.size(); i++) {
-              for (HybridFileParcelable file : files.get(i)) {
-                if (file.getName(context).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                  try {
-                    CryptHandler cryptHandler = CryptHandler.getInstance();
-                    EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
-                    EncryptedEntry newEntry = new EncryptedEntry();
-                    newEntry.setId(oldEntry.getId());
-                    newEntry.setPassword(oldEntry.getPassword());
-                    newEntry.setPath(paths.get(i) + "/" + file.getName(context));
-                    cryptHandler.updateEntry(oldEntry, newEntry);
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                    // couldn't change the entry, leave it alone
+      AppConfig.getInstance()
+          .runInBackground(
+              () -> {
+                for (int i = 0; i < paths.size(); i++) {
+                  for (HybridFileParcelable file : files.get(i)) {
+                    if (file.getName(context).endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                      try {
+                        CryptHandler cryptHandler = CryptHandler.getInstance();
+                        EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
+                        EncryptedEntry newEntry = new EncryptedEntry();
+                        newEntry.setId(oldEntry.getId());
+                        newEntry.setPassword(oldEntry.getPassword());
+                        newEntry.setPath(paths.get(i) + "/" + file.getName(context));
+                        cryptHandler.updateEntry(oldEntry, newEntry);
+                      } catch (Exception e) {
+                        e.printStackTrace();
+                        // couldn't change the entry, leave it alone
+                      }
+                    }
                   }
                 }
-              }
-            }
-          });
+              });
 
     } else {
 

@@ -1097,12 +1097,13 @@ public class MainActivity extends PermissionsActivity
         int pathLayout = dataUtils.getListOrGridForPath(ma.getCurrentPath(), DataUtils.LIST);
         if (ma.IS_LIST) {
           if (pathLayout == DataUtils.LIST) {
-            AppConfig.runInBackground(
-                () -> {
-                  utilsHandler.removeFromDatabase(
-                      new OperationData(
-                          UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
-                });
+            AppConfig.getInstance()
+                .runInBackground(
+                    () -> {
+                      utilsHandler.removeFromDatabase(
+                          new OperationData(
+                              UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
+                    });
           }
           utilsHandler.saveToDatabase(
               new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
@@ -1110,12 +1111,13 @@ public class MainActivity extends PermissionsActivity
           dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
         } else {
           if (pathLayout == DataUtils.GRID) {
-            AppConfig.runInBackground(
-                () -> {
-                  utilsHandler.removeFromDatabase(
-                      new OperationData(
-                          UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
-                });
+            AppConfig.getInstance()
+                .runInBackground(
+                    () -> {
+                      utilsHandler.removeFromDatabase(
+                          new OperationData(
+                              UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
+                    });
           }
 
           utilsHandler.saveToDatabase(
@@ -1813,10 +1815,11 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) {
         dataUtils.removeServer(i);
 
-        AppConfig.runInBackground(
-            () -> {
-              utilsHandler.renameSMB(oldname, oldPath, name, path);
-            });
+        AppConfig.getInstance()
+            .runInBackground(
+                () -> {
+                  utilsHandler.renameSMB(oldname, oldPath, name, path);
+                });
         // mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
       }
       dataUtils.addServer(s);
@@ -1833,11 +1836,12 @@ public class MainActivity extends PermissionsActivity
     if (i != -1) {
       dataUtils.removeServer(i);
 
-      AppConfig.runInBackground(
-          () -> {
-            utilsHandler.removeFromDatabase(
-                new OperationData(UtilsHandler.Operation.SMB, name, path));
-          });
+      AppConfig.getInstance()
+          .runInBackground(
+              () -> {
+                utilsHandler.removeFromDatabase(
+                    new OperationData(UtilsHandler.Operation.SMB, name, path));
+              });
       // grid.removePath(name, path, DataUtils.SMB);
       drawer.refreshDrawer();
     }

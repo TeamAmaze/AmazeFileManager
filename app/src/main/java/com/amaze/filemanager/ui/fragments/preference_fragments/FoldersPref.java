@@ -227,13 +227,14 @@ public class FoldersPref extends PreferenceFragment
                   new String[] {editText1.getText().toString(), editText2.getText().toString()};
 
               dataUtils.addBook(values);
-              AppConfig.runInBackground(
-                  () ->
-                      utilsHandler.renameBookmark(
-                          oldName,
-                          oldPath,
-                          editText1.getText().toString(),
-                          editText2.getText().toString()));
+              AppConfig.getInstance()
+                  .runInBackground(
+                      () ->
+                          utilsHandler.renameBookmark(
+                              oldName,
+                              oldPath,
+                              editText1.getText().toString(),
+                              editText2.getText().toString()));
               dialog.dismiss();
             });
 

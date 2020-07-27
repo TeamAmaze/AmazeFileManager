@@ -42,7 +42,6 @@ import android.app.Application;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.StrictMode;
 import android.widget.Toast;
 
@@ -61,9 +60,6 @@ public class AppConfig extends GlideApplication {
   private UtilsHandler utilsHandler;
 
   private static Handler applicationHandler = new Handler();
-
-  private HandlerThread backgroundHandlerThread;
-  private static Handler backgroundHandler;
 
   private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
@@ -94,10 +90,6 @@ public class AppConfig extends GlideApplication {
     utilsProvider = new UtilitiesProvider(this);
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
-    backgroundHandlerThread = new HandlerThread("app_background");
-    backgroundHandlerThread.start();
-    backgroundHandler = new Handler(backgroundHandlerThread.getLooper());
-
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
@@ -106,7 +98,6 @@ public class AppConfig extends GlideApplication {
   @Override
   public void onTerminate() {
     super.onTerminate();
-    backgroundHandlerThread.quit();
     executorService.shutdownNow();
   }
 
@@ -129,10 +120,8 @@ public class AppConfig extends GlideApplication {
    * this runnable is executed, and {@link #runInBackground(Runnable)} in case we need to execute
    * something after execution in background
    */
-  public static void runInBackground(Runnable runnable) {
-    synchronized (backgroundHandler) {
-      backgroundHandler.post(runnable);
-    }
+  public void runInBackground(Runnable runnable) {
+    executorService.submit(runnable);
   }
 
   /**

@@ -20,9 +20,10 @@
 
 package com.amaze.filemanager.test;
 
-import static org.robolectric.Shadows.shadowOf;
+import static org.awaitility.Awaitility.await;
 
 import java.lang.reflect.Field;
+import java.util.concurrent.ExecutorService;
 
 import org.robolectric.util.Scheduler;
 
@@ -49,16 +50,16 @@ public class TestUtils {
    * via reflection.
    *
    * @see Scheduler#advanceToNextPostedRunnable()
-   * @see AppConfig#backgroundHandler
+   * @see AppConfig#executorService
    * @see AppConfig#runInBackground(Runnable)
    */
   public static void flushAppConfigHandlerThread() {
     try {
-      Field f = AppConfig.class.getDeclaredField("backgroundHandler");
+      Field f = AppConfig.class.getDeclaredField("executorService");
       f.setAccessible(true);
-      Handler h = (Handler) f.get(null);
-      Scheduler scheduler = shadowOf(h.getLooper()).getScheduler();
-      scheduler.advanceToLastPostedRunnable();
+      ExecutorService h = (ExecutorService) f.get(AppConfig.getInstance());
+      h.shutdown();
+      await().until(h::isTerminated);
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new AssertionError("Unable to access backgroundHandler within AppConfig");
     }

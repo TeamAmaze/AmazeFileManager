@@ -309,17 +309,18 @@ public class SftpConnectDialog extends DialogFragment {
                 if (i != -1) {
                   DataUtils.getInstance().removeServer(i);
 
-                  AppConfig.runInBackground(
-                      () -> {
-                        utilsHandler.removeFromDatabase(
-                            new OperationData(
-                                UtilsHandler.Operation.SFTP,
-                                path,
-                                connectionName,
-                                null,
-                                null,
-                                null));
-                      });
+                  AppConfig.getInstance()
+                      .runInBackground(
+                          () -> {
+                            utilsHandler.removeFromDatabase(
+                                new OperationData(
+                                    UtilsHandler.Operation.SFTP,
+                                    path,
+                                    connectionName,
+                                    null,
+                                    null,
+                                    null));
+                          });
                   ((MainActivity) getActivity()).getDrawer().refreshDrawer();
                 }
                 dialog.dismiss();
@@ -476,16 +477,17 @@ public class SftpConnectDialog extends DialogFragment {
       Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
       ((MainActivity) getActivity()).getDrawer().refreshDrawer();
 
-      AppConfig.runInBackground(
-          () -> {
-            utilsHandler.updateSsh(
-                connectionName,
-                getArguments().getString("name"),
-                encryptedPath,
-                hostKeyFingerprint,
-                selectedParsedKeyPairName,
-                getPemContents());
-          });
+      AppConfig.getInstance()
+          .runInBackground(
+              () -> {
+                utilsHandler.updateSsh(
+                    connectionName,
+                    getArguments().getString("name"),
+                    encryptedPath,
+                    hostKeyFingerprint,
+                    selectedParsedKeyPairName,
+                    getPemContents());
+              });
 
       dismiss();
       return true;
