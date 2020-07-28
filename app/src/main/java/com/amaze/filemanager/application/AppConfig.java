@@ -87,11 +87,10 @@ public class AppConfig extends GlideApplication {
     utilsProvider = new UtilitiesProvider(this);
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
-    // FIXME: in unit tests when AppConfig is rapidly created/destroyed this call will cause
-    // IllegalThreadStateException.
-    // Until this gets fixed only one test case can be run in a time. - Raymond, 24/4/2018
     backgroundHandlerThread.start();
     backgroundHandler = new Handler(backgroundHandlerThread.getLooper());
+
+    runInBackground(jcifs.Config::registerSmbURLHandler);
 
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
