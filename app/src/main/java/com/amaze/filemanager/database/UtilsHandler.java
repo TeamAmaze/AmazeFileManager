@@ -58,6 +58,8 @@ import androidx.annotation.NonNull;
  */
 public class UtilsHandler {
 
+  private static final String TAG = UtilsHandler.class.getSimpleName();
+
   private final Context context;
 
   private final UtilitiesDatabase utilitiesDatabase;
@@ -313,6 +315,13 @@ public class UtilsHandler {
   }
 
   public void renameSMB(String oldName, String oldPath, String newName, String newPath) {
+    try {
+      oldPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), oldPath);
+      newPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), newPath);
+    } catch (GeneralSecurityException | IOException e) {
+      android.util.Log.e(TAG, "Error encrypting SMB path", e);
+    }
+
     SmbEntry smbEntry = utilitiesDatabase.smbEntryDao().findByNameAndPath(oldName, oldPath);
     smbEntry.name = newName;
     smbEntry.path = newPath;

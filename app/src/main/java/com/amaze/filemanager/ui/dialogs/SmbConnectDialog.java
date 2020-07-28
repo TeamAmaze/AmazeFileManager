@@ -207,7 +207,6 @@ public class SmbConnectDialog extends DialogFragment {
       String userp = "", passp = "", ipp = "", domainp = "";
       conName.setText(name);
       try {
-        jcifs.Config.registerSmbURLHandler();
         URL a = new URL(path);
         String userinfo = a.getUserInfo();
         if (userinfo != null) {
