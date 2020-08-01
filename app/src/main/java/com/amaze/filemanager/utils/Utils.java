@@ -52,6 +52,7 @@ import android.widget.Toast;
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -221,12 +222,12 @@ public class Utils {
   }
 
   /** Returns uri associated to specific basefile */
-  public static Uri getUriForBaseFile(Context context, HybridFileParcelable baseFile) {
+  public static Uri getUriForBaseFile(
+      @NonNull Context context, @NonNull HybridFileParcelable baseFile) {
     switch (baseFile.getMode()) {
       case FILE:
       case ROOT:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
           return FileProvider.getUriForFile(
               context, context.getPackageName(), new File(baseFile.getPath()));
         } else {
@@ -340,7 +341,7 @@ public class Utils {
       MainActivity mainActivity,
       CharSequence text,
       int length,
-      int actionTextId,
+      @StringRes int actionTextId,
       Runnable actionCallback) {
     Snackbar snackbar =
         Snackbar.make(mainActivity.findViewById(R.id.content_frame), text, length)

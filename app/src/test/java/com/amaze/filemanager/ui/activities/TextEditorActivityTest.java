@@ -20,10 +20,8 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.assertTrue;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -45,7 +43,6 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.ContentResolver;
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Environment;
@@ -57,13 +54,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    minSdk = 24,
     maxSdk = 28)
-/*
- Restrict minSdk to 24 since it'd fail at SDK 21-23.
- This may only be fixed by upgrading to Robolectric 4.
- See https://github.com/robolectric/robolectric/issues/3947
-*/
 public class TextEditorActivityTest {
 
   private final String fileContents = "fsdfsdfs";
@@ -82,7 +73,7 @@ public class TextEditorActivityTest {
     intent.setData(Uri.fromFile(file));
     generateActivity(intent);
 
-    assertThat(text.getText().toString(), is(fileContents + "\n"));
+    assertEquals(fileContents + "\n", text.getText().toString());
   }
 
   @Test
@@ -120,7 +111,7 @@ public class TextEditorActivityTest {
     file.createNewFile();
 
     if (!file.canWrite()) file.setWritable(true);
-    assertThat(file.canWrite(), is(true));
+    assertTrue(file.canWrite());
 
     PrintWriter out = new PrintWriter(file);
     out.write(fileContents);
@@ -128,10 +119,5 @@ public class TextEditorActivityTest {
     out.close();
 
     return file;
-  }
-
-  private Uri getFileContentUri(Context context, File file) {
-    fail("Cannot create content URI");
-    return null;
   }
 }
