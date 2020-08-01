@@ -20,33 +20,66 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import org.junit.Ignore;
+import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.P;
+import static androidx.test.core.app.ActivityScenario.launch;
+import static org.robolectric.Shadows.shadowOf;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.Robolectric;
-import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
+import org.robolectric.annotation.LooperMode;
+import org.robolectric.shadows.ShadowLooper;
+import org.robolectric.shadows.ShadowStorageManager;
 
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.test.TestUtils;
 
+import android.os.Build;
+import android.os.storage.StorageManager;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class},
-    maxSdk = 28)
+    shadows = {ShadowMultiDex.class, ShadowStorageManager.class},
+    maxSdk = P)
+/*
+ * Need to make LooperMode PAUSED and flush the main looper before activity can show up.
+ * @see {@link LooperMode.Mode.PAUSED}
+ * @see {@link <a href="https://stackoverflow.com/questions/55679636/robolectric-throws-fragmentmanager-is-already-executing-transactions">StackOverflow discussion</a>}
+ */
+@LooperMode(LooperMode.Mode.PAUSED)
 public class MainActivityTest {
 
+  @Before
+  public void setUp() {
+    if (Build.VERSION.SDK_INT >= N) TestUtils.initializeInternalStorage();
+  }
+
+  @After
+  public void tearDown() {
+    if (Build.VERSION.SDK_INT >= N)
+      shadowOf(ApplicationProvider.getApplicationContext().getSystemService(StorageManager.class))
+          .resetStorageVolumeList();
+  }
+
   @Test
-  @Ignore
   public void testMainActivity() {
-    ActivityController<MainActivity> controller =
-        Robolectric.buildActivity(MainActivity.class)
-            .create()
-            .start()
-            .resume()
-            .visible()
-            .pause()
-            .destroy();
+    ActivityScenario<MainActivity> scenario = launch(MainActivity.class);
+
+    ShadowLooper.idleMainLooper();
+
+    scenario.moveToState(Lifecycle.State.STARTED);
+
+    scenario.onActivity(
+        activity -> {
+          scenario.close();
+        });
   }
 }
