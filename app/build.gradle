@@ -124,9 +124,11 @@ dependencies {
     testImplementation "androidx.test:runner:$androidXTestVersion"
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation 'androidx.test.ext:junit:1.1.1'
+    //testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation 'org.jsoup:jsoup:1.11.2'
     testAnnotationProcessor "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic

@@ -54,7 +54,7 @@ public class ColorUtilsTest {
     doTest(R.color.archive_item, Icons.COMPRESSED);
     doTest(R.color.apk_item, Icons.APK);
     doTest(R.color.generic_item, Icons.NOT_KNOWN);
-    assertNotNull(ApplicationProvider.getApplicationContext()); //idiotic codacy compliance...
+    assertNotNull(ApplicationProvider.getApplicationContext()); // idiotic codacy compliance...
   }
 
   @Test
@@ -68,7 +68,7 @@ public class ColorUtilsTest {
     doTestGeneric(R.color.primary_indigo, Icons.DOCUMENTS);
     doTestGeneric(R.color.primary_indigo, Icons.ENCRYPTED);
     doTestGeneric(R.color.primary_indigo, Icons.GIF);
-    assertNotNull(ApplicationProvider.getApplicationContext()); //idiotic codacy compliance...
+    assertNotNull(ApplicationProvider.getApplicationContext()); // idiotic codacy compliance...
   }
 
   private void doTest(@ColorInt int expected, int icon) {

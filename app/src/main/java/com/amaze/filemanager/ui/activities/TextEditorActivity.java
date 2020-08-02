@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
@@ -322,7 +323,7 @@ public class TextEditorActivity extends ThemedActivity
                   try {
                     mInput.setText(data.fileContents);
 
-                    if (mFile.scheme == EditableFileAbstraction.SCHEME_FILE
+                    if (mFile.scheme.equals(FILE)
                         && getExternalCacheDir() != null
                         && mFile
                             .hybridFileParcelable
@@ -403,8 +404,7 @@ public class TextEditorActivity extends ThemedActivity
         saveFile(mInput.getText().toString());
         break;
       case R.id.details:
-        if (mFile.scheme == EditableFileAbstraction.SCHEME_FILE
-            && mFile.hybridFileParcelable.getFile().exists()) {
+        if (mFile.scheme.equals(FILE) && mFile.hybridFileParcelable.getFile().exists()) {
           GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
               mFile.hybridFileParcelable, this, getAppTheme());
         } else {
@@ -412,7 +412,7 @@ public class TextEditorActivity extends ThemedActivity
         }
         break;
       case R.id.openwith:
-        if (mFile.scheme == EditableFileAbstraction.SCHEME_FILE) {
+        if (mFile.scheme.equals(FILE)) {
           File currentFile = mFile.hybridFileParcelable.getFile();
           if (currentFile.exists()) {
             boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
