@@ -154,7 +154,7 @@ public class MediaStoreHack {
     try {
       temporaryTrack = installTemporaryTrack(context);
     } catch (final IOException ex) {
-      Log.w("MediaFile", "Error installing tempory track.", ex);
+      Log.w("MediaFile", "Error installing temporary track.", ex);
       return 0;
     }
     final Uri filesUri = MediaStore.Files.getContentUri("external");

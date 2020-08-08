@@ -34,11 +34,11 @@ import androidx.annotation.StringRes;
 
 public final class WarnableTextInputValidator extends SimpleTextWatcher
     implements View.OnFocusChangeListener, View.OnTouchListener {
-  private final Context mContext;
-  private final EditText mEditText;
-  private final View mButton;
-  private final WarnableTextInputLayout mTextInputLayout;
-  private final OnTextValidate mValidator;
+  private final Context context;
+  private final EditText editText;
+  private final View button;
+  private final WarnableTextInputLayout textInputLayout;
+  private final OnTextValidate validator;
   private @DrawableRes int warningDrawable, errorDrawable;
 
   public WarnableTextInputValidator(
@@ -47,15 +47,15 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher
       WarnableTextInputLayout textInputLayout,
       View positiveButton,
       OnTextValidate validator) {
-    mContext = context;
-    mEditText = editText;
-    mEditText.setOnFocusChangeListener(this);
-    mEditText.addTextChangedListener(this);
-    mTextInputLayout = textInputLayout;
-    mButton = positiveButton;
-    mButton.setOnTouchListener(this);
-    mButton.setEnabled(false);
-    mValidator = validator;
+    this.context = context;
+    this.editText = editText;
+    this.editText.setOnFocusChangeListener(this);
+    this.editText.addTextChangedListener(this);
+    this.textInputLayout = textInputLayout;
+    button = positiveButton;
+    button.setOnTouchListener(this);
+    button.setEnabled(false);
+    this.validator = validator;
 
     warningDrawable = R.drawable.ic_warning_24dp;
     errorDrawable = R.drawable.ic_error_24dp;
@@ -65,7 +65,7 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher
   public void onFocusChange(View v, boolean hasFocus) {
     if (!hasFocus) {
       int state = doValidate(false);
-      mButton.setEnabled(state != ReturnState.STATE_ERROR);
+      button.setEnabled(state != ReturnState.STATE_ERROR);
     }
   }
 
@@ -86,24 +86,24 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher
 
   /** @return ReturnState.state */
   private int doValidate(boolean onlySetWarning) {
-    ReturnState state = mValidator.isTextValid(mEditText.getText().toString());
+    ReturnState state = validator.isTextValid(editText.getText().toString());
     switch (state.state) {
       case ReturnState.STATE_NORMAL:
-        mTextInputLayout.removeError();
+        textInputLayout.removeError();
         setEditTextIcon(null);
-        mButton.setEnabled(true);
+        button.setEnabled(true);
         break;
       case ReturnState.STATE_ERROR:
         if (!onlySetWarning) {
-          mTextInputLayout.setError(mContext.getString(state.text));
+          textInputLayout.setError(context.getString(state.text));
           setEditTextIcon(errorDrawable);
         }
-        mButton.setEnabled(false);
+        button.setEnabled(false);
         break;
       case ReturnState.STATE_WARNING:
-        mTextInputLayout.setWarning(state.text);
+        textInputLayout.setWarning(state.text);
         setEditTextIcon(warningDrawable);
-        mButton.setEnabled(true);
+        button.setEnabled(true);
         break;
     }
 
@@ -112,7 +112,7 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher
 
   private void setEditTextIcon(@DrawableRes Integer drawable) {
     @DrawableRes int drawableInt = drawable != null ? drawable : 0;
-    mEditText.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableInt, 0);
+    editText.setCompoundDrawablesWithIntrinsicBounds(0, 0, drawableInt, 0);
   }
 
   public interface OnTextValidate {

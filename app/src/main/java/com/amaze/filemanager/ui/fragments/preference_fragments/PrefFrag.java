@@ -164,7 +164,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             masterPasswordPreference.setEnabled(false);
             return true;
           });
-    } catch (NoClassDefFoundError error) {
+    } catch (NoClassDefFoundError | ClassCastException error) {
       error.printStackTrace();
 
       // fingerprint manager class not defined in the framework
