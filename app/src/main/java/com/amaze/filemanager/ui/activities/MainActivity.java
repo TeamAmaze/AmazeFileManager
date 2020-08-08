@@ -129,6 +129,7 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -2123,7 +2124,7 @@ public class MainActivity extends PermissionsActivity
 
     @Override
     public void onLoaderReset(@NonNull Loader<Cursor> loader) {
-        
+        Log.d("onLoaderReset","Loader Reset Called");
     }
 
     private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
