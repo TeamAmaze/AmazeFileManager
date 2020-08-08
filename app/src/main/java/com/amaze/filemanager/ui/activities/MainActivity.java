@@ -109,7 +109,6 @@ import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.res.Configuration;
@@ -129,9 +128,7 @@ import android.os.HandlerThread;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
-import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -141,7 +138,6 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.Toast;
 
@@ -152,7 +148,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
-import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -280,7 +275,6 @@ public class MainActivity extends PermissionsActivity
     private PasteHelper pasteHelper;
 
     private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
-    private String textFileName = "";
 
     /**
      * Called when the activity is first created.
@@ -553,7 +547,7 @@ public class MainActivity extends PermissionsActivity
                 // save a single file to filesystem when sharing from browser.
                 Bundle extras = intent.getExtras();
                 String data = extras.getString(Intent.EXTRA_SUBJECT) + "\nURL: "+ extras.getString(Intent.EXTRA_TEXT);
-                Uri fileUri = CreateAndWrite(data,"SavedFromBrowser"+(System.currentTimeMillis() / 1000));
+                Uri fileUri = createTempTextFile(data,"SavedFromBrowser"+(System.currentTimeMillis() / 1000));
                 ArrayList<Uri> uris = new ArrayList<>();
                 uris.add(fileUri);
                 initFabToSave(uris);
@@ -577,7 +571,7 @@ public class MainActivity extends PermissionsActivity
     /*
      * Method to create a file and save it and return the path
      * */
-    public Uri CreateAndWrite(String data,String textFileName){
+    public Uri createTempTextFile(String data, String textFileName){
         try{
             String rootPath = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Downloads/";
             File root = new File(rootPath);
@@ -2128,7 +2122,8 @@ public class MainActivity extends PermissionsActivity
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
+        
     }
 
     private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
