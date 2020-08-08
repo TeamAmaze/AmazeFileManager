@@ -23,7 +23,15 @@ package com.amaze.filemanager.ui.activities;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.P;
 import static androidx.test.core.app.ActivityScenario.launch;
+import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
@@ -34,8 +42,12 @@ import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.ShadowStorageManager;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
+import com.amaze.filemanager.test.ShadowCryptUtil;
 import com.amaze.filemanager.test.TestUtils;
+import com.amaze.filemanager.utils.SmbUtil;
 
 import android.os.Build;
 import android.os.storage.StorageManager;
@@ -47,7 +59,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class, ShadowStorageManager.class},
+    shadows = {
+      ShadowMultiDex.class,
+      ShadowStorageManager.class,
+      ShadowCryptUtil.class,
+      ShadowSmbFile.class
+    },
     maxSdk = P)
 /*
  * Need to make LooperMode PAUSED and flush the main looper before activity can show up.
@@ -70,7 +87,7 @@ public class MainActivityTest {
   }
 
   @Test
-  public void testMainActivity() {
+  public void testUpdateSmbExceptionShouldNotThrowNPE() {
     ActivityScenario<MainActivity> scenario = launch(MainActivity.class);
 
     ShadowLooper.idleMainLooper();
@@ -79,7 +96,50 @@ public class MainActivityTest {
 
     scenario.onActivity(
         activity -> {
-          scenario.close();
+          String path = "smb://root:toor@192.168.1.1";
+          String oldName = "SMB connection";
+          String newName = "root@192.168.1.1";
+          try {
+
+            activity.addConnection(
+                false,
+                oldName,
+                path,
+                SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
+                null,
+                null);
+            activity.addConnection(
+                true,
+                newName,
+                path,
+                SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
+                oldName,
+                path);
+
+            ShadowLooper.idleMainLooper();
+
+            await()
+                .atMost(5, TimeUnit.SECONDS)
+                .until(() -> AppConfig.getInstance().getUtilsHandler().getSmbList().size() > 0);
+            await()
+                .atMost(5, TimeUnit.SECONDS)
+                .until(
+                    () ->
+                        AppConfig.getInstance()
+                            .getUtilsHandler()
+                            .getSmbList()
+                            .get(0)[0]
+                            .equals(newName));
+            List<String[]> verify = AppConfig.getInstance().getUtilsHandler().getSmbList();
+            String[] entry = verify.get(0);
+            assertEquals(path, entry[1]);
+
+          } catch (GeneralSecurityException | IOException e) {
+            fail(e.getMessage());
+          } finally {
+            scenario.moveToState(Lifecycle.State.DESTROYED);
+            scenario.close();
+          }
         });
   }
 }
