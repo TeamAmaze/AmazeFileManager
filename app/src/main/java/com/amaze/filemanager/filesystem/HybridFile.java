@@ -788,8 +788,12 @@ public class HybridFile {
                         client.ls(SshClientUtils.extractRemotePathFrom(path))) {
                       boolean isDirectory = info.isDirectory();
                       if (info.getAttributes().getType().equals(FileMode.Type.SYMLINK)) {
-                        FileAttributes symlinkAttrs = client.stat(info.getPath());
-                        isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
+                        try {
+                          FileAttributes symlinkAttrs = client.stat(info.getPath());
+                          isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
+                        } catch (IOException ifSymlinkIsBroken) {
+                          continue;
+                        }
                       }
                       HybridFileParcelable f =
                           new HybridFileParcelable(String.format("%s/%s", path, info.getName()));

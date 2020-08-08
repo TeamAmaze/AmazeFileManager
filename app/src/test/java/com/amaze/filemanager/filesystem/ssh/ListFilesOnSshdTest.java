@@ -144,4 +144,26 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
             "symlink3.txt",
             "symlink4.txt"));
   }
+
+  @Test
+  public void testListDirsAndBrokenSymlinks() throws Exception {
+    File sysroot = new File(Environment.getExternalStorageDirectory(), "sysroot");
+    sysroot.mkdir();
+    Files.createSymbolicLink(
+        Paths.get(
+            new File(Environment.getExternalStorageDirectory(), "b0rken.symlink")
+                .getAbsolutePath()),
+        Paths.get(new File("/tmp/notfound.file").getAbsolutePath()));
+    for (String s : new String[] {"srv", "var", "tmp"}) {
+      File subdir = new File(sysroot, s);
+      subdir.mkdir();
+      Files.createSymbolicLink(
+          Paths.get(new File(Environment.getExternalStorageDirectory(), s).getAbsolutePath()),
+          Paths.get(subdir.getAbsolutePath()));
+    }
+    for (String s : new String[] {"bin", "lib", "usr"}) {
+      new File(Environment.getExternalStorageDirectory(), s).mkdir();
+    }
+    performVerify();
+  }
 }
