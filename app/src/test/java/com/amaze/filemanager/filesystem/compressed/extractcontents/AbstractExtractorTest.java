@@ -53,8 +53,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    minSdk = 14,
-    maxSdk = 28)
+    minSdk = 14)
 public abstract class AbstractExtractorTest {
 
   protected abstract Class<? extends Extractor> extractorClass();

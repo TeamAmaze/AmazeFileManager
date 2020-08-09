@@ -19,6 +19,7 @@ plugins {
 }
 
 allprojects {
+
     repositories {
         google()
         jcenter()
@@ -56,7 +57,7 @@ configurations {
     robo26
     robo27
     robo28
-//    robo29
+    robo29
 }
 
 dependencies {
@@ -72,7 +73,7 @@ dependencies {
     robo26 "org.robolectric:android-all:8.0.0_r4-robolectric-r1"
     robo27 "org.robolectric:android-all:8.1.0-robolectric-4611349"
     robo28 "org.robolectric:android-all:9-robolectric-4913185-2"
-//    robo29 "org.robolectric:android-all:Q-robolectric-5415296"
+    robo29 "org.robolectric:android-all:10-robolectric-5803371"
 }
 
 def robolectricDependencies = "${rootProject.buildDir.path}/robolectric"
@@ -90,7 +91,7 @@ task fetchRobolectricDependencies(type: Copy) {
     from configurations.robo26
     from configurations.robo27
     from configurations.robo28
-//    from configurations.robo29
+    from configurations.robo29
     into robolectricDependencies
 }
 
@@ -108,5 +109,28 @@ subprojects {
                 it.dependsOn fetchRobolectricDependencies
             }
         }
+        if (project.plugins.hasPlugin("jacoco-android")){
+            android {
+                testOptions.unitTests.all {
+                    jacoco {
+                        excludes = ['jdk.internal.*']
+                    }
+                }
+            }
+        }
+        dependencies {
+            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
+
+            if (project.hasProperty('kapt')) {
+                kapt 'javax.xml.bind:jaxb-api:2.3.1'
+                kapt 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+                kapt 'com.sun.xml.bind:jaxb-impl:2.3.2'
+            }
+
+            annotationProcessor 'javax.xml.bind:jaxb-api:2.3.1'
+            annotationProcessor 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+            annotationProcessor 'com.sun.xml.bind:jaxb-impl:2.3.2'
+        }
     }
+
 }

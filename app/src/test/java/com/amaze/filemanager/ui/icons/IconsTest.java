@@ -36,9 +36,7 @@ import android.webkit.MimeTypeMap;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(
-    shadows = {ShadowMultiDex.class},
-    maxSdk = 28)
+@Config(shadows = {ShadowMultiDex.class})
 public class IconsTest {
 
   @Before

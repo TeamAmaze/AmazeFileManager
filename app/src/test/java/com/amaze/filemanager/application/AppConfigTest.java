@@ -32,7 +32,6 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
 import com.amaze.filemanager.R;
@@ -46,7 +45,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(maxSdk = 28)
 public class AppConfigTest {
 
   @After

@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.views;
 
-import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -30,7 +29,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.R;
 
@@ -44,7 +42,6 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(maxSdk = P)
 public class WarnableTextInputValidatorTest {
 
   private Context context;

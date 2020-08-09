@@ -42,9 +42,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
  * "*{slash}*"
  */
 @RunWith(AndroidJUnit4.class)
-@Config(
-    shadows = {ShadowMultiDex.class, ShadowDateFormat.class},
-    maxSdk = 28)
+@Config(shadows = {ShadowMultiDex.class, ShadowDateFormat.class})
 public class FileListSorterTest {
   /**
    * Purpose: when dirsOnTop is 0, if file1 is directory && file2 is not directory, result is -1

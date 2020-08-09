@@ -43,7 +43,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(minSdk = 19, maxSdk = 28)
+@Config(minSdk = 19)
 public class AnimUtilsTest {
 
   @Test

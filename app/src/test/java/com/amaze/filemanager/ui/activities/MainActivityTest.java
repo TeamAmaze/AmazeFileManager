@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION_CODES.N;
-import static android.os.Build.VERSION_CODES.P;
 import static androidx.test.core.app.ActivityScenario.launch;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -64,8 +63,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
       ShadowStorageManager.class,
       ShadowCryptUtil.class,
       ShadowSmbFile.class
-    },
-    maxSdk = P)
+    })
 /*
  * Need to make LooperMode PAUSED and flush the main looper before activity can show up.
  * @see {@link LooperMode.Mode.PAUSED}
@@ -131,6 +129,7 @@ public class MainActivityTest {
                             .get(0)[0]
                             .equals(newName));
             List<String[]> verify = AppConfig.getInstance().getUtilsHandler().getSmbList();
+            assertEquals(1, verify.size());
             String[] entry = verify.get(0);
             assertEquals(path, entry[1]);
 

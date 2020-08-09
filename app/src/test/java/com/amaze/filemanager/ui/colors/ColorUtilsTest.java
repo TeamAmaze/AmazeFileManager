@@ -21,9 +21,8 @@
 package com.amaze.filemanager.ui.colors;
 
 import static android.os.Build.VERSION_CODES.N;
-import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,37 +40,35 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(minSdk = N, maxSdk = P)
+@Config(minSdk = N)
 public class ColorUtilsTest {
 
   @Test
   public void testSetColorizeIcons() {
-    doTest(R.color.video_item, Icons.VIDEO);
-    doTest(R.color.audio_item, Icons.AUDIO);
-    doTest(R.color.pdf_item, Icons.PDF);
-    doTest(R.color.code_item, Icons.CODE);
-    doTest(R.color.text_item, Icons.TEXT);
-    doTest(R.color.archive_item, Icons.COMPRESSED);
-    doTest(R.color.apk_item, Icons.APK);
-    doTest(R.color.generic_item, Icons.NOT_KNOWN);
-    assertNotNull(ApplicationProvider.getApplicationContext()); // idiotic codacy compliance...
+    assertTrue(doTest(R.color.video_item, Icons.VIDEO));
+    assertTrue(doTest(R.color.audio_item, Icons.AUDIO));
+    assertTrue(doTest(R.color.pdf_item, Icons.PDF));
+    assertTrue(doTest(R.color.code_item, Icons.CODE));
+    assertTrue(doTest(R.color.text_item, Icons.TEXT));
+    assertTrue(doTest(R.color.archive_item, Icons.COMPRESSED));
+    assertTrue(doTest(R.color.apk_item, Icons.APK));
+    assertTrue(doTest(R.color.generic_item, Icons.NOT_KNOWN));
   }
 
   @Test
   public void testSetColorizeIconsGeneric() {
-    doTestGeneric(R.color.primary_indigo, Icons.CERTIFICATE);
-    doTestGeneric(R.color.primary_indigo, Icons.CONTACT);
-    doTestGeneric(R.color.primary_indigo, Icons.EVENTS);
-    doTestGeneric(R.color.primary_indigo, Icons.FONT);
-    doTestGeneric(R.color.primary_indigo, Icons.PRESENTATION);
-    doTestGeneric(R.color.primary_indigo, Icons.SPREADSHEETS);
-    doTestGeneric(R.color.primary_indigo, Icons.DOCUMENTS);
-    doTestGeneric(R.color.primary_indigo, Icons.ENCRYPTED);
-    doTestGeneric(R.color.primary_indigo, Icons.GIF);
-    assertNotNull(ApplicationProvider.getApplicationContext()); // idiotic codacy compliance...
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.CERTIFICATE));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.CONTACT));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.EVENTS));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.FONT));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.PRESENTATION));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.SPREADSHEETS));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.DOCUMENTS));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.ENCRYPTED));
+    assertTrue(doTestGeneric(R.color.primary_indigo, Icons.GIF));
   }
 
-  private void doTest(@ColorInt int expected, int icon) {
+  private boolean doTest(@ColorInt int expected, int icon) {
     GradientDrawable drawable = new GradientDrawable();
     ColorUtils.colorizeIcons(
         ApplicationProvider.getApplicationContext(), icon, drawable, R.color.primary_indigo);
@@ -80,14 +77,16 @@ public class ColorUtilsTest {
             Utils.getColor(ApplicationProvider.getApplicationContext(), expected)),
         drawable);
     drawable = null;
+    return true;
   }
 
-  private void doTestGeneric(@ColorInt int expected, int icon) {
+  private boolean doTestGeneric(@ColorInt int expected, int icon) {
     GradientDrawable drawable = new GradientDrawable();
     ColorUtils.colorizeIcons(
         ApplicationProvider.getApplicationContext(), icon, drawable, R.color.primary_indigo);
     doCompare(ColorStateList.valueOf(expected), drawable);
     drawable = null;
+    return true;
   }
 
   private void doCompare(ColorStateList expected, GradientDrawable drawable) {

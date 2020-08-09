@@ -41,8 +41,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    minSdk = 24,
-    maxSdk = 28)
+    minSdk = 24)
 public class SingletonUsbOtgTest {
   @Test
   public void usbConnectionTest() {
