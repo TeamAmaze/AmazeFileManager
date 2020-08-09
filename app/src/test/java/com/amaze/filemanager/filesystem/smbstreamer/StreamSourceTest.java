@@ -47,9 +47,7 @@ import jcifs.smb.SmbFile;
 
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(AndroidJUnit4.class)
-@Config(
-    shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
-    maxSdk = 28)
+@Config(shadows = {ShadowMultiDex.class, ShadowSmbFile.class})
 public class StreamSourceTest {
   private SmbFile file;
   private StreamSource ss;

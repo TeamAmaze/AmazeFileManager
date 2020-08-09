@@ -52,9 +52,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import net.schmizz.sshj.common.SecurityUtils;
 
 @RunWith(AndroidJUnit4.class)
-@Config(
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
-    maxSdk = 28)
+@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
 public class SshConnectionPoolTest {
 
   private SshServer server;

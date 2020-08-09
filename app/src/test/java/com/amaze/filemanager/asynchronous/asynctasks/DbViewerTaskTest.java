@@ -51,9 +51,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(
-    maxSdk = 28,
-    shadows = {ShadowMultiDex.class})
+@Config(shadows = {ShadowMultiDex.class})
 public class DbViewerTaskTest {
 
   private WebView webView;

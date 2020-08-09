@@ -46,9 +46,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 /** Created by Rustam Khadipash on 31/3/2018. */
 @RunWith(AndroidJUnit4.class)
-@Config(
-    shadows = {ShadowMultiDex.class},
-    maxSdk = 28)
+@Config(shadows = {ShadowMultiDex.class})
 public class CloudStreamSourceTest {
   private CloudStreamSource cs;
   private String testFilePath;

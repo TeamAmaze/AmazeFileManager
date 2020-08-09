@@ -48,9 +48,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import eu.chainfire.libsuperuser.Shell;
 
 @RunWith(AndroidJUnit4.class)
-@Config(
-    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class},
-    maxSdk = 28)
+@Config(shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
 public class RootHelperTest {
 
   private static final File sysroot =

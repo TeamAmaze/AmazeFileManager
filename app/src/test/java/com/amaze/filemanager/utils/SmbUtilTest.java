@@ -40,7 +40,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     minSdk = 19,
-    maxSdk = 28,
     shadows = {ShadowCryptUtil.class})
 public class SmbUtilTest {
 
