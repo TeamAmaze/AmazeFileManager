@@ -792,6 +792,10 @@ public class HybridFile {
                           FileAttributes symlinkAttrs = client.stat(info.getPath());
                           isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
                         } catch (IOException ifSymlinkIsBroken) {
+                          Log.w(
+                              TAG,
+                              String.format(
+                                  "Symbolic link %s is broken, skipping", info.getPath()));
                           continue;
                         }
                       }
