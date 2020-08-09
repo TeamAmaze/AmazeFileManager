@@ -2149,6 +2149,7 @@ public class MainActivity extends PermissionsActivity
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
+        //Mandatory method. It's empty for now.
     }
 
     private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
