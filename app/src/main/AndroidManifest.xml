@@ -56,7 +56,8 @@
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
-            android:theme="@style/appCompatLight">
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:screenOrientation="sensor">
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
