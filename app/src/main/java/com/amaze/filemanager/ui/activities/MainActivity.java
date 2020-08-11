@@ -525,7 +525,10 @@ public class MainActivity extends PermissionsActivity
       } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
         // save a single file to filesystem
         Bundle extras = intent.getExtras();
-        String data = extras.getString(Intent.EXTRA_SUBJECT) + "\nURL: " + extras.getString(Intent.EXTRA_TEXT);
+        String data =
+            extras.getString(Intent.EXTRA_SUBJECT)
+                + "\nURL: "
+                + extras.getString(Intent.EXTRA_TEXT);
 
         Uri fileUri = createTempTextFile(data, String.valueOf(System.currentTimeMillis() / 1000));
         ArrayList<Uri> uris = new ArrayList<>();
@@ -598,7 +601,8 @@ public class MainActivity extends PermissionsActivity
    * */
   public Uri createTempTextFile(String data, String textFileName) {
     try {
-      String rootPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+      String rootPath =
+          Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
       File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
       if (!root.exists()) {
         root.mkdirs();
