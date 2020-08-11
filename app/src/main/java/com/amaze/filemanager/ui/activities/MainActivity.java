@@ -27,6 +27,9 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -521,9 +524,12 @@ public class MainActivity extends PermissionsActivity
 
       } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
         // save a single file to filesystem
-        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        Bundle extras = intent.getExtras();
+        String data = extras.getString(Intent.EXTRA_SUBJECT) + "\nURL: " + extras.getString(Intent.EXTRA_TEXT);
+
+        Uri fileUri = createTempTextFile(data, String.valueOf(System.currentTimeMillis() / 1000));
         ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
+        uris.add(fileUri);
         initFabToSave(uris);
 
         // disable screen rotation just for convenience purpose
@@ -584,6 +590,38 @@ public class MainActivity extends PermissionsActivity
             });
     // Ensure the FAB menu is visible
     floatingActionButton.setVisibility(View.VISIBLE);
+  }
+
+  /*
+   * When saving from browser, we are fetching the Summary and the URL of the page and saving it in
+   * a text file and finally returning the URI so that can be saved.
+   * */
+  public Uri createTempTextFile(String data, String textFileName) {
+    try {
+      String rootPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+      File root = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+      if (!root.exists()) {
+        root.mkdirs();
+      }
+      File f = new File(rootPath + textFileName + ".txt");
+      if (f.exists()) {
+        f.delete();
+      }
+      f.createNewFile();
+
+      FileOutputStream out = new FileOutputStream(f);
+
+      OutputStreamWriter outputWriter = new OutputStreamWriter(out);
+      outputWriter.write(data);
+      outputWriter.close();
+
+      out.flush();
+      out.close();
+      return Uri.fromFile(f);
+    } catch (IOException io) {
+      io.printStackTrace();
+      return null;
+    }
   }
 
   public void clearFabActionItems() {
