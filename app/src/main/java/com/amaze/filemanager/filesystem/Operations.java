@@ -133,7 +133,8 @@ public class Operations {
           DocumentFile directoryToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
           if (directoryToCreate != null) errorCallBack.exists(file);
 
-          DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
+          DocumentFile parentDirectory =
+              OTGUtil.getDocumentFile(file.getParent(context), context, false);
           if (parentDirectory.isDirectory()) {
             parentDirectory.createDirectory(file.getName(context));
             errorCallBack.done(file, true);
@@ -178,7 +179,7 @@ public class Operations {
           }
         } else {
           if (file.isLocal() || file.isRoot()) {
-            int mode = checkFolder(new File(file.getParent()), context);
+            int mode = checkFolder(new File(file.getParent(context)), context);
             if (mode == 2) {
               errorCallBack.launchSAF(file);
               return null;
@@ -317,7 +318,8 @@ public class Operations {
           DocumentFile fileToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
           if (fileToCreate != null) errorCallBack.exists(file);
 
-          DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
+          DocumentFile parentDirectory =
+              OTGUtil.getDocumentFile(file.getParent(context), context, false);
           if (parentDirectory.isDirectory()) {
             parentDirectory.createFile(
                 file.getName(context).substring(file.getName(context).lastIndexOf(".")),
@@ -327,7 +329,7 @@ public class Operations {
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
-            int mode = checkFolder(new File(file.getParent()), context);
+            int mode = checkFolder(new File(file.getParent(context)), context);
             if (mode == 2) {
               errorCallBack.launchSAF(file);
               return null;

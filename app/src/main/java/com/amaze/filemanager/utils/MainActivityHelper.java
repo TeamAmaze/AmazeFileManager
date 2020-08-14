@@ -453,7 +453,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkfile(file.getMode(), file.getParent(), ma);
+                        mkfile(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -531,7 +534,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkdir(file.getMode(), file.getParent(), ma);
+                        mkdir(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }

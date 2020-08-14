@@ -1170,7 +1170,7 @@ public abstract class FileUtil {
     }
 
     private File installTemporaryTrack() throws IOException {
-      File externalFilesDir = getExternalFilesDir(context);
+      File externalFilesDir = context.getExternalFilesDir(null);
       if (externalFilesDir == null) {
         return null;
       }

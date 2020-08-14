@@ -1213,7 +1213,7 @@ public class MainActivity extends PermissionsActivity
     registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
     registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
 
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
+    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       updateUsbInformation();
     }
   }
@@ -1484,10 +1484,9 @@ public class MainActivity extends PermissionsActivity
     } else if (requestCode == REQUEST_CODE_SAF) {
       if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
         // otg access
-        Uri usbOtgRoot = Uri.parse(intent.getData().toString());
+        Uri usbOtgRoot = intent.getData();
         SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
         getCurrentMainFragment().loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
-
         drawer.closeIfNotLocked();
         if (drawer.isLocked()) drawer.onDrawerClosed();
       } else {

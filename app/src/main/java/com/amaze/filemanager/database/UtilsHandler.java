@@ -155,15 +155,15 @@ public class UtilsHandler {
   }
 
   public void addCommonBookmarks() {
-    String sd = Environment.getExternalStorageDirectory() + "/";
+    File sd = Environment.getExternalStorageDirectory();
 
     String[] dirs =
         new String[] {
-          sd + Environment.DIRECTORY_DCIM,
-          sd + Environment.DIRECTORY_DOWNLOADS,
-          sd + Environment.DIRECTORY_MOVIES,
-          sd + Environment.DIRECTORY_MUSIC,
-          sd + Environment.DIRECTORY_PICTURES
+          new File(sd, Environment.DIRECTORY_DCIM).getAbsolutePath(),
+          new File(sd, Environment.DIRECTORY_DOWNLOADS).getAbsolutePath(),
+          new File(sd, Environment.DIRECTORY_MOVIES).getAbsolutePath(),
+          new File(sd, Environment.DIRECTORY_MUSIC).getAbsolutePath(),
+          new File(sd, Environment.DIRECTORY_PICTURES).getAbsolutePath()
         };
 
     for (String dir : dirs) {

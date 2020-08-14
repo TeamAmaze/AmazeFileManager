@@ -21,9 +21,16 @@
 package com.amaze.filemanager.filesystem;
 
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.Utils;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
+
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import net.schmizz.sshj.xfer.FilePermission;
 
 /** Created by arpitkh996 on 11-01-2016. */
 public class HybridFileParcelable extends HybridFile implements Parcelable {
@@ -49,10 +56,34 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     this.permission = permission;
   }
 
+  public HybridFileParcelable(SmbFile smbFile) throws SmbException {
+    super(OpenMode.SMB, smbFile.getPath());
+    setName(smbFile.getName());
+    setDirectory(smbFile.isDirectory());
+    setDate(smbFile.lastModified());
+    setSize(smbFile.isDirectory() ? 0 : smbFile.length());
+  }
+
+  public HybridFileParcelable(String path, boolean isDirectory, RemoteResourceInfo sshFile) {
+    super(OpenMode.SFTP, String.format("%s/%s", path, sshFile.getName()));
+    setName(sshFile.getName());
+    setDirectory(isDirectory);
+    setDate(sshFile.getAttributes().getMtime() * 1000);
+    setSize(isDirectory ? 0 : sshFile.getAttributes().getSize());
+    setPermission(
+        Integer.toString(FilePermission.toMask(sshFile.getAttributes().getPermissions()), 8));
+  }
+
   @Override
   public String getName() {
-    if (name != null && name.length() > 0) return name;
+    if (!Utils.isNullOrEmpty(name)) return name;
     else return super.getName();
+  }
+
+  @Override
+  public String getName(Context context) {
+    if (!Utils.isNullOrEmpty(name)) return name;
+    else return super.getName(context);
   }
 
   public void setName(String name) {

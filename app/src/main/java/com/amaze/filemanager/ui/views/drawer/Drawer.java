@@ -263,7 +263,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
       storageDirectoryPaths.add(file);
 
-      if (file.contains(OTGUtil.PREFIX_OTG)) {
+      if (file.contains(OTGUtil.PREFIX_OTG) || file.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
         addNewItem(
             menu,
             STORAGES_GROUP,
@@ -694,7 +694,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            && meta.path.contains(OTGUtil.PREFIX_OTG)
+            && (meta.path.contains(OTGUtil.PREFIX_OTG)
+                || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
             && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
           MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
           dialog
@@ -705,6 +706,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                     dialog.dismiss();
                   });
+          dialog.show();
         } else {
           pendingPath = meta.path;
           closeIfNotLocked();
