@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static org.awaitility.Awaitility.await;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -28,6 +29,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -49,11 +51,16 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
     for (String s : new String[] {"sysroot", "srv", "var", "tmp", "bin", "lib", "usr"}) {
       new File(Environment.getExternalStorageDirectory(), s).mkdir();
     }
-    performVerify();
+    assertTrue(performVerify());
   }
 
   @Test
   public void testListDirsAndSymlinks() throws Exception {
+    createNecessaryDirsForSymlinkRelatedTests();
+    assertTrue(performVerify());
+  }
+
+  private void createNecessaryDirsForSymlinkRelatedTests() throws IOException {
     File sysroot = new File(Environment.getExternalStorageDirectory(), "sysroot");
     sysroot.mkdir();
     for (String s : new String[] {"srv", "var", "tmp"}) {
@@ -66,41 +73,27 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
     for (String s : new String[] {"bin", "lib", "usr"}) {
       new File(Environment.getExternalStorageDirectory(), s).mkdir();
     }
-    performVerify();
   }
 
-  private void performVerify() throws InterruptedException {
+  private boolean performVerify() {
     List<String> result = new ArrayList<>();
     HybridFile file =
         new HybridFile(OpenMode.SFTP, "ssh://testuser:testpassword@127.0.0.1:" + serverPort);
-    CountDownLatch waiter = new CountDownLatch(7);
     file.forEachChildrenFile(
         RuntimeEnvironment.application,
         false,
         (fileFound) -> {
           assertTrue(fileFound.getPath() + " not seen as directory", fileFound.isDirectory());
           result.add(fileFound.getName());
-          waiter.countDown();
         });
-    waiter.await();
-    assertEquals(7, result.size());
+    await().until(() -> result.size() == 7);
     assertThat(result, hasItems("sysroot", "srv", "var", "tmp", "bin", "lib", "usr"));
+    return true;
   }
 
   @Test
   public void testListDirsAndFilesAndSymlinks() throws Exception {
-    File sysroot = new File(Environment.getExternalStorageDirectory(), "sysroot");
-    sysroot.mkdir();
-    for (String s : new String[] {"srv", "var", "tmp"}) {
-      File subdir = new File(sysroot, s);
-      subdir.mkdir();
-      Files.createSymbolicLink(
-          Paths.get(new File(Environment.getExternalStorageDirectory(), s).getAbsolutePath()),
-          Paths.get(subdir.getAbsolutePath()));
-    }
-    for (String s : new String[] {"bin", "lib", "usr"}) {
-      new File(Environment.getExternalStorageDirectory(), s).mkdir();
-    }
+    createNecessaryDirsForSymlinkRelatedTests();
     for (int i = 1; i <= 4; i++) {
       File f = new File(Environment.getExternalStorageDirectory(), i + ".txt");
       FileOutputStream out = new FileOutputStream(f);
@@ -143,5 +136,16 @@ public class ListFilesOnSshdTest extends AbstractSftpServerTest {
             "symlink2.txt",
             "symlink3.txt",
             "symlink4.txt"));
+  }
+
+  @Test
+  public void testListDirsAndBrokenSymlinks() throws Exception {
+    createNecessaryDirsForSymlinkRelatedTests();
+    Files.createSymbolicLink(
+        Paths.get(
+            new File(Environment.getExternalStorageDirectory(), "b0rken.symlink")
+                .getAbsolutePath()),
+        Paths.get(new File("/tmp/notfound.file").getAbsolutePath()));
+    assertTrue(performVerify());
   }
 }
