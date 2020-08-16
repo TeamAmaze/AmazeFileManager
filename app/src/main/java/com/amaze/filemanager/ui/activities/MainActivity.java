@@ -529,9 +529,9 @@ public class MainActivity extends PermissionsActivity
           uris.add(uri);
           initFabToSave(uris);
         }
-          // disable screen rotation just for convenience purpose
-          // TODO: Support screen rotation when saving a file
-          Utils.disableScreenRotation(this);
+        // disable screen rotation just for convenience purpose
+        // TODO: Support screen rotation when saving a file
+        Utils.disableScreenRotation(this);
 
       } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
         // save multiple files to filesystem
