@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh;
 
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertThrows;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -37,7 +38,7 @@ import net.schmizz.sshj.sftp.SFTPClient;
 public class SshClientUtilTest {
 
   @Test
-  public void testIsDirectoryNormal() {
+  public void testIsDirectoryNormal() throws IOException {
     RemoteResourceInfo mock = mock(RemoteResourceInfo.class);
     when(mock.isDirectory()).thenReturn(true);
     FileAttributes mockAttributes =
@@ -48,7 +49,7 @@ public class SshClientUtilTest {
   }
 
   @Test
-  public void testIsDirectoryWithFile() {
+  public void testIsDirectoryWithFile() throws IOException {
     RemoteResourceInfo mock = mock(RemoteResourceInfo.class);
     when(mock.isDirectory()).thenReturn(false);
     FileAttributes mockAttributes =
@@ -87,7 +88,7 @@ public class SshClientUtilTest {
     mockAttributes = new FileAttributes.Builder().withType(FileMode.Type.DIRECTORY).build();
     when(mockClient.stat("/sysroot/etc")).thenThrow(new IOException());
 
-    assertTrue(SshClientUtils.isDirectory(mockClient, mock));
+    assertThrows(IOException.class, () -> SshClientUtils.isDirectory(mockClient, mock));
   }
 
   @Test
@@ -103,6 +104,6 @@ public class SshClientUtilTest {
     mockAttributes = new FileAttributes.Builder().withType(FileMode.Type.DIRECTORY).build();
     when(mockClient.stat("/sysroot/etc")).thenThrow(new IOException());
 
-    assertFalse(SshClientUtils.isDirectory(mockClient, mock));
+    assertThrows(IOException.class, () -> SshClientUtils.isDirectory(mockClient, mock));
   }
 }

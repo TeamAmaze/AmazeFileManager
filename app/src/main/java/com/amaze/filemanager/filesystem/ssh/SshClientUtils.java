@@ -287,7 +287,8 @@ public abstract class SshClientUtils {
         : String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
   }
 
-  public static boolean isDirectory(@NonNull SFTPClient client, @NonNull RemoteResourceInfo info) {
+  public static boolean isDirectory(@NonNull SFTPClient client, @NonNull RemoteResourceInfo info)
+      throws IOException {
     boolean isDirectory = info.isDirectory();
     if (info.getAttributes().getType().equals(FileMode.Type.SYMLINK)) {
       try {
@@ -295,6 +296,7 @@ public abstract class SshClientUtils {
         isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
       } catch (IOException ifSymlinkIsBroken) {
         Log.w(TAG, String.format("Symbolic link %s is broken, skipping", info.getPath()));
+        throw ifSymlinkIsBroken;
       }
     }
     return isDirectory;

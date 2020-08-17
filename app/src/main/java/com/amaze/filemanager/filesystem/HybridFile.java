@@ -723,7 +723,13 @@ public class HybridFile {
                   try {
                     for (RemoteResourceInfo info :
                         client.ls(SshClientUtils.extractRemotePathFrom(path))) {
-                      boolean isDirectory = SshClientUtils.isDirectory(client, info);
+                      boolean isDirectory = false;
+                      try {
+                        isDirectory = SshClientUtils.isDirectory(client, info);
+                      } catch (IOException ifBrokenSymlink) {
+                        Log.w(TAG, "IOException checking isDirectory(): " + info.getPath());
+                        continue;
+                      }
                       HybridFileParcelable f = new HybridFileParcelable(path, isDirectory, info);
                       onFileFound.onFileFound(f);
                     }
@@ -786,7 +792,13 @@ public class HybridFile {
                       try {
                         for (RemoteResourceInfo info :
                             client.ls(SshClientUtils.extractRemotePathFrom(path))) {
-                          boolean isDirectory = SshClientUtils.isDirectory(client, info);
+                          boolean isDirectory = false;
+                          try {
+                            isDirectory = SshClientUtils.isDirectory(client, info);
+                          } catch (IOException ifBrokenSymlink) {
+                            Log.w(TAG, "IOException checking isDirectory(): " + info.getPath());
+                            continue;
+                          }
                           HybridFileParcelable f =
                               new HybridFileParcelable(path, isDirectory, info);
                           retval.add(f);
