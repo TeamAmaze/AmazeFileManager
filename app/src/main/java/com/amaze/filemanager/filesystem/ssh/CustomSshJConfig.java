@@ -23,10 +23,6 @@ package com.amaze.filemanager.filesystem.ssh;
 import java.security.Security;
 
 import net.schmizz.sshj.DefaultConfig;
-import net.schmizz.sshj.signature.SignatureDSA;
-import net.schmizz.sshj.signature.SignatureRSA;
-import net.schmizz.sshj.transport.random.JCERandom;
-import net.schmizz.sshj.transport.random.SingletonRandomFactory;
 
 /**
  * sshj {@link net.schmizz.sshj.Config} for our own use.
@@ -43,15 +39,5 @@ public class CustomSshJConfig extends DefaultConfig {
   public static void init() {
     Security.removeProvider("BC");
     Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(), 0);
-  }
-
-  // don't add ECDSA
-  protected void initSignatureFactories() {
-    setSignatureFactories(new SignatureRSA.Factory(), new SignatureDSA.Factory());
-  }
-
-  @Override
-  protected void initRandomFactory(boolean ignored) {
-    setRandomFactory(new SingletonRandomFactory(new JCERandom.Factory()));
   }
 }
