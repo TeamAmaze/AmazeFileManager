@@ -591,7 +591,7 @@ public class MainActivity extends PermissionsActivity
                         + "\nURL: "
                         + extras.getString(Intent.EXTRA_TEXT);
                 String fileName = Long.toString(System.currentTimeMillis());
-                FileUtil.mktextfile(data, getCurrentMainFragment().getCurrentPath(), fileName);
+                AppConfig.runInBackground(() -> FileUtil.mktextfile(data, getCurrentMainFragment().getCurrentPath(), fileName));
 
                 Toast.makeText(
                         MainActivity.this,
