@@ -628,7 +628,6 @@ public abstract class FileUtil {
     try {
       f.createNewFile();
       out = new FileOutputStream(f, false);
-
       outputWriter = new OutputStreamWriter(out);
       outputWriter.write(data);
       return true;
