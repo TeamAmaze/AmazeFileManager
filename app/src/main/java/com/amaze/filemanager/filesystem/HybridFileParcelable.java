@@ -56,6 +56,12 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     this.permission = permission;
   }
 
+  /**
+   * Constructor for jcifs {@link SmbFile}.
+   *
+   * @param smbFile
+   * @throws SmbException
+   */
   public HybridFileParcelable(SmbFile smbFile) throws SmbException {
     super(OpenMode.SMB, smbFile.getPath());
     setName(smbFile.getName());
@@ -64,6 +70,13 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     setSize(smbFile.isDirectory() ? 0 : smbFile.length());
   }
 
+  /**
+   * Constructor for sshj {@link RemoteResourceInfo}.
+   *
+   * @param path
+   * @param isDirectory
+   * @param sshFile
+   */
   public HybridFileParcelable(String path, boolean isDirectory, RemoteResourceInfo sshFile) {
     super(OpenMode.SFTP, String.format("%s/%s", path, sshFile.getName()));
     setName(sshFile.getName());

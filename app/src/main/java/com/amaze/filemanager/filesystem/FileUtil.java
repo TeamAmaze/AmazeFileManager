@@ -278,8 +278,7 @@ public abstract class FileUtil {
                     } else {
                       OutputStream outputStream = targetSmbFile.getOutputStream();
                       bufferedOutputStream = new BufferedOutputStream(outputStream);
-                      retval.add(
-                          mainActivity.mainActivityHelper.parseSmbPath(targetSmbFile.getPath()));
+                      retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
                     }
                     break;
                   case SFTP:

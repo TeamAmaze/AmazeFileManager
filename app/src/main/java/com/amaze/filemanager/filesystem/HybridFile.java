@@ -818,12 +818,7 @@ public class HybridFile {
         try {
           SmbFile smbFile = new SmbFile(path);
           for (SmbFile smbFile1 : smbFile.listFiles()) {
-            HybridFileParcelable baseFile = new HybridFileParcelable(smbFile1.getPath());
-            baseFile.setName(smbFile1.getName());
-            baseFile.setMode(OpenMode.SMB);
-            baseFile.setDirectory(smbFile1.isDirectory());
-            baseFile.setDate(smbFile1.lastModified());
-            baseFile.setSize(baseFile.isDirectory() ? 0 : smbFile1.length());
+            HybridFileParcelable baseFile = new HybridFileParcelable(smbFile1);
             arrayList.add(baseFile);
           }
         } catch (MalformedURLException e) {
@@ -861,12 +856,12 @@ public class HybridFile {
     return path;
   }
 
-  String parseSftpPath(String a) {
+  public static String parseSftpPath(String a) {
     if (a.contains("@")) return "ssh://" + a.substring(a.indexOf("@") + 1, a.length());
     else return a;
   }
 
-  String parseSmbPath(String a) {
+  public static String parseSmbPath(String a) {
     if (a.contains("@")) return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
     else return a;
   }
