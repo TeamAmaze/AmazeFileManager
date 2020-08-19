@@ -625,12 +625,9 @@ public abstract class FileUtil {
     File f = new File(path + "/" + fileName + ".txt");
     FileOutputStream out = null;
     OutputStreamWriter outputWriter = null;
-    if (f.exists()) {
-      f.delete();
-    }
     try {
       f.createNewFile();
-      out = new FileOutputStream(f);
+      out = new FileOutputStream(f, false);
 
       outputWriter = new OutputStreamWriter(out);
       outputWriter.write(data);
