@@ -22,16 +22,16 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import java.io.File;
 
-import org.robolectric.RuntimeEnvironment;
-
 import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 public class TarGzHelperTaskTest extends AbstractCompressedHelperTaskTest {
 
   @Override
   protected CompressedHelperTask createTask(String relativePath) {
     return new GzipHelperTask(
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         new File(Environment.getExternalStorageDirectory(), "test-archive.tar.gz")
             .getAbsolutePath(),
         relativePath,

@@ -38,24 +38,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowEnvironment;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.content.Context;
 import android.os.Environment;
 
-@RunWith(RobolectricTestRunner.class)
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
-    minSdk = 14,
-    maxSdk = 27)
+    minSdk = 14)
 public abstract class AbstractExtractorTest {
 
   protected abstract Class<? extends Extractor> extractorClass();
@@ -85,7 +83,7 @@ public abstract class AbstractExtractorTest {
         extractorClass()
             .getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
             .newInstance(
-                RuntimeEnvironment.application,
+                ApplicationProvider.getApplicationContext(),
                 getArchiveFile().getAbsolutePath(),
                 Environment.getExternalStorageDirectory().getAbsolutePath(),
                 null);
@@ -119,7 +117,7 @@ public abstract class AbstractExtractorTest {
         extractorClass()
             .getConstructor(Context.class, String.class, String.class, Extractor.OnUpdate.class)
             .newInstance(
-                RuntimeEnvironment.application,
+                ApplicationProvider.getApplicationContext(),
                 getArchiveFile().getAbsolutePath(),
                 Environment.getExternalStorageDirectory().getAbsolutePath(),
                 new Extractor.OnUpdate() {

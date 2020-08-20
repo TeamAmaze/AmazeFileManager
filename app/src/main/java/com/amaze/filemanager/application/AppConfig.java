@@ -178,11 +178,7 @@ public class AppConfig extends GlideApplication {
       final Context c = context;
       final @StringRes int m = message;
 
-      ((AppConfig) context)
-          .runInApplicationThread(
-              () -> {
-                Toast.makeText(c, m, Toast.LENGTH_LONG).show();
-              });
+      getInstance().runInApplicationThread(() -> Toast.makeText(c, m, Toast.LENGTH_LONG).show());
     }
   }
 
@@ -206,11 +202,7 @@ public class AppConfig extends GlideApplication {
       final Context c = context;
       final String m = message;
 
-      ((AppConfig) context)
-          .runInApplicationThread(
-              () -> {
-                Toast.makeText(c, m, Toast.LENGTH_LONG).show();
-              });
+      getInstance().runInApplicationThread(() -> Toast.makeText(c, m, Toast.LENGTH_LONG).show());
     }
   }
 

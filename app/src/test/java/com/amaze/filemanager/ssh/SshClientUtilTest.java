@@ -18,22 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks.compress;
+package com.amaze.filemanager.ssh;
 
-import java.io.File;
+import static org.junit.Assert.assertEquals;
 
-import android.os.Environment;
+import org.junit.Test;
 
-import androidx.test.core.app.ApplicationProvider;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
-public class ZipHelperTaskTest extends AbstractCompressedHelperTaskTest {
-
-  protected CompressedHelperTask createTask(String relativePath) {
-    return new ZipHelperTask(
-        ApplicationProvider.getApplicationContext(),
-        new File(Environment.getExternalStorageDirectory(), "test-archive.zip").getAbsolutePath(),
-        relativePath,
-        false,
-        (data) -> {});
+public class SshClientUtilTest {
+  @Test
+  public void testExtractRemotePathFromUri() {
+    assertEquals(
+        "/home/user/foo/bar",
+        SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/home/user/foo/bar"));
+    assertEquals("/", SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/"));
+    assertEquals("/", SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22"));
   }
 }

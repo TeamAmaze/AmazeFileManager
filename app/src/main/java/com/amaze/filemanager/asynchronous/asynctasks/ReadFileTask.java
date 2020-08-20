@@ -74,13 +74,13 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
       InputStream inputStream = null;
 
       switch (fileAbstraction.scheme) {
-        case EditableFileAbstraction.SCHEME_CONTENT:
+        case CONTENT:
           if (fileAbstraction.uri == null)
             throw new NullPointerException("Something went really wrong!");
 
           inputStream = contentResolver.openInputStream(fileAbstraction.uri);
           break;
-        case EditableFileAbstraction.SCHEME_FILE:
+        case FILE:
           final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
           if (hybridFileParcelable == null)
             throw new NullPointerException("Something went really wrong!");

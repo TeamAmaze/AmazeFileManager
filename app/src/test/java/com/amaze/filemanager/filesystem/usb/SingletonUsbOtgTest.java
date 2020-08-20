@@ -27,23 +27,21 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.net.Uri;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 @Ignore("Test skipped due to Robolectric unable to inflate SpeedDialView")
-@RunWith(RobolectricTestRunner.class)
+@RunWith(AndroidJUnit4.class)
 @Config(
-    constants = BuildConfig.class,
     shadows = {ShadowMultiDex.class},
-    minSdk = 24,
-    maxSdk = 27)
+    minSdk = 24)
 public class SingletonUsbOtgTest {
   @Test
   public void usbConnectionTest() {

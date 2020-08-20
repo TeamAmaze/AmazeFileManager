@@ -86,7 +86,7 @@ android {
 }
 
 ext {
-    robolectricVersion = '3.8'
+    robolectricVersion = '4.3.1'
     glideVersion = '4.11.0'
     sshjVersion = '0.26.0'
     jcifsVersion = '2.1.3'
@@ -94,7 +94,11 @@ ext {
     roomVersion = '2.2.5'
     bouncyCastleVersion = '1.65'
     awaitilityVersion = "3.1.6"
+    androidXTestVersion = "1.2.0"
+    junitVersion = "4.13"
+    slf4jVersion = "1.7.25"
     mockitoVersion = "3.4.4"
+    androidBillingVersion = "2.1.0"
 }
 
 dependencies {
@@ -108,23 +112,30 @@ dependencies {
     implementation 'androidx.palette:palette:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
+    implementation "com.android.billingclient:billing:$androidBillingVersion"
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
-    implementation 'com.android.billingclient:billing:2.1.0'
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
 
     //For tests
-    androidTestImplementation 'junit:junit:4.13'//tests the app logic
-    testImplementation 'junit:junit:4.13'//tests the app logic
+    testImplementation "junit:junit:$junitVersion"//tests the app logic
     testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
+    testImplementation "androidx.test:core:$androidXTestVersion"
+    testImplementation "androidx.test:runner:$androidXTestVersion"
+    testImplementation "androidx.test:rules:$androidXTestVersion"
+    testImplementation 'androidx.test.ext:junit:1.1.1'
+    //testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation 'org.jsoup:jsoup:1.11.2'
+    testAnnotationProcessor "com.google.auto.service:auto-service:1.0-rc4"
 
+    androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    debugImplementation 'androidx.test:runner:1.2.0'
-    androidTestImplementation 'androidx.test:rules:1.2.0'
-    androidTestImplementation 'androidx.annotation:annotation:1.1.0'
+    androidTestImplementation "androidx.test:core:$androidXTestVersion"
+    androidTestImplementation "androidx.test:runner:$androidXTestVersion"
+    androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'commons-net:commons-net:3.6'
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
@@ -145,22 +156,15 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
 
-    //FTP Server
-    /*
-    implementation 'org.apache.mina:mina-core:2.0.13'
-    implementation 'org.apache.ftpserver:ftpserver-core:1.0.6'
-    implementation 'org.apache.ftpserver:ftplet-api:1.0.6'
-    */
-
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
 
     implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'slf4j-android', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
@@ -185,12 +189,11 @@ dependencies {
     //SFTP
     implementation "com.hierynomus:sshj:$sshjVersion"
 
+    //smb
     implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
 
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
-
-    implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
 
     //Glide: loads icons seemlessly
     implementation "com.github.bumptech.glide:glide:$glideVersion"

@@ -27,25 +27,22 @@ import static org.junit.Assert.assertThat;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowDateFormat;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 /**
  * because of test based on mock-up, extension testing isn't tested so, assume all extension is
  * "*{slash}*"
  */
-@RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowDateFormat.class},
-    maxSdk = 27)
+@RunWith(AndroidJUnit4.class)
+@Config(shadows = {ShadowMultiDex.class, ShadowDateFormat.class})
 public class FileListSorterTest {
   /**
    * Purpose: when dirsOnTop is 0, if file1 is directory && file2 is not directory, result is -1
@@ -57,7 +54,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(0, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -71,7 +68,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -103,7 +100,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(0, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1.txt",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -117,7 +114,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -143,7 +140,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(1, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -157,7 +154,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -183,7 +180,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(1, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1.txt",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -197,7 +194,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -225,7 +222,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1.txt",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -239,7 +236,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -265,7 +262,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -279,7 +276,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -305,7 +302,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 0, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -319,7 +316,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "ABC.txt",
             "C:\\AmazeFileManager\\ABC",
             "user",
@@ -345,7 +342,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 1, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -359,7 +356,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -385,7 +382,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 1, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -399,7 +396,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -425,7 +422,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 1, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -439,7 +436,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -465,7 +462,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -479,7 +476,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -505,7 +502,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -519,7 +516,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -545,7 +542,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -559,7 +556,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -586,7 +583,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -600,7 +597,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -627,7 +624,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -641,7 +638,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -668,7 +665,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1.txt",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -682,7 +679,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -709,7 +706,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -723,7 +720,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -749,7 +746,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 2, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -763,7 +760,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -791,7 +788,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 3, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc1.txt",
             "C:\\AmazeFileManager\\abc1",
             "user",
@@ -805,7 +802,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -833,7 +830,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 3, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -847,7 +844,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc2.txt",
             "C:\\AmazeFileManager\\abc2",
             "user",
@@ -874,7 +871,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 3, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -888,7 +885,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "ABC.txt",
             "C:\\AmazeFileManager\\ABC",
             "user",
@@ -913,7 +910,7 @@ public class FileListSorterTest {
     FileListSorter fileListSorter = new FileListSorter(-1, 4, 1);
     LayoutElementParcelable file1 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "abc.txt",
             "C:\\AmazeFileManager\\abc",
             "user",
@@ -927,7 +924,7 @@ public class FileListSorterTest {
             OpenMode.UNKNOWN);
     LayoutElementParcelable file2 =
         new LayoutElementParcelable(
-            RuntimeEnvironment.application,
+            ApplicationProvider.getApplicationContext(),
             "ABC.txt",
             "C:\\AmazeFileManager\\ABC",
             "user",

@@ -79,7 +79,7 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
       OutputStream outputStream;
 
       switch (fileAbstraction.scheme) {
-        case EditableFileAbstraction.SCHEME_CONTENT:
+        case CONTENT:
           if (fileAbstraction.uri == null)
             throw new NullPointerException("Something went really wrong!");
 
@@ -90,7 +90,7 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
           }
 
           break;
-        case EditableFileAbstraction.SCHEME_FILE:
+        case FILE:
           final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
           if (hybridFileParcelable == null)
             throw new NullPointerException("Something went really wrong!");
