@@ -55,6 +55,8 @@ import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
 import jcifs.smb.SmbAuthException;
@@ -299,72 +301,42 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listImages() {
-    ArrayList<LayoutElementParcelable> images = new ArrayList<>();
     final String[] projection = {MediaStore.Images.Media.DATA};
-    final Cursor cursor =
-        context
-            .getContentResolver()
-            .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-    if (cursor == null) return images;
-    else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-        if (strings != null) {
-          LayoutElementParcelable parcelable = createListParcelables(strings);
-          if (parcelable != null) images.add(parcelable);
-        }
-      } while (cursor.moveToNext());
-    }
-    cursor.close();
-    return images;
+    return listMediaCommon(projection, null);
   }
 
   private ArrayList<LayoutElementParcelable> listVideos() {
-    ArrayList<LayoutElementParcelable> videos = new ArrayList<>();
-    final String[] projection = {MediaStore.Images.Media.DATA};
-    final Cursor cursor =
-        context
-            .getContentResolver()
-            .query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-    if (cursor == null) return videos;
-    else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-        if (strings != null) {
-          LayoutElementParcelable parcelable = createListParcelables(strings);
-          if (parcelable != null) videos.add(parcelable);
-        }
-      } while (cursor.moveToNext());
-    }
-    cursor.close();
-    return videos;
+    final String[] projection = {MediaStore.Video.Media.DATA};
+    return listMediaCommon(projection, null);
   }
 
   private ArrayList<LayoutElementParcelable> listaudio() {
     String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
     String[] projection = {MediaStore.Audio.Media.DATA};
+    return listMediaCommon(projection, selection);
+  }
 
+  private @NonNull ArrayList<LayoutElementParcelable> listMediaCommon(
+      @NonNull String[] projection, @Nullable String selection) {
     Cursor cursor =
         context
             .getContentResolver()
             .query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
 
-    ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
-    if (cursor == null) return songs;
+    ArrayList<LayoutElementParcelable> retval = new ArrayList<>();
+    if (cursor == null) return retval;
     else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
         if (strings != null) {
           LayoutElementParcelable parcelable = createListParcelables(strings);
-          if (parcelable != null) songs.add(parcelable);
+          if (parcelable != null) retval.add(parcelable);
         }
       } while (cursor.moveToNext());
     }
     cursor.close();
-    return songs;
+    return retval;
   }
 
   private ArrayList<LayoutElementParcelable> listDocs() {

@@ -800,7 +800,9 @@ public class FileUtils {
 
   public static boolean isRoot(
       String dir) { // TODO: 5/5/2017 hardcoding root might lead to problems down the line
-    return !dir.contains(OTGUtil.PREFIX_OTG) && !dir.startsWith("/storage");
+    return !dir.contains(OTGUtil.PREFIX_OTG)
+        && !dir.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)
+        && !dir.startsWith("/storage");
   }
 
   /** Converts ArrayList of HybridFileParcelable to ArrayList of File */

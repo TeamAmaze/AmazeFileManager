@@ -80,6 +80,7 @@ android {
     testOptions {
         unitTests {
             includeAndroidResources = true
+            returnDefaultValues = true
         }
     }
 }
@@ -93,6 +94,7 @@ ext {
     roomVersion = '2.2.5'
     bouncyCastleVersion = '1.65'
     awaitilityVersion = "3.1.6"
+    mockitoVersion = "3.4.4"
 }
 
 dependencies {
@@ -111,11 +113,11 @@ dependencies {
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
 
     //For tests
-    androidTestImplementation 'junit:junit:4.12'//tests the app logic
-    testImplementation 'junit:junit:4.12'//tests the app logic
+    androidTestImplementation 'junit:junit:4.13'//tests the app logic
+    testImplementation 'junit:junit:4.13'//tests the app logic
     testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
     testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
-
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
 

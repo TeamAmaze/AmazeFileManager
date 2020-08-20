@@ -453,7 +453,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkfile(file.getMode(), file.getParent(), ma);
+                        mkfile(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -531,7 +534,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkdir(file.getMode(), file.getParent(), ma);
+                        mkdir(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -611,20 +617,10 @@ public class MainActivityHelper {
     } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
-  public String parseSftpPath(String a) {
-    if (a.contains("@")) return "ssh://" + a.substring(a.lastIndexOf("@") + 1, a.length());
-    else return a;
-  }
-
-  public String parseSmbPath(String a) {
-    if (a.contains("@")) return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-    else return a;
-  }
-
   /** Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix */
   public String parseOTGPath(String path) {
     if (path.contains(OTGUtil.PREFIX_OTG)) return path;
-    else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1, path.length());
+    else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1);
   }
 
   public String parseCloudPath(OpenMode serviceType, String path) {

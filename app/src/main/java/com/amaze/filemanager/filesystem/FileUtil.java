@@ -279,8 +279,7 @@ public abstract class FileUtil {
                     } else {
                       OutputStream outputStream = targetSmbFile.getOutputStream();
                       bufferedOutputStream = new BufferedOutputStream(outputStream);
-                      retval.add(
-                          mainActivity.mainActivityHelper.parseSmbPath(targetSmbFile.getPath()));
+                      retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
                     }
                     break;
                   case SFTP:
@@ -1196,7 +1195,7 @@ public abstract class FileUtil {
     }
 
     private File installTemporaryTrack() throws IOException {
-      File externalFilesDir = getExternalFilesDir(context);
+      File externalFilesDir = context.getExternalFilesDir(null);
       if (externalFilesDir == null) {
         return null;
       }

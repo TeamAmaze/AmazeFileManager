@@ -25,6 +25,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -341,10 +342,10 @@ public class BottomBar implements View.OnTouchListener {
 
     switch (openmode) {
       case SFTP:
-        newPath = mainActivityHelper.parseSftpPath(news);
+        newPath = HybridFile.parseSftpPath(news);
         break;
       case SMB:
-        newPath = mainActivityHelper.parseSmbPath(news);
+        newPath = HybridFile.parseSmbPath(news);
         break;
       case OTG:
         newPath = mainActivityHelper.parseOTGPath(news);
