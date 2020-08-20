@@ -269,6 +269,7 @@ public class MainActivity extends PermissionsActivity
   private PasteHelper pasteHelper;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
+  private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
 
   /** Called when the activity is first created. */
   @Override
@@ -678,6 +679,9 @@ public class MainActivity extends PermissionsActivity
       }
       File path = Utils.getVolumeDirectory(volume);
       String name = volume.getDescription(this);
+      if (INTERNAL_SHARED_STORAGE.equalsIgnoreCase(name)) {
+        name = getString(R.string.storage_internal);
+      }
       int icon;
       if (!volume.isRemovable()) {
         icon = R.drawable.ic_phone_android_white_24dp;
