@@ -156,22 +156,15 @@ dependencies {
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
 
-    //FTP Server
-    /*
-    implementation 'org.apache.mina:mina-core:2.0.13'
-    implementation 'org.apache.ftpserver:ftpserver-core:1.0.6'
-    implementation 'org.apache.ftpserver:ftplet-api:1.0.6'
-    */
-
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
 
     implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-android', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'slf4j-android', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: '1.7.25'
+    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
@@ -196,12 +189,11 @@ dependencies {
     //SFTP
     implementation "com.hierynomus:sshj:$sshjVersion"
 
+    //smb
     implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
 
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"
-
-    implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
 
     //Glide: loads icons seemlessly
     implementation "com.github.bumptech.glide:glide:$glideVersion"
