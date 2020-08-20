@@ -519,16 +519,20 @@ public class MainActivity extends PermissionsActivity
           zippath = Utils.sanitizeInput(uri.toString());
         }
 
-      } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
-        // save a single file to filesystem
-        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
-        initFabToSave(uris);
-
+      } else if (actionIntent.equals(Intent.ACTION_SEND)) {
+        if (type.equals("text/plain")) {
+          initFabToSave(null);
+        } else {
+          // save a single file to filesystem
+          Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+          ArrayList<Uri> uris = new ArrayList<>();
+          uris.add(uri);
+          initFabToSave(uris);
+        }
         // disable screen rotation just for convenience purpose
         // TODO: Support screen rotation when saving a file
         Utils.disableScreenRotation(this);
+
       } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
         // save multiple files to filesystem
 
@@ -580,6 +584,26 @@ public class MainActivity extends PermissionsActivity
                       .show();
                   finish();
                 }
+              } else {
+                Bundle extras = intent.getExtras();
+                String data =
+                    extras.getString(Intent.EXTRA_SUBJECT)
+                        + "\nURL: "
+                        + extras.getString(Intent.EXTRA_TEXT);
+                String fileName = Long.toString(System.currentTimeMillis());
+                AppConfig.runInBackground(
+                    () ->
+                        FileUtil.mktextfile(
+                            data, getCurrentMainFragment().getCurrentPath(), fileName));
+
+                Toast.makeText(
+                        MainActivity.this,
+                        getResources().getString(R.string.saving)
+                            + " to "
+                            + getCurrentMainFragment().getCurrentPath(),
+                        Toast.LENGTH_LONG)
+                    .show();
+                finish();
               }
             });
     // Ensure the FAB menu is visible
@@ -2053,7 +2077,9 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
-  public void onLoaderReset(Loader<Cursor> loader) {}
+  public void onLoaderReset(Loader<Cursor> loader) {
+    // For passing code check
+  }
 
   private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
 

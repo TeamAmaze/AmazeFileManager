@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -617,6 +618,31 @@ public abstract class FileUtil {
       }
     }
     return false;
+  }
+
+  public static boolean mktextfile(String data, String path, String fileName) {
+
+    File f = new File(path + "/" + fileName + ".txt");
+    FileOutputStream out = null;
+    OutputStreamWriter outputWriter = null;
+    try {
+      f.createNewFile();
+      out = new FileOutputStream(f, false);
+      outputWriter = new OutputStreamWriter(out);
+      outputWriter.write(data);
+      return true;
+    } catch (IOException io) {
+      Log.e(FileUtil.LOG, io.getMessage());
+      return false;
+    } finally {
+      try {
+        outputWriter.close();
+        out.flush();
+        out.close();
+      } catch (IOException e) {
+        Log.e(FileUtil.LOG, e.getMessage());
+      }
+    }
   }
 
   /**
