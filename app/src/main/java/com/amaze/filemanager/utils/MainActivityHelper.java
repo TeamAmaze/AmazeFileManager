@@ -70,8 +70,6 @@ import androidx.fragment.app.FragmentManager;
 /** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
 
-  private static final String NEW_FILE_TXT_EXTENSION = ".txt";
-
   private MainActivity mainActivity;
   private DataUtils dataUtils = DataUtils.getInstance();
   private int accentColor;
@@ -169,7 +167,7 @@ public class MainActivityHelper {
   public void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
     mk(
         R.string.newfile,
-        NEW_FILE_TXT_EXTENSION,
+        AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT),
         (dialog, which) -> {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
@@ -187,7 +185,9 @@ public class MainActivityHelper {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_WARNING,
                   R.string.create_hidden_file_warn);
-            } else if (!text.toLowerCase().endsWith(NEW_FILE_TXT_EXTENSION)) {
+            } else if (!text.toLowerCase()
+                .endsWith(
+                    AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT))) {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_WARNING,
                   R.string.create_file_suggest_txt_extension);

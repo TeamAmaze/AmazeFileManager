@@ -661,5 +661,6 @@
     <string name="ftp_server_prompt_connect_to_network">Connect to a network or enable AP</string>
     <string name="ftp_server_open_settings">Open settings</string>
     <string name="move">Move</string>
+    <string name="select_save_location">Select location to save</string>
 </resources>
 
