@@ -130,6 +130,8 @@ public class FtpServerFragment extends Fragment {
         statusDividerView.setBackgroundColor(
             Utils.getColor(getContext(), R.color.divider_dark_card));
         break;
+      default:
+        break;
     }
 
     ftpBtn.setOnClickListener(
