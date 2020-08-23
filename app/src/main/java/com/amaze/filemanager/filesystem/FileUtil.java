@@ -47,6 +47,7 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -621,7 +622,12 @@ public abstract class FileUtil {
 
   public static boolean mktextfile(String data, String path, String fileName) {
 
-    File f = new File(path + "/" + fileName + ".txt");
+    File f =
+        new File(
+            path,
+            fileName
+                .concat(AppConstants.NEW_FILE_DELIMITER)
+                .concat(AppConstants.NEW_FILE_EXTENSION_TXT));
     FileOutputStream out = null;
     OutputStreamWriter outputWriter = null;
     try {
