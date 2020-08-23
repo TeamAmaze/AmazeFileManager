@@ -535,7 +535,7 @@ public class CopyService extends AbstractProgressiveService {
       return RootHelper.fileExists(hFile2.getPath());
     } else {
       ArrayList<HybridFileParcelable> baseFiles =
-          RootHelper.getFilesList(hFile1.getParent(), true, true, null);
+          RootHelper.getFilesList(hFile1.getParent(c), true, true, null);
       int i = -1;
       int index = -1;
       for (HybridFileParcelable b : baseFiles) {
@@ -546,7 +546,7 @@ public class CopyService extends AbstractProgressiveService {
         }
       }
       ArrayList<HybridFileParcelable> baseFiles1 =
-          RootHelper.getFilesList(hFile1.getParent(), true, true, null);
+          RootHelper.getFilesList(hFile1.getParent(c), true, true, null);
       int i1 = -1;
       int index1 = -1;
       for (HybridFileParcelable b : baseFiles1) {

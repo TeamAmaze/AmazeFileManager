@@ -70,8 +70,6 @@ import androidx.fragment.app.FragmentManager;
 /** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
 
-  private static final String NEW_FILE_TXT_EXTENSION = ".txt";
-
   private MainActivity mainActivity;
   private DataUtils dataUtils = DataUtils.getInstance();
   private int accentColor;
@@ -169,7 +167,7 @@ public class MainActivityHelper {
   public void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
     mk(
         R.string.newfile,
-        NEW_FILE_TXT_EXTENSION,
+        AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT),
         (dialog, which) -> {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
@@ -187,7 +185,9 @@ public class MainActivityHelper {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_WARNING,
                   R.string.create_hidden_file_warn);
-            } else if (!text.toLowerCase().endsWith(NEW_FILE_TXT_EXTENSION)) {
+            } else if (!text.toLowerCase()
+                .endsWith(
+                    AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT))) {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_WARNING,
                   R.string.create_file_suggest_txt_extension);
@@ -453,7 +453,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkfile(file.getMode(), file.getParent(), ma);
+                        mkfile(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -531,7 +534,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkdir(file.getMode(), file.getParent(), ma);
+                        mkdir(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -611,20 +617,10 @@ public class MainActivityHelper {
     } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
-  public String parseSftpPath(String a) {
-    if (a.contains("@")) return "ssh://" + a.substring(a.lastIndexOf("@") + 1, a.length());
-    else return a;
-  }
-
-  public String parseSmbPath(String a) {
-    if (a.contains("@")) return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-    else return a;
-  }
-
   /** Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix */
   public String parseOTGPath(String path) {
     if (path.contains(OTGUtil.PREFIX_OTG)) return path;
-    else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1, path.length());
+    else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1);
   }
 
   public String parseCloudPath(OpenMode serviceType, String path) {

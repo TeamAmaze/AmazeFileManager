@@ -36,20 +36,17 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class},
-    maxSdk = 27)
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
+@Config(shadows = {ShadowMultiDex.class})
 public abstract class AbstractSftpServerTest {
 
   protected SshServer server;

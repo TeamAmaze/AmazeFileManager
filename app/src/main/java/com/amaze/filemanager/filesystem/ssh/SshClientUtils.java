@@ -50,6 +50,9 @@ import androidx.annotation.NonNull;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.FileMode;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public abstract class SshClientUtils {
@@ -285,5 +288,20 @@ public abstract class SshClientUtils {
     return (selectedParsedKeyPair != null || password == null)
         ? String.format("ssh://%s@%s:%d", username, hostname, port)
         : String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
+  }
+
+  public static boolean isDirectory(@NonNull SFTPClient client, @NonNull RemoteResourceInfo info)
+      throws IOException {
+    boolean isDirectory = info.isDirectory();
+    if (info.getAttributes().getType().equals(FileMode.Type.SYMLINK)) {
+      try {
+        FileAttributes symlinkAttrs = client.stat(info.getPath());
+        isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
+      } catch (IOException ifSymlinkIsBroken) {
+        Log.w(TAG, String.format("Symbolic link %s is broken, skipping", info.getPath()));
+        throw ifSymlinkIsBroken;
+      }
+    }
+    return isDirectory;
   }
 }

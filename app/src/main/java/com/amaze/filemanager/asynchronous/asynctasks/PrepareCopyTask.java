@@ -239,7 +239,7 @@ public class PrepareCopyTask
 
     final MaterialDialog dialog = dialogBuilder.build();
     dialog.show();
-    if (filesToCopy.get(0).getParent().equals(path)) {
+    if (filesToCopy.get(0).getParent(context).equals(path)) {
       View negative = dialog.getActionButton(DialogAction.NEGATIVE);
       negative.setEnabled(false);
     }

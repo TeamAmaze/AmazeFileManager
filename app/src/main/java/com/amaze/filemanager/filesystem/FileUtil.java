@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -46,6 +47,7 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
@@ -278,8 +280,7 @@ public abstract class FileUtil {
                     } else {
                       OutputStream outputStream = targetSmbFile.getOutputStream();
                       bufferedOutputStream = new BufferedOutputStream(outputStream);
-                      retval.add(
-                          mainActivity.mainActivityHelper.parseSmbPath(targetSmbFile.getPath()));
+                      retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
                     }
                     break;
                   case SFTP:
@@ -617,6 +618,36 @@ public abstract class FileUtil {
       }
     }
     return false;
+  }
+
+  public static boolean mktextfile(String data, String path, String fileName) {
+
+    File f =
+        new File(
+            path,
+            fileName
+                .concat(AppConstants.NEW_FILE_DELIMITER)
+                .concat(AppConstants.NEW_FILE_EXTENSION_TXT));
+    FileOutputStream out = null;
+    OutputStreamWriter outputWriter = null;
+    try {
+      f.createNewFile();
+      out = new FileOutputStream(f, false);
+      outputWriter = new OutputStreamWriter(out);
+      outputWriter.write(data);
+      return true;
+    } catch (IOException io) {
+      Log.e(FileUtil.LOG, io.getMessage());
+      return false;
+    } finally {
+      try {
+        outputWriter.close();
+        out.flush();
+        out.close();
+      } catch (IOException e) {
+        Log.e(FileUtil.LOG, e.getMessage());
+      }
+    }
   }
 
   /**
@@ -1170,7 +1201,7 @@ public abstract class FileUtil {
     }
 
     private File installTemporaryTrack() throws IOException {
-      File externalFilesDir = getExternalFilesDir(context);
+      File externalFilesDir = context.getExternalFilesDir(null);
       if (externalFilesDir == null) {
         return null;
       }

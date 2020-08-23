@@ -90,6 +90,8 @@ public class AppConfig extends GlideApplication {
     utilsProvider = new UtilitiesProvider(this);
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
+    runInBackground(jcifs.Config::registerSmbURLHandler);
+
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
@@ -188,11 +190,7 @@ public class AppConfig extends GlideApplication {
       final Context c = context;
       final @StringRes int m = message;
 
-      ((AppConfig) context)
-          .runInApplicationThread(
-              () -> {
-                Toast.makeText(c, m, Toast.LENGTH_LONG).show();
-              });
+      getInstance().runInApplicationThread(() -> Toast.makeText(c, m, Toast.LENGTH_LONG).show());
     }
   }
 
@@ -216,11 +214,7 @@ public class AppConfig extends GlideApplication {
       final Context c = context;
       final String m = message;
 
-      ((AppConfig) context)
-          .runInApplicationThread(
-              () -> {
-                Toast.makeText(c, m, Toast.LENGTH_LONG).show();
-              });
+      getInstance().runInApplicationThread(() -> Toast.makeText(c, m, Toast.LENGTH_LONG).show());
     }
   }
 

@@ -87,8 +87,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   // colors relative to current visible tab
   private @ColorInt int startColor, endColor;
 
-  private TabHandler tabHandler;
-
   private ArgbEvaluator evaluator = new ArgbEvaluator();
 
   @Override
@@ -96,7 +94,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
 
-    tabHandler = TabHandler.getInstance();
     fragmentManager = getActivity().getSupportFragmentManager();
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -193,6 +190,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   public void updatepaths(int pos) {
 
     // Getting old path from database before clearing
+    TabHandler tabHandler = TabHandler.getInstance();
     tabHandler.clear();
 
     int i = 1;
@@ -346,6 +344,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
    * @param addTab whether new tabs should be added to ui or just change values in database
    */
   public void refactorDrawerStorages(boolean addTab) {
+    TabHandler tabHandler = TabHandler.getInstance();
     Tab tab1 = tabHandler.findTab(1);
     Tab tab2 = tabHandler.findTab(2);
     Tab[] tabs = tabHandler.getAllTabs();

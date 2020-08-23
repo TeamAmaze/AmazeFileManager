@@ -21,15 +21,28 @@
 package com.amaze.filemanager.test;
 
 import static org.awaitility.Awaitility.await;
+import static android.os.Build.VERSION_CODES.P;
+import static org.robolectric.Shadows.shadowOf;
 
+import java.io.File;
 import java.lang.reflect.Field;
 import java.util.concurrent.ExecutorService;
 
+import org.robolectric.shadows.ShadowStorageManager;
 import org.robolectric.util.Scheduler;
 
 import com.amaze.filemanager.application.AppConfig;
 
+import android.os.Build;
+import android.os.Environment;
 import android.os.Handler;
+import android.os.Parcel;
+import android.os.UserHandle;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+
+import androidx.annotation.NonNull;
+import androidx.test.core.app.ApplicationProvider;
 
 public class TestUtils {
 
@@ -63,5 +76,64 @@ public class TestUtils {
     } catch (NoSuchFieldException | IllegalAccessException e) {
       throw new AssertionError("Unable to access backgroundHandler within AppConfig");
     }
+  }
+
+  /**
+   * Populate "internal device storage" to StorageManager with directory as provided by Robolectric.
+   *
+   * <p>Tests need storage access must call this on test case setup for SDK >= N to work.
+   */
+  public static void initializeInternalStorage() {
+    Parcel parcel = Parcel.obtain();
+    File dir = Environment.getExternalStorageDirectory();
+    parcel.writeString("FS-internal");
+    if (Build.VERSION.SDK_INT < P) parcel.writeInt(0);
+    parcel.writeString(dir.getAbsolutePath());
+    if (Build.VERSION.SDK_INT >= P) parcel.writeString(dir.getAbsolutePath());
+    parcel.writeString("robolectric internal storage");
+    parcel.writeInt(1);
+    parcel.writeInt(0);
+    parcel.writeInt(1);
+    if (Build.VERSION.SDK_INT < P) parcel.writeLong(1024 * 1024);
+    parcel.writeInt(0);
+    parcel.writeLong(1024 * 1024);
+    parcel.writeParcelable(UserHandle.getUserHandleForUid(0), 0);
+    parcel.writeString("1234-5678");
+    parcel.writeString(Environment.MEDIA_MOUNTED);
+    addVolumeToStorageManager(parcel);
+  }
+
+  /**
+   * Populate "external device storage" to StorageManager with directory as provided by Robolectric.
+   *
+   * <p>Tests need storage access must call this on test case setup for SDK >= N to work.
+   */
+  public static void initializeExternalStorage() {
+    Parcel parcel = Parcel.obtain();
+    File dir = Environment.getExternalStoragePublicDirectory("external");
+    parcel.writeString("FS-external");
+    if (Build.VERSION.SDK_INT < P) parcel.writeInt(0);
+    parcel.writeString(dir.getAbsolutePath());
+    if (Build.VERSION.SDK_INT >= P) parcel.writeString(dir.getAbsolutePath());
+    parcel.writeString("robolectric external storage");
+    parcel.writeInt(0);
+    parcel.writeInt(1);
+    parcel.writeInt(0);
+    if (Build.VERSION.SDK_INT < P) parcel.writeLong(1024 * 1024);
+    parcel.writeInt(0);
+    parcel.writeLong(1024 * 1024);
+    parcel.writeParcelable(UserHandle.getUserHandleForUid(0), 0);
+    parcel.writeString("ABCD-EFGH");
+    parcel.writeString(Environment.MEDIA_MOUNTED);
+    addVolumeToStorageManager(parcel);
+  }
+
+  private static void addVolumeToStorageManager(@NonNull Parcel parcel) {
+    parcel.setDataPosition(0);
+    ShadowStorageManager storageManager =
+        shadowOf(
+            ApplicationProvider.getApplicationContext().getSystemService(StorageManager.class));
+    StorageVolume volume = StorageVolume.CREATOR.createFromParcel(parcel);
+    storageManager.addStorageVolume(volume);
   }
 }

@@ -59,6 +59,7 @@ public class ColorUtils {
         break;
       case Icons.NOT_KNOWN:
         background.setColor(Utils.getColor(context, R.color.generic_item));
+        break;
       default:
         background.setColor(defaultColor);
         break;

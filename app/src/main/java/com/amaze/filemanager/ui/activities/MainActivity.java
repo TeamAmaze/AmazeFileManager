@@ -81,6 +81,7 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
+import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
@@ -92,6 +93,7 @@ import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
@@ -519,16 +521,20 @@ public class MainActivity extends PermissionsActivity
           zippath = Utils.sanitizeInput(uri.toString());
         }
 
-      } else if (actionIntent.equals(Intent.ACTION_SEND) && type != null) {
-        // save a single file to filesystem
-        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-        ArrayList<Uri> uris = new ArrayList<>();
-        uris.add(uri);
-        initFabToSave(uris);
-
+      } else if (actionIntent.equals(Intent.ACTION_SEND)) {
+        if (type.equals("text/plain")) {
+          initFabToSave(null);
+        } else {
+          // save a single file to filesystem
+          Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+          ArrayList<Uri> uris = new ArrayList<>();
+          uris.add(uri);
+          initFabToSave(uris);
+        }
         // disable screen rotation just for convenience purpose
         // TODO: Support screen rotation when saving a file
         Utils.disableScreenRotation(this);
+
       } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
         // save multiple files to filesystem
 
@@ -544,46 +550,66 @@ public class MainActivity extends PermissionsActivity
 
   /** Initializes the floating action button to act as to save data from an external intent */
   private void initFabToSave(final ArrayList<Uri> uris) {
-    clearFabActionItems();
-    floatingActionButton.getMainFab().setImageResource(R.drawable.ic_file_download_white_24dp);
-    floatingActionButton
-        .getMainFab()
-        .setOnClickListener(
-            v -> {
-              if (uris != null && uris.size() > 0) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                  File folder = new File(getCurrentMainFragment().getCurrentPath());
-                  int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
-                  if (result == MainActivityHelper.WRITABLE_OR_ON_SDCARD) {
-                    FileUtil.writeUriToStorage(
-                        MainActivity.this,
-                        uris,
-                        getContentResolver(),
-                        getCurrentMainFragment().getCurrentPath());
-                    finish();
-                  } else {
-                    // Trigger SAF intent, keep uri until finish
-                    operation = DataUtils.SAVE_FILE;
-                    urisToBeSaved = uris;
-                    mainActivityHelper.checkFolder(folder, MainActivity.this);
-                  }
-                } else {
-                  FileUtil.writeUriToStorage(
-                      MainActivity.this,
-                      uris,
-                      getContentResolver(),
-                      getCurrentMainFragment().getCurrentPath());
-                  Toast.makeText(
-                          MainActivity.this,
-                          getResources().getString(R.string.saving),
-                          Toast.LENGTH_LONG)
-                      .show();
-                  finish();
-                }
-              }
-            });
-    // Ensure the FAB menu is visible
-    floatingActionButton.setVisibility(View.VISIBLE);
+    Utils.showThemedSnackbar(
+        this,
+        getString(R.string.select_save_location),
+        BaseTransientBottomBar.LENGTH_INDEFINITE,
+        R.string.save,
+        () -> saveExternalIntent(uris));
+  }
+
+  private void saveExternalIntent(final ArrayList<Uri> uris) {
+    if (uris != null && uris.size() > 0) {
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        File folder = new File(getCurrentMainFragment().getCurrentPath());
+        int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
+        if (result == MainActivityHelper.WRITABLE_OR_ON_SDCARD) {
+          FileUtil.writeUriToStorage(
+              MainActivity.this,
+              uris,
+              getContentResolver(),
+              getCurrentMainFragment().getCurrentPath());
+          finish();
+        } else {
+          // Trigger SAF intent, keep uri until finish
+          operation = DataUtils.SAVE_FILE;
+          urisToBeSaved = uris;
+          mainActivityHelper.checkFolder(folder, MainActivity.this);
+        }
+      } else {
+        FileUtil.writeUriToStorage(
+            MainActivity.this,
+            uris,
+            getContentResolver(),
+            getCurrentMainFragment().getCurrentPath());
+      }
+    } else {
+      saveExternalIntentExtras();
+    }
+    Toast.makeText(
+            MainActivity.this,
+            getResources().getString(R.string.saving)
+                + " to "
+                + getCurrentMainFragment().getCurrentPath(),
+            Toast.LENGTH_LONG)
+        .show();
+    finish();
+  }
+
+  private void saveExternalIntentExtras() {
+    Bundle extras = intent.getExtras();
+    StringBuilder data = new StringBuilder();
+    if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_SUBJECT))) {
+      data.append(extras.getString(Intent.EXTRA_SUBJECT));
+    }
+    if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_TEXT))) {
+      data.append(AppConstants.NEW_LINE).append(extras.getString(Intent.EXTRA_TEXT));
+    }
+    String fileName = Long.toString(System.currentTimeMillis());
+    AppConfig.runInBackground(
+        () ->
+            FileUtil.mktextfile(
+                data.toString(), getCurrentMainFragment().getCurrentPath(), fileName));
   }
 
   public void clearFabActionItems() {
@@ -1215,7 +1241,7 @@ public class MainActivity extends PermissionsActivity
     registerReceiver(mainActivityHelper.mNotificationReceiver, newFilter);
     registerReceiver(receiver2, new IntentFilter(TAG_INTENT_FILTER_GENERAL));
 
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
+    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       updateUsbInformation();
     }
   }
@@ -1486,10 +1512,9 @@ public class MainActivity extends PermissionsActivity
     } else if (requestCode == REQUEST_CODE_SAF) {
       if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
         // otg access
-        Uri usbOtgRoot = Uri.parse(intent.getData().toString());
+        Uri usbOtgRoot = intent.getData();
         SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
         getCurrentMainFragment().loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
-
         drawer.closeIfNotLocked();
         if (drawer.isLocked()) drawer.onDrawerClosed();
       } else {
@@ -2057,7 +2082,9 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
-  public void onLoaderReset(Loader<Cursor> loader) {}
+  public void onLoaderReset(Loader<Cursor> loader) {
+    // For passing code check
+  }
 
   private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {
 
