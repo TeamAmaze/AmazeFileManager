@@ -156,6 +156,21 @@
                 android:text="@string/calculating"
                 android:textSize="@dimen/material_generic_title_summary"/>
         </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingStart="-7dp"
+            android:paddingLeft="-7dp"
+            android:paddingRight="-7dp">
+            <CheckBox
+                android:id="@+id/nomediacheckbox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-medium"
+                android:text="@string/hide_media"
+                android:visibility="gone"/>
+        </LinearLayout>
     </LinearLayout>
 
     <com.github.mikephil.charting.charts.PieChart
