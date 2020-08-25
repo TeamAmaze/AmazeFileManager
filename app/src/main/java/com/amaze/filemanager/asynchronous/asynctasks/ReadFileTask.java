@@ -28,15 +28,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.os.AsyncTask;
+
+import androidx.documentfile.provider.DocumentFile;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 18:05. */
 public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedValues> {
@@ -78,7 +82,11 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
           if (fileAbstraction.uri == null)
             throw new NullPointerException("Something went really wrong!");
 
-          inputStream = contentResolver.openInputStream(fileAbstraction.uri);
+          DocumentFile documentFile =
+              DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+          if (documentFile != null && documentFile.exists() && documentFile.canRead())
+            inputStream = contentResolver.openInputStream(documentFile.getUri());
+          else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
           break;
         case FILE:
           final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
@@ -86,30 +94,8 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
             throw new NullPointerException("Something went really wrong!");
 
           File file = hybridFileParcelable.getFile();
+          inputStream = loadFile(file);
 
-          if (!file.canWrite() && isRootExplorer) {
-            // try loading stream associated using root
-            try {
-              cachedFile = new File(externalCacheDir, hybridFileParcelable.getName());
-              // creating a cache file
-              RootUtils.copy(hybridFileParcelable.getPath(), cachedFile.getPath());
-
-              inputStream = new FileInputStream(cachedFile);
-            } catch (ShellNotRunningException e) {
-              e.printStackTrace();
-              inputStream = null;
-            } catch (FileNotFoundException e) {
-              e.printStackTrace();
-              inputStream = null;
-            }
-          } else if (file.canRead()) {
-            // readable file in filesystem
-            try {
-              inputStream = new FileInputStream(hybridFileParcelable.getPath());
-            } catch (FileNotFoundException e) {
-              inputStream = null;
-            }
-          }
           break;
         default:
           throw new IllegalArgumentException(
@@ -143,6 +129,35 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
     super.onPostExecute(s);
 
     onAsyncTaskFinished.onAsyncTaskFinished(s);
+  }
+
+  private InputStream loadFile(File file) {
+    InputStream inputStream = null;
+    if (!file.canWrite() && isRootExplorer) {
+      // try loading stream associated using root
+      try {
+        cachedFile = new File(externalCacheDir, file.getName());
+        // creating a cache file
+        RootUtils.copy(file.getAbsolutePath(), cachedFile.getPath());
+
+        inputStream = new FileInputStream(cachedFile);
+      } catch (ShellNotRunningException e) {
+        e.printStackTrace();
+        inputStream = null;
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        inputStream = null;
+      }
+    } else if (file.canRead()) {
+      // readable file in filesystem
+      try {
+        inputStream = new FileInputStream(file.getAbsolutePath());
+      } catch (FileNotFoundException e) {
+        inputStream = null;
+      }
+    }
+
+    return inputStream;
   }
 
   public static class ReturnedValues {
