@@ -91,13 +91,17 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
             throw new NullPointerException("Something went really wrong!");
 
           try {
-            DocumentFile documentFile =
-                DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
-            if (documentFile != null && documentFile.exists() && documentFile.canWrite())
+            if (fileAbstraction.uri.getAuthority().equals(context.get().getPackageName())) {
+              DocumentFile documentFile =
+                  DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+              if (documentFile != null && documentFile.exists() && documentFile.canWrite())
+                outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+              else {
+                destFile = FileUtils.fromContentUri(fileAbstraction.uri);
+                outputStream = openFile(destFile, context.get());
+              }
+            } else {
               outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
-            else {
-              destFile = FileUtils.fromContentUri(fileAbstraction.uri);
-              outputStream = openFile(destFile, context.get());
             }
           } catch (RuntimeException e) {
             throw new StreamNotFoundException(e);

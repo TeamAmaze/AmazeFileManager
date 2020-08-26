@@ -82,11 +82,15 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
           if (fileAbstraction.uri == null)
             throw new NullPointerException("Something went really wrong!");
 
-          DocumentFile documentFile =
-              DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
-          if (documentFile != null && documentFile.exists() && documentFile.canRead())
-            inputStream = contentResolver.openInputStream(documentFile.getUri());
-          else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+          if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
+            DocumentFile documentFile =
+                DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+            if (documentFile != null && documentFile.exists() && documentFile.canRead())
+              inputStream = contentResolver.openInputStream(documentFile.getUri());
+            else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+          } else {
+            inputStream = contentResolver.openInputStream(fileAbstraction.uri);
+          }
           break;
         case FILE:
           final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
