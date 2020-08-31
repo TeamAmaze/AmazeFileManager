@@ -48,6 +48,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileAttributes;
@@ -74,8 +76,7 @@ public abstract class SshClientUtils {
     T retval = null;
     if (client != null) {
       try {
-        retval =
-            AppConfig.getInstance().execute((Callable<T>) () -> template.execute(client)).get();
+        retval = (T) Single.just(template.execute(client)).subscribeOn(Schedulers.io()).blockingGet();
       } catch (Exception e) {
         Log.e(TAG, "Error executing template method", e);
       } finally {

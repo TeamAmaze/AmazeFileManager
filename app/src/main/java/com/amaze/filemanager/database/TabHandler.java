@@ -25,6 +25,9 @@ import com.amaze.filemanager.database.models.explorer.Tab;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import io.reactivex.schedulers.Schedulers;
+
+import java.util.List;
 
 /** Created by Vishal on 9/17/2014. */
 public class TabHandler {
@@ -45,19 +48,21 @@ public class TabHandler {
   }
 
   public void addTab(@NonNull Tab tab) {
-    database.tabDao().insertTab(tab);
+    database.tabDao().insertTab(tab).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void clear() {
-    database.tabDao().clear();
+    database.tabDao().clear().subscribeOn(Schedulers.io()).subscribe();
   }
 
   @Nullable
   public Tab findTab(int tabNo) {
-    return database.tabDao().find(tabNo);
+    return database.tabDao().find(tabNo).subscribeOn(Schedulers.io()).blockingGet();
   }
 
   public Tab[] getAllTabs() {
-    return database.tabDao().list();
+    List<Tab> tabList = database.tabDao().list().toList().subscribeOn(Schedulers.io()).blockingGet();
+    Tab[] tabs = new Tab[tabList.size()];
+    return tabList.toArray(tabs);
   }
 }

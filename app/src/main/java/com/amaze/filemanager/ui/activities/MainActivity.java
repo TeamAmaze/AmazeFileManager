@@ -153,6 +153,10 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
 import eu.chainfire.libsuperuser.Shell;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.functions.Action;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
@@ -368,79 +372,82 @@ public class MainActivity extends PermissionsActivity
 
     checkForExternalPermission();
 
-    AppConfig.runInParallel(
-        new AppConfig.CustomAsyncCallbacks<Void, Void>(null) {
-          @Override
-          public Void doInBackground() {
-
-            dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
-            dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
-            dataUtils.setGridfiles(utilsHandler.getGridViewList());
-            dataUtils.setListfiles(utilsHandler.getListViewList());
-            dataUtils.setBooks(utilsHandler.getBookmarksList());
-            ArrayList<String[]> servers = new ArrayList<String[]>();
-            servers.addAll(utilsHandler.getSmbList());
-            servers.addAll(utilsHandler.getSftpList());
-            dataUtils.setServers(servers);
-
-            return null;
-          }
-
-          @Override
-          public void onPostExecute(Void result) {
-
-            drawer.refreshDrawer();
-
-            if (savedInstanceState == null) {
-              if (openProcesses) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(
-                    R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
-                // transaction.addToBackStack(null);
-                drawer.setSomethingSelected(true);
-                openProcesses = false;
-                // title.setText(utils.getString(con, R.string.process_viewer));
-                // Commit the transaction
-                transaction.commit();
-                supportInvalidateOptionsMenu();
-              } else if (intent.getAction() != null
-                  && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
-                // tile preferences, open ftp fragment
-
-                FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new FtpServerFragment());
-                appBarLayout
-                    .animate()
-                    .translationY(0)
-                    .setInterpolator(new DecelerateInterpolator(2))
-                    .start();
-
-                drawer.setSomethingSelected(true);
-                drawer.deselectEverything();
-                transaction2.commit();
-              } else {
-                if (path != null && path.length() > 0) {
-                  HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
-                  file.generateMode(MainActivity.this);
-                  if (file.isDirectory(MainActivity.this)) goToMain(path);
-                  else {
-                    goToMain(null);
-                    FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
-                  }
-                } else {
-                  goToMain(null);
-                }
+    Completable.fromRunnable(
+            new Runnable() {
+              @Override
+              public void run() {
+                dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
+                dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
+                dataUtils.setGridfiles(utilsHandler.getGridViewList());
+                dataUtils.setListfiles(utilsHandler.getListViewList());
+                dataUtils.setBooks(utilsHandler.getBookmarksList());
+                ArrayList<String[]> servers = new ArrayList<String[]>();
+                servers.addAll(utilsHandler.getSmbList());
+                servers.addAll(utilsHandler.getSftpList());
+                dataUtils.setServers(servers);
               }
-            } else {
-              pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
-              oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
-              oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
-              oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
-              operation = savedInstanceState.getInt(KEY_OPERATION);
-              // mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
-            }
+            })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new Action() {
+              @Override
+              public void run() {
+                drawer.refreshDrawer();
+                invalidateFragmentAndBundle(savedInstanceState);
+              }
+            });
+  }
+
+  private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
+    if (savedInstanceState == null) {
+      if (openProcesses) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(
+          R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
+        // transaction.addToBackStack(null);
+        drawer.setSomethingSelected(true);
+        openProcesses = false;
+        // title.setText(utils.getString(con, R.string.process_viewer));
+        // Commit the transaction
+        transaction.commit();
+        supportInvalidateOptionsMenu();
+      } else if (intent.getAction() != null
+        && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+        // tile preferences, open ftp fragment
+
+        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+        transaction2.replace(R.id.content_frame, new FtpServerFragment());
+        appBarLayout
+          .animate()
+          .translationY(0)
+          .setInterpolator(new DecelerateInterpolator(2))
+          .start();
+
+        drawer.setSomethingSelected(true);
+        drawer.deselectEverything();
+        transaction2.commit();
+      } else {
+        if (path != null && path.length() > 0) {
+          HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
+          file.generateMode(MainActivity.this);
+          if (file.isDirectory(MainActivity.this)) goToMain(path);
+          else {
+            goToMain(null);
+            FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
           }
-        });
+        } else {
+          goToMain(null);
+        }
+      }
+    } else {
+      pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
+      oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
+      oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
+      oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
+      operation = savedInstanceState.getInt(KEY_OPERATION);
+      // mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
+    }
   }
 
   private void checkForExternalPermission() {

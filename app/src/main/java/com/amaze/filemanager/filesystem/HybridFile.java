@@ -20,18 +20,13 @@
 
 package com.amaze.filemanager.filesystem;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-
+import android.content.ContentResolver;
+import android.content.Context;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.util.Log;
+import androidx.annotation.NonNull;
+import androidx.documentfile.provider.DocumentFile;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
@@ -49,6 +44,7 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
+import com.amaze.filemanager.utils.annotations.*;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
@@ -71,6 +67,16 @@ import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.EnumSet;
 
 /** Created by Arpit on 07-07-2015. */
 // Hybrid file for handeling all types of files
@@ -439,8 +445,8 @@ public class HybridFile {
     return isDirectory;
   }
 
+  @BlockingAsync
   public boolean isDirectory(Context context) {
-
     boolean isDirectory;
     switch (mode) {
       case SFTP:
@@ -460,11 +466,8 @@ public class HybridFile {
             });
       case SMB:
         try {
-          isDirectory =
-              AppConfig.getInstance()
-                  .execute((Callable<Boolean>) () -> new SmbFile(path).isDirectory())
-                  .get();
-        } catch (InterruptedException | ExecutionException e) {
+          isDirectory = new SmbFile(path).isDirectory();
+        } catch (MalformedURLException | SmbException e) {
           isDirectory = false;
           if (e.getCause() != null) e.getCause().printStackTrace();
           else e.printStackTrace();

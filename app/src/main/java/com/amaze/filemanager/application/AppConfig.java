@@ -26,6 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
+import android.util.Log;
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -49,6 +50,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatDelegate;
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.schedulers.Schedulers;
+import jcifs.Config;
 
 public class AppConfig extends GlideApplication {
 
@@ -58,10 +63,6 @@ public class AppConfig extends GlideApplication {
   private RequestQueue requestQueue;
   private ImageLoader imageLoader;
   private UtilsHandler utilsHandler;
-
-  private static Handler applicationHandler = new Handler();
-
-  private final ExecutorService executorService = Executors.newSingleThreadExecutor();
 
   private WeakReference<Context> mainActivityContext;
   private static ScreenUtils screenUtils;
@@ -90,7 +91,7 @@ public class AppConfig extends GlideApplication {
     utilsProvider = new UtilitiesProvider(this);
     utilsHandler = new UtilsHandler(this, utilitiesDatabase);
 
-    runInBackground(jcifs.Config::registerSmbURLHandler);
+    runInBackground(Config::registerSmbURLHandler);
 
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -100,22 +101,9 @@ public class AppConfig extends GlideApplication {
   @Override
   public void onTerminate() {
     super.onTerminate();
-    executorService.shutdownNow();
   }
 
-  /**
-   * Convenience method to execute code that needs to avoid main thread. Delegate to
-   *
-   * @see ExecutorService#submit(Callable)
-   * @see Future
-   * @param callable {@link Callable} that contains logic that cannot run on main thread, like
-   *     networking, calculation
-   * @param <T> Return value type
-   * @return {@link Future} from submitting the callable to the executor service
-   */
-  public <T> Future<T> execute(Callable<T> callable) {
-    return executorService.submit(callable);
-  }
+//  ExecutorService executorService = Executors.newCachedThreadPool();
 
   /**
    * Post a runnable to handler. Use this in case we don't have any restriction to execute after
@@ -123,51 +111,15 @@ public class AppConfig extends GlideApplication {
    * something after execution in background
    */
   public void runInBackground(Runnable runnable) {
-    executorService.submit(runnable);
-  }
+    Completable.fromRunnable(runnable).subscribeOn(Schedulers.io()).subscribe();
+    /*Single.just(runnable).subscribeOn(Schedulers.io()).subscribe(new Consumer<Runnable>() {
+      @Override
+      public void accept(Runnable runnable) throws Throwable {
 
-  /**
-   * A compact AsyncTask which runs which executes whatever is passed by callbacks. Supports any
-   * class that extends an object as param array, and result too.
-   */
-  public static <Params, Result> void runInParallel(
-      final CustomAsyncCallbacks<Params, Result> customAsyncCallbacks) {
-
-    synchronized (customAsyncCallbacks) {
-      new AsyncTask<Params, Void, Result>() {
-        @Override
-        protected void onPreExecute() {
-          super.onPreExecute();
-          customAsyncCallbacks.onPreExecute();
-        }
-
-        @Override
-        protected Result doInBackground(Object... params) {
-          return customAsyncCallbacks.doInBackground();
-        }
-
-        @Override
-        protected void onPostExecute(Result aVoid) {
-          super.onPostExecute(aVoid);
-          customAsyncCallbacks.onPostExecute(aVoid);
-        }
-      }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, customAsyncCallbacks.parameters);
-    }
-  }
-
-  /** Interface providing callbacks utilized by {@link #runInBackground(Runnable)} */
-  public abstract static class CustomAsyncCallbacks<Params, Result> {
-    public final @Nullable Params[] parameters;
-
-    public CustomAsyncCallbacks(@Nullable Params[] params) {
-      parameters = params;
-    }
-
-    public abstract Result doInBackground();
-
-    public void onPostExecute(Result result) {}
-
-    public void onPreExecute() {}
+      }
+    });*/
+//    executorService.execute(runnable);
+//    Observable.just(runnable).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
   }
 
   /**
@@ -224,7 +176,7 @@ public class AppConfig extends GlideApplication {
    * @param r Runnable to run
    */
   public void runInApplicationThread(Runnable r) {
-    applicationHandler.post(r);
+    Completable.fromRunnable(r).subscribeOn(AndroidSchedulers.mainThread()).cache();
   }
 
   public static synchronized AppConfig getInstance() {

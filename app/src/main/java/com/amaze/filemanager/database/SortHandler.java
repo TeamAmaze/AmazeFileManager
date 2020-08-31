@@ -34,6 +34,7 @@ import android.preference.PreferenceManager;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import io.reactivex.schedulers.Schedulers;
 
 /** Created by Ning on 5/28/2018. */
 public class SortHandler {
@@ -70,19 +71,19 @@ public class SortHandler {
   }
 
   public void addEntry(Sort sort) {
-    AppConfig.getInstance().runInBackground(() -> database.sortDao().insert(sort));
+    database.sortDao().insert(sort).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void clear(String path) {
-    AppConfig.getInstance().runInBackground(() -> database.sortDao().clear(path));
+    database.sortDao().clear(path).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void updateEntry(Sort oldSort, Sort newSort) {
-    AppConfig.getInstance().runInBackground(() -> database.sortDao().update(newSort));
+    database.sortDao().update(newSort).subscribeOn(Schedulers.io()).subscribe();
   }
 
   @Nullable
   public Sort findEntry(String path) {
-    return database.sortDao().find(path);
+    return database.sortDao().find(path).subscribeOn(Schedulers.io()).blockingGet();
   }
 }

@@ -31,6 +31,8 @@ import com.amaze.filemanager.utils.OpenMode;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 /** Created by vishal on 18/4/17. */
 public class CloudHandler {
@@ -57,13 +59,18 @@ public class CloudHandler {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    database.cloudEntryDao().insert(cloudEntry);
+    database.cloudEntryDao().insert(cloudEntry).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void clear(OpenMode serviceType) {
-    database
-        .cloudEntryDao()
-        .delete(database.cloudEntryDao().findByServiceType(serviceType.ordinal()));
+    database.cloudEntryDao().findByServiceType(serviceType.ordinal()).subscribeOn(Schedulers.io()).subscribe(new Consumer<CloudEntry>() {
+      @Override
+      public void accept(CloudEntry cloudEntry) {
+        database
+          .cloudEntryDao()
+          .delete(cloudEntry).subscribeOn(Schedulers.io()).subscribe();
+      }
+    });
   }
 
   public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
@@ -71,20 +78,19 @@ public class CloudHandler {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    database.cloudEntryDao().update(newCloudEntry);
+    database.cloudEntryDao().update(newCloudEntry).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public CloudEntry findEntry(OpenMode serviceType) throws CloudPluginException {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    return database.cloudEntryDao().findByServiceType(serviceType.ordinal());
+    return database.cloudEntryDao().findByServiceType(serviceType.ordinal()).subscribeOn(Schedulers.io()).blockingGet();
   }
 
   public List<CloudEntry> getAllEntries() throws CloudPluginException {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
-
-    return Arrays.asList(database.cloudEntryDao().list());
+    return database.cloudEntryDao().list().subscribeOn(Schedulers.io()).toList().blockingGet();
   }
 }
