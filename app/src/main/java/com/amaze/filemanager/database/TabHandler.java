@@ -20,14 +20,17 @@
 
 package com.amaze.filemanager.database;
 
+import java.util.List;
+
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Tab;
 
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import io.reactivex.schedulers.Schedulers;
 
-import java.util.List;
+import io.reactivex.schedulers.Schedulers;
 
 /** Created by Vishal on 9/17/2014. */
 public class TabHandler {
@@ -57,11 +60,17 @@ public class TabHandler {
 
   @Nullable
   public Tab findTab(int tabNo) {
-    return database.tabDao().find(tabNo).subscribeOn(Schedulers.io()).blockingGet();
+    try {
+      return database.tabDao().find(tabNo).subscribeOn(Schedulers.io()).blockingGet();
+    } catch (Exception e) {
+      // catch error to handle Single#onError for blockingGet
+      Log.e(getClass().getSimpleName(), e.getMessage());
+      return null;
+    }
   }
 
   public Tab[] getAllTabs() {
-    List<Tab> tabList = database.tabDao().list().toList().subscribeOn(Schedulers.io()).blockingGet();
+    List<Tab> tabList = database.tabDao().list().subscribeOn(Schedulers.io()).blockingGet();
     Tab[] tabs = new Tab[tabList.size()];
     return tabList.toArray(tabs);
   }

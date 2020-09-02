@@ -24,14 +24,16 @@ import static com.amaze.filemanager.database.UtilitiesDatabase.COLUMN_NAME;
 import static com.amaze.filemanager.database.UtilitiesDatabase.COLUMN_PATH;
 import static com.amaze.filemanager.database.UtilitiesDatabase.TABLE_SMB;
 
+import java.util.List;
+
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -52,7 +54,7 @@ public interface SmbEntryDao {
   Completable update(SmbEntry instance);
 
   @Query("SELECT * FROM " + TABLE_SMB)
-  Observable<SmbEntry> list();
+  Single<List<SmbEntry>> list();
 
   @Query(
       "SELECT * FROM "

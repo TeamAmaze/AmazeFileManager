@@ -24,14 +24,16 @@ import static com.amaze.filemanager.database.UtilitiesDatabase.COLUMN_NAME;
 import static com.amaze.filemanager.database.UtilitiesDatabase.COLUMN_PATH;
 import static com.amaze.filemanager.database.UtilitiesDatabase.TABLE_BOOKMARKS;
 
+import java.util.List;
+
 import com.amaze.filemanager.database.models.utilities.Bookmark;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -52,7 +54,7 @@ public interface BookmarkEntryDao {
   Completable update(Bookmark instance);
 
   @Query("SELECT * FROM " + TABLE_BOOKMARKS)
-  Observable<Bookmark> list();
+  Single<List<Bookmark>> list();
 
   @Query(
       "SELECT * FROM "

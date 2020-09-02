@@ -155,7 +155,6 @@ import androidx.loader.content.Loader;
 import eu.chainfire.libsuperuser.Shell;
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Action;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends PermissionsActivity
@@ -308,7 +307,7 @@ public class MainActivity extends PermissionsActivity
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
-      getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      //      LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
     }
 
     path = getIntent().getStringExtra("path");
@@ -373,29 +372,23 @@ public class MainActivity extends PermissionsActivity
     checkForExternalPermission();
 
     Completable.fromRunnable(
-            new Runnable() {
-              @Override
-              public void run() {
-                dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
-                dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
-                dataUtils.setGridfiles(utilsHandler.getGridViewList());
-                dataUtils.setListfiles(utilsHandler.getListViewList());
-                dataUtils.setBooks(utilsHandler.getBookmarksList());
-                ArrayList<String[]> servers = new ArrayList<String[]>();
-                servers.addAll(utilsHandler.getSmbList());
-                servers.addAll(utilsHandler.getSftpList());
-                dataUtils.setServers(servers);
-              }
+            () -> {
+              dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
+              dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
+              dataUtils.setGridfiles(utilsHandler.getGridViewList());
+              dataUtils.setListfiles(utilsHandler.getListViewList());
+              dataUtils.setBooks(utilsHandler.getBookmarksList());
+              ArrayList<String[]> servers = new ArrayList<>();
+              servers.addAll(utilsHandler.getSmbList());
+              servers.addAll(utilsHandler.getSftpList());
+              dataUtils.setServers(servers);
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-            new Action() {
-              @Override
-              public void run() {
-                drawer.refreshDrawer();
-                invalidateFragmentAndBundle(savedInstanceState);
-              }
+            () -> {
+              drawer.refreshDrawer();
+              invalidateFragmentAndBundle(savedInstanceState);
             });
   }
 
@@ -404,7 +397,7 @@ public class MainActivity extends PermissionsActivity
       if (openProcesses) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction.replace(
-          R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
+            R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
         // transaction.addToBackStack(null);
         drawer.setSomethingSelected(true);
         openProcesses = false;
@@ -413,16 +406,16 @@ public class MainActivity extends PermissionsActivity
         transaction.commit();
         supportInvalidateOptionsMenu();
       } else if (intent.getAction() != null
-        && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+          && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
         // tile preferences, open ftp fragment
 
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
         transaction2.replace(R.id.content_frame, new FtpServerFragment());
         appBarLayout
-          .animate()
-          .translationY(0)
-          .setInterpolator(new DecelerateInterpolator(2))
-          .start();
+            .animate()
+            .translationY(0)
+            .setInterpolator(new DecelerateInterpolator(2))
+            .start();
 
         drawer.setSomethingSelected(true);
         drawer.deselectEverything();
@@ -613,10 +606,11 @@ public class MainActivity extends PermissionsActivity
       data.append(AppConstants.NEW_LINE).append(extras.getString(Intent.EXTRA_TEXT));
     }
     String fileName = Long.toString(System.currentTimeMillis());
-    AppConfig.runInBackground(
-        () ->
-            FileUtil.mktextfile(
-                data.toString(), getCurrentMainFragment().getCurrentPath(), fileName));
+    AppConfig.getInstance()
+        .runInBackground(
+            () ->
+                FileUtil.mktextfile(
+                    data.toString(), getCurrentMainFragment().getCurrentPath(), fileName));
   }
 
   public void clearFabActionItems() {

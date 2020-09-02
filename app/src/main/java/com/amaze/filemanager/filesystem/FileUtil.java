@@ -285,9 +285,7 @@ public abstract class FileUtil {
                           } else {
                             OutputStream outputStream = targetSmbFile.getOutputStream();
                             bufferedOutputStream = new BufferedOutputStream(outputStream);
-                            retval.add(
-                                mainActivity.mainActivityHelper.parseSmbPath(
-                                    targetSmbFile.getPath()));
+                            retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
                           }
                           break;
                         case SFTP:
@@ -380,7 +378,8 @@ public abstract class FileUtil {
                     emitter.onError(new Exception());
                   }
                 })
-        .subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
             paths -> {
               if (paths != null) {

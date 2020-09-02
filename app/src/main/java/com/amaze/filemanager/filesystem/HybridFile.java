@@ -20,13 +20,16 @@
 
 package com.amaze.filemanager.filesystem;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.os.Build;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import androidx.annotation.NonNull;
-import androidx.documentfile.provider.DocumentFile;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
@@ -67,16 +70,6 @@ import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.util.ArrayList;
-import java.util.EnumSet;
 
 /** Created by Arpit on 07-07-2015. */
 // Hybrid file for handeling all types of files

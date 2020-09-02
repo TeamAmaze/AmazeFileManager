@@ -21,12 +21,7 @@
 package com.amaze.filemanager.application;
 
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
 
-import android.util.Log;
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -41,8 +36,6 @@ import com.android.volley.toolbox.Volley;
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
-import android.os.AsyncTask;
-import android.os.Handler;
 import android.os.StrictMode;
 import android.widget.Toast;
 
@@ -50,6 +43,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.AppCompatDelegate;
+
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
@@ -103,7 +97,7 @@ public class AppConfig extends GlideApplication {
     super.onTerminate();
   }
 
-//  ExecutorService executorService = Executors.newCachedThreadPool();
+  //  ExecutorService executorService = Executors.newCachedThreadPool();
 
   /**
    * Post a runnable to handler. Use this in case we don't have any restriction to execute after
@@ -118,8 +112,8 @@ public class AppConfig extends GlideApplication {
 
       }
     });*/
-//    executorService.execute(runnable);
-//    Observable.just(runnable).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
+    //    executorService.execute(runnable);
+    //    Observable.just(runnable).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
   }
 
   /**

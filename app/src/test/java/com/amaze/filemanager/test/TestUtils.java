@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.test;
 
-import static org.awaitility.Awaitility.await;
 import static android.os.Build.VERSION_CODES.P;
+import static org.awaitility.Awaitility.await;
 import static org.robolectric.Shadows.shadowOf;
 
 import java.io.File;

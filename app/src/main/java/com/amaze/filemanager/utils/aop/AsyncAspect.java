@@ -18,15 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-/*package com.amaze.filemanager.utils.aop;
+package com.amaze.filemanager.utils.aop;
 
-import android.util.Log;
-import io.reactivex.Observable;
-import io.reactivex.schedulers.Schedulers;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
+
+import android.util.Log;
+
+import io.reactivex.Observable;
+import io.reactivex.schedulers.Schedulers;
 
 @Aspect
 public class AsyncAspect {
@@ -34,13 +36,16 @@ public class AsyncAspect {
   @Pointcut("within(com.amaze.filemanager..*)")
   public void asyncBlockPointcut() {}
 
-  @Around("asyncBlockPointcut() && @annotation(com.amaze.filemanager.utils.annotations.BlockingAsync)")
+  @Around(
+      "asyncBlockPointcut() && @annotation(com.amaze.filemanager.utils.annotations.BlockingAsync)")
   public Object asyncBlockAspect(ProceedingJoinPoint proceedingJoinPoint) {
     try {
-      return Observable.just(proceedingJoinPoint.proceed()).subscribeOn(Schedulers.io()).blockingSingle();
+      return Observable.just(proceedingJoinPoint.proceed())
+          .subscribeOn(Schedulers.io())
+          .blockingSingle();
     } catch (Throwable throwable) {
       Log.w(getClass().getSimpleName(), "Failed to proceed to join point due to: {}", throwable);
       return null;
     }
   }
-}*/
+}

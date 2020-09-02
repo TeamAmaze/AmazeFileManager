@@ -31,9 +31,11 @@ import com.amaze.filemanager.database.models.explorer.Sort;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
 import io.reactivex.schedulers.Schedulers;
 
 /** Created by Ning on 5/28/2018. */
@@ -84,6 +86,12 @@ public class SortHandler {
 
   @Nullable
   public Sort findEntry(String path) {
-    return database.sortDao().find(path).subscribeOn(Schedulers.io()).blockingGet();
+    try {
+      return database.sortDao().find(path).subscribeOn(Schedulers.io()).blockingGet();
+    } catch (Exception e) {
+      // catch error to handle Single#onError for blockingGet
+      Log.e(getClass().getSimpleName(), e.getMessage());
+      return null;
+    }
   }
 }

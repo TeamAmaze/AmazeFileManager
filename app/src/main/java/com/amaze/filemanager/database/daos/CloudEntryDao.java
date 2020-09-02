@@ -23,6 +23,8 @@ package com.amaze.filemanager.database.daos;
 import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_CLOUD_SERVICE;
 import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_CLOUD_PERSIST;
 
+import java.util.List;
+
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 
 import androidx.room.Dao;
@@ -30,8 +32,8 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Update;
+
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -53,7 +55,7 @@ public interface CloudEntryDao {
   Single<CloudEntry> findByServiceType(int serviceType);
 
   @Query("SELECT * FROM " + TABLE_CLOUD_PERSIST)
-  Observable<CloudEntry> list();
+  Single<List<CloudEntry>> list();
 
   @Update
   Completable update(CloudEntry entry);

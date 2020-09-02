@@ -23,6 +23,8 @@ package com.amaze.filemanager.database.daos;
 import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_TAB_NO;
 import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_TAB;
 
+import java.util.List;
+
 import com.amaze.filemanager.database.models.explorer.Tab;
 
 import androidx.room.Dao;
@@ -30,8 +32,8 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -55,5 +57,5 @@ public interface TabDao {
   Single<Tab> find(int tabNo);
 
   @Query("SELECT * FROM " + TABLE_TAB)
-  Observable<Tab> list();
+  Single<List<Tab>> list();
 }

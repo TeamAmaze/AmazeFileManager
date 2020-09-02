@@ -20,13 +20,16 @@
 
 package com.amaze.filemanager.database;
 
+import java.util.List;
+
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 
-import androidx.annotation.NonNull;
-import io.reactivex.schedulers.Schedulers;
+import android.util.Log;
 
-import java.util.List;
+import androidx.annotation.NonNull;
+
+import io.reactivex.schedulers.Schedulers;
 
 /** Created by vishal on 15/4/17. */
 public class CryptHandler {
@@ -59,11 +62,18 @@ public class CryptHandler {
   }
 
   public EncryptedEntry findEntry(String path) {
-    return database.encryptedEntryDao().select(path).subscribeOn(Schedulers.io()).blockingGet();
+    try {
+      return database.encryptedEntryDao().select(path).subscribeOn(Schedulers.io()).blockingGet();
+    } catch (Exception e) {
+      // catch error to handle Single#onError for blockingGet
+      Log.e(getClass().getSimpleName(), e.getMessage());
+      return null;
+    }
   }
 
   public EncryptedEntry[] getAllEntries() {
-    List<EncryptedEntry> encryptedEntryList = database.encryptedEntryDao().list().toList().subscribeOn(Schedulers.io()).blockingGet();
+    List<EncryptedEntry> encryptedEntryList =
+        database.encryptedEntryDao().list().subscribeOn(Schedulers.io()).blockingGet();
     EncryptedEntry[] encryptedEntries = new EncryptedEntry[encryptedEntryList.size()];
     return encryptedEntryList.toArray(encryptedEntries);
   }

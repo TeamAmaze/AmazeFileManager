@@ -23,6 +23,8 @@ package com.amaze.filemanager.database.daos;
 import static com.amaze.filemanager.database.ExplorerDatabase.COLUMN_PATH;
 import static com.amaze.filemanager.database.ExplorerDatabase.TABLE_ENCRYPTED;
 
+import java.util.List;
+
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 
 import androidx.room.Dao;
@@ -30,8 +32,8 @@ import androidx.room.Insert;
 import androidx.room.Query;
 import androidx.room.Transaction;
 import androidx.room.Update;
+
 import io.reactivex.Completable;
-import io.reactivex.Observable;
 import io.reactivex.Single;
 
 /**
@@ -59,5 +61,5 @@ public interface EncryptedEntryDao {
   Completable delete(String path);
 
   @Query("SELECT * FROM " + TABLE_ENCRYPTED)
-  Observable<EncryptedEntry> list();
+  Single<List<EncryptedEntry>> list();
 }
