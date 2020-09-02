@@ -97,8 +97,6 @@ public class AppConfig extends GlideApplication {
     super.onTerminate();
   }
 
-  //  ExecutorService executorService = Executors.newCachedThreadPool();
-
   /**
    * Post a runnable to handler. Use this in case we don't have any restriction to execute after
    * this runnable is executed, and {@link #runInBackground(Runnable)} in case we need to execute
@@ -106,14 +104,6 @@ public class AppConfig extends GlideApplication {
    */
   public void runInBackground(Runnable runnable) {
     Completable.fromRunnable(runnable).subscribeOn(Schedulers.io()).subscribe();
-    /*Single.just(runnable).subscribeOn(Schedulers.io()).subscribe(new Consumer<Runnable>() {
-      @Override
-      public void accept(Runnable runnable) throws Throwable {
-
-      }
-    });*/
-    //    executorService.execute(runnable);
-    //    Observable.just(runnable).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
   }
 
   /**
@@ -170,7 +160,7 @@ public class AppConfig extends GlideApplication {
    * @param r Runnable to run
    */
   public void runInApplicationThread(Runnable r) {
-    Completable.fromRunnable(r).subscribeOn(AndroidSchedulers.mainThread()).cache();
+    Completable.fromRunnable(r).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
   }
 
   public static synchronized AppConfig getInstance() {
