@@ -39,11 +39,14 @@ import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 18:05. */
 public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedValues> {
+
+  private static final String TAG = ReadFileTask.class.getSimpleName();
 
   public static final int NORMAL = 0;
   public static final int EXCEPTION_STREAM_NOT_FOUND = -1;
@@ -85,7 +88,7 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
           if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
             DocumentFile documentFile =
                 DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
-            if (documentFile != null && documentFile.exists() && documentFile.canRead())
+            if (documentFile != null && documentFile.exists() && documentFile.canWrite())
               inputStream = contentResolver.openInputStream(documentFile.getUri());
             else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
           } else {
@@ -157,6 +160,7 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
       try {
         inputStream = new FileInputStream(file.getAbsolutePath());
       } catch (FileNotFoundException e) {
+        Log.e(TAG, "Unable to open file [" + file.getAbsolutePath() + "] for reading", e);
         inputStream = null;
       }
     }
