@@ -357,7 +357,23 @@ public class LoadFilesListTask
                 || path.endsWith("txt")
                 || path.endsWith(".rtf")
                 || path.endsWith(".odt")
-                || path.endsWith(".html"))) {
+                || path.endsWith(".html")
+                || path.endsWith(".xml")
+                || path.endsWith(".text/x-asm")
+                || path.endsWith(".def")
+                || path.endsWith(".in")
+                || path.endsWith(".rc")
+                || path.endsWith(".list")
+                || path.endsWith(".log")
+                || path.endsWith(".pl")
+                || path.endsWith(".prop")
+                || path.endsWith(".properties")
+                || path.endsWith(".rc")
+                || path.endsWith(".msg")
+                || path.endsWith(".odt")
+                || path.endsWith(".pages")
+                || path.endsWith(".wpd")
+                || path.endsWith(".wps"))) {
           HybridFileParcelable strings =
               RootHelper.generateBaseFile(new File(path), showHiddenFiles);
           if (strings != null) {
