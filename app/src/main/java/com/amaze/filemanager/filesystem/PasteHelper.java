@@ -38,7 +38,9 @@ import android.text.Html;
 import android.text.Spanned;
 
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 /**
@@ -137,28 +139,37 @@ public final class PasteHelper implements Parcelable {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-            spanned -> {
-              snackbar =
-                  Utils.showThemedSnackbar(
-                      mainActivity,
-                      spanned,
-                      BaseTransientBottomBar.LENGTH_INDEFINITE,
-                      R.string.paste,
-                      () -> {
-                        String path = mainActivity.getCurrentMainFragment().getCurrentPath();
-                        ArrayList<HybridFileParcelable> arrayList =
-                            new ArrayList<>(Arrays.asList(paths));
-                        boolean move = operation == PasteHelper.OPERATION_CUT;
-                        new PrepareCopyTask(
-                                mainActivity.getCurrentMainFragment(),
-                                path,
-                                move,
-                                mainActivity,
-                                mainActivity.isRootExplorer())
-                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-                        dismissSnackbar(true);
-                      });
-              Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
+            new SingleObserver<Spanned>() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onSuccess(Spanned spanned) {
+                snackbar =
+                    Utils.showThemedSnackbar(
+                        mainActivity,
+                        spanned,
+                        BaseTransientBottomBar.LENGTH_INDEFINITE,
+                        R.string.paste,
+                        () -> {
+                          String path = mainActivity.getCurrentMainFragment().getCurrentPath();
+                          ArrayList<HybridFileParcelable> arrayList =
+                              new ArrayList<>(Arrays.asList(paths));
+                          boolean move = operation == PasteHelper.OPERATION_CUT;
+                          new PrepareCopyTask(
+                                  mainActivity.getCurrentMainFragment(),
+                                  path,
+                                  move,
+                                  mainActivity,
+                                  mainActivity.isRootExplorer())
+                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+                          dismissSnackbar(true);
+                        });
+                Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
+              }
+
+              @Override
+              public void onError(Throwable e) {}
             });
   }
 
