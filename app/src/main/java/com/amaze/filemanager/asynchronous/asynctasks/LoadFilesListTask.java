@@ -469,10 +469,6 @@ public class LoadFilesListTask
     }
     cursor.close();
     Collections.sort(recentFiles, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
-    if (recentFiles.size() > 20)
-      for (int i = recentFiles.size() - 1; i > 20; i--) {
-        recentFiles.remove(i);
-      }
     return recentFiles;
   }
 
