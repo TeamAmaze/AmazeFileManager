@@ -307,7 +307,7 @@ public class MainActivity extends PermissionsActivity
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
-      //      LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
     }
 
     path = getIntent().getStringExtra("path");

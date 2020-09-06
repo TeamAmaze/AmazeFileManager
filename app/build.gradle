@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
-apply plugin: "com.hiya.jacoco-android"
-apply plugin: 'com.archinamon.aspectj'
+apply plugin: 'jacoco-android'
 
 android {
     compileSdkVersion 28
@@ -117,7 +116,6 @@ dependencies {
     annotationProcessor "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
-    implementation 'com.android.billingclient:billing:2.1.0'
     annotationProcessor 'androidx.annotation:annotation:1.1.0'
 
     //For tests

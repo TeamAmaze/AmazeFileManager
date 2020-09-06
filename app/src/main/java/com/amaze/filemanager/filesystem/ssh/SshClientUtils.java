@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -76,7 +77,9 @@ public abstract class SshClientUtils {
     if (client != null) {
       try {
         retval =
-            (T) Single.just(template.execute(client)).subscribeOn(Schedulers.io()).blockingGet();
+            Single.fromCallable((Callable<T>) () -> template.execute(client))
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
       } catch (Exception e) {
         Log.e(TAG, "Error executing template method", e);
       } finally {

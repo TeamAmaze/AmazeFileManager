@@ -47,7 +47,6 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.annotations.*;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
@@ -61,6 +60,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.SSHClient;
@@ -438,7 +439,6 @@ public class HybridFile {
     return isDirectory;
   }
 
-  @BlockingAsync
   public boolean isDirectory(Context context) {
     boolean isDirectory;
     switch (mode) {
@@ -453,14 +453,21 @@ public class HybridFile {
                       .getType()
                       .equals(FileMode.Type.DIRECTORY);
                 } catch (SFTPException notFound) {
+                  Log.e(
+                      getClass().getSimpleName(),
+                      "Fail to execute isDirectory for SFTP path :" + path);
+                  notFound.printStackTrace();
                   return false;
                 }
               }
             });
       case SMB:
         try {
-          isDirectory = new SmbFile(path).isDirectory();
-        } catch (MalformedURLException | SmbException e) {
+          isDirectory =
+              Single.fromCallable(() -> new SmbFile(path).isDirectory())
+                  .subscribeOn(Schedulers.io())
+                  .blockingGet();
+        } catch (Exception e) {
           isDirectory = false;
           if (e.getCause() != null) e.getCause().printStackTrace();
           else e.printStackTrace();
