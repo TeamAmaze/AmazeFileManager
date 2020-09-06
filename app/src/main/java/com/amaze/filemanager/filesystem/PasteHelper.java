@@ -36,6 +36,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -169,7 +170,12 @@ public final class PasteHelper implements Parcelable {
               }
 
               @Override
-              public void onError(Throwable e) {}
+              public void onError(Throwable e) {
+                Log.e(
+                    getClass().getSimpleName(),
+                    "Failed to show paste snackbar due to " + e.getCause());
+                e.printStackTrace();
+              }
             });
   }
 

@@ -72,8 +72,10 @@ import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
 import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
 import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -380,8 +382,12 @@ public abstract class FileUtil {
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-            paths -> {
-              if (paths != null) {
+            new MaybeObserver<List<String>>() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onSuccess(List<String> paths) {
                 if (paths.size() == 1) {
                   Toast.makeText(
                           mainActivity,
@@ -396,6 +402,17 @@ public abstract class FileUtil {
                       .show();
                 }
               }
+
+              @Override
+              public void onError(Throwable e) {
+                Log.e(
+                    getClass().getSimpleName(),
+                    "Failed to write uri to storage due to " + e.getCause());
+                e.printStackTrace();
+              }
+
+              @Override
+              public void onComplete() {}
             });
   }
 

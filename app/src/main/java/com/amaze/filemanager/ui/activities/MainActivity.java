@@ -154,7 +154,9 @@ import androidx.loader.content.Loader;
 
 import eu.chainfire.libsuperuser.Shell;
 import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends PermissionsActivity
@@ -386,9 +388,20 @@ public class MainActivity extends PermissionsActivity
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
-            () -> {
-              drawer.refreshDrawer();
-              invalidateFragmentAndBundle(savedInstanceState);
+            new CompletableObserver() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onComplete() {
+                drawer.refreshDrawer();
+                invalidateFragmentAndBundle(savedInstanceState);
+              }
+
+              @Override
+              public void onError(Throwable e) {
+                e.printStackTrace();
+              }
             });
   }
 
