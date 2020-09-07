@@ -108,7 +108,7 @@ public class Utils {
   public static String getDate(@NonNull Context c, long f) {
     return String.format(
         DATE_TIME_FORMAT,
-        DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_DATE),
+        DateUtils.formatDateTime(c, f, DateUtils.FORMAT_ABBREV_MONTH),
         DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_TIME));
   }
 
