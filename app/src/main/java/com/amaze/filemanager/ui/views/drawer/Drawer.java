@@ -234,6 +234,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       mainActivity.getSupportActionBar().setHomeButtonEnabled(true);
       mDrawerToggle.syncState();
     }
+
+    mDrawerLayout.addDrawerListener(
+        new DrawerLayout.SimpleDrawerListener() {
+          @Override
+          public void onDrawerStateChanged(int newState) {
+            if (isOnTablet) lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+            unlockIfNotOnTablet();
+          }
+        });
   }
 
   private void setNavViewDimension(CustomNavigationView navView) {
