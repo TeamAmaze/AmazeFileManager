@@ -1313,6 +1313,11 @@ public class GeneralDialogCreation {
     builder.dividerColor(Color.GRAY);
     MaterialDialog materialDialog = builder.build();
     adapter.updateDialog(materialDialog);
+    materialDialog.setOnDismissListener(
+        dialogInterface ->
+            m.getMainActivity()
+                .getCurrentMainFragment()
+                .loadlist(m.getCurrentPath(), false, OpenMode.UNKNOWN));
     materialDialog.show();
   }
 
