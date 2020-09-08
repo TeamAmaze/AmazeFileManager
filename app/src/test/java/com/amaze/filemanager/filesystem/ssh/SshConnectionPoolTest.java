@@ -42,13 +42,14 @@ import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
-import com.amaze.filemanager.test.TestUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.common.SecurityUtils;
 
 @RunWith(AndroidJUnit4.class)
@@ -67,6 +68,8 @@ public class SshConnectionPoolTest {
   public static void bootstrap() throws Exception {
     hostKeyProvider = new TestKeyProvider();
     userKeyProvider = new TestKeyProvider();
+    RxJavaPlugins.reset();
+    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
   }
 
   @After
@@ -341,7 +344,5 @@ public class SshConnectionPoolTest {
               SecurityUtils.getFingerprint(hostKeyProvider.getKeyPair().getPublic()),
               "id_rsa",
               privateKeyContents));
-
-    TestUtils.flushAppConfigHandlerThread();
   }
 }

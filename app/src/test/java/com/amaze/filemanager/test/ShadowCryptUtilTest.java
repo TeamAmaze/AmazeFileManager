@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -41,9 +42,18 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
+
 @RunWith(AndroidJUnit4.class)
 @Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
 public class ShadowCryptUtilTest {
+
+  @BeforeClass
+  public static void setUpBeforeClass() {
+    RxJavaPlugins.reset();
+    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+  }
 
   @Test
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
@@ -72,8 +82,6 @@ public class ShadowCryptUtilTest {
             fingerprint,
             null,
             null));
-
-    TestUtils.flushAppConfigHandlerThread();
 
     await()
         .atMost(10, TimeUnit.SECONDS)

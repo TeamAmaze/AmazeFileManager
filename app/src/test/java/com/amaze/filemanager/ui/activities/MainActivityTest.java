@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -56,6 +57,9 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
+
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {
@@ -71,6 +75,12 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
  */
 @LooperMode(LooperMode.Mode.PAUSED)
 public class MainActivityTest {
+
+  @BeforeClass
+  public static void setUpBeforeClass() {
+    RxJavaPlugins.reset();
+    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+  }
 
   @Before
   public void setUp() {
