@@ -109,7 +109,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private DataUtils dataUtils;
 
   private ActionViewStateManager actionViewStateManager;
-  private boolean isSomethingSelected;
   private volatile int phoneStorageCount =
       0; // number of storage available (internal/external/otg etc)
   private boolean isDrawerLocked = false;
@@ -200,18 +199,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     // drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
     if (mainActivity.findViewById(R.id.tab_frame) != null) {
       isOnTablet = true;
-      lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-      open();
       mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-      mDrawerLayout.post(this::open);
-    } else if (mainActivity.findViewById(R.id.tab_frame) == null) {
-      unlockIfNotOnTablet();
-      close();
-      mDrawerLayout.post(this::close);
     }
     navView.addHeaderView(drawerHeaderLayout);
 
-    if (!isDrawerLocked) {
+    if (!isOnTablet) {
       mDrawerToggle =
           new ActionBarDrawerToggle(
               mainActivity, /* host Activity */
@@ -234,15 +226,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       mainActivity.getSupportActionBar().setHomeButtonEnabled(true);
       mDrawerToggle.syncState();
     }
-
-    mDrawerLayout.addDrawerListener(
-        new DrawerLayout.SimpleDrawerListener() {
-          @Override
-          public void onDrawerStateChanged(int newState) {
-            if (isOnTablet) lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-            unlockIfNotOnTablet();
-          }
-        });
   }
 
   private void setNavViewDimension(CustomNavigationView navView) {
@@ -253,6 +236,19 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     navView.setLayoutParams(
         new DrawerLayout.LayoutParams(
             desiredWidthInPx, LinearLayout.LayoutParams.MATCH_PARENT, Gravity.START));
+  }
+
+  /** Refactors lock mode based on orientation */
+  public void refactorDrawerLockMode() {
+    if (mainActivity.findViewById(R.id.tab_frame) != null) {
+      isOnTablet = true;
+      mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+      open();
+      lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+    } else {
+      unlockIfNotOnTablet();
+      close();
+    }
   }
 
   public void refreshDrawer() {
@@ -555,7 +551,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     if (item != null) {
       item.setChecked(true);
       actionViewStateManager.selectActionView(item);
-      isSomethingSelected = true;
     }
   }
 
@@ -639,6 +634,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     return isDrawerLocked;
   }
 
+  public boolean isOnTablet() {
+    return isOnTablet;
+  }
+
   public boolean isOpen() {
     return mDrawerLayout.isDrawerOpen(navView);
   }
@@ -682,7 +681,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   public boolean onNavigationItemSelected(@NonNull MenuItem item) {
     actionViewStateManager.deselectCurrentActionView();
     actionViewStateManager.selectActionView(item);
-    isSomethingSelected = true;
 
     String title = item.getTitle().toString();
     MenuMetadata meta = dataUtils.getDrawerMetadata(item);
@@ -773,14 +771,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
   }
 
-  public boolean isSomethingSelected() {
-    return isSomethingSelected;
-  }
-
-  public void setSomethingSelected(boolean isSelected) {
-    isSomethingSelected = isSelected;
-  }
-
   public int getPhoneStorageCount() {
     return phoneStorageCount;
   }
@@ -816,10 +806,32 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     if (id == null) deselectEverything();
     else {
+      selectCorrectDrawerItem(id);
+    }
+  }
+
+  /**
+   * Select given item id in navigation drawer
+   *
+   * @param id given item id from menu
+   */
+  public void selectCorrectDrawerItem(int id) {
+    if (id < 0) {
+      deselectEverything();
+    } else {
       MenuItem item = navView.getMenu().findItem(id);
       navView.setCheckedItem(item);
       actionViewStateManager.selectActionView(item);
     }
+  }
+
+  /**
+   * Get selected item id
+   *
+   * @return item id from menu
+   */
+  public int getDrawerSelectedItem() {
+    return navView.getSelected().getItemId();
   }
 
   public void setBackgroundColor(@ColorInt int color) {
@@ -855,7 +867,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   public void deselectEverything() {
     actionViewStateManager
         .deselectCurrentActionView(); // If you set the item as checked the listener doesn't trigger
-    if (!isSomethingSelected) {
+    if (navView.getSelected() == null) {
       return;
     }
 
@@ -864,8 +876,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     for (int i = 0; i < navView.getMenu().size(); i++) {
       navView.getMenu().getItem(i).setChecked(false);
     }
-
-    isSomethingSelected = false;
   }
 
   /**
