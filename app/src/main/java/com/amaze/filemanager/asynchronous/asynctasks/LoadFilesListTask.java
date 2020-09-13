@@ -385,10 +385,6 @@ public class LoadFilesListTask
     }
     cursor.close();
     Collections.sort(docs, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
-    if (docs.size() > 20)
-      for (int i = docs.size() - 1; i > 20; i--) {
-        docs.remove(i);
-      }
     return docs;
   }
 
@@ -441,17 +437,20 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecentFiles() {
-    ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>();
-    final String[] projection = {
-      MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
-    };
+    ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
+    final String[] projection = {MediaStore.Files.FileColumns.DATA};
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
     Cursor cursor =
         this.context
             .getContentResolver()
-            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
+            .query(
+                MediaStore.Files.getContentUri("external"),
+                projection,
+                null,
+                null,
+                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
     if (cursor == null) return recentFiles;
     if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
@@ -468,7 +467,6 @@ public class LoadFilesListTask
       } while (cursor.moveToNext());
     }
     cursor.close();
-    Collections.sort(recentFiles, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
     return recentFiles;
   }
 
