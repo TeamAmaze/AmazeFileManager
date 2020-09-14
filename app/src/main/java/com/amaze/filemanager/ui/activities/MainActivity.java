@@ -1219,7 +1219,7 @@ public class MainActivity extends PermissionsActivity
     unregisterReceiver(mainActivityHelper.mNotificationReceiver);
     unregisterReceiver(receiver2);
 
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
+    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       unregisterReceiver(mOtgReceiver);
     }
     killToast();
