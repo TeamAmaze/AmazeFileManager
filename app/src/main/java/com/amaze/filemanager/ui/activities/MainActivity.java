@@ -276,6 +276,7 @@ public class MainActivity extends PermissionsActivity
   private PasteHelper pasteHelper;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
+  private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
 
   /** Called when the activity is first created. */
   @Override
@@ -325,10 +326,6 @@ public class MainActivity extends PermissionsActivity
     }
 
     checkForExternalIntent(intent);
-
-    if (savedInstanceState != null) {
-      drawer.setSomethingSelected(savedInstanceState.getBoolean(KEY_DRAWER_SELECTED));
-    }
 
     // setting window background color instead of each item, in order to reduce pixel overdraw
     if (getAppTheme().equals(AppTheme.LIGHT)) {
@@ -412,7 +409,6 @@ public class MainActivity extends PermissionsActivity
         transaction.replace(
             R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
         // transaction.addToBackStack(null);
-        drawer.setSomethingSelected(true);
         openProcesses = false;
         // title.setText(utils.getString(con, R.string.process_viewer));
         // Commit the transaction
@@ -430,7 +426,6 @@ public class MainActivity extends PermissionsActivity
             .setInterpolator(new DecelerateInterpolator(2))
             .start();
 
-        drawer.setSomethingSelected(true);
         drawer.deselectEverything();
         transaction2.commit();
       } else {
@@ -453,6 +448,8 @@ public class MainActivity extends PermissionsActivity
       oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
       operation = savedInstanceState.getInt(KEY_OPERATION);
       // mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
+      int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
+      getDrawer().selectCorrectDrawerItem(selectedStorage);
     }
   }
 
@@ -694,6 +691,9 @@ public class MainActivity extends PermissionsActivity
       }
       File path = Utils.getVolumeDirectory(volume);
       String name = volume.getDescription(this);
+      if (INTERNAL_SHARED_STORAGE.equalsIgnoreCase(name)) {
+        name = getString(R.string.storage_internal);
+      }
       int icon;
       if (!volume.isRemovable()) {
         icon = R.drawable.ic_phone_android_white_24dp;
@@ -906,7 +906,6 @@ public class MainActivity extends PermissionsActivity
     }
     transaction.replace(R.id.content_frame, tabFragment);
     // Commit the transaction
-    drawer.setSomethingSelected(true);
     transaction.addToBackStack("tabt" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
@@ -1209,7 +1208,7 @@ public class MainActivity extends PermissionsActivity
   @Override
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    outState.putBoolean(KEY_DRAWER_SELECTED, drawer.isSomethingSelected());
+    outState.putInt(KEY_DRAWER_SELECTED, getDrawer().getDrawerSelectedItem());
     if (pasteHelper != null) {
       outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
     }
@@ -1231,7 +1230,7 @@ public class MainActivity extends PermissionsActivity
     unregisterReceiver(mainActivityHelper.mNotificationReceiver);
     unregisterReceiver(receiver2);
 
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT && SDK_INT < Build.VERSION_CODES.N) {
+    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       unregisterReceiver(mOtgReceiver);
     }
     killToast();
@@ -1246,7 +1245,7 @@ public class MainActivity extends PermissionsActivity
     }
 
     drawer.refreshDrawer();
-    drawer.deselectEverything();
+    drawer.refactorDrawerLockMode();
 
     IntentFilter newFilter = new IntentFilter();
     newFilter.addAction(Intent.ACTION_MEDIA_MOUNTED);
@@ -1590,12 +1589,12 @@ public class MainActivity extends PermissionsActivity
       FrameLayout.MarginLayoutParams p =
           (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
       SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-      if (!drawer.isLocked()) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+      if (!drawer.isOnTablet()) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
     } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       Window window = getWindow();
       window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
       // window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-      if (drawer.isLocked()) {
+      if (drawer.isOnTablet()) {
         window.setStatusBarColor((skinStatusBar));
       } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
       if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) window.setNavigationBarColor(skinStatusBar);
@@ -1735,7 +1734,6 @@ public class MainActivity extends PermissionsActivity
       transaction.replace(
           R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
       //   transaction.addToBackStack(null);
-      drawer.setSomethingSelected(true);
       openProcesses = false;
       // title.setText(utils.getString(con, R.string.process_viewer));
       // Commit the transaction

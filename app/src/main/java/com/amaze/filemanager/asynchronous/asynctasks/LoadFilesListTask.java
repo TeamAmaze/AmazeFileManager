@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
@@ -51,6 +50,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
@@ -302,26 +302,24 @@ public class LoadFilesListTask
 
   private ArrayList<LayoutElementParcelable> listImages() {
     final String[] projection = {MediaStore.Images.Media.DATA};
-    return listMediaCommon(projection, null);
+    return listMediaCommon(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null);
   }
 
   private ArrayList<LayoutElementParcelable> listVideos() {
     final String[] projection = {MediaStore.Video.Media.DATA};
-    return listMediaCommon(projection, null);
+    return listMediaCommon(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null);
   }
 
   private ArrayList<LayoutElementParcelable> listaudio() {
     String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
     String[] projection = {MediaStore.Audio.Media.DATA};
-    return listMediaCommon(projection, selection);
+    return listMediaCommon(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection);
   }
 
   private @NonNull ArrayList<LayoutElementParcelable> listMediaCommon(
-      @NonNull String[] projection, @Nullable String selection) {
+      Uri contentUri, @NonNull String[] projection, @Nullable String selection) {
     Cursor cursor =
-        context
-            .getContentResolver()
-            .query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
+        context.getContentResolver().query(contentUri, projection, selection, null, null);
 
     ArrayList<LayoutElementParcelable> retval = new ArrayList<>();
     if (cursor == null) return retval;
@@ -346,37 +344,36 @@ public class LoadFilesListTask
         context
             .getContentResolver()
             .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
-    String[] types =
-        new String[] {
-          ".pdf",
-          ".xml",
-          ".html",
-          ".asm",
-          ".text/x-asm",
-          ".def",
-          ".in",
-          ".rc",
-          ".list",
-          ".log",
-          ".pl",
-          ".prop",
-          ".properties",
-          ".rc",
-          ".doc",
-          ".docx",
-          ".msg",
-          ".odt",
-          ".pages",
-          ".rtf",
-          ".txt",
-          ".wpd",
-          ".wps"
-        };
+
     if (cursor == null) return docs;
     else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        if (path != null && Arrays.asList(types).contains(path)) {
+
+        if (path != null
+            && (path.endsWith(".pdf")
+                || path.endsWith(".doc")
+                || path.endsWith(".docx")
+                || path.endsWith("txt")
+                || path.endsWith(".rtf")
+                || path.endsWith(".odt")
+                || path.endsWith(".html")
+                || path.endsWith(".xml")
+                || path.endsWith(".text/x-asm")
+                || path.endsWith(".def")
+                || path.endsWith(".in")
+                || path.endsWith(".rc")
+                || path.endsWith(".list")
+                || path.endsWith(".log")
+                || path.endsWith(".pl")
+                || path.endsWith(".prop")
+                || path.endsWith(".properties")
+                || path.endsWith(".rc")
+                || path.endsWith(".msg")
+                || path.endsWith(".odt")
+                || path.endsWith(".pages")
+                || path.endsWith(".wpd")
+                || path.endsWith(".wps"))) {
           HybridFileParcelable strings =
               RootHelper.generateBaseFile(new File(path), showHiddenFiles);
           if (strings != null) {
@@ -388,10 +385,6 @@ public class LoadFilesListTask
     }
     cursor.close();
     Collections.sort(docs, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
-    if (docs.size() > 20)
-      for (int i = docs.size() - 1; i > 20; i--) {
-        docs.remove(i);
-      }
     return docs;
   }
 
@@ -444,17 +437,20 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecentFiles() {
-    ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>();
-    final String[] projection = {
-      MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
-    };
+    ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
+    final String[] projection = {MediaStore.Files.FileColumns.DATA};
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
     Cursor cursor =
         this.context
             .getContentResolver()
-            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
+            .query(
+                MediaStore.Files.getContentUri("external"),
+                projection,
+                null,
+                null,
+                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
     if (cursor == null) return recentFiles;
     if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
@@ -471,11 +467,6 @@ public class LoadFilesListTask
       } while (cursor.moveToNext());
     }
     cursor.close();
-    Collections.sort(recentFiles, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
-    if (recentFiles.size() > 20)
-      for (int i = recentFiles.size() - 1; i > 20; i--) {
-        recentFiles.remove(i);
-      }
     return recentFiles;
   }
 

@@ -80,8 +80,6 @@ import androidx.fragment.app.Fragment;
  */
 public class FtpServerFragment extends Fragment {
 
-  private MainActivity mainActivity;
-
   private TextView statusText, url, username, password, port, sharedPath;
   public static final String TAG = "FTPServerFragment";
 
@@ -99,7 +97,6 @@ public class FtpServerFragment extends Fragment {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setHasOptionsMenu(true);
-    mainActivity = (MainActivity) getActivity();
   }
 
   @Override
@@ -116,12 +113,12 @@ public class FtpServerFragment extends Fragment {
     View startDividerView = rootView.findViewById(R.id.divider_ftp_start);
     View statusDividerView = rootView.findViewById(R.id.divider_ftp_status);
     ftpPasswordVisibleButton = rootView.findViewById(R.id.ftp_password_visible);
-    accentColor = mainActivity.getAccent();
+    accentColor = getMainActivity().getAccent();
 
     updateSpans();
     updateStatus();
 
-    switch (mainActivity.getAppTheme().getSimpleTheme()) {
+    switch (getMainActivity().getAppTheme().getSimpleTheme()) {
       case LIGHT:
         startDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
         statusDividerView.setBackgroundColor(Utils.getColor(getContext(), R.color.divider));
@@ -132,6 +129,8 @@ public class FtpServerFragment extends Fragment {
             Utils.getColor(getContext(), R.color.divider_dark_card));
         statusDividerView.setBackgroundColor(
             Utils.getColor(getContext(), R.color.divider_dark_card));
+        break;
+      default:
         break;
     }
 
@@ -158,16 +157,17 @@ public class FtpServerFragment extends Fragment {
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     setRetainInstance(true);
-    mainActivity.getAppbar().setTitle(R.string.ftp);
-    mainActivity.getFAB().hide();
-    mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
-    mainActivity.supportInvalidateOptionsMenu();
+    getMainActivity().getAppbar().setTitle(R.string.ftp);
+    getMainActivity().getFAB().hide();
+    getMainActivity().getAppbar().getBottomBar().setVisibility(View.GONE);
+    getMainActivity().supportInvalidateOptionsMenu();
 
-    int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
-    int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+    int skin_color = getMainActivity().getCurrentColorPreference().primaryFirstTab;
+    int skinTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
 
-    mainActivity.updateViews(
-        new ColorDrawable(MainActivity.currentTab == 1 ? skinTwoColor : skin_color));
+    getMainActivity()
+        .updateViews(
+            new ColorDrawable(getMainActivity().currentTab == 1 ? skinTwoColor : skin_color));
   }
 
   @Override
@@ -304,7 +304,7 @@ public class FtpServerFragment extends Fragment {
 
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-    mainActivity.getMenuInflater().inflate(R.menu.ftp_server_menu, menu);
+    getMainActivity().getMenuInflater().inflate(R.menu.ftp_server_menu, menu);
   }
 
   private BroadcastReceiver mWifiReceiver =
@@ -399,6 +399,10 @@ public class FtpServerFragment extends Fragment {
     dismissSnackbar();
   }
 
+  private MainActivity getMainActivity() {
+    return (MainActivity) getActivity();
+  }
+
   /** Update UI widgets after change in shared preferences */
   private void updateStatus() {
 
@@ -416,7 +420,7 @@ public class FtpServerFragment extends Fragment {
       ftpBtn.setText(getResources().getString(R.string.start_ftp).toUpperCase());
 
     } else {
-      accentColor = mainActivity.getAccent();
+      accentColor = getMainActivity().getAccent();
       url.setText(spannedStatusUrl);
       statusText.setText(spannedStatusConnected);
       ftpBtn.setEnabled(true);
@@ -563,11 +567,13 @@ public class FtpServerFragment extends Fragment {
   }
 
   private int getDefaultPortFromPreferences() {
-    return mainActivity.getPrefs().getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
+    return getMainActivity()
+        .getPrefs()
+        .getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
   }
 
   private String getUsernameFromPreferences() {
-    return mainActivity
+    return getMainActivity()
         .getPrefs()
         .getString(FtpService.KEY_PREFERENCE_USERNAME, FtpService.DEFAULT_USERNAME);
   }
@@ -575,7 +581,7 @@ public class FtpServerFragment extends Fragment {
   private String getPasswordFromPreferences() {
     try {
       String encryptedPassword =
-          mainActivity.getPrefs().getString(FtpService.KEY_PREFERENCE_PASSWORD, "");
+          getMainActivity().getPrefs().getString(FtpService.KEY_PREFERENCE_PASSWORD, "");
 
       if (encryptedPassword.equals("")) {
         return "";
@@ -588,7 +594,7 @@ public class FtpServerFragment extends Fragment {
       Toast.makeText(getContext(), getResources().getString(R.string.error), Toast.LENGTH_SHORT)
           .show();
       // can't decrypt the password saved in preferences, remove the preference altogether
-      mainActivity.getPrefs().edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply();
+      getMainActivity().getPrefs().edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply();
       return "";
     }
   }
@@ -600,7 +606,7 @@ public class FtpServerFragment extends Fragment {
   }
 
   private void changeFTPServerPort(int port) {
-    mainActivity.getPrefs().edit().putInt(FtpService.PORT_PREFERENCE_KEY, port).apply();
+    getMainActivity().getPrefs().edit().putInt(FtpService.PORT_PREFERENCE_KEY, port).apply();
 
     // first update spans which will point to an updated status
     updateSpans();
@@ -615,13 +621,17 @@ public class FtpServerFragment extends Fragment {
   }
 
   private void setFTPUsername(String username) {
-    mainActivity.getPrefs().edit().putString(FtpService.KEY_PREFERENCE_USERNAME, username).apply();
+    getMainActivity()
+        .getPrefs()
+        .edit()
+        .putString(FtpService.KEY_PREFERENCE_USERNAME, username)
+        .apply();
     updateStatus();
   }
 
   private void setFTPPassword(String password) {
     try {
-      mainActivity
+      getMainActivity()
           .getPrefs()
           .edit()
           .putString(
@@ -641,23 +651,23 @@ public class FtpServerFragment extends Fragment {
    * @return timeout in seconds
    */
   private int getFTPTimeout() {
-    return mainActivity
+    return getMainActivity()
         .getPrefs()
         .getInt(FtpService.KEY_PREFERENCE_TIMEOUT, FtpService.DEFAULT_TIMEOUT);
   }
 
   private void setFTPTimeout(int seconds) {
-    mainActivity.getPrefs().edit().putInt(FtpService.KEY_PREFERENCE_TIMEOUT, seconds).apply();
+    getMainActivity().getPrefs().edit().putInt(FtpService.KEY_PREFERENCE_TIMEOUT, seconds).apply();
   }
 
   private boolean getSecurePreference() {
-    return mainActivity
+    return getMainActivity()
         .getPrefs()
         .getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
   }
 
   private void setSecurePreference(boolean isSecureEnabled) {
-    mainActivity
+    getMainActivity()
         .getPrefs()
         .edit()
         .putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)

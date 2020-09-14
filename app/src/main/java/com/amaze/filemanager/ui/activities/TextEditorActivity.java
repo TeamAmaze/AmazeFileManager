@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
@@ -36,12 +37,14 @@ import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.MapEntry;
+import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
@@ -407,6 +410,13 @@ public class TextEditorActivity extends ThemedActivity
         if (mFile.scheme.equals(FILE) && mFile.hybridFileParcelable.getFile().exists()) {
           GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
               mFile.hybridFileParcelable, this, getAppTheme());
+        } else if (mFile.scheme.equals(CONTENT)) {
+          if (getApplicationContext().getPackageName().equals(mFile.uri.getAuthority())) {
+            File file = FileUtils.fromContentUri(mFile.uri);
+            HybridFileParcelable p = new HybridFileParcelable(file.getAbsolutePath());
+            if (isRootExplorer()) p.setMode(OpenMode.ROOT);
+            GeneralDialogCreation.showPropertiesDialogWithoutPermissions(p, this, getAppTheme());
+          }
         } else {
           Toast.makeText(this, R.string.no_obtainable_info, Toast.LENGTH_SHORT).show();
         }

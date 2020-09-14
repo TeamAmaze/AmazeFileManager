@@ -1468,7 +1468,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     (getActivity())
         .registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
 
-    getMainActivity().getDrawer().selectCorrectDrawerItemForPath(getPath());
     resumeDecryptOperations();
     startFileObserver();
   }
