@@ -114,7 +114,6 @@ public class RenameBookmark extends DialogFragment {
       if (studiomode != 0) {
         if (path.startsWith("smb:/")) {
           try {
-            jcifs.Config.registerSmbURLHandler();
             URL a = new URL(path);
             String userinfo = a.getUserInfo();
             if (userinfo != null) {

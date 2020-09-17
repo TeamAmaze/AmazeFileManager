@@ -24,16 +24,11 @@ import static android.os.Build.VERSION_CODES.P;
 import static org.robolectric.Shadows.shadowOf;
 
 import java.io.File;
-import java.lang.reflect.Field;
 
 import org.robolectric.shadows.ShadowStorageManager;
-import org.robolectric.util.Scheduler;
-
-import com.amaze.filemanager.application.AppConfig;
 
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.os.Parcel;
 import android.os.UserHandle;
 import android.os.storage.StorageManager;
@@ -43,38 +38,6 @@ import androidx.annotation.NonNull;
 import androidx.test.core.app.ApplicationProvider;
 
 public class TestUtils {
-
-  /**
-   * Flush the background handler thread.
-   *
-   * <p>Due to the way Robolectric implement threads, Runnables posted to the handler thread via
-   * {@link AppConfig#runInBackground(Runnable)} may not be executed, making tests involving it will
-   * fail. This method accesses the {@link Scheduler} behind the {@link
-   * org.robolectric.shadows.ShadowLooper} of the background {@link Handler} and execute any {@link
-   * Runnable}s posted to it.
-   *
-   * <p>This method throws {@link AssertionError} directly so test code don't need to handle
-   * possible exceptions occur when accessing
-   *
-   * <pre>AppConfig.backgroundHandler</pre>
-   *
-   * via reflection.
-   *
-   * @see Scheduler#advanceToNextPostedRunnable()
-   * @see AppConfig#backgroundHandler
-   * @see AppConfig#runInBackground(Runnable)
-   */
-  public static void flushAppConfigHandlerThread() {
-    try {
-      Field f = AppConfig.class.getDeclaredField("backgroundHandler");
-      f.setAccessible(true);
-      Handler h = (Handler) f.get(null);
-      Scheduler scheduler = shadowOf(h.getLooper()).getScheduler();
-      scheduler.advanceToLastPostedRunnable();
-    } catch (NoSuchFieldException | IllegalAccessException e) {
-      throw new AssertionError("Unable to access backgroundHandler within AppConfig");
-    }
-  }
 
   /**
    * Populate "internal device storage" to StorageManager with directory as provided by Robolectric.

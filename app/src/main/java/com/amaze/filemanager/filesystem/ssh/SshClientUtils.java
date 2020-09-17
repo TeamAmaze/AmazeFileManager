@@ -27,6 +27,7 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -47,6 +48,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileAttributes;
@@ -55,7 +58,8 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public abstract class SshClientUtils {
-  private static final String TAG = "SshClientUtils";
+
+  private static final String TAG = SshClientUtils.class.getSimpleName();
 
   /**
    * Execute the given SshClientTemplate.
@@ -68,17 +72,20 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   public static final <T> T execute(@NonNull SshClientTemplate template) {
-    SSHClient client = null;
+    SSHClient client = SshConnectionPool.getInstance().getConnection(template.url);
     T retval = null;
-    try {
-      client = SshConnectionPool.getInstance().getConnection(template.url);
-      if (client != null) retval = template.execute(client);
-      else throw new RuntimeException("Unable to execute template");
-    } catch (Exception e) {
-      Log.e(TAG, "Error executing template method", e);
-    } finally {
-      if (client != null && template.closeClientOnFinish) {
-        tryDisconnect(client);
+    if (client != null) {
+      try {
+        retval =
+            Single.fromCallable((Callable<T>) () -> template.execute(client))
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
+      } catch (Exception e) {
+        Log.e(TAG, "Error executing template method", e);
+      } finally {
+        if (template.closeClientOnFinish) {
+          tryDisconnect(client);
+        }
       }
     }
     return retval;

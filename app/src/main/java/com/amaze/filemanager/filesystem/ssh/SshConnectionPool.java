@@ -58,12 +58,14 @@ public class SshConnectionPool {
 
   private static final String TAG = SshConnectionPool.class.getSimpleName();
 
-  private static SshConnectionPool instance = null;
-
   private final Map<String, SSHClient> connections;
 
   private SshConnectionPool() {
-    connections = new ConcurrentHashMap<String, SSHClient>();
+    connections = new ConcurrentHashMap<>();
+  }
+
+  private static final class SshConnectionPoolHolder {
+    private static final SshConnectionPool instance = new SshConnectionPool();
   }
 
   /**
@@ -72,9 +74,7 @@ public class SshConnectionPool {
    * @return {@link SshConnectionPool} instance
    */
   public static final SshConnectionPool getInstance() {
-    if (instance == null) instance = new SshConnectionPool();
-
-    return instance;
+    return SshConnectionPoolHolder.instance;
   }
 
   /**
@@ -172,16 +172,17 @@ public class SshConnectionPool {
    * @see MainActivity#onDestroy()
    * @see MainActivity#exit()
    */
-  public void expungeAllConnections() {
-    AppConfig.runInBackground(
-        () -> {
-          if (!connections.isEmpty()) {
-            for (SSHClient connection : connections.values()) {
-              SshClientUtils.tryDisconnect(connection);
-            }
-            connections.clear();
-          }
-        });
+  public void shutdown() {
+    AppConfig.getInstance()
+        .runInBackground(
+            () -> {
+              if (!connections.isEmpty()) {
+                for (SSHClient connection : connections.values()) {
+                  SshClientUtils.tryDisconnect(connection);
+                }
+                connections.clear();
+              }
+            });
   }
 
   // Logic for creating SSH connection. Depends on password existence in given Uri password or

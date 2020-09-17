@@ -60,6 +60,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.SSHClient;
@@ -438,7 +440,6 @@ public class HybridFile {
   }
 
   public boolean isDirectory(Context context) {
-
     boolean isDirectory;
     switch (mode) {
       case SFTP:
@@ -452,19 +453,24 @@ public class HybridFile {
                       .getType()
                       .equals(FileMode.Type.DIRECTORY);
                 } catch (SFTPException notFound) {
+                  Log.e(
+                      getClass().getSimpleName(),
+                      "Fail to execute isDirectory for SFTP path :" + path);
+                  notFound.printStackTrace();
                   return false;
                 }
               }
             });
       case SMB:
         try {
-          isDirectory = new SmbFile(path).isDirectory();
-        } catch (SmbException e) {
+          isDirectory =
+              Single.fromCallable(() -> new SmbFile(path).isDirectory())
+                  .subscribeOn(Schedulers.io())
+                  .blockingGet();
+        } catch (Exception e) {
           isDirectory = false;
-          e.printStackTrace();
-        } catch (MalformedURLException e) {
-          isDirectory = false;
-          e.printStackTrace();
+          if (e.getCause() != null) e.getCause().printStackTrace();
+          else e.printStackTrace();
         }
         break;
       case FILE:

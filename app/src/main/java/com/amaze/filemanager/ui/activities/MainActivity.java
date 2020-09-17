@@ -153,6 +153,11 @@ import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
 import eu.chainfire.libsuperuser.Shell;
+import io.reactivex.Completable;
+import io.reactivex.CompletableObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
@@ -305,7 +310,7 @@ public class MainActivity extends PermissionsActivity
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
-      getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
     }
 
     path = getIntent().getStringExtra("path");
@@ -365,79 +370,87 @@ public class MainActivity extends PermissionsActivity
 
     checkForExternalPermission();
 
-    AppConfig.runInParallel(
-        new AppConfig.CustomAsyncCallbacks<Void, Void>(null) {
-          @Override
-          public Void doInBackground() {
+    Completable.fromRunnable(
+            () -> {
+              dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
+              dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
+              dataUtils.setGridfiles(utilsHandler.getGridViewList());
+              dataUtils.setListfiles(utilsHandler.getListViewList());
+              dataUtils.setBooks(utilsHandler.getBookmarksList());
+              ArrayList<String[]> servers = new ArrayList<>();
+              servers.addAll(utilsHandler.getSmbList());
+              servers.addAll(utilsHandler.getSftpList());
+              dataUtils.setServers(servers);
+            })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new CompletableObserver() {
+              @Override
+              public void onSubscribe(Disposable d) {}
 
-            dataUtils.setHiddenFiles(utilsHandler.getHiddenFilesConcurrentRadixTree());
-            dataUtils.setHistory(utilsHandler.getHistoryLinkedList());
-            dataUtils.setGridfiles(utilsHandler.getGridViewList());
-            dataUtils.setListfiles(utilsHandler.getListViewList());
-            dataUtils.setBooks(utilsHandler.getBookmarksList());
-            ArrayList<String[]> servers = new ArrayList<String[]>();
-            servers.addAll(utilsHandler.getSmbList());
-            servers.addAll(utilsHandler.getSftpList());
-            dataUtils.setServers(servers);
-
-            return null;
-          }
-
-          @Override
-          public void onPostExecute(Void result) {
-
-            drawer.refreshDrawer();
-
-            if (savedInstanceState == null) {
-              if (openProcesses) {
-                FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
-                transaction.replace(
-                    R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
-                // transaction.addToBackStack(null);
-                openProcesses = false;
-                // title.setText(utils.getString(con, R.string.process_viewer));
-                // Commit the transaction
-                transaction.commit();
-                supportInvalidateOptionsMenu();
-              } else if (intent.getAction() != null
-                  && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
-                // tile preferences, open ftp fragment
-
-                FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
-                transaction2.replace(R.id.content_frame, new FtpServerFragment());
-                appBarLayout
-                    .animate()
-                    .translationY(0)
-                    .setInterpolator(new DecelerateInterpolator(2))
-                    .start();
-
-                drawer.deselectEverything();
-                transaction2.commit();
-              } else {
-                if (path != null && path.length() > 0) {
-                  HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
-                  file.generateMode(MainActivity.this);
-                  if (file.isDirectory(MainActivity.this)) goToMain(path);
-                  else {
-                    goToMain(null);
-                    FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
-                  }
-                } else {
-                  goToMain(null);
-                }
+              @Override
+              public void onComplete() {
+                drawer.refreshDrawer();
+                invalidateFragmentAndBundle(savedInstanceState);
               }
-            } else {
-              pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
-              oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
-              oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
-              oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
-              operation = savedInstanceState.getInt(KEY_OPERATION);
-              // mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
-              int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
-              getDrawer().selectCorrectDrawerItem(selectedStorage);
-            }
+
+              @Override
+              public void onError(Throwable e) {
+                e.printStackTrace();
+              }
+            });
+  }
+
+  private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
+    if (savedInstanceState == null) {
+      if (openProcesses) {
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction.replace(
+            R.id.content_frame, new ProcessViewerFragment(), KEY_INTENT_PROCESS_VIEWER);
+        // transaction.addToBackStack(null);
+        openProcesses = false;
+        // title.setText(utils.getString(con, R.string.process_viewer));
+        // Commit the transaction
+        transaction.commit();
+        supportInvalidateOptionsMenu();
+      } else if (intent.getAction() != null
+          && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+        // tile preferences, open ftp fragment
+
+        FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
+        transaction2.replace(R.id.content_frame, new FtpServerFragment());
+        appBarLayout
+            .animate()
+            .translationY(0)
+            .setInterpolator(new DecelerateInterpolator(2))
+            .start();
+
+        drawer.deselectEverything();
+        transaction2.commit();
+      } else {
+        if (path != null && path.length() > 0) {
+          HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
+          file.generateMode(MainActivity.this);
+          if (file.isDirectory(MainActivity.this)) goToMain(path);
+          else {
+            goToMain(null);
+            FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
           }
-        });
+        } else {
+          goToMain(null);
+        }
+      }
+    } else {
+      pasteHelper = savedInstanceState.getParcelable(PASTEHELPER_BUNDLE);
+      oppathe = savedInstanceState.getString(KEY_OPERATION_PATH);
+      oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
+      oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
+      operation = savedInstanceState.getInt(KEY_OPERATION);
+      // mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
+      int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
+      getDrawer().selectCorrectDrawerItem(selectedStorage);
+    }
   }
 
   private void checkForExternalPermission() {
@@ -603,10 +616,11 @@ public class MainActivity extends PermissionsActivity
       data.append(AppConstants.NEW_LINE).append(extras.getString(Intent.EXTRA_TEXT));
     }
     String fileName = Long.toString(System.currentTimeMillis());
-    AppConfig.runInBackground(
-        () ->
-            FileUtil.mktextfile(
-                data.toString(), getCurrentMainFragment().getCurrentPath(), fileName));
+    AppConfig.getInstance()
+        .runInBackground(
+            () ->
+                FileUtil.mktextfile(
+                    data.toString(), getCurrentMainFragment().getCurrentPath(), fileName));
   }
 
   public void clearFabActionItems() {
@@ -864,7 +878,7 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
-      SshConnectionPool.getInstance().expungeAllConnections();
+      SshConnectionPool.getInstance().shutdown();
       finish();
       if (isRootExplorer()) {
         // TODO close all shells
@@ -1122,12 +1136,13 @@ public class MainActivity extends PermissionsActivity
         int pathLayout = dataUtils.getListOrGridForPath(ma.getCurrentPath(), DataUtils.LIST);
         if (ma.IS_LIST) {
           if (pathLayout == DataUtils.LIST) {
-            AppConfig.runInBackground(
-                () -> {
-                  utilsHandler.removeFromDatabase(
-                      new OperationData(
-                          UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
-                });
+            AppConfig.getInstance()
+                .runInBackground(
+                    () -> {
+                      utilsHandler.removeFromDatabase(
+                          new OperationData(
+                              UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
+                    });
           }
           utilsHandler.saveToDatabase(
               new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
@@ -1135,12 +1150,13 @@ public class MainActivity extends PermissionsActivity
           dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
         } else {
           if (pathLayout == DataUtils.GRID) {
-            AppConfig.runInBackground(
-                () -> {
-                  utilsHandler.removeFromDatabase(
-                      new OperationData(
-                          UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
-                });
+            AppConfig.getInstance()
+                .runInBackground(
+                    () -> {
+                      utilsHandler.removeFromDatabase(
+                          new OperationData(
+                              UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
+                    });
           }
 
           utilsHandler.saveToDatabase(
@@ -1323,7 +1339,7 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-    SshConnectionPool.getInstance().expungeAllConnections();
+    SshConnectionPool.getInstance().shutdown();
   }
 
   /** Closes the interactive shell and threads associated */
@@ -1836,10 +1852,11 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) {
         dataUtils.removeServer(i);
 
-        AppConfig.runInBackground(
-            () -> {
-              utilsHandler.renameSMB(oldname, oldPath, name, path);
-            });
+        AppConfig.getInstance()
+            .runInBackground(
+                () -> {
+                  utilsHandler.renameSMB(oldname, oldPath, name, path);
+                });
         // mainActivity.grid.removePath(oldname, oldPath, DataUtils.SMB);
       }
       dataUtils.addServer(s);
@@ -1856,11 +1873,12 @@ public class MainActivity extends PermissionsActivity
     if (i != -1) {
       dataUtils.removeServer(i);
 
-      AppConfig.runInBackground(
-          () -> {
-            utilsHandler.removeFromDatabase(
-                new OperationData(UtilsHandler.Operation.SMB, name, path));
-          });
+      AppConfig.getInstance()
+          .runInBackground(
+              () -> {
+                utilsHandler.removeFromDatabase(
+                    new OperationData(UtilsHandler.Operation.SMB, name, path));
+              });
       // grid.removePath(name, path, DataUtils.SMB);
       drawer.refreshDrawer();
     }

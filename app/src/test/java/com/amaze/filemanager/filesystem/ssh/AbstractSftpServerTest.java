@@ -72,7 +72,7 @@ public abstract class AbstractSftpServerTest {
 
   @After
   public void tearDown() throws IOException {
-    SshConnectionPool.getInstance().expungeAllConnections();
+    SshConnectionPool.getInstance().shutdown();
     if (server != null && server.isOpen()) {
       server.stop(true);
     }

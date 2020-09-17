@@ -36,6 +36,13 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
+import android.util.Log;
+
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Special immutable class for handling cut/copy operations.
@@ -129,26 +136,47 @@ public final class PasteHelper implements Parcelable {
   }
 
   private void showSnackbar() {
-    snackbar =
-        Utils.showThemedSnackbar(
-            mainActivity,
-            getSnackbarContent(),
-            BaseTransientBottomBar.LENGTH_INDEFINITE,
-            R.string.paste,
-            () -> {
-              String path = mainActivity.getCurrentMainFragment().getCurrentPath();
-              ArrayList<HybridFileParcelable> arrayList = new ArrayList<>(Arrays.asList(paths));
-              boolean move = operation == PasteHelper.OPERATION_CUT;
-              new PrepareCopyTask(
-                      mainActivity.getCurrentMainFragment(),
-                      path,
-                      move,
-                      mainActivity,
-                      mainActivity.isRootExplorer())
-                  .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-              dismissSnackbar(true);
+    Single.fromCallable(() -> getSnackbarContent())
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new SingleObserver<Spanned>() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onSuccess(Spanned spanned) {
+                snackbar =
+                    Utils.showThemedSnackbar(
+                        mainActivity,
+                        spanned,
+                        BaseTransientBottomBar.LENGTH_INDEFINITE,
+                        R.string.paste,
+                        () -> {
+                          String path = mainActivity.getCurrentMainFragment().getCurrentPath();
+                          ArrayList<HybridFileParcelable> arrayList =
+                              new ArrayList<>(Arrays.asList(paths));
+                          boolean move = operation == PasteHelper.OPERATION_CUT;
+                          new PrepareCopyTask(
+                                  mainActivity.getCurrentMainFragment(),
+                                  path,
+                                  move,
+                                  mainActivity,
+                                  mainActivity.isRootExplorer())
+                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+                          dismissSnackbar(true);
+                        });
+                Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
+              }
+
+              @Override
+              public void onError(Throwable e) {
+                Log.e(
+                    getClass().getSimpleName(),
+                    "Failed to show paste snackbar due to " + e.getCause());
+                e.printStackTrace();
+              }
             });
-    Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
   }
 
   private Spanned getSnackbarContent() {

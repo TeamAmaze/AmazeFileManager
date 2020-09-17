@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.database;
 
-import java.util.Arrays;
 import java.util.List;
 
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
@@ -29,8 +28,11 @@ import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.utils.OpenMode;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+
+import io.reactivex.schedulers.Schedulers;
 
 /** Created by vishal on 18/4/17. */
 public class CloudHandler {
@@ -57,13 +59,21 @@ public class CloudHandler {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    database.cloudEntryDao().insert(cloudEntry);
+    database.cloudEntryDao().insert(cloudEntry).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public void clear(OpenMode serviceType) {
     database
         .cloudEntryDao()
-        .delete(database.cloudEntryDao().findByServiceType(serviceType.ordinal()));
+        .findByServiceType(serviceType.ordinal())
+        .subscribeOn(Schedulers.io())
+        .subscribe(
+            cloudEntry ->
+                database
+                    .cloudEntryDao()
+                    .delete(cloudEntry)
+                    .subscribeOn(Schedulers.io())
+                    .subscribe());
   }
 
   public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
@@ -71,20 +81,29 @@ public class CloudHandler {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    database.cloudEntryDao().update(newCloudEntry);
+    database.cloudEntryDao().update(newCloudEntry).subscribeOn(Schedulers.io()).subscribe();
   }
 
   public CloudEntry findEntry(OpenMode serviceType) throws CloudPluginException {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
 
-    return database.cloudEntryDao().findByServiceType(serviceType.ordinal());
+    try {
+      return database
+          .cloudEntryDao()
+          .findByServiceType(serviceType.ordinal())
+          .subscribeOn(Schedulers.io())
+          .blockingGet();
+    } catch (Exception e) {
+      // catch error to handle Single#onError for blockingGet
+      Log.e(getClass().getSimpleName(), e.getMessage());
+      return null;
+    }
   }
 
   public List<CloudEntry> getAllEntries() throws CloudPluginException {
 
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) throw new CloudPluginException();
-
-    return Arrays.asList(database.cloudEntryDao().list());
+    return database.cloudEntryDao().list().subscribeOn(Schedulers.io()).blockingGet();
   }
 }
