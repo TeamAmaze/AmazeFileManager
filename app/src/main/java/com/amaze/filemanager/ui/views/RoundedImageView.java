@@ -42,8 +42,12 @@ public class RoundedImageView extends ImageView {
 
   private static final float BACKGROUND_CIRCLE_MARGIN_PERCENTUAL = 0.015f;
 
-  private float[] relativeSize = null;
+  private float relativeWidth;
+  private float relativeHeight;
+  private boolean isImageAnIcon = false;
+  private boolean forceRedraw = false;
   private Paint background = new Paint();
+  private Bitmap bitmap = null;
 
   public RoundedImageView(Context ctx, AttributeSet attrs) {
     super(ctx, attrs);
@@ -59,21 +63,28 @@ public class RoundedImageView extends ImageView {
     Drawable drawable = getDrawable();
     int w = getWidth(), h = getHeight();
 
-    if (!isImageAnIcon()) {
-      Bitmap b = drawableToBitmap(drawable);
-      Bitmap bitmap = b.copy(Bitmap.Config.ARGB_8888, true);
-
-      Bitmap roundBitmap = getRoundedCroppedBitmap(bitmap, w);
-      canvas.drawBitmap(roundBitmap, 0, 0, null);
-    } else {
+    if (isImageAnIcon) {
       float min = Math.min(w, h);
       float backgroundCircleMargin = min * BACKGROUND_CIRCLE_MARGIN_PERCENTUAL;
       float radius = min / 2f - backgroundCircleMargin * 2;
-      Bitmap bitmap = drawableToBitmapRelative(drawable, radius);
+      if (bitmap == null || forceRedraw) {
+        bitmap = drawableToBitmapRelative(drawable, radius, relativeWidth, relativeHeight);
+        forceRedraw = false;
+      }
 
       canvas.drawCircle(w / 2, h / 2, radius, background);
       canvas.drawBitmap(
           bitmap, w / 2 - bitmap.getWidth() / 2, h / 2 - bitmap.getHeight() / 2, null);
+    } else {
+      if (bitmap == null || forceRedraw) {
+        Bitmap b = drawableToBitmap(drawable);
+        Bitmap tempBitmap = b.copy(Config.ARGB_8888, true);
+
+        bitmap = getRoundedCroppedBitmap(getContext(), tempBitmap, w);
+        forceRedraw = false;
+      }
+
+      canvas.drawBitmap(bitmap, 0, 0, null);
     }
   }
 
@@ -92,14 +103,13 @@ public class RoundedImageView extends ImageView {
     if (width > 2 || height > 2)
       throw new UnsupportedOperationException(
           "Can't make image bigger! Accepted values are [2; 0)");
-    this.relativeSize = new float[] {width, height};
+    relativeWidth = width;
+    relativeHeight = height;
+    isImageAnIcon = true;
+    forceRedraw = true;
   }
 
-  private boolean isImageAnIcon() {
-    return relativeSize != null;
-  }
-
-  public Bitmap getRoundedCroppedBitmap(Bitmap bitmap, int radius) {
+  public static Bitmap getRoundedCroppedBitmap(Context context, Bitmap bitmap, int radius) {
     Bitmap finalBitmap;
     if (bitmap.getWidth() != radius || bitmap.getHeight() != radius) {
       finalBitmap = Bitmap.createScaledBitmap(bitmap, radius, radius, false);
@@ -117,7 +127,7 @@ public class RoundedImageView extends ImageView {
     paint.setAntiAlias(true);
     paint.setFilterBitmap(true);
     paint.setDither(true);
-    paint.setColor(Utils.getColor(getContext(), R.color.roundedimagepaint));
+    paint.setColor(Utils.getColor(context, R.color.roundedimagepaint));
     canvas.drawCircle(
         finalBitmap.getWidth() / 2 + 0.7f,
         finalBitmap.getHeight() / 2 + 0.7f,
@@ -133,10 +143,10 @@ public class RoundedImageView extends ImageView {
    * Converts a {@link Drawable} to {@link Bitmap} A drawable can be drawn on a {@link Canvas} and a
    * Canvas can be backed by a Bitmap. Hence the conversion
    */
-  public Bitmap drawableToBitmap(Drawable drawable) {
+  public static Bitmap drawableToBitmap(Drawable drawable) {
     Bitmap bitmap;
 
-    if (!isImageAnIcon() && drawable instanceof BitmapDrawable) {
+    if (drawable instanceof BitmapDrawable) {
       BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
       if (bitmapDrawable.getBitmap() != null) {
         return bitmapDrawable.getBitmap();
@@ -162,26 +172,17 @@ public class RoundedImageView extends ImageView {
    * Converts a {@link Drawable} to {@link Bitmap} A drawable can be drawn on a {@link Canvas} and a
    * Canvas can be backed by a Bitmap. Hence the conversion
    */
-  public Bitmap drawableToBitmapRelative(Drawable drawable, float radius) {
-    Bitmap bitmap;
-
-    if (!isImageAnIcon() && drawable instanceof BitmapDrawable) {
-      BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
-      if (bitmapDrawable.getBitmap() != null) {
-        return bitmapDrawable.getBitmap();
-      }
-    }
-
-    int sizeW = (int) (radius * relativeSize[0]);
-    int sizeH = (int) (radius * relativeSize[1]);
-
+  public static Bitmap drawableToBitmapRelative(
+      Drawable drawable, float radius, float relativeWidth, float relativeHeight) {
     if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
       throw new IllegalStateException(
           "Solid colors cannot be represented as images! Use RoundedImageView.setBackgroundColor()");
-    } else {
-      bitmap = Bitmap.createBitmap(sizeW, sizeH, Bitmap.Config.ARGB_8888);
     }
 
+    int sizeW = (int) (radius * relativeWidth);
+    int sizeH = (int) (radius * relativeHeight);
+
+    Bitmap bitmap = Bitmap.createBitmap(sizeW, sizeH, Bitmap.Config.ARGB_8888);
     Canvas canvas = new Canvas(bitmap);
     drawable.setBounds(0, 0, sizeW, sizeH);
     drawable.draw(canvas);
