@@ -72,7 +72,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
   private static final String URL_REPO_ISSUES =
       "https://github.com/TeamAmaze/AmazeFileManager/issues";
   private static final String URL_REPO_TRANSLATE =
-      "https://www.transifex.com/amaze/amaze-file-manager-1/";
+      "https://www.transifex.com/amaze/amaze-file-manager/";
   private static final String URL_REPO_XDA =
       "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
   private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
