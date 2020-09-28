@@ -294,18 +294,13 @@ public class HybridFile {
     return path;
   }
 
-  /** @deprecated use {@link #getName(Context)} */
-  public String getName() {
+  public String getSimpleName() {
     String name = null;
     switch (mode) {
       case SMB:
         SmbFile smbFile = getSmbFile();
         if (smbFile != null) return smbFile.getName();
         break;
-      case FILE:
-        return getFile().getName();
-      case ROOT:
-        return getFile().getName();
       default:
         StringBuilder builder = new StringBuilder(path);
         name = builder.substring(builder.lastIndexOf("/") + 1, builder.length());
@@ -390,7 +385,7 @@ public class HybridFile {
   public String getParentName() {
     StringBuilder builder = new StringBuilder(path);
     StringBuilder parentPath =
-        new StringBuilder(builder.substring(0, builder.length() - (getName().length() + 1)));
+        new StringBuilder(builder.substring(0, builder.length() - (getSimpleName().length() + 1)));
     String parentName = parentPath.substring(parentPath.lastIndexOf("/") + 1, parentPath.length());
     return parentName;
   }

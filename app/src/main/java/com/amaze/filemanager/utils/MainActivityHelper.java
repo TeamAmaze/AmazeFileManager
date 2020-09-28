@@ -293,9 +293,11 @@ public class MainActivityHelper {
     final Toast toast =
         Toast.makeText(context, context.getString(R.string.renaming), Toast.LENGTH_SHORT);
     toast.show();
+    HybridFile oldFile = new HybridFile(mode, oldPath);
+    HybridFile newFile = new HybridFile(mode, newPath);
     Operations.rename(
-        new HybridFile(mode, oldPath),
-        new HybridFile(mode, newPath),
+        oldFile,
+        newFile,
         rootmode,
         context,
         new Operations.ErrorCallBack() {
@@ -329,7 +331,11 @@ public class MainActivityHelper {
           public void done(final HybridFile hFile, final boolean b) {
             context.runOnUiThread(
                 () -> {
-                  if (b) {
+                  /*
+                   * DocumentFile.renameTo() may return false even when rename is successful. Hence we need an extra check
+                   * instead of merely looking at the return value
+                   */
+                  if (b || newFile.exists(context)) {
                     Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
 
                     intent.putExtra(
