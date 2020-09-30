@@ -19,7 +19,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:ignore="MissingTranslation">
-  <string name="app_name">Αμέιζ</string>
+  <string name="app_name">Αmaze</string>
   <string name="drawer_open">Άνοιγμα μενού πλοήγησης</string>
   <string name="drawer_close">Κλείσιμο μενού πλοήγησης</string>
     <string name="icon">Εικονίδιο</string>
@@ -266,7 +266,7 @@
   <string name="path">Διαδρομή</string>
   <string name="rename_bookmark">Επεξεργασία Σελιδοδείκτη</string>
   <string name="cut">Αποκοπή</string>
-  <string name="search">Αναζητηση</string>
+  <string name="search">Αναζήτηση</string>
   <string name="invalid_name">Μη έγκυρο όνομα</string>
   <string name="search_hint">Πληκτρολόγησε για αναζήτηση&#8230;</string>
   <string name="advanced_search">Σύνθετη Αναζήτηση</string>
