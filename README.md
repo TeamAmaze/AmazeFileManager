@@ -14,15 +14,15 @@
 Overview
 ---
 - Open Source, light and smooth
-- Based on Material Design guidelines
-- Basic features like cut, copy, delete, compress, extract etc. easily accessible
+- Based on Material Design guidelines that are highly efficient
+- Basic features like cut, copy, delete, compress, extract etc. are easily accessible
 - Work on multiple tabs at same time
 - Multiple themes with cool icons
-- Navigation drawer for quick navigation
+- Navigation drawer results in quick navigation
 - App Manager to open, backup, or directly uninstall any app
 - Quickly access history, access bookmarks or search for any file
 - Root explorer for advanced users
-- AES Encryption and Decryption of files for security (Jellybean v4.3+)
+- AES Encryption and Decryption of files for security purpose (Jellybean v4.3+)
 - Cloud services support (Jellybean v4.3+ / requires additional plug-in)
 - Inbuilt Database Reader, Zip/Rar Reader, Apk Reader, Text Reader
 - No ads or In-app purchases
@@ -47,7 +47,7 @@ Vendors/Developers
 ----
 The device vendors/ROM developers are free to include Amaze apk pre-installed in system. There is no fee required; *but you must comply with the license* (for more information read the [GNU GPL v3](https://www.gnu.org/licenses/gpl-3.0.en.html) or newer).
 
-We strongly recommend using apk signed by us (either Play Store version or from AFH link above) so that users would be able to update directly from Play Store after distribution. Furthermore, a change in digital signature will break plug-ins.
+We strongly recommend using apk signed by us (either Play Store version or from AFH link above) so that users would be able to update directly from Play Store after the distribution. Furthermore, a change in digital signature will break plug-ins.
 
 Social
 ---
