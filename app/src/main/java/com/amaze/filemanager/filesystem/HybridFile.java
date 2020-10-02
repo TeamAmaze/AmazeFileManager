@@ -376,10 +376,14 @@ public class HybridFile {
       case ROOT:
         parentPath = getFile().getParent();
         break;
-      case OTG:
-      default:
+      case SFTP:
         StringBuilder builder = new StringBuilder(path);
         StringBuilder parentPathBuilder =
+            new StringBuilder(builder.substring(0, builder.length() - (getName(context).length())));
+        return parentPathBuilder.toString();
+      default:
+        builder = new StringBuilder(path);
+        parentPathBuilder =
             new StringBuilder(
                 builder.substring(0, builder.length() - (getName(context).length() + 1)));
         return parentPathBuilder.toString();
@@ -725,7 +729,7 @@ public class HybridFile {
           SshClientUtils.execute(
               new SFtpClientTemplate(path) {
                 @Override
-                public Void execute(SFTPClient client) {
+                public Boolean execute(SFTPClient client) {
                   try {
                     for (RemoteResourceInfo info :
                         client.ls(SshClientUtils.extractRemotePathFrom(path))) {
@@ -742,7 +746,7 @@ public class HybridFile {
                   } catch (IOException e) {
                     Log.w("DEBUG.listFiles", "IOException", e);
                   }
-                  return null;
+                  return true;
                 }
               });
         } catch (Exception e) {
@@ -1008,8 +1012,12 @@ public class HybridFile {
                     try {
                       super.close();
                     } finally {
-                      rf.close();
-                      client.close();
+                      try {
+                        rf.close();
+                        client.close();
+                      } catch (Exception e) {
+                        Log.w(TAG, "Error closing stream", e);
+                      }
                     }
                   }
                 };
