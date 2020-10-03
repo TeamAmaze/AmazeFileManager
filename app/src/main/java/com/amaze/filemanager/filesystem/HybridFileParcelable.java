@@ -87,10 +87,9 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
         Integer.toString(FilePermission.toMask(sshFile.getAttributes().getPermissions()), 8));
   }
 
-  @Override
   public String getName() {
     if (!Utils.isNullOrEmpty(name)) return name;
-    else return super.getName();
+    else return super.getSimpleName();
   }
 
   @Override
