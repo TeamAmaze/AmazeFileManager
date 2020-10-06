@@ -260,11 +260,11 @@ public class SshConnectionPool {
    */
   static final class ConnectionInfo {
 
-    final String host;
-    final int port;
-    final String username;
-    final String password;
-    final String defaultPath;
+    protected final String host;
+    protected final int port;
+    protected final String username;
+    protected final String password;
+    protected final String defaultPath;
 
     // FIXME: Crude assumption
     ConnectionInfo(@NonNull String url) {
