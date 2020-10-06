@@ -116,7 +116,8 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
   @Override
   protected AsyncTaskResult<SSHClient> doInBackground(Void... voids) {
 
-    final SSHClient sshClient = SshConnectionPool.getSSHClientFactory().create(new CustomSshJConfig());
+    final SSHClient sshClient =
+        SshConnectionPool.getSSHClientFactory().create(new CustomSshJConfig());
     sshClient.addHostKeyVerifier(hostKey);
     sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
 

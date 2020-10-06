@@ -478,7 +478,7 @@ public class SftpConnectDialog extends DialogFragment {
       }
     } else {
       String originalDefaultPath = getArguments().getString("defaultPath");
-      if(originalDefaultPath == null) originalDefaultPath = "";
+      if (originalDefaultPath == null) originalDefaultPath = "";
       String originalPath =
           deriveSftpPathFrom(
               getArguments().getString("address"),

@@ -331,7 +331,8 @@ public class SshConnectionPool {
   }
 
   public interface SSHClientFactory {
-    @NonNull SSHClient create(Config config);
+    @NonNull
+    SSHClient create(Config config);
   }
 
   static class DefaultSSHClientFactory implements SSHClientFactory {
