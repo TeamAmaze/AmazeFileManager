@@ -34,6 +34,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
@@ -83,7 +84,7 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     final AtomicReference<AsyncTaskResult<PublicKey>> holder =
         new AtomicReference<AsyncTaskResult<PublicKey>>();
     final CountDownLatch latch = new CountDownLatch(1);
-    final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
+    final SSHClient sshClient = SshConnectionPool.getSSHClientFactory().create(new CustomSshJConfig());
     sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
     sshClient.addHostKeyVerifier(
         (hostname, port, key) -> {

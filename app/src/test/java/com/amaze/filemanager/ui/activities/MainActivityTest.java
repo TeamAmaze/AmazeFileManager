@@ -20,88 +20,38 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static android.os.Build.VERSION_CODES.N;
-import static androidx.test.core.app.ActivityScenario.launch;
-import static org.awaitility.Awaitility.await;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
-import static org.robolectric.Shadows.shadowOf;
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
+
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
+import com.amaze.filemanager.test.ShadowCryptUtil;
+import com.amaze.filemanager.utils.SmbUtil;
+
+import org.junit.Test;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-import org.robolectric.annotation.LooperMode;
-import org.robolectric.shadows.ShadowLooper;
-import org.robolectric.shadows.ShadowStorageManager;
+import static androidx.test.core.app.ActivityScenario.launch;
+import static org.awaitility.Awaitility.await;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
-import com.amaze.filemanager.test.ShadowCryptUtil;
-import com.amaze.filemanager.test.TestUtils;
-import com.amaze.filemanager.utils.SmbUtil;
-
-import android.os.Build;
-import android.os.storage.StorageManager;
-
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import io.reactivex.plugins.RxJavaPlugins;
-import io.reactivex.schedulers.Schedulers;
-
-@RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {
-      ShadowMultiDex.class,
-      ShadowStorageManager.class,
       ShadowCryptUtil.class,
       ShadowSmbFile.class
     })
-/*
- * Need to make LooperMode PAUSED and flush the main looper before activity can show up.
- * @see {@link LooperMode.Mode.PAUSED}
- * @see {@link <a href="https://stackoverflow.com/questions/55679636/robolectric-throws-fragmentmanager-is-already-executing-transactions">StackOverflow discussion</a>}
- */
-@LooperMode(LooperMode.Mode.PAUSED)
-public class MainActivityTest {
-
-  @BeforeClass
-  public static void setUpBeforeClass() {
-    RxJavaPlugins.reset();
-    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
-  }
-
-  @Before
-  public void setUp() {
-    if (Build.VERSION.SDK_INT >= N) TestUtils.initializeInternalStorage();
-  }
-
-  @After
-  public void tearDown() {
-    if (Build.VERSION.SDK_INT >= N)
-      shadowOf(ApplicationProvider.getApplicationContext().getSystemService(StorageManager.class))
-          .resetStorageVolumeList();
-  }
+public class MainActivityTest extends AbstractMainActivityTest {
 
   @Test
   public void testUpdateSmbExceptionShouldNotThrowNPE() {
-    ActivityScenario<MainActivity> scenario = launch(MainActivity.class);
-
-    ShadowLooper.idleMainLooper();
-
-    scenario.moveToState(Lifecycle.State.STARTED);
-
     scenario.onActivity(
         activity -> {
           String path = "smb://root:toor@192.168.1.1";
@@ -145,9 +95,6 @@ public class MainActivityTest {
 
           } catch (GeneralSecurityException | IOException e) {
             fail(e.getMessage());
-          } finally {
-            scenario.moveToState(Lifecycle.State.DESTROYED);
-            scenario.close();
           }
         });
   }

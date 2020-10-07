@@ -41,6 +41,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import net.schmizz.sshj.Config;
 import net.schmizz.sshj.SSHClient;
 
 /**
@@ -57,6 +58,8 @@ public class SshConnectionPool {
   public static final int SSH_CONNECT_TIMEOUT = 30000;
 
   private static final String TAG = SshConnectionPool.class.getSimpleName();
+
+  private static SSHClientFactory factory = new DefaultSSHClientFactory();
 
   private final Map<String, SSHClient> connections;
 
@@ -75,6 +78,14 @@ public class SshConnectionPool {
    */
   public static final SshConnectionPool getInstance() {
     return SshConnectionPoolHolder.instance;
+  }
+
+  public static void setSSHClientFactory(@NonNull SSHClientFactory sshClientFactory) {
+    factory = sshClientFactory;
+  }
+
+  public static final @NonNull SSHClientFactory getSSHClientFactory() {
+    return factory;
   }
 
   /**
@@ -316,6 +327,18 @@ public class SshConnectionPool {
     @Override
     protected void onPostExecute(Void aVoid) {
       if (callback != null) callback.run();
+    }
+  }
+
+  public interface SSHClientFactory {
+    @NonNull SSHClient create(Config config);
+  }
+
+  static class DefaultSSHClientFactory implements SSHClientFactory {
+    @NonNull
+    @Override
+    public SSHClient create(Config config) {
+      return new SSHClient(config);
     }
   }
 }
