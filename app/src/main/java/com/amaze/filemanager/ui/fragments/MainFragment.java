@@ -958,37 +958,26 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
     getMainActivity().mReturnIntent = false;
 
+    Uri mediaStoreUri = Utils.getUriForBaseFile(getActivity(), baseFile);
+    Log.d(
+            getClass().getSimpleName(),
+            mediaStoreUri.toString()
+                    + "\t"
+                    + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
     Intent intent = new Intent();
-    if (getMainActivity().mRingtonePickerIntent) {
+    intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+    intent.setAction(Intent.ACTION_SEND);
 
-      Uri mediaStoreUri = MediaStoreHack.getUriFromFile(baseFile.getPath(), getActivity());
-      Log.d(
-          getClass().getSimpleName(),
-          mediaStoreUri.toString()
-              + "\t"
-              + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+    if (getMainActivity().mRingtonePickerIntent) {
       intent.setDataAndType(
           mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
-      getActivity().setResult(FragmentActivity.RESULT_OK, intent);
-      getActivity().finish();
     } else {
-
       Log.d("pickup", "file");
-
-      Intent intentresult = new Intent();
-
-      Uri resultUri = Utils.getUriForBaseFile(getActivity(), baseFile);
-      intentresult.setAction(Intent.ACTION_SEND);
-      intentresult.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-      if (resultUri != null)
-        intentresult.setDataAndType(resultUri, MimeTypes.getExtension(baseFile.getPath()));
-
-      getActivity().setResult(FragmentActivity.RESULT_OK, intentresult);
-      getActivity().finish();
-      // mode.finish();
+      intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
     }
+    getActivity().setResult(FragmentActivity.RESULT_OK, intent);
+    getActivity().finish();
   }
 
   LoadFilesListTask loadFilesListTask;
