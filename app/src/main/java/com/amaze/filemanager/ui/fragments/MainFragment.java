@@ -48,7 +48,6 @@ import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.MediaStoreHack;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
@@ -960,10 +959,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
     Uri mediaStoreUri = Utils.getUriForBaseFile(getActivity(), baseFile);
     Log.d(
-            getClass().getSimpleName(),
-            mediaStoreUri.toString()
-                    + "\t"
-                    + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+        getClass().getSimpleName(),
+        mediaStoreUri.toString()
+            + "\t"
+            + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
     Intent intent = new Intent();
     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     intent.setAction(Intent.ACTION_SEND);

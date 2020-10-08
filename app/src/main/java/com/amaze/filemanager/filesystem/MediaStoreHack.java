@@ -121,6 +121,7 @@ public class MediaStoreHack {
 
   /**
    * Fallback to get uri from a path. Used only as a workaround for Kitkat ext SD card
+   *
    * @param path file path
    * @param context context
    * @return uri of file
