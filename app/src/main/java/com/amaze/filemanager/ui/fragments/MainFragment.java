@@ -384,17 +384,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   private void loadViews() {
     if (CURRENT_PATH != null) {
-      getMainActivity()
-          .getAppbar()
-          .getBottomBar()
-          .updatePath(
-              CURRENT_PATH,
-              results,
-              MainActivityHelper.SEARCH_TEXT,
-              openMode,
-              folder_count,
-              file_count,
-              this);
       if ((LIST_ELEMENTS == null || LIST_ELEMENTS.size() == 0) && !results) {
         loadlist(CURRENT_PATH, true, OpenMode.FILE);
       } else {

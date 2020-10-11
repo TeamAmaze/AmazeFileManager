@@ -196,17 +196,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       if (fragment instanceof MainFragment) {
         MainFragment m = (MainFragment) fragment;
         if (i - 1 == MainActivity.currentTab && i == pos) {
-          mainActivity
-              .getAppbar()
-              .getBottomBar()
-              .updatePath(
-                  m.getCurrentPath(),
-                  m.results,
-                  MainActivityHelper.SEARCH_TEXT,
-                  m.openMode,
-                  m.folder_count,
-                  m.file_count,
-                  m);
+          updateBottomBar(m);
           mainActivity.getDrawer().selectCorrectDrawerItemForPath(m.getCurrentPath());
         }
         if (m.openMode == OpenMode.FILE) {
@@ -284,17 +274,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       MainFragment ma = (MainFragment) fragment;
       if (ma.getCurrentPath() != null) {
         mainActivity.getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
-        mainActivity
-            .getAppbar()
-            .getBottomBar()
-            .updatePath(
-                ma.getCurrentPath(),
-                ma.results,
-                MainActivityHelper.SEARCH_TEXT,
-                ma.openMode,
-                ma.folder_count,
-                ma.file_count,
-                ma);
+        updateBottomBar(ma);
       }
     }
 
@@ -331,8 +311,8 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     }
   }
 
-  private void addNewTab(int num, String path) {
-    addTab(new Tab(num, path, path), "");
+  private void addNewTab(int num, String path, boolean currentTab) {
+    addTab(new Tab(num, path, path), "", currentTab);
   }
 
   /**
@@ -357,8 +337,8 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       String currentFirstTab = Utils.isNullOrEmpty(firstTabPath) ? "/" : firstTabPath;
       String currentSecondTab = Utils.isNullOrEmpty(secondTabPath) ? firstTabPath : secondTabPath;
       if (addTab) {
-        addNewTab(1, currentSecondTab);
-        addNewTab(2, currentFirstTab);
+        addNewTab(1, currentSecondTab, true);
+        addNewTab(2, currentFirstTab, false);
       }
       tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab));
       tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab));
@@ -369,23 +349,23 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     } else {
       if (path != null && path.length() != 0) {
         if (MainActivity.currentTab == 0) {
-          addTab(tab1, path);
-          addTab(tab2, "");
+          addTab(tab1, path, true);
+          addTab(tab2, "", false);
         }
 
         if (MainActivity.currentTab == 1) {
-          addTab(tab1, "");
-          addTab(tab2, path);
+          addTab(tab1, "", false);
+          addTab(tab2, path, true);
         }
       } else {
-        addTab(tab1, "");
-        addTab(tab2, "");
+        addTab(tab1, "", true);
+        addTab(tab2, "", false);
       }
     }
   }
 
-  private void addTab(@NonNull Tab tab, String path) {
-    Fragment main = new MainFragment();
+  private void addTab(@NonNull Tab tab, String path, boolean currentTab) {
+    MainFragment main = new MainFragment();
     Bundle b = new Bundle();
 
     if (path != null && path.length() != 0) {
@@ -401,6 +381,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     fragments.add(main);
     mSectionsPagerAdapter.notifyDataSetChanged();
     mViewPager.setOffscreenPageLimit(4);
+    if (currentTab) {
+      updateBottomBar(main);
+    }
   }
 
   public Fragment getCurrentTabFragment() {
@@ -426,5 +409,19 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
       circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
     }
+  }
+
+  private void updateBottomBar(MainFragment mainFragment) {
+    mainActivity
+        .getAppbar()
+        .getBottomBar()
+        .updatePath(
+            mainFragment.getCurrentPath(),
+            mainFragment.results,
+            MainActivityHelper.SEARCH_TEXT,
+            mainFragment.openMode,
+            mainFragment.folder_count,
+            mainFragment.file_count,
+            mainFragment);
   }
 }
