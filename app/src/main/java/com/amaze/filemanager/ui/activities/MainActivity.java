@@ -197,9 +197,6 @@ public class MainActivity extends PermissionsActivity
   // This holds the Uris to be written at initFabToSave()
   private ArrayList<Uri> urisToBeSaved;
 
-  /** @deprecated use getCurrentMainFragment() */
-  public MainFragment mainFragment;
-
   public static final String PASTEHELPER_BUNDLE = "pasteHelper";
 
   private static final String KEY_DRAWER_SELECTED = "selectitem";
@@ -447,7 +444,6 @@ public class MainActivity extends PermissionsActivity
       oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
       oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
       operation = savedInstanceState.getInt(KEY_OPERATION);
-      // mainFragment = (Main) savedInstanceState.getParcelable("main_fragment");
       int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
       getDrawer().selectCorrectDrawerItem(selectedStorage);
     }
@@ -1219,9 +1215,6 @@ public class MainActivity extends PermissionsActivity
       outState.putParcelableArrayList(KEY_OPERATIONS_PATH_LIST, (oparrayList));
       outState.putInt(KEY_OPERATION, operation);
     }
-    /*if (mainFragment!=null) {
-        outState.putParcelable("main_fragment", mainFragment);
-    }*/
   }
 
   @Override
@@ -1926,25 +1919,25 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void onPreExecute(String query) {
-    mainFragment.mSwipeRefreshLayout.setRefreshing(true);
-    mainFragment.onSearchPreExecute(query);
+    getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(true);
+    getCurrentMainFragment().onSearchPreExecute(query);
   }
 
   @Override
   public void onPostExecute(String query) {
-    mainFragment.onSearchCompleted(query);
-    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    getCurrentMainFragment().onSearchCompleted(query);
+    getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(false);
   }
 
   @Override
   public void onProgressUpdate(HybridFileParcelable val, String query) {
-    mainFragment.addSearchResult(val, query);
+    getCurrentMainFragment().addSearchResult(val, query);
   }
 
   @Override
   public void onCancelled() {
-    mainFragment.reloadListElements(false, false, !mainFragment.IS_LIST);
-    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
+    getCurrentMainFragment().reloadListElements(false, false, !getCurrentMainFragment().IS_LIST);
+    getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(false);
   }
 
   @Override

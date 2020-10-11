@@ -162,7 +162,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   private RecyclerView listView;
   private UtilitiesProvider utilsProvider;
   private HashMap<String, Bundle> scrolls = new HashMap<>();
-  private MainFragment ma = this;
   private View rootView;
   private View actionModeView;
   private FastScroller fastScroller;
@@ -214,21 +213,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     primaryTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
   }
 
-  public void stopAnimation() {
-    if ((!adapter.stoppedAnimation)) {
-      for (int j = 0; j < listView.getChildCount(); j++) {
-        View v = listView.getChildAt(j);
-        if (v != null) v.clearAnimation();
-      }
-    }
-    adapter.stoppedAnimation = true;
-  }
-
   @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     rootView = inflater.inflate(R.layout.main_frag, container, false);
-    setRetainInstance(true);
     listView = rootView.findViewById(R.id.listView);
     mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
     fastScroller = rootView.findViewById(R.id.fastscroll);
@@ -268,10 +256,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     super.onActivityCreated(savedInstanceState);
 
     setHasOptionsMenu(false);
-    // getMainActivity() = (MainActivity) getActivity();
     initNoFileLayout();
     getSortModes();
-    this.setRetainInstance(false);
     HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
     f.generateMode(getActivity());
     getMainActivity().getAppbar().getBottomBar().setClickListener();
@@ -316,8 +302,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   if (columns == 0 || columns == -1) columns = 3;
                   if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
-                if (savedInstanceState != null && !IS_LIST)
-                  onSavedInstanceState(savedInstanceState);
+                if (!IS_LIST) {
+                  loadViews();
+                }
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
                   mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
@@ -325,12 +312,17 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 }
               }
             });
+    loadViews();
+  }
 
-    if (savedInstanceState == null) {
-      loadlist(CURRENT_PATH, false, openMode);
-    } else {
-      if (IS_LIST) onSavedInstanceState(savedInstanceState);
+  public void stopAnimation() {
+    if ((!adapter.stoppedAnimation)) {
+      for (int j = 0; j < listView.getChildCount(); j++) {
+        View v = listView.getChildAt(j);
+        if (v != null) v.clearAnimation();
+      }
     }
+    adapter.stoppedAnimation = true;
   }
 
   void setGridLayoutSpanSizeLookup(GridLayoutManager mLayoutManagerGrid) {
@@ -390,60 +382,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     reloadListElements(false, results, isPathLayoutGrid);
   }
 
-  @Override
-  public void onSaveInstanceState(Bundle outState) {
-    super.onSaveInstanceState(outState);
-
-    int index;
-    View vi;
-    if (listView != null) {
-      if (IS_LIST) {
-        index = (mLayoutManager).findFirstVisibleItemPosition();
-        vi = listView.getChildAt(0);
-      } else {
-        index = (mLayoutManagerGrid).findFirstVisibleItemPosition();
-        vi = listView.getChildAt(0);
-      }
-
-      int top = (vi == null) ? 0 : vi.getTop();
-
-      outState.putInt("index", index);
-      outState.putInt("top", top);
-      outState.putParcelableArrayList("list", LIST_ELEMENTS);
-      outState.putString("CURRENT_PATH", CURRENT_PATH);
-      outState.putBoolean("selection", selection);
-      outState.putInt("openMode", openMode.ordinal());
-      outState.putInt("folder_count", folder_count);
-      outState.putInt("file_count", file_count);
-
-      if (selection) {
-        outState.putIntegerArrayList("position", adapter.getCheckedItemsIndex());
-      }
-
-      outState.putBoolean("results", results);
-
-      if (openMode == OpenMode.SMB) {
-        outState.putString("SmbPath", smbPath);
-      }
-    }
-  }
-
-  void onSavedInstanceState(final Bundle savedInstanceState) {
-    Bundle b = new Bundle();
-    String cur = savedInstanceState.getString("CURRENT_PATH");
-
-    if (cur != null) {
-      b.putInt("index", savedInstanceState.getInt("index"));
-      b.putInt("top", savedInstanceState.getInt("top"));
-      scrolls.put(cur, b);
-
-      openMode = OpenMode.getOpenMode(savedInstanceState.getInt("openMode", 0));
-      if (openMode == OpenMode.SMB) smbPath = savedInstanceState.getString("SmbPath");
-      LIST_ELEMENTS = savedInstanceState.getParcelableArrayList("list");
-      CURRENT_PATH = cur;
-      folder_count = savedInstanceState.getInt("folder_count", 0);
-      file_count = savedInstanceState.getInt("file_count", 0);
-      results = savedInstanceState.getBoolean("results");
+  void loadViews() {
+    if (CURRENT_PATH != null) {
       getMainActivity()
           .getAppbar()
           .getBottomBar()
@@ -456,15 +396,17 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               file_count,
               this);
       if ((LIST_ELEMENTS == null || LIST_ELEMENTS.size() == 0) && !results) {
-        loadlist(home, true, OpenMode.FILE);
+        loadlist(CURRENT_PATH, true, OpenMode.FILE);
       } else {
         reloadListElements(true, results, !IS_LIST);
       }
-      if (savedInstanceState.getBoolean("selection")) {
-        for (Integer index : savedInstanceState.getIntegerArrayList("position")) {
+      if (selection) {
+        for (Integer index : adapter.getCheckedItemsIndex()) {
           adapter.toggleChecked(index, null);
         }
       }
+    } else {
+      loadlist(home, true, OpenMode.FILE);
     }
   }
 
@@ -819,7 +761,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       };
 
   public void home() {
-    ma.loadlist((ma.home), false, OpenMode.FILE);
+    loadlist((home), false, OpenMode.FILE);
   }
 
   /**
@@ -891,7 +833,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           EncryptDecryptUtils.decryptFile(
               getContext(),
               getMainActivity(),
-              ma,
+              this,
               openMode,
               e.generateBaseFile(),
               getActivity().getExternalCacheDir().getPath(),
@@ -999,9 +941,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
     loadFilesListTask =
         new LoadFilesListTask(
-            ma.getActivity(),
+            getActivity(),
             path,
-            ma,
+            this,
             openMode,
             getBoolean(PREFERENCE_SHOW_THUMB),
             getBoolean(PREFERENCE_SHOW_HIDDENFILES),
@@ -1103,12 +1045,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         adapter =
             new RecyclerAdapter(
                 getMainActivity(),
-                ma,
+                this,
                 utilsProvider,
                 sharedPref,
                 listView,
                 LIST_ELEMENTS,
-                ma.getActivity());
+                getActivity());
       } else {
         adapter.setItems(listView, new ArrayList<>(LIST_ELEMENTS));
       }
@@ -1334,8 +1276,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         if (MainActivityHelper.SEARCH_TEXT != null) {
 
           // starting the search query again :O
-          getMainActivity().mainFragment =
-              (MainFragment) getMainActivity().getTabFragment().getCurrentTabFragment();
           FragmentManager fm = getMainActivity().getSupportFragmentManager();
 
           // getting parent path to resume search from there

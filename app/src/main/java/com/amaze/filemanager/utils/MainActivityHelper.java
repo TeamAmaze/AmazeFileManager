@@ -671,8 +671,6 @@ public class MainActivityHelper {
     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
     // ma.searchTask = task;
     SEARCH_TEXT = query;
-    mainActivity.mainFragment =
-        (MainFragment) mainActivity.getTabFragment().getCurrentTabFragment();
     FragmentManager fm = mainActivity.getSupportFragmentManager();
     SearchWorkerFragment fragment =
         (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);

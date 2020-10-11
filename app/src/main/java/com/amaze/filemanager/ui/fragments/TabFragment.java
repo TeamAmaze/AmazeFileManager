@@ -173,8 +173,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
             ThemedActivity.skinTwo : ThemedActivity.skin));
     mainActivity.updateViews(colorDrawable);*/
 
-    mainActivity.mainFragment = (MainFragment) getCurrentTabFragment();
-
     return rootView;
   }
 
