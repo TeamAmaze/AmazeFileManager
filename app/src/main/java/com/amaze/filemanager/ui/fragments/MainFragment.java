@@ -382,7 +382,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     reloadListElements(false, results, isPathLayoutGrid);
   }
 
-  void loadViews() {
+  private void loadViews() {
     if (CURRENT_PATH != null) {
       getMainActivity()
           .getAppbar()
