@@ -97,7 +97,7 @@ public class CustomFileObserver extends FileObserver {
     if (Build.VERSION.SDK_INT == Build.VERSION_CODES.M) {
       stopPollingSystem();
     } else {
-      super.startWatching();
+      super.stopWatching();
     }
   }
 

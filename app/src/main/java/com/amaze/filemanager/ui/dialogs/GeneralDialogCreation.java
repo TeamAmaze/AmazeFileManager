@@ -590,7 +590,7 @@ public class GeneralDialogCreation {
     }
 
     if (!forStorage && showPermissions) {
-      final MainFragment main = ((MainActivity) base).mainFragment;
+      final MainFragment main = ((MainActivity) base).getCurrentMainFragment();
       AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
       appCompatButton.setAllCaps(true);
 
