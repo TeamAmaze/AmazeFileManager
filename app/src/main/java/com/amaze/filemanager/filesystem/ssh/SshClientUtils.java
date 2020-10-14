@@ -47,6 +47,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -288,10 +289,18 @@ public abstract class SshClientUtils {
 
   // Decide the SSH URL depends on password/selected KeyPair
   public static String deriveSftpPathFrom(
-      String hostname, int port, String username, String password, KeyPair selectedParsedKeyPair) {
+      @NonNull String hostname,
+      int port,
+      @Nullable String defaultPath,
+      @NonNull String username,
+      @Nullable String password,
+      @Nullable KeyPair selectedParsedKeyPair) {
+    // FIXME: should be caller's responsibility
+    String pathSuffix = defaultPath;
+    if (pathSuffix == null) pathSuffix = "/";
     return (selectedParsedKeyPair != null || password == null)
-        ? String.format("ssh://%s@%s:%d", username, hostname, port)
-        : String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
+        ? String.format("ssh://%s@%s:%d%s", username, hostname, port, pathSuffix)
+        : String.format("ssh://%s:%s@%s:%d%s", username, password, hostname, port, pathSuffix);
   }
 
   public static boolean isDirectory(@NonNull SFTPClient client, @NonNull RemoteResourceInfo info)

@@ -41,6 +41,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import net.schmizz.sshj.Config;
 import net.schmizz.sshj.SSHClient;
 
 /**
@@ -57,6 +58,8 @@ public class SshConnectionPool {
   public static final int SSH_CONNECT_TIMEOUT = 30000;
 
   private static final String TAG = SshConnectionPool.class.getSimpleName();
+
+  private static SSHClientFactory factory = new DefaultSSHClientFactory();
 
   private final Map<String, SSHClient> connections;
 
@@ -75,6 +78,14 @@ public class SshConnectionPool {
    */
   public static final SshConnectionPool getInstance() {
     return SshConnectionPoolHolder.instance;
+  }
+
+  public static void setSSHClientFactory(@NonNull SSHClientFactory sshClientFactory) {
+    factory = sshClientFactory;
+  }
+
+  public static final @NonNull SSHClientFactory getSSHClientFactory() {
+    return factory;
   }
 
   /**
@@ -147,7 +158,7 @@ public class SshConnectionPool {
       @Nullable String password,
       @Nullable KeyPair keyPair) {
 
-    String url = SshClientUtils.deriveSftpPathFrom(host, port, username, password, keyPair);
+    String url = SshClientUtils.deriveSftpPathFrom(host, port, "", username, password, keyPair);
 
     SSHClient client = connections.get(url);
     if (client == null) {
@@ -260,10 +271,11 @@ public class SshConnectionPool {
    */
   static final class ConnectionInfo {
 
-    final String host;
-    final int port;
-    final String username;
-    final String password;
+    protected final String host;
+    protected final int port;
+    protected final String username;
+    protected final String password;
+    protected final String defaultPath;
 
     // FIXME: Crude assumption
     ConnectionInfo(@NonNull String url) {
@@ -271,7 +283,15 @@ public class SshConnectionPool {
         throw new IllegalArgumentException("Argument is not a SSH URI: " + url);
 
       this.host = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf(':'));
-      int port = Integer.parseInt(url.substring(url.lastIndexOf(':') + 1));
+      String portAndPath = url.substring(url.lastIndexOf(':') + 1);
+      int port = SSH_DEFAULT_PORT;
+      if (portAndPath.contains("/")) {
+        port = Integer.parseInt(portAndPath.substring(0, portAndPath.indexOf('/')));
+        defaultPath = portAndPath.substring(portAndPath.indexOf('/'));
+      } else {
+        port = Integer.parseInt(portAndPath);
+        defaultPath = null;
+      }
       // If the uri is fetched from the app's database storage, we assume it will never be empty
       String authString = url.substring(SSH_URI_PREFIX.length(), url.lastIndexOf('@'));
       String[] userInfo = authString.split(":");
@@ -307,6 +327,26 @@ public class SshConnectionPool {
     @Override
     protected void onPostExecute(Void aVoid) {
       if (callback != null) callback.run();
+    }
+  }
+
+  /**
+   * Interface defining a factory class for creating {@link SSHClient} instances.
+   *
+   * <p>In normal usage you won't need this; will be useful however when writing tests concerning
+   * SSHClient, that mocked instances can be returned so tests can be run without a real SSH server.
+   */
+  public interface SSHClientFactory {
+    @NonNull
+    SSHClient create(Config config);
+  }
+
+  /** Default {@link SSHClientFactory} implementation. */
+  static class DefaultSSHClientFactory implements SSHClientFactory {
+    @NonNull
+    @Override
+    public SSHClient create(Config config) {
+      return new SSHClient(config);
     }
   }
 }

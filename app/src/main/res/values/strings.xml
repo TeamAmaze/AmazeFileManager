@@ -664,5 +664,6 @@
     <string name="ftp_server_open_settings">Open settings</string>
     <string name="move">Move</string>
     <string name="select_save_location">Select location to save</string>
+    <string name="scp_default_path">Default Path (Optional)</string>
 </resources>
 
