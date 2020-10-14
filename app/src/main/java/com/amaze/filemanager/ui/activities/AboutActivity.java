@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static com.amaze.filemanager.utils.Utils.*;
+import static com.amaze.filemanager.utils.Utils.openURL;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
