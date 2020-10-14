@@ -413,9 +413,9 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
     String aEmailList[] = {EMAIL_VISHAL};
     String aEmailCCList[] = {EMAIL_EMMANUEL, EMAIL_RAYMOND};
-    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
-    emailIntent.putExtra(android.content.Intent.EXTRA_CC, aEmailCCList);
-    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
+    emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
+    emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
+    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
     emailIntent.setType("message/rfc822");
     return emailIntent;
   }

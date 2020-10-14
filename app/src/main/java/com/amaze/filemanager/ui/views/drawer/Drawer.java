@@ -126,7 +126,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private CustomNavigationView navView;
   private RelativeLayout drawerHeaderParent;
   private View drawerHeaderLayout, drawerHeaderView;
-  private ImageView donateImageView, telegramImageView;
+  private ImageView donateImageView;
+  private ImageView telegramImageView;
   private TextView appVersion;
 
   /** Tablet is defined as 'width > 720dp' */
@@ -148,7 +149,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     if (BuildConfig.DEBUG) {
       appVersion.setVisibility(View.VISIBLE);
     }
-    donateImageView.setOnClickListener(v -> billing = new Billing(mainActivity));
+    donateImageView.setOnClickListener(v -> new Billing(mainActivity));
     telegramImageView.setOnClickListener(v -> Utils.openURL(URL_TELEGRAM, mainActivity));
     /*drawerHeaderView.setOnLongClickListener(
     v -> {
@@ -939,5 +940,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public String getSecondPath() {
     return secondPath;
+  }
+
+  public Billing getBilling() {
+    return this.billing;
   }
 }
