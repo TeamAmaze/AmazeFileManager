@@ -36,6 +36,7 @@ import com.leinardi.android.speeddial.UiUtils;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -354,5 +355,16 @@ public class Utils {
     }
     snackbar.show();
     return snackbar;
+  }
+
+  /**
+   * Open url in browser
+   *
+   * @param url given url
+   */
+  public static void openURL(String url, Context context) {
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setData(Uri.parse(url));
+    context.startActivity(intent);
   }
 }

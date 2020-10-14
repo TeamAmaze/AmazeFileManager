@@ -50,6 +50,7 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.fragments.preference_fragments.QuickAccessPref;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -80,6 +81,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -104,6 +106,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     STORAGES_GROUP, SERVERS_GROUP, CLOUDS_GROUP, FOLDERS_GROUP, QUICKACCESSES_GROUP, LASTGROUP
   };
 
+  private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
+
   private MainActivity mainActivity;
   private Resources resources;
   private DataUtils dataUtils;
@@ -122,9 +126,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private CustomNavigationView navView;
   private RelativeLayout drawerHeaderParent;
   private View drawerHeaderLayout, drawerHeaderView;
+  private ImageView donateImageView;
+  private ImageView telegramImageView;
+  private TextView appVersion;
 
   /** Tablet is defined as 'width > 720dp' */
   private boolean isOnTablet = false;
+
+  private Billing billing;
 
   public Drawer(MainActivity mainActivity) {
     this.mainActivity = mainActivity;
@@ -134,20 +143,28 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);
     drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
     drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
-    drawerHeaderView.setOnLongClickListener(
-        v -> {
-          Intent intent1;
-          if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-            intent1 = new Intent();
-            intent1.setAction(Intent.ACTION_GET_CONTENT);
-          } else {
-            intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-          }
-          intent1.addCategory(Intent.CATEGORY_OPENABLE);
-          intent1.setType("image/*");
-          mainActivity.startActivityForResult(intent1, image_selector_request_code);
-          return false;
-        });
+    donateImageView = drawerHeaderLayout.findViewById(R.id.donate);
+    telegramImageView = drawerHeaderLayout.findViewById(R.id.telegram);
+    appVersion = drawerHeaderLayout.findViewById(R.id.app_version);
+    if (BuildConfig.DEBUG) {
+      appVersion.setVisibility(View.VISIBLE);
+    }
+    donateImageView.setOnClickListener(v -> new Billing(mainActivity));
+    telegramImageView.setOnClickListener(v -> Utils.openURL(URL_TELEGRAM, mainActivity));
+    /*drawerHeaderView.setOnLongClickListener(
+    v -> {
+      Intent intent1;
+      if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+        intent1 = new Intent();
+        intent1.setAction(Intent.ACTION_GET_CONTENT);
+      } else {
+        intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+      }
+      intent1.addCategory(Intent.CATEGORY_OPENABLE);
+      intent1.setType("image/*");
+      mainActivity.startActivityForResult(intent1, image_selector_request_code);
+      return false;
+    });*/
 
     mImageLoader = AppConfig.getInstance().getImageLoader();
 
@@ -828,6 +845,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
    * @return item id from menu
    */
   public int getDrawerSelectedItem() {
+    if (navView.getSelected() == null) {
+      return -1;
+    }
     return navView.getSelected().getItemId();
   }
 
@@ -920,5 +940,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public String getSecondPath() {
     return secondPath;
+  }
+
+  public Billing getBilling() {
+    return this.billing;
   }
 }

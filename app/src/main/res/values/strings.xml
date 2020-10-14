@@ -311,6 +311,8 @@
     <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
     <string name="support_development">Support Development</string>
     <string name="report_bugs_title">Report Bugs</string>
+    <string name="source_title">Source code</string>
+    <string name="source_summary">View our source code on GitHub</string>
     <string name="report_bugs_summary">Report bugs or request new feature</string>
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>

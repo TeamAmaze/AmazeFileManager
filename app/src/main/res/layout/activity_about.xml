@@ -258,6 +258,23 @@
                                 android:text="@string/author_1"
                                 android:textSize="@dimen/material_generic_title"
                                 />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_author_1_title"
+                                android:layout_marginTop="@dimen/material_generic">
+                                <TextView
+                                    android:id="@+id/text_view_author_1_github"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/github"
+                                    android:textColor="@color/accent_red"
+                                    android:layout_alignParentLeft="true"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
+                            </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
 
@@ -304,6 +321,23 @@
                                 android:text="@string/author_2"
                                 android:textSize="@dimen/material_generic_title"
                                 />
+
+                            <RelativeLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_author_2_title"
+                                android:layout_marginTop="@dimen/material_generic">
+                                <TextView
+                                    android:id="@+id/text_view_author_2_github"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:background="?android:attr/selectableItemBackground"
+                                    android:text="@string/github"
+                                    android:textColor="@color/accent_red"
+                                    android:layout_alignParentLeft="true"
+                                    android:textSize="@dimen/material_generic_title"
+                                    android:onClick="onClick"/>
+                            </RelativeLayout>
                         </RelativeLayout>
                     </RelativeLayout>
 
@@ -440,6 +474,51 @@
                             android:text="@string/support_development"
                             android:textColor="@android:color/darker_gray"
                             />
+                    </RelativeLayout>
+
+
+
+                    <RelativeLayout
+                        android:id="@+id/relative_layout_source"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_list_item"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:onClick="onClick"
+                        >
+
+                        <ImageView
+                            android:id="@+id/image_source"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="@dimen/material_generic"
+                            android:layout_marginRight="@dimen/material_generic_medium"
+                            app:srcCompat="@drawable/ic_library_code_white_24dp"
+                            android:layout_centerVertical="true"
+                            />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_toRightOf="@+id/image_source"
+                            android:gravity="center_vertical"
+                            >
+                            <TextView
+                                android:id="@+id/text_view_source"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/source_title"
+                                android:textSize="@dimen/material_generic_title"
+                                />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_source"
+                                android:text="@string/source_summary"
+                                android:textSize="@dimen/material_generic_title_summary"
+                                />
+                        </RelativeLayout>
                     </RelativeLayout>
 
                     <RelativeLayout

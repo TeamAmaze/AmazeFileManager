@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static com.amaze.filemanager.utils.Utils.openURL;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -31,11 +33,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -66,10 +66,13 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
   private Billing billing;
 
   private static final String KEY_PREF_STUDIO = "studio";
+  private static final String URL_AUTHOR1_GITHUB = "https://github.com/arpitkh96";
+  private static final String URL_AUTHOR2_GITHUB = "https://github.com/VishalNehra";
   private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
   private static final String URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove";
   private static final String URL_REPO_CHANGELOG =
       "https://github.com/TeamAmaze/AmazeFileManager/commits/master";
+  private static final String URL_REPO = "https://github.com/TeamAmaze/AmazeFileManager";
   private static final String URL_REPO_ISSUES =
       "https://github.com/TeamAmaze/AmazeFileManager/issues";
   private static final String URL_REPO_TRANSLATE =
@@ -198,12 +201,16 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         }
         break;
 
+      case R.id.relative_layout_source:
+        openURL(URL_REPO, this);
+        break;
+
       case R.id.relative_layout_issues:
-        openURL(URL_REPO_ISSUES);
+        openURL(URL_REPO_ISSUES, this);
         break;
 
       case R.id.relative_layout_changelog:
-        openURL(URL_REPO_CHANGELOG);
+        openURL(URL_REPO_CHANGELOG, this);
         break;
 
       case R.id.relative_layout_licenses:
@@ -236,35 +243,37 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
 
         break;
 
+      case R.id.text_view_author_1_github:
+        openURL(URL_AUTHOR1_GITHUB, this);
+        break;
+
+      case R.id.text_view_author_2_github:
+        openURL(URL_AUTHOR2_GITHUB, this);
+        break;
+
       case R.id.text_view_developer_1_github:
-        openURL(URL_DEVELOPER1_GITHUB);
+        openURL(URL_DEVELOPER1_GITHUB, this);
         break;
 
       case R.id.text_view_developer_2_github:
-        openURL(URL_DEVELOPER2_GITHUB);
+        openURL(URL_DEVELOPER2_GITHUB, this);
         break;
 
       case R.id.relative_layout_translate:
-        openURL(URL_REPO_TRANSLATE);
+        openURL(URL_REPO_TRANSLATE, this);
         break;
 
       case R.id.relative_layout_xda:
-        openURL(URL_REPO_XDA);
+        openURL(URL_REPO_XDA, this);
         break;
 
       case R.id.relative_layout_rate:
-        openURL(URL_REPO_RATE);
+        openURL(URL_REPO_RATE, this);
         break;
       case R.id.relative_layout_donate:
         billing = new Billing(this);
         break;
     }
-  }
-
-  private void openURL(String url) {
-    Intent intent = new Intent(Intent.ACTION_VIEW);
-    intent.setData(Uri.parse(url));
-    startActivity(intent);
   }
 
   @Override
