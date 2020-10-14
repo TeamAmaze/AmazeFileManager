@@ -209,6 +209,10 @@ public class BottomBar implements View.OnTouchListener {
     fullPathText.setText(text);
   }
 
+  public String getFullPathText() {
+    return fullPathText.getText().toString();
+  }
+
   public boolean areButtonsShowing() {
     return buttons.getVisibility() == View.VISIBLE;
   }
