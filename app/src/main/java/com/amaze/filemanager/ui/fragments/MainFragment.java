@@ -1612,13 +1612,19 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
       // adding new value to LIST_ELEMENTS
       LayoutElementParcelable layoutElementAdded = addTo(a);
-      if (!results) {
-        reloadListElements(false, true, !IS_LIST);
-        getMainActivity().getAppbar().getBottomBar().setPathText("");
+      if (!getMainActivity()
+          .getAppbar()
+          .getBottomBar()
+          .getFullPathText()
+          .contains(getString(R.string.searching))) {
         getMainActivity()
             .getAppbar()
             .getBottomBar()
             .setFullPathText(getString(R.string.searching, query));
+      }
+      if (!results) {
+        reloadListElements(false, true, !IS_LIST);
+        getMainActivity().getAppbar().getBottomBar().setPathText("");
       } else {
         adapter.addItem(layoutElementAdded);
       }

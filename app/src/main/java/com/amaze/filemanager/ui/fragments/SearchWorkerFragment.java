@@ -28,6 +28,7 @@ import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 /**
@@ -82,8 +83,15 @@ public class SearchWorkerFragment extends Fragment {
 
     searchAsyncTask =
         new SearchAsyncTask(
-            getActivity(), callbacks, input, openMode, rootMode, isRegexEnabled, isMatchesEnabled);
+            getActivity(), input, openMode, rootMode, isRegexEnabled, isMatchesEnabled);
+    searchAsyncTask.setCallback(callbacks);
     searchAsyncTask.execute(path);
+  }
+
+  @Override
+  public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+    super.onActivityCreated(savedInstanceState);
+    searchAsyncTask.setCallback(callbacks);
   }
 
   @Override
