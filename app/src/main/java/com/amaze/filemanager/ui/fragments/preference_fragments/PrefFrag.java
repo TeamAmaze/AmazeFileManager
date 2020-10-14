@@ -47,7 +47,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.hardware.fingerprint.FingerprintManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -80,6 +79,9 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
     PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH
   };
+  private static final String EMAIL_VISHAL = "vishalmeham2@gmail.com";
+  private static final String EMAIL_EMMANUEL = "emmanuelbendavid@gmail.com";
+  private static final String EMAIL_RAYMOND = "airwave209gt@gmail.com";
 
   private UtilitiesProvider utilsProvider;
   private SharedPreferences sharedPref;
@@ -223,10 +225,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         builder.build().show();
         return true;
       case PreferencesConstants.FRAGMENT_FEEDBACK:
-        Intent emailIntent =
-            new Intent(
-                Intent.ACTION_SENDTO, Uri.fromParts("mailto", "vishalmeham2@gmail.com", null));
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
+        Intent emailIntent = buildEmailIntent();
 
         PackageManager packageManager = getActivity().getPackageManager();
         List activities =
@@ -238,7 +237,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         else
           Toast.makeText(
                   getActivity(),
-                  getResources().getString(R.string.send_email_to) + " vishalmeham2@gmail.com",
+                  getResources().getString(R.string.send_email_to) + " " + EMAIL_VISHAL,
                   Toast.LENGTH_LONG)
               .show();
         return false;
@@ -408,5 +407,16 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         listView.onRestoreInstanceState(restored);
       }
     }
+  }
+
+  private Intent buildEmailIntent() {
+    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+    String aEmailList[] = {EMAIL_VISHAL};
+    String aEmailCCList[] = {EMAIL_EMMANUEL, EMAIL_RAYMOND};
+    emailIntent.putExtra(android.content.Intent.EXTRA_EMAIL, aEmailList);
+    emailIntent.putExtra(android.content.Intent.EXTRA_CC, aEmailCCList);
+    emailIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
+    emailIntent.setType("message/rfc822");
+    return emailIntent;
   }
 }
