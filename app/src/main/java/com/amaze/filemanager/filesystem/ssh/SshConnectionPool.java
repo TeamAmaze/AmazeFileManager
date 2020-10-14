@@ -330,11 +330,18 @@ public class SshConnectionPool {
     }
   }
 
+  /**
+   * Interface defining a factory class for creating {@link SSHClient} instances.
+   *
+   * <p>In normal usage you won't need this; will be useful however when writing tests concerning
+   * SSHClient, that mocked instances can be returned so tests can be run without a real SSH server.
+   */
   public interface SSHClientFactory {
     @NonNull
     SSHClient create(Config config);
   }
 
+  /** Default {@link SSHClientFactory} implementation. */
   static class DefaultSSHClientFactory implements SSHClientFactory {
     @NonNull
     @Override
