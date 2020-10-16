@@ -1,5 +1,6 @@
-<FrameLayout  xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="8dp"
     android:layout_height="@dimen/drawer_header_height_with_padding"
     android:minHeight="@dimen/drawer_header_height_with_padding"
@@ -17,6 +18,38 @@
             android:minHeight="@dimen/drawer_header_height"
             android:layout_alignParentStart="true"
             android:layout_alignParentLeft="true"/>
-
+        <TextView
+            android:id="@+id/app_version"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentLeft="true"
+            android:padding="@dimen/md_content_padding_top"
+            android:text="@string/app_version"
+            android:textColor="@android:color/white"
+            android:visibility="gone"
+            android:textSize="@dimen/md_content_textsize"
+            />
+        <ImageView
+            android:id="@+id/donate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/twotone_credit_card_white_48dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:padding="@dimen/md_content_padding_top"
+            />
+        <ImageView
+            android:id="@+id/telegram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/telegram_app_96"
+            android:layout_toLeftOf="@+id/donate"
+            android:layout_alignParentBottom="true"
+            android:padding="@dimen/md_content_padding_top"
+            android:layout_toStartOf="@+id/donate"
+            />
     </RelativeLayout>
 </FrameLayout>

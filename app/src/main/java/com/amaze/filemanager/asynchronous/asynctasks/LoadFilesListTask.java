@@ -22,39 +22,41 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.BaseAsyncTask;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.fragments.CloudSheetFragment;
-import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.ui.activities.superclasses.BaseAsyncTask;
+import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
+import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.FileListSorter;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
 import jcifs.smb.SmbAuthException;
@@ -299,72 +301,40 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listImages() {
-    ArrayList<LayoutElementParcelable> images = new ArrayList<>();
     final String[] projection = {MediaStore.Images.Media.DATA};
-    final Cursor cursor =
-        context
-            .getContentResolver()
-            .query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-    if (cursor == null) return images;
-    else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-        if (strings != null) {
-          LayoutElementParcelable parcelable = createListParcelables(strings);
-          if (parcelable != null) images.add(parcelable);
-        }
-      } while (cursor.moveToNext());
-    }
-    cursor.close();
-    return images;
+    return listMediaCommon(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, projection, null);
   }
 
   private ArrayList<LayoutElementParcelable> listVideos() {
-    ArrayList<LayoutElementParcelable> videos = new ArrayList<>();
-    final String[] projection = {MediaStore.Images.Media.DATA};
-    final Cursor cursor =
-        context
-            .getContentResolver()
-            .query(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null, null, null);
-    if (cursor == null) return videos;
-    else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
-      do {
-        String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
-        if (strings != null) {
-          LayoutElementParcelable parcelable = createListParcelables(strings);
-          if (parcelable != null) videos.add(parcelable);
-        }
-      } while (cursor.moveToNext());
-    }
-    cursor.close();
-    return videos;
+    final String[] projection = {MediaStore.Video.Media.DATA};
+    return listMediaCommon(MediaStore.Video.Media.EXTERNAL_CONTENT_URI, projection, null);
   }
 
   private ArrayList<LayoutElementParcelable> listaudio() {
     String selection = MediaStore.Audio.Media.IS_MUSIC + " != 0";
     String[] projection = {MediaStore.Audio.Media.DATA};
+    return listMediaCommon(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection);
+  }
 
+  private @NonNull ArrayList<LayoutElementParcelable> listMediaCommon(
+      Uri contentUri, @NonNull String[] projection, @Nullable String selection) {
     Cursor cursor =
-        context
-            .getContentResolver()
-            .query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection, null, null);
+        context.getContentResolver().query(contentUri, projection, selection, null, null);
 
-    ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
-    if (cursor == null) return songs;
+    ArrayList<LayoutElementParcelable> retval = new ArrayList<>();
+    if (cursor == null) return retval;
     else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
         HybridFileParcelable strings = RootHelper.generateBaseFile(new File(path), showHiddenFiles);
         if (strings != null) {
           LayoutElementParcelable parcelable = createListParcelables(strings);
-          if (parcelable != null) songs.add(parcelable);
+          if (parcelable != null) retval.add(parcelable);
         }
       } while (cursor.moveToNext());
     }
     cursor.close();
-    return songs;
+    return retval;
   }
 
   private ArrayList<LayoutElementParcelable> listDocs() {
@@ -374,37 +344,36 @@ public class LoadFilesListTask
         context
             .getContentResolver()
             .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
-    String[] types =
-        new String[] {
-          ".pdf",
-          ".xml",
-          ".html",
-          ".asm",
-          ".text/x-asm",
-          ".def",
-          ".in",
-          ".rc",
-          ".list",
-          ".log",
-          ".pl",
-          ".prop",
-          ".properties",
-          ".rc",
-          ".doc",
-          ".docx",
-          ".msg",
-          ".odt",
-          ".pages",
-          ".rtf",
-          ".txt",
-          ".wpd",
-          ".wps"
-        };
+
     if (cursor == null) return docs;
     else if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
         String path = cursor.getString(cursor.getColumnIndex(MediaStore.Files.FileColumns.DATA));
-        if (path != null && Arrays.asList(types).contains(path)) {
+
+        if (path != null
+            && (path.endsWith(".pdf")
+                || path.endsWith(".doc")
+                || path.endsWith(".docx")
+                || path.endsWith("txt")
+                || path.endsWith(".rtf")
+                || path.endsWith(".odt")
+                || path.endsWith(".html")
+                || path.endsWith(".xml")
+                || path.endsWith(".text/x-asm")
+                || path.endsWith(".def")
+                || path.endsWith(".in")
+                || path.endsWith(".rc")
+                || path.endsWith(".list")
+                || path.endsWith(".log")
+                || path.endsWith(".pl")
+                || path.endsWith(".prop")
+                || path.endsWith(".properties")
+                || path.endsWith(".rc")
+                || path.endsWith(".msg")
+                || path.endsWith(".odt")
+                || path.endsWith(".pages")
+                || path.endsWith(".wpd")
+                || path.endsWith(".wps"))) {
           HybridFileParcelable strings =
               RootHelper.generateBaseFile(new File(path), showHiddenFiles);
           if (strings != null) {
@@ -416,10 +385,6 @@ public class LoadFilesListTask
     }
     cursor.close();
     Collections.sort(docs, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
-    if (docs.size() > 20)
-      for (int i = docs.size() - 1; i > 20; i--) {
-        docs.remove(i);
-      }
     return docs;
   }
 
@@ -450,7 +415,7 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecent() {
-    UtilsHandler utilsHandler = new UtilsHandler(context);
+    UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
     final LinkedList<String> paths = utilsHandler.getHistoryLinkedList();
     ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
     for (String f : paths) {
@@ -472,17 +437,20 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecentFiles() {
-    ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>();
-    final String[] projection = {
-      MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
-    };
+    ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
+    final String[] projection = {MediaStore.Files.FileColumns.DATA};
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
     Cursor cursor =
         this.context
             .getContentResolver()
-            .query(MediaStore.Files.getContentUri("external"), projection, null, null, null);
+            .query(
+                MediaStore.Files.getContentUri("external"),
+                projection,
+                null,
+                null,
+                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
     if (cursor == null) return recentFiles;
     if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
@@ -499,11 +467,6 @@ public class LoadFilesListTask
       } while (cursor.moveToNext());
     }
     cursor.close();
-    Collections.sort(recentFiles, (lhs, rhs) -> -1 * Long.valueOf(lhs.date).compareTo(rhs.date));
-    if (recentFiles.size() > 20)
-      for (int i = recentFiles.size() - 1; i > 20; i--) {
-        recentFiles.remove(i);
-      }
     return recentFiles;
   }
 

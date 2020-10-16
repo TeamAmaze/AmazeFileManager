@@ -30,9 +30,10 @@ import java.security.PrivateKey;
 import java.security.PublicKey;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
-import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 
 import android.app.AlertDialog;
 import android.os.AsyncTask;
@@ -115,7 +116,8 @@ public class SshAuthenticationTask extends AsyncTask<Void, Void, AsyncTaskResult
   @Override
   protected AsyncTaskResult<SSHClient> doInBackground(Void... voids) {
 
-    final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
+    final SSHClient sshClient =
+        SshConnectionPool.getSSHClientFactory().create(new CustomSshJConfig());
     sshClient.addHostKeyVerifier(hostKey);
     sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
 

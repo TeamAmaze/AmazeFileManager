@@ -311,6 +311,8 @@
     <string name="primary_two_summary">Set color to large UI elements for the right tab</string>
     <string name="support_development">Support Development</string>
     <string name="report_bugs_title">Report Bugs</string>
+    <string name="source_title">Source code</string>
+    <string name="source_summary">View our source code on GitHub</string>
     <string name="report_bugs_summary">Report bugs or request new feature</string>
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>
@@ -657,5 +659,11 @@
     <string name="storage_sd_card">SD card</string>
     <string name="choose_folder">Choose This Folder</string>
     <string name="folder_go_up_one_level" translatable="false">..</string>
+    <string name="some_files_failed_invalid_operation">Some files failed due to invalid operation</string>
+    <string name="ftp_server_prompt_connect_to_network">Connect to a network or enable AP</string>
+    <string name="ftp_server_open_settings">Open settings</string>
+    <string name="move">Move</string>
+    <string name="select_save_location">Select location to save</string>
+    <string name="scp_default_path">Default Path (Optional)</string>
 </resources>
 

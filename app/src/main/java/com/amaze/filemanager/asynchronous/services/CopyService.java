@@ -24,27 +24,27 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -319,7 +319,7 @@ public class CopyService extends AbstractProgressiveService {
         if (sourceFile.getName(c).endsWith(CryptUtil.CRYPT_EXTENSION)) {
           try {
 
-            CryptHandler cryptHandler = new CryptHandler(getApplicationContext());
+            CryptHandler cryptHandler = CryptHandler.getInstance();
             EncryptedEntry oldEntry = cryptHandler.findEntry(sourceFile.getPath());
             EncryptedEntry newEntry = new EncryptedEntry();
 
@@ -457,7 +457,7 @@ public class CopyService extends AbstractProgressiveService {
           e.printStackTrace();
           failedFOps.add(sourceFile);
         }
-        FileUtils.scanFile(targetFile.getFile(), c);
+        FileUtils.scanFile(c, new HybridFile[] {targetFile});
       }
 
       private void copyFiles(
@@ -535,7 +535,7 @@ public class CopyService extends AbstractProgressiveService {
       return RootHelper.fileExists(hFile2.getPath());
     } else {
       ArrayList<HybridFileParcelable> baseFiles =
-          RootHelper.getFilesList(hFile1.getParent(), true, true, null);
+          RootHelper.getFilesList(hFile1.getParent(c), true, true, null);
       int i = -1;
       int index = -1;
       for (HybridFileParcelable b : baseFiles) {
@@ -546,7 +546,7 @@ public class CopyService extends AbstractProgressiveService {
         }
       }
       ArrayList<HybridFileParcelable> baseFiles1 =
-          RootHelper.getFilesList(hFile1.getParent(), true, true, null);
+          RootHelper.getFilesList(hFile1.getParent(c), true, true, null);
       int i1 = -1;
       int index1 = -1;
       for (HybridFileParcelable b : baseFiles1) {

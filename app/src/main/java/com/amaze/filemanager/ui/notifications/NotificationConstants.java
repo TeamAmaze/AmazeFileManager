@@ -77,7 +77,7 @@ public class NotificationConstants {
         case TYPE_FTP:
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             notification.setCategory(Notification.CATEGORY_SERVICE);
-            notification.setVisibility(Notification.VISIBILITY_PUBLIC);
+            notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
           }
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
             notification.setPriority(Notification.PRIORITY_MAX);

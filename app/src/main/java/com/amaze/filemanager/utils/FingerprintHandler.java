@@ -21,7 +21,7 @@
 package com.amaze.filemanager.utils;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
+import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 
 import android.Manifest;
 import android.content.Context;

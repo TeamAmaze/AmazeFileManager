@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.views;
 
-import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.ui.theme.AppTheme;
 
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;

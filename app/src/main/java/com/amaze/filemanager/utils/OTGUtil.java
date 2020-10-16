@@ -51,6 +51,8 @@ public class OTGUtil {
 
   public static final String PREFIX_OTG = "otg:/";
 
+  public static final String PREFIX_MEDIA_REMOVABLE = "/mnt/media_rw";
+
   /**
    * Returns an array of list of files at a specific path in OTG
    *

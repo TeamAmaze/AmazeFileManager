@@ -21,9 +21,9 @@
 package com.amaze.filemanager.adapters.holders;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.theme.AppTheme;
 
 import android.content.Context;
 import android.view.View;

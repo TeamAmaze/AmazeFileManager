@@ -35,22 +35,20 @@ import java.util.concurrent.CountDownLatch;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowShellInteractive;
+import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.os.Environment;
 
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
 import eu.chainfire.libsuperuser.Shell;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
+@RunWith(AndroidJUnit4.class)
+@Config(shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
 public class RootHelperTest {
 
   private static final File sysroot =

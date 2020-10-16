@@ -29,21 +29,18 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.OpenMode;
 
 import android.os.Environment;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(
-    maxSdk = 27,
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
+@Config(shadows = {ShadowMultiDex.class})
 public class OperationsTest {
 
   private File storageRoot = Environment.getExternalStorageDirectory();
@@ -69,7 +66,7 @@ public class OperationsTest {
     CountDownLatch waiter = new CountDownLatch(1);
     Operations.mkdir(
         newFolderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -89,7 +86,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         newFolderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -104,7 +101,7 @@ public class OperationsTest {
     AtomicBoolean assertFlag = new AtomicBoolean(false);
     Operations.mkdir(
         newFolderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -125,7 +122,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         newFolderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -141,7 +138,7 @@ public class OperationsTest {
     CountDownLatch waiter2 = new CountDownLatch(1);
     Operations.mkdir(
         newFolder2HF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -156,7 +153,7 @@ public class OperationsTest {
     AtomicBoolean assertFlag = new AtomicBoolean(false);
     Operations.mkdir(
         newFolder2HF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -179,7 +176,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         oldFolderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -195,7 +192,7 @@ public class OperationsTest {
         oldFolderHF,
         newFolderHF,
         false,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         new AbstractErrorCallback() {
           @Override
           public void done(HybridFile hFile, boolean b) {
@@ -215,7 +212,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         folderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -232,7 +229,7 @@ public class OperationsTest {
         folderHF,
         folderHF,
         false,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         new AbstractErrorCallback() {
           @Override
           public void exists(HybridFile file) {
@@ -253,7 +250,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         folderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -270,7 +267,7 @@ public class OperationsTest {
     CountDownLatch waiter2 = new CountDownLatch(1);
     Operations.mkdir(
         folder2HF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -287,7 +284,7 @@ public class OperationsTest {
         folderHF,
         folder2HF,
         false,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         new AbstractErrorCallback() {
           @Override
           public void exists(HybridFile file) {
@@ -308,7 +305,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         folderHF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -325,7 +322,7 @@ public class OperationsTest {
     CountDownLatch waiter2 = new CountDownLatch(1);
     Operations.mkdir(
         folder2HF,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
           @Override
@@ -345,7 +342,7 @@ public class OperationsTest {
         folder2HF,
         folder3HF,
         false,
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         new AbstractErrorCallback() {
           @Override
           public void done(HybridFile file, boolean b) {

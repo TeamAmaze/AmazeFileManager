@@ -33,7 +33,7 @@ import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 
 import android.content.Context;
 

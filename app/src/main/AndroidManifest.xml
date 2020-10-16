@@ -45,7 +45,7 @@
         android:required="false" />
 
     <application
-        android:name=".utils.application.AppConfig"
+        android:name=".application.AppConfig"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"
@@ -55,8 +55,8 @@
         <activity
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
-            android:name=".activities.MainActivity"
-            android:theme="@style/appCompatLight">
+            android:name=".ui.activities.MainActivity"
+            android:theme="@style/appCompatBlack">
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -118,8 +118,8 @@
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
             android:label="@string/setting"
-            android:name=".activities.PreferencesActivity"
-            android:theme="@style/appCompatLight">
+            android:name=".ui.activities.PreferencesActivity"
+            android:theme="@style/appCompatBlack">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -128,8 +128,8 @@
         </activity>
         <activity
             android:label="@string/textreader"
-            android:name=".activities.TextEditorActivity"
-            android:theme="@style/appCompatLight">
+            android:name=".ui.activities.TextEditorActivity"
+            android:theme="@style/appCompatBlack">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
                 android:label="Amaze Text Editor">
@@ -144,8 +144,8 @@
         </activity>
         <activity
             android:label="@string/databasereader"
-            android:name=".activities.DatabaseViewerActivity"
-            android:theme="@style/appCompatLight"
+            android:name=".ui.activities.DatabaseViewerActivity"
+            android:theme="@style/appCompatBlack"
             android:screenOrientation="locked">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
@@ -157,8 +157,8 @@
 
         </activity>
 
-        <activity android:name=".activities.AboutActivity"
-            android:theme="@style/aboutLight"
+        <activity android:name=".ui.activities.AboutActivity"
+            android:theme="@style/aboutBlack"
             android:label="About"
             />
 

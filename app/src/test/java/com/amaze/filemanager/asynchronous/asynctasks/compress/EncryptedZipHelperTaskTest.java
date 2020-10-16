@@ -22,15 +22,15 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import java.io.File;
 
-import org.robolectric.RuntimeEnvironment;
-
 import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
 
 public class EncryptedZipHelperTaskTest extends AbstractCompressedHelperTaskTest {
 
   protected CompressedHelperTask createTask(String relativePath) {
     return new ZipHelperTask(
-        RuntimeEnvironment.application,
+        ApplicationProvider.getApplicationContext(),
         new File(Environment.getExternalStorageDirectory(), "test-archive-encrypted.zip")
             .getAbsolutePath(),
         relativePath,

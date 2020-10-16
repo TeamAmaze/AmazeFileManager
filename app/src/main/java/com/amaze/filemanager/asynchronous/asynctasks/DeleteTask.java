@@ -23,19 +23,20 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.app.NotificationManager;
@@ -157,16 +158,14 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
           delete(cd, f.getPath());
         }
       } catch (Exception e) {
-        for (HybridFileParcelable f : files) {
-          FileUtils.scanFile(f.getFile(), cd);
-        }
+        FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
       }
     }
 
     // delete file entry from encrypted database
     for (HybridFileParcelable file : files) {
       if (file.getName(cd).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-        CryptHandler handler = new CryptHandler(cd);
+        CryptHandler handler = CryptHandler.getInstance();
         handler.clear(file.getPath());
       }
     }

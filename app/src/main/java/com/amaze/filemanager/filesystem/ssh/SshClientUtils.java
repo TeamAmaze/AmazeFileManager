@@ -27,14 +27,15 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.SmbUtil;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.cloud.CloudStreamer;
 
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -46,13 +47,20 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.FileMode;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public abstract class SshClientUtils {
-  private static final String TAG = "SshClientUtils";
+
+  private static final String TAG = SshClientUtils.class.getSimpleName();
 
   /**
    * Execute the given SshClientTemplate.
@@ -65,17 +73,20 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   public static final <T> T execute(@NonNull SshClientTemplate template) {
-    SSHClient client = null;
+    SSHClient client = SshConnectionPool.getInstance().getConnection(template.url);
     T retval = null;
-    try {
-      client = SshConnectionPool.getInstance().getConnection(template.url);
-      if (client != null) retval = template.execute(client);
-      else throw new RuntimeException("Unable to execute template");
-    } catch (Exception e) {
-      Log.e(TAG, "Error executing template method", e);
-    } finally {
-      if (client != null && template.closeClientOnFinish) {
-        tryDisconnect(client);
+    if (client != null) {
+      try {
+        retval =
+            Single.fromCallable((Callable<T>) () -> template.execute(client))
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
+      } catch (Exception e) {
+        Log.e(TAG, "Error executing template method", e);
+      } finally {
+        if (template.closeClientOnFinish) {
+          tryDisconnect(client);
+        }
       }
     }
     return retval;
@@ -278,9 +289,32 @@ public abstract class SshClientUtils {
 
   // Decide the SSH URL depends on password/selected KeyPair
   public static String deriveSftpPathFrom(
-      String hostname, int port, String username, String password, KeyPair selectedParsedKeyPair) {
+      @NonNull String hostname,
+      int port,
+      @Nullable String defaultPath,
+      @NonNull String username,
+      @Nullable String password,
+      @Nullable KeyPair selectedParsedKeyPair) {
+    // FIXME: should be caller's responsibility
+    String pathSuffix = defaultPath;
+    if (pathSuffix == null) pathSuffix = "/";
     return (selectedParsedKeyPair != null || password == null)
-        ? String.format("ssh://%s@%s:%d", username, hostname, port)
-        : String.format("ssh://%s:%s@%s:%d", username, password, hostname, port);
+        ? String.format("ssh://%s@%s:%d%s", username, hostname, port, pathSuffix)
+        : String.format("ssh://%s:%s@%s:%d%s", username, password, hostname, port, pathSuffix);
+  }
+
+  public static boolean isDirectory(@NonNull SFTPClient client, @NonNull RemoteResourceInfo info)
+      throws IOException {
+    boolean isDirectory = info.isDirectory();
+    if (info.getAttributes().getType().equals(FileMode.Type.SYMLINK)) {
+      try {
+        FileAttributes symlinkAttrs = client.stat(info.getPath());
+        isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
+      } catch (IOException ifSymlinkIsBroken) {
+        Log.w(TAG, String.format("Symbolic link %s is broken, skipping", info.getPath()));
+        throw ifSymlinkIsBroken;
+      }
+    }
+    return isDirectory;
   }
 }

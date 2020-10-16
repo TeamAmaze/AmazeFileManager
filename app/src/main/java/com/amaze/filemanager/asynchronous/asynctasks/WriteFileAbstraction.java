@@ -27,17 +27,23 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.AsyncTask;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 18:36. */
 public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
@@ -77,20 +83,31 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
   protected Integer doInBackground(Void... voids) {
     try {
       OutputStream outputStream;
+      File destFile = null;
 
       switch (fileAbstraction.scheme) {
-        case EditableFileAbstraction.SCHEME_CONTENT:
+        case CONTENT:
           if (fileAbstraction.uri == null)
             throw new NullPointerException("Something went really wrong!");
 
           try {
-            outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+            if (fileAbstraction.uri.getAuthority().equals(context.get().getPackageName())) {
+              DocumentFile documentFile =
+                  DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+              if (documentFile != null && documentFile.exists() && documentFile.canWrite())
+                outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+              else {
+                destFile = FileUtils.fromContentUri(fileAbstraction.uri);
+                outputStream = openFile(destFile, context.get());
+              }
+            } else {
+              outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+            }
           } catch (RuntimeException e) {
             throw new StreamNotFoundException(e);
           }
-
           break;
-        case EditableFileAbstraction.SCHEME_FILE:
+        case FILE:
           final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
           if (hybridFileParcelable == null)
             throw new NullPointerException("Something went really wrong!");
@@ -100,19 +117,8 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
             cancel(true);
             return null;
           }
-          outputStream = FileUtil.getOutputStream(hybridFileParcelable.getFile(), context);
-
-          if (isRootExplorer && outputStream == null) {
-            // try loading stream associated using root
-            try {
-              if (cachedFile != null && cachedFile.exists()) {
-                outputStream = new FileOutputStream(cachedFile);
-              }
-            } catch (FileNotFoundException e) {
-              e.printStackTrace();
-              outputStream = null;
-            }
-          }
+          outputStream = openFile(hybridFileParcelable.getFile(), context);
+          destFile = fileAbstraction.hybridFileParcelable.getFile();
           break;
         default:
           throw new IllegalArgumentException(
@@ -124,10 +130,9 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
       outputStream.write(dataToSave.getBytes());
       outputStream.close();
 
-      if (cachedFile != null && cachedFile.exists()) {
+      if (cachedFile != null && cachedFile.exists() && destFile != null) {
         // cat cache content to original file and delete cache file
-        RootUtils.cat(cachedFile.getPath(), fileAbstraction.hybridFileParcelable.getPath());
-
+        RootUtils.cat(cachedFile.getPath(), destFile.getPath());
         cachedFile.delete();
       }
 
@@ -150,5 +155,26 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
     super.onPostExecute(integer);
 
     onAsyncTaskFinished.onAsyncTaskFinished(integer);
+  }
+
+  private OutputStream openFile(@Nullable File file, @NonNull Context context)
+      throws FileNotFoundException {
+    if (file == null) throw new IllegalArgumentException("File cannot be null");
+
+    OutputStream outputStream = FileUtil.getOutputStream(file, context);
+
+    if (isRootExplorer && outputStream == null) {
+      // try loading stream associated using root
+      try {
+        if (cachedFile != null && cachedFile.exists()) {
+          outputStream = new FileOutputStream(cachedFile);
+        }
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        outputStream = null;
+      }
+    }
+
+    return outputStream;
   }
 }

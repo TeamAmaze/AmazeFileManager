@@ -27,14 +27,14 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
@@ -133,7 +133,8 @@ public class Operations {
           DocumentFile directoryToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
           if (directoryToCreate != null) errorCallBack.exists(file);
 
-          DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
+          DocumentFile parentDirectory =
+              OTGUtil.getDocumentFile(file.getParent(context), context, false);
           if (parentDirectory.isDirectory()) {
             parentDirectory.createDirectory(file.getName(context));
             errorCallBack.done(file, true);
@@ -178,7 +179,7 @@ public class Operations {
           }
         } else {
           if (file.isLocal() || file.isRoot()) {
-            int mode = checkFolder(new File(file.getParent()), context);
+            int mode = checkFolder(new File(file.getParent(context)), context);
             if (mode == 2) {
               errorCallBack.launchSAF(file);
               return null;
@@ -317,7 +318,8 @@ public class Operations {
           DocumentFile fileToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
           if (fileToCreate != null) errorCallBack.exists(file);
 
-          DocumentFile parentDirectory = OTGUtil.getDocumentFile(file.getParent(), context, false);
+          DocumentFile parentDirectory =
+              OTGUtil.getDocumentFile(file.getParent(context), context, false);
           if (parentDirectory.isDirectory()) {
             parentDirectory.createFile(
                 file.getName(context).substring(file.getName(context).lastIndexOf(".")),
@@ -327,7 +329,7 @@ public class Operations {
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
-            int mode = checkFolder(new File(file.getParent()), context);
+            int mode = checkFolder(new File(file.getParent(context)), context);
             if (mode == 2) {
               errorCallBack.launchSAF(file);
               return null;
@@ -368,8 +370,10 @@ public class Operations {
 
       @Override
       protected Void doInBackground(Void... params) {
-        // check whether file names for new file are valid or recursion occurs
-        if (!Operations.isFileNameValid(newFile.getName(context))) {
+        // check whether file names for new file are valid or recursion occurs.
+        // If rename is on OTG, we are skipping
+        if (!(oldFile.mode.equals(newFile.mode) && oldFile.mode.equals(OpenMode.OTG))
+            && !Operations.isFileNameValid(newFile.getSimpleName())) {
           errorCallBack.invalidName(newFile);
           return null;
         }
@@ -463,7 +467,7 @@ public class Operations {
             errorCallBack.exists(newFile);
             return null;
           }
-          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
+          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getSimpleName()));
           return null;
         } else {
 

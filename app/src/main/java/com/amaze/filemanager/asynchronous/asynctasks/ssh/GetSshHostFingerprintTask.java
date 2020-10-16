@@ -30,14 +30,16 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicReference;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.utils.application.AppConfig;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 
 import android.app.ProgressDialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -62,6 +64,9 @@ import net.schmizz.sshj.transport.verification.HostKeyVerifier;
  * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog#onCreateDialog(Bundle)
  */
 public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskResult<PublicKey>> {
+
+  private static final String TAG = GetSshHostFingerprintTask.class.getSimpleName();
+
   private final String hostname;
   private final int port;
   private final AsyncTaskResult.Callback<AsyncTaskResult<PublicKey>> callback;
@@ -83,7 +88,8 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     final AtomicReference<AsyncTaskResult<PublicKey>> holder =
         new AtomicReference<AsyncTaskResult<PublicKey>>();
     final CountDownLatch latch = new CountDownLatch(1);
-    final SSHClient sshClient = new SSHClient(new CustomSshJConfig());
+    final SSHClient sshClient =
+        SshConnectionPool.getSSHClientFactory().create(new CustomSshJConfig());
     sshClient.setConnectTimeout(SSH_CONNECT_TIMEOUT);
     sshClient.addHostKeyVerifier(
         (hostname, port, key) -> {
@@ -95,12 +101,8 @@ public class GetSshHostFingerprintTask extends AsyncTask<Void, Void, AsyncTaskRe
     try {
       sshClient.connect(hostname, port);
       latch.await();
-    } catch (IOException e) {
-      e.printStackTrace();
-      holder.set(new AsyncTaskResult<PublicKey>(e));
-      latch.countDown();
-    } catch (InterruptedException e) {
-      e.printStackTrace();
+    } catch (IOException | InterruptedException e) {
+      Log.e(TAG, "Unable to connect to [" + hostname + ":" + port + "]", e);
       holder.set(new AsyncTaskResult<PublicKey>(e));
       latch.countDown();
     } finally {

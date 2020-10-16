@@ -22,13 +22,13 @@ package com.amaze.filemanager.ui.dialogs;
 
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircularColorsView;
 import com.amaze.filemanager.ui.views.preference.SelectedColorsPreference;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 
 import android.content.Context;
 import android.content.SharedPreferences;

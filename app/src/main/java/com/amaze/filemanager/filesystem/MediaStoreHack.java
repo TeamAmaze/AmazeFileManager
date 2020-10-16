@@ -119,6 +119,13 @@ public class MediaStoreHack {
     return outputStream;
   }
 
+  /**
+   * Fallback to get uri from a path. Used only as a workaround for Kitkat ext SD card
+   *
+   * @param path file path
+   * @param context context
+   * @return uri of file
+   */
   public static Uri getUriFromFile(final String path, Context context) {
     ContentResolver resolver = context.getContentResolver();
 
@@ -154,7 +161,7 @@ public class MediaStoreHack {
     try {
       temporaryTrack = installTemporaryTrack(context);
     } catch (final IOException ex) {
-      Log.w("MediaFile", "Error installing tempory track.", ex);
+      Log.w("MediaFile", "Error installing temporary track.", ex);
       return 0;
     }
     final Uri filesUri = MediaStore.Files.getContentUri("external");

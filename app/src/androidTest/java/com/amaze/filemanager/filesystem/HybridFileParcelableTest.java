@@ -20,9 +20,10 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
-import org.junit.*;
+import org.junit.Before;
+import org.junit.Test;
 
 import com.amaze.filemanager.utils.OpenMode;
 

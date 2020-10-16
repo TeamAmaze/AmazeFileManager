@@ -21,8 +21,8 @@
 package com.amaze.filemanager.ui.dialogs;
 
 import static android.os.Build.VERSION_CODES.M;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
-import static com.amaze.filemanager.utils.files.FileUtils.toHybridFileArrayList;
+import static com.amaze.filemanager.filesystem.files.FileUtils.toHybridFileArrayList;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
 import java.io.File;
 import java.io.IOException;
@@ -40,24 +40,29 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.SortHandler;
-import com.amaze.filemanager.database.models.Sort;
+import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.fragments.AppsListFragment;
-import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.fragments.AppsListFragment;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.DataUtils;
@@ -66,11 +71,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.files.CryptUtil;
-import com.amaze.filemanager.utils.files.EncryptDecryptUtils;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.data.Entry;
@@ -590,7 +590,7 @@ public class GeneralDialogCreation {
     }
 
     if (!forStorage && showPermissions) {
-      final MainFragment main = ((MainActivity) base).mainFragment;
+      final MainFragment main = ((MainActivity) base).getCurrentMainFragment();
       AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
       appCompatButton.setAllCaps(true);
 
@@ -1209,7 +1209,7 @@ public class GeneralDialogCreation {
       MaterialDialog dialog,
       boolean desc) {
     final int sortType = desc ? dialog.getSelectedIndex() + 4 : dialog.getSelectedIndex();
-    SortHandler sortHandler = new SortHandler(m.getContext());
+    SortHandler sortHandler = SortHandler.getInstance();
     if (onlyThisFloders.contains(m.getCurrentPath())) {
       Sort oldSort = sortHandler.findEntry(m.getCurrentPath());
       Sort newSort = new Sort(m.getCurrentPath(), sortType);
@@ -1313,6 +1313,11 @@ public class GeneralDialogCreation {
     builder.dividerColor(Color.GRAY);
     MaterialDialog materialDialog = builder.build();
     adapter.updateDialog(materialDialog);
+    materialDialog.setOnDismissListener(
+        dialogInterface ->
+            m.getMainActivity()
+                .getCurrentMainFragment()
+                .loadlist(m.getCurrentPath(), false, OpenMode.UNKNOWN));
     materialDialog.show();
   }
 

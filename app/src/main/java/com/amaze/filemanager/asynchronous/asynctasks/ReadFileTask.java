@@ -28,18 +28,25 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.os.AsyncTask;
+import android.util.Log;
+
+import androidx.documentfile.provider.DocumentFile;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 18:05. */
 public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedValues> {
+
+  private static final String TAG = ReadFileTask.class.getSimpleName();
 
   public static final int NORMAL = 0;
   public static final int EXCEPTION_STREAM_NOT_FOUND = -1;
@@ -74,42 +81,28 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
       InputStream inputStream = null;
 
       switch (fileAbstraction.scheme) {
-        case EditableFileAbstraction.SCHEME_CONTENT:
+        case CONTENT:
           if (fileAbstraction.uri == null)
             throw new NullPointerException("Something went really wrong!");
 
-          inputStream = contentResolver.openInputStream(fileAbstraction.uri);
+          if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
+            DocumentFile documentFile =
+                DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+            if (documentFile != null && documentFile.exists() && documentFile.canWrite())
+              inputStream = contentResolver.openInputStream(documentFile.getUri());
+            else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+          } else {
+            inputStream = contentResolver.openInputStream(fileAbstraction.uri);
+          }
           break;
-        case EditableFileAbstraction.SCHEME_FILE:
+        case FILE:
           final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
           if (hybridFileParcelable == null)
             throw new NullPointerException("Something went really wrong!");
 
           File file = hybridFileParcelable.getFile();
+          inputStream = loadFile(file);
 
-          if (!file.canWrite() && isRootExplorer) {
-            // try loading stream associated using root
-            try {
-              cachedFile = new File(externalCacheDir, hybridFileParcelable.getName());
-              // creating a cache file
-              RootUtils.copy(hybridFileParcelable.getPath(), cachedFile.getPath());
-
-              inputStream = new FileInputStream(cachedFile);
-            } catch (ShellNotRunningException e) {
-              e.printStackTrace();
-              inputStream = null;
-            } catch (FileNotFoundException e) {
-              e.printStackTrace();
-              inputStream = null;
-            }
-          } else if (file.canRead()) {
-            // readable file in filesystem
-            try {
-              inputStream = new FileInputStream(hybridFileParcelable.getPath());
-            } catch (FileNotFoundException e) {
-              inputStream = null;
-            }
-          }
           break;
         default:
           throw new IllegalArgumentException(
@@ -143,6 +136,36 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
     super.onPostExecute(s);
 
     onAsyncTaskFinished.onAsyncTaskFinished(s);
+  }
+
+  private InputStream loadFile(File file) {
+    InputStream inputStream = null;
+    if (!file.canWrite() && isRootExplorer) {
+      // try loading stream associated using root
+      try {
+        cachedFile = new File(externalCacheDir, file.getName());
+        // creating a cache file
+        RootUtils.copy(file.getAbsolutePath(), cachedFile.getPath());
+
+        inputStream = new FileInputStream(cachedFile);
+      } catch (ShellNotRunningException e) {
+        e.printStackTrace();
+        inputStream = null;
+      } catch (FileNotFoundException e) {
+        e.printStackTrace();
+        inputStream = null;
+      }
+    } else if (file.canRead()) {
+      // readable file in filesystem
+      try {
+        inputStream = new FileInputStream(file.getAbsolutePath());
+      } catch (FileNotFoundException e) {
+        Log.e(TAG, "Unable to open file [" + file.getAbsolutePath() + "] for reading", e);
+        inputStream = null;
+      }
+    }
+
+    return inputStream;
   }
 
   public static class ReturnedValues {

@@ -25,26 +25,26 @@ import java.util.ArrayList;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
-import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.fragments.TabFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
+import com.amaze.filemanager.ui.fragments.TabFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
-import com.amaze.filemanager.utils.files.CryptUtil;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import android.app.Activity;
@@ -69,8 +69,6 @@ import androidx.fragment.app.FragmentManager;
 
 /** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
-
-  private static final String NEW_FILE_TXT_EXTENSION = ".txt";
 
   private MainActivity mainActivity;
   private DataUtils dataUtils = DataUtils.getInstance();
@@ -169,7 +167,7 @@ public class MainActivityHelper {
   public void mkfile(final OpenMode openMode, final String path, final MainFragment ma) {
     mk(
         R.string.newfile,
-        NEW_FILE_TXT_EXTENSION,
+        AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT),
         (dialog, which) -> {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(new HybridFile(openMode, path + "/" + textfield.getText().toString()), ma);
@@ -187,7 +185,9 @@ public class MainActivityHelper {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_WARNING,
                   R.string.create_hidden_file_warn);
-            } else if (!text.toLowerCase().endsWith(NEW_FILE_TXT_EXTENSION)) {
+            } else if (!text.toLowerCase()
+                .endsWith(
+                    AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT))) {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_WARNING,
                   R.string.create_file_suggest_txt_extension);
@@ -293,9 +293,11 @@ public class MainActivityHelper {
     final Toast toast =
         Toast.makeText(context, context.getString(R.string.renaming), Toast.LENGTH_SHORT);
     toast.show();
+    HybridFile oldFile = new HybridFile(mode, oldPath);
+    HybridFile newFile = new HybridFile(mode, newPath);
     Operations.rename(
-        new HybridFile(mode, oldPath),
-        new HybridFile(mode, newPath),
+        oldFile,
+        newFile,
         rootmode,
         context,
         new Operations.ErrorCallBack() {
@@ -329,7 +331,11 @@ public class MainActivityHelper {
           public void done(final HybridFile hFile, final boolean b) {
             context.runOnUiThread(
                 () -> {
-                  if (b) {
+                  /*
+                   * DocumentFile.renameTo() may return false even when rename is successful. Hence we need an extra check
+                   * instead of merely looking at the return value
+                   */
+                  if (b || newFile.exists(context)) {
                     Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
 
                     intent.putExtra(
@@ -339,8 +345,7 @@ public class MainActivityHelper {
                     // update the database entry to reflect rename for encrypted file
                     if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                       try {
-
-                        CryptHandler cryptHandler = new CryptHandler(context);
+                        CryptHandler cryptHandler = CryptHandler.getInstance();
                         EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
                         EncryptedEntry newEntry = new EncryptedEntry();
                         newEntry.setId(oldEntry.getId());
@@ -454,7 +459,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkfile(file.getMode(), file.getParent(), ma);
+                        mkfile(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -532,7 +540,10 @@ public class MainActivityHelper {
                           .show();
                       if (ma != null && ma.getActivity() != null) {
                         // retry with dialog prompted again
-                        mkdir(file.getMode(), file.getParent(), ma);
+                        mkdir(
+                            file.getMode(),
+                            file.getParent(mainActivity.getApplicationContext()),
+                            ma);
                       }
                     });
           }
@@ -612,20 +623,10 @@ public class MainActivityHelper {
     } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
-  public String parseSftpPath(String a) {
-    if (a.contains("@")) return "ssh://" + a.substring(a.lastIndexOf("@") + 1, a.length());
-    else return a;
-  }
-
-  public String parseSmbPath(String a) {
-    if (a.contains("@")) return "smb://" + a.substring(a.indexOf("@") + 1, a.length());
-    else return a;
-  }
-
   /** Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix */
   public String parseOTGPath(String path) {
     if (path.contains(OTGUtil.PREFIX_OTG)) return path;
-    else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1, path.length());
+    else return OTGUtil.PREFIX_OTG + path.substring(path.indexOf(":") + 1);
   }
 
   public String parseCloudPath(OpenMode serviceType, String path) {
@@ -670,8 +671,6 @@ public class MainActivityHelper {
     task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, fpath);*/
     // ma.searchTask = task;
     SEARCH_TEXT = query;
-    mainActivity.mainFragment =
-        (MainFragment) mainActivity.getTabFragment().getCurrentTabFragment();
     FragmentManager fm = mainActivity.getSupportFragmentManager();
     SearchWorkerFragment fragment =
         (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);

@@ -26,7 +26,7 @@ import java.lang.ref.WeakReference;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.MainFragment;
 
 import android.os.Handler;
 import android.os.Looper;

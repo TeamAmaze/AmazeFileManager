@@ -22,8 +22,8 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.util.ArrayList;
 
-import com.amaze.filemanager.fragments.DbViewerFragment;
-import com.amaze.filemanager.utils.theme.AppTheme;
+import com.amaze.filemanager.ui.fragments.DbViewerFragment;
+import com.amaze.filemanager.ui.theme.AppTheme;
 
 import android.database.Cursor;
 import android.os.AsyncTask;
@@ -52,7 +52,7 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
     this.dbViewerFragment = dbViewerFragment;
     stringBuilder = new StringBuilder();
 
-    webView.getSettings().setDefaultTextEncodingName("utf-8");
+    this.webView.getSettings().setDefaultTextEncodingName("utf-8");
   }
 
   @Override
@@ -62,10 +62,10 @@ public class DbViewerTask extends AsyncTask<Void, Integer, Void> {
     if (dbViewerFragment.databaseViewerActivity.getAppTheme().equals(AppTheme.DARK)
         || dbViewerFragment.databaseViewerActivity.getAppTheme().equals(AppTheme.BLACK)) {
 
-      htmlInit = "<html><body>" + "<table border='1' style='width:100%;color:#ffffff'>";
+      htmlInit = "<html><body><table border='1' style='width:100%;color:#ffffff'>";
     } else {
 
-      htmlInit = "<html><body>" + "<table border='1' style='width:100%;color:#000000'>";
+      htmlInit = "<html><body><table border='1' style='width:100%;color:#000000'>";
     }
     stringBuilder.append(htmlInit);
     dbViewerFragment.loadingText.setVisibility(View.VISIBLE);

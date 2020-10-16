@@ -22,14 +22,21 @@ package com.amaze.filemanager.utils;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.google.android.material.snackbar.Snackbar;
+import com.leinardi.android.speeddial.SpeedDialView;
+import com.leinardi.android.speeddial.UiUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -45,6 +52,8 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -100,7 +109,7 @@ public class Utils {
   public static String getDate(@NonNull Context c, long f) {
     return String.format(
         DATE_TIME_FORMAT,
-        DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_DATE),
+        DateUtils.formatDateTime(c, f, DateUtils.FORMAT_ABBREV_MONTH),
         DateUtils.formatDateTime(c, f, DateUtils.FORMAT_SHOW_TIME));
   }
 
@@ -214,12 +223,12 @@ public class Utils {
   }
 
   /** Returns uri associated to specific basefile */
-  public static Uri getUriForBaseFile(Context context, HybridFileParcelable baseFile) {
+  public static Uri getUriForBaseFile(
+      @NonNull Context context, @NonNull HybridFileParcelable baseFile) {
     switch (baseFile.getMode()) {
       case FILE:
       case ROOT:
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-
           return FileProvider.getUriForFile(
               context, context.getPackageName(), new File(baseFile.getPath()));
         } else {
@@ -278,5 +287,84 @@ public class Utils {
       // This shouldn't fail, as mPath has been there in every version
       throw new RuntimeException(e);
     }
+  }
+
+  public static boolean isNullOrEmpty(final Collection<?> list) {
+    return list == null || list.size() == 0;
+  }
+
+  public static boolean isNullOrEmpty(final String string) {
+    return string == null || string.length() == 0;
+  }
+
+  /**
+   * Clears the fab action items and animate the main fab to open/close icon (i.e. without any
+   * background overlay) Generally used in combination with snackbar, to show/hide snackbar using
+   * FAB
+   *
+   * @param mainActivity main activity
+   * @param callback callback, can be null when fab open is false
+   * @param open should open / close the fab
+   */
+  public static void invalidateFab(
+      MainActivity mainActivity, @Nullable Runnable callback, boolean open) {
+    if (open) {
+      mainActivity.clearFabActionItems();
+      mainActivity.getFAB().getMainFab().setImageResource(R.drawable.ic_close_white_24dp);
+      mainActivity
+          .getFAB()
+          .setOnChangeListener(
+              new SpeedDialView.OnChangeListener() {
+                @Override
+                public boolean onMainActionSelected() {
+                  if (callback != null) {
+                    callback.run();
+                  }
+                  return false;
+                }
+
+                @Override
+                public void onToggleChanged(boolean isOpen) {
+                  // do nothing
+                }
+              });
+      // Ensure the FAB menu is visible
+      mainActivity.getFAB().setVisibility(View.VISIBLE);
+    } else {
+      UiUtils.rotateBackward(mainActivity.getFAB().getMainFab(), true);
+      mainActivity.getFAB().getMainFab().setImageResource(R.drawable.ic_add_white_24dp);
+      mainActivity.initializeFabActionViews();
+      mainActivity.getFAB().setOnChangeListener(null);
+    }
+  }
+
+  public static Snackbar showThemedSnackbar(
+      MainActivity mainActivity,
+      CharSequence text,
+      int length,
+      @StringRes int actionTextId,
+      Runnable actionCallback) {
+    Snackbar snackbar =
+        Snackbar.make(mainActivity.findViewById(R.id.content_frame), text, length)
+            .setAction(actionTextId, v -> actionCallback.run());
+    if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
+      snackbar
+          .getView()
+          .setBackgroundColor(mainActivity.getResources().getColor(android.R.color.white));
+      snackbar.setTextColor(mainActivity.getResources().getColor(android.R.color.black));
+    }
+    snackbar.show();
+    return snackbar;
+  }
+
+  /**
+   * Open url in browser
+   *
+   * @param url given url
+   */
+  public static void openURL(String url, Context context) {
+    Intent intent = new Intent(Intent.ACTION_VIEW);
+    intent.setData(Uri.parse(url));
+    context.startActivity(intent);
   }
 }

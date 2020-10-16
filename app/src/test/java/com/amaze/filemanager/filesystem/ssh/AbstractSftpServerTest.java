@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 
@@ -35,24 +36,24 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class})
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+@RunWith(AndroidJUnit4.class)
+@Config(shadows = {ShadowMultiDex.class})
 public abstract class AbstractSftpServerTest {
 
   protected SshServer server;
 
   protected static TestKeyProvider hostKeyProvider;
+
+  protected int serverPort;
 
   @BeforeClass
   public static void bootstrap() throws Exception {
@@ -61,30 +62,35 @@ public abstract class AbstractSftpServerTest {
 
   @Before
   public void setUp() throws IOException {
-    createSshServer(
-        new VirtualFileSystemFactory(
-            Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath())));
+    serverPort =
+        createSshServer(
+            new VirtualFileSystemFactory(
+                Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath())),
+            64000);
     prepareSshConnection();
   }
 
   @After
-  public void tearDown() {
-    SshConnectionPool.getInstance().expungeAllConnections();
-    if (server != null && server.isOpen()) server.close(true);
+  public void tearDown() throws IOException {
+    SshConnectionPool.getInstance().shutdown();
+    if (server != null && server.isOpen()) {
+      server.stop(true);
+    }
   }
 
   protected final void prepareSshConnection() {
     String hostFingerprint = KeyUtils.getFingerPrint(hostKeyProvider.getKeyPair().getPublic());
     SshConnectionPool.getInstance()
-        .getConnection("127.0.0.1", 22222, hostFingerprint, "testuser", "testpassword", null);
+        .getConnection("127.0.0.1", serverPort, hostFingerprint, "testuser", "testpassword", null);
   }
 
-  protected final void createSshServer(FileSystemFactory fileSystemFactory) throws IOException {
+  protected final int createSshServer(FileSystemFactory fileSystemFactory, int startPort)
+      throws IOException {
+
     server = SshServer.setUpDefaultServer();
 
     server.setFileSystemFactory(fileSystemFactory);
     server.setPublickeyAuthenticator(AcceptAllPublickeyAuthenticator.INSTANCE);
-    server.setPort(22222);
     server.setHost("127.0.0.1");
     server.setKeyPairProvider(hostKeyProvider);
     server.setCommandFactory(new ScpCommandFactory());
@@ -92,6 +98,13 @@ public abstract class AbstractSftpServerTest {
     server.setPasswordAuthenticator(
         ((username, password, session) ->
             username.equals("testuser") && password.equals("testpassword")));
-    server.start();
+
+    try {
+      server.setPort(startPort);
+      server.start();
+      return startPort;
+    } catch (BindException ifPortIsUnavailable) {
+      return createSshServer(fileSystemFactory, startPort + 1);
+    }
   }
 }

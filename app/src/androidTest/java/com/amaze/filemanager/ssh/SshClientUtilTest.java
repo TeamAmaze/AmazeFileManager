@@ -28,7 +28,7 @@ import org.junit.runner.RunWith;
 
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
-import androidx.test.runner.AndroidJUnit4;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 public class SshClientUtilTest {

@@ -1,12 +1,15 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
+    ext.kotlin_version = '1.4.10'
     repositories {
         google()
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.6.4'
+        classpath 'com.dicedmelon.gradle:jacoco-android:0.1.4'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -18,12 +21,18 @@ plugins {
 }
 
 allprojects {
+
     repositories {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://jcenter.bintray.com" }
         mavenCentral()
+    }
+    tasks.withType(Test) {
+        maxParallelForks = 2
+        maxHeapSize = "2g"
+        forkEvery = 2
     }
 }
 
@@ -35,4 +44,103 @@ spotless {
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
+    kotlin {
+        licenseHeaderFile 'spotless.license-java'
+        target 'app/src/**/*.kt'
+        ktlint().userData(['disabled_rules': 'no-wildcard-imports', 'kotlin_imports_layout': 'idea'])
+        trimTrailingWhitespace()
+        indentWithSpaces()
+        endWithNewline()
+    }
+}
+
+configurations {
+    robo16
+    robo17
+    robo18
+    robo19
+    robo21
+    robo22
+    robo23
+    robo24
+    robo25
+    robo26
+    robo27
+    robo28
+    robo29
+}
+
+dependencies {
+    robo16 "org.robolectric:android-all:4.1.2_r1-robolectric-r1"
+    robo17 "org.robolectric:android-all:4.2.2_r1.2-robolectric-r1"
+    robo18 "org.robolectric:android-all:4.3_r2-robolectric-r1"
+    robo19 "org.robolectric:android-all:4.4_r1-robolectric-r2"
+    robo21 "org.robolectric:android-all:5.0.2_r3-robolectric-r0"
+    robo22 "org.robolectric:android-all:5.1.1_r9-robolectric-r2"
+    robo23 "org.robolectric:android-all:6.0.1_r3-robolectric-r1"
+    robo24 "org.robolectric:android-all:7.0.0_r1-robolectric-r1"
+    robo25 "org.robolectric:android-all:7.1.0_r7-robolectric-r1"
+    robo26 "org.robolectric:android-all:8.0.0_r4-robolectric-r1"
+    robo27 "org.robolectric:android-all:8.1.0-robolectric-4611349"
+    robo28 "org.robolectric:android-all:9-robolectric-4913185-2"
+    robo29 "org.robolectric:android-all:10-robolectric-5803371"
+}
+
+def robolectricDependencies = "${rootProject.buildDir.path}/robolectric"
+
+task fetchRobolectricDependencies(type: Copy) {
+    from configurations.robo16
+    from configurations.robo17
+    from configurations.robo18
+    from configurations.robo19
+    from configurations.robo21
+    from configurations.robo22
+    from configurations.robo23
+    from configurations.robo24
+    from configurations.robo25
+    from configurations.robo26
+    from configurations.robo27
+    from configurations.robo28
+    from configurations.robo29
+    into robolectricDependencies
+}
+
+subprojects {
+    afterEvaluate {
+        if (project.plugins.hasPlugin("com.android.application") || project.plugins.hasPlugin("com.android.library")) {
+            android {
+                testOptions.unitTests.all {
+                    systemProperty 'robolectric.offline', 'true'
+                    systemProperty 'robolectric.dependency.dir', robolectricDependencies
+                }
+            }
+
+            tasks.withType(Test) {
+                it.dependsOn fetchRobolectricDependencies
+            }
+        }
+        if (project.plugins.hasPlugin("jacoco-android")){
+            android {
+                testOptions.unitTests.all {
+                    jacoco {
+                        excludes = ['jdk.internal.*']
+                    }
+                }
+            }
+        }
+        dependencies {
+            compileOnly 'com.github.pengrad:jdk9-deps:1.0'
+
+            if (project.hasProperty('kapt')) {
+                kapt 'javax.xml.bind:jaxb-api:2.3.1'
+                kapt 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+                kapt 'com.sun.xml.bind:jaxb-impl:2.3.2'
+            }
+
+            annotationProcessor 'javax.xml.bind:jaxb-api:2.3.1'
+            annotationProcessor 'com.sun.xml.bind:jaxb-core:2.3.0.1'
+            annotationProcessor 'com.sun.xml.bind:jaxb-impl:2.3.2'
+        }
+    }
+
 }

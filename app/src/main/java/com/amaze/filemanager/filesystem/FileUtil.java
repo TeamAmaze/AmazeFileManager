@@ -29,6 +29,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.net.MalformedURLException;
@@ -38,18 +39,19 @@ import java.util.List;
 import java.util.regex.Pattern;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.annotation.TargetApi;
@@ -69,6 +71,12 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
+import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
+import io.reactivex.MaybeOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -198,198 +206,214 @@ public abstract class FileUtil {
       @NonNull final ContentResolver contentResolver,
       @NonNull final String currentPath) {
 
-    AppConfig.runInParallel(
-        new AppConfig.CustomAsyncCallbacks<Void, List<String>>(null) {
+    Maybe.create(
+            (MaybeOnSubscribe<List<String>>)
+                emitter -> {
+                  List<String> retval = new ArrayList<>();
 
-          @Override
-          public List<String> doInBackground() {
+                  for (Uri uri : uris) {
 
-            List<String> retval = new ArrayList<>();
+                    BufferedInputStream bufferedInputStream = null;
+                    try {
+                      bufferedInputStream =
+                          new BufferedInputStream(contentResolver.openInputStream(uri));
+                    } catch (FileNotFoundException e) {
+                      e.printStackTrace();
+                      return;
+                    }
 
-            for (Uri uri : uris) {
+                    BufferedOutputStream bufferedOutputStream = null;
 
-              BufferedInputStream bufferedInputStream = null;
-              try {
-                bufferedInputStream = new BufferedInputStream(contentResolver.openInputStream(uri));
-              } catch (FileNotFoundException e) {
-                e.printStackTrace();
-              }
+                    try {
+                      DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
+                      String filename = documentFile.getName();
+                      if (filename == null) {
+                        filename = uri.getLastPathSegment();
 
-              BufferedOutputStream bufferedOutputStream = null;
+                        // For cleaning up slashes. Back in #1217 there is a case of
+                        // Uri.getLastPathSegment() end up with a full file path
+                        if (filename.contains("/"))
+                          filename = filename.substring(filename.lastIndexOf('/') + 1);
+                      }
 
-              try {
-                DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
-                String filename = documentFile.getName();
-                if (filename == null) {
-                  filename = uri.getLastPathSegment();
+                      String finalFilePath = currentPath + "/" + filename;
+                      DataUtils dataUtils = DataUtils.getInstance();
 
-                  // For cleaning up slashes. Back in #1217 there is a case of
-                  // Uri.getLastPathSegment() end up with a full file path
-                  if (filename.contains("/"))
-                    filename = filename.substring(filename.lastIndexOf('/') + 1);
-                }
+                      HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
+                      hFile.generateMode(mainActivity);
 
-                String finalFilePath = currentPath + "/" + filename;
-                DataUtils dataUtils = DataUtils.getInstance();
+                      switch (hFile.getMode()) {
+                        case FILE:
+                        case ROOT:
+                          File targetFile = new File(finalFilePath);
+                          if (!FileUtil.isWritableNormalOrSaf(
+                              targetFile.getParentFile(), mainActivity.getApplicationContext())) {
+                            AppConfig.toast(
+                                mainActivity,
+                                mainActivity.getResources().getString(R.string.not_allowed));
+                            return;
+                          }
 
-                HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
-                hFile.generateMode(mainActivity);
+                          DocumentFile targetDocumentFile =
+                              getDocumentFile(
+                                  targetFile, false, mainActivity.getApplicationContext());
 
-                switch (hFile.getMode()) {
-                  case FILE:
-                  case ROOT:
-                    File targetFile = new File(finalFilePath);
-                    if (!FileUtil.isWritableNormalOrSaf(
-                        targetFile.getParentFile(), mainActivity.getApplicationContext())) {
-                      AppConfig.toast(
+                          // Fallback, in case getDocumentFile() didn't properly return a
+                          // DocumentFile
+                          // instance
+                          if (targetDocumentFile == null)
+                            targetDocumentFile = DocumentFile.fromFile(targetFile);
+
+                          // Lazy check... and in fact, different apps may pass in URI in different
+                          // formats, so we could only check filename matches
+                          // FIXME?: Prompt overwrite instead of simply blocking
+                          if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
+                            AppConfig.toast(
+                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                            return;
+                          }
+
+                          bufferedOutputStream =
+                              new BufferedOutputStream(
+                                  contentResolver.openOutputStream(targetDocumentFile.getUri()));
+                          retval.add(targetFile.getPath());
+                          break;
+                        case SMB:
+                          SmbFile targetSmbFile = new SmbFile(finalFilePath);
+                          if (targetSmbFile.exists()) {
+                            AppConfig.toast(
+                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                            emitter.onError(new Exception());
+                          } else {
+                            OutputStream outputStream = targetSmbFile.getOutputStream();
+                            bufferedOutputStream = new BufferedOutputStream(outputStream);
+                            retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
+                          }
+                          break;
+                        case SFTP:
+                          // FIXME: implement support
+                          AppConfig.toast(
+                              mainActivity, mainActivity.getString(R.string.not_allowed));
+                          emitter.onError(new Exception());
+                        case DROPBOX:
+                          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+                          String path = CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath);
+                          cloudStorageDropbox.upload(
+                              path, bufferedInputStream, documentFile.length(), true);
+                          retval.add(path);
+                          break;
+                        case BOX:
+                          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
+                          path = CloudUtil.stripPath(OpenMode.BOX, finalFilePath);
+                          cloudStorageBox.upload(
+                              path, bufferedInputStream, documentFile.length(), true);
+                          retval.add(path);
+                          break;
+                        case ONEDRIVE:
+                          CloudStorage cloudStorageOneDrive =
+                              dataUtils.getAccount(OpenMode.ONEDRIVE);
+                          path = CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath);
+                          cloudStorageOneDrive.upload(
+                              path, bufferedInputStream, documentFile.length(), true);
+                          retval.add(path);
+                          break;
+                        case GDRIVE:
+                          CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
+                          path = CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath);
+                          cloudStorageGDrive.upload(
+                              path, bufferedInputStream, documentFile.length(), true);
+                          retval.add(path);
+                          break;
+                        case OTG:
+                          DocumentFile documentTargetFile =
+                              OTGUtil.getDocumentFile(finalFilePath, mainActivity, true);
+
+                          if (documentTargetFile.exists()) {
+                            AppConfig.toast(
+                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                            return;
+                          }
+
+                          bufferedOutputStream =
+                              new BufferedOutputStream(
+                                  contentResolver.openOutputStream(documentTargetFile.getUri()),
+                                  GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+
+                          retval.add(documentTargetFile.getUri().getPath());
+                          break;
+                        default:
+                          return;
+                      }
+
+                      int count = 0;
+                      byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+
+                      while (count != -1) {
+                        count = bufferedInputStream.read(buffer);
+                        if (count != -1) {
+
+                          bufferedOutputStream.write(buffer, 0, count);
+                        }
+                      }
+                      bufferedOutputStream.flush();
+
+                    } catch (IOException e) {
+                      e.printStackTrace();
+                      return;
+                    } finally {
+                      try {
+                        if (bufferedInputStream != null) {
+                          bufferedInputStream.close();
+                        }
+                        if (bufferedOutputStream != null) {
+                          bufferedOutputStream.close();
+                        }
+                      } catch (IOException e) {
+                        e.printStackTrace();
+                      }
+                    }
+                  }
+                  if (retval.size() > 0) {
+                    emitter.onSuccess(retval);
+                  } else {
+                    emitter.onError(new Exception());
+                  }
+                })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new MaybeObserver<List<String>>() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onSuccess(List<String> paths) {
+                if (paths.size() == 1) {
+                  Toast.makeText(
                           mainActivity,
-                          mainActivity.getResources().getString(R.string.not_allowed));
-                      return null;
-                    }
-
-                    DocumentFile targetDocumentFile =
-                        getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
-
-                    // Fallback, in case getDocumentFile() didn't properly return a DocumentFile
-                    // instance
-                    if (targetDocumentFile == null)
-                      targetDocumentFile = DocumentFile.fromFile(targetFile);
-
-                    // Lazy check... and in fact, different apps may pass in URI in different
-                    // formats, so we could only check filename matches
-                    // FIXME?: Prompt overwrite instead of simply blocking
-                    if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
-                      AppConfig.toast(
-                          mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                      return null;
-                    }
-
-                    bufferedOutputStream =
-                        new BufferedOutputStream(
-                            contentResolver.openOutputStream(targetDocumentFile.getUri()));
-                    retval.add(targetFile.getPath());
-                    break;
-                  case SMB:
-                    SmbFile targetSmbFile = new SmbFile(finalFilePath);
-                    if (targetSmbFile.exists()) {
-                      AppConfig.toast(
-                          mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                      return null;
-                    } else {
-                      OutputStream outputStream = targetSmbFile.getOutputStream();
-                      bufferedOutputStream = new BufferedOutputStream(outputStream);
-                      retval.add(
-                          mainActivity.mainActivityHelper.parseSmbPath(targetSmbFile.getPath()));
-                    }
-                    break;
-                  case SFTP:
-                    // FIXME: implement support
-                    AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
-                    return null;
-                  case DROPBOX:
-                    CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-                    String path = CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath);
-                    cloudStorageDropbox.upload(
-                        path, bufferedInputStream, documentFile.length(), true);
-                    retval.add(path);
-                    break;
-                  case BOX:
-                    CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-                    path = CloudUtil.stripPath(OpenMode.BOX, finalFilePath);
-                    cloudStorageBox.upload(path, bufferedInputStream, documentFile.length(), true);
-                    retval.add(path);
-                    break;
-                  case ONEDRIVE:
-                    CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-                    path = CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath);
-                    cloudStorageOneDrive.upload(
-                        path, bufferedInputStream, documentFile.length(), true);
-                    retval.add(path);
-                    break;
-                  case GDRIVE:
-                    CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-                    path = CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath);
-                    cloudStorageGDrive.upload(
-                        path, bufferedInputStream, documentFile.length(), true);
-                    retval.add(path);
-                    break;
-                  case OTG:
-                    DocumentFile documentTargetFile =
-                        OTGUtil.getDocumentFile(finalFilePath, mainActivity, true);
-
-                    if (documentTargetFile.exists()) {
-                      AppConfig.toast(
-                          mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                      return null;
-                    }
-
-                    bufferedOutputStream =
-                        new BufferedOutputStream(
-                            contentResolver.openOutputStream(documentTargetFile.getUri()),
-                            GenericCopyUtil.DEFAULT_BUFFER_SIZE);
-
-                    retval.add(documentTargetFile.getUri().getPath());
-                    break;
-                  default:
-                    return null;
-                }
-
-                int count = 0;
-                byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-
-                while (count != -1) {
-                  count = bufferedInputStream.read(buffer);
-                  if (count != -1) {
-
-                    bufferedOutputStream.write(buffer, 0, count);
-                  }
-                }
-                bufferedOutputStream.flush();
-
-              } catch (FileNotFoundException e) {
-                e.printStackTrace();
-              } catch (MalformedURLException e) {
-                e.printStackTrace();
-              } catch (IOException e) {
-                e.printStackTrace();
-              } finally {
-
-                try {
-
-                  if (bufferedInputStream != null) {
-                    bufferedInputStream.close();
-                  }
-                  if (bufferedOutputStream != null) {
-                    bufferedOutputStream.close();
-                  }
-                } catch (IOException e) {
-                  e.printStackTrace();
+                          mainActivity.getString(R.string.saved_single_file, paths.get(0)),
+                          Toast.LENGTH_LONG)
+                      .show();
+                } else {
+                  Toast.makeText(
+                          mainActivity,
+                          mainActivity.getString(R.string.saved_multi_files, paths.size()),
+                          Toast.LENGTH_LONG)
+                      .show();
                 }
               }
-            }
-            return (retval.size() > 0) ? retval : null;
-          }
 
-          @Override
-          public void onPostExecute(List<String> result) {
-            if (result != null) {
-              List<String> paths = (List<String>) result;
-              if (paths.size() == 1) {
-                Toast.makeText(
-                        mainActivity,
-                        mainActivity.getString(R.string.saved_single_file, paths.get(0)),
-                        Toast.LENGTH_LONG)
-                    .show();
-              } else {
-                Toast.makeText(
-                        mainActivity,
-                        mainActivity.getString(R.string.saved_multi_files, paths.size()),
-                        Toast.LENGTH_LONG)
-                    .show();
+              @Override
+              public void onError(Throwable e) {
+                Log.e(
+                    getClass().getSimpleName(),
+                    "Failed to write uri to storage due to " + e.getCause());
+                e.printStackTrace();
               }
-            }
-          }
-        });
+
+              @Override
+              public void onComplete() {}
+            });
   }
 
   /**
@@ -617,6 +641,36 @@ public abstract class FileUtil {
       }
     }
     return false;
+  }
+
+  public static boolean mktextfile(String data, String path, String fileName) {
+
+    File f =
+        new File(
+            path,
+            fileName
+                .concat(AppConstants.NEW_FILE_DELIMITER)
+                .concat(AppConstants.NEW_FILE_EXTENSION_TXT));
+    FileOutputStream out = null;
+    OutputStreamWriter outputWriter = null;
+    try {
+      f.createNewFile();
+      out = new FileOutputStream(f, false);
+      outputWriter = new OutputStreamWriter(out);
+      outputWriter.write(data);
+      return true;
+    } catch (IOException io) {
+      Log.e(FileUtil.LOG, io.getMessage());
+      return false;
+    } finally {
+      try {
+        outputWriter.close();
+        out.flush();
+        out.close();
+      } catch (IOException e) {
+        Log.e(FileUtil.LOG, e.getMessage());
+      }
+    }
   }
 
   /**
@@ -1170,7 +1224,7 @@ public abstract class FileUtil {
     }
 
     private File installTemporaryTrack() throws IOException {
-      File externalFilesDir = getExternalFilesDir(context);
+      File externalFilesDir = context.getExternalFilesDir(null);
       if (externalFilesDir == null) {
         return null;
       }

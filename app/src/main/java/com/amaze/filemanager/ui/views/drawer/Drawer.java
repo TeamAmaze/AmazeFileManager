@@ -21,8 +21,8 @@
 package com.amaze.filemanager.ui.views.drawer;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -32,20 +32,25 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.activities.PreferencesActivity;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
-import com.amaze.filemanager.fragments.AppsListFragment;
-import com.amaze.filemanager.fragments.CloudSheetFragment;
-import com.amaze.filemanager.fragments.FtpServerFragment;
-import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.fragments.preference_fragments.QuickAccessPref;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.AppsListFragment;
+import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
+import com.amaze.filemanager.ui.fragments.FtpServerFragment;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preference_fragments.QuickAccessPref;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -53,10 +58,6 @@ import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.cloud.CloudUtil;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.theme.AppTheme;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageLoader;
 import com.cloudrail.si.interfaces.CloudStorage;
@@ -80,6 +81,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -104,12 +106,13 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     STORAGES_GROUP, SERVERS_GROUP, CLOUDS_GROUP, FOLDERS_GROUP, QUICKACCESSES_GROUP, LASTGROUP
   };
 
+  private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
+
   private MainActivity mainActivity;
   private Resources resources;
   private DataUtils dataUtils;
 
   private ActionViewStateManager actionViewStateManager;
-  private boolean isSomethingSelected;
   private volatile int phoneStorageCount =
       0; // number of storage available (internal/external/otg etc)
   private boolean isDrawerLocked = false;
@@ -123,9 +126,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private CustomNavigationView navView;
   private RelativeLayout drawerHeaderParent;
   private View drawerHeaderLayout, drawerHeaderView;
+  private ImageView donateImageView;
+  private ImageView telegramImageView;
+  private TextView appVersion;
 
   /** Tablet is defined as 'width > 720dp' */
   private boolean isOnTablet = false;
+
+  private Billing billing;
 
   public Drawer(MainActivity mainActivity) {
     this.mainActivity = mainActivity;
@@ -135,20 +143,28 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);
     drawerHeaderParent = drawerHeaderLayout.findViewById(R.id.drawer_header_parent);
     drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
-    drawerHeaderView.setOnLongClickListener(
-        v -> {
-          Intent intent1;
-          if (SDK_INT < Build.VERSION_CODES.KITKAT) {
-            intent1 = new Intent();
-            intent1.setAction(Intent.ACTION_GET_CONTENT);
-          } else {
-            intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
-          }
-          intent1.addCategory(Intent.CATEGORY_OPENABLE);
-          intent1.setType("image/*");
-          mainActivity.startActivityForResult(intent1, image_selector_request_code);
-          return false;
-        });
+    donateImageView = drawerHeaderLayout.findViewById(R.id.donate);
+    telegramImageView = drawerHeaderLayout.findViewById(R.id.telegram);
+    appVersion = drawerHeaderLayout.findViewById(R.id.app_version);
+    if (BuildConfig.DEBUG) {
+      appVersion.setVisibility(View.VISIBLE);
+    }
+    donateImageView.setOnClickListener(v -> new Billing(mainActivity));
+    telegramImageView.setOnClickListener(v -> Utils.openURL(URL_TELEGRAM, mainActivity));
+    /*drawerHeaderView.setOnLongClickListener(
+    v -> {
+      Intent intent1;
+      if (SDK_INT < Build.VERSION_CODES.KITKAT) {
+        intent1 = new Intent();
+        intent1.setAction(Intent.ACTION_GET_CONTENT);
+      } else {
+        intent1 = new Intent(Intent.ACTION_OPEN_DOCUMENT);
+      }
+      intent1.addCategory(Intent.CATEGORY_OPENABLE);
+      intent1.setType("image/*");
+      mainActivity.startActivityForResult(intent1, image_selector_request_code);
+      return false;
+    });*/
 
     mImageLoader = AppConfig.getInstance().getImageLoader();
 
@@ -200,18 +216,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     // drawerHeaderParent.setBackgroundColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
     if (mainActivity.findViewById(R.id.tab_frame) != null) {
       isOnTablet = true;
-      lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
-      open();
       mDrawerLayout.setScrimColor(Color.TRANSPARENT);
-      mDrawerLayout.post(this::open);
-    } else if (mainActivity.findViewById(R.id.tab_frame) == null) {
-      unlockIfNotOnTablet();
-      close();
-      mDrawerLayout.post(this::close);
     }
     navView.addHeaderView(drawerHeaderLayout);
 
-    if (!isDrawerLocked) {
+    if (!isOnTablet) {
       mDrawerToggle =
           new ActionBarDrawerToggle(
               mainActivity, /* host Activity */
@@ -246,6 +255,19 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             desiredWidthInPx, LinearLayout.LayoutParams.MATCH_PARENT, Gravity.START));
   }
 
+  /** Refactors lock mode based on orientation */
+  public void refactorDrawerLockMode() {
+    if (mainActivity.findViewById(R.id.tab_frame) != null) {
+      isOnTablet = true;
+      mDrawerLayout.setScrimColor(Color.TRANSPARENT);
+      open();
+      lock(DrawerLayout.LOCK_MODE_LOCKED_OPEN);
+    } else {
+      unlockIfNotOnTablet();
+      close();
+    }
+  }
+
   public void refreshDrawer() {
     Menu menu = navView.getMenu();
     menu.clear();
@@ -263,7 +285,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
       storageDirectoryPaths.add(file);
 
-      if (file.contains(OTGUtil.PREFIX_OTG)) {
+      if (file.contains(OTGUtil.PREFIX_OTG) || file.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
         addNewItem(
             menu,
             STORAGES_GROUP,
@@ -546,7 +568,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     if (item != null) {
       item.setChecked(true);
       actionViewStateManager.selectActionView(item);
-      isSomethingSelected = true;
     }
   }
 
@@ -571,7 +592,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
         imageView.setColorFilter(Color.WHITE);
       }
-
       item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
     }
   }
@@ -586,7 +606,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       @DrawableRes Integer actionViewIcon) {
     if (BuildConfig.DEBUG && menu.findItem(order) != null)
       throw new IllegalStateException("Item already id exists: " + order);
-
     MenuItem item = menu.add(group, order, order, text).setIcon(icon);
     dataUtils.putDrawerMetadata(item, meta);
 
@@ -598,7 +617,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
         imageView.setColorFilter(Color.WHITE);
       }
-
       item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
     }
   }
@@ -628,6 +646,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public boolean isLocked() {
     return isDrawerLocked;
+  }
+
+  public boolean isOnTablet() {
+    return isOnTablet;
   }
 
   public boolean isOpen() {
@@ -673,7 +695,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   public boolean onNavigationItemSelected(@NonNull MenuItem item) {
     actionViewStateManager.deselectCurrentActionView();
     actionViewStateManager.selectActionView(item);
-    isSomethingSelected = true;
 
     String title = item.getTitle().toString();
     MenuMetadata meta = dataUtils.getDrawerMetadata(item);
@@ -694,7 +715,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-            && meta.path.contains(OTGUtil.PREFIX_OTG)
+            && (meta.path.contains(OTGUtil.PREFIX_OTG)
+                || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
             && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
           MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
           dialog
@@ -705,6 +727,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                     dialog.dismiss();
                   });
+          dialog.show();
         } else {
           pendingPath = meta.path;
           closeIfNotLocked();
@@ -762,14 +785,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
   }
 
-  public boolean isSomethingSelected() {
-    return isSomethingSelected;
-  }
-
-  public void setSomethingSelected(boolean isSelected) {
-    isSomethingSelected = isSelected;
-  }
-
   public int getPhoneStorageCount() {
     return phoneStorageCount;
   }
@@ -805,10 +820,35 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     if (id == null) deselectEverything();
     else {
+      selectCorrectDrawerItem(id);
+    }
+  }
+
+  /**
+   * Select given item id in navigation drawer
+   *
+   * @param id given item id from menu
+   */
+  public void selectCorrectDrawerItem(int id) {
+    if (id < 0) {
+      deselectEverything();
+    } else {
       MenuItem item = navView.getMenu().findItem(id);
       navView.setCheckedItem(item);
       actionViewStateManager.selectActionView(item);
     }
+  }
+
+  /**
+   * Get selected item id
+   *
+   * @return item id from menu
+   */
+  public int getDrawerSelectedItem() {
+    if (navView.getSelected() == null) {
+      return -1;
+    }
+    return navView.getSelected().getItemId();
   }
 
   public void setBackgroundColor(@ColorInt int color) {
@@ -844,7 +884,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   public void deselectEverything() {
     actionViewStateManager
         .deselectCurrentActionView(); // If you set the item as checked the listener doesn't trigger
-    if (!isSomethingSelected) {
+    if (navView.getSelected() == null) {
       return;
     }
 
@@ -853,8 +893,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     for (int i = 0; i < navView.getMenu().size(); i++) {
       navView.getMenu().getItem(i).setChecked(false);
     }
-
-    isSomethingSelected = false;
   }
 
   /**
@@ -902,5 +940,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public String getSecondPath() {
     return secondPath;
+  }
+
+  public Billing getBilling() {
+    return this.billing;
   }
 }

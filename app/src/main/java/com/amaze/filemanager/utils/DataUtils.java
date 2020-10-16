@@ -26,8 +26,8 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
-import com.amaze.filemanager.utils.application.AppConfig;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -395,7 +395,7 @@ public class DataUtils {
   public void clearHistory() {
     history.clear();
     if (dataChangeListener != null) {
-      AppConfig.runInBackground(() -> dataChangeListener.onHistoryCleared());
+      AppConfig.getInstance().runInBackground(() -> dataChangeListener.onHistoryCleared());
     }
   }
 

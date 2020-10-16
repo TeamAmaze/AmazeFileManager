@@ -32,17 +32,17 @@ import java.util.zip.ZipException;
 import java.util.zip.ZipOutputStream;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.application.AppConfig;
-import com.amaze.filemanager.utils.files.FileUtils;
-import com.amaze.filemanager.utils.files.GenericCopyUtil;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;

@@ -56,4 +56,9 @@ public class ShadowSmbFile {
   public long length() throws SmbException {
     return file.length();
   }
+
+  @Implementation
+  public SmbFile[] listFiles() {
+    return new SmbFile[0];
+  }
 }

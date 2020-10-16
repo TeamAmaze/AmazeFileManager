@@ -21,7 +21,7 @@
 package com.amaze.filemanager.utils;
 
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
-import com.amaze.filemanager.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 
 import android.os.Parcel;
 import android.os.Parcelable;

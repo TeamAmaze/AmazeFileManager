@@ -20,21 +20,22 @@
 
 package com.amaze.filemanager.ui.views.appbar;
 
-import static com.amaze.filemanager.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
 
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
-import com.amaze.filemanager.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.fragments.MainFragment;
-import com.amaze.filemanager.fragments.TabFragment;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.files.FileUtils;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -208,6 +209,10 @@ public class BottomBar implements View.OnTouchListener {
     fullPathText.setText(text);
   }
 
+  public String getFullPathText() {
+    return fullPathText.getText().toString();
+  }
+
   public boolean areButtonsShowing() {
     return buttons.getVisibility() == View.VISIBLE;
   }
@@ -341,10 +346,10 @@ public class BottomBar implements View.OnTouchListener {
 
     switch (openmode) {
       case SFTP:
-        newPath = mainActivityHelper.parseSftpPath(news);
+        newPath = HybridFile.parseSftpPath(news);
         break;
       case SMB:
-        newPath = mainActivityHelper.parseSmbPath(news);
+        newPath = HybridFile.parseSmbPath(news);
         break;
       case OTG:
         newPath = mainActivityHelper.parseOTGPath(news);

@@ -33,6 +33,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 
 import android.os.Environment;
 
+@Ignore("Test skipped due to problem at upstream library.")
 public class SevenZipHelperTaskTest2 extends AbstractCompressedHelperTaskTest {
 
   @Test

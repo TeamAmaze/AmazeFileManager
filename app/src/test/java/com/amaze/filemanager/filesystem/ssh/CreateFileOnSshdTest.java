@@ -27,12 +27,14 @@ import java.util.Collections;
 
 import org.apache.sshd.common.file.virtualfs.VirtualFileSystemFactory;
 import org.apache.sshd.common.session.Session;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.amaze.filemanager.filesystem.ssh.test.BlockFileCreationFileSystemProvider;
 
 import android.os.Environment;
 
+@Ignore("Skipped due to no solid test case given")
 public class CreateFileOnSshdTest extends AbstractSftpServerTest {
 
   @Test
@@ -40,7 +42,8 @@ public class CreateFileOnSshdTest extends AbstractSftpServerTest {
     tearDown();
     createSshServer(
         new VirtualFileSystemFactory(
-            Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath())));
+            Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath())),
+        serverPort);
   }
 
   @Test
@@ -55,6 +58,7 @@ public class CreateFileOnSshdTest extends AbstractSftpServerTest {
                     Paths.get(Environment.getExternalStorageDirectory().getAbsolutePath()),
                     Collections.emptyMap());
           }
-        });
+        },
+        serverPort);
   }
 }

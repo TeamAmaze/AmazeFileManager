@@ -20,46 +20,76 @@
 
 package com.amaze.filemanager.test;
 
+import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.TimeUnit;
 
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.robolectric.RobolectricTestRunner;
-import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.files.CryptUtil;
 
-@RunWith(RobolectricTestRunner.class)
-@Config(
-    constants = BuildConfig.class,
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
+
+@RunWith(AndroidJUnit4.class)
+@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
 public class ShadowCryptUtilTest {
+
+  @BeforeClass
+  public static void setUpBeforeClass() {
+    RxJavaPlugins.reset();
+    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+  }
 
   @Test
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
-    String encrypted = CryptUtil.encryptPassword(RuntimeEnvironment.application, text);
-    assertEquals(text, CryptUtil.decryptPassword(RuntimeEnvironment.application, encrypted));
+    String encrypted = CryptUtil.encryptPassword(ApplicationProvider.getApplicationContext(), text);
+    assertEquals(
+        text, CryptUtil.decryptPassword(ApplicationProvider.getApplicationContext(), encrypted));
   }
 
   @Test
-  public void testWithUtilsHandler() throws GeneralSecurityException, IOException {
-    UtilsHandler utilsHandler = new UtilsHandler(RuntimeEnvironment.application);
-    utilsHandler.onCreate(utilsHandler.getWritableDatabase());
+  public void testWithUtilsHandler() {
+
+    UtilitiesDatabase utilitiesDatabase =
+        UtilitiesDatabase.initialize(ApplicationProvider.getApplicationContext());
+    UtilsHandler utilsHandler =
+        new UtilsHandler(ApplicationProvider.getApplicationContext(), utilitiesDatabase);
 
     String fingerprint = "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff";
     String url = "ssh://test:test@127.0.0.1:22";
 
-    utilsHandler.addSsh(
-        "Test", SshClientUtils.encryptSshPathAsNecessary(url), fingerprint, null, null);
-    assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+    utilsHandler.saveToDatabase(
+        new OperationData(
+            UtilsHandler.Operation.SFTP,
+            SshClientUtils.encryptSshPathAsNecessary(url),
+            "Test",
+            fingerprint,
+            null,
+            null));
+
+    await()
+        .atMost(10, TimeUnit.SECONDS)
+        .until(
+            () -> {
+              assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+              utilitiesDatabase.close();
+              return true;
+            });
   }
 }

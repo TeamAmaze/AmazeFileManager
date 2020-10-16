@@ -25,14 +25,15 @@ import java.util.regex.Pattern;
 
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.fragments.SearchWorkerFragment;
+import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.utils.OpenMode;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void> {
+public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void>
+    implements StatefulAsyncTask<SearchWorkerFragment.HelperCallbacks> {
 
   private static final String TAG = "SearchAsyncTask";
 
@@ -43,15 +44,8 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
   private boolean rootMode, isRegexEnabled, isMatchesEnabled;
 
   public SearchAsyncTask(
-      Activity a,
-      SearchWorkerFragment.HelperCallbacks l,
-      String input,
-      OpenMode openMode,
-      boolean root,
-      boolean regex,
-      boolean matches) {
+      Activity a, String input, OpenMode openMode, boolean root, boolean regex, boolean matches) {
     activity = new WeakReference<>(a);
-    callbacks = l;
     this.input = input;
     this.openMode = openMode;
     rootMode = root;
@@ -111,6 +105,11 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
     if (!isCancelled() && callbacks != null) {
       callbacks.onProgressUpdate(val[0], input);
     }
+  }
+
+  @Override
+  public void setCallback(SearchWorkerFragment.HelperCallbacks helperCallbacks) {
+    this.callbacks = helperCallbacks;
   }
 
   /**

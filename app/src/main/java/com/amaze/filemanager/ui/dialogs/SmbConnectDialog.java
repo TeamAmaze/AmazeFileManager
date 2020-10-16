@@ -30,13 +30,13 @@ import java.security.GeneralSecurityException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.EditTextColorStateUtil;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
-import com.amaze.filemanager.utils.provider.UtilitiesProvider;
 import com.google.android.material.textfield.TextInputLayout;
 
 import android.app.Dialog;
@@ -207,7 +207,6 @@ public class SmbConnectDialog extends DialogFragment {
       String userp = "", passp = "", ipp = "", domainp = "";
       conName.setText(name);
       try {
-        jcifs.Config.registerSmbURLHandler();
         URL a = new URL(path);
         String userinfo = a.getUserInfo();
         if (userinfo != null) {

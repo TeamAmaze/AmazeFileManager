@@ -26,8 +26,8 @@ import java.util.Collections;
 import java.util.List;
 
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
+import com.amaze.filemanager.asynchronous.broadcast_receivers.PackageReceiver;
 import com.amaze.filemanager.utils.InterestingConfigChange;
-import com.amaze.filemanager.utils.broadcast_receiver.PackageReceiver;
 
 import android.content.Context;
 import android.content.pm.ApplicationInfo;

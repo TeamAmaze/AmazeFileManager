@@ -52,6 +52,21 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
+        android:id="@+id/defaultPathTIL"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="text"
+        android:hint="@string/scp_default_path"
+            android:id="@+id/defaultPathET"
+            android:layout_gravity="center_horizontal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
         app:errorEnabled="true"
         android:layout_height="wrap_content"
         android:id="@+id/usernameTIL" >

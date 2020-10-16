@@ -31,15 +31,15 @@ import org.apache.commons.compress.archivers.ArchiveException;
 import org.tukaani.xz.CorruptedInputException;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.activities.MainActivity;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-import com.amaze.filemanager.utils.application.AppConfig;
 
 import android.widget.EditText;
 
