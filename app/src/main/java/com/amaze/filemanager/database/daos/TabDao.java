@@ -32,6 +32,7 @@ import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Transaction;
+import androidx.room.Update;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
@@ -55,6 +56,9 @@ public interface TabDao {
 
   @Query("SELECT * FROM " + TABLE_TAB + " WHERE " + COLUMN_TAB_NO + " = :tabNo")
   Single<Tab> find(int tabNo);
+
+  @Update(onConflict = OnConflictStrategy.REPLACE)
+  void update(Tab tab);
 
   @Query("SELECT * FROM " + TABLE_TAB)
   Single<List<Tab>> list();

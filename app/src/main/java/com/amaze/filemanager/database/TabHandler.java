@@ -54,6 +54,10 @@ public class TabHandler {
     database.tabDao().insertTab(tab).subscribeOn(Schedulers.io()).subscribe();
   }
 
+  public void update(Tab tab) {
+    database.tabDao().update(tab);
+  }
+
   public void clear() {
     database.tabDao().clear().subscribeOn(Schedulers.io()).subscribe();
   }

@@ -189,7 +189,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
     // Getting old path from database before clearing
     TabHandler tabHandler = TabHandler.getInstance();
-    tabHandler.clear();
 
     int i = 1;
     for (Fragment fragment : fragments) {
@@ -198,13 +197,12 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         if (i - 1 == MainActivity.currentTab && i == pos) {
           updateBottomBar(m);
           mainActivity.getDrawer().selectCorrectDrawerItemForPath(m.getCurrentPath());
+          if (m.openMode == OpenMode.FILE) {
+            tabHandler.update(new Tab(i, m.getCurrentPath(), m.home));
+          } else {
+            tabHandler.update(new Tab(i, m.home, m.home));
+          }
         }
-        if (m.openMode == OpenMode.FILE) {
-          tabHandler.addTab(new Tab(i, m.getCurrentPath(), m.home));
-        } else {
-          tabHandler.addTab(new Tab(i, m.home, m.home));
-        }
-
         i++;
       }
     }
