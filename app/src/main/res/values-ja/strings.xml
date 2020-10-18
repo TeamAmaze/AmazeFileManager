@@ -645,5 +645,6 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="storage_internal">内部ストレージ</string>
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD カード</string>
-</resources>
+    <string name="choose_folder">このフォルダーを選択</string>
+    </resources>
 
