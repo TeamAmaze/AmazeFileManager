@@ -1,1 +1,2 @@
+include ':file_operations'
 include ':app', ':commons_compress_7z'
