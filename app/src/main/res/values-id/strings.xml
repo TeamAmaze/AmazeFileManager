@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -20,7 +20,8 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">File Manager</string>
     <string name="drawer_open">Buka laci navigasi</string>
     <string name="drawer_close">Tutup laci navigasi</string>
@@ -234,7 +235,7 @@
     <string name="icon_color_title">Warna Ikon</string>
     <string name="icon_color_summary">Atur warna ikon</string>
     <string name="choose_color">Pilih warna</string>
-  <string name="files">Berkas</string>
+    <string name="files">Berkas</string>
     <string name="textreader">Pembaca Teks</string>
     <string name="databasereader">Pembaca Basis Data</string>
     <string name="show_dividers">Tampilkan Pemisah</string>
@@ -299,6 +300,7 @@
     <string name="domain">Domain</string>
     <string name="invalid">%s tidak valid</string>
     <string name="ftp_notif_starting">Server FTP sedang berjalan</string>
+    <string name="ftp_notif_starting_title">Server FTP</string>
     <string name="ftp_notif_title">Server FTP Amaze sedang berjalan</string>
     <string name="ftp_notif_text">di %s</string>
     <string name="ftp_notif_stop_server">BERHENTI</string>
@@ -307,12 +309,14 @@
     <string name="ftp_port_change_error_invalid">Porta yang dipilih tidak valid</string>
     <string name="primary_two_title">Warna Utama (Tab Kanan)</string>
     <string name="primary_two_summary">Atur warna elemen UI besar untuk tab di sebelah kanan</string>
-  <string name="support_development">Dukung Pengembangan</string>
+    <string name="support_development">Dukung Pengembangan</string>
     <string name="report_bugs_title">Laporkan Bug</string>
+    <string name="source_title">Kode sumber</string>
+    <string name="source_summary">Lihat kode sumber Amaze di GitHub</string>
     <string name="report_bugs_summary">Laporkan bug atau minta fitur baru</string>
     <string name="translate_title">Terjemahkan</string>
     <string name="translate_summary">Terjemahkan Amaze ke dalam bahasa anda</string>
-  <string name="easter_egg_title">Mode Studio</string>
+    <string name="easter_egg_title">Mode Studio</string>
     <string name="paypal_copy_message">Id Paypal disalin ke papan klip</string>
     <string name="searching_devices">Mencari perangkat</string>
     <string name="use_custom_ip">Gunakan IP khusus</string>
@@ -536,12 +540,12 @@
     <string name="cloud_token_lost">Token hilang, silakan masuk lagi</string>
     <string name="monofont">Fon Monospace</string>
     <string name="showHeaders">Tampilkan Tajuk</string>
-
+	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">Tidak ada item</string>
 	<string name="item">item</string>
 	<string name="items">item</string>
-
+	
 	<string name="byte_singular">byte</string>
 	<string name="bytes">byte</string>
     <!-- end of plurals -->
@@ -563,7 +567,6 @@
     <string name="text_editor">Pengaturan penyunting teks</string>
     <string name="preference_newstack_title">Buka berkas pada sesi baru</string>
     <string name="preference_newstack_summary">Memungkinkan anda membuka berkas di sesi yang terpisah. Dan mengaksesnya dari layar aplikasi yang baru-baru ini dibuka.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Pengembang</string>
     <string name="no_bitcoin_app">Silakan pasang dompet bitcoin</string>
     <string name="channel_name_normal">Notifikasi Amaze</string>
@@ -571,7 +574,6 @@
     <string name="channel_name_ftp">Server FTP Amaze</string>
     <string name="channel_description_ftp">Notifikasi Server FTP Amaze File Manager</string>
 
-    <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Memproses&#8230;</string>
     <string name="failed_no_connection">Gagal memuat berkas. Silakan periksa koneksi anda.</string>
 
@@ -594,7 +596,7 @@
     </string>
     <string name="ssh_key_prompt_passphrase">Silakan masukkan frasa sandi.</string>
     <string name="add_shortcut_not_supported_by_launcher">Pembuatan pintasan tidak didukung oleh launcher anda.</string>
-
+    
     <string name="select_color_config">Pilih konfigurasi warna</string>
     <string name="customize">Ubahsuai</string>
     <string name="custom">Khusus</string>
@@ -637,4 +639,28 @@
     <string name="saf_otg_explanation">Untuk alasan keamanan, anda harus mengunjungi filesystem Android. Silakan pilih perangkat USB dari daftar di sebelah kiri.</string>
     <string name="donation_thanks">Terima kasih atas donasi anda, ini membuat kami tetap termotivasi! (:</string>
     <string name="enable_marquee_filename">Aktifkan efek marquee untuk nama berkas</string>
+    <string name="archive_password_prompt">Silakan masukkan sandi arsip:</string>
+    <string name="cannot_extract_archive">Tidak bisa mengekstrak arsip \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Tidak bisa membuka arsip \"%s\". Arsip rusak, atau aplikasi memang tidak bisa membuka arsip.</string>
+    <string name="close">Tutup</string>
+    <string name="bookmark_exists">Markah sudah ada</string>
+    <string name="hide_media">Sembunyikan dari pengelola media</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">SANGAT MUNGKIN ADA SESEORANG YANG MELAKUKAN HAL YANG TIDAK BAIK!\n\nSeseorang bisa saja sedang memata-matai anda saat ini (serangan man-in-the-middle)! Ada kemungkinan juga kunci hos memang telah berubah. Sidik jari untuk kunci publik yang dikirim oleh host remote tidak cocok dengan yang disimpan di dalam Amaze.\n\nAnda bisa melanjutkan dengan cara memperbarui hos, sidik jari atau membatalkan pembaruan pengaturan koneksi SSH.</string>
+    <string name="update_host_key">Perbarui Kunci Hos</string>
+    <string name="cancel_recommended">Batal (Direkomendasikan)</string>
+    <string name="failed_install_apk">Gagal untuk dipasang</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Penyimpanan Internal</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">Kartu SD</string>
+    <string name="choose_folder">Pilih Folder Ini</string>
+    <string name="some_files_failed_invalid_operation">Beberapa berkas gagal karena proses yang tidak valid</string>
+    <string name="ftp_server_prompt_connect_to_network">Sambung ke jaringan atau aktifkan AP</string>
+    <string name="ftp_server_open_settings">Buka pengaturan</string>
+    <string name="move">Pindah</string>
+    <string name="select_save_location">Pilih lokasi simpan</string>
+    <string name="scp_default_path">Jalur Bawaan (Opsional)</string>
 </resources>
+
