@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -20,7 +20,8 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze File Manager</string>
     <string name="drawer_open">Navigációs fiók megnyitása</string>
     <string name="drawer_close">Navigációs fiók bezárása</string>
@@ -224,7 +225,7 @@
     <string name="database">Adatbázis</string>
     <string name="colored_navigation">Színes navigációs sáv</string>
     <string name="colored_navigvation_sum">Függetlenül attól, hogy a felszínben a rendszer navigációs sáv színezett</string>
- 
+
     <string name="color_title">Szín</string>
     <string name="color_summary">Állítsa be a különböző kezelőfelületi elemek színét</string>
     <string name="primary_color_title">Alapszín (bal lap)</string>
@@ -234,7 +235,7 @@
     <string name="icon_color_title">Ikon színe</string>
     <string name="icon_color_summary">Állítsa be az ikonok színét</string>
     <string name="choose_color">Válasszon színt</string>
-  <string name="files">fájl</string>
+    <string name="files">fájl</string>
     <string name="textreader">Szövegolvasó</string>
     <string name="databasereader">Adatbázis-olvasó</string>
     <string name="show_dividers">Elválasztók megjelenítése</string>
@@ -299,6 +300,7 @@
     <string name="domain">Tartomány</string>
     <string name="invalid">%s érvénytelen</string>
     <string name="ftp_notif_starting">FTP-kiszolgáló indítása</string>
+    <string name="ftp_notif_starting_title">FTP-kiszolgáló</string>
     <string name="ftp_notif_title">Az Amaze FTP-kiszolgáló fut</string>
     <string name="ftp_notif_text">%s</string>
     <string name="ftp_notif_stop_server">LEÁLLÍTÁS</string>
@@ -307,12 +309,12 @@
     <string name="ftp_port_change_error_invalid">Érvénytelen port szám lett kiválasztva</string>
     <string name="primary_two_title">Alapszín (jobb lap)</string>
     <string name="primary_two_summary">Állítsa be a jobb lapon lévő nagy kezelőfelületi elemek a színét</string>
-  <string name="support_development">Fejlesztés támogatása</string>
+    <string name="support_development">Fejlesztés támogatása</string>
     <string name="report_bugs_title">Hibák jelentése</string>
     <string name="report_bugs_summary">Hibák jelentése vagy új funkciók igénylése</string>
     <string name="translate_title">Fordítás</string>
     <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
-  <string name="easter_egg_title">Stúdió mód</string>
+    <string name="easter_egg_title">Stúdió mód</string>
     <string name="paypal_copy_message">A Paypal id a vágólapra lett másolva</string>
     <string name="searching_devices">Eszközök keresése</string>
     <string name="use_custom_ip">Egyéni IP használata</string>
@@ -537,14 +539,14 @@
     <string name="cloud_token_lost">A token elveszett. Kérjük, jelentkezzen be újra</string>
     <string name="monofont">Fix szélességű betű</string>
     <string name="showHeaders">Fejlécek megjelenítése</string>
-
-    <!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
-    <string name="no_items">Nincsenek elemek</string>
-    <string name="item">elem</string>
-    <string name="items">elem</string>
-
-    <string name="byte_singular">bájt</string>
-    <string name="bytes">bájt</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">Nincsenek elemek</string>
+	<string name="item">elem</string>
+	<string name="items">elem</string>
+	
+	<string name="byte_singular">bájt</string>
+	<string name="bytes">bájt</string>
     <!-- end of plurals -->
 
     <string name="no_name">A fájlnak névvel kell rendelkeznie</string>
@@ -564,7 +566,6 @@
     <string name="text_editor">Szövegszerkesztő beállításai</string>
     <string name="preference_newstack_title">Fájlok megnyitása új feladatként</string>
     <string name="preference_newstack_summary">Lehetővé teszi a fájlok megnyitását különálló feladatokban. Ezeket a rendszer legutóbbi képernyőjéről érheti el.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Fejlesztők</string>
     <string name="no_bitcoin_app">Kérjük, telepítse a Bitcoin pénztárcát</string>
     <string name="channel_name_normal">Amaze értesítések</string>
@@ -572,7 +573,6 @@
     <string name="channel_name_ftp">Amaze FTP-kiszolgáló</string>
     <string name="channel_description_ftp">Amaze File Manager FTP-kiszolgáló értesítései</string>
 
-    <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Feldolgozás&#8230;</string>
     <string name="failed_no_connection">Nem sikerült betölteni a fájlokat. Ellenőrizze a kapcsolatot.</string>
 
@@ -636,5 +636,7 @@
     <string name="unknown">ismeretlen</string>
     <string name="multiple_invalid_archive_entries">Néhány fájlt az archívumban nem lehet kibontani; lehet, hogy az archívum sérült vagy rosszindulatú forrásból származik.</string>
     <string name="saf_otg_explanation">Biztonsági okokból most az Android fájlrendszerébe kell lépnie. Kérjük, válassza ki az USB eszközt a bal oldali listából.</string>
-</resources>
+    <string name="archive_password_prompt">Írja be az archívum jelszavát:</string>
+    <string name="close">Bezárás</string>
+    </resources>
 
