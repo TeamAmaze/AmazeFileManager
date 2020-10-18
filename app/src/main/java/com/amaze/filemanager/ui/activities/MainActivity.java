@@ -35,6 +35,7 @@ import java.util.regex.Pattern;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
@@ -167,6 +168,8 @@ public class MainActivity extends PermissionsActivity
         CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>,
         FolderChooserDialog.FolderCallback {
+
+  private static final String TAG = "MainActivity";
 
   public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
   public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -1516,6 +1519,8 @@ public class MainActivity extends PermissionsActivity
           urisToBeSaved = null;
           finish();
           break;
+        default:
+          LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
       }
       operation = -1;
     } else if (requestCode == REQUEST_CODE_SAF) {
