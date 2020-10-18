@@ -127,7 +127,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   public ActionMode mActionMode;
   // TODO refactor
-  public int sortby, dsort, asc;
+  public int sortby;
+  public int dsort;
+  public int asc;
   public String home;
   public boolean selection, results = false;
   public OpenMode openMode = OpenMode.FILE;
@@ -476,8 +478,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             return true;
           }
 
-          if (getMainActivity().mReturnIntent)
-            if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
+          if (getMainActivity().mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+            showOption(R.id.openmulti, menu);
+          }
           // tv.setText(positions.size());
           if (!results) {
             hideOption(R.id.openparent, menu);
