@@ -36,6 +36,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 
+import com.amaze.filemanager.file_operations.filesystem.smbstreamer.StreamSource;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
 

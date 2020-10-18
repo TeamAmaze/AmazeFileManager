@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.smbstreamer;
+package com.amaze.filemanager.file_operations.filesystem.smbstreamer;
 
 /** Created by Arpit on 06-07-2015. */
 import java.io.BufferedReader;
@@ -42,8 +42,7 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
 
-import com.amaze.filemanager.filesystem.cloud.CloudStreamer;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
 
 import android.net.Uri;
 import android.util.Log;
@@ -91,6 +90,8 @@ import android.util.Log;
  * See the end of the source file for distribution license (Modified BSD licence)
  */
 public abstract class StreamServer {
+  public static final String TAG = "StreamServer";
+
   // ==================================================
   // API parts
   // ==================================================
@@ -261,9 +262,9 @@ public abstract class StreamServer {
 
         // Decode the header into parms and header java properties
         decodeHeader(hin, pre, parms, header);
-        Log.d(CloudUtil.TAG, pre.toString());
-        Log.d(CloudUtil.TAG, "Params: " + parms.toString());
-        Log.d(CloudUtil.TAG, "Header: " + header.toString());
+        Log.d(TAG, pre.toString());
+        Log.d(TAG, "Params: " + parms.toString());
+        Log.d(TAG, "Header: " + header.toString());
         String method = pre.getProperty("method");
         String uri = pre.getProperty("uri");
 
