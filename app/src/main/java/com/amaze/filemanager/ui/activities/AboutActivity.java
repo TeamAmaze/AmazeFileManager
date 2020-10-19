@@ -22,6 +22,7 @@ package com.amaze.filemanager.ui.activities;
 
 import static com.amaze.filemanager.utils.Utils.openURL;
 
+import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -237,6 +238,8 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
           case BLACK:
             libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
             break;
+          default:
+            LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
         }
 
         libsBuilder.start(this);
