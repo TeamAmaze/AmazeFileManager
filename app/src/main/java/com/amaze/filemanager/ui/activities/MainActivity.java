@@ -52,12 +52,12 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.StorageNaming;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
@@ -79,6 +79,7 @@ import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
@@ -752,7 +753,10 @@ public class MainActivity extends PermissionsActivity
         icon = R.drawable.ic_sd_storage_white_24dp;
       }
 
-      String name = StorageNaming.getDeviceDescriptionLegacy(this, f);
+      @StorageNaming.DeviceDescription
+      int deviceDescription = StorageNaming.getDeviceDescriptionLegacy(f);
+      String name = StorageNamingHelper.getNameForDeviceDescription(this, f, deviceDescription);
+
       volumes.add(new StorageDirectoryParcelable(file, name, icon));
     }
 

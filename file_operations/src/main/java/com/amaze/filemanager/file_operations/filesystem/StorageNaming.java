@@ -18,32 +18,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem;
+package com.amaze.filemanager.file_operations.filesystem;
 
 import java.io.File;
 
-import com.amaze.filemanager.R;
-
 import android.content.Context;
+
+import androidx.annotation.IntDef;
 
 public final class StorageNaming {
 
+  @IntDef({STORAGE_INTERNAL, STORAGE_SD_CARD, ROOT, NOT_KNOWN})
+  public @interface DeviceDescription {}
+
+  public static final int STORAGE_INTERNAL = 0;
+  public static final int STORAGE_SD_CARD = 1;
+  public static final int ROOT = 2;
+  public static final int NOT_KNOWN = 3;
+
   /** Retrofit of {@link android.os.storage.StorageVolume#getDescription(Context)} to older apis */
-  public static String getDeviceDescriptionLegacy(Context context, File file) {
+  public static @DeviceDescription int getDeviceDescriptionLegacy(File file) {
     String path = file.getPath();
 
     switch (path) {
       case "/storage/emulated/legacy":
       case "/storage/emulated/0":
       case "/mnt/sdcard":
-        return context.getString(R.string.storage_internal);
+        return STORAGE_INTERNAL;
       case "/storage/sdcard":
       case "/storage/sdcard1":
-        return context.getString(R.string.storage_sd_card);
+        return STORAGE_SD_CARD;
       case "/":
-        return context.getString(R.string.root_directory);
+        return ROOT;
       default:
-        return file.getName();
+        return NOT_KNOWN;
     }
   }
 }
