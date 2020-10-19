@@ -509,10 +509,13 @@ public class CopyService extends AbstractProgressiveService {
           GenericCopyUtil copyUtil = new GenericCopyUtil(c, progressHandler);
 
           progressHandler.setFileName(sourceFile.getName(c));
-          copyUtil.copy(sourceFile, targetFile, () -> {
-            // we ran out of memory to map the whole channel, let's switch to streams
-            AppConfig.toast(c, c.getString(R.string.copy_low_memory));
-          });
+          copyUtil.copy(
+              sourceFile,
+              targetFile,
+              () -> {
+                // we ran out of memory to map the whole channel, let's switch to streams
+                AppConfig.toast(c, c.getString(R.string.copy_low_memory));
+              });
         }
       }
     }

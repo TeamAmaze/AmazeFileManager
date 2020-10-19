@@ -353,7 +353,8 @@ public class GenericCopyUtil {
    * @param sourceFile the source file, which is to be copied
    * @param targetFile the target file
    */
-  public void copy(HybridFileParcelable sourceFile, HybridFile targetFile, OnLowMemory onLowMemory) throws IOException {
+  public void copy(HybridFileParcelable sourceFile, HybridFile targetFile, OnLowMemory onLowMemory)
+      throws IOException {
     this.mSourceFile = sourceFile;
     this.mTargetFile = targetFile;
 

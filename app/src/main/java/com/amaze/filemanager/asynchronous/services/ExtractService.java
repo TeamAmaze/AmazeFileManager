@@ -308,7 +308,8 @@ public class ExtractService extends AbstractProgressiveService {
                   public boolean isCancelled() {
                     return progressHandler.getCancelled();
                   }
-                });
+                },
+                (toAdd) -> ServiceWatcherUtil.position += toAdd);
 
         try {
           if (entriesToExtract != null) {

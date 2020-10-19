@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
@@ -44,8 +45,9 @@ class RarExtractor(
     context: Context,
     filePath: String,
     outputPath: String,
-    listener: OnUpdate
-) : Extractor(context, filePath, outputPath, listener) {
+    listener: OnUpdate,
+    updatePosition: UpdatePosition
+) : Extractor(context, filePath, outputPath, listener, updatePosition) {
 
     @Throws(IOException::class)
     override fun extractWithFilter(filter: Filter) {

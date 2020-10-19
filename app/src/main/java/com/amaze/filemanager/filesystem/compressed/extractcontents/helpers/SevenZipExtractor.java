@@ -25,7 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
@@ -43,8 +43,9 @@ public class SevenZipExtractor extends Extractor {
       @NonNull Context context,
       @NonNull String filePath,
       @NonNull String outputPath,
-      @NonNull OnUpdate listener) {
-    super(context, filePath, outputPath, listener);
+      @NonNull OnUpdate listener,
+      @NonNull UpdatePosition updatePosition) {
+    super(context, filePath, outputPath, listener, updatePosition);
   }
 
   @Override
@@ -117,7 +118,7 @@ public class SevenZipExtractor extends Extractor {
                     ? GenericCopyUtil.DEFAULT_BUFFER_SIZE
                     : bytesLeft);
         outputStream.write(content, 0, length);
-        ServiceWatcherUtil.position += length;
+        updatePosition.updatePosition(length);
         progress += length;
       }
     } finally {
