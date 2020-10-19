@@ -28,8 +28,8 @@ import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;

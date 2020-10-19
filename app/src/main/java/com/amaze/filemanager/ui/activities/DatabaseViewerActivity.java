@@ -26,7 +26,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.DbViewerFragment;

@@ -80,7 +80,7 @@ import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
