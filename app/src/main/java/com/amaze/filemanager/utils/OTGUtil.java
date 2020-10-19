@@ -27,10 +27,10 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
-import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
 
 import android.content.Context;
 import android.hardware.usb.UsbConstants;
