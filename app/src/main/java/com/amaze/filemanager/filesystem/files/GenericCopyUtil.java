@@ -35,9 +35,9 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.utils.OnLowMemory;
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -91,7 +91,9 @@ public class GenericCopyUtil {
    *     even on low memory but don't map the whole file to memory but parts of it, and transfer
    *     each part instead.
    */
-  private void startCopy(boolean lowOnMemory, OnLowMemory onLowMemory) throws IOException {
+  private void startCopy(
+      boolean lowOnMemory, @NonNull OnLowMemory onLowMemory, @NonNull UpdatePosition updatePosition)
+      throws IOException {
 
     FileInputStream inputStream = null;
     FileOutputStream outputStream = null;
@@ -306,13 +308,14 @@ public class GenericCopyUtil {
       }
 
       if (bufferedInputStream != null) {
-        if (bufferedOutputStream != null) copyFile(bufferedInputStream, bufferedOutputStream);
+        if (bufferedOutputStream != null)
+          copyFile(bufferedInputStream, bufferedOutputStream, updatePosition);
         else if (outChannel != null) {
-          copyFile(bufferedInputStream, outChannel);
+          copyFile(bufferedInputStream, outChannel, updatePosition);
         }
       } else if (inChannel != null) {
-        if (bufferedOutputStream != null) copyFile(inChannel, bufferedOutputStream);
-        else if (outChannel != null) copyFile(inChannel, outChannel);
+        if (bufferedOutputStream != null) copyFile(inChannel, bufferedOutputStream, updatePosition);
+        else if (outChannel != null) copyFile(inChannel, outChannel, updatePosition);
       }
 
     } catch (IOException e) {
@@ -324,7 +327,7 @@ public class GenericCopyUtil {
 
       onLowMemory.onLowMemory();
 
-      startCopy(true, onLowMemory);
+      startCopy(true, onLowMemory, updatePosition);
     } finally {
 
       try {
@@ -353,16 +356,20 @@ public class GenericCopyUtil {
    * @param sourceFile the source file, which is to be copied
    * @param targetFile the target file
    */
-  public void copy(HybridFileParcelable sourceFile, HybridFile targetFile, OnLowMemory onLowMemory)
+  public void copy(
+      HybridFileParcelable sourceFile,
+      HybridFile targetFile,
+      @NonNull OnLowMemory onLowMemory,
+      @NonNull UpdatePosition updatePosition)
       throws IOException {
     this.mSourceFile = sourceFile;
     this.mTargetFile = targetFile;
 
-    startCopy(false, onLowMemory);
+    startCopy(false, onLowMemory, updatePosition);
   }
 
   /**
-   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel)}.
+   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel, UpdatePosition)}.
    *
    * @see Channels#newChannel(InputStream)
    * @param bufferedInputStream source
@@ -370,30 +377,36 @@ public class GenericCopyUtil {
    * @throws IOException
    */
   @VisibleForTesting
-  void copyFile(@NonNull BufferedInputStream bufferedInputStream, @NonNull FileChannel outChannel)
+  void copyFile(
+      @NonNull BufferedInputStream bufferedInputStream,
+      @NonNull FileChannel outChannel,
+      @NonNull UpdatePosition updatePosition)
       throws IOException {
-    doCopy(Channels.newChannel(bufferedInputStream), outChannel);
+    doCopy(Channels.newChannel(bufferedInputStream), outChannel, updatePosition);
   }
 
   /**
-   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel)}.
+   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel, UpdatePosition)}.
    *
    * @param inChannel source
    * @param outChannel target
    * @throws IOException
    */
   @VisibleForTesting
-  void copyFile(@NonNull FileChannel inChannel, @NonNull FileChannel outChannel)
+  void copyFile(
+      @NonNull FileChannel inChannel,
+      @NonNull FileChannel outChannel,
+      @NonNull UpdatePosition updatePosition)
       throws IOException {
     // MappedByteBuffer inByteBuffer = inChannel.map(FileChannel.MapMode.READ_ONLY, 0,
     // inChannel.size());
     // MappedByteBuffer outByteBuffer = outChannel.map(FileChannel.MapMode.READ_WRITE, 0,
     // inChannel.size());
-    doCopy(inChannel, outChannel);
+    doCopy(inChannel, outChannel, updatePosition);
   }
 
   /**
-   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel)}.
+   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel, UpdatePosition)}.
    *
    * @see Channels#newChannel(InputStream)
    * @see Channels#newChannel(OutputStream)
@@ -404,13 +417,17 @@ public class GenericCopyUtil {
   @VisibleForTesting
   void copyFile(
       @NonNull BufferedInputStream bufferedInputStream,
-      @NonNull BufferedOutputStream bufferedOutputStream)
+      @NonNull BufferedOutputStream bufferedOutputStream,
+      @NonNull UpdatePosition updatePosition)
       throws IOException {
-    doCopy(Channels.newChannel(bufferedInputStream), Channels.newChannel(bufferedOutputStream));
+    doCopy(
+        Channels.newChannel(bufferedInputStream),
+        Channels.newChannel(bufferedOutputStream),
+        updatePosition);
   }
 
   /**
-   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel)}.
+   * Calls {@link #doCopy(ReadableByteChannel, WritableByteChannel, UpdatePosition)}.
    *
    * @see Channels#newChannel(OutputStream)
    * @param inChannel source
@@ -418,20 +435,26 @@ public class GenericCopyUtil {
    * @throws IOException
    */
   @VisibleForTesting
-  void copyFile(@NonNull FileChannel inChannel, @NonNull BufferedOutputStream bufferedOutputStream)
+  void copyFile(
+      @NonNull FileChannel inChannel,
+      @NonNull BufferedOutputStream bufferedOutputStream,
+      @NonNull UpdatePosition updatePosition)
       throws IOException {
-    doCopy(inChannel, Channels.newChannel(bufferedOutputStream));
+    doCopy(inChannel, Channels.newChannel(bufferedOutputStream), updatePosition);
   }
 
   @VisibleForTesting
-  void doCopy(@NonNull ReadableByteChannel from, @NonNull WritableByteChannel to)
+  void doCopy(
+      @NonNull ReadableByteChannel from,
+      @NonNull WritableByteChannel to,
+      @NonNull UpdatePosition updatePosition)
       throws IOException {
     ByteBuffer buffer = ByteBuffer.allocateDirect(DEFAULT_TRANSFER_QUANTUM);
     long count;
     while ((from.read(buffer) != -1 || buffer.position() > 0) && !progressHandler.getCancelled()) {
       buffer.flip();
       count = to.write(buffer);
-      ServiceWatcherUtil.position += count;
+      updatePosition.updatePosition(count);
       buffer.compact();
     }
 
