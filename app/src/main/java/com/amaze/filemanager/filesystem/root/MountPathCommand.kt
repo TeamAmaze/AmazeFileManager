@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.root
 
 import android.os.Build
-import com.amaze.filemanager.exceptions.ShellNotRunningException
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object MountPathCommand : IRootCommand() {

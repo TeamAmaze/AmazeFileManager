@@ -29,8 +29,8 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;

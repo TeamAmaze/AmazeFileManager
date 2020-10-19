@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.root.base
 
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
-import com.amaze.filemanager.exceptions.ShellNotRunningException
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.ui.activities.MainActivity
 import eu.chainfire.libsuperuser.Shell
 import eu.chainfire.libsuperuser.Shell.OnCommandResultListener
