@@ -96,10 +96,7 @@ public class CompressedHelperTest {
    */
   @Test
   public void getExtractorInstance() {
-    UpdatePosition updatePosition =
-        (toAdd) -> {
-          ServiceWatcherUtil.position += toAdd;
-        };
+    UpdatePosition updatePosition = ServiceWatcherUtil.UPDATE_POSITION;
 
     File file = new File("/test/test.zip"); // .zip used by ZipExtractor
     Extractor result =
