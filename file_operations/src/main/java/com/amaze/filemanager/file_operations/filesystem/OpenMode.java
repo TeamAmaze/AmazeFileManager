@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.file_operations.filesystem;
 
 /**
  * Created by vishal on 10/11/16.

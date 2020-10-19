@@ -41,6 +41,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTa
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -49,7 +50,6 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.google.android.material.snackbar.Snackbar;
 

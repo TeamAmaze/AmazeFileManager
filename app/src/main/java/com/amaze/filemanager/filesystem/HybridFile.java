@@ -39,6 +39,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
@@ -51,7 +52,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;

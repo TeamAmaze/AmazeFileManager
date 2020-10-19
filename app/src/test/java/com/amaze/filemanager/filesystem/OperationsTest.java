@@ -34,8 +34,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.OpenMode;
 
 import android.os.Environment;
 

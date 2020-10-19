@@ -27,6 +27,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;

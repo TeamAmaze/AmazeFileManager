@@ -25,10 +25,10 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.utils.OpenMode;
 
 import android.app.Activity;
 import android.os.AsyncTask;

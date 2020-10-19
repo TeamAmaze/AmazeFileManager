@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem;
 
-import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;

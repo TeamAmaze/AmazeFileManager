@@ -34,6 +34,7 @@ import com.amaze.filemanager.adapters.holders.AppHolder;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -43,7 +44,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.AnimUtils;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 

@@ -32,6 +32,7 @@ import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -42,7 +43,6 @@ import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;

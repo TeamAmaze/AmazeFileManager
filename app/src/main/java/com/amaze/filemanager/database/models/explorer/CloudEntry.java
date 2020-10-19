@@ -24,7 +24,7 @@ import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.models.StringWrapper;
 import com.amaze.filemanager.database.typeconverters.EncryptedStringTypeConverter;
 import com.amaze.filemanager.database.typeconverters.OpenModeTypeConverter;
-import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
@@ -70,12 +70,12 @@ public class CloudEntry {
     return this.persistData;
   }
 
-  /** Set the service type Support values from {@link com.amaze.filemanager.utils.OpenMode} */
+  /** Set the service type Support values from {@link OpenMode} */
   public void setServiceType(OpenMode openMode) {
     this.serviceType = openMode;
   }
 
-  /** Returns ordinal value of service from {@link com.amaze.filemanager.utils.OpenMode} */
+  /** Returns ordinal value of service from {@link OpenMode} */
   public OpenMode getServiceType() {
     return this.serviceType;
   }

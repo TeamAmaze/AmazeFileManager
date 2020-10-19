@@ -45,6 +45,7 @@ import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -71,7 +72,6 @@ import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 

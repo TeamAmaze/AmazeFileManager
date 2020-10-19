@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;

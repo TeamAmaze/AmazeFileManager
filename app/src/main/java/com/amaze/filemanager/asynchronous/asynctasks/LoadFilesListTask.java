@@ -33,6 +33,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.exceptions.CloudPluginException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -46,7 +47,6 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
