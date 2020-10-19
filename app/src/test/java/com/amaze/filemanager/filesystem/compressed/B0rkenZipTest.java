@@ -100,7 +100,7 @@ public class B0rkenZipTest {
             zipfile1.getAbsolutePath(),
             Environment.getExternalStorageDirectory().getAbsolutePath(),
             emptyListener,
-                ServiceWatcherUtil.UPDATE_POSITION);
+            ServiceWatcherUtil.UPDATE_POSITION);
     extractor.extractEverything();
     assertEquals(1, extractor.getInvalidArchiveEntries().size());
     assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());
@@ -114,7 +114,7 @@ public class B0rkenZipTest {
             zipfile2.getAbsolutePath(),
             Environment.getExternalStorageDirectory().getAbsolutePath(),
             emptyListener,
-                ServiceWatcherUtil.UPDATE_POSITION);
+            ServiceWatcherUtil.UPDATE_POSITION);
     extractor.extractEverything();
     assertEquals(1, extractor.getInvalidArchiveEntries().size());
     assertTrue(new File(Environment.getExternalStorageDirectory(), "good.txt").exists());
@@ -128,7 +128,7 @@ public class B0rkenZipTest {
             zipfile3.getAbsolutePath(),
             Environment.getExternalStorageDirectory().getAbsolutePath(),
             emptyListener,
-                ServiceWatcherUtil.UPDATE_POSITION);
+            ServiceWatcherUtil.UPDATE_POSITION);
     extractor.extractFiles(new String[] {"/test.txt"});
     assertEquals(0, extractor.getInvalidArchiveEntries().size());
     assertTrue(new File(Environment.getExternalStorageDirectory(), "test.txt").exists());

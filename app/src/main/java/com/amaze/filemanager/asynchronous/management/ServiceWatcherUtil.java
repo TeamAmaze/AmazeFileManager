@@ -48,7 +48,8 @@ import androidx.core.app.NotificationCompat;
 
 public class ServiceWatcherUtil {
 
-  public static final UpdatePosition UPDATE_POSITION = (toAdd -> ServiceWatcherUtil.position += toAdd);
+  public static final UpdatePosition UPDATE_POSITION =
+      (toAdd -> ServiceWatcherUtil.position += toAdd);
 
   public static int state = STATE_UNSET;
 

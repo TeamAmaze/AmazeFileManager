@@ -516,7 +516,7 @@ public class CopyService extends AbstractProgressiveService {
                 // we ran out of memory to map the whole channel, let's switch to streams
                 AppConfig.toast(c, c.getString(R.string.copy_low_memory));
               },
-                  ServiceWatcherUtil.UPDATE_POSITION);
+              ServiceWatcherUtil.UPDATE_POSITION);
         }
       }
     }

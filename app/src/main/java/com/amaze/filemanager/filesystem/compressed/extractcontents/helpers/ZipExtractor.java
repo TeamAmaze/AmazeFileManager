@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
