@@ -35,10 +35,9 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.utils.OnLowMemory;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -92,7 +91,7 @@ public class GenericCopyUtil {
    *     even on low memory but don't map the whole file to memory but parts of it, and transfer
    *     each part instead.
    */
-  private void startCopy(boolean lowOnMemory) throws IOException {
+  private void startCopy(boolean lowOnMemory, OnLowMemory onLowMemory) throws IOException {
 
     FileInputStream inputStream = null;
     FileOutputStream outputStream = null;
@@ -323,10 +322,9 @@ public class GenericCopyUtil {
     } catch (OutOfMemoryError e) {
       e.printStackTrace();
 
-      // we ran out of memory to map the whole channel, let's switch to streams
-      AppConfig.toast(mContext, mContext.getString(R.string.copy_low_memory));
+      onLowMemory.onLowMemory();
 
-      startCopy(true);
+      startCopy(true, onLowMemory);
     } finally {
 
       try {
@@ -355,12 +353,11 @@ public class GenericCopyUtil {
    * @param sourceFile the source file, which is to be copied
    * @param targetFile the target file
    */
-  public void copy(HybridFileParcelable sourceFile, HybridFile targetFile) throws IOException {
-
+  public void copy(HybridFileParcelable sourceFile, HybridFile targetFile, OnLowMemory onLowMemory) throws IOException {
     this.mSourceFile = sourceFile;
     this.mTargetFile = targetFile;
 
-    startCopy(false);
+    startCopy(false, onLowMemory);
   }
 
   /**
