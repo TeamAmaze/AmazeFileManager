@@ -28,13 +28,13 @@ import androidx.annotation.IntDef;
 
 public final class StorageNaming {
 
-  @IntDef({STORAGE_INTERNAL, STORAGE_SD_CARD, ROOT, NOT_KNOWN})
-  public @interface DeviceDescription {}
-
   public static final int STORAGE_INTERNAL = 0;
   public static final int STORAGE_SD_CARD = 1;
   public static final int ROOT = 2;
   public static final int NOT_KNOWN = 3;
+
+  @IntDef({STORAGE_INTERNAL, STORAGE_SD_CARD, ROOT, NOT_KNOWN})
+  public @interface DeviceDescription {}
 
   /** Retrofit of {@link android.os.storage.StorageVolume#getDescription(Context)} to older apis */
   public static @DeviceDescription int getDeviceDescriptionLegacy(File file) {
