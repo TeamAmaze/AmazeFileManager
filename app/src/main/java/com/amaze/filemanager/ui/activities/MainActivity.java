@@ -37,6 +37,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.TagsHelper;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
@@ -169,7 +170,7 @@ public class MainActivity extends PermissionsActivity
         LoaderManager.LoaderCallbacks<Cursor>,
         FolderChooserDialog.FolderCallback {
 
-  private static final String TAG = "MainActivity";
+  private static final String TAG = TagsHelper.getTag(MainActivity.class);
 
   public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
   public static final String TAG_ASYNC_HELPER = "async_helper";
