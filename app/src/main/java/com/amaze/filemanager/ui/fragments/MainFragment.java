@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
@@ -307,7 +308,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 if (!IS_LIST) {
                   loadViews();
                 }
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
                   mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
                   mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -478,7 +479,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             return true;
           }
 
-          if (getMainActivity().mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+          if (getMainActivity().mReturnIntent && Build.VERSION.SDK_INT >= JELLY_BEAN) {
             showOption(R.id.openmulti, menu);
           }
           // tv.setText(positions.size());
