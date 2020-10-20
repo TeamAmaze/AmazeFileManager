@@ -95,8 +95,6 @@ public class GenericCopyUtil {
       boolean lowOnMemory, @NonNull OnLowMemory onLowMemory, @NonNull UpdatePosition updatePosition)
       throws IOException {
 
-    FileInputStream inputStream = null;
-    FileOutputStream outputStream = null;
     FileChannel inChannel = null;
     FileChannel outChannel = null;
     BufferedInputStream bufferedInputStream = null;
@@ -237,8 +235,6 @@ public class GenericCopyUtil {
       try {
         if (inChannel != null) inChannel.close();
         if (outChannel != null) outChannel.close();
-        if (inputStream != null) inputStream.close();
-        if (outputStream != null) outputStream.close();
         if (bufferedInputStream != null) bufferedInputStream.close();
         if (bufferedOutputStream != null) bufferedOutputStream.close();
       } catch (IOException e) {
