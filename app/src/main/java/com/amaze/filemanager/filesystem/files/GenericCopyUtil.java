@@ -95,13 +95,12 @@ public class GenericCopyUtil {
       boolean lowOnMemory, @NonNull OnLowMemory onLowMemory, @NonNull UpdatePosition updatePosition)
       throws IOException {
 
-    FileChannel inChannel = null;
-    FileChannel outChannel = null;
+    ReadableByteChannel inChannel = null;
+    WritableByteChannel outChannel = null;
     BufferedInputStream bufferedInputStream = null;
     BufferedOutputStream bufferedOutputStream = null;
 
     try {
-
       // initializing the input channels based on file types
       if (mSourceFile.isOtgFile()) {
         // source is in otg
@@ -209,17 +208,23 @@ public class GenericCopyUtil {
         }
       }
 
-      if (bufferedInputStream != null) {
-        if (bufferedOutputStream != null)
-          copyFile(bufferedInputStream, bufferedOutputStream, updatePosition);
-        else if (outChannel != null) {
-          copyFile(bufferedInputStream, outChannel, updatePosition);
-        }
-      } else if (inChannel != null) {
-        if (bufferedOutputStream != null) copyFile(inChannel, bufferedOutputStream, updatePosition);
-        else if (outChannel != null) copyFile(inChannel, outChannel, updatePosition);
+      if(bufferedInputStream != null) {
+        inChannel = Channels.newChannel(bufferedInputStream);
       }
 
+      if(bufferedOutputStream != null){
+        outChannel = Channels.newChannel(bufferedOutputStream);
+      }
+
+      if(inChannel == null) {
+        throw new NullPointerException("Tried to copy from null!");
+      }
+
+      if(outChannel == null) {
+        throw new NullPointerException("Tried to copy to null!");
+      }
+
+      doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
       e.printStackTrace();
       Log.d(getClass().getSimpleName(), "I/O Error!");
