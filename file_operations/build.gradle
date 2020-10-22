@@ -59,6 +59,8 @@ dependencies {
     //smb
     implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
 
+    implementation 'androidx.multidex:multidex:2.0.1'//Multiple dex files
+
     //TODO some libs are not needed
 
     //For tests
