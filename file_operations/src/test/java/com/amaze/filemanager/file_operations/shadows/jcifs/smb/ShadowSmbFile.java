@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.shadows.jcifs.smb;
+package com.amaze.filemanager.file_operations.shadows.jcifs.smb;
 
 import java.io.File;
 import java.io.FileInputStream;
