@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.cloud;
+package com.amaze.filemanager.file_operations.filesystem.cloud;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
@@ -42,7 +42,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamSource;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.file_operations.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
