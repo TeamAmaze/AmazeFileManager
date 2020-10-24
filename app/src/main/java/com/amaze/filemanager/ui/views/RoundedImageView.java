@@ -37,8 +37,10 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
+import androidx.annotation.Nullable;
+
 /** Created by Arpit on 23-01-2015 edited by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
-public class RoundedImageView extends ImageView {
+public class RoundedImageView extends androidx.appcompat.widget.AppCompatImageView {
 
   private static final float BACKGROUND_CIRCLE_MARGIN_PERCENTUAL = 0.015f;
 
@@ -88,6 +90,12 @@ public class RoundedImageView extends ImageView {
     }
   }
 
+  @Override
+  public void setImageDrawable(@Nullable Drawable drawable) {
+    super.setImageDrawable(drawable);
+    forceRedraw = true;
+  }
+  
   @Override
   public void setBackgroundColor(int color) {
     background.setColor(color);
