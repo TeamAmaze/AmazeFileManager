@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
@@ -31,7 +32,6 @@ import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
@@ -104,7 +104,7 @@ public class AppsListFragment extends ListFragment
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     ListPreloader<String> preloader =
         new ListPreloader<>(
-            Glide.with(app), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
+            GlideApp.with(app), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
 
     adapter =
         new AppsAdapter(
