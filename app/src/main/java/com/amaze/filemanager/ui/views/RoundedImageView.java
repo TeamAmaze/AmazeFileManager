@@ -35,7 +35,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.widget.ImageView;
 
 import androidx.annotation.Nullable;
 
@@ -95,7 +94,7 @@ public class RoundedImageView extends androidx.appcompat.widget.AppCompatImageVi
     super.setImageDrawable(drawable);
     forceRedraw = true;
   }
-  
+
   @Override
   public void setBackgroundColor(int color) {
     background.setColor(color);
