@@ -120,7 +120,12 @@ public class RootUtils {
     // remounting destination as rw
     String mountPoint = mountFileSystemRW(destination);
 
-    RootHelper.runShellCommand("cp -r \"" + source + "\" \"" + destination + "\"");
+    RootHelper.runShellCommand(
+        "cp -r \""
+            + RootHelper.getCommandLineString(source)
+            + "\" \""
+            + RootHelper.getCommandLineString(destination)
+            + "\"");
 
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
@@ -145,7 +150,9 @@ public class RootUtils {
     String mountPoint = mountFileSystemRW(filePath);
 
     String options = isDirectory ? "-R" : "";
-    String command = String.format(CHMOD_COMMAND, options, updatedPermissions, filePath);
+    String command =
+        String.format(
+            CHMOD_COMMAND, options, updatedPermissions, RootHelper.getCommandLineString(filePath));
 
     RootHelper.runShellCommandWithCallback(
         command,
@@ -172,8 +179,8 @@ public class RootUtils {
   public static void mkDir(String path, String name) throws ShellNotRunningException {
 
     String mountPoint = mountFileSystemRW(path);
-
-    RootHelper.runShellCommand("mkdir \"" + path + "/" + name + "\"");
+    String filePath = path + "/" + name;
+    RootHelper.runShellCommand("mkdir \"" + RootHelper.getCommandLineString(filePath) + "\"");
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
       mountFileSystemRO(mountPoint);
@@ -188,7 +195,7 @@ public class RootUtils {
   public static void mkFile(String path) throws ShellNotRunningException {
     String mountPoint = mountFileSystemRW(path);
 
-    RootHelper.runShellCommand("touch \"" + path + "\"");
+    RootHelper.runShellCommand("touch \"" + RootHelper.getCommandLineString(path) + "\"");
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
       mountFileSystemRO(mountPoint);
@@ -209,7 +216,9 @@ public class RootUtils {
    */
   public static boolean delete(String path) throws ShellNotRunningException {
     String mountPoint = mountFileSystemRW(path);
-    ArrayList<String> result = RootHelper.runShellCommandToList("rm -rf \"" + path + "\"");
+    ArrayList<String> result =
+        RootHelper.runShellCommandToList(
+            "rm -rf \"" + RootHelper.getCommandLineString(path) + "\"");
 
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
@@ -225,7 +234,12 @@ public class RootUtils {
     String mountPoint = mountFileSystemRW(destination);
 
     // mountOwnerRW(mountPath);
-    RootHelper.runShellCommand("mv \"" + path + "\" \"" + destination + "\"");
+    RootHelper.runShellCommand(
+        "mv \""
+            + RootHelper.getCommandLineString(path)
+            + "\" \""
+            + RootHelper.getCommandLineString(destination)
+            + "\"");
 
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
@@ -243,7 +257,12 @@ public class RootUtils {
   public static boolean rename(String oldPath, String newPath) throws ShellNotRunningException {
     String mountPoint = mountFileSystemRW(oldPath);
     ArrayList<String> output =
-        RootHelper.runShellCommandToList("mv \"" + oldPath + "\" \"" + newPath + "\"");
+        RootHelper.runShellCommandToList(
+            "mv \""
+                + RootHelper.getCommandLineString(oldPath)
+                + "\" \""
+                + RootHelper.getCommandLineString(newPath)
+                + "\"");
 
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
@@ -258,7 +277,12 @@ public class RootUtils {
 
     String mountPoint = mountFileSystemRW(destinationPath);
 
-    RootHelper.runShellCommand("cat \"" + sourcePath + "\" > \"" + destinationPath + "\"");
+    RootHelper.runShellCommand(
+        "cat \""
+            + RootHelper.getCommandLineString(sourcePath)
+            + "\" > \""
+            + RootHelper.getCommandLineString(destinationPath)
+            + "\"");
     if (mountPoint != null) {
       // we mounted the filesystem as rw, let's mount it back to ro
       mountFileSystemRO(mountPoint);

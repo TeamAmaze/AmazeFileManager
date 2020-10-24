@@ -725,6 +725,7 @@ public class FileUtils {
       for (int i = q + 1; i < array.length; i++) {
         link.append(" ").append(array[i]);
       }
+      link = new StringBuilder(link.toString().trim());
     }
     long Size = (size == null || size.trim().length() == 0) ? -1 : Long.parseLong(size);
     if (date.trim().length() > 0) {
