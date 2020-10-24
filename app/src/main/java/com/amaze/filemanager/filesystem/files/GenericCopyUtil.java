@@ -208,19 +208,19 @@ public class GenericCopyUtil {
         }
       }
 
-      if(bufferedInputStream != null) {
+      if (bufferedInputStream != null) {
         inChannel = Channels.newChannel(bufferedInputStream);
       }
 
-      if(bufferedOutputStream != null){
+      if (bufferedOutputStream != null) {
         outChannel = Channels.newChannel(bufferedOutputStream);
       }
 
-      if(inChannel == null) {
+      if (inChannel == null) {
         throw new NullPointerException("Tried to copy from null!");
       }
 
-      if(outChannel == null) {
+      if (outChannel == null) {
         throw new NullPointerException("Tried to copy to null!");
       }
 
