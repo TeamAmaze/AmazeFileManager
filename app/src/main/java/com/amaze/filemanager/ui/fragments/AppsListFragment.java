@@ -104,7 +104,10 @@ public class AppsListFragment extends ListFragment
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     ListPreloader<String> preloader =
         new ListPreloader<>(
-            GlideApp.with(app), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
+            GlideApp.with(app),
+            modelProvider,
+            sizeProvider,
+            GlideConstants.MAX_PRELOAD_APPSADAPTER);
 
     adapter =
         new AppsAdapter(

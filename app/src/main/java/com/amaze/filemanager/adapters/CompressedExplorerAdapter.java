@@ -248,7 +248,9 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
       holder.txtDesc.setText("");
       holder.date.setText(R.string.goback);
     } else {
-      GlideApp.with(compressedExplorerFragment).load(rowItem.iconData.image).into(holder.genericIcon);
+      GlideApp.with(compressedExplorerFragment)
+          .load(rowItem.iconData.image)
+          .into(holder.genericIcon);
 
       if (compressedExplorerFragment.showLastModified)
         holder.date.setText(Utils.getDate(context, rowItem.date));

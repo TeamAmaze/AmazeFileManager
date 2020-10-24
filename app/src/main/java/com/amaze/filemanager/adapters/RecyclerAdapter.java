@@ -909,7 +909,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       OnImageProcessed errorListener) {
     if (iconData.isImageBroken()) {
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
-      GlideApp.with(mainFrag).load(R.drawable.ic_broken_image_white_24dp).into(viewHolder.genericIcon);
+      GlideApp.with(mainFrag)
+          .load(R.drawable.ic_broken_image_white_24dp)
+          .into(viewHolder.genericIcon);
       GradientDrawable gradientDrawable = (GradientDrawable) viewHolder.genericIcon.getBackground();
       gradientDrawable.setColor(grey_color);
 
@@ -976,7 +978,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
       iconBackground.setBackgroundColor(grey_color);
-      GlideApp.with(mainFrag).load(R.drawable.ic_broken_image_white_24dp).into(viewHolder.genericIcon);
+      GlideApp.with(mainFrag)
+          .load(R.drawable.ic_broken_image_white_24dp)
+          .into(viewHolder.genericIcon);
       view.setVisibility(View.INVISIBLE);
 
       errorListener.onImageProcessed(true);
