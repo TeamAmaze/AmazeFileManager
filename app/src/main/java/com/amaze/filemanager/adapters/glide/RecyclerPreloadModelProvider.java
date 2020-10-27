@@ -23,8 +23,9 @@ package com.amaze.filemanager.adapters.glide;
 import java.util.Collections;
 import java.util.List;
 
+import com.amaze.filemanager.GlideApp;
+import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -40,12 +41,12 @@ public class RecyclerPreloadModelProvider
     implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 
   private List<IconDataParcelable> urisToLoad;
-  private RequestBuilder<Drawable> request;
+  private GlideRequest<Drawable> request;
 
   public RecyclerPreloadModelProvider(
       @NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris) {
     urisToLoad = uris;
-    request = Glide.with(fragment).asDrawable().centerCrop();
+    request = GlideApp.with(fragment).asDrawable().centerCrop();
   }
 
   @Override

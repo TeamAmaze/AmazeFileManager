@@ -10,6 +10,7 @@ on:
     branches:
       - 'master'
       - 'release/*'
+      - 'hotfix/*'
 
 jobs:
   build:

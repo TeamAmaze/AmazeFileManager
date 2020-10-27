@@ -33,6 +33,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -56,7 +57,6 @@ import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.engine.GlideException;
@@ -406,7 +406,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     preloader =
         new RecyclerViewPreloader<>(
-            Glide.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES);
+            GlideApp.with(mainFrag), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES);
 
     recyclerView.addOnScrollListener(preloader);
   }
@@ -542,10 +542,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
       if (mainFrag.IS_LIST) {
         // clear previously cached icon
-        Glide.with(mainFrag).clear(holder.genericIcon);
-        Glide.with(mainFrag).clear(holder.pictureIcon);
-        Glide.with(mainFrag).clear(holder.apkIcon);
-        Glide.with(mainFrag).clear(holder.rl);
+        GlideApp.with(mainFrag).clear(holder.genericIcon);
+        GlideApp.with(mainFrag).clear(holder.pictureIcon);
+        GlideApp.with(mainFrag).clear(holder.apkIcon);
+        GlideApp.with(mainFrag).clear(holder.rl);
 
         holder.rl.setOnClickListener(
             v -> {
@@ -729,10 +729,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       } else {
         // view is a grid view
         // clear previously cached icon
-        Glide.with(mainFrag).clear(holder.genericIcon);
-        Glide.with(mainFrag).clear(holder.iconLayout);
-        Glide.with(mainFrag).clear(holder.imageView1);
-        Glide.with(mainFrag).clear(holder.rl);
+        GlideApp.with(mainFrag).clear(holder.genericIcon);
+        GlideApp.with(mainFrag).clear(holder.iconLayout);
+        GlideApp.with(mainFrag).clear(holder.imageView1);
+        GlideApp.with(mainFrag).clear(holder.rl);
 
         holder.checkImageViewGrid.setColorFilter(accentColor);
         holder.rl.setOnClickListener(
@@ -777,7 +777,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             holder.genericIcon.setImageResource(R.drawable.ic_doc_apk_white);
           }
         } else {
-          Glide.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
+          GlideApp.with(mainFrag).load(rowItem.iconData.image).into(holder.genericIcon);
         }
 
         if (holder.genericIcon.getVisibility() == View.VISIBLE) {
@@ -909,7 +909,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       OnImageProcessed errorListener) {
     if (iconData.isImageBroken()) {
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
-      Glide.with(mainFrag).load(R.drawable.ic_broken_image_white_24dp).into(viewHolder.genericIcon);
+      GlideApp.with(mainFrag)
+          .load(R.drawable.ic_broken_image_white_24dp)
+          .into(viewHolder.genericIcon);
       GradientDrawable gradientDrawable = (GradientDrawable) viewHolder.genericIcon.getBackground();
       gradientDrawable.setColor(grey_color);
 
@@ -918,7 +920,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     viewHolder.genericIcon.setVisibility(View.VISIBLE);
-    Glide.with(mainFrag).load(iconData.loadingImage).into(viewHolder.genericIcon);
+    GlideApp.with(mainFrag).load(iconData.loadingImage).into(viewHolder.genericIcon);
     GradientDrawable gradientDrawable = (GradientDrawable) viewHolder.genericIcon.getBackground();
 
     RequestListener<Drawable> requestListener =
@@ -930,7 +932,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             new Handler(
                     msg -> {
                       viewHolder.genericIcon.setVisibility(View.VISIBLE);
-                      Glide.with(mainFrag)
+                      GlideApp.with(mainFrag)
                           .load(R.drawable.ic_broken_image_white_24dp)
                           .into(viewHolder.genericIcon);
                       return false;
@@ -976,7 +978,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
       viewHolder.genericIcon.setVisibility(View.VISIBLE);
       iconBackground.setBackgroundColor(grey_color);
-      Glide.with(mainFrag).load(R.drawable.ic_broken_image_white_24dp).into(viewHolder.genericIcon);
+      GlideApp.with(mainFrag)
+          .load(R.drawable.ic_broken_image_white_24dp)
+          .into(viewHolder.genericIcon);
       view.setVisibility(View.INVISIBLE);
 
       errorListener.onImageProcessed(true);
@@ -987,7 +991,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES) ? viewHolder.genericIcon : viewHolder.iconLayout;
 
     viewHolder.genericIcon.setVisibility(View.VISIBLE);
-    Glide.with(mainFrag).load(iconData.loadingImage).into(viewHolder.genericIcon);
+    GlideApp.with(mainFrag).load(iconData.loadingImage).into(viewHolder.genericIcon);
     view.setVisibility(View.INVISIBLE);
 
     RequestListener<Drawable> requestListener =
@@ -998,7 +1002,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             iconBackground.setBackgroundColor(grey_color);
             new Handler(
                     msg -> {
-                      Glide.with(mainFrag)
+                      GlideApp.with(mainFrag)
                           .load(R.drawable.ic_broken_image_white_24dp)
                           .into(viewHolder.genericIcon);
                       return false;
