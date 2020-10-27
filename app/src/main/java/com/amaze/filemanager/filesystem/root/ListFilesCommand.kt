@@ -25,14 +25,17 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
-import com.amaze.filemanager.filesystem.root.api.IListFilesCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 import com.amaze.filemanager.utils.OpenMode
 import java.io.File
 import kotlin.collections.ArrayList
 
-object ListFilesCommand : IListFilesCommand {
+object ListFilesCommand : IRootCommand() {
 
-    override fun listFiles(
+    /**
+     * list files in given directory and invoke callback
+     */
+    fun listFiles(
         path: String,
         root: Boolean,
         showHidden: Boolean,
@@ -48,7 +51,7 @@ object ListFilesCommand : IListFilesCommand {
                 if (!it.contains("Permission denied")) {
                     parseStringForHybridFile(it, path,
                             RootHelper.isCommandValid("stat"))
-                    ?.let(onFileFoundCallback)
+                            ?.let(onFileFoundCallback)
                 }
             }
             mode = OpenMode.ROOT
@@ -65,8 +68,11 @@ object ListFilesCommand : IListFilesCommand {
         openModeCallback(mode)
     }
 
+    /**
+     * executes list files root command directory and return each line item
+     */
     @Throws(ShellNotRunningException::class)
-    override fun executeRootCommand(path: String, showHidden: Boolean): List<String> {
+    fun executeRootCommand(path: String, showHidden: Boolean): List<String> {
         try {
             /**
              * If path is root keep command `stat -c *`
@@ -113,8 +119,7 @@ object ListFilesCommand : IListFilesCommand {
         val pathFile = File(path)
         val files = ArrayList<HybridFileParcelable>()
         if (pathFile.exists() && pathFile.isDirectory) {
-            pathFile.listFiles().forEach {
-                currentFile ->
+            pathFile.listFiles().forEach { currentFile ->
                 var size: Long = 0
                 if (!currentFile.isDirectory) size = currentFile.length()
                 HybridFileParcelable(
@@ -123,8 +128,7 @@ object ListFilesCommand : IListFilesCommand {
                         currentFile.lastModified(),
                         size,
                         currentFile.isDirectory
-                ).let {
-                    baseFile ->
+                ).let { baseFile ->
                     baseFile.name = currentFile.name
                     baseFile.mode = OpenMode.FILE
                     if (showHidden) {

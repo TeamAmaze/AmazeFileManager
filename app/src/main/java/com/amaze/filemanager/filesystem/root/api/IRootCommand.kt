@@ -25,7 +25,7 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import eu.chainfire.libsuperuser.Shell
 import eu.chainfire.libsuperuser.Shell.OnCommandResultListener
 
-interface IRootCommand {
+open class IRootCommand {
 
     /**
      * Runs the command and stores output in a list. The listener is set on the handler thread [ ]

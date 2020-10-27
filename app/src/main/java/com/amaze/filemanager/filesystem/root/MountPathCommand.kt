@@ -22,15 +22,23 @@ package com.amaze.filemanager.filesystem.root
 
 import android.os.Build
 import com.amaze.filemanager.exceptions.ShellNotRunningException
-import com.amaze.filemanager.filesystem.root.api.IMountPathCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 
-object MountPathCommand : IMountPathCommand {
+object MountPathCommand : IRootCommand() {
 
     const val READ_ONLY = "RO"
     const val READ_WRITE = "RW"
 
+    /**
+     * Mount filesystem associated with path for writable access (rw) Since we don't have the root of
+     * filesystem to remount, we need to parse output of # mount command.
+     *
+     * @param path the path on which action to perform
+     * @param operation RO or RW
+     * @return String the root of mount point that was ro, and mounted to rw; null otherwise
+     */
     @Throws(ShellNotRunningException::class)
-    override fun mountPath(path: String, operation: String): String? {
+    fun mountPath(path: String, operation: String): String? {
         return when (operation) {
             READ_WRITE -> mountReadWrite(path)
             READ_ONLY -> {

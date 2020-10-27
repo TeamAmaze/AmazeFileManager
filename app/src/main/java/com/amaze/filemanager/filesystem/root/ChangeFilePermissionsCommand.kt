@@ -22,9 +22,9 @@ package com.amaze.filemanager.filesystem.root
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.root.api.IChangeFilePermissionsCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 
-object ChangeFilePermissionsCommand : IChangeFilePermissionsCommand {
+object ChangeFilePermissionsCommand : IRootCommand() {
 
     /**
      * This is the chmod command, it should be used with String.format(). String.format(CHMOD_COMMAND,
@@ -32,8 +32,15 @@ object ChangeFilePermissionsCommand : IChangeFilePermissionsCommand {
      */
     private const val CHMOD_COMMAND = "chmod %s %o \"%s\""
 
+    /**
+     * Change permissions for a given file path - requires root
+     *
+     * @param filePath given file path
+     * @param updatedPermissions octal notation for permissions
+     * @param isDirectory is given path a directory or file
+     */
     @Throws(ShellNotRunningException::class)
-    override fun changeFilePermissions(
+    fun changeFilePermissions(
         filePath: String,
         updatedPermissions: Int,
         isDirectory: Boolean,
@@ -43,14 +50,14 @@ object ChangeFilePermissionsCommand : IChangeFilePermissionsCommand {
 
         val options = if (isDirectory) "-R" else ""
         val command = String.format(
-            CHMOD_COMMAND,
-            options,
-            updatedPermissions,
-            RootHelper.getCommandLineString(filePath)
+                CHMOD_COMMAND,
+                options,
+                updatedPermissions,
+                RootHelper.getCommandLineString(filePath)
         )
 
         runShellCommandWithCallback(
-            command
+                command
         ) { _: Int, exitCode: Int, _: List<String?>? ->
             if (exitCode < 0) {
                 onOperationPerform(false)

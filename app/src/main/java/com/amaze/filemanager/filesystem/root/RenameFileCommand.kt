@@ -22,12 +22,19 @@ package com.amaze.filemanager.filesystem.root
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.root.api.IRenameFileCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 
-object RenameFileCommand : IRenameFileCommand {
+object RenameFileCommand : IRootCommand() {
 
+    /**
+     * Renames file using root
+     *
+     * @param oldPath path to file before rename
+     * @param newPath path to file after rename
+     * @return if rename was successful or not
+     */
     @Throws(ShellNotRunningException::class)
-    override fun renameFile(oldPath: String, newPath: String): Boolean {
+    fun renameFile(oldPath: String, newPath: String): Boolean {
         val mountPoint = MountPathCommand.mountPath(oldPath, MountPathCommand.READ_WRITE)
         val command = "mv \"${RootHelper.getCommandLineString(oldPath)}\"" +
                 " \"${RootHelper.getCommandLineString(newPath)}\""

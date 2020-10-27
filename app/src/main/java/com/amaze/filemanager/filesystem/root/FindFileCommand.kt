@@ -22,12 +22,17 @@ package com.amaze.filemanager.filesystem.root
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.root.api.IFindFileCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 
-object FindFileCommand : IFindFileCommand {
+object FindFileCommand : IRootCommand() {
 
+    /**
+     * find file at given path in root
+     *
+     * @return boolean whether file was deleted or not
+     */
     @Throws(ShellNotRunningException::class)
-    override fun findFile(path: String): Boolean {
+    fun findFile(path: String): Boolean {
         val result = runShellCommandToList(
                 "find \"${RootHelper.getCommandLineString(path)}\""
         )

@@ -23,18 +23,23 @@ package com.amaze.filemanager.filesystem.root
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.MountPathCommand.mountPath
-import com.amaze.filemanager.filesystem.root.api.ICopyFilesCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 
-object CopyFilesCommand : ICopyFilesCommand {
+object CopyFilesCommand : IRootCommand() {
 
+    /**
+     * Copies files using root
+     * @param source given source
+     * @param destination given destination
+     */
     @Throws(ShellNotRunningException::class)
-    override fun copyFiles(source: String, destination: String) {
+    fun copyFiles(source: String, destination: String) {
         // remounting destination as rw
         val mountPoint = mountPath(destination, MountPathCommand.READ_WRITE)
 
         runShellCommand(
-            "cp -r \"${RootHelper.getCommandLineString(source)}\" " +
-                    "\"${RootHelper.getCommandLineString(destination)}\""
+                "cp -r \"${RootHelper.getCommandLineString(source)}\" " +
+                        "\"${RootHelper.getCommandLineString(destination)}\""
         )
 
         // we mounted the filesystem as rw, let's mount it back to ro

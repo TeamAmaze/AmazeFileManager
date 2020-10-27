@@ -22,12 +22,18 @@ package com.amaze.filemanager.filesystem.root
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.root.api.IMakeDirectoryCommand
+import com.amaze.filemanager.filesystem.root.api.IRootCommand
 
-object MakeDirectoryCommand : IMakeDirectoryCommand {
+object MakeDirectoryCommand : IRootCommand() {
 
+    /**
+     * Creates an empty directory using root
+     *
+     * @param path path to new directory
+     * @param name name of directory
+     */
     @Throws(ShellNotRunningException::class)
-    override fun makeDirectory(path: String, name: String) {
+    fun makeDirectory(path: String, name: String) {
         val mountPoint = MountPathCommand.mountPath(path, MountPathCommand.READ_WRITE)
         val filePath = "$path/$name"
         runShellCommand("mkdir \"${RootHelper.getCommandLineString(filePath)}\"")
