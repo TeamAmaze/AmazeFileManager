@@ -29,16 +29,15 @@ import java.util.List;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.utils.OnFileFound;
-
 import eu.chainfire.libsuperuser.Shell;
+import kotlin.jvm.functions.Function1;
 
 /**
  * Shadow of {@link Shell.Interactive}, for {@link com.amaze.filemanager.filesystem.RootHelperTest}.
  *
- * <p>Only tested for {@link com.amaze.filemanager.filesystem.RootHelper#getFiles(String, boolean,
- * boolean, RootHelper.GetModeCallBack, OnFileFound)}, so only guarantees work for that.
+ * <p>Only tested for {@link
+ * com.amaze.filemanager.filesystem.root.ListFilesCommand#listFiles(String, boolean, boolean,
+ * Function1, Function1)}, so only guarantees work for that.
  *
  * <p><strong>DO NOT RUN THIS ON NON-UNIX OS. YOU SHOULD KNOW THIS ALREADY.</strong>
  */

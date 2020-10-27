@@ -38,6 +38,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.BaseAsyncTask;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -217,15 +218,23 @@ public class LoadFilesListTask
       default:
         // we're neither in OTG not in SMB, load the list based on root/general filesystem
         list = new ArrayList<>();
-        RootHelper.getFiles(
+        final OpenMode[] currentOpenMode = new OpenMode[1];
+        ListFilesCommand.INSTANCE.listFiles(
             path,
             nullCheckOrInterrupt(mainFragment, this).getMainActivity().isRootExplorer(),
             showHiddenFiles,
-            mode -> openmode = mode,
-            file -> {
-              LayoutElementParcelable elem = createListParcelables(file);
+            mode -> {
+              currentOpenMode[0] = mode;
+              return null;
+            },
+            hybridFileParcelable -> {
+              LayoutElementParcelable elem = createListParcelables(hybridFileParcelable);
               if (elem != null) list.add(elem);
+              return null;
             });
+        if (null != currentOpenMode[0]) {
+          openmode = currentOpenMode[0];
+        }
         break;
     }
 

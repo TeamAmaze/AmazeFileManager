@@ -34,8 +34,8 @@ import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -132,7 +132,7 @@ public class WriteFileAbstraction extends AsyncTask<Void, String, Integer> {
 
       if (cachedFile != null && cachedFile.exists() && destFile != null) {
         // cat cache content to original file and delete cache file
-        RootUtils.cat(cachedFile.getPath(), destFile.getPath());
+        ConcatenateFileCommand.INSTANCE.concatenateFile(cachedFile.getPath(), destFile.getPath());
         cachedFile.delete();
       }
 

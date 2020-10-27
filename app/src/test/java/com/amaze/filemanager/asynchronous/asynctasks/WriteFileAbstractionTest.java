@@ -47,8 +47,8 @@ import org.robolectric.annotation.Implements;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -195,7 +195,7 @@ public class WriteFileAbstractionTest {
   }
 
   @Implements(FileUtil.class)
-  static class BlockAllOutputStreamsFileUtil {
+  public static class BlockAllOutputStreamsFileUtil {
 
     @Implementation
     public static OutputStream getOutputStream(final File target, Context context)
@@ -204,11 +204,11 @@ public class WriteFileAbstractionTest {
     }
   }
 
-  @Implements(RootUtils.class)
-  static class BypassMountPartitionRootUtils {
+  @Implements(ConcatenateFileCommand.class)
+  public static class BypassMountPartitionRootUtils {
 
     @Implementation
-    public static void cat(String sourcePath, String destinationPath)
+    public static void concatenateFile(String sourcePath, String destinationPath)
         throws ShellNotRunningException {
       try {
         IoUtils.copy(new FileInputStream(sourcePath), new FileOutputStream(destinationPath), 512);
@@ -218,10 +218,10 @@ public class WriteFileAbstractionTest {
     }
   }
 
-  @Implements(RootUtils.class)
-  static class ShellNotRunningRootUtils {
+  @Implements(ConcatenateFileCommand.class)
+  public static class ShellNotRunningRootUtils {
     @Implementation
-    public static void cat(String sourcePath, String destinationPath)
+    public static void concatenateFile(String sourcePath, String destinationPath)
         throws ShellNotRunningException {
       throw new ShellNotRunningException();
     }

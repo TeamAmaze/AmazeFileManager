@@ -37,6 +37,8 @@ import com.amaze.filemanager.exceptions.CloudPluginException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
+import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
@@ -46,7 +48,6 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
@@ -202,7 +203,7 @@ public class HybridFile {
 
   HybridFileParcelable generateBaseFileFromParent() {
     ArrayList<HybridFileParcelable> arrayList =
-        RootHelper.getFilesList(getFile().getParent(), true, true, null);
+        RootHelper.getFilesList(getFile().getParent(), true, true);
     for (HybridFileParcelable baseFile : arrayList) {
       if (baseFile.getPath().equals(path)) return baseFile;
     }
@@ -420,7 +421,7 @@ public class HybridFile {
         break;
       case ROOT:
         try {
-          isDirectory = RootHelper.isDirectory(path, true, 5);
+          isDirectory = RootHelper.isDirectory(path, 5);
         } catch (ShellNotRunningException e) {
           e.printStackTrace();
           isDirectory = false;
@@ -477,7 +478,7 @@ public class HybridFile {
         break;
       case ROOT:
         try {
-          isDirectory = RootHelper.isDirectory(path, true, 5);
+          isDirectory = RootHelper.isDirectory(path, 5);
         } catch (ShellNotRunningException e) {
           e.printStackTrace();
           isDirectory = false;
@@ -773,7 +774,15 @@ public class HybridFile {
         }
         break;
       default:
-        RootHelper.getFiles(path, isRoot, true, null, onFileFound);
+        ListFilesCommand.INSTANCE.listFiles(
+            path,
+            isRoot,
+            true,
+            openMode -> null,
+            hybridFileParcelable -> {
+              onFileFound.onFileFound(hybridFileParcelable);
+              return null;
+            });
     }
   }
 
@@ -849,7 +858,7 @@ public class HybridFile {
         }
         break;
       default:
-        arrayList = RootHelper.getFilesList(path, isRoot, true, null);
+        arrayList = RootHelper.getFilesList(path, isRoot, true);
     }
 
     return arrayList;
@@ -1211,7 +1220,7 @@ public class HybridFile {
     } else {
       if (isRoot() && rootmode) {
         setMode(OpenMode.ROOT);
-        RootUtils.delete(getPath());
+        DeleteFileCommand.INSTANCE.deleteFile(getPath());
       } else {
         FileUtil.deleteFile(getFile(), context);
       }

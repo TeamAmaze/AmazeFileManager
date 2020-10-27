@@ -24,118 +24,28 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.utils.OnFileFound;
+import com.amaze.filemanager.filesystem.root.FindFileCommand;
+import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
-import androidx.documentfile.provider.DocumentFile;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
-import eu.chainfire.libsuperuser.Shell;
+import androidx.documentfile.provider.DocumentFile;
 
 public class RootHelper {
 
-  /**
-   * Runs the command and stores output in a list. The listener is set on the handler thread {@link
-   * MainActivity#handlerThread} thus any code run in callback must be thread safe. Command is run
-   * from the root context (u:r:SuperSU0)
-   *
-   * @param cmd the command
-   * @return a list of results. Null only if the command passed is a blocking call or no output is
-   *     there for the command passed
-   */
-  public static ArrayList<String> runShellCommandToList(String cmd)
-      throws ShellNotRunningException {
-    final ArrayList<String> result = new ArrayList<>();
-    // callback being called on a background handler thread
-    runShellCommandWithCallback(cmd, (commandCode, exitCode, output) -> result.addAll(output));
-    return result;
-  }
-
-  /**
-   * Command is run from the root context (u:r:SuperSU0)
-   *
-   * @param cmd the command
-   */
-  public static void runShellCommand(String cmd) throws ShellNotRunningException {
-    if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
-      throw new ShellNotRunningException();
-    MainActivity.shellInteractive.addCommand(cmd);
-    MainActivity.shellInteractive.waitForIdle();
-  }
-
-  /**
-   * Runs the command on an interactive shell. Provides a listener for the caller to interact. The
-   * caller is executed on a worker background thread, hence any calls from the callback should be
-   * thread safe. Command is run from superuser context (u:r:SuperSU0)
-   *
-   * @param cmd the command
-   */
-  public static void runShellCommandWithCallback(String cmd, Shell.OnCommandResultListener callback)
-      throws ShellNotRunningException {
-    if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning())
-      throw new ShellNotRunningException();
-    MainActivity.shellInteractive.addCommand(cmd, 0, callback);
-    MainActivity.shellInteractive.waitForIdle();
-  }
-
-  /**
-   * @param cmd the command
-   * @return a list of results. Null only if the command passed is a blocking call or no output is
-   *     there for the command passed
-   * @deprecated Use {@link #runShellCommand(String)} instead which runs command on an interactive
-   *     shell
-   *     <p>Runs the command and stores output in a list. The listener is set on the caller thread,
-   *     thus any code run in callback must be thread safe. Command is run from a third-party level
-   *     context (u:r:init_shell0) Not callback supported as the shell is not interactive
-   */
-  public static List<String> runNonRootShellCommand(String cmd) {
-    return Shell.SH.run(cmd);
-  }
+  public static final int CHMOD_READ = 4, CHMOD_WRITE = 2, CHMOD_EXECUTE = 1;
 
   public static String getCommandLineString(String input) {
-    return input.replaceAll(UNIX_ESCAPE_EXPRESSION, "\\\\$1");
+    return input.replaceAll(UNIX_INPUT_WHITELIST, "");
   }
 
-  private static final String UNIX_ESCAPE_EXPRESSION =
-      "(\\(|\\)|\\[|\\]|\\s|\'|\"|`|\\{|\\}|&|\\\\|\\?)";
-
-  /**
-   * Loads files in a path using basic filesystem callbacks
-   *
-   * @param path the path
-   */
-  public static ArrayList<HybridFileParcelable> getFilesList(
-      String path, boolean showHidden, OnFileFound listener) {
-    File f = new File(path);
-    ArrayList<HybridFileParcelable> files = new ArrayList<>();
-    try {
-      if (f.exists() && f.isDirectory()) {
-        for (File x : f.listFiles()) {
-          long size = 0;
-          if (!x.isDirectory()) size = x.length();
-          HybridFileParcelable baseFile =
-              new HybridFileParcelable(
-                  x.getPath(), parseFilePermission(x), x.lastModified(), size, x.isDirectory());
-          baseFile.setName(x.getName());
-          baseFile.setMode(OpenMode.FILE);
-          if (showHidden) {
-            files.add(baseFile);
-            listener.onFileFound(baseFile);
-          } else {
-            if (!x.isHidden()) {
-              files.add(baseFile);
-              listener.onFileFound(baseFile);
-            }
-          }
-        }
-      }
-    } catch (Exception e) {
-    }
-    return files;
-  }
+  public static final String UNIX_INPUT_WHITELIST = "[^a-zA-Z0-9@/:}{\\-_=+.,'\"\\s]";
 
   public static HybridFileParcelable generateBaseFile(File x, boolean showHidden) {
     long size = 0;
@@ -151,22 +61,6 @@ public class RootHelper {
       return (baseFile);
     }
     return null;
-  }
-
-  public static HybridFileParcelable generateBaseFile(DocumentFile file) {
-    long size = 0;
-    if (!file.isDirectory()) size = file.length();
-    HybridFileParcelable baseFile =
-        new HybridFileParcelable(
-            file.getName(),
-            parseDocumentFilePermission(file),
-            file.lastModified(),
-            size,
-            file.isDirectory());
-    baseFile.setName(file.getName());
-    baseFile.setMode(OpenMode.OTG);
-
-    return baseFile;
   }
 
   public static String parseFilePermission(File f) {
@@ -205,8 +99,17 @@ public class RootHelper {
     File f = new File(path);
     String p = f.getParent();
     if (p != null && p.length() > 0) {
-      ArrayList<HybridFileParcelable> ls = getFilesList(p, true, true, null);
-      for (HybridFileParcelable strings : ls) {
+      List<HybridFileParcelable> filesList = new ArrayList<>();
+      ListFilesCommand.INSTANCE.listFiles(
+          p,
+          true,
+          true,
+          openMode -> null,
+          hybridFileParcelable -> {
+            filesList.add(hybridFileParcelable);
+            return null;
+          });
+      for (HybridFileParcelable strings : filesList) {
         if (strings.getPath() != null && strings.getPath().equals(path)) {
           return true;
         }
@@ -215,23 +118,16 @@ public class RootHelper {
     return false;
   }
 
-  static boolean contains(String[] a, String name) {
-    for (String s : a) {
-      // Log.e("checking",s);
-      if (s.equals(name)) return true;
-    }
-    return false;
-  }
-
-  /** Whether toTest file is directory or not TODO: Avoid parsing ls */
-  public static boolean isDirectory(String toTest, boolean root, int count)
-      throws ShellNotRunningException {
+  /**
+   * Whether toTest file is directory or not
+   */
+  public static boolean isDirectory(String toTest, int count) throws ShellNotRunningException {
     File file = new File(toTest);
     String name = file.getName();
     String parentPath = file.getParent();
     if (!Utils.isNullOrEmpty(parentPath)) {
-      ArrayList<String> resultLines =
-          runShellCommandToList("ls -l \"" + getCommandLineString(parentPath) + "\"");
+      List<String> resultLines =
+          ListFilesCommand.INSTANCE.executeRootCommand(getCommandLineString(parentPath), true);
       for (String currentLine : resultLines) {
         if (contains(currentLine.split(" "), name)) {
           try {
@@ -239,7 +135,7 @@ public class RootHelper {
             if (parsedFile.getPermission().trim().startsWith("d")) return true;
             else if (parsedFile.getPermission().trim().startsWith("l")) {
               if (count > 5) return file.isDirectory();
-              else return isDirectory(parsedFile.getLink().trim(), root, ++count);
+              else return isDirectory(parsedFile.getLink().trim(), ++count);
             } else return file.isDirectory();
           } catch (Exception e) {
             e.printStackTrace();
@@ -251,13 +147,12 @@ public class RootHelper {
     return file.isDirectory();
   }
 
-  private static boolean isDirectory(HybridFileParcelable path) {
-    return path.getPermission().startsWith("d") || new File(path.getPath()).isDirectory();
-  }
-
-  /** Callback to setting type of file to handle, while loading list of files */
-  public interface GetModeCallBack {
-    void getMode(OpenMode mode);
+  static boolean contains(String[] a, String name) {
+    for (String s : a) {
+      // Log.e("checking",s);
+      if (s.equals(name)) return true;
+    }
+    return false;
   }
 
   /**
@@ -266,77 +161,59 @@ public class RootHelper {
    *
    * @param root whether root is available or not
    * @param showHidden to show hidden files
-   * @param getModeCallBack callback to set the type of file
-   * @deprecated use getFiles()
    */
   public static ArrayList<HybridFileParcelable> getFilesList(
-      String path, boolean root, boolean showHidden, GetModeCallBack getModeCallBack) {
-    final ArrayList<HybridFileParcelable> files = new ArrayList<>();
-    getFiles(path, root, showHidden, getModeCallBack, files::add);
+      String path, boolean root, boolean showHidden) {
+    ArrayList<HybridFileParcelable> files = new ArrayList<>();
+    ListFilesCommand.INSTANCE.listFiles(
+        path,
+        root,
+        showHidden,
+        openMode -> null,
+        hybridFileParcelable -> {
+          files.add(hybridFileParcelable);
+          return null;
+        });
     return files;
   }
 
   /**
-   * Get files using shell, supposing the path is not a SMB/OTG/Custom (*.apk/images) TODO: Avoid
-   * parsing ls
-   *
-   * @param root whether root is available or not
-   * @param showHidden to show hidden files
-   * @param getModeCallBack callback to set the type of file
+   * This converts from a set of booleans to OCTAL permissions notations. For use with {@link
+   * com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand->CHMOD_COMMAND} (true,
+   * false, false, true, true, false, false, false, true) => 0461
    */
-  public static void getFiles(
-      String path,
-      boolean root,
-      boolean showHidden,
-      GetModeCallBack getModeCallBack,
-      OnFileFound fileCallback) {
-    OpenMode mode = OpenMode.FILE;
-    if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
-      try {
-        // we're rooted and we're trying to load file with superuser
-        // we're at the root directories, superuser is required!
-        List<String> ls;
-        String cpath = getCommandLineString(path);
-        // ls = Shell.SU.run("ls -l " + cpath);
-        ls = runShellCommandToList("ls -l " + (showHidden ? "-a " : "") + "\"" + cpath + "\"");
-        if (ls != null) {
-          for (String file : ls) {
-            if (!file.contains("Permission denied")) {
-              HybridFileParcelable array = FileUtils.parseName(file);
-              if (array != null) {
-                array.setMode(OpenMode.ROOT);
-                array.setName(array.getPath());
-                if (!path.equals("/")) {
-                  array.setPath(path + "/" + array.getPath());
-                } else {
-                  // root of filesystem, don't concat another '/'
-                  array.setPath(path + array.getPath());
-                }
-                if (array.getLink().trim().length() > 0) {
-                  boolean isdirectory = isDirectory(array.getLink(), root, 0);
-                  array.setDirectory(isdirectory);
-                } else array.setDirectory(isDirectory(array));
-                fileCallback.onFileFound(array);
-              }
-            }
-          }
-          mode = OpenMode.ROOT;
-        }
+  public static int permissionsToOctalString(
+      boolean ur,
+      boolean uw,
+      boolean ux,
+      boolean gr,
+      boolean gw,
+      boolean gx,
+      boolean or,
+      boolean ow,
+      boolean ox) {
+    int u = ((ur ? CHMOD_READ : 0) | (uw ? CHMOD_WRITE : 0) | (ux ? CHMOD_EXECUTE : 0)) << 6;
+    int g = ((gr ? CHMOD_READ : 0) | (gw ? CHMOD_WRITE : 0) | (gx ? CHMOD_EXECUTE : 0)) << 3;
+    int o = (or ? CHMOD_READ : 0) | (ow ? CHMOD_WRITE : 0) | (ox ? CHMOD_EXECUTE : 0);
+    return u | g | o;
+  }
 
-        if (getModeCallBack != null) getModeCallBack.getMode(mode);
-      } catch (ShellNotRunningException e) {
-        e.printStackTrace();
+  /** Identifies if a given command binary is present in system or not */
+  public static boolean isCommandValid(String command) {
+    try {
+      String binary = command.split(" ")[0];
+      SharedPreferences sharedPreferences =
+          PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance());
+      if (!sharedPreferences.getBoolean(binary, false)) {
+        boolean binaryPresent =
+            FindFileCommand.INSTANCE.findFile("/system/bin/" + binary)
+                || FindFileCommand.INSTANCE.findFile("/system/xbin/" + binary);
+        sharedPreferences.edit().putBoolean(binary, binaryPresent).apply();
       }
-    } else if (FileUtils.canListFiles(new File(path))) {
-      // we're taking a chance to load files using basic java filesystem
-      getFilesList(path, showHidden, fileCallback);
-      mode = OpenMode.FILE;
-    } else {
-      // we couldn't load files using native java filesystem callbacks
-      // maybe the access is not allowed due to android system restrictions, we'll see later
-      mode = OpenMode.FILE;
+      return sharedPreferences.getBoolean(binary, false);
+    } catch (ShellNotRunningException e) {
+      e.printStackTrace();
+      return false;
     }
-
-    if (getModeCallBack != null) getModeCallBack.getMode(mode);
   }
 }
