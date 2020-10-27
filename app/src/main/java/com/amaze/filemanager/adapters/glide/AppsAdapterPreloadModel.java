@@ -23,7 +23,8 @@ package com.amaze.filemanager.adapters.glide;
 import java.util.Collections;
 import java.util.List;
 
-import com.bumptech.glide.Glide;
+import com.amaze.filemanager.GlideApp;
+import com.amaze.filemanager.GlideRequest;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -37,11 +38,11 @@ import androidx.fragment.app.Fragment;
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 15:38. */
 public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvider<String> {
 
-  private RequestBuilder<Drawable> request;
+  private GlideRequest<Drawable> request;
   private List<String> items;
 
   public AppsAdapterPreloadModel(Fragment f) {
-    request = Glide.with(f).asDrawable().fitCenter();
+    request = GlideApp.with(f).asDrawable().fitCenter();
   }
 
   public void setItemList(List<String> items) {
