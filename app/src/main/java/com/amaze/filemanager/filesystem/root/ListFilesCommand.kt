@@ -41,20 +41,18 @@ object ListFilesCommand : IListFilesCommand {
     ) {
         var mode = OpenMode.FILE
         if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
-            try {
-                // we're rooted and we're trying to load file with superuser
-                // we're at the root directories, superuser is required!
-                // ls = Shell.SU.run("ls -l " + cpath);
-                executeRootCommand(path, showHidden).forEach {
-                    if (!it.contains("Permission denied")) {
-                        parseStringForHybridFile(it, path, RootHelper.isCommandValid("stat"))?.let(onFileFoundCallback)
-                    }
+            // we're rooted and we're trying to load file with superuser
+            // we're at the root directories, superuser is required!
+            // ls = Shell.SU.run("ls -l " + cpath);
+            executeRootCommand(path, showHidden).forEach {
+                if (!it.contains("Permission denied")) {
+                    parseStringForHybridFile(it, path,
+                            RootHelper.isCommandValid("stat"))
+                    ?.let(onFileFoundCallback)
                 }
-                mode = OpenMode.ROOT
-                openModeCallback(mode)
-            } catch (e: ShellNotRunningException) {
-                e.printStackTrace()
             }
+            mode = OpenMode.ROOT
+            openModeCallback(mode)
         } else if (FileUtils.canListFiles(File(path))) {
             // we're taking a chance to load files using basic java filesystem
             getFilesList(path, showHidden, onFileFoundCallback)
@@ -69,27 +67,32 @@ object ListFilesCommand : IListFilesCommand {
 
     @Throws(ShellNotRunningException::class)
     override fun executeRootCommand(path: String, showHidden: Boolean): List<String> {
-        /**
-         * If path is root keep command `stat -c *`
-         * Else keep `stat -c /path/file/\*`
-         */
-        var appendedPath = path
-        appendedPath = when (path) {
-            "/" -> appendedPath.replace("/", "")
-            else -> appendedPath.plus("/")
-        }
-        val sanitizedPath = RootHelper.getCommandLineString(appendedPath)
-            val command = "stat -c '%A %h %G %U %B %y %N' " +
-                "$sanitizedPath*" + (if (showHidden) " $sanitizedPath.* " else "")
-        return if (RootHelper.isCommandValid(command)) {
-            Log.i(javaClass.simpleName, "Using stat for list parsing")
-            runShellCommandToList(command).map {
-                it.replace(sanitizedPath, "")
+        try {
+            /**
+             * If path is root keep command `stat -c *`
+             * Else keep `stat -c /path/file/\*`
+             */
+            var appendedPath = path
+            appendedPath = when (path) {
+                "/" -> appendedPath.replace("/", "")
+                else -> appendedPath.plus("/")
             }
-        } else {
-            Log.i(javaClass.simpleName, "Using ls for list parsing")
-            runShellCommandToList("ls -l " + (if (showHidden) "-a " else "") +
-                    "\"$sanitizedPath\"")
+            val sanitizedPath = RootHelper.getCommandLineString(appendedPath)
+            val command = "stat -c '%A %h %G %U %B %y %N' " +
+                    "$sanitizedPath*" + (if (showHidden) " $sanitizedPath.* " else "")
+            return if (RootHelper.isCommandValid(command)) {
+                Log.i(javaClass.simpleName, "Using stat for list parsing")
+                runShellCommandToList(command).map {
+                    it.replace(sanitizedPath, "")
+                }
+            } else {
+                Log.i(javaClass.simpleName, "Using ls for list parsing")
+                runShellCommandToList("ls -l " + (if (showHidden) "-a " else "") +
+                        "\"$sanitizedPath\"")
+            }
+        } catch (exception: ShellNotRunningException) {
+            exception.printStackTrace()
+            return ArrayList()
         }
     }
 
@@ -109,36 +112,32 @@ object ListFilesCommand : IListFilesCommand {
     ): ArrayList<HybridFileParcelable>? {
         val pathFile = File(path)
         val files = ArrayList<HybridFileParcelable>()
-        try {
-            if (pathFile.exists() && pathFile.isDirectory) {
-                pathFile.listFiles().forEach {
-                    currentFile ->
-                    var size: Long = 0
-                    if (!currentFile.isDirectory) size = currentFile.length()
-                    HybridFileParcelable(
-                            currentFile.path,
-                            RootHelper.parseFilePermission(currentFile),
-                            currentFile.lastModified(),
-                            size,
-                            currentFile.isDirectory
-                    ).let {
-                        baseFile ->
-                        baseFile.name = currentFile.name
-                        baseFile.mode = OpenMode.FILE
-                        if (showHidden) {
+        if (pathFile.exists() && pathFile.isDirectory) {
+            pathFile.listFiles().forEach {
+                currentFile ->
+                var size: Long = 0
+                if (!currentFile.isDirectory) size = currentFile.length()
+                HybridFileParcelable(
+                        currentFile.path,
+                        RootHelper.parseFilePermission(currentFile),
+                        currentFile.lastModified(),
+                        size,
+                        currentFile.isDirectory
+                ).let {
+                    baseFile ->
+                    baseFile.name = currentFile.name
+                    baseFile.mode = OpenMode.FILE
+                    if (showHidden) {
+                        files.add(baseFile)
+                        listener(baseFile)
+                    } else {
+                        if (!currentFile.isHidden) {
                             files.add(baseFile)
                             listener(baseFile)
-                        } else {
-                            if (!currentFile.isHidden) {
-                                files.add(baseFile)
-                                listener(baseFile)
-                            }
                         }
                     }
                 }
             }
-        } catch (e: Exception) {
-            Log.e(javaClass.simpleName, e.message, e)
         }
         return files
     }
@@ -146,35 +145,41 @@ object ListFilesCommand : IListFilesCommand {
     /**
      * Parses listing command result for HybridFile
      */
-     private fun parseStringForHybridFile(rawFile: String, path: String, isStat: Boolean) : HybridFileParcelable? {
-         return FileUtils.parseName(if (isStat) rawFile.replace("('|`)".toRegex(), "") else rawFile)?.apply {
-             this.mode = OpenMode.ROOT
-             this.name = this.path
-             if (path != "/") {
-                 this.path = path + "/" + this.path
-             } else {
-                 // root of filesystem, don't concat another '/'
-                 this.path = path + this.path
-             }
-             if (this.link.trim { it <= ' ' }.isNotEmpty()) {
-                 if (isStat) {
-                     isDirectory(this).let {
-                         this.isDirectory = it
-                         if (it) {
-                             // stat command symlink includes time stamp at the end
-                             // also, stat follows symlink by default if listing is invoked on it
-                             // so we don't need link for stat
-                             this.link = ""
-                         }
-                     }
-                 } else {
-                     RootHelper.isDirectory(this.link, 0).let {
-                         this.isDirectory = it
-                     }
-                 }
-             } else {
-                 this.isDirectory = isDirectory(this)
-             }
-         }
-     }
+    private fun parseStringForHybridFile(
+        rawFile: String,
+        path: String,
+        isStat: Boolean
+    ): HybridFileParcelable? {
+        return FileUtils.parseName(
+                if (isStat) rawFile.replace("('|`)".toRegex(),
+                        "") else rawFile)?.apply {
+            this.mode = OpenMode.ROOT
+            this.name = this.path
+            if (path != "/") {
+                this.path = path + "/" + this.path
+            } else {
+                // root of filesystem, don't concat another '/'
+                this.path = path + this.path
+            }
+            if (this.link.trim { it <= ' ' }.isNotEmpty()) {
+                if (isStat) {
+                    isDirectory(this).let {
+                        this.isDirectory = it
+                        if (it) {
+                            // stat command symlink includes time stamp at the end
+                            // also, stat follows symlink by default if listing is invoked on it
+                            // so we don't need link for stat
+                            this.link = ""
+                        }
+                    }
+                } else {
+                    RootHelper.isDirectory(this.link, 0).let {
+                        this.isDirectory = it
+                    }
+                }
+            } else {
+                this.isDirectory = isDirectory(this)
+            }
+        }
+    }
 }

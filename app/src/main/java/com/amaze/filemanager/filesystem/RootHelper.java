@@ -39,13 +39,15 @@ import androidx.documentfile.provider.DocumentFile;
 
 public class RootHelper {
 
-  public static final int CHMOD_READ = 4, CHMOD_WRITE = 2, CHMOD_EXECUTE = 1;
+  public static final int CHMOD_READ = 4;
+  public static final int CHMOD_WRITE = 2;
+  public static final int CHMOD_EXECUTE = 1;
+
+  private static final String UNIX_INPUT_WHITELIST = "[^a-zA-Z0-9@/:}{\\-_=+.,'\"\\s]";
 
   public static String getCommandLineString(String input) {
     return input.replaceAll(UNIX_INPUT_WHITELIST, "");
   }
-
-  public static final String UNIX_INPUT_WHITELIST = "[^a-zA-Z0-9@/:}{\\-_=+.,'\"\\s]";
 
   public static HybridFileParcelable generateBaseFile(File x, boolean showHidden) {
     long size = 0;
@@ -118,9 +120,7 @@ public class RootHelper {
     return false;
   }
 
-  /**
-   * Whether toTest file is directory or not
-   */
+  /** Whether toTest file is directory or not */
   public static boolean isDirectory(String toTest, int count) throws ShellNotRunningException {
     File file = new File(toTest);
     String name = file.getName();
@@ -135,7 +135,7 @@ public class RootHelper {
             if (parsedFile.getPermission().trim().startsWith("d")) return true;
             else if (parsedFile.getPermission().trim().startsWith("l")) {
               if (count > 5) return file.isDirectory();
-              else return isDirectory(parsedFile.getLink().trim(), ++count);
+              else return isDirectory(parsedFile.getLink().trim(), count + 1);
             } else return file.isDirectory();
           } catch (Exception e) {
             e.printStackTrace();
