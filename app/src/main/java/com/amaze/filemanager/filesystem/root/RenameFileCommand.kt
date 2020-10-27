@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem.root
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.root.api.IRootCommand
+import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object RenameFileCommand : IRootCommand() {
 

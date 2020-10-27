@@ -25,7 +25,7 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
-import com.amaze.filemanager.filesystem.root.api.IRootCommand
+import com.amaze.filemanager.filesystem.root.base.IRootCommand
 import com.amaze.filemanager.utils.OpenMode
 import java.io.File
 import kotlin.collections.ArrayList

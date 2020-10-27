@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.root.api
+package com.amaze.filemanager.filesystem.root.base
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.ui.activities.MainActivity
