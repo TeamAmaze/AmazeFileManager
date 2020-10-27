@@ -18,14 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.smbstreamer;
+package com.amaze.filemanager.file_operations.filesystem.smbstreamer;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Pattern;
-
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 
 import android.util.Log;
 
@@ -94,7 +92,7 @@ public class Streamer extends StreamServer {
             }
         }
     }*/
-    if (sourceFile == null) res = new Response(HTTP_NOTFOUND, MIME_PLAINTEXT, null);
+    if (sourceFile == null) res = new Response(StreamServer.HTTP_NOTFOUND, StreamServer.MIME_PLAINTEXT, null);
     else {
       long startFrom = 0;
       long endAt = -1;
@@ -112,7 +110,7 @@ public class Streamer extends StreamServer {
           }
         }
       }
-      Log.d(CloudUtil.TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
+      Log.d(TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
 
       // Change return code and add Content-Range header when skipping
       // is requested
@@ -121,23 +119,23 @@ public class Streamer extends StreamServer {
       long fileLen = source.length();
       if (range != null && startFrom > 0) {
         if (startFrom >= fileLen) {
-          res = new Response(HTTP_RANGE_NOT_SATISFIABLE, MIME_PLAINTEXT, null);
+          res = new Response(StreamServer.HTTP_RANGE_NOT_SATISFIABLE, StreamServer.MIME_PLAINTEXT, null);
           res.addHeader("Content-Range", "bytes 0-0/" + fileLen);
         } else {
           if (endAt < 0) endAt = fileLen - 1;
           long newLen = fileLen - startFrom;
           if (newLen < 0) newLen = 0;
-          Log.d(CloudUtil.TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
+          Log.d(TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
           final long dataLen = newLen;
           source.moveTo(startFrom);
-          Log.d(CloudUtil.TAG, "Skipped " + startFrom + " bytes");
+          Log.d(TAG, "Skipped " + startFrom + " bytes");
 
-          res = new Response(HTTP_PARTIALCONTENT, source.getMimeType(), source);
+          res = new Response(StreamServer.HTTP_PARTIALCONTENT, source.getMimeType(), source);
           res.addHeader("Content-length", "" + dataLen);
         }
       } else {
         source.reset();
-        res = new Response(HTTP_OK, source.getMimeType(), source);
+        res = new Response(StreamServer.HTTP_OK, source.getMimeType(), source);
         res.addHeader("Content-Length", "" + fileLen);
       }
     }

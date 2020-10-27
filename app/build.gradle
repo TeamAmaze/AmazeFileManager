@@ -228,6 +228,7 @@ dependencies {
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
 
     implementation project(':commons_compress_7z')
+    implementation project(':file_operations')
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }

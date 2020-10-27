@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.streams;
+package com.amaze.filemanager.file_operations.filesystem.streams;
 
 import java.io.IOException;
 import java.io.InputStream;

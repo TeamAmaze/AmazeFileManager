@@ -18,33 +18,25 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.smbstreamer;
+package com.amaze.filemanager.file_operations.filesystem.cloud;
 
-/** Created by Arpit on 06-07-2015. */
+import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStream;
+
 import java.io.IOException;
 import java.io.InputStream;
 
-import com.amaze.filemanager.filesystem.streams.RandomAccessStream;
-
-import android.webkit.MimeTypeMap;
-
-import jcifs.smb.SmbFile;
-
-public class StreamSource extends RandomAccessStream {
-
-  protected String mime;
+/** Created by Vishal on 30-04-2017. */
+public class CloudStreamSource extends RandomAccessStream {
   protected long fp;
   protected String name;
-  protected SmbFile file;
-  InputStream input;
+  private InputStream inputStream;
 
-  public StreamSource(SmbFile file, long l) {
-    super(l);
+  public CloudStreamSource(String fileName, long length, InputStream inputStream) {
+    super(length);
 
     fp = 0;
-    mime = MimeTypeMap.getFileExtensionFromUrl(file.getName());
-    name = file.getName();
-    this.file = file;
+    this.name = fileName;
+    this.inputStream = inputStream;
   }
 
   /**
@@ -66,8 +58,7 @@ public class StreamSource extends RandomAccessStream {
    */
   public void open() throws IOException {
     try {
-      input = file.getInputStream(); // new SmbFileInputStream(file, bufferSize, 1);
-      if (fp > 0) input.skip(fp);
+      if (fp > 0) inputStream.skip(fp);
     } catch (Exception e) {
       throw new IOException(e);
     }
@@ -75,47 +66,40 @@ public class StreamSource extends RandomAccessStream {
 
   @Override
   public int read() throws IOException {
-    int read = input.read();
+    int read = inputStream.read();
     if (read != -1) fp++;
     return read;
   }
 
+  @Override
   public int read(byte[] bytes, int start, int offs) throws IOException {
-    int read = input.read(bytes, start, offs);
+    int read = inputStream.read(bytes, start, offs);
     fp += read;
     return read;
   }
 
   @Override
-  public void moveTo(long position) throws IllegalArgumentException {
-    if (position < 0 || length() < position) {
-      throw new IllegalArgumentException("Position out of the bounds of the file!");
-    }
-
-    fp = position;
-  }
-
-  @Override
   public void close() {
-    if (input != null) {
+    if (inputStream != null) {
       try {
-        input.close();
+        inputStream.close();
       } catch (IOException e) {
         e.printStackTrace();
       }
     }
   }
 
-  public String getMimeType() {
-    return mime;
-  }
-
   public String getName() {
     return name;
   }
 
-  public SmbFile getFile() {
-    return file;
+  @Override
+  public void moveTo(long position) {
+    if (position < 0 || length() < position) {
+      throw new IllegalArgumentException("Position out of the bounds of the file!");
+    }
+
+    fp = position;
   }
 
   @Override
