@@ -79,17 +79,18 @@ object ListFilesCommand : IRootCommand() {
              * Else keep `stat -c /path/file/\*`
              */
             var appendedPath = path
-            appendedPath = when (path) {
-                "/" -> appendedPath.replace("/", "")
-                else -> appendedPath.plus("/")
-            }
             val sanitizedPath = RootHelper.getCommandLineString(appendedPath)
+            appendedPath = when (path) {
+                "/" -> sanitizedPath.replace("/", "")
+                else -> sanitizedPath.plus("/")
+            }
+
             val command = "stat -c '%A %h %G %U %B %y %N' " +
-                    "$sanitizedPath*" + (if (showHidden) " $sanitizedPath.* " else "")
+                    "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
             return if (RootHelper.isCommandValid(command)) {
                 Log.i(javaClass.simpleName, "Using stat for list parsing")
                 runShellCommandToList(command).map {
-                    it.replace(sanitizedPath, "")
+                    it.replace(appendedPath, "")
                 }
             } else {
                 Log.i(javaClass.simpleName, "Using ls for list parsing")

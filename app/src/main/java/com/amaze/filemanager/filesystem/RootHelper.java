@@ -192,10 +192,14 @@ public class RootHelper {
       boolean or,
       boolean ow,
       boolean ox) {
-    int u = ((ur ? CHMOD_READ : 0) | (uw ? CHMOD_WRITE : 0) | (ux ? CHMOD_EXECUTE : 0)) << 6;
-    int g = ((gr ? CHMOD_READ : 0) | (gw ? CHMOD_WRITE : 0) | (gx ? CHMOD_EXECUTE : 0)) << 3;
-    int o = (or ? CHMOD_READ : 0) | (ow ? CHMOD_WRITE : 0) | (ox ? CHMOD_EXECUTE : 0);
+    int u = getPermissionInOctal(ur, uw, ux) << 6;
+    int g = getPermissionInOctal(gr, gw, gx) << 3;
+    int o = getPermissionInOctal(or, ow, ox);
     return u | g | o;
+  }
+
+  private static int getPermissionInOctal(boolean read, boolean write, boolean execute) {
+    return (read ? CHMOD_READ : 0) | (write ? CHMOD_WRITE : 0) | (execute ? CHMOD_EXECUTE : 0);
   }
 
   /** Identifies if a given command binary is present in system or not */

@@ -26,10 +26,6 @@ import com.amaze.filemanager.filesystem.root.base.IRootCommand
 
 object ChangeFilePermissionsCommand : IRootCommand() {
 
-    /**
-     * This is the chmod command, it should be used with String.format(). String.format(CHMOD_COMMAND,
-     * options, permsOctalInt, path);
-     */
     private const val CHMOD_COMMAND = "chmod %s %o \"%s\""
 
     /**
