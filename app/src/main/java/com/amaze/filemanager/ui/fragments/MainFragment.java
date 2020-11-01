@@ -28,7 +28,6 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -92,6 +91,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -106,6 +106,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -1185,7 +1186,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   .rename(
                       openMode,
                       f.getPath(),
-                      CURRENT_PATH + "/" + name1,
+                      Uri.parse(CURRENT_PATH).buildUpon().appendPath(name1).build().toString(),
                       getActivity(),
                       getMainActivity().isRootExplorer());
             },
@@ -1240,18 +1241,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         if (selection) {
           adapter.toggleChecked(false);
         } else {
-
-          if (openMode == OpenMode.SMB) {
-            try {
-              if (!smbPath.equals(CURRENT_PATH)) {
-                String path = (new SmbFile(CURRENT_PATH).getParent());
-                loadlist((path), true, openMode);
-              } else loadlist(home, false, OpenMode.FILE);
-            } catch (MalformedURLException e) {
-              e.printStackTrace();
-            }
-
-          } else if (openMode == OpenMode.SFTP) {
+          if (OpenMode.SMB.equals(openMode)) {
+            if (!smbPath.equals(CURRENT_PATH)) {
+              StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+              if (CURRENT_PATH.indexOf('?') > 0)
+                path.append(CURRENT_PATH.substring(CURRENT_PATH.indexOf('?')));
+              loadlist(path.toString().replace("%3D", "="), true, openMode);
+            } else loadlist(home, false, OpenMode.FILE);
+          } else if (OpenMode.SFTP.equals(openMode)) {
             if (!CURRENT_PATH.substring("ssh://".length()).contains("/"))
               loadlist(home, false, OpenMode.FILE);
             else loadlist(currentFile.getParent(getContext()), true, openMode);
@@ -1339,14 +1336,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         adapter.toggleChecked(false);
       } else {
         if (openMode == OpenMode.SMB) {
-          try {
-            if (!CURRENT_PATH.equals(smbPath)) {
-              String path = (new SmbFile(CURRENT_PATH).getParent());
-              loadlist((path), true, OpenMode.SMB);
-            } else loadlist(home, false, OpenMode.FILE);
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
-          }
+          if (!CURRENT_PATH.equals(smbPath)) {
+            StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+            if (CURRENT_PATH.indexOf('?') > 0)
+              path.append(CURRENT_PATH.substring(CURRENT_PATH.indexOf('?')));
+            loadlist(path.toString(), true, OpenMode.SMB);
+          } else loadlist(home, false, OpenMode.FILE);
         } else if (CURRENT_PATH.equals("/")
             || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
@@ -1412,8 +1407,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public ArrayList<LayoutElementParcelable> addToSmb(
-      SmbFile[] mFile, String path, boolean showHiddenFiles) throws SmbException {
+      @NonNull SmbFile[] mFile, @NonNull String path, boolean showHiddenFiles) throws SmbException {
     ArrayList<LayoutElementParcelable> smbFileList = new ArrayList<>();
+    String extraParams = Uri.parse(path).getQuery();
+
     if (searchHelper.size() > 500) searchHelper.clear();
     for (SmbFile aMFile : mFile) {
       if ((dataUtils.isFileHidden(aMFile.getPath()) || aMFile.isHidden()) && !showHiddenFiles) {
@@ -1430,11 +1427,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       if (aMFile.isDirectory()) {
         folder_count++;
 
+        Uri.Builder aMFilePathBuilder = Uri.parse(aMFile.getPath()).buildUpon();
+        if (!TextUtils.isEmpty(extraParams)) aMFilePathBuilder.query(extraParams);
+
         LayoutElementParcelable layoutElement =
             new LayoutElementParcelable(
                 getContext(),
                 name,
-                aMFile.getPath(),
+                aMFilePathBuilder.build().toString(),
                 "",
                 "",
                 "",
@@ -1682,7 +1682,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           }
           */
 
-          s.setStreamSrc(new SmbFile(baseFile.getPath()), baseFile.getSize());
+          s.setStreamSrc(baseFile.getSmbFile(), baseFile.getSize());
           activity.runOnUiThread(
               () -> {
                 try {

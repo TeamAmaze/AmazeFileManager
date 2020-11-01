@@ -179,7 +179,7 @@ public class SubnetScanner extends AsyncTask<Void, ComputerParcelable, Void> {
           public void run() {
             for (int i = 0; i < SubnetScanner.RETRY_COUNT; i++) {
               try {
-                SmbFile smbFile = new SmbFile("smb://");
+                SmbFile smbFile = SmbUtil.create("smb://");
                 smbFile.setConnectTimeout(5000);
                 SmbFile[] listFiles = smbFile.listFiles();
                 for (SmbFile smbFile2 : listFiles) {

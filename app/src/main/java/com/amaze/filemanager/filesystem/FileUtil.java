@@ -32,7 +32,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +51,7 @@ import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.annotation.TargetApi;
@@ -279,7 +279,7 @@ public abstract class FileUtil {
                           retval.add(targetFile.getPath());
                           break;
                         case SMB:
-                          SmbFile targetSmbFile = new SmbFile(finalFilePath);
+                          SmbFile targetSmbFile = SmbUtil.create(finalFilePath);
                           if (targetSmbFile.exists()) {
                             AppConfig.toast(
                                 mainActivity, mainActivity.getString(R.string.cannot_overwrite));
@@ -577,11 +577,8 @@ public abstract class FileUtil {
     switch (file.mode) {
       case SMB:
         try {
-          SmbFile smbFile = new SmbFile(file.getPath());
+          SmbFile smbFile = file.getSmbFile();
           smbFile.mkdirs();
-        } catch (MalformedURLException e) {
-          e.printStackTrace();
-          isSuccessful = false;
         } catch (SmbException e) {
           e.printStackTrace();
           isSuccessful = false;

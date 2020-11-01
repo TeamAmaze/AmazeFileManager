@@ -76,12 +76,18 @@
             android:id="@+id/passwordET"
             android:layout_gravity="center_horizontal" />
     </com.google.android.material.textfield.TextInputLayout>
+
     <androidx.appcompat.widget.AppCompatCheckBox
-        android:layout_width="match_parent"
+        android:id="@+id/chkSmbAnonymous"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/anonymous"
-        android:id="@+id/checkBox2"
-        android:layout_gravity="center_horizontal" />
+        android:text="@string/anonymous" />
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:id="@+id/chkSmbDisableIpcSignature"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/disableIpcSignature" />
+
     <TextView
         android:layout_width="wrap_content"
         android:id="@+id/wanthelp"

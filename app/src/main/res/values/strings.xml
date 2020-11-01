@@ -665,5 +665,6 @@
     <string name="move">Move</string>
     <string name="select_save_location">Select location to save</string>
     <string name="scp_default_path">Default Path (Optional)</string>
+    <string name="disableIpcSignature">Disable IPC signing check (For legacy SMBv1 servers - UNSAFE!)</string>
 </resources>
 

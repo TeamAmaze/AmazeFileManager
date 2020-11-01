@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
@@ -30,6 +32,7 @@ import java.security.GeneralSecurityException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.smb.CifsContextFactory;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -45,6 +48,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
+import android.net.UrlQuerySanitizer;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -178,23 +182,25 @@ public class SmbConnectDialog extends DialogFragment {
 
     int accentColor = ((ThemedActivity) getActivity()).getAccent();
     final AppCompatEditText pass = v2.findViewById(R.id.passwordET);
-    final AppCompatCheckBox ch = v2.findViewById(R.id.checkBox2);
+    final AppCompatCheckBox chkSmbAnonymous = v2.findViewById(R.id.chkSmbAnonymous);
+    final AppCompatCheckBox chkSmbDisableIpcSignature =
+        v2.findViewById(R.id.chkSmbDisableIpcSignature);
     TextView help = v2.findViewById(R.id.wanthelp);
 
     EditTextColorStateUtil.setTint(context, conName, accentColor);
     EditTextColorStateUtil.setTint(context, user, accentColor);
     EditTextColorStateUtil.setTint(context, pass, accentColor);
 
-    Utils.setTint(context, ch, accentColor);
+    Utils.setTint(context, chkSmbAnonymous, accentColor);
     help.setOnClickListener(
         v -> {
           int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
           GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
         });
 
-    ch.setOnClickListener(
+    chkSmbAnonymous.setOnClickListener(
         view -> {
-          if (ch.isChecked()) {
+          if (chkSmbAnonymous.isChecked()) {
             user.setEnabled(false);
             pass.setEnabled(false);
           } else {
@@ -219,9 +225,18 @@ public class SmbConnectDialog extends DialogFragment {
           domain.setText(domainp);
           user.setText(userp);
           pass.setText(passp);
-        } else ch.setChecked(true);
+        } else {
+          chkSmbAnonymous.setChecked(true);
+        }
         ipp = a.getHost();
         ip.setText(ipp);
+
+        UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(path);
+        if (sanitizer.hasParameter(PARAM_DISABLE_IPC_SIGNING_CHECK)) {
+          chkSmbDisableIpcSignature.setChecked(
+              Boolean.parseBoolean(sanitizer.getValue(PARAM_DISABLE_IPC_SIGNING_CHECK)));
+        }
+
       } catch (UnsupportedEncodingException e) {
         e.printStackTrace();
       } catch (MalformedURLException e) {
@@ -273,15 +288,20 @@ public class SmbConnectDialog extends DialogFragment {
           }
           SmbFile smbFile;
           String domaind = domain.getText().toString();
-          if (ch.isChecked()) smbFile = createSMBPath(new String[] {ipa, "", "", domaind}, true);
+          if (chkSmbAnonymous.isChecked())
+            smbFile = createSMBPath(new String[] {ipa, "", "", domaind}, true, false);
           else {
             String useraw = user.getText().toString();
             String useru = useraw.replaceAll(" ", "\\ ");
             String passp = pass.getText().toString();
-            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind}, false);
+            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind}, false, false);
           }
 
           if (smbFile == null) return;
+
+          StringBuilder extraParams = new StringBuilder();
+          if (chkSmbDisableIpcSignature.isChecked())
+            extraParams.append(PARAM_DISABLE_IPC_SIGNING_CHECK).append('=').append(true);
 
           try {
             s =
@@ -297,7 +317,9 @@ public class SmbConnectDialog extends DialogFragment {
 
           if (smbConnectionListener != null) {
             // encrypted path means path with encrypted pass
-            smbConnectionListener.addConnection(edit, s[0], smbFile.getPath(), s[1], name, path);
+            String qs = extraParams.length() > 0 ? extraParams.insert(0, '?').toString() : "";
+            smbConnectionListener.addConnection(
+                edit, s[0], smbFile.getPath() + qs, s[1] + qs, name, path);
           }
           dismiss();
         });
@@ -314,24 +336,23 @@ public class SmbConnectDialog extends DialogFragment {
     return ba3.build();
   }
 
-  private SmbFile createSMBPath(String[] auth, boolean anonym) {
+  private SmbFile createSMBPath(String[] auth, boolean anonymous, boolean disableIpcSignCheck) {
     try {
       String yourPeerIP = auth[0], domain = auth[3];
 
-      String path =
-          "smb://"
-              + (android.text.TextUtils.isEmpty(domain)
-                  ? ""
-                  : (URLEncoder.encode(domain + ";", "UTF-8")))
-              + (anonym
-                  ? ""
-                  : (URLEncoder.encode(auth[1], "UTF-8")
-                      + ":"
-                      + URLEncoder.encode(auth[2], "UTF-8")
-                      + "@"))
-              + yourPeerIP
-              + "/";
-      SmbFile smbFile = new SmbFile(path);
+      StringBuilder sb = new StringBuilder("smb://");
+      if (!android.text.TextUtils.isEmpty(domain))
+        sb.append(URLEncoder.encode(domain + ";", "UTF-8"));
+      if (!anonymous)
+        sb.append(URLEncoder.encode(auth[1], "UTF-8"))
+            .append(":")
+            .append(URLEncoder.encode(auth[2], "UTF-8"))
+            .append("@");
+      sb.append(yourPeerIP).append("/");
+      SmbFile smbFile =
+          new SmbFile(
+              sb.toString(),
+              CifsContextFactory.createWithDisableIpcSigningCheck(disableIpcSignCheck));
       return smbFile;
     } catch (MalformedURLException e) {
       e.printStackTrace();
