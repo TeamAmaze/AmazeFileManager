@@ -163,7 +163,6 @@ object ListFilesCommand : IRootCommand() {
     /**
      * Parses listing command result for HybridFile
      */
-    @Throws(ShellCommandInvalidException::class)
     private fun parseStringForHybridFile(
         rawFile: String,
         path: String,
