@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.root
 
 import android.util.Log
+import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
@@ -42,15 +43,15 @@ object ListFilesCommand : IRootCommand() {
         openModeCallback: (openMode: OpenMode) -> Unit,
         onFileFoundCallback: (file: HybridFileParcelable) -> Unit
     ) {
-        var mode = OpenMode.FILE
+        var mode: OpenMode
         if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
             // we're rooted and we're trying to load file with superuser
             // we're at the root directories, superuser is required!
-            // ls = Shell.SU.run("ls -l " + cpath);
-            executeRootCommand(path, showHidden).forEach {
+            val result = executeRootCommand(path, showHidden)
+            result.first.forEach {
                 if (!it.contains("Permission denied")) {
                     parseStringForHybridFile(it, path,
-                            RootHelper.isCommandValid("stat"))
+                            !result.second)
                             ?.let(onFileFoundCallback)
                 }
             }
@@ -70,9 +71,14 @@ object ListFilesCommand : IRootCommand() {
 
     /**
      * executes list files root command directory and return each line item
+     * returns pair with first denoting the result array and second if run with ls (true) or stat (false)
      */
     @Throws(ShellNotRunningException::class)
-    fun executeRootCommand(path: String, showHidden: Boolean): List<String> {
+    fun executeRootCommand(
+        path: String,
+        showHidden: Boolean,
+        retryWithLs: Boolean = false
+    ): Pair<List<String>, Boolean> {
         try {
             /**
              * If path is root keep command `stat -c *`
@@ -87,19 +93,26 @@ object ListFilesCommand : IRootCommand() {
 
             val command = "stat -c '%A %h %G %U %B %y %N' " +
                     "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
-            return if (RootHelper.isCommandValid(command)) {
+            return if (!retryWithLs) {
                 Log.i(javaClass.simpleName, "Using stat for list parsing")
-                runShellCommandToList(command).map {
+                Pair(first = runShellCommandToList(command).map {
                     it.replace(appendedPath, "")
-                }
+                }, second = retryWithLs)
             } else {
                 Log.i(javaClass.simpleName, "Using ls for list parsing")
-                runShellCommandToList("ls -l " + (if (showHidden) "-a " else "") +
-                        "\"$sanitizedPath\"")
+                Pair(first = runShellCommandToList("ls -l " + (if (showHidden) "-a " else "") +
+                    "\"$sanitizedPath\""), second = retryWithLs)
+            }
+        } catch (invalidCommand: ShellCommandInvalidException) {
+            Log.w(javaClass.simpleName, "Command not found - ${invalidCommand.message}")
+            return if (retryWithLs) {
+                Pair(first = ArrayList(), second = true)
+            } else {
+                executeRootCommand(path, showHidden, true)
             }
         } catch (exception: ShellNotRunningException) {
             exception.printStackTrace()
-            return ArrayList()
+            return Pair(first = ArrayList(), second = false)
         }
     }
 
@@ -150,6 +163,7 @@ object ListFilesCommand : IRootCommand() {
     /**
      * Parses listing command result for HybridFile
      */
+    @Throws(ShellCommandInvalidException::class)
     private fun parseStringForHybridFile(
         rawFile: String,
         path: String,

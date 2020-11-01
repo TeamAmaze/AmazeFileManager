@@ -24,16 +24,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.root.FindFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
 import androidx.documentfile.provider.DocumentFile;
 
@@ -127,7 +122,9 @@ public class RootHelper {
     String parentPath = file.getParent();
     if (!Utils.isNullOrEmpty(parentPath)) {
       List<String> resultLines =
-          ListFilesCommand.INSTANCE.executeRootCommand(getCommandLineString(parentPath), true);
+          ListFilesCommand.INSTANCE
+              .executeRootCommand(getCommandLineString(parentPath), true, false)
+              .getFirst();
       for (String currentLine : resultLines) {
         if (contains(currentLine.split(" "), name)) {
           try {
@@ -200,24 +197,5 @@ public class RootHelper {
 
   private static int getPermissionInOctal(boolean read, boolean write, boolean execute) {
     return (read ? CHMOD_READ : 0) | (write ? CHMOD_WRITE : 0) | (execute ? CHMOD_EXECUTE : 0);
-  }
-
-  /** Identifies if a given command binary is present in system or not */
-  public static boolean isCommandValid(String command) {
-    try {
-      String binary = command.split(" ")[0];
-      SharedPreferences sharedPreferences =
-          PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance());
-      if (!sharedPreferences.getBoolean(binary, false)) {
-        boolean binaryPresent =
-            FindFileCommand.INSTANCE.findFile("/system/bin/" + binary)
-                || FindFileCommand.INSTANCE.findFile("/system/xbin/" + binary);
-        sharedPreferences.edit().putBoolean(binary, binaryPresent).apply();
-      }
-      return sharedPreferences.getBoolean(binary, false);
-    } catch (ShellNotRunningException e) {
-      e.printStackTrace();
-      return false;
-    }
   }
 }

@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.root.base
 
+import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.ui.activities.MainActivity
 import eu.chainfire.libsuperuser.Shell
@@ -36,12 +37,21 @@ open class IRootCommand {
      * @return a list of results. Null only if the command passed is a blocking call or no output is
      * there for the command passed
      */
-    @Throws(ShellNotRunningException::class)
+    @Throws(ShellNotRunningException::class, ShellCommandInvalidException::class)
     fun runShellCommandToList(cmd: String): List<String> {
         val result = ArrayList<String>()
+        var interrupt = false
+        var errorCode: Int = -1
         // callback being called on a background handler thread
         runShellCommandWithCallback(cmd) { _, exitCode, output ->
+            if (exitCode in 1..127) {
+                interrupt = true
+                errorCode = exitCode
+            }
             result.addAll(output)
+        }
+        if (interrupt) {
+            throw ShellCommandInvalidException("$cmd , error code - $errorCode")
         }
         return result
     }

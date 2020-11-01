@@ -691,7 +691,7 @@ public class FileUtils {
   /**
    * We're parsing a line returned from a stdout of shell.
    *
-   * @param line must be the line returned from a 'ls' command
+   * @param line must be the line returned from 'ls' or 'stat' command
    */
   public static HybridFileParcelable parseName(String line) {
     boolean linked = false;
