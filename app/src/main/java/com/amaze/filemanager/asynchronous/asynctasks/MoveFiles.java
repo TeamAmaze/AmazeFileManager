@@ -39,11 +39,11 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
@@ -126,7 +126,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
               // check if we have root
               if (mainFrag != null && mainFrag.getMainActivity().isRootExplorer()) {
                 try {
-                  if (!RootUtils.rename(baseFile.getPath(), destPath)) return false;
+                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath))
+                    return false;
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();
                   return false;

@@ -639,18 +639,6 @@ public class MainActivity extends PermissionsActivity
       handlerThread.start();
       handler = new Handler(handlerThread.getLooper());
       shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
-
-      // TODO: check for busybox
-      /*try {
-          if (!RootUtils.isBusyboxAvailable()) {
-              Toast.makeText(this, getString(R.string.error_busybox), Toast.LENGTH_LONG).show();
-              closeInteractiveShell();
-              sharedPref.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
-          }
-      } catch (ShellNotRunningException e) {
-          e.printStackTrace();
-          sharedPref.edit().putBoolean(PreferenceUtils.KEY_ROOT, false).apply();
-      }*/
     }
   }
 

@@ -44,6 +44,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
@@ -51,7 +52,6 @@ import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.annotation.TargetApi;
@@ -458,7 +458,7 @@ public abstract class FileUtil {
     if (f.getParentFile().canWrite()) {
       return f.renameTo(new File(newPath));
     } else if (root) {
-      RootUtils.rename(f.getPath(), newPath);
+      RenameFileCommand.INSTANCE.renameFile(f.getPath(), newPath);
       return true;
     }
     return false;

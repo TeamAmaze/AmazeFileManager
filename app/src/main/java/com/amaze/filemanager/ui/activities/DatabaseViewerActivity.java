@@ -28,13 +28,13 @@ import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.fragments.DbViewerFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
@@ -170,7 +170,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
               if (!file.canRead() && isRootExplorer()) {
 
                 try {
-                  RootUtils.copy(
+                  CopyFilesCommand.INSTANCE.copyFiles(
                       pathFile.getPath(), new File(file1.getPath(), file.getName()).getPath());
                   pathFile = new File(file1.getPath(), file.getName());
                 } catch (ShellNotRunningException e) {
