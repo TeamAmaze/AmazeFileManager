@@ -37,7 +37,7 @@ object RenameFileCommand : IRootCommand() {
     fun renameFile(oldPath: String, newPath: String): Boolean {
         val mountPoint = MountPathCommand.mountPath(oldPath, MountPathCommand.READ_WRITE)
         val command = "mv \"${RootHelper.getCommandLineString(oldPath)}\"" +
-                " \"${RootHelper.getCommandLineString(newPath)}\""
+            " \"${RootHelper.getCommandLineString(newPath)}\""
         val output = runShellCommandToList(command)
         mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
         return output.isEmpty()

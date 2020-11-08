@@ -46,14 +46,14 @@ object ChangeFilePermissionsCommand : IRootCommand() {
 
         val options = if (isDirectory) "-R" else ""
         val command = String.format(
-                CHMOD_COMMAND,
-                options,
-                updatedPermissions,
-                RootHelper.getCommandLineString(filePath)
+            CHMOD_COMMAND,
+            options,
+            updatedPermissions,
+            RootHelper.getCommandLineString(filePath)
         )
 
         runShellCommandWithCallback(
-                command
+            command
         ) { _: Int, exitCode: Int, _: List<String?>? ->
             if (exitCode < 0) {
                 onOperationPerform(false)

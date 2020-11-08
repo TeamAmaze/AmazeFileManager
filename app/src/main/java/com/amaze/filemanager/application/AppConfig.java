@@ -247,7 +247,7 @@ public class AppConfig extends GlideApplication {
       ErrorActivity.reportError(
           this,
           ace,
-              null,
+          null,
           ErrorActivity.ErrorInfo.make(
               ErrorActivity.ERROR_UNKNOWN,
               "Could not initialize ACRA crash report",

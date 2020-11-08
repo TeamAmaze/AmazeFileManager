@@ -109,10 +109,10 @@ public class ErrorActivity extends ThemedActivity {
   private EditText userCommentBox;
 
   public static void reportError(
-          final Context context,
-          final List<Throwable> el,
-          final View rootView,
-          final ErrorInfo errorInfo) {
+      final Context context,
+      final List<Throwable> el,
+      final View rootView,
+      final ErrorInfo errorInfo) {
     if (rootView != null) {
       Snackbar.make(rootView, R.string.error_snackbar_message, 3 * 1000)
           .setActionTextColor(Color.YELLOW)
@@ -126,9 +126,7 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   private static void startErrorActivity(
-          final Context context,
-          final ErrorInfo errorInfo,
-          final List<Throwable> el) {
+      final Context context, final ErrorInfo errorInfo, final List<Throwable> el) {
     final Intent intent = new Intent(context, ErrorActivity.class);
     intent.putExtra(ERROR_INFO, errorInfo);
     intent.putExtra(ERROR_LIST, elToSl(el));
@@ -137,10 +135,7 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   public static void reportError(
-          final Context context,
-          final Throwable e,
-          final View rootView,
-          final ErrorInfo errorInfo) {
+      final Context context, final Throwable e, final View rootView, final ErrorInfo errorInfo) {
     List<Throwable> el = null;
     if (e != null) {
       el = new Vector<>();

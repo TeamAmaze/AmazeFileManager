@@ -38,8 +38,8 @@ object CopyFilesCommand : IRootCommand() {
         val mountPoint = mountPath(destination, MountPathCommand.READ_WRITE)
 
         runShellCommand(
-                "cp -r \"${RootHelper.getCommandLineString(source)}\" " +
-                        "\"${RootHelper.getCommandLineString(destination)}\""
+            "cp -r \"${RootHelper.getCommandLineString(source)}\" " +
+                "\"${RootHelper.getCommandLineString(destination)}\""
         )
 
         // we mounted the filesystem as rw, let's mount it back to ro

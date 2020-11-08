@@ -34,7 +34,7 @@ object FindFileCommand : IRootCommand() {
     @Throws(ShellNotRunningException::class)
     fun findFile(path: String): Boolean {
         val result = runShellCommandToList(
-                "find \"${RootHelper.getCommandLineString(path)}\""
+            "find \"${RootHelper.getCommandLineString(path)}\""
         )
         return result.isNotEmpty()
     }
