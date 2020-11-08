@@ -109,28 +109,26 @@ public class ErrorActivity extends ThemedActivity {
   private EditText userCommentBox;
 
   public static void reportError(
-      final Context context,
-      final List<Throwable> el,
-      final Class returnActivity,
-      final View rootView,
-      final ErrorInfo errorInfo) {
+          final Context context,
+          final List<Throwable> el,
+          final View rootView,
+          final ErrorInfo errorInfo) {
     if (rootView != null) {
       Snackbar.make(rootView, R.string.error_snackbar_message, 3 * 1000)
           .setActionTextColor(Color.YELLOW)
           .setAction(
               context.getString(R.string.error_snackbar_action).toUpperCase(),
-              v -> startErrorActivity(returnActivity, context, errorInfo, el))
+              v -> startErrorActivity(context, errorInfo, el))
           .show();
     } else {
-      startErrorActivity(returnActivity, context, errorInfo, el);
+      startErrorActivity(context, errorInfo, el);
     }
   }
 
   private static void startErrorActivity(
-      final Class returnActivity,
-      final Context context,
-      final ErrorInfo errorInfo,
-      final List<Throwable> el) {
+          final Context context,
+          final ErrorInfo errorInfo,
+          final List<Throwable> el) {
     final Intent intent = new Intent(context, ErrorActivity.class);
     intent.putExtra(ERROR_INFO, errorInfo);
     intent.putExtra(ERROR_LIST, elToSl(el));
@@ -139,17 +137,16 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   public static void reportError(
-      final Context context,
-      final Throwable e,
-      final Class returnActivity,
-      final View rootView,
-      final ErrorInfo errorInfo) {
+          final Context context,
+          final Throwable e,
+          final View rootView,
+          final ErrorInfo errorInfo) {
     List<Throwable> el = null;
     if (e != null) {
       el = new Vector<>();
       el.add(e);
     }
-    reportError(context, el, returnActivity, rootView, errorInfo);
+    reportError(context, el, rootView, errorInfo);
   }
 
   public static void reportError(
@@ -210,7 +207,6 @@ public class ErrorActivity extends ThemedActivity {
 
     userCommentBox = findViewById(R.id.errorCommentBox);
     final TextView errorView = findViewById(R.id.errorView);
-    final TextView infoView = findViewById(R.id.errorInfosView);
     final TextView errorMessageView = findViewById(R.id.errorMessageView);
 
     returnActivity = MainActivity.class;
@@ -280,6 +276,8 @@ public class ErrorActivity extends ThemedActivity {
         intent.putExtra(Intent.EXTRA_TEXT, buildJson());
         intent.setType("text/plain");
         startActivity(Intent.createChooser(intent, getString(R.string.share)));
+        break;
+      default:
         break;
     }
     return false;
@@ -472,8 +470,8 @@ public class ErrorActivity extends ThemedActivity {
           }
         };
 
-    final String userAction;
-    public final String request;
+    private final String userAction;
+    private final String request;
     @StringRes public final int message;
 
     private ErrorInfo(final String userAction, final String request, @StringRes final int message) {
