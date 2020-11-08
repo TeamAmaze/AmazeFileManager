@@ -29,12 +29,14 @@ import java.net.MalformedURLException;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
+import com.amaze.filemanager.filesystem.root.MakeFileCommand;
+import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
@@ -189,8 +191,8 @@ public class Operations {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
               try {
-
-                RootUtils.mkDir(file.getParent(context), file.getName(context));
+                MakeDirectoryCommand.INSTANCE.makeDirectory(
+                    file.getParent(context), file.getName(context));
               } catch (ShellNotRunningException e) {
                 e.printStackTrace();
               }
@@ -339,8 +341,7 @@ public class Operations {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
               try {
-
-                RootUtils.mkFile(file.getPath());
+                MakeFileCommand.INSTANCE.makeFile(file.getPath());
               } catch (ShellNotRunningException e) {
                 e.printStackTrace();
               }
@@ -487,7 +488,7 @@ public class Operations {
                 boolean a = !file.exists() && file1.exists();
                 if (!a && rootMode) {
                   try {
-                    RootUtils.rename(file.getPath(), file1.getPath());
+                    RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
                   } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                   }
@@ -501,7 +502,7 @@ public class Operations {
               break;
             case ROOT:
               try {
-                RootUtils.rename(file.getPath(), file1.getPath());
+                RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
               } catch (ShellNotRunningException e) {
                 e.printStackTrace();
               }

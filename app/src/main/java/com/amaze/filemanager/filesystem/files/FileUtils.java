@@ -691,7 +691,7 @@ public class FileUtils {
   /**
    * We're parsing a line returned from a stdout of shell.
    *
-   * @param line must be the line returned from a 'ls' command
+   * @param line must be the line returned from 'ls' or 'stat' command
    */
   public static HybridFileParcelable parseName(String line) {
     boolean linked = false;
@@ -725,6 +725,7 @@ public class FileUtils {
       for (int i = q + 1; i < array.length; i++) {
         link.append(" ").append(array[i]);
       }
+      link = new StringBuilder(link.toString().trim());
     }
     long Size = (size == null || size.trim().length() == 0) ? -1 : Long.parseLong(size);
     if (date.trim().length() > 0) {

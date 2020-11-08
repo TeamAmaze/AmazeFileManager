@@ -34,8 +34,8 @@ import com.amaze.filemanager.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
-import com.amaze.filemanager.utils.RootUtils;
 
 import android.content.ContentResolver;
 import android.os.AsyncTask;
@@ -145,7 +145,7 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
       try {
         cachedFile = new File(externalCacheDir, file.getName());
         // creating a cache file
-        RootUtils.copy(file.getAbsolutePath(), cachedFile.getPath());
+        CopyFilesCommand.INSTANCE.copyFiles(file.getAbsolutePath(), cachedFile.getPath());
 
         inputStream = new FileInputStream(cachedFile);
       } catch (ShellNotRunningException e) {

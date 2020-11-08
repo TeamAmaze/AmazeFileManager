@@ -53,10 +53,12 @@ import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.AppsListFragment;
@@ -68,7 +70,6 @@ import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.FingerprintHandler;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.github.mikephil.charting.charts.PieChart;
@@ -1360,7 +1361,7 @@ public class GeneralDialogCreation {
     but.setOnClickListener(
         v1 -> {
           int perms =
-              RootUtils.permissionsToOctalString(
+              RootHelper.permissionsToOctalString(
                   readown.isChecked(),
                   writeown.isChecked(),
                   exeown.isChecked(),
@@ -1372,7 +1373,7 @@ public class GeneralDialogCreation {
                   exeother.isChecked());
 
           try {
-            RootUtils.changePermissions(
+            ChangeFilePermissionsCommand.INSTANCE.changeFilePermissions(
                 file.getPath(),
                 perms,
                 file.isDirectory(context),
@@ -1387,6 +1388,7 @@ public class GeneralDialogCreation {
                             Toast.LENGTH_LONG)
                         .show();
                   }
+                  return null;
                 });
           } catch (ShellNotRunningException e) {
             Toast.makeText(context, mainFrag.getString(R.string.root_failure), Toast.LENGTH_LONG)
