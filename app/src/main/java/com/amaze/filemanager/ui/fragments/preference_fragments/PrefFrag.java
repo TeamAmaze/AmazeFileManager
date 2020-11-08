@@ -22,6 +22,7 @@ package com.amaze.filemanager.ui.fragments.preference_fragments;
 
 import static com.amaze.filemanager.R.string.feedback;
 import static com.amaze.filemanager.ui.activities.PreferencesActivity.START_PREFERENCE;
+import static com.amaze.filemanager.utils.Utils.EMAIL_VISHAL;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -38,6 +39,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
+import com.amaze.filemanager.utils.Utils;
 
 import android.Manifest;
 import android.app.Activity;
@@ -79,9 +81,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
     PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH
   };
-  private static final String EMAIL_VISHAL = "vishalmeham2@gmail.com";
-  private static final String EMAIL_EMMANUEL = "emmanuelbendavid@gmail.com";
-  private static final String EMAIL_RAYMOND = "airwave209gt@gmail.com";
 
   private UtilitiesProvider utilsProvider;
   private SharedPreferences sharedPref;
@@ -225,7 +224,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         builder.build().show();
         return true;
       case PreferencesConstants.FRAGMENT_FEEDBACK:
-        Intent emailIntent = buildEmailIntent();
+        Intent emailIntent = Utils.buildEmailIntent(null);
 
         PackageManager packageManager = getActivity().getPackageManager();
         List activities =
@@ -407,16 +406,5 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         listView.onRestoreInstanceState(restored);
       }
     }
-  }
-
-  private Intent buildEmailIntent() {
-    Intent emailIntent = new Intent(Intent.ACTION_SEND);
-    String aEmailList[] = {EMAIL_VISHAL};
-    String aEmailCCList[] = {EMAIL_EMMANUEL, EMAIL_RAYMOND};
-    emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
-    emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
-    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager");
-    emailIntent.setType("message/rfc822");
-    return emailIntent;
   }
 }

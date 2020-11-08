@@ -106,8 +106,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     STORAGES_GROUP, SERVERS_GROUP, CLOUDS_GROUP, FOLDERS_GROUP, QUICKACCESSES_GROUP, LASTGROUP
   };
 
-  private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
-
   private MainActivity mainActivity;
   private Resources resources;
   private DataUtils dataUtils;
@@ -150,7 +148,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       appVersion.setVisibility(View.VISIBLE);
     }
     donateImageView.setOnClickListener(v -> new Billing(mainActivity));
-    telegramImageView.setOnClickListener(v -> Utils.openURL(URL_TELEGRAM, mainActivity));
+    telegramImageView.setOnClickListener(v -> Utils.openTelegramURL(mainActivity));
     /*drawerHeaderView.setOnLongClickListener(
     v -> {
       Intent intent1;
