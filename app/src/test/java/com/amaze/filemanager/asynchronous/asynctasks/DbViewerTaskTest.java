@@ -20,12 +20,14 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static android.os.Looper.getMainLooper;
 import static android.view.View.VISIBLE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.robolectric.Shadows.shadowOf;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -111,6 +113,8 @@ public class DbViewerTaskTest {
 
     DbViewerTask task = new DbViewerTask(schemaCursor, contentCursor, webView, mock);
     task.doInBackground();
+
+    shadowOf(getMainLooper()).idle();
 
     assertNotNull(task.schemaList);
     assertNotNull(task.contentList);
