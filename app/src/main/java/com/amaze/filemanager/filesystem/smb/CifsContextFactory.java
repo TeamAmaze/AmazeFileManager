@@ -36,6 +36,8 @@ import jcifs.context.SingletonContext;
 
 public abstract class CifsContextFactory {
 
+  public static final String SMB_URI_PREFIX = "smb://";
+
   private static final String TAG = CifsContextFactory.class.getSimpleName();
 
   private static final Properties defaultProperties;

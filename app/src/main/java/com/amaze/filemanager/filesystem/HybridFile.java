@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -94,11 +97,11 @@ public class HybridFile {
 
   public HybridFile(OpenMode mode, String path, String name, boolean isDirectory) {
     this(mode, path);
-    if (path.startsWith("smb://") || isSmb()) {
+    if (path.startsWith(SMB_URI_PREFIX) || isSmb()) {
       Uri.Builder pathBuilder = Uri.parse(this.path).buildUpon().appendPath(name);
       if (isDirectory) pathBuilder.appendPath("/");
       this.path = pathBuilder.build().toString();
-    } else if (path.startsWith("ssh://") || isSftp()) {
+    } else if (path.startsWith(SSH_URI_PREFIX) || isSftp()) {
       this.path += "/" + name;
     } else if (isRoot() && path.equals("/")) {
       // root of filesystem, don't concat another '/'
@@ -109,9 +112,9 @@ public class HybridFile {
   }
 
   public void generateMode(Context context) {
-    if (path.startsWith("smb://")) {
+    if (path.startsWith(SMB_URI_PREFIX)) {
       mode = OpenMode.SMB;
-    } else if (path.startsWith("ssh://")) {
+    } else if (path.startsWith(SSH_URI_PREFIX)) {
       mode = OpenMode.SFTP;
     } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
       mode = OpenMode.OTG;
@@ -408,6 +411,7 @@ public class HybridFile {
         try {
           isDirectory = smbFile != null && smbFile.isDirectory();
         } catch (SmbException e) {
+          e.printStackTrace();
           isDirectory = false;
         }
         break;
@@ -857,16 +861,12 @@ public class HybridFile {
   }
 
   public String getReadablePath(String path) {
-    if (isSftp() || isSmb()) return parseSmbPath(path);
+    if (isSftp() || isSmb()) return parseAndFormatUriForDisplay(path);
     else return path;
   }
 
-  public static String parseSftpPath(String a) {
-    return parseSmbPath(a);
-  }
-
-  public static String parseSmbPath(String a) {
-    Uri uri = Uri.parse(a);
+  public static String parseAndFormatUriForDisplay(@NonNull String uriString) {
+    Uri uri = Uri.parse(uriString);
     return String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath());
   }
 

@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
 import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
 
 import java.io.IOException;
@@ -340,7 +341,7 @@ public class SmbConnectDialog extends DialogFragment {
     try {
       String yourPeerIP = auth[0], domain = auth[3];
 
-      StringBuilder sb = new StringBuilder("smb://");
+      StringBuilder sb = new StringBuilder(SMB_URI_PREFIX);
       if (!android.text.TextUtils.isEmpty(domain))
         sb.append(URLEncoder.encode(domain + ";", "UTF-8"));
       if (!anonymous)

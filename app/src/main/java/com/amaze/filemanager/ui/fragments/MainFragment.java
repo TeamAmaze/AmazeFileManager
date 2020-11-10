@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
@@ -1249,7 +1250,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               loadlist(path.toString().replace("%3D", "="), true, openMode);
             } else loadlist(home, false, OpenMode.FILE);
           } else if (OpenMode.SFTP.equals(openMode)) {
-            if (!CURRENT_PATH.substring("ssh://".length()).contains("/"))
+            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/"))
               loadlist(home, false, OpenMode.FILE);
             else loadlist(currentFile.getParent(getContext()), true, openMode);
           } else if (CURRENT_PATH.equals("/")

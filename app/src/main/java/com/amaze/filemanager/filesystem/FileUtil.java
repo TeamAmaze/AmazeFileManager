@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -287,7 +290,8 @@ public abstract class FileUtil {
                           } else {
                             OutputStream outputStream = targetSmbFile.getOutputStream();
                             bufferedOutputStream = new BufferedOutputStream(outputStream);
-                            retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
+                            retval.add(
+                                HybridFile.parseAndFormatUriForDisplay(targetSmbFile.getPath()));
                           }
                           break;
                         case SFTP:
@@ -1016,8 +1020,8 @@ public abstract class FileUtil {
    */
   public static int checkFolder(final String f, Context context) {
     if (f == null) return 0;
-    if (f.startsWith("smb://")
-        || f.startsWith("ssh://")
+    if (f.startsWith(SMB_URI_PREFIX)
+        || f.startsWith(SSH_URI_PREFIX)
         || f.startsWith(OTGUtil.PREFIX_OTG)
         || f.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
         || f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)

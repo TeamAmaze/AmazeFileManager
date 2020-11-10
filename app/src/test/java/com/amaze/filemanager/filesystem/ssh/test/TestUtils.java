@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem.ssh.test;
 
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.KeyPair;
@@ -77,7 +79,7 @@ public abstract class TestUtils {
       privateKeyContents = writer.toString();
     }
 
-    StringBuilder fullUri = new StringBuilder().append("ssh://").append(validUsername);
+    StringBuilder fullUri = new StringBuilder().append(SSH_URI_PREFIX).append(validUsername);
 
     if (validPassword != null) fullUri.append(':').append(validPassword);
 
