@@ -346,10 +346,8 @@ public class BottomBar implements View.OnTouchListener {
 
     switch (openmode) {
       case SFTP:
-        newPath = HybridFile.parseSftpPath(news);
-        break;
       case SMB:
-        newPath = HybridFile.parseSmbPath(news);
+        newPath = HybridFile.parseAndFormatUriForDisplay(news);
         break;
       case OTG:
         newPath = mainActivityHelper.parseOTGPath(news);

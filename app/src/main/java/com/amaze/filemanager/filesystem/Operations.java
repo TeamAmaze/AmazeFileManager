@@ -25,6 +25,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
 
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
@@ -386,17 +387,15 @@ public class Operations {
 
         if (oldFile.isSmb()) {
           try {
-            SmbFile smbFile = new SmbFile(oldFile.getPath());
-            SmbFile smbFile1 = new SmbFile(newFile.getPath());
+            SmbFile smbFile = oldFile.getSmbFile();
+            SmbFile smbFile1 = new SmbFile(new URL(newFile.getPath()), smbFile.getContext());
             if (smbFile1.exists()) {
               errorCallBack.exists(newFile);
               return null;
             }
             smbFile.renameTo(smbFile1);
             if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
-          } catch (SmbException e) {
+          } catch (SmbException | MalformedURLException e) {
             e.printStackTrace();
           }
           return null;
