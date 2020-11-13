@@ -379,12 +379,18 @@ public class UtilsHandler {
   private void removeSmbPath(String name, String path) {
     if ("".equals(path))
       utilitiesDatabase.smbEntryDao().deleteByName(name).subscribeOn(Schedulers.io()).subscribe();
-    else
+    else {
+      try {
+        path = SmbUtil.getSmbEncryptedPath(context, path);
+      } catch (GeneralSecurityException | IOException e) {
+        Log.e(TAG, "Error encrypting path", e);
+      }
       utilitiesDatabase
           .smbEntryDao()
           .deleteByNameAndPath(name, path)
           .subscribeOn(Schedulers.io())
           .subscribe();
+    }
   }
 
   private void removeSftpPath(String name, String path) {

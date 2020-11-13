@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -112,7 +114,7 @@ public class RenameBookmark extends DialogFragment {
           });
       final AppCompatEditText ip = v2.findViewById(R.id.editText);
       if (studiomode != 0) {
-        if (path.startsWith("smb:/")) {
+        if (path.startsWith(SMB_URI_PREFIX)) {
           try {
             URL a = new URL(path);
             String userinfo = a.getUserInfo();
@@ -121,7 +123,7 @@ public class RenameBookmark extends DialogFragment {
               user = inf.substring(0, inf.indexOf(":"));
               pass = inf.substring(inf.indexOf(":") + 1, inf.length());
               String ipp = a.getHost();
-              pa = "smb://" + ipp + a.getPath();
+              pa = SMB_URI_PREFIX + ipp + a.getPath();
             }
           } catch (Exception e) {
             e.printStackTrace();
@@ -146,13 +148,13 @@ public class RenameBookmark extends DialogFragment {
               v -> {
                 String t = ip.getText().toString();
                 String name = conName.getText().toString();
-                if (studiomode != 0 && t.startsWith("smb://")) {
+                if (studiomode != 0 && t.startsWith(SMB_URI_PREFIX)) {
                   try {
                     URL a = new URL(t);
                     String userinfo = a.getUserInfo();
                     if (userinfo == null && user.length() > 0) {
                       t =
-                          "smb://"
+                          SMB_URI_PREFIX
                               + ((URLEncoder.encode(user, "UTF-8")
                                   + ":"
                                   + URLEncoder.encode(pass, "UTF-8")

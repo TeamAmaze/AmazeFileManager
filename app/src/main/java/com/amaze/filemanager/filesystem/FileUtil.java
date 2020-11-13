@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -32,7 +35,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.MalformedURLException;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,6 +54,7 @@ import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.utils.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.annotation.TargetApi;
@@ -279,7 +282,7 @@ public abstract class FileUtil {
                           retval.add(targetFile.getPath());
                           break;
                         case SMB:
-                          SmbFile targetSmbFile = new SmbFile(finalFilePath);
+                          SmbFile targetSmbFile = SmbUtil.create(finalFilePath);
                           if (targetSmbFile.exists()) {
                             AppConfig.toast(
                                 mainActivity, mainActivity.getString(R.string.cannot_overwrite));
@@ -287,7 +290,8 @@ public abstract class FileUtil {
                           } else {
                             OutputStream outputStream = targetSmbFile.getOutputStream();
                             bufferedOutputStream = new BufferedOutputStream(outputStream);
-                            retval.add(HybridFile.parseSmbPath(targetSmbFile.getPath()));
+                            retval.add(
+                                HybridFile.parseAndFormatUriForDisplay(targetSmbFile.getPath()));
                           }
                           break;
                         case SFTP:
@@ -577,11 +581,8 @@ public abstract class FileUtil {
     switch (file.mode) {
       case SMB:
         try {
-          SmbFile smbFile = new SmbFile(file.getPath());
+          SmbFile smbFile = file.getSmbFile();
           smbFile.mkdirs();
-        } catch (MalformedURLException e) {
-          e.printStackTrace();
-          isSuccessful = false;
         } catch (SmbException e) {
           e.printStackTrace();
           isSuccessful = false;
@@ -1019,8 +1020,8 @@ public abstract class FileUtil {
    */
   public static int checkFolder(final String f, Context context) {
     if (f == null) return 0;
-    if (f.startsWith("smb://")
-        || f.startsWith("ssh://")
+    if (f.startsWith(SMB_URI_PREFIX)
+        || f.startsWith(SSH_URI_PREFIX)
         || f.startsWith(OTGUtil.PREFIX_OTG)
         || f.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
         || f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)
