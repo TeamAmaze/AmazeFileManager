@@ -21,7 +21,6 @@
 package com.amaze.filemanager.filesystem.ssh.test;
 
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
-
 import static org.robolectric.Shadows.shadowOf;
 
 import java.io.IOException;
