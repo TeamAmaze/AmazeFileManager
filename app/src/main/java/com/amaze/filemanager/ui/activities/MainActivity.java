@@ -460,15 +460,21 @@ public class MainActivity extends PermissionsActivity
             // reset home and current paths according to new storages
             if (b) {
               TabHandler tabHandler = TabHandler.getInstance();
-              tabHandler.clear();
-              if (tabFragment != null) {
-                tabFragment.refactorDrawerStorages(false);
-                Fragment main = tabFragment.getFragmentAtIndex(0);
-                if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                if (main1 != null) ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
-              }
-              getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+              tabHandler
+                  .clear()
+                  .subscribe(
+                      () -> {
+                        if (tabFragment != null) {
+                          tabFragment.refactorDrawerStorages(false);
+                          Fragment main = tabFragment.getFragmentAtIndex(0);
+                          if (main != null)
+                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                          Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                          if (main1 != null)
+                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                        }
+                        getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+                      });
             } else {
               // just refresh list
               if (tabFragment != null) {
