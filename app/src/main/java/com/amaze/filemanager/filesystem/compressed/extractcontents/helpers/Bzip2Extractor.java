@@ -111,6 +111,7 @@ public class Bzip2Extractor extends Extractor {
       }
     } finally {
       outputStream.close();
+      outputFile.setLastModified(entry.getModTime().getTime());
     }
   }
 }

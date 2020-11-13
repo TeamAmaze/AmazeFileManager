@@ -111,6 +111,7 @@ public class XzExtractor extends Extractor {
       }
     } finally {
       outputStream.close();
+      outputFile.setLastModified(entry.getModTime().getTime());
     }
   }
 }

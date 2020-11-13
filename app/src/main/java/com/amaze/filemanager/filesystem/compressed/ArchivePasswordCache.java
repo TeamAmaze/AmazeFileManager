@@ -42,7 +42,7 @@ import androidx.annotation.Nullable;
  *
  * @see Map
  * @see com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
- * @see net.lingala.zip4j.core.ZipFile
+ * @see net.lingala.zip4j.ZipFile
  * @see <a href="https://github.com/TeamAmaze/AmazeFileManager/pull/1391">DataUtils, which uses Bill
  *     Pugh's Singleton Implementation too</a>
  */
