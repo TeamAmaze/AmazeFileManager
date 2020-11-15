@@ -310,6 +310,8 @@
     <string name="primary_two_summary">Define a cor dos elementos grandes da interface para a aba direita</string>
     <string name="support_development">Apoie o desenvolvimento</string>
     <string name="report_bugs_title">Relate erros</string>
+    <string name="source_title">Código Fonte</string>
+    <string name="source_summary">Veja o nosso código fonte no GitHub</string>
     <string name="report_bugs_summary">Comunique erros encontrados ou solicite novas funcionalidades</string>
     <string name="translate_title">Traduza</string>
     <string name="translate_summary">Traduza o Amaze para seu idioma</string>
@@ -503,6 +505,7 @@
     <string name="crypt_fingerprint_authenticate">Toque o sensor para continuar</string>
     <string name="authenticate_password">Digite a senha</string>
 
+    <string name="sidebar_preferences">Barra Lateral</string>
     <string name="sidebar_folders_title">Atalhos da barra lateral</string>
     <string name="sidebar_quick_access_title">Acesso rápido à barra lateral</string>
     <string name="show_folders_pref_title">Mostrar atalhos</string>
@@ -622,6 +625,28 @@
     <string name="saf_otg_explanation">Por motivo de seguranção, você será direcionado para o sistema de arquivos do Android. Selecione o dispositivo USB a partir da lista à esquerda.</string>
     <string name="donation_thanks">Obrigado pela doação, isto nos mantém motivados! (:</string>
     <string name="enable_marquee_filename">Ativar o efeito de letreiro para nomes de arquivos</string>
+    <string name="archive_password_prompt">Por favor, insira arquivo</string>
+    <string name="cannot_extract_archive">Não foi possível extrair o arquivo \"1%s\": \'%s</string>
+    <string name="archive_unsupported_or_corrupt">Não foi possível abrir arquivo \"1%s\". Ou não podemos abrir o arquivo ou o arquivo está danificado</string>
     <string name="close">Fechar</string>
-    </resources>
+    <string name="bookmark_exists">Marcador existe</string>
+    <string name="hide_media">Ocultar de mídia</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">É POSSÌVEL QUE ALGUÉM ESTEJA FAZENDO ALGO ERRADO!\n\nAlguém poderia estar escutando você agora mesmo (ataque de homem-no-meio)! É talbém possível que a chave de host tenha epenas mudado. O fingerprint para a chave pública enviada ao host remoto não bate com a armazenada no Amaze\n\nVocê pode proceder com a atualização do fingerprint de host ou cancelar a atualização das configurações de SSH</string>
+    <string name="update_host_key">Atualizar Chave de Host</string>
+    <string name="cancel_recommended">Cancelar (Recomendado)</string>
+    <string name="failed_install_apk">Falha ao instalar</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Memória interna</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">Cartão SD</string>
+    <string name="choose_folder">Escolher Esta Pasta</string>
+    <string name="some_files_failed_invalid_operation">Alguns arquivos falharam devido a uma operação inválida</string>
+    <string name="ftp_server_prompt_connect_to_network">Conectar a uma rede ou habilitar PA</string>
+    <string name="ftp_server_open_settings">Abrir configurações</string>
+    <string name="move">Mover</string>
+    <string name="select_save_location">Selecione local para salvar</string>
+    <string name="scp_default_path">Caminho padrão (Opcional)</string>
+</resources>
 
