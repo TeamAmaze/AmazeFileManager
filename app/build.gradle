@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'com.hiya.jacoco-android'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 29
 
     dexOptions {
         jumboMode = true
@@ -24,7 +24,7 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 29
         versionCode 90
         versionName "3.5.1"
         multiDexEnabled true
@@ -267,6 +267,7 @@ jacoco {
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 
