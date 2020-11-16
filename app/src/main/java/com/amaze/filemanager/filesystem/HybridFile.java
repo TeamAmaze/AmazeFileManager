@@ -33,6 +33,7 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
@@ -215,7 +216,7 @@ public class HybridFile {
     return null;
   }
 
-  public long lastModified() throws SmbException {
+  public long lastModified() {
     switch (mode) {
       case SFTP:
         return SshClientUtils.<Long>execute(
@@ -227,7 +228,14 @@ public class HybridFile {
             });
       case SMB:
         SmbFile smbFile = getSmbFile();
-        if (smbFile != null) return smbFile.lastModified();
+        if (smbFile != null) {
+          try {
+            return smbFile.lastModified();
+          } catch (SmbException e) {
+            Log.e(TAG, "Error getting last modified time for SMB [" + path + "]", e);
+            return 0;
+          }
+        }
         break;
       case FILE:
         return getFile().lastModified();
@@ -710,7 +718,7 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         try {
-          SshClientUtils.execute(
+          SshClientUtils.<Boolean>execute(
               new SFtpClientTemplate(path) {
                 @Override
                 public Boolean execute(SFTPClient client) {
@@ -729,6 +737,12 @@ public class HybridFile {
                     }
                   } catch (IOException e) {
                     Log.w("DEBUG.listFiles", "IOException", e);
+                    AppConfig.toast(
+                        context,
+                        context.getString(
+                            R.string.cannot_read_directory,
+                            parseAndFormatUriForDisplay(path),
+                            e.getMessage()));
                   }
                   return true;
                 }
@@ -1191,24 +1205,27 @@ public class HybridFile {
     } else FileUtil.mkdir(getFile(), context);
   }
 
-  public boolean delete(Context context, boolean rootmode) throws ShellNotRunningException {
+  public boolean delete(Context context, boolean rootmode)
+      throws ShellNotRunningException, SmbException {
     if (isSftp()) {
-      SshClientUtils.execute(
-          new SFtpClientTemplate(path) {
-            @Override
-            public Void execute(SFTPClient client) throws IOException {
-              if (isDirectory(AppConfig.getInstance()))
-                client.rmdir(SshClientUtils.extractRemotePathFrom(path));
-              else client.rm(SshClientUtils.extractRemotePathFrom(path));
-              return null;
-            }
-          });
-      return true;
+      Boolean retval =
+          SshClientUtils.<Boolean>execute(
+              new SFtpClientTemplate(path) {
+                @Override
+                public Boolean execute(@NonNull SFTPClient client) throws IOException {
+                  String _path = SshClientUtils.extractRemotePathFrom(path);
+                  if (isDirectory(AppConfig.getInstance())) client.rmdir(_path);
+                  else client.rm(_path);
+                  return client.statExistence(_path) == null;
+                }
+              });
+      return retval != null && retval;
     } else if (isSmb()) {
       try {
         getSmbFile().delete();
       } catch (SmbException e) {
-        e.printStackTrace();
+        Log.e(TAG, "Error delete SMB file", e);
+        throw e;
       }
     } else {
       if (isRoot() && rootmode) {

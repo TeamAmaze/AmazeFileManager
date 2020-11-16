@@ -20,9 +20,13 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_FAILED_OPS;
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_GENERAL;
+
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -49,9 +53,13 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
-public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, String, Boolean> {
+import jcifs.smb.SmbException;
+
+public class DeleteTask
+    extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
 
   private ArrayList<HybridFileParcelable> files;
   private Context cd;
@@ -59,14 +67,14 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
   private CompressedExplorerFragment compressedExplorerFragment;
   private DataUtils dataUtils = DataUtils.getInstance();
 
-  public DeleteTask(Context cd) {
+  public DeleteTask(@NonNull Context cd) {
     this.cd = cd;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(cd)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
   }
 
-  public DeleteTask(Context cd, CompressedExplorerFragment compressedExplorerFragment) {
+  public DeleteTask(@NonNull Context cd, CompressedExplorerFragment compressedExplorerFragment) {
     this.cd = cd;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(cd)
@@ -80,10 +88,10 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
     Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
   }
 
-  protected Boolean doInBackground(ArrayList<HybridFileParcelable>... p1) {
+  protected AsyncTaskResult<Boolean> doInBackground(ArrayList<HybridFileParcelable>... p1) {
     files = p1[0];
     boolean wasDeleted = true;
-    if (files.size() == 0) return true;
+    if (files.size() == 0) return new AsyncTaskResult<>(true);
 
     if (files.get(0).isOtgFile()) {
       for (HybridFileParcelable file : files) {
@@ -143,10 +151,10 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
             wasDeleted = false;
             break;
           }
-        } catch (ShellNotRunningException e) {
+        } catch (ShellNotRunningException | SmbException e) {
           e.printStackTrace();
           wasDeleted = false;
-          break;
+          return new AsyncTaskResult<>(e);
         }
       }
     }
@@ -170,21 +178,25 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
       }
     }
 
-    return wasDeleted;
+    return new AsyncTaskResult<>(wasDeleted);
   }
 
   @Override
-  public void onPostExecute(Boolean wasDeleted) {
+  public void onPostExecute(AsyncTaskResult<Boolean> result) {
 
     Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-    String path = files.get(0).getParent(cd);
-    intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
-    cd.sendBroadcast(intent);
+    if (files.size() > 0) {
+      String path = files.get(0).getParent(cd);
+      intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
+      cd.sendBroadcast(intent);
+    }
 
-    if (!wasDeleted) {
-      Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+    if (result.result == null || !result.result) {
+      cd.sendBroadcast(
+          new Intent(TAG_INTENT_FILTER_GENERAL)
+              .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, files));
     } else if (compressedExplorerFragment == null) {
-      Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
+      AppConfig.toast(cd, R.string.done);
     }
 
     if (compressedExplorerFragment != null) {
