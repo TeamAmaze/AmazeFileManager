@@ -20,11 +20,13 @@
 
 package com.amaze.filemanager.application;
 
+import static android.os.Looper.getMainLooper;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.mock;
+import static org.robolectric.Shadows.shadowOf;
 
 import java.lang.reflect.Field;
 import java.util.concurrent.TimeUnit;
@@ -68,6 +70,7 @@ public class AppConfigTest {
   @Test
   public void testToastWithStringRes() {
     AppConfig.toast(ApplicationProvider.getApplicationContext(), R.string.ok);
+    shadowOf(getMainLooper()).idle();
     await().atMost(5, TimeUnit.SECONDS).until(() -> ShadowToast.getLatestToast() != null);
     assertEquals(
         ApplicationProvider.getApplicationContext().getString(R.string.ok),
@@ -77,6 +80,7 @@ public class AppConfigTest {
   @Test
   public void testToastWithString() {
     AppConfig.toast(ApplicationProvider.getApplicationContext(), "Hello world");
+    shadowOf(getMainLooper()).idle();
     await().atMost(5, TimeUnit.SECONDS).until(() -> ShadowToast.getLatestToast() != null);
     assertEquals("Hello world", ShadowToast.getTextOfLatestToast());
   }

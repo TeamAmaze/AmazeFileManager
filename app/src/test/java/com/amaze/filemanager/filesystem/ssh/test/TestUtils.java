@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh.test;
 
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static org.robolectric.Shadows.shadowOf;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -36,6 +37,8 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -103,5 +106,7 @@ public abstract class TestUtils {
               SecurityUtils.getFingerprint(hostKeyPair.getPublic()),
               "id_rsa",
               privateKeyContents));
+
+    shadowOf(Looper.getMainLooper()).idle();
   }
 }
