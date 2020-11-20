@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.activities.superclasses;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
@@ -93,8 +92,6 @@ public class ThemedActivity extends PreferenceActivity {
     if (getToolbar() != null) {
       getToolbar().setBackgroundColor(getPrimary());
     }
-
-    boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
 
     Window window = getWindow();
     if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
