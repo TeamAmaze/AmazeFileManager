@@ -50,6 +50,9 @@ class SshHybridFileTest {
     private val path: String = "ssh://user:password@127.0.0.1:22222/test.file"
 
     companion object {
+        /**
+         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
+         */
         @BeforeClass
         fun bootstrap() {
             RxJavaPlugins.reset()
@@ -57,17 +60,28 @@ class SshHybridFileTest {
         }
     }
 
+    /**
+     * Test case setup.
+     *
+     * TODO: some even more generic test case base to prevent copy-and-paste?
+     */
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
     }
 
+    /**
+     * Test case to verify delete SSH file success scenario.
+     */
     @Test
     fun testCanDelete() {
         MockSshConnectionPools.prepareCanDeleteScenario()
         assertTrue(HybridFile(OpenMode.SFTP, path).delete(ctx!!, false))
     }
 
+    /**
+     * Test case to verify delete SSH file failure scenario.
+     */
     @Test
     fun testCannotDelete() {
         MockSshConnectionPools.prepareCannotDeleteScenario()

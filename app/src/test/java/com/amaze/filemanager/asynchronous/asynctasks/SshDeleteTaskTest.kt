@@ -35,12 +35,22 @@ import org.robolectric.annotation.Config
 @Config(shadows = [ShadowMultiDex::class, ShadowCryptUtil::class])
 class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
+    /**
+     * Test case to verify delete SSH file success scenario.
+     *
+     * @see AbstractDeleteTaskTestBase.doTestDeleteFileOk
+     */
     @Test
     fun testDeleteSshFileOk() {
         MockSshConnectionPools.prepareCanDeleteScenario()
         doTestDeleteFileOk(createSshHybridFileParcelable())
     }
 
+    /**
+     * Test case to verify delete SSH file failure scenario.
+     *
+     * @see AbstractDeleteTaskTestBase.doTestDeleteFileAccessDenied
+     */
     @Test
     fun testDeleteSshFileAccessDenied() {
         MockSshConnectionPools.prepareCannotDeleteScenario()

@@ -44,11 +44,21 @@ class SmbHybridFileTest {
 
     private var ctx: Context? = null
 
+    /**
+     * Test case setup.
+     *
+     * TODO: some even more generic test case base to prevent copy-and-paste?
+     */
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
     }
 
+    /**
+     * Test case to verify delete SMB file success scenario.
+     *
+     * @see HybridFile.delete
+     */
     @Test
     fun testDeleteOk() {
         val file = HybridFile(SMB, "smb://user:password@1.2.3.4/just/a/file.txt")
@@ -56,6 +66,11 @@ class SmbHybridFileTest {
         assertFalse(file.exists())
     }
 
+    /**
+     * Test case to verify delete SMB file failure scenario.
+     *
+     * @see HybridFile.delete
+     */
     @Test(expected = SmbException::class)
     fun testDeleteAccessDenied() {
         val file = HybridFile(SMB, PATH_CANNOT_DELETE_FILE)

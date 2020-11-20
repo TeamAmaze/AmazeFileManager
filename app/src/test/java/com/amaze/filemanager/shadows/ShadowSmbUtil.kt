@@ -64,6 +64,11 @@ class ShadowSmbUtil {
             `when`(mockCannotRenameOld!!.exists()).thenReturn(true)
         }
 
+        /**
+         * Shadows SmbUtil.create()
+         *
+         * @see SmbUtil.create
+         */
         @JvmStatic @Implementation
         fun create(path: String): SmbFile {
 

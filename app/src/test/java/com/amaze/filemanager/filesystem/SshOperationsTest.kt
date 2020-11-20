@@ -34,6 +34,9 @@ import org.robolectric.shadows.ShadowAsyncTask
 class SshOperationsTest : AbstractOperationsTestBase() {
 
     companion object {
+        /**
+         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
+         */
         @BeforeClass
         fun bootstrap() {
             RxJavaPlugins.reset()
@@ -41,6 +44,11 @@ class SshOperationsTest : AbstractOperationsTestBase() {
         }
     }
 
+    /**
+     * Test case to verify rename SSH file failure scenario.
+     *
+     * @see AbstractOperationsTestBase.testRenameFileAccessDenied
+     */
     @Test
     fun testRenameFileAccessDenied() {
         MockSshConnectionPools.prepareCannotDeleteScenario()

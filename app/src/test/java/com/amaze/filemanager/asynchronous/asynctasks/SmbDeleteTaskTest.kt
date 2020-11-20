@@ -31,12 +31,22 @@ import org.robolectric.annotation.Config
 @Config(shadows = [ShadowMultiDex::class, ShadowSmbUtil::class])
 class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
+    /**
+     * Test case to verify delete SMB file success scenario.
+     *
+     * @see AbstractDeleteTaskTestBase.doTestDeleteFileOk
+     */
     @Test
     fun testDeleteSmbFileOk() {
         doTestDeleteFileOk(
                 HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt")))
     }
 
+    /**
+     * Test case to verify delete SSH file failure scenario.
+     *
+     * @see AbstractDeleteTaskTestBase.doTestDeleteFileAccessDenied
+     */
     @Test
     fun testDeleteSmbFileAccessDenied() {
         doTestDeleteFileAccessDenied(HybridFileParcelable(SmbUtil.create(PATH_CANNOT_DELETE_FILE)))

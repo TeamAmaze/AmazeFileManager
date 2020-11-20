@@ -30,6 +30,8 @@ import org.mockito.Mockito.*
 
 object MockSshConnectionPools {
 
+    private const val ACCESS_DENIED = "Access is denied."
+
     private val hostKeyPair = TestUtils.createKeyPair()
 
     private val userKeyPair = TestUtils.createKeyPair()
@@ -50,7 +52,7 @@ object MockSshConnectionPools {
             `when`(type).thenReturn(FileMode.Type.DIRECTORY)
         }
         val sftpClient = mock(SFTPClient::class.java).apply {
-            doThrow(SFTPException("Access is denied."))
+            doThrow(SFTPException(ACCESS_DENIED))
                 .`when`(this).rename("/tmp/old.file", "/tmp/new.file")
             `when`(stat("/tmp/old.file")).thenReturn(fileAttributes)
             `when`(stat("/tmp/new.file")).thenReturn(null)
@@ -63,8 +65,8 @@ object MockSshConnectionPools {
                 doNothing().`when`(this).rm(anyString())
                 doNothing().`when`(this).rmdir(anyString())
             } else {
-                `when`(rm(anyString())).thenThrow(SFTPException("Access is denied."))
-                `when`(rmdir(anyString())).thenThrow(SFTPException("Access is denied."))
+                `when`(rm(anyString())).thenThrow(SFTPException(ACCESS_DENIED))
+                `when`(rmdir(anyString())).thenThrow(SFTPException(ACCESS_DENIED))
             }
         }
         val sshClient = mock(SSHClient::class.java).apply {

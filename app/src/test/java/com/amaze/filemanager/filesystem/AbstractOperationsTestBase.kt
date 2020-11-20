@@ -53,6 +53,11 @@ abstract class AbstractOperationsTestBase {
         override fun invalidName(file: HybridFile?) = Unit
     }
 
+    /**
+     * Test case setup.
+     *
+     * TODO: some even more generic test case base to prevent copy-and-paste?
+     */
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()

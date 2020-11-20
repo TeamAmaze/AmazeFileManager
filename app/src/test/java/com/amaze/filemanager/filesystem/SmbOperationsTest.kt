@@ -31,6 +31,11 @@ import org.robolectric.shadows.ShadowAsyncTask
 @Config(shadows = [ShadowSmbUtil::class, ShadowMultiDex::class, ShadowAsyncTask::class])
 class SmbOperationsTest : AbstractOperationsTestBase() {
 
+    /**
+     * Test case to verify rename SMB file failure scenario.
+     *
+     * @see AbstractOperationsTestBase.testRenameFileAccessDenied
+     */
     @Test
     fun testRenameFileAccessDenied() {
         super.testRenameFileAccessDenied(SMB,

@@ -49,6 +49,9 @@ abstract class AbstractDeleteTaskTestBase {
     private var ctx: Context? = null
 
     companion object {
+        /**
+         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
+         */
         @BeforeClass
         fun bootstrap() {
             RxJavaPlugins.reset()
@@ -56,6 +59,11 @@ abstract class AbstractDeleteTaskTestBase {
         }
     }
 
+    /**
+     * Test case setup.
+     *
+     * TODO: some even more generic test case base to prevent copy-and-paste?
+     */
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
