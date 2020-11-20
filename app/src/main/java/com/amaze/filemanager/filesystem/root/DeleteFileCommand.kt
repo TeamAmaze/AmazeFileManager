@@ -35,7 +35,7 @@ object DeleteFileCommand : IRootCommand() {
     fun deleteFile(path: String): Boolean {
         val mountPoint = MountPathCommand.mountPath(path, MountPathCommand.READ_WRITE)
         val result = runShellCommandToList(
-                "rm -rf \"${RootHelper.getCommandLineString(path)}\""
+            "rm -rf \"${RootHelper.getCommandLineString(path)}\""
         )
 
         mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }

@@ -34,7 +34,7 @@ object ConcatenateFileCommand : IRootCommand() {
         val mountPoint = MountPathCommand.mountPath(destinationPath, MountPathCommand.READ_WRITE)
         runShellCommand(
             "cat \"${RootHelper.getCommandLineString(sourcePath)}\"" +
-                    " > \"${RootHelper.getCommandLineString(destinationPath)}\""
+                " > \"${RootHelper.getCommandLineString(destinationPath)}\""
         )
         mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
     }

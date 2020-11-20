@@ -25,6 +25,7 @@ import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.concurrent.TimeUnit;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -71,6 +72,11 @@ public class Utils {
   private static final String INPUT_INTENT_BLACKLIST_AMP = "&&";
   private static final String INPUT_INTENT_BLACKLIST_DOTS = "\\.\\.\\.";
   private static final String DATE_TIME_FORMAT = "%s | %s";
+  private static final String EMAIL_EMMANUEL = "emmanuelbendavid@gmail.com";
+  private static final String EMAIL_RAYMOND = "airwave209gt@gmail.com";
+  private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
+
+  public static final String EMAIL_VISHAL = "vishalmeham2@gmail.com";
 
   // methods for fastscroller
   public static float clamp(float min, float max, float value) {
@@ -366,5 +372,31 @@ public class Utils {
     Intent intent = new Intent(Intent.ACTION_VIEW);
     intent.setData(Uri.parse(url));
     context.startActivity(intent);
+  }
+
+  /** Open telegram in browser */
+  public static void openTelegramURL(Context context) {
+    openURL(URL_TELEGRAM, context);
+  }
+
+  /**
+   * Builds a email intent for amaze feedback
+   *
+   * @param text email content
+   * @return intent
+   */
+  public static Intent buildEmailIntent(String text) {
+    Intent emailIntent = new Intent(Intent.ACTION_SEND);
+    String aEmailList[] = {EMAIL_VISHAL};
+    String aEmailCCList[] = {EMAIL_EMMANUEL, EMAIL_RAYMOND};
+    emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
+    emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
+    emailIntent.putExtra(
+        Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager for " + BuildConfig.VERSION_NAME);
+    if (!Utils.isNullOrEmpty(text)) {
+      emailIntent.putExtra(Intent.EXTRA_TEXT, text);
+    }
+    emailIntent.setType("message/rfc822");
+    return emailIntent;
   }
 }

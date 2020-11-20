@@ -18,26 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.root
+package com.amaze.filemanager.crashreport
 
-import com.amaze.filemanager.exceptions.ShellNotRunningException
-import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.root.base.IRootCommand
+import android.content.Context
+import com.amaze.filemanager.R
+import org.acra.data.CrashReportData
+import org.acra.sender.ReportSender
 
-object MoveFileCommand : IRootCommand() {
+class AcraReportSender : ReportSender {
 
-    /**
-     * Move files using root
-     * @param path source path
-     * @param destination
-     */
-    @Throws(ShellNotRunningException::class)
-    fun moveFile(path: String, destination: String) {
-        // remounting destination as rw
-        val mountPoint = MountPathCommand.mountPath(destination, MountPathCommand.READ_WRITE)
-        val command = "mv \"${RootHelper.getCommandLineString(path)}\"" +
-            " \"${RootHelper.getCommandLineString(destination)}\""
-        runShellCommand(command)
-        mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
+    override fun send(context: Context, errorContent: CrashReportData) {
+        ErrorActivity.reportError(
+            context, errorContent,
+            ErrorActivity.ErrorInfo.make(
+                ErrorActivity.ERROR_UI_ERROR,
+                "Application crash", R.string.app_ui_crash
+            )
+        )
+    }
+
+    override fun requiresForeground(): Boolean {
+        return true
     }
 }

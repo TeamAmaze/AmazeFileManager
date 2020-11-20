@@ -50,9 +50,11 @@ object ListFilesCommand : IRootCommand() {
             val result = executeRootCommand(path, showHidden)
             result.first.forEach {
                 if (!it.contains("Permission denied")) {
-                    parseStringForHybridFile(it, path,
-                            !result.second)
-                            ?.let(onFileFoundCallback)
+                    parseStringForHybridFile(
+                        it, path,
+                        !result.second
+                    )
+                        ?.let(onFileFoundCallback)
                 }
             }
             mode = OpenMode.ROOT
@@ -92,16 +94,24 @@ object ListFilesCommand : IRootCommand() {
             }
 
             val command = "stat -c '%A %h %G %U %B %y %N' " +
-                    "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
+                "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
             return if (!retryWithLs) {
                 Log.i(javaClass.simpleName, "Using stat for list parsing")
-                Pair(first = runShellCommandToList(command).map {
-                    it.replace(appendedPath, "")
-                }, second = retryWithLs)
+                Pair(
+                    first = runShellCommandToList(command).map {
+                        it.replace(appendedPath, "")
+                    },
+                    second = retryWithLs
+                )
             } else {
                 Log.i(javaClass.simpleName, "Using ls for list parsing")
-                Pair(first = runShellCommandToList("ls -l " + (if (showHidden) "-a " else "") +
-                    "\"$sanitizedPath\""), second = retryWithLs)
+                Pair(
+                    first = runShellCommandToList(
+                        "ls -l " + (if (showHidden) "-a " else "") +
+                            "\"$sanitizedPath\""
+                    ),
+                    second = retryWithLs
+                )
             }
         } catch (invalidCommand: ShellCommandInvalidException) {
             Log.w(javaClass.simpleName, "Command not found - ${invalidCommand.message}")
@@ -137,11 +147,11 @@ object ListFilesCommand : IRootCommand() {
                 var size: Long = 0
                 if (!currentFile.isDirectory) size = currentFile.length()
                 HybridFileParcelable(
-                        currentFile.path,
-                        RootHelper.parseFilePermission(currentFile),
-                        currentFile.lastModified(),
-                        size,
-                        currentFile.isDirectory
+                    currentFile.path,
+                    RootHelper.parseFilePermission(currentFile),
+                    currentFile.lastModified(),
+                    size,
+                    currentFile.isDirectory
                 ).let { baseFile ->
                     baseFile.name = currentFile.name
                     baseFile.mode = OpenMode.FILE
@@ -169,8 +179,11 @@ object ListFilesCommand : IRootCommand() {
         isStat: Boolean
     ): HybridFileParcelable? {
         return FileUtils.parseName(
-                if (isStat) rawFile.replace("('|`)".toRegex(),
-                        "") else rawFile)?.apply {
+            if (isStat) rawFile.replace(
+                "('|`)".toRegex(),
+                ""
+            ) else rawFile
+        )?.apply {
             this.mode = OpenMode.ROOT
             this.name = this.path
             if (path != "/") {

@@ -163,6 +163,11 @@
             android:label="About"
             />
 
+        <activity android:name=".crashreport.ErrorActivity"
+            android:theme="@style/appCompatBlack"
+            android:label="Error"
+            />
+
         <service
             android:name = ".asynchronous.services.ExtractService"
             android:label = "Extracting"

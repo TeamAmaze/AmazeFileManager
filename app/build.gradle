@@ -231,6 +231,7 @@ dependencies {
     implementation project(':commons_compress_7z')
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "ch.acra:acra-core:5.7.0"
 }
 
 configurations.all {
