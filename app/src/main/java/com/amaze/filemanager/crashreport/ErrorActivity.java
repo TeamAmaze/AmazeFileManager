@@ -40,7 +40,6 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -61,7 +60,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -176,17 +174,10 @@ public class ErrorActivity extends ThemedActivity {
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.activity_error);
-
-    final Intent intent = getIntent();
-
     final Toolbar toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    @ColorInt
-    int primaryColor =
-        ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
-
-    toolbar.setBackgroundColor(primaryColor);
+    final Intent intent = getIntent();
 
     final ActionBar actionBar = getSupportActionBar();
     if (actionBar != null) {
@@ -249,6 +240,7 @@ public class ErrorActivity extends ThemedActivity {
     for (final String e : errorList) {
       Log.e(TAG, e);
     }
+    initStatusBarResources(findViewById(R.id.parent_view));
   }
 
   @Override

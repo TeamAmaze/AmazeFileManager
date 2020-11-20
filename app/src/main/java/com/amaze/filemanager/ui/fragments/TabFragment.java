@@ -217,7 +217,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       sharedPrefs
           .edit()
           .putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab)
-          .commit();
+          .apply();
     }
 
     if (fragments != null && fragments.size() != 0) {
@@ -261,7 +261,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       sharedPrefs
           .edit()
           .putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab)
-          .commit();
+          .apply();
     }
 
     //        Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab, new

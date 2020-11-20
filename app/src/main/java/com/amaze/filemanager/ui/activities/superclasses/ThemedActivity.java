@@ -20,17 +20,33 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.PreferenceUtils;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
 
+import android.app.ActivityManager;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
+import android.widget.FrameLayout;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
@@ -39,6 +55,15 @@ public class ThemedActivity extends PreferenceActivity {
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
+    // setting window background color instead of each item, in order to reduce pixel overdraw
+    if (getAppTheme().equals(AppTheme.LIGHT)) {
+      getWindow().setBackgroundDrawableResource(android.R.color.white);
+    } else if (getAppTheme().equals(AppTheme.BLACK)) {
+      getWindow().setBackgroundDrawableResource(android.R.color.black);
+    } else {
+      getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
+    }
+
     // checking if theme should be set light/dark or automatic
     int colorPickerPref =
         getPrefs().getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, ColorPickerDialog.NO_DATA);
@@ -46,7 +71,48 @@ public class ThemedActivity extends PreferenceActivity {
       getColorPreference().saveColorPreferences(getPrefs(), ColorPreferenceHelper.randomize(this));
     }
 
+    if (SDK_INT >= 21) {
+      ActivityManager.TaskDescription taskDescription =
+          new ActivityManager.TaskDescription(
+              getString(R.string.appbar_name),
+              ((BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap.ic_launcher)).getBitmap(),
+              getPrimary());
+      setTaskDescription(taskDescription);
+    }
+
     setTheme();
+  }
+
+  /**
+   * Set status bar and navigation bar colors based on sdk
+   *
+   * @param parentView parent view required to set margin on kitkat top
+   */
+  public void initStatusBarResources(View parentView) {
+
+    if (getToolbar() != null) {
+      getToolbar().setBackgroundColor(getPrimary());
+    }
+
+    boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
+
+    Window window = getWindow();
+    if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (findViewById(R.id.tab_frame) != null || findViewById(R.id.drawer_layout) == null) {
+        window.setStatusBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+      } else {
+        window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+      }
+    } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
+        || SDK_INT == Build.VERSION_CODES.KITKAT) {
+      setKitkatStatusBarMargin(parentView);
+      setKitkatStatusBarTint();
+    }
+
+    if (getBoolean(PREFERENCE_COLORED_NAVIGATION) && SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+    }
   }
 
   public UserColorPreferences getCurrentColorPreference() {
@@ -55,6 +121,30 @@ public class ThemedActivity extends PreferenceActivity {
 
   public @ColorInt int getAccent() {
     return getColorPreference().getCurrentUserColorPreferences(this, getPrefs()).accent;
+  }
+
+  private void setKitkatStatusBarMargin(View parentView) {
+    SystemBarTintManager tintManager = new SystemBarTintManager(this);
+    tintManager.setStatusBarTintEnabled(true);
+    // tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
+    FrameLayout.MarginLayoutParams p = (ViewGroup.MarginLayoutParams) parentView.getLayoutParams();
+    SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
+    p.setMargins(0, config.getStatusBarHeight(), 0, 0);
+  }
+
+  private void setKitkatStatusBarTint() {
+    SystemBarTintManager tintManager = new SystemBarTintManager(this);
+    tintManager.setStatusBarTintEnabled(true);
+    tintManager.setStatusBarTintColor(getPrimary());
+  }
+
+  public @ColorInt int getPrimary() {
+    return ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), getCurrentTab());
+  }
+
+  @Nullable
+  private Toolbar getToolbar() {
+    return findViewById(R.id.toolbar);
   }
 
   void setTheme() {

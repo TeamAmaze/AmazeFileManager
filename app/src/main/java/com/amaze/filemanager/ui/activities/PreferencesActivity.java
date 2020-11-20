@@ -87,7 +87,6 @@ public class PreferencesActivity extends ThemedActivity
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.prefsfrag);
-
     Toolbar toolbar = findViewById(R.id.toolbar);
     invalidateRecentsColorAndIcon();
     setSupportActionBar(toolbar);
@@ -95,8 +94,6 @@ public class PreferencesActivity extends ThemedActivity
         .setDisplayOptions(
             androidx.appcompat.app.ActionBar.DISPLAY_HOME_AS_UP
                 | androidx.appcompat.app.ActionBar.DISPLAY_SHOW_TITLE);
-    invalidateToolbarColor();
-    invalidateNavBar();
 
     if (savedInstanceState != null) {
       selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
@@ -105,6 +102,7 @@ public class PreferencesActivity extends ThemedActivity
     } else {
       selectItem(0);
     }
+    initStatusBarResources(findViewById(R.id.preferences));
   }
 
   @Override

@@ -61,7 +61,6 @@ import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
@@ -78,7 +77,6 @@ import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
@@ -102,7 +100,6 @@ import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.app.ActivityManager;
 import android.content.BroadcastReceiver;
 import android.content.ContentResolver;
 import android.content.ContentUris;
@@ -112,7 +109,6 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
@@ -132,14 +128,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.DecelerateInterpolator;
-import android.widget.FrameLayout;
 import android.widget.Toast;
 
-import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.IdRes;
 import androidx.annotation.NonNull;
@@ -279,6 +270,8 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    setContentView(R.layout.main_toolbar);
+
     dataUtils = DataUtils.getInstance();
 
     initialisePreferences();
@@ -288,16 +281,6 @@ public class MainActivity extends PermissionsActivity
 
     AppConfig.getInstance().setMainActivityContext(this);
 
-    setContentView(R.layout.main_toolbar);
-    appbar =
-        new AppBar(
-            this,
-            getPrefs(),
-            queue -> {
-              if (!queue.isEmpty()) {
-                mainActivityHelper.search(getPrefs(), queue);
-              }
-            });
     initialiseViews();
     utilsHandler = AppConfig.getInstance().getUtilsHandler();
     cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase());
@@ -324,41 +307,7 @@ public class MainActivity extends PermissionsActivity
 
     checkForExternalIntent(intent);
 
-    // setting window background color instead of each item, in order to reduce pixel overdraw
-    if (getAppTheme().equals(AppTheme.LIGHT)) {
-      /*if(Main.IS_LIST)
-          getWindow().setBackgroundDrawableResource(android.R.color.white);
-      else
-          getWindow().setBackgroundDrawableResource(R.color.grid_background_light);
-      */
-      getWindow().setBackgroundDrawableResource(android.R.color.white);
-    } else if (getAppTheme().equals(AppTheme.BLACK)) {
-      getWindow().setBackgroundDrawableResource(android.R.color.black);
-    } else {
-      getWindow().setBackgroundDrawableResource(R.color.holo_dark_background);
-    }
-
-    /*findViewById(R.id.drawer_buttton).setOnClickListener(new ImageView.OnClickListener() {
-        @Override
-        public void onClick(View view) {
-            if (mDrawerLayout.isOpen(mDrawerLinear)) {
-                mDrawerLayout.close(mDrawerLinear);
-            } else mDrawerLayout.openDrawer(mDrawerLinear);
-        }
-    });*/
-
     drawer.setDrawerIndicatorEnabled();
-
-    // recents header color implementation
-    if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      ActivityManager.TaskDescription taskDescription =
-          new ActivityManager.TaskDescription(
-              "Amaze",
-              ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-              ColorPreferenceHelper.getPrimary(
-                  getCurrentColorPreference(), MainActivity.currentTab));
-      setTaskDescription(taskDescription);
-    }
 
     if (!getBoolean(PREFERENCE_BOOKMARKS_ADDED)) {
       utilsHandler.addCommonBookmarks();
@@ -397,6 +346,7 @@ public class MainActivity extends PermissionsActivity
                 e.printStackTrace();
               }
             });
+    initStatusBarResources(findViewById(R.id.drawer_layout));
   }
 
   private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
@@ -1529,23 +1479,24 @@ public class MainActivity extends PermissionsActivity
   }
 
   void initialisePreferences() {
-    currentTab =
-        getPrefs()
-            .getInt(
-                PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
-    @ColorInt
-    int currentPrimary =
-        ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
-    skinStatusBar = PreferenceUtils.getStatusColor(currentPrimary);
+    currentTab = getCurrentTab();
+    skinStatusBar = PreferenceUtils.getStatusColor(getPrimary());
   }
 
   void initialiseViews() {
+
+    appbar =
+        new AppBar(
+            this,
+            getPrefs(),
+            queue -> {
+              if (!queue.isEmpty()) {
+                mainActivityHelper.search(getPrefs(), queue);
+              }
+            });
     appBarLayout = getAppbar().getAppbarLayout();
 
-    // buttonBarFrame.setBackgroundColor(Color.parseColor(currentTab==1 ? skinTwo : skin));
-
     setSupportActionBar(getAppbar().getToolbar());
-
     drawer = new Drawer(this);
 
     indicator_layout = findViewById(R.id.indicator_layout);
@@ -1568,27 +1519,6 @@ public class MainActivity extends PermissionsActivity
         });
 
     drawer.setDrawerHeaderBackground();
-    // getSupportActionBar().setBackgroundDrawable(new ColorDrawable(Color.parseColor((currentTab==1
-    // ? skinTwo : skin))));
-
-    // status bar0
-    if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH || SDK_INT == Build.VERSION_CODES.KITKAT) {
-      SystemBarTintManager tintManager = new SystemBarTintManager(this);
-      tintManager.setStatusBarTintEnabled(true);
-      // tintManager.setStatusBarTintColor(Color.parseColor((currentTab==1 ? skinTwo : skin)));
-      FrameLayout.MarginLayoutParams p =
-          (ViewGroup.MarginLayoutParams) findViewById(R.id.drawer_layout).getLayoutParams();
-      SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-      if (!drawer.isOnTablet()) p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-    } else if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      Window window = getWindow();
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      // window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-      if (drawer.isOnTablet()) {
-        window.setStatusBarColor((skinStatusBar));
-      } else window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) window.setNavigationBarColor(skinStatusBar);
-    }
   }
 
   /**
