@@ -40,7 +40,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.app.NotificationManager;
@@ -62,10 +61,10 @@ public class DeleteTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
 
   private ArrayList<HybridFileParcelable> files;
-  private Context cd;
-  private boolean rootMode;
+  private final Context cd;
+  private final boolean rootMode;
   private CompressedExplorerFragment compressedExplorerFragment;
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private final DataUtils dataUtils = DataUtils.getInstance();
 
   public DeleteTask(@NonNull Context cd) {
     this.cd = cd;
@@ -88,90 +87,32 @@ public class DeleteTask
     Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
   }
 
-  protected AsyncTaskResult<Boolean> doInBackground(ArrayList<HybridFileParcelable>... p1) {
+  @Override
+  @SafeVarargs
+  protected final AsyncTaskResult<Boolean> doInBackground(
+      final ArrayList<HybridFileParcelable>... p1) {
     files = p1[0];
     boolean wasDeleted = true;
     if (files.size() == 0) return new AsyncTaskResult<>(true);
 
-    if (files.get(0).isOtgFile()) {
-      for (HybridFileParcelable file : files) {
-        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
-        wasDeleted = documentFile.delete();
-      }
-    } else if (files.get(0).isDropBoxFile()) {
-      CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else if (files.get(0).isBoxFile()) {
-      CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else if (files.get(0).isGoogleDriveFile()) {
-      CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else if (files.get(0).isOneDriveFile()) {
-      CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else {
-      for (HybridFileParcelable file : files) {
-        try {
-          if (file.delete(cd, rootMode)) {
-            wasDeleted = true;
-          } else {
-            wasDeleted = false;
-            break;
-          }
-        } catch (ShellNotRunningException | SmbException e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          return new AsyncTaskResult<>(e);
-        }
-      }
-    }
-
-    // delete file from media database
-    if (!files.get(0).isSmb()) {
-      try {
-        for (HybridFileParcelable f : files) {
-          delete(cd, f.getPath());
-        }
-      } catch (Exception e) {
-        FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
-      }
-    }
-
-    // delete file entry from encrypted database
     for (HybridFileParcelable file : files) {
+      try {
+        wasDeleted = doDeleteFile(file);
+        if (!wasDeleted) break;
+      } catch (Exception e) {
+        return new AsyncTaskResult<>(e);
+      }
+
+      // delete file from media database
+      if (!file.isSmb()) {
+        try {
+          deleteFromMediaDatabase(cd, file.getPath());
+        } catch (Exception e) {
+          FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
+        }
+      }
+
+      // delete file entry from encrypted database
       if (file.getName(cd).endsWith(CryptUtil.CRYPT_EXTENSION)) {
         CryptHandler handler = CryptHandler.getInstance();
         handler.clear(file.getPath());
@@ -209,7 +150,34 @@ public class DeleteTask
     notificationManager.cancel(NotificationConstants.COPY_ID);
   }
 
-  private void delete(final Context context, final String file) {
+  private boolean doDeleteFile(@NonNull HybridFileParcelable file) throws Exception {
+    switch (file.getMode()) {
+      case OTG:
+        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
+        return documentFile.delete();
+      case DROPBOX:
+      case BOX:
+      case GDRIVE:
+      case ONEDRIVE:
+        CloudStorage cloudStorage = dataUtils.getAccount(file.getMode());
+        try {
+          cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
+          return true;
+        } catch (Exception e) {
+          e.printStackTrace();
+          return false;
+        }
+      default:
+        try {
+          return (file.delete(cd, rootMode));
+        } catch (ShellNotRunningException | SmbException e) {
+          e.printStackTrace();
+          throw e;
+        }
+    }
+  }
+
+  private void deleteFromMediaDatabase(final Context context, final String file) {
     final String where = MediaStore.MediaColumns.DATA + "=?";
     final String[] selectionArgs = new String[] {file};
     final ContentResolver contentResolver = context.getContentResolver();
