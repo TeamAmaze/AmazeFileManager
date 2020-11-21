@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh
 
 import android.content.Context
+import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
@@ -42,7 +43,10 @@ import org.robolectric.shadows.ShadowAsyncTask
 
 @RunWith(RobolectricTestRunner::class)
 @LooperMode(LooperMode.Mode.PAUSED)
-@Config(shadows = [ShadowMultiDex::class, ShadowAsyncTask::class, ShadowCryptUtil::class])
+@Config(
+    shadows = [ShadowMultiDex::class, ShadowAsyncTask::class, ShadowCryptUtil::class],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 class SshHybridFileTest {
 
     private var ctx: Context? = null

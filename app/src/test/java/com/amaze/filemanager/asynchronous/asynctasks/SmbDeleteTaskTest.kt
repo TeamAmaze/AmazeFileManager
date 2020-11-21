@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks
 
+import android.os.Build.VERSION_CODES.*
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
@@ -28,7 +29,7 @@ import com.amaze.filemanager.utils.SmbUtil
 import org.junit.Test
 import org.robolectric.annotation.Config
 
-@Config(shadows = [ShadowMultiDex::class, ShadowSmbUtil::class])
+@Config(shadows = [ShadowMultiDex::class, ShadowSmbUtil::class], sdk = [JELLY_BEAN, KITKAT, P])
 class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
     /**
@@ -39,7 +40,8 @@ class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
     @Test
     fun testDeleteSmbFileOk() {
         doTestDeleteFileOk(
-                HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt")))
+            HybridFileParcelable(SmbUtil.create("smb://user:password@1.2.3.4/just/a/file.txt"))
+        )
     }
 
     /**

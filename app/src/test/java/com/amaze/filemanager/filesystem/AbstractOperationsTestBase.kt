@@ -86,18 +86,19 @@ abstract class AbstractOperationsTestBase {
                 this[0].apply {
                     Assert.assertEquals(MainActivity.TAG_INTENT_FILTER_GENERAL, this.action)
                     this
-                    .getParcelableArrayListExtra<HybridFileParcelable>(
-                            MainActivity.TAG_INTENT_FILTER_FAILED_OPS)
-                    .run {
-                        Assert.assertTrue(this.size > 0)
-                        Assert.assertEquals(oldFilePath, this[0].path)
-                    }
+                        .getParcelableArrayListExtra<HybridFileParcelable>(
+                            MainActivity.TAG_INTENT_FILTER_FAILED_OPS
+                        )
+                        .run {
+                            Assert.assertTrue(this.size > 0)
+                            Assert.assertEquals(oldFilePath, this[0].path)
+                        }
                 }
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                 Shadows.shadowOf(ctx?.getSystemService(StorageManager::class.java))
-                        .resetStorageVolumeList()
+                    .resetStorageVolumeList()
         }
     }
 }

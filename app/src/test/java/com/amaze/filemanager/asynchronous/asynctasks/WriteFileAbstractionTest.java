@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction.EXCEPTION_SHELL_NOT_RUNNING;
 import static com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction.EXCEPTION_STREAM_NOT_FOUND;
 import static com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction.NORMAL;
@@ -59,7 +62,9 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class})
+@Config(
+    shadows = {ShadowMultiDex.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class WriteFileAbstractionTest {
 
   private static final String contents = "This is modified data";

@@ -60,7 +60,7 @@ class ShadowSmbUtil {
 
             mockCannotRenameOld = createInternal(PATH_CANNOT_RENAME_OLDFILE)
             `when`(mockCannotRenameOld!!.renameTo(any()))
-                    .thenThrow(SmbException("Access is denied."))
+                .thenThrow(SmbException("Access is denied."))
             `when`(mockCannotRenameOld!!.exists()).thenReturn(true)
         }
 

@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.filesystem.ssh.test.TestUtils.saveSshConnectionSettings;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -62,7 +65,9 @@ import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class SshConnectionPoolTest {
 
   private static KeyPair hostKeyPair;

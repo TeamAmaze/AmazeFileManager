@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.smb
 
 import android.content.Context
+import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.HybridFile
@@ -38,7 +39,10 @@ import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowSmbUtil::class, ShadowMultiDex::class])
+@Config(
+    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 @LooperMode(LooperMode.Mode.PAUSED)
 class SmbHybridFileTest {
 

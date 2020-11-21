@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.fail;
 
 import java.io.File;
@@ -50,7 +53,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 import eu.chainfire.libsuperuser.Shell;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class, ShadowShellInteractive.class})
+@Config(
+    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class RootHelperTest {
 
   private static final File sysroot =

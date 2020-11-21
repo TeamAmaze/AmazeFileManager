@@ -20,8 +20,10 @@
 
 package com.amaze.filemanager.filesystem
 
+import android.os.Build.VERSION_CODES.*
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.utils.OpenMode
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -30,7 +32,10 @@ import org.junit.Test
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowAsyncTask
 
-@Config(shadows = [ShadowMultiDex::class, ShadowAsyncTask::class])
+@Config(
+    shadows = [ShadowMultiDex::class, ShadowAsyncTask::class, ShadowCryptUtil::class],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 class SshOperationsTest : AbstractOperationsTestBase() {
 
     companion object {
@@ -52,8 +57,10 @@ class SshOperationsTest : AbstractOperationsTestBase() {
     @Test
     fun testRenameFileAccessDenied() {
         MockSshConnectionPools.prepareCannotDeleteScenario()
-        super.testRenameFileAccessDenied(OpenMode.SFTP,
-        "ssh://user:password@127.0.0.1:22222/tmp/old.file",
-        "ssh://user:password@127.0.0.1:22222/tmp/new.file")
+        super.testRenameFileAccessDenied(
+            OpenMode.SFTP,
+            "ssh://user:password@127.0.0.1:22222/tmp/old.file",
+            "ssh://user:password@127.0.0.1:22222/tmp/new.file"
+        )
     }
 }

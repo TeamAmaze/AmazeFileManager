@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks
 
+import android.os.Build.VERSION_CODES.*
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -32,7 +33,10 @@ import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import org.robolectric.annotation.Config
 
-@Config(shadows = [ShadowMultiDex::class, ShadowCryptUtil::class])
+@Config(
+    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
     /**
@@ -63,15 +67,20 @@ class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
                 `when`(mtime).thenReturn(System.currentTimeMillis() / 1000)
                 `when`(size).thenReturn(16384)
                 `when`(permissions).thenReturn(
-                    setOf(FilePermission.USR_RWX,
+                    setOf(
+                        FilePermission.USR_RWX,
                         FilePermission.GRP_RWX,
-                        FilePermission.OTH_RWX))
+                        FilePermission.OTH_RWX
+                    )
+                )
             }
             `when`(name).thenReturn("test.file")
             `when`(attributes).thenReturn(fa)
         }
 
-        return HybridFileParcelable("ssh://user:password@127.0.0.1:22222",
-                false, ri)
+        return HybridFileParcelable(
+            "ssh://user:password@127.0.0.1:22222",
+            false, ri
+        )
     }
 }

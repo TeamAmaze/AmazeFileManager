@@ -86,9 +86,12 @@ object MockSshConnectionPools {
          */
         SshConnectionPool::class.java.getDeclaredField("connections").run {
             this.isAccessible = true
-            this.set(SshConnectionPool.getInstance(),
+            this.set(
+                SshConnectionPool.getInstance(),
                 mutableMapOf(
-                        Pair<String, SSHClient>("ssh://user:password@127.0.0.1:22222", sshClient)))
+                    Pair<String, SSHClient>("ssh://user:password@127.0.0.1:22222", sshClient)
+                )
+            )
         }
 
         SshConnectionPool.setSSHClientFactory { sshClient }

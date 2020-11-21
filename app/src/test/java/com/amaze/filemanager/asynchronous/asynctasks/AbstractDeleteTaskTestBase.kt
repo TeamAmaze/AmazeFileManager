@@ -106,7 +106,8 @@ abstract class AbstractDeleteTaskTestBase {
                 }!!.apply {
                     assertEquals(MainActivity.TAG_INTENT_FILTER_GENERAL, action)
                     getParcelableArrayListExtra<HybridFileParcelable>(
-                        MainActivity.TAG_INTENT_FILTER_FAILED_OPS)
+                        MainActivity.TAG_INTENT_FILTER_FAILED_OPS
+                    )
                         .run {
                             assertTrue(size > 0)
                             assertEquals(file.path, this[0].path)
@@ -116,7 +117,7 @@ abstract class AbstractDeleteTaskTestBase {
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
                 shadowOf(ctx?.getSystemService(StorageManager::class.java))
-                        .resetStorageVolumeList()
+                    .resetStorageVolumeList()
         }
     }
 }
