@@ -126,6 +126,12 @@
         <item name="android:textColor">@color/warningColor</item>
     </style>
 
+    <!-- Bottom sheet dialog -->
+    <style name="bottom_sheet_dialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="colorAccent">?colorAccent</item>
+        <item name="android:windowFrame">@null</item>
+    </style>
+
     <!-- styles for preferences -->
     <!-- light -->
     <style name="pref_accent_light_red" parent="appCompatLight">

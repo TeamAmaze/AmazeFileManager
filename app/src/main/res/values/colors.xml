@@ -24,6 +24,7 @@
     <color name="divider">#e0e0e0</color>
     <color name="divider_dark_card">#575757</color>
     <color name="divider_dark">#484848</color>
+    <color name="divider_translucent">#25575757</color>
     <color name="search_text_highlight">#FF9632</color>
     <!-- TODO: replace this hardcoded color with default list item selection color -->
     <color name="grid_background_light">#f2f2f2</color>

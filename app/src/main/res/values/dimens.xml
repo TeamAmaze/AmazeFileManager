@@ -43,6 +43,7 @@
 
     <dimen name="list_header_height">48dp</dimen>
     <dimen name="list_header_textsize">16sp</dimen>
+    <dimen name="text_size_22sp">22sp</dimen>
 
     <!-- Copy value from material-dialogs library -->
     <dimen name="md_dialog_frame_margin">24dp</dimen>

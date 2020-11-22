@@ -686,5 +686,10 @@
     <string name="crash_report_copied">Crash report copied to clipboard</string>
 
     <string name="disableIpcSignature">Disable IPC signing check (For legacy SMBv1 servers - UNSAFE!)</string>
+    <string name="just_once">Just Once</string>
+    <string name="always">Always</string>
+    <string name="choose_different_app">Choose different application</string>
+    <string name="clear_open_file">Clear cache</string>
+    <string name="clear_open_file_summary">Clears selected default file opening apps</string>
 </resources>
 
