@@ -27,6 +27,7 @@ import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 
 import androidx.appcompat.widget.AppCompatTextView;
 
@@ -40,17 +41,21 @@ public class ThemedTextView extends AppCompatTextView {
 
   public ThemedTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    if (((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
-        .getAppTheme()
-        .equals(AppTheme.LIGHT)) {
-      setTextColor(Utils.getColor(getContext(), android.R.color.black));
-    } else if (((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
-            .getAppTheme()
-            .equals(AppTheme.DARK)
-        || ((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
-            .getAppTheme()
-            .equals(AppTheme.BLACK)) {
-      setTextColor(Utils.getColor(getContext(), android.R.color.white));
+    try {
+      if (((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
+          .getAppTheme()
+          .equals(AppTheme.LIGHT)) {
+        setTextColor(Utils.getColor(getContext(), android.R.color.black));
+      } else if (((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
+              .getAppTheme()
+              .equals(AppTheme.DARK)
+          || ((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
+              .getAppTheme()
+              .equals(AppTheme.BLACK)) {
+        setTextColor(Utils.getColor(getContext(), android.R.color.white));
+      }
+    } catch (ClassCastException e) {
+      Log.w(getClass().getSimpleName(), e);
     }
   }
 }

@@ -38,6 +38,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.AppsAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.data.OpenFileParcelable
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.FragmentOpenFileDialogBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -67,6 +68,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         private const val KEY_PREFERENCES_DEFAULT = "_DEFAULT"
         const val KEY_PREFERENCES_LAST = "_LAST"
 
+        /**
+         * Opens the file using previously set default app or shows a bottom sheet dialog
+         */
         fun openFileOrShow(
             uri: Uri,
             mimeType: String,
@@ -112,6 +116,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             }
         }
 
+        /**
+         * Builds an intent which necessary permission flags for external apps to open uri file
+         */
         fun buildIntent(
             uri: Uri,
             mimeType: String,
@@ -176,6 +183,10 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             return result
         }
 
+        /**
+         * Sets last open app preference for bottom sheet file chooser.
+         * Next time same mime type comes, this app will be shown on top of the list if present
+         */
         fun setLastOpenedApp(
             appDataParcelable: AppDataParcelable,
             preferenceActivity: PreferenceActivity
@@ -190,7 +201,10 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             ).apply()
         }
 
-        fun setDefaultOpenedApp(
+        /**
+         * Sets default app for mime type selected using 'Always' button from bottom sheet
+         */
+        private fun setDefaultOpenedApp(
             appDataParcelable: AppDataParcelable,
             preferenceActivity: PreferenceActivity
         ) {
@@ -204,6 +218,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             ).apply()
         }
 
+        /**
+         * Clears all default apps set preferences for mime types
+         */
         fun clearPreferences(sharedPreferences: SharedPreferences) {
             val keys = HashSet<String>()
             sharedPreferences.all.keys.forEach {
@@ -257,45 +274,17 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             true
         )
 
-        val packageManager = context!!.packageManager
         val intent = buildIntent(
             uri!!, mimeType!!, useNewStack!!, null, null
         )
-        val appDataParcelableList: ArrayList<AppDataParcelable> = ArrayList()
+        val appDataParcelableList = initAppDataParcelableList(intent)
         val lastClassAndPackageRaw = sharedPreferences
             .getString(mimeType.plus(KEY_PREFERENCES_LAST), null)
         val lastClassAndPackage = lastClassAndPackageRaw?.split(" ")
-        var lastAppData: AppDataParcelable? = null
-        packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach {
-            val openFileParcelable = OpenFileParcelable(
-                uri, mimeType, useNewStack, it.activityInfo.name, it.activityInfo.packageName
-            )
-            val label = it.loadLabel(packageManager).toString()
-            val appDataParcelable = AppDataParcelable(
-                if (label.isNotEmpty()) label else it.activityInfo.packageName,
-                null,
-                it.activityInfo.packageName,
-                null,
-                null,
-                0,
-                0,
-                openFileParcelable
-            )
-            appDataParcelableList.add(appDataParcelable)
-        }
-        try {
-            lastAppData = if (!lastClassAndPackage.isNullOrEmpty()) {
-                appDataParcelableList.find {
-                    it.openFileParcelable.className == lastClassAndPackage[0]
-                }
-            } else {
-                appDataParcelableList[0]
-            }
-            appDataParcelableList.remove(lastAppData)
-        } catch (e: Exception) {
-            FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
-            dismiss()
-        }
+        val lastAppData: AppDataParcelable = initLastAppData(
+            lastClassAndPackage,
+            appDataParcelableList
+        )
 
         lastAppData?.let {
             val lastAppIntent = buildIntent(
@@ -329,6 +318,51 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             dismiss()
         }
         adapter.setData(appDataParcelableList)
+    }
+
+    private fun initAppDataParcelableList(intent: Intent): ArrayList<AppDataParcelable> {
+        val packageManager = requireContext().packageManager
+        val appDataParcelableList: ArrayList<AppDataParcelable> = ArrayList()
+        packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL).forEach {
+            val openFileParcelable = OpenFileParcelable(
+                uri, mimeType, useNewStack, it.activityInfo.name, it.activityInfo.packageName
+            )
+            val label = it.loadLabel(packageManager).toString()
+            val appDataParcelable = AppDataParcelable(
+                if (label.isNotEmpty()) label else it.activityInfo.packageName,
+                null,
+                it.activityInfo.packageName,
+                null,
+                null,
+                0,
+                0,
+                openFileParcelable
+            )
+            appDataParcelableList.add(appDataParcelable)
+        }
+        return appDataParcelableList
+    }
+
+    private fun initLastAppData(
+        lastClassAndPackage: List<String>?,
+        appDataParcelableList: ArrayList<AppDataParcelable>
+    ): AppDataParcelable {
+        if (appDataParcelableList.size == 0) {
+            AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))
+            FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
+            dismiss()
+        }
+
+        var lastAppData: AppDataParcelable? = if (!lastClassAndPackage.isNullOrEmpty()) {
+            appDataParcelableList.find {
+                it.openFileParcelable.className == lastClassAndPackage[0]
+            }
+        } else {
+            null
+        }
+        lastAppData = lastAppData ?: appDataParcelableList[0]
+        appDataParcelableList.remove(lastAppData)
+        return lastAppData
     }
 
     override fun onPause() {

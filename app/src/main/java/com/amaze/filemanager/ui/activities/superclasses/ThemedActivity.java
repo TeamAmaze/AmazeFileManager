@@ -54,6 +54,7 @@ public class ThemedActivity extends PreferenceActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    AppConfig.getInstance().setThemedActivityContext(this);
 
     // setting window background color instead of each item, in order to reduce pixel overdraw
     if (getAppTheme().equals(AppTheme.LIGHT)) {
@@ -81,7 +82,6 @@ public class ThemedActivity extends PreferenceActivity {
     }
 
     setTheme();
-    AppConfig.getInstance().setThemedActivityContext(this);
   }
 
   /**

@@ -28,8 +28,10 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
+    /**
+     * Initializes bottom sheet ui resources based on current theme
+     */
     fun initDialogResources(rootView: View) {
-
         when ((activity as ThemedActivity?)!!.appTheme) {
             AppTheme.DARK -> {
                 rootView
