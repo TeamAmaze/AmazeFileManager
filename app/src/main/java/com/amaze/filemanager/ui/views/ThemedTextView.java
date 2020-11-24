@@ -20,15 +20,17 @@
 
 package com.amaze.filemanager.ui.views;
 
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import org.jetbrains.annotations.NotNull;
+
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
 import android.util.AttributeSet;
-import android.util.Log;
+import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatTextView;
 
 /**
@@ -41,21 +43,15 @@ public class ThemedTextView extends AppCompatTextView {
 
   public ThemedTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
-    try {
-      if (((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
-          .getAppTheme()
-          .equals(AppTheme.LIGHT)) {
-        setTextColor(Utils.getColor(getContext(), android.R.color.black));
-      } else if (((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
-              .getAppTheme()
-              .equals(AppTheme.DARK)
-          || ((ThemedActivity) AppConfig.getInstance().getThemedActivityContext())
-              .getAppTheme()
-              .equals(AppTheme.BLACK)) {
-        setTextColor(Utils.getColor(getContext(), android.R.color.white));
-      }
-    } catch (ClassCastException e) {
-      Log.w(getClass().getSimpleName(), e);
+    setTextViewColor(this, context);
+  }
+
+  public static void setTextViewColor(@NotNull TextView textView, @NonNull Context context) {
+    if (((MainActivity) context).getAppTheme().equals(AppTheme.LIGHT)) {
+      textView.setTextColor(Utils.getColor(context, android.R.color.black));
+    } else if (((MainActivity) context).getAppTheme().equals(AppTheme.DARK)
+        || ((MainActivity) context).getAppTheme().equals(AppTheme.BLACK)) {
+      textView.setTextColor(Utils.getColor(context, android.R.color.white));
     }
   }
 }

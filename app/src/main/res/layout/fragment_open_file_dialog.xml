@@ -18,7 +18,7 @@
         android:layout_marginStart="@dimen/material_generic"
         android:layout_marginTop="@dimen/material_generic_medium"
         />
-    <com.amaze.filemanager.ui.views.ThemedTextView
+    <TextView
         android:id="@+id/last_app_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
         android:layout_marginTop="@dimen/material_generic"
         />
 
-    <com.amaze.filemanager.ui.views.ThemedTextView
+    <TextView
         android:id="@+id/choose_different_app_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -87,7 +87,7 @@
     <ListView
         android:id="@+id/apps_list_view"
         android:layout_width="match_parent"
-        android:layout_height="300dp"
+        android:layout_height="@dimen/material_sheet_listview_height"
         app:layout_constraintTop_toBottomOf="@+id/choose_different_app_text_view"
         android:layout_marginTop="@dimen/material_generic"
         />

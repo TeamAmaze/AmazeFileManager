@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -48,6 +49,8 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
+import com.amaze.filemanager.ui.views.ThemedTextView
+import com.amaze.filemanager.utils.Utils
 
 class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
@@ -282,11 +285,10 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             .getString(mimeType.plus(KEY_PREFERENCES_LAST), null)
         val lastClassAndPackage = lastClassAndPackageRaw?.split(" ")
         val lastAppData: AppDataParcelable = initLastAppData(
-            lastClassAndPackage,
-            appDataParcelableList
-        )
+            lastClassAndPackage, appDataParcelableList
+        ) ?: return
 
-        lastAppData?.let {
+        lastAppData.let {
             val lastAppIntent = buildIntent(
                 it.openFileParcelable.uri!!,
                 it.openFileParcelable.mimeType!!,
@@ -311,6 +313,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     setDefaultOpenedApp(it, activity as PreferenceActivity)
                     requireContext().startActivity(lastAppIntent)
                 }
+                ThemedTextView.setTextViewColor(lastAppTitle, requireContext())
+                ThemedTextView.setTextViewColor(chooseDifferentAppTextView, requireContext())
             }
         }
         viewBinding.openAsButton.setOnClickListener {
@@ -318,6 +322,22 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             dismiss()
         }
         adapter.setData(appDataParcelableList)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val configuration: Configuration = activity!!.resources.configuration
+        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
+            configuration.screenWidthDp > 450
+        ) {
+            // see recommendations on https://material.io/components/sheets-bottom#specs
+            dialog!!.window!!.setLayout(Utils.dpToPx(requireContext(), 450), -1)
+        }
     }
 
     private fun initAppDataParcelableList(intent: Intent): ArrayList<AppDataParcelable> {
@@ -346,11 +366,12 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     private fun initLastAppData(
         lastClassAndPackage: List<String>?,
         appDataParcelableList: ArrayList<AppDataParcelable>
-    ): AppDataParcelable {
+    ): AppDataParcelable? {
         if (appDataParcelableList.size == 0) {
             AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))
             FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
             dismiss()
+            return null
         }
 
         var lastAppData: AppDataParcelable? = if (!lastClassAndPackage.isNullOrEmpty()) {
@@ -363,10 +384,5 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         lastAppData = lastAppData ?: appDataParcelableList[0]
         appDataParcelableList.remove(lastAppData)
         return lastAppData
-    }
-
-    override fun onPause() {
-        super.onPause()
-        dismiss()
     }
 }

@@ -34,20 +34,18 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
     fun initDialogResources(rootView: View) {
         when ((activity as ThemedActivity?)!!.appTheme) {
             AppTheme.DARK -> {
-                rootView
-                    .setBackgroundDrawable(
-                        context?.resources?.getDrawable(
-                            R.drawable.shape_dialog_bottomsheet_dark
-                        )
+                rootView.setBackgroundDrawable(
+                    context?.resources?.getDrawable(
+                        R.drawable.shape_dialog_bottomsheet_dark
                     )
+                )
             }
             AppTheme.BLACK -> {
-                rootView
-                    .setBackgroundDrawable(
-                        context?.resources?.getDrawable(
-                            R.drawable.shape_dialog_bottomsheet_black
-                        )
+                rootView.setBackgroundDrawable(
+                    context?.resources?.getDrawable(
+                        R.drawable.shape_dialog_bottomsheet_black
                     )
+                )
             }
             else -> {
                 rootView
