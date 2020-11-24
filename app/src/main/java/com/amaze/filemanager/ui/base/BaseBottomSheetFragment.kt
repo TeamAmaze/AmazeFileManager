@@ -20,13 +20,26 @@
 
 package com.amaze.filemanager.ui.base
 
+import android.content.res.Configuration
 import android.view.View
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.theme.AppTheme
+import com.amaze.filemanager.utils.Utils
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
+
+    override fun onResume() {
+        super.onResume()
+        val configuration: Configuration = activity!!.resources.configuration
+        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
+            configuration.screenWidthDp > 450
+        ) {
+            // see recommendations on https://material.io/components/sheets-bottom#specs
+            dialog!!.window!!.setLayout(Utils.dpToPx(requireContext(), 450), -1)
+        }
+    }
 
     /**
      * Initializes bottom sheet ui resources based on current theme

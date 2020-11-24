@@ -24,7 +24,6 @@ import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
@@ -54,7 +53,6 @@ public class ThemedActivity extends PreferenceActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    AppConfig.getInstance().setThemedActivityContext(this);
 
     // setting window background color instead of each item, in order to reduce pixel overdraw
     if (getAppTheme().equals(AppTheme.LIGHT)) {

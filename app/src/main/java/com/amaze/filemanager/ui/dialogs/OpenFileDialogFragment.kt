@@ -25,7 +25,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.content.res.Configuration
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -50,7 +49,6 @@ import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.views.ThemedTextView
-import com.amaze.filemanager.utils.Utils
 
 class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
@@ -225,14 +223,18 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
          * Clears all default apps set preferences for mime types
          */
         fun clearPreferences(sharedPreferences: SharedPreferences) {
-            val keys = HashSet<String>()
-            sharedPreferences.all.keys.forEach {
-                if (it.endsWith(KEY_PREFERENCES_DEFAULT) || it.endsWith(KEY_PREFERENCES_LAST)) {
-                    keys.add(it)
+            AppConfig.getInstance().runInBackground {
+                val keys = HashSet<String>()
+                sharedPreferences.all.keys.forEach {
+                    if (it.endsWith(KEY_PREFERENCES_DEFAULT) ||
+                        it.endsWith(KEY_PREFERENCES_LAST)
+                    ) {
+                        keys.add(it)
+                    }
                 }
-            }
-            keys.forEach {
-                sharedPreferences.edit().remove(it).apply()
+                keys.forEach {
+                    sharedPreferences.edit().remove(it).apply()
+                }
             }
         }
 
@@ -327,17 +329,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     override fun onPause() {
         super.onPause()
         dismiss()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        val configuration: Configuration = activity!!.resources.configuration
-        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
-            configuration.screenWidthDp > 450
-        ) {
-            // see recommendations on https://material.io/components/sheets-bottom#specs
-            dialog!!.window!!.setLayout(Utils.dpToPx(requireContext(), 450), -1)
-        }
     }
 
     private fun initAppDataParcelableList(intent: Intent): ArrayList<AppDataParcelable> {
