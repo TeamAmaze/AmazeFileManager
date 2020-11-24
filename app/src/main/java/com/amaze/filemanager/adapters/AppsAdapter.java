@@ -149,7 +149,9 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     if (isBottomSheet) {
       holder.about.setVisibility(View.GONE);
-      holder.summary.setVisibility(View.GONE);
+      holder.txtDesc.setText(rowItem.openFileParcelable.getClassName());
+      holder.txtDesc.setSingleLine(true);
+      holder.txtDesc.setEllipsize(TextUtils.TruncateAt.MIDDLE);
     }
 
     if (holder.about != null && !isBottomSheet) {

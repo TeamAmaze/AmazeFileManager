@@ -20,31 +20,30 @@
 
 package com.amaze.filemanager.ui.base
 
-import android.R
+import android.view.MotionEvent
 import android.view.View
-import com.amaze.filemanager.ui.activities.MainActivity
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.MotionEventCompat
+import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.theme.AppTheme
-import com.amaze.filemanager.utils.Utils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
     fun initDialogResources(rootView: View) {
 
-        when ((activity as MainActivity?)!!.appTheme) {
+        when ((activity as ThemedActivity?)!!.appTheme) {
             AppTheme.DARK -> {
-                rootView.setBackgroundColor(
-                    Utils.getColor(
-                        context,
-                        com.amaze.filemanager.R.color.holo_dark_background
-                    )
-                )
+                rootView.setBackgroundDrawable(context?.resources?.getDrawable(R.drawable.shape_dialog_bottomsheet_dark))
             }
             AppTheme.BLACK -> {
-                rootView.setBackgroundColor(Utils.getColor(context, R.color.black))
+                rootView.setBackgroundDrawable(context?.resources?.getDrawable(R.drawable.shape_dialog_bottomsheet_black))
             }
             else -> {
-                rootView.setBackgroundColor(Utils.getColor(context, R.color.white))
+                rootView.setBackgroundDrawable(context?.resources?.getDrawable(R.drawable.shape_dialog_bottomsheet_white))
             }
         }
     }

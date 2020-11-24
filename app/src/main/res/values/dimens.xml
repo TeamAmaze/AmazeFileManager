@@ -37,6 +37,8 @@
 
     <dimen name="material_sheet_row_height_title">56dp</dimen>
     <dimen name="material_sheet_row_height_content">48dp</dimen>
+    <dimen name="material_sheet_height">500dp</dimen>
+    <dimen name="material_sheet_peek_height">400dp</dimen>
     <dimen name="height_divider">1dp</dimen>
 
     <dimen name="spacebetweenitems_properties_dialog">10dp</dimen>

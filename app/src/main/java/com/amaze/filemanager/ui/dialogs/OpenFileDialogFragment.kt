@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.dialogs
 
+import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -31,13 +32,18 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.Toast
+import androidx.coordinatorlayout.widget.CoordinatorLayout
+import androidx.core.view.MotionEventCompat
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.AppsAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.data.OpenFileParcelable
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.FragmentOpenFileDialogBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -47,6 +53,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
@@ -80,8 +87,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             ) {
                 if (forceChooser) {
                     clearMimeTypePreference(
-                        MimeTypes.getMimeType(uri.toString(), false),
-                        activity.prefs
+                        MimeTypes.getMimeType(uri.toString(), false), activity.prefs
                     )
                 }
                 val openFileDialogFragment = newInstance(uri, mimeType, useNewStack)
@@ -130,8 +136,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
                 } else {
                     chooserIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK or
-                            Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
                     )
                 }
             }
@@ -144,16 +149,12 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun getPreferenceAndStartActivity(
-            uri: Uri,
-            mimeType: String,
-            useNewStack: Boolean,
-            activity: PreferenceActivity
+            uri: Uri, mimeType: String, useNewStack: Boolean, activity: PreferenceActivity
         ): Boolean {
             val classAndPackageRaw = activity.prefs.getString(
                 mimeType.plus(
                     KEY_PREFERENCES_DEFAULT
-                ),
-                null
+                ), null
             )
             var result = false
             if (!classAndPackageRaw.isNullOrEmpty()) {
@@ -178,8 +179,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         fun setLastOpenedApp(
-            appDataParcelable: AppDataParcelable,
-            preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_LAST),
@@ -192,8 +192,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         fun setDefaultOpenedApp(
-            appDataParcelable: AppDataParcelable,
-            preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_DEFAULT),
@@ -218,8 +217,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun clearMimeTypePreference(
-            mimeType: String,
-            sharedPreferences: SharedPreferences
+            mimeType: String, sharedPreferences: SharedPreferences
         ) {
             sharedPreferences.edit().remove(mimeType.plus(KEY_PREFERENCES_DEFAULT)).apply()
         }
@@ -231,13 +229,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         mimeType = arguments?.getString(KEY_MIME_TYPE)
         useNewStack = arguments?.getBoolean(KEY_USE_NEW_STACK)
         utilsProvider = (activity as BasicActivity?)!!.utilsProvider
-//        setStyle(STYLE_NORMAL, R.style.bottom_sheet_dialog)
+        setStyle(STYLE_NORMAL, R.style.appBottomSheetDialogTheme)
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         viewBinding = FragmentOpenFileDialogBinding.inflate(inflater)
         initDialogResources(viewBinding.parent)
@@ -246,7 +242,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         adapter = AppsAdapter(
             this,
@@ -261,21 +256,16 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
         val packageManager = context!!.packageManager
         val intent = buildIntent(
-            uri!!, mimeType!!, useNewStack!!,
-            null, null
+            uri!!, mimeType!!, useNewStack!!, null, null
         )
         val appDataParcelableList: ArrayList<AppDataParcelable> = ArrayList()
         val lastClassAndPackageRaw = sharedPreferences
             .getString(mimeType.plus(KEY_PREFERENCES_LAST), null)
         val lastClassAndPackage = lastClassAndPackageRaw?.split(" ")
-        val lastAppData: AppDataParcelable?
+        var lastAppData: AppDataParcelable? = null
         packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY).forEach {
             val openFileParcelable = OpenFileParcelable(
-                uri,
-                mimeType,
-                useNewStack,
-                it.activityInfo.name,
-                it.activityInfo.packageName
+                uri, mimeType, useNewStack, it.activityInfo.name, it.activityInfo.packageName
             )
             val label = it.loadLabel(packageManager).toString()
             val appDataParcelable = AppDataParcelable(
@@ -290,14 +280,19 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             )
             appDataParcelableList.add(appDataParcelable)
         }
-        lastAppData = if (!lastClassAndPackage.isNullOrEmpty()) {
-            appDataParcelableList.find {
-                it.openFileParcelable.className == lastClassAndPackage[0]
+        try {
+            lastAppData = if (!lastClassAndPackage.isNullOrEmpty()) {
+                appDataParcelableList.find {
+                    it.openFileParcelable.className == lastClassAndPackage[0]
+                }
+            } else {
+                appDataParcelableList[0]
             }
-        } else {
-            appDataParcelableList[0]
+            appDataParcelableList.remove(lastAppData)
+        } catch (e: Exception) {
+            FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
+            dismiss()
         }
-        appDataParcelableList.remove(lastAppData)
 
         lastAppData?.let {
             val lastAppIntent = buildIntent(
@@ -312,8 +307,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                 appsListView.adapter = adapter
                 lastAppTitle.text = it.label
                 lastAppImage.setImageDrawable(
-                    (activity as MainActivity).packageManager
-                        .getApplicationIcon(it.packageName)
+                    (activity as MainActivity).packageManager.getApplicationIcon(it.packageName)
                 )
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->

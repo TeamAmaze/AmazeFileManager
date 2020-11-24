@@ -73,6 +73,7 @@ public class AppConfig extends GlideApplication {
   private UtilsHandler utilsHandler;
 
   private WeakReference<Context> mainActivityContext;
+  private WeakReference<Context> themedActivityContext;
   private static ScreenUtils screenUtils;
 
   private static AppConfig instance;
@@ -207,6 +208,10 @@ public class AppConfig extends GlideApplication {
     screenUtils = new ScreenUtils(activity);
   }
 
+  public void setThemedActivityContext(@NonNull Activity activityContext) {
+    themedActivityContext = new WeakReference<>(activityContext);
+  }
+
   public ScreenUtils getScreenUtils() {
     return screenUtils;
   }
@@ -214,6 +219,11 @@ public class AppConfig extends GlideApplication {
   @Nullable
   public Context getMainActivityContext() {
     return mainActivityContext.get();
+  }
+
+  @Nullable
+  public Context getThemedActivityContext() {
+    return themedActivityContext.get();
   }
 
   public ExplorerDatabase getExplorerDatabase() {
