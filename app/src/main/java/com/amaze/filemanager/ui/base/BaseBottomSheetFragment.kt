@@ -20,15 +20,10 @@
 
 package com.amaze.filemanager.ui.base
 
-import android.view.MotionEvent
 import android.view.View
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.MotionEventCompat
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.theme.AppTheme
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetBehavior.BottomSheetCallback
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
@@ -37,13 +32,28 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
         when ((activity as ThemedActivity?)!!.appTheme) {
             AppTheme.DARK -> {
-                rootView.setBackgroundDrawable(context?.resources?.getDrawable(R.drawable.shape_dialog_bottomsheet_dark))
+                rootView
+                    .setBackgroundDrawable(
+                        context?.resources?.getDrawable(
+                            R.drawable.shape_dialog_bottomsheet_dark
+                        )
+                    )
             }
             AppTheme.BLACK -> {
-                rootView.setBackgroundDrawable(context?.resources?.getDrawable(R.drawable.shape_dialog_bottomsheet_black))
+                rootView
+                    .setBackgroundDrawable(
+                        context?.resources?.getDrawable(
+                            R.drawable.shape_dialog_bottomsheet_black
+                        )
+                    )
             }
             else -> {
-                rootView.setBackgroundDrawable(context?.resources?.getDrawable(R.drawable.shape_dialog_bottomsheet_white))
+                rootView
+                    .setBackgroundDrawable(
+                        context?.resources?.getDrawable(
+                            R.drawable.shape_dialog_bottomsheet_white
+                        )
+                    )
             }
         }
     }

@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.dialogs
 
-import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -32,18 +31,13 @@ import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
-import androidx.coordinatorlayout.widget.CoordinatorLayout
-import androidx.core.view.MotionEventCompat
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.AppsAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.data.OpenFileParcelable
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.FragmentOpenFileDialogBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -53,7 +47,6 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
-import com.google.android.material.bottomsheet.BottomSheetBehavior
 
 class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
@@ -136,7 +129,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
                 } else {
                     chooserIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            or Intent.FLAG_ACTIVITY_TASK_ON_HOME
                     )
                 }
             }
@@ -149,12 +143,16 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun getPreferenceAndStartActivity(
-            uri: Uri, mimeType: String, useNewStack: Boolean, activity: PreferenceActivity
+            uri: Uri,
+            mimeType: String,
+            useNewStack: Boolean,
+            activity: PreferenceActivity
         ): Boolean {
             val classAndPackageRaw = activity.prefs.getString(
                 mimeType.plus(
                     KEY_PREFERENCES_DEFAULT
-                ), null
+                ),
+                null
             )
             var result = false
             if (!classAndPackageRaw.isNullOrEmpty()) {
@@ -179,7 +177,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         fun setLastOpenedApp(
-            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable,
+            preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_LAST),
@@ -192,7 +191,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         fun setDefaultOpenedApp(
-            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable,
+            preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_DEFAULT),
@@ -217,7 +217,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun clearMimeTypePreference(
-            mimeType: String, sharedPreferences: SharedPreferences
+            mimeType: String,
+            sharedPreferences: SharedPreferences
         ) {
             sharedPreferences.edit().remove(mimeType.plus(KEY_PREFERENCES_DEFAULT)).apply()
         }
@@ -233,7 +234,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         viewBinding = FragmentOpenFileDialogBinding.inflate(inflater)
         initDialogResources(viewBinding.parent)
