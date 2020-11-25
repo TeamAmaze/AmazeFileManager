@@ -20,11 +20,108 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
+import java.util.ArrayList;
+
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.junit.Test;
+
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 
 import android.os.Environment;
 
 public class RarHelperTaskTest extends AbstractCompressedHelperTaskTest {
+
+  @Test
+  public void testGuessFirstPartOfRar() {
+
+    assertEquals(
+        new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part01.rar")
+            .getAbsolutePath(),
+        RarHelperTask.guessFirstPartOfRar(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part01.rar")
+                .getAbsolutePath()));
+
+    assertEquals(
+        new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part1.rar")
+            .getAbsolutePath(),
+        RarHelperTask.guessFirstPartOfRar(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part2.rar")
+                .getAbsolutePath()));
+
+    assertEquals(
+        new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part001.rar")
+            .getAbsolutePath(),
+        RarHelperTask.guessFirstPartOfRar(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part002.rar")
+                .getAbsolutePath()));
+
+    assertEquals(
+        new File(
+                Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part0001.rar")
+            .getAbsolutePath(),
+        RarHelperTask.guessFirstPartOfRar(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part0342.rar")
+                .getAbsolutePath()));
+  }
+
+  @Test
+  public void testMultiVolumeRar() {
+    doTestMultiVolumeRar("test-multipart-archive-v4.part1.rar");
+  }
+
+  @Test
+  public void testMultiVolumeRarFromPart2() {
+    doTestMultiVolumeRar("test-multipart-archive-v4.part2.rar");
+  }
+
+  private void doTestMultiVolumeRar(String filename) {
+    CompressedHelperTask task =
+        new RarHelperTask(
+            new File(Environment.getExternalStorageDirectory(), filename).getAbsolutePath(),
+            "",
+            false,
+            data -> {});
+    AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
+    assertNotNull(result);
+    assertNotNull(result.result);
+    assertEquals(1, result.result.size());
+    assertEquals("test.bin", result.result.get(0).name);
+    assertEquals(1024 * 128, result.result.get(0).size);
+  }
+
+  @Test
+  public void testMultiVolumeRarV5() {
+    CompressedHelperTask task =
+        new RarHelperTask(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v5.part1.rar")
+                .getAbsolutePath(),
+            "",
+            false,
+            data -> {});
+    AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
+    assertNotNull(result);
+    assertNull(result.result);
+    assertNotNull(result.exception);
+    assertEquals(ArchiveException.class, result.exception.getClass());
+    assertEquals(UnsupportedRarV5Exception.class, result.exception.getCause().getClass());
+  }
 
   @Override
   protected CompressedHelperTask createTask(String relativePath) {

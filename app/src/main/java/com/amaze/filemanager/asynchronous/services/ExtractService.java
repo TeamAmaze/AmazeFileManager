@@ -40,6 +40,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -326,6 +327,14 @@ public class ExtractService extends AbstractProgressiveService {
             passwordProtected = true;
             paused = true;
             publishProgress(e);
+          } else if (e.getCause() != null
+              && UnsupportedRarV5Exception.class.isAssignableFrom(e.getCause().getClass())) {
+            Log.e(TAG, "RAR " + compressedPath + " is unsupported V5 archive", e);
+            AppConfig.toast(
+                extractService,
+                extractService.getString(R.string.error_unsupported_v5_rar, compressedPath));
+            paused = false;
+            return false;
           } else {
             Log.e(TAG, "Error while extracting file " + compressedPath, e);
             AppConfig.toast(extractService, extractService.getString(R.string.error));

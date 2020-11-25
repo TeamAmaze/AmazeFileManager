@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -33,7 +34,9 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecom
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 import com.github.junrar.rarfile.FileHeader;
+import com.github.junrar.rarfile.MainHeader;
 
 import androidx.annotation.NonNull;
 
@@ -62,7 +65,7 @@ public class RarHelperTask extends CompressedHelperTask {
   void addElements(@NonNull ArrayList<CompressedObjectParcelable> elements)
       throws ArchiveException {
     try {
-      Archive zipfile = new Archive(new File(fileLocation));
+      Archive zipfile = getArchive(fileLocation);
       String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
 
       for (FileHeader rarArchive : zipfile.getFileHeaders()) {
@@ -83,12 +86,46 @@ public class RarHelperTask extends CompressedHelperTask {
               new CompressedObjectParcelable(
                   RarDecompressor.convertName(rarArchive),
                   0,
-                  rarArchive.getDataSize(),
+                  rarArchive.getFullUnpackSize(),
                   rarArchive.isDirectory()));
         }
       }
+    } catch (UnsupportedRarV5Exception e) {
+      throw new ArchiveException("RAR v5 archives are not supported", e);
+    } catch (FileNotFoundException e) {
+      throw new ArchiveException("First part of multipart archive not found", e);
     } catch (RarException | IOException e) {
       throw new ArchiveException(String.format("RAR archive %s is corrupt", fileLocation));
+    }
+  }
+
+  public static Archive getArchive(String fileLocation) throws RarException, IOException {
+    Archive zipfile = new Archive(new File(fileLocation));
+    MainHeader rarHeader = zipfile.getMainHeader();
+    if (rarHeader.isMultiVolume() && !rarHeader.isFirstVolume()) {
+      File firstPartOfArchive = new File(guessFirstPartOfRar(fileLocation));
+      if (firstPartOfArchive.exists()) {
+        zipfile = new Archive(firstPartOfArchive);
+      } else {
+        throw new FileNotFoundException(
+            String.format("First part of archive [%s] not found", firstPartOfArchive.getName()));
+      }
+    }
+    return zipfile;
+  }
+
+  public static String guessFirstPartOfRar(@NonNull String archivePath) {
+    if (archivePath.lastIndexOf(".part") < 1) {
+      return archivePath;
+    } else {
+      StringBuilder sb = new StringBuilder(archivePath);
+      int start = sb.lastIndexOf("part"), end = sb.lastIndexOf(".rar");
+      if (start > 0 && end > start) {
+        for (int i = start + 4; i < end - 1; i++) sb.setCharAt(i, '0');
+
+        sb.setCharAt(end - 1, '1');
+      }
+      return sb.toString();
     }
   }
 }

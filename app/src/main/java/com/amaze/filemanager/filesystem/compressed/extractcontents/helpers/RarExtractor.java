@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.amaze.filemanager.asynchronous.asynctasks.compress.RarHelperTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -53,28 +54,28 @@ public class RarExtractor extends Extractor {
   protected void extractWithFilter(@NonNull Filter filter) throws IOException {
     try {
       long totalBytes = 0;
-      Archive rarFile = new Archive(new File(filePath));
+      Archive rarFile = RarHelperTask.getArchive(filePath);
       ArrayList<FileHeader> arrayList = new ArrayList<>();
 
       // iterating archive elements to find file names that are to be extracted
       for (FileHeader header : rarFile.getFileHeaders()) {
-        if (CompressedHelper.isEntryPathValid(header.getFileNameString())) {
-          if (filter.shouldExtract(header.getFileNameString(), header.isDirectory())) {
+        if (CompressedHelper.isEntryPathValid(header.getFileName())) {
+          if (filter.shouldExtract(header.getFileName(), header.isDirectory())) {
             // header to be extracted is at least the entry path (may be more, when it is a
             // directory)
             arrayList.add(header);
             totalBytes += header.getFullUnpackSize();
           }
         } else {
-          invalidArchiveEntries.add(header.getFileNameString());
+          invalidArchiveEntries.add(header.getFileName());
         }
       }
 
-      listener.onStart(totalBytes, arrayList.get(0).getFileNameString());
+      listener.onStart(totalBytes, arrayList.get(0).getFileName());
 
       for (FileHeader entry : arrayList) {
         if (!listener.isCancelled()) {
-          listener.onUpdate(entry.getFileNameString());
+          listener.onUpdate(entry.getFileName());
           extractEntry(context, rarFile, entry, outputPath);
         }
       }
@@ -87,8 +88,7 @@ public class RarExtractor extends Extractor {
   private void extractEntry(
       @NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
       throws RarException, IOException {
-    String name =
-        fixEntryName(entry.getFileNameString()).replaceAll("\\\\", CompressedHelper.SEPARATOR);
+    String name = fixEntryName(entry.getFileName()).replaceAll("\\\\", CompressedHelper.SEPARATOR);
     File outputFile = new File(outputDir, name);
 
     if (!outputFile.getCanonicalPath().startsWith(outputDir)) {
@@ -119,6 +119,7 @@ public class RarExtractor extends Extractor {
     } finally {
       outputStream.close();
       inputStream.close();
+      outputFile.setLastModified(entry.getMTime().getTime());
     }
   }
 }

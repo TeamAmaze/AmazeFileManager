@@ -111,6 +111,7 @@ ext {
     slf4jVersion = "1.7.25"
     mockitoVersion = "3.4.4"
     androidBillingVersion = "2.1.0"
+    junrarVersion = "7.4.0"
 }
 
 dependencies {
@@ -161,12 +162,7 @@ dependencies {
 
     implementation 'org.apache.commons:commons-compress:1.18'
 
-    implementation ('com.github.junrar:junrar:0.7') {
-        exclude module: 'commons-logging'
-        exclude module: 'commons-logging-api'
-        exclude module: 'maven-scm-api'
-        exclude module: 'maven-scm-provider-svnexe'
-    }
+    implementation "com.github.junrar:junrar:$junrarVersion"
 
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
