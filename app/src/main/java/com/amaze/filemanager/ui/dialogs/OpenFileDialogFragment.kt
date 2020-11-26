@@ -34,10 +34,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import com.amaze.filemanager.GlideApp
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.AppsAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.data.OpenFileParcelable
+import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.FragmentOpenFileDialogBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
@@ -49,14 +51,18 @@ import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.views.ThemedTextView
+import com.amaze.filemanager.utils.GlideConstants
+import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.util.ViewPreloadSizeProvider
 
 class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
     private var uri: Uri? = null
     private var mimeType: String? = null
     private var useNewStack: Boolean? = null
+    private var fragmentOpenFileDialogBinding: FragmentOpenFileDialogBinding? = null
+    private val viewBinding get() = fragmentOpenFileDialogBinding!!
 
-    private lateinit var viewBinding: FragmentOpenFileDialogBinding
     private lateinit var adapter: AppsAdapter
     private lateinit var utilsProvider: UtilitiesProvider
     private lateinit var sharedPreferences: SharedPreferences
@@ -137,8 +143,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
                 } else {
                     chooserIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-                            or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
                     )
                 }
             }
@@ -151,16 +156,12 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun getPreferenceAndStartActivity(
-            uri: Uri,
-            mimeType: String,
-            useNewStack: Boolean,
-            activity: PreferenceActivity
+            uri: Uri, mimeType: String, useNewStack: Boolean, activity: PreferenceActivity
         ): Boolean {
             val classAndPackageRaw = activity.prefs.getString(
                 mimeType.plus(
                     KEY_PREFERENCES_DEFAULT
-                ),
-                null
+                ), null
             )
             var result = false
             if (!classAndPackageRaw.isNullOrEmpty()) {
@@ -189,8 +190,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
          * Next time same mime type comes, this app will be shown on top of the list if present
          */
         fun setLastOpenedApp(
-            appDataParcelable: AppDataParcelable,
-            preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_LAST),
@@ -206,8 +206,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
          * Sets default app for mime type selected using 'Always' button from bottom sheet
          */
         private fun setDefaultOpenedApp(
-            appDataParcelable: AppDataParcelable,
-            preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_DEFAULT),
@@ -239,8 +238,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun clearMimeTypePreference(
-            mimeType: String,
-            sharedPreferences: SharedPreferences
+            mimeType: String, sharedPreferences: SharedPreferences
         ) {
             sharedPreferences.edit().remove(mimeType.plus(KEY_PREFERENCES_DEFAULT)).apply()
         }
@@ -256,24 +254,33 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        viewBinding = FragmentOpenFileDialogBinding.inflate(inflater)
+        fragmentOpenFileDialogBinding = FragmentOpenFileDialogBinding.inflate(inflater)
         initDialogResources(viewBinding.parent)
         return viewBinding.root
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        fragmentOpenFileDialogBinding = null
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val modelProvider = AppsAdapterPreloadModel(this)
+        val sizeProvider = ViewPreloadSizeProvider<String>()
+        val preloader = ListPreloader(
+            GlideApp.with(this), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER
+        )
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         adapter = AppsAdapter(
             this,
             activity as ThemedActivity?,
             utilsProvider,
-            null,
-            null,
+            modelProvider,
+            sizeProvider,
             R.layout.rowlayout,
             (activity as MainActivity).prefs,
             true
@@ -290,6 +297,20 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             lastClassAndPackage, appDataParcelableList
         ) ?: return
 
+        adapter.setData(appDataParcelableList)
+        modelProvider.setItemList(appDataParcelableList.map { appDataParcelable ->
+            appDataParcelable.packageName
+        })
+        loadViews(lastAppData)
+        viewBinding.appsListView.setOnScrollListener(preloader)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        dismiss()
+    }
+
+    private fun loadViews(lastAppData: AppDataParcelable) {
         lastAppData.let {
             val lastAppIntent = buildIntent(
                 it.openFileParcelable.uri!!,
@@ -315,20 +336,14 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     setDefaultOpenedApp(it, activity as PreferenceActivity)
                     requireContext().startActivity(lastAppIntent)
                 }
+                openAsButton.setOnClickListener {
+                    FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
+                    dismiss()
+                }
                 ThemedTextView.setTextViewColor(lastAppTitle, requireContext())
                 ThemedTextView.setTextViewColor(chooseDifferentAppTextView, requireContext())
             }
         }
-        viewBinding.openAsButton.setOnClickListener {
-            FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
-            dismiss()
-        }
-        adapter.setData(appDataParcelableList)
-    }
-
-    override fun onPause() {
-        super.onPause()
-        dismiss()
     }
 
     private fun initAppDataParcelableList(intent: Intent): ArrayList<AppDataParcelable> {
@@ -355,8 +370,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     }
 
     private fun initLastAppData(
-        lastClassAndPackage: List<String>?,
-        appDataParcelableList: ArrayList<AppDataParcelable>
+        lastClassAndPackage: List<String>?, appDataParcelableList: ArrayList<AppDataParcelable>
     ): AppDataParcelable? {
         if (appDataParcelableList.size == 0) {
             AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))

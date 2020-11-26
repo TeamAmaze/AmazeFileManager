@@ -52,13 +52,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -136,22 +134,14 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     final AppHolder holder = (AppHolder) view.getTag();
 
-    if (modelProvider != null) {
-      modelProvider.loadApkImage(rowItem.path, holder.apkIcon);
-    } else if (isBottomSheet) {
-      try {
-        holder.apkIcon.setImageDrawable(
-            themedActivity.getPackageManager().getApplicationIcon(rowItem.packageName));
-      } catch (PackageManager.NameNotFoundException e) {
-        Log.w(getClass().getSimpleName(), e);
-      }
-    }
-
     if (isBottomSheet) {
       holder.about.setVisibility(View.GONE);
       holder.txtDesc.setText(rowItem.openFileParcelable.getClassName());
       holder.txtDesc.setSingleLine(true);
       holder.txtDesc.setEllipsize(TextUtils.TruncateAt.MIDDLE);
+      modelProvider.loadApkImage(rowItem.packageName, holder.apkIcon, true, themedActivity);
+    } else {
+      modelProvider.loadApkImage(rowItem.path, holder.apkIcon, false, themedActivity);
     }
 
     if (holder.about != null && !isBottomSheet) {

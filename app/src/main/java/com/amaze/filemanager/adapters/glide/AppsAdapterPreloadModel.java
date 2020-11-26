@@ -28,7 +28,10 @@ import com.amaze.filemanager.GlideRequest;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
+import android.content.Context;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
@@ -62,7 +65,16 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
     return request.clone().load(item);
   }
 
-  public void loadApkImage(String item, ImageView v) {
-    request.load(item).into(v);
+  public void loadApkImage(String item, ImageView v, boolean isBottomSheet, Context context) {
+    if (isBottomSheet) {
+      try {
+        request.load(context.getPackageManager().getApplicationIcon(item)).into(v);
+      } catch (PackageManager.NameNotFoundException e) {
+        Log.w(getClass().getSimpleName(), e);
+        request.load("").into(v);
+      }
+    } else {
+      request.load(item).into(v);
+    }
   }
 }
