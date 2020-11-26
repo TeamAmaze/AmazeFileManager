@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.smb;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -29,18 +32,19 @@ import java.util.Properties;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.robolectric.annotation.Config;
 
 import androidx.annotation.NonNull;
 
-import jcifs.Config;
 import jcifs.ResolverType;
 import jcifs.context.BaseContext;
 
+@Config(sdk = {JELLY_BEAN, KITKAT, P})
 public class CifsContextFactoryTest {
 
   @BeforeClass
   public static void bootstrap() {
-    Config.registerSmbURLHandler();
+    jcifs.Config.registerSmbURLHandler();
   }
 
   @Test

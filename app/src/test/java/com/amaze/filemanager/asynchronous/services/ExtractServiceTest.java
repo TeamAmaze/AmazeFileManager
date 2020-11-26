@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static android.os.Looper.getMainLooper;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -56,7 +59,9 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class})
+@Config(
+    shadows = {ShadowMultiDex.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class ExtractServiceTest {
 
   private File zipfile1 = new File(Environment.getExternalStorageDirectory(), "zip-slip.zip");

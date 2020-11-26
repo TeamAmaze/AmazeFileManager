@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
@@ -44,7 +47,9 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class})
+@Config(
+    shadows = {ShadowMultiDex.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public abstract class AbstractCompressedHelperTaskTest {
 
   @Before
