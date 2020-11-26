@@ -686,5 +686,9 @@
     <string name="crash_report_copied">Crash report copied to clipboard</string>
 
     <string name="disableIpcSignature">Disable IPC signing check (For legacy SMBv1 servers - UNSAFE!)</string>
+    <string name="cannot_delete_file">Cannot delete file </string>
+    <string name="cannot_delete_file_with_reason">Cannot delete file - %s </string>
+    <string name="cannot_rename_file">Cannot rename file %s - %s</string>
+    <string name="cannot_read_directory">Cannot read directory %s - %s</string>
 </resources>
 

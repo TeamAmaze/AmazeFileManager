@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.application;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static android.os.Looper.getMainLooper;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -34,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 import org.junit.After;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowToast;
 
 import com.amaze.filemanager.R;
@@ -47,6 +51,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
+@Config(sdk = {JELLY_BEAN, KITKAT, P})
 public class AppConfigTest {
 
   @After
