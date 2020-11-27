@@ -69,7 +69,7 @@ public class RarHelperTask extends CompressedHelperTask {
       String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
 
       for (FileHeader rarArchive : zipfile.getFileHeaders()) {
-        String name = rarArchive.getFileNameString(); // This uses \ as separator, not /
+        String name = rarArchive.getFileName();
         if (!CompressedHelper.isEntryPathValid(name)) {
           continue;
         }
@@ -85,7 +85,7 @@ public class RarHelperTask extends CompressedHelperTask {
           elements.add(
               new CompressedObjectParcelable(
                   RarDecompressor.convertName(rarArchive),
-                  0,
+                  rarArchive.getMTime().getTime(),
                   rarArchive.getFullUnpackSize(),
                   rarArchive.isDirectory()));
         }

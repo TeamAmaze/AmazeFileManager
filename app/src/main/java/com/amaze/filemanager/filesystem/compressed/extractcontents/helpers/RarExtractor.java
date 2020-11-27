@@ -97,11 +97,13 @@ public class RarExtractor extends Extractor {
 
     if (entry.isDirectory()) {
       FileUtil.mkdir(outputFile, context);
+      outputFile.setLastModified(entry.getMTime().getTime());
       return;
     }
 
     if (!outputFile.getParentFile().exists()) {
       FileUtil.mkdir(outputFile.getParentFile(), context);
+      outputFile.getParentFile().setLastModified(entry.getMTime().getTime());
     }
     //	Log.i("Amaze", "Extracting: " + entry);
     BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
