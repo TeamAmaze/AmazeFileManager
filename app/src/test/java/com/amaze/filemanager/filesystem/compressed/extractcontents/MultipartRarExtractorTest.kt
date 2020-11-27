@@ -48,14 +48,15 @@ import java.util.concurrent.CountDownLatch
 class MultipartRarExtractorTest {
 
     private val callback = object : OnUpdate {
-        override fun onStart(totalBytes: Long, firstEntryName: String) {}
-        override fun onUpdate(entryPath: String) {}
-        override fun onFinish() {}
-        override fun isCancelled(): Boolean {
-            return false
-        }
+        override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
+        override fun onUpdate(entryPath: String) = Unit
+        override fun onFinish() = Unit
+        override fun isCancelled(): Boolean = false
     }
 
+    /**
+     * Test setup.
+     */
     @Before
     @Throws(Exception::class)
     fun setUp() {
@@ -63,18 +64,27 @@ class MultipartRarExtractorTest {
         copyArchivesToStorage()
     }
 
+    /**
+     * Test extract a multipart RAR v4.
+     */
     @Test
     @Throws(Exception::class)
     fun testExtractMultiVolumeV4Rar() {
         doTestExtractMultiVolumeV4Rar("test-multipart-archive-v4.part1.rar")
     }
 
+    /**
+     * Test extract a multipart RAR v4 from part 2.
+     */
     @Test
     @Throws(Exception::class)
     fun testExtractMultiVolumeV4RarFromPart2() {
         doTestExtractMultiVolumeV4Rar("test-multipart-archive-v4.part2.rar")
     }
 
+    /**
+     * Test extract a multipart RAR v4 from part 3.
+     */
     @Test
     @Throws(Exception::class)
     fun testExtractMultiVolumeV4RarFromPart3() {
@@ -100,6 +110,9 @@ class MultipartRarExtractorTest {
         latch.await()
     }
 
+    /**
+     * Test extract a multipart RAR v5, which should fail.
+     */
     @Test
     fun testExtractMultiVolumeV5Rar() {
         try {

@@ -114,12 +114,26 @@ public class RarHelperTask extends CompressedHelperTask {
     return zipfile;
   }
 
+  /**
+   * Try to guess the first part of a multipart rar.
+   *
+   * <ul>
+   *   <li>For filenames like file.part5.rar, it will return file.part1.rar
+   *   <li>For filenames like file.part003.rar, it will return file.part001.rar
+   * </ul>
+   *
+   * Best effort only, won't be smart enough to detect if part number is zero padded.
+   *
+   * @param archivePath file path to check
+   * @return file path with filename = first part of rar guessed
+   */
   public static String guessFirstPartOfRar(@NonNull String archivePath) {
     if (archivePath.lastIndexOf(".part") < 1) {
       return archivePath;
     } else {
       StringBuilder sb = new StringBuilder(archivePath);
-      int start = sb.lastIndexOf("part"), end = sb.lastIndexOf(".rar");
+      int start = sb.lastIndexOf("part");
+      int end = sb.lastIndexOf(".rar");
       if (start > 0 && end > start) {
         for (int i = start + 4; i < end - 1; i++) sb.setCharAt(i, '0');
 
