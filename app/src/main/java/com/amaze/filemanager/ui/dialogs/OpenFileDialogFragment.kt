@@ -143,7 +143,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_DOCUMENT)
                 } else {
                     chooserIntent.addFlags(
-                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_TASK_ON_HOME
+                        Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                            or Intent.FLAG_ACTIVITY_TASK_ON_HOME
                     )
                 }
             }
@@ -156,12 +157,16 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun getPreferenceAndStartActivity(
-            uri: Uri, mimeType: String, useNewStack: Boolean, activity: PreferenceActivity
+            uri: Uri,
+            mimeType: String,
+            useNewStack: Boolean,
+            activity: PreferenceActivity
         ): Boolean {
             val classAndPackageRaw = activity.prefs.getString(
                 mimeType.plus(
                     KEY_PREFERENCES_DEFAULT
-                ), null
+                ),
+                null
             )
             var result = false
             if (!classAndPackageRaw.isNullOrEmpty()) {
@@ -190,7 +195,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
          * Next time same mime type comes, this app will be shown on top of the list if present
          */
         fun setLastOpenedApp(
-            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable,
+            preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_LAST),
@@ -206,7 +212,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
          * Sets default app for mime type selected using 'Always' button from bottom sheet
          */
         private fun setDefaultOpenedApp(
-            appDataParcelable: AppDataParcelable, preferenceActivity: PreferenceActivity
+            appDataParcelable: AppDataParcelable,
+            preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
                 appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_DEFAULT),
@@ -238,7 +245,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
 
         private fun clearMimeTypePreference(
-            mimeType: String, sharedPreferences: SharedPreferences
+            mimeType: String,
+            sharedPreferences: SharedPreferences
         ) {
             sharedPreferences.edit().remove(mimeType.plus(KEY_PREFERENCES_DEFAULT)).apply()
         }
@@ -254,7 +262,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         fragmentOpenFileDialogBinding = FragmentOpenFileDialogBinding.inflate(inflater)
         initDialogResources(viewBinding.parent)
@@ -298,9 +308,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         ) ?: return
 
         adapter.setData(appDataParcelableList)
-        modelProvider.setItemList(appDataParcelableList.map { appDataParcelable ->
-            appDataParcelable.packageName
-        })
+        modelProvider.setItemList(
+            appDataParcelableList.map { appDataParcelable ->
+                appDataParcelable.packageName
+            }
+        )
         loadViews(lastAppData)
         viewBinding.appsListView.setOnScrollListener(preloader)
     }
@@ -370,7 +382,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     }
 
     private fun initLastAppData(
-        lastClassAndPackage: List<String>?, appDataParcelableList: ArrayList<AppDataParcelable>
+        lastClassAndPackage: List<String>?,
+        appDataParcelableList: ArrayList<AppDataParcelable>
     ): AppDataParcelable? {
         if (appDataParcelableList.size == 0) {
             AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))

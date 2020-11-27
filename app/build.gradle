@@ -1,5 +1,6 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
 apply plugin: 'com.hiya.jacoco-android'
 
 android {
@@ -119,10 +120,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "com.android.billingclient:billing:$androidBillingVersion"
-    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
-    annotationProcessor 'androidx.annotation:annotation:1.1.0'
+    kapt 'androidx.annotation:annotation:1.1.0'
 
     //For tests
     testImplementation "junit:junit:$junitVersion"//tests the app logic
@@ -210,7 +211,7 @@ dependencies {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
-    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
 
     implementation "com.leinardi.android:speed-dial:$fabSpeedDialVersion"
 
