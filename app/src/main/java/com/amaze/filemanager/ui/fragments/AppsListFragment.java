@@ -97,7 +97,7 @@ public class AppsListFragment extends ListFragment
           .getDecorView()
           .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
 
-    modelProvider = new AppsAdapterPreloadModel(app);
+    modelProvider = new AppsAdapterPreloadModel(app, false);
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     ListPreloader<String> preloader =
         new ListPreloader<>(

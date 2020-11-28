@@ -21,43 +21,14 @@
 package com.amaze.filemanager.adapters.data
 
 import android.net.Uri
-import android.os.Parcel
 import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
+@Parcelize
 class OpenFileParcelable(
     var uri: Uri?,
     var mimeType: String?,
     var useNewStack: Boolean?,
     var className: String?,
     var packageName: String?
-) : Parcelable {
-    constructor(parcel: Parcel) : this(
-        parcel.readParcelable(Uri::class.java.classLoader),
-        parcel.readString(),
-        parcel.readValue(Boolean::class.java.classLoader) as? Boolean,
-        parcel.readString(),
-        parcel.readString()
-    )
-
-    override fun writeToParcel(parcel: Parcel, flags: Int) {
-        parcel.writeParcelable(uri, flags)
-        parcel.writeString(mimeType)
-        parcel.writeValue(useNewStack)
-        parcel.writeString(className)
-        parcel.writeString(packageName)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-
-    companion object CREATOR : Parcelable.Creator<OpenFileParcelable> {
-        override fun createFromParcel(parcel: Parcel): OpenFileParcelable {
-            return OpenFileParcelable(parcel)
-        }
-
-        override fun newArray(size: Int): Array<OpenFileParcelable?> {
-            return arrayOfNulls(size)
-        }
-    }
-}
+) : Parcelable

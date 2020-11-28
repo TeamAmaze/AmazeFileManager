@@ -139,9 +139,9 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
       holder.txtDesc.setText(rowItem.openFileParcelable.getClassName());
       holder.txtDesc.setSingleLine(true);
       holder.txtDesc.setEllipsize(TextUtils.TruncateAt.MIDDLE);
-      modelProvider.loadApkImage(rowItem.packageName, holder.apkIcon, true, themedActivity);
+      modelProvider.loadApkImage(rowItem.packageName, holder.apkIcon);
     } else {
-      modelProvider.loadApkImage(rowItem.path, holder.apkIcon, false, themedActivity);
+      modelProvider.loadApkImage(rowItem.path, holder.apkIcon);
     }
 
     if (holder.about != null && !isBottomSheet) {

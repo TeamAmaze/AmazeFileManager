@@ -25,6 +25,7 @@ import java.util.List;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.GlideRequest;
+import com.amaze.filemanager.R;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -36,16 +37,21 @@ import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 15:38. */
 public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvider<String> {
 
+  private Context mContext;
   private GlideRequest<Drawable> request;
   private List<String> items;
+  private boolean isBottomSheet;
 
-  public AppsAdapterPreloadModel(Fragment f) {
+  public AppsAdapterPreloadModel(Fragment f, boolean isBottomSheet) {
     request = GlideApp.with(f).asDrawable().fitCenter();
+    this.mContext = f.requireContext();
+    this.isBottomSheet = isBottomSheet;
   }
 
   public void setItemList(List<String> items) {
@@ -62,19 +68,27 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
   @Nullable
   @Override
   public RequestBuilder getPreloadRequestBuilder(String item) {
-    return request.clone().load(item);
+    if (isBottomSheet) {
+      return request.clone().load(getApplicationIconFromPackageName(item));
+    } else {
+      return request.clone().load(item);
+    }
   }
 
-  public void loadApkImage(String item, ImageView v, boolean isBottomSheet, Context context) {
+  public void loadApkImage(String item, ImageView v) {
     if (isBottomSheet) {
-      try {
-        request.load(context.getPackageManager().getApplicationIcon(item)).into(v);
-      } catch (PackageManager.NameNotFoundException e) {
-        Log.w(getClass().getSimpleName(), e);
-        request.load("").into(v);
-      }
+      request.load(getApplicationIconFromPackageName(item)).into(v);
     } else {
       request.load(item).into(v);
+    }
+  }
+
+  private Drawable getApplicationIconFromPackageName(String packageName) {
+    try {
+      return mContext.getPackageManager().getApplicationIcon(packageName);
+    } catch (PackageManager.NameNotFoundException e) {
+      Log.w(getClass().getSimpleName(), e);
+      return ContextCompat.getDrawable(mContext, R.drawable.ic_broken_image_white_24dp);
     }
   }
 }

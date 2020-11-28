@@ -279,7 +279,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val modelProvider = AppsAdapterPreloadModel(this)
+        val modelProvider = AppsAdapterPreloadModel(this, true)
         val sizeProvider = ViewPreloadSizeProvider<String>()
         val preloader = ListPreloader(
             GlideApp.with(this), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER
