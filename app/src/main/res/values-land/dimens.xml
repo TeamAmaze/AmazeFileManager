@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="material_sheet_listview_height">150dp</dimen>
+</resources>

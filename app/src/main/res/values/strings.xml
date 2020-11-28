@@ -690,5 +690,10 @@
     <string name="cannot_delete_file_with_reason">Cannot delete file - %s </string>
     <string name="cannot_rename_file">Cannot rename file %s - %s</string>
     <string name="cannot_read_directory">Cannot read directory %s - %s</string>
+    <string name="just_once">Just Once</string>
+    <string name="always">Always</string>
+    <string name="choose_different_app">Choose different application</string>
+    <string name="clear_open_file">Clear cache</string>
+    <string name="clear_open_file_summary">Clears selected default file opening apps</string>
 </resources>
 

@@ -31,11 +31,13 @@ import java.util.List;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
@@ -79,7 +81,8 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     PreferencesConstants.FRAGMENT_QUICKACCESSES,
     PreferencesConstants.FRAGMENT_ADVANCED_SEARCH,
     PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
-    PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH
+    PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
+    PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE
   };
 
   private UtilitiesProvider utilsProvider;
@@ -179,6 +182,10 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     MaterialDialog.Builder builder;
 
     switch (preference.getKey()) {
+      case PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE:
+        OpenFileDialogFragment.Companion.clearPreferences(sharedPref);
+        AppConfig.toast(getActivity(), getActivity().getString(R.string.done));
+        return true;
       case PreferencesConstants.PREFERENCE_GRID_COLUMNS:
         sort = getResources().getStringArray(R.array.columns);
         builder = new MaterialDialog.Builder(getActivity());

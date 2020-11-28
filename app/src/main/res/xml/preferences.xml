@@ -68,6 +68,11 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/general">
+        <Preference
+            android:key="clear_open_file"
+            android:title="@string/clear_open_file"
+            android:summary="@string/clear_open_file_summary"
+            />
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="true"
             android:key="savepaths"

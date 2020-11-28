@@ -95,7 +95,8 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
               object.flags + "_" + (info != null ? info.versionName : ""),
               Formatter.formatFileSize(getContext(), sourceDir.length()),
               sourceDir.length(),
-              sourceDir.lastModified());
+              sourceDir.lastModified(),
+              null);
 
       mApps.first.add(elem);
 
