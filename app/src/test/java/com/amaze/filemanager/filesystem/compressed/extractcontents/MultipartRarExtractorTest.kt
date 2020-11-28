@@ -58,7 +58,6 @@ class MultipartRarExtractorTest {
      * Test setup.
      */
     @Before
-    @Throws(Exception::class)
     fun setUp() {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED)
         copyArchivesToStorage()
@@ -68,35 +67,14 @@ class MultipartRarExtractorTest {
      * Test extract a multipart RAR v4.
      */
     @Test
-    @Throws(Exception::class)
     fun testExtractMultiVolumeV4Rar() {
-        doTestExtractMultiVolumeV4Rar("test-multipart-archive-v4.part1.rar")
-    }
-
-    /**
-     * Test extract a multipart RAR v4 from part 2.
-     */
-    @Test
-    @Throws(Exception::class)
-    fun testExtractMultiVolumeV4RarFromPart2() {
-        doTestExtractMultiVolumeV4Rar("test-multipart-archive-v4.part2.rar")
-    }
-
-    /**
-     * Test extract a multipart RAR v4 from part 3.
-     */
-    @Test
-    @Throws(Exception::class)
-    fun testExtractMultiVolumeV4RarFromPart3() {
-        doTestExtractMultiVolumeV4Rar("test-multipart-archive-v4.part3.rar")
-    }
-
-    @Throws(Exception::class)
-    private fun doTestExtractMultiVolumeV4Rar(filename: String) {
         val latch = CountDownLatch(1)
         RarExtractor(
             ApplicationProvider.getApplicationContext(),
-            File(Environment.getExternalStorageDirectory(), filename).absolutePath,
+            File(
+                Environment.getExternalStorageDirectory(),
+                "test-multipart-archive-v4.part1.rar"
+            ).absolutePath,
             Environment.getExternalStorageDirectory().absolutePath,
             object : OnUpdate by callback {
                 override fun onFinish() {

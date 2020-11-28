@@ -26,7 +26,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.amaze.filemanager.asynchronous.asynctasks.compress.RarHelperTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -54,7 +53,7 @@ public class RarExtractor extends Extractor {
   protected void extractWithFilter(@NonNull Filter filter) throws IOException {
     try {
       long totalBytes = 0;
-      Archive rarFile = RarHelperTask.getArchive(filePath);
+      Archive rarFile = new Archive(new File(filePath));
       ArrayList<FileHeader> arrayList = new ArrayList<>();
 
       // iterating archive elements to find file names that are to be extracted

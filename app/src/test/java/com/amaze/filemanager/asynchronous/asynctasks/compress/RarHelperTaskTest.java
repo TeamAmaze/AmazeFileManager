@@ -39,60 +39,13 @@ import android.os.Environment;
 public class RarHelperTaskTest extends AbstractCompressedHelperTaskTest {
 
   @Test
-  public void testGuessFirstPartOfRar() {
-
-    assertEquals(
-        new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part01.rar")
-            .getAbsolutePath(),
-        RarHelperTask.guessFirstPartOfRar(
-            new File(
-                    Environment.getExternalStorageDirectory(),
-                    "test-multipart-archive-v4.part01.rar")
-                .getAbsolutePath()));
-
-    assertEquals(
-        new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part1.rar")
-            .getAbsolutePath(),
-        RarHelperTask.guessFirstPartOfRar(
-            new File(
-                    Environment.getExternalStorageDirectory(),
-                    "test-multipart-archive-v4.part2.rar")
-                .getAbsolutePath()));
-
-    assertEquals(
-        new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part001.rar")
-            .getAbsolutePath(),
-        RarHelperTask.guessFirstPartOfRar(
-            new File(
-                    Environment.getExternalStorageDirectory(),
-                    "test-multipart-archive-v4.part002.rar")
-                .getAbsolutePath()));
-
-    assertEquals(
-        new File(
-                Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part0001.rar")
-            .getAbsolutePath(),
-        RarHelperTask.guessFirstPartOfRar(
-            new File(
-                    Environment.getExternalStorageDirectory(),
-                    "test-multipart-archive-v4.part0342.rar")
-                .getAbsolutePath()));
-  }
-
-  @Test
   public void testMultiVolumeRar() {
-    doTestMultiVolumeRar("test-multipart-archive-v4.part1.rar");
-  }
-
-  @Test
-  public void testMultiVolumeRarFromPart2() {
-    doTestMultiVolumeRar("test-multipart-archive-v4.part2.rar");
-  }
-
-  private void doTestMultiVolumeRar(String filename) {
     CompressedHelperTask task =
         new RarHelperTask(
-            new File(Environment.getExternalStorageDirectory(), filename).getAbsolutePath(),
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part1.rar")
+                .getAbsolutePath(),
             "",
             false,
             data -> {});
