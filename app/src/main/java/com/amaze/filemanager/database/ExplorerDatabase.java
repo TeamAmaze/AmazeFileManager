@@ -75,6 +75,161 @@ public abstract class ExplorerDatabase extends RoomDatabase {
 
   private static final String TEMP_TABLE_PREFIX = "temp_";
 
+  // 1->2: add encrypted table
+  private static final Migration MIGRATION_1_2 =
+          new Migration(1,2) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
+              String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
+                      + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                      + COLUMN_PATH + " TEXT,"
+                      + COLUMN_HOME + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+                      + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                      + COLUMN_ENCRYPTED_PATH + " TEXT,"
+                      + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                      + ")";
+              database.execSQL(CREATE_TAB_TABLE);
+              database.execSQL(CREATE_TABLE_ENCRYPTED);
+            }
+          };
+
+  // 2->3: add cloud table
+  private static final Migration MIGRATION_2_3 =
+          new Migration(2,3) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_CLOUD_PERSIST);
+
+              String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
+                      + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                      + COLUMN_PATH + " TEXT,"
+                      + COLUMN_HOME + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+                      + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                      + COLUMN_ENCRYPTED_PATH + " TEXT,"
+                      + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_CLOUD = "CREATE TABLE " + TABLE_CLOUD_PERSIST + "("
+                      + COLUMN_CLOUD_ID
+                      + " INTEGER PRIMARY KEY,"
+                      + COLUMN_CLOUD_SERVICE + " INTEGER,"
+                      + COLUMN_CLOUD_PERSIST + " TEXT" + ")";
+
+              database.execSQL(CREATE_TAB_TABLE);
+              database.execSQL(CREATE_TABLE_ENCRYPTED);
+              database.execSQL(CREATE_TABLE_CLOUD);
+            }
+          };
+
+  // 3->4: nada
+  private static final Migration MIGRATION_3_4 =
+          new Migration(3, 4) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_CLOUD_PERSIST);
+
+              String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
+                      + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                      + COLUMN_PATH + " TEXT,"
+                      + COLUMN_HOME + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+                      + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                      + COLUMN_ENCRYPTED_PATH + " TEXT,"
+                      + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_CLOUD = "CREATE TABLE " + TABLE_CLOUD_PERSIST + "("
+                      + COLUMN_CLOUD_ID
+                      + " INTEGER PRIMARY KEY,"
+                      + COLUMN_CLOUD_SERVICE + " INTEGER,"
+                      + COLUMN_CLOUD_PERSIST + " TEXT" + ")";
+
+              database.execSQL(CREATE_TAB_TABLE);
+              database.execSQL(CREATE_TABLE_ENCRYPTED);
+              database.execSQL(CREATE_TABLE_CLOUD);
+            }
+          };
+
+  // 4->5: nada
+  private static final Migration MIGRATION_4_5 =
+          new Migration(4, 5) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_CLOUD_PERSIST);
+
+              String CREATE_TAB_TABLE = "CREATE TABLE " + TABLE_TAB + "("
+                      + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                      + COLUMN_PATH + " TEXT,"
+                      + COLUMN_HOME + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_ENCRYPTED = "CREATE TABLE " + TABLE_ENCRYPTED + "("
+                      + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                      + COLUMN_ENCRYPTED_PATH + " TEXT,"
+                      + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                      + ")";
+
+              String CREATE_TABLE_CLOUD = "CREATE TABLE " + TABLE_CLOUD_PERSIST + "("
+                      + COLUMN_CLOUD_ID
+                      + " INTEGER PRIMARY KEY,"
+                      + COLUMN_CLOUD_SERVICE + " INTEGER,"
+                      + COLUMN_CLOUD_PERSIST + " TEXT" + ")";
+
+              database.execSQL(CREATE_TAB_TABLE);
+              database.execSQL(CREATE_TABLE_ENCRYPTED);
+              database.execSQL(CREATE_TABLE_CLOUD);
+            }
+          };
+
+  // 5->6: add sort table
+  private static final Migration MIGRATION_5_6 =
+          new Migration(5, 6) {
+            @Override
+            public void migrate(@NonNull SupportSQLiteDatabase database) {
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_TAB);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_ENCRYPTED);
+              database.execSQL("DROP TABLE IF EXISTS " + TABLE_CLOUD_PERSIST);
+
+              database.execSQL("CREATE TABLE " + TABLE_TAB + "("
+                      + COLUMN_TAB_NO + " INTEGER PRIMARY KEY,"
+                      + COLUMN_PATH + " TEXT,"
+                      + COLUMN_HOME + " TEXT" +
+                      ")");
+
+              database.execSQL("CREATE TABLE " + TABLE_ENCRYPTED + "("
+                      + COLUMN_ENCRYPTED_ID + " INTEGER PRIMARY KEY,"
+                      + COLUMN_ENCRYPTED_PATH + " TEXT,"
+                      + COLUMN_ENCRYPTED_PASSWORD + " TEXT"
+                      + ")");
+
+              database.execSQL("CREATE TABLE " + TABLE_CLOUD_PERSIST +"("
+                      + COLUMN_CLOUD_ID + " INTEGER PRIMARY KEY,"
+                      + COLUMN_CLOUD_SERVICE + " INTEGER,"
+                      + COLUMN_CLOUD_PERSIST + " TEXT" + ")");
+
+              database.execSQL("CREATE TABLE "+ TABLE_SORT + "("
+                      + COLUMN_SORT_PATH + " TEXT PRIMARY KEY,"
+                      + COLUMN_SORT_TYPE + " INTEGER"
+                      + ")");
+            }
+          };
+
   private static final Migration MIGRATION_6_7 =
       new Migration(6, DATABASE_VERSION) {
         @Override
@@ -173,6 +328,11 @@ public abstract class ExplorerDatabase extends RoomDatabase {
 
   public static synchronized ExplorerDatabase initialize(@NonNull Context context) {
     return Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME)
+        .addMigrations(MIGRATION_1_2)
+        .addMigrations(MIGRATION_2_3)
+        .addMigrations(MIGRATION_3_4)
+        .addMigrations(MIGRATION_4_5)
+        .addMigrations(MIGRATION_5_6)
         .addMigrations(MIGRATION_6_7)
         .allowMainThreadQueries()
         .build();
