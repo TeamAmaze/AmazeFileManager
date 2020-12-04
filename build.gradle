@@ -32,10 +32,9 @@ allprojects {
         mavenCentral()
     }
     tasks.withType(Test) {
-        maxParallelForks = 4
+        maxParallelForks = 2
         maxHeapSize = "4g"
-        forkEvery = 4
-    }
+        forkEvery = 2   }
 }
 
 spotless {

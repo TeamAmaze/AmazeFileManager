@@ -75,6 +75,9 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
     mApps = new AppsDataPair(new ArrayList<>(apps.size()), new ArrayList<>(apps.size()));
 
     for (ApplicationInfo object : apps) {
+      if (object.sourceDir == null) {
+        continue;
+      }
       File sourceDir = new File(object.sourceDir);
 
       String label = object.loadLabel(packageManager).toString();
