@@ -85,7 +85,7 @@ public class FtpServerFragment extends Fragment {
 
   private AppCompatEditText usernameEditText, passwordEditText;
   private TextInputLayout usernameTextInput, passwordTextInput;
-  private AppCompatCheckBox mAnonymousCheckBox, mSecureCheckBox;
+  private AppCompatCheckBox anonymousCheckBox, secureCheckBox, readonlyCheckBox;
   private Button ftpBtn;
   private int accentColor;
   private Spanned spannedStatusNoConnection, spannedStatusConnected, spannedStatusUrl;
@@ -234,7 +234,7 @@ public class FtpServerFragment extends Fragment {
 
         loginDialogBuilder.onPositive(
             (dialog, which) -> {
-              if (mAnonymousCheckBox.isChecked()) {
+              if (anonymousCheckBox.isChecked()) {
 
                 // remove preferences
                 setFTPUsername("");
@@ -253,9 +253,8 @@ public class FtpServerFragment extends Fragment {
                 }
               }
 
-              if (mSecureCheckBox.isChecked()) {
-                setSecurePreference(true);
-              } else setSecurePreference(false);
+              setSecurePreference(secureCheckBox.isChecked());
+              setReadonlyPreference(readonlyCheckBox.isChecked());
             });
 
         loginDialogBuilder
@@ -526,10 +525,11 @@ public class FtpServerFragment extends Fragment {
     passwordEditText = loginDialogView.findViewById(R.id.edit_text_dialog_ftp_password);
     usernameTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_username);
     passwordTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_password);
-    mAnonymousCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
-    mSecureCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_secure);
+    anonymousCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
+    secureCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_secure);
+    readonlyCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_readonly);
 
-    mAnonymousCheckBox.setOnCheckedChangeListener(
+    anonymousCheckBox.setOnCheckedChangeListener(
         (buttonView, isChecked) -> {
           if (isChecked) {
             usernameEditText.setEnabled(false);
@@ -542,16 +542,15 @@ public class FtpServerFragment extends Fragment {
 
     // init dialog views as per preferences
     if (getUsernameFromPreferences().equals(FtpService.DEFAULT_USERNAME)) {
-      mAnonymousCheckBox.setChecked(true);
+      anonymousCheckBox.setChecked(true);
     } else {
 
       usernameEditText.setText(getUsernameFromPreferences());
       passwordEditText.setText(getPasswordFromPreferences());
     }
 
-    if (getSecurePreference()) {
-      mSecureCheckBox.setChecked(true);
-    } else mSecureCheckBox.setChecked(false);
+    secureCheckBox.setChecked(getSecurePreference());
+    readonlyCheckBox.setChecked(getReadonlyPreference());
   }
 
   /** @return address at which server is running */
@@ -671,6 +670,18 @@ public class FtpServerFragment extends Fragment {
         .getPrefs()
         .edit()
         .putBoolean(FtpService.KEY_PREFERENCE_SECURE, isSecureEnabled)
+        .apply();
+  }
+
+  private boolean getReadonlyPreference() {
+    return getMainActivity().getPrefs().getBoolean(FtpService.KEY_PREFERENCE_READONLY, false);
+  }
+
+  private void setReadonlyPreference(boolean isReadonly) {
+    getMainActivity()
+        .getPrefs()
+        .edit()
+        .putBoolean(FtpService.KEY_PREFERENCE_READONLY, isReadonly)
         .apply();
   }
 

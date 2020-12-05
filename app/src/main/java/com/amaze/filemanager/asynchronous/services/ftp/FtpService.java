@@ -34,10 +34,8 @@ import java.net.SocketException;
 import java.net.UnknownHostException;
 import java.security.GeneralSecurityException;
 import java.security.KeyStore;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.List;
 
 import javax.net.ssl.KeyManagerFactory;
 import javax.net.ssl.TrustManagerFactory;
@@ -45,7 +43,6 @@ import javax.net.ssl.TrustManagerFactory;
 import org.apache.ftpserver.ConnectionConfigFactory;
 import org.apache.ftpserver.FtpServer;
 import org.apache.ftpserver.FtpServerFactory;
-import org.apache.ftpserver.ftplet.Authority;
 import org.apache.ftpserver.ftplet.FtpException;
 import org.apache.ftpserver.listener.ListenerFactory;
 import org.apache.ftpserver.ssl.ClientAuth;
@@ -90,6 +87,7 @@ public class FtpService extends Service implements Runnable {
   public static final String KEY_PREFERENCE_PASSWORD = "ftp_password_encrypted";
   public static final String KEY_PREFERENCE_TIMEOUT = "ftp_timeout";
   public static final String KEY_PREFERENCE_SECURE = "ftp_secure";
+  public static final String KEY_PREFERENCE_READONLY = "ftp_readonly";
   public static final String DEFAULT_PATH =
       Environment.getExternalStorageDirectory().getAbsolutePath();
   public static final String INITIALS_HOST_FTP = "ftp://";
@@ -197,9 +195,9 @@ public class FtpService extends Service implements Runnable {
     }
 
     user.setHomeDirectory(preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH));
-    List<Authority> list = new ArrayList<>();
-    list.add(new WritePermission());
-    user.setAuthorities(list);
+    if (!preferences.getBoolean(KEY_PREFERENCE_READONLY, false)) {
+      user.setAuthorities(Collections.singletonList(new WritePermission()));
+    }
     try {
       serverFactory.getUserManager().save(user);
     } catch (FtpException e) {

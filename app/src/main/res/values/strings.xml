@@ -695,5 +695,6 @@
     <string name="choose_different_app">Choose different application</string>
     <string name="clear_open_file">Clear cache</string>
     <string name="clear_open_file_summary">Clears selected default file opening apps</string>
+    <string name="ftp_readonly">Read-only access</string>
 </resources>
 
