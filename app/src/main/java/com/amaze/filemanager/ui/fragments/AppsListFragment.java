@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
@@ -31,18 +32,14 @@ import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
-import com.bumptech.glide.Glide;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
@@ -100,22 +97,25 @@ public class AppsListFragment extends ListFragment
           .getDecorView()
           .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
 
-    modelProvider = new AppsAdapterPreloadModel(app);
+    modelProvider = new AppsAdapterPreloadModel(app, false);
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     ListPreloader<String> preloader =
         new ListPreloader<>(
-            Glide.with(app), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER);
+            GlideApp.with(app),
+            modelProvider,
+            sizeProvider,
+            GlideConstants.MAX_PRELOAD_APPSADAPTER);
 
     adapter =
         new AppsAdapter(
-            getContext(),
+            this,
             (ThemedActivity) getActivity(),
             utilsProvider,
             modelProvider,
             sizeProvider,
             R.layout.rowlayout,
-            app,
-            Sp);
+            Sp,
+            false);
 
     getListView().setOnScrollListener(preloader);
     setListAdapter(adapter);
@@ -140,19 +140,6 @@ public class AppsListFragment extends ListFragment
       b.putInt(KEY_INDEX, index);
       b.putInt(KEY_TOP, top);
     }
-  }
-
-  public boolean unin(String pkg) {
-    try {
-      Intent intent = new Intent(Intent.ACTION_DELETE);
-      intent.setData(Uri.parse("package:" + pkg));
-      startActivity(intent);
-    } catch (Exception e) {
-      Toast.makeText(getActivity(), "" + e, Toast.LENGTH_SHORT).show();
-      e.printStackTrace();
-      return false;
-    }
-    return true;
   }
 
   /**

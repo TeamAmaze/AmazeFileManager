@@ -21,6 +21,8 @@
 package com.amaze.filemanager.utils;
 
 /** Created by arpitkh996 on 16-01-2016. */
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
@@ -179,7 +181,7 @@ public class SubnetScanner extends AsyncTask<Void, ComputerParcelable, Void> {
           public void run() {
             for (int i = 0; i < SubnetScanner.RETRY_COUNT; i++) {
               try {
-                SmbFile smbFile = new SmbFile("smb://");
+                SmbFile smbFile = SmbUtil.create(SMB_URI_PREFIX);
                 smbFile.setConnectTimeout(5000);
                 SmbFile[] listFiles = smbFile.listFiles();
                 for (SmbFile smbFile2 : listFiles) {

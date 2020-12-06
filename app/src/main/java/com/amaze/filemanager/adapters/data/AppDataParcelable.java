@@ -30,6 +30,7 @@ public final class AppDataParcelable implements Parcelable {
 
   public final String label, path, packageName, data, fileSize;
   public final long size, lastModification;
+  public final OpenFileParcelable openFileParcelable;
 
   public AppDataParcelable(
       String label,
@@ -38,7 +39,8 @@ public final class AppDataParcelable implements Parcelable {
       String data,
       String fileSize,
       long size,
-      long lastModification) {
+      long lastModification,
+      OpenFileParcelable openFileParcelable) {
     this.label = label;
     this.path = path;
     this.packageName = packageName;
@@ -46,6 +48,7 @@ public final class AppDataParcelable implements Parcelable {
     this.fileSize = fileSize;
     this.size = size;
     this.lastModification = lastModification;
+    this.openFileParcelable = openFileParcelable;
   }
 
   @Override
@@ -62,6 +65,7 @@ public final class AppDataParcelable implements Parcelable {
     parcel.writeString(fileSize);
     parcel.writeLong(size);
     parcel.writeLong(lastModification);
+    parcel.writeParcelable(openFileParcelable, i);
   }
 
   private AppDataParcelable(Parcel in) {
@@ -72,6 +76,7 @@ public final class AppDataParcelable implements Parcelable {
     this.fileSize = in.readString();
     this.size = in.readLong();
     this.lastModification = in.readLong();
+    this.openFileParcelable = in.readParcelable(OpenFileParcelable.class.getClassLoader());
   }
 
   public static final Creator<AppDataParcelable> CREATOR =

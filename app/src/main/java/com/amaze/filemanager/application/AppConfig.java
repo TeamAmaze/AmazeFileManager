@@ -22,6 +22,17 @@ package com.amaze.filemanager.application;
 
 import java.lang.ref.WeakReference;
 
+import org.acra.ACRA;
+import org.acra.annotation.AcraCore;
+import org.acra.config.ACRAConfigurationException;
+import org.acra.config.CoreConfiguration;
+import org.acra.config.CoreConfigurationBuilder;
+import org.acra.data.StringFormat;
+
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.crashreport.AcraReportSenderFactory;
+import com.amaze.filemanager.crashreport.ErrorActivity;
 import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -49,6 +60,9 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.Config;
 
+@AcraCore(
+    buildConfigClass = BuildConfig.class,
+    reportSenderFactoryClasses = AcraReportSenderFactory.class)
 public class AppConfig extends GlideApplication {
 
   public static final String TAG = AppConfig.class.getSimpleName();
@@ -90,6 +104,12 @@ public class AppConfig extends GlideApplication {
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
+  }
+
+  @Override
+  protected void attachBaseContext(Context base) {
+    super.attachBaseContext(base);
+    initACRA();
   }
 
   @Override
@@ -202,5 +222,36 @@ public class AppConfig extends GlideApplication {
 
   public UtilitiesDatabase getUtilitiesDatabase() {
     return utilitiesDatabase;
+  }
+
+  /**
+   * Called in {@link #attachBaseContext(Context)} after calling the {@code super} method. Should be
+   * overridden if MultiDex is enabled, since it has to be initialized before ACRA.
+   */
+  protected void initACRA() {
+    if (ACRA.isACRASenderServiceProcess()) {
+      return;
+    }
+
+    try {
+      final CoreConfiguration acraConfig =
+          new CoreConfigurationBuilder(this)
+              .setBuildConfigClass(BuildConfig.class)
+              .setReportFormat(StringFormat.JSON)
+              .setSendReportsInDevMode(true)
+              .setEnabled(true)
+              .build();
+      ACRA.init(this, acraConfig);
+    } catch (final ACRAConfigurationException ace) {
+      ace.printStackTrace();
+      ErrorActivity.reportError(
+          this,
+          ace,
+          null,
+          ErrorActivity.ErrorInfo.make(
+              ErrorActivity.ERROR_UNKNOWN,
+              "Could not initialize ACRA crash report",
+              R.string.app_ui_crash));
+    }
   }
 }

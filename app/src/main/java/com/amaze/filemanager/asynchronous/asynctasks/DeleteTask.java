@@ -20,9 +20,13 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_FAILED_OPS;
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_GENERAL;
+
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -36,7 +40,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.app.NotificationManager;
@@ -49,24 +52,28 @@ import android.preference.PreferenceManager;
 import android.provider.MediaStore;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
 
-public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, String, Boolean> {
+import jcifs.smb.SmbException;
+
+public class DeleteTask
+    extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
 
   private ArrayList<HybridFileParcelable> files;
-  private Context cd;
-  private boolean rootMode;
+  private final Context cd;
+  private final boolean rootMode;
   private CompressedExplorerFragment compressedExplorerFragment;
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private final DataUtils dataUtils = DataUtils.getInstance();
 
-  public DeleteTask(Context cd) {
+  public DeleteTask(@NonNull Context cd) {
     this.cd = cd;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(cd)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
   }
 
-  public DeleteTask(Context cd, CompressedExplorerFragment compressedExplorerFragment) {
+  public DeleteTask(@NonNull Context cd, CompressedExplorerFragment compressedExplorerFragment) {
     this.cd = cd;
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(cd)
@@ -80,111 +87,57 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
     Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
   }
 
-  protected Boolean doInBackground(ArrayList<HybridFileParcelable>... p1) {
+  @Override
+  @SafeVarargs
+  protected final AsyncTaskResult<Boolean> doInBackground(
+      final ArrayList<HybridFileParcelable>... p1) {
     files = p1[0];
     boolean wasDeleted = true;
-    if (files.size() == 0) return true;
+    if (files.size() == 0) return new AsyncTaskResult<>(true);
 
-    if (files.get(0).isOtgFile()) {
-      for (HybridFileParcelable file : files) {
-        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
-        wasDeleted = documentFile.delete();
-      }
-    } else if (files.get(0).isDropBoxFile()) {
-      CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageDropbox.delete(CloudUtil.stripPath(OpenMode.DROPBOX, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else if (files.get(0).isBoxFile()) {
-      CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageBox.delete(CloudUtil.stripPath(OpenMode.BOX, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else if (files.get(0).isGoogleDriveFile()) {
-      CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageGdrive.delete(CloudUtil.stripPath(OpenMode.GDRIVE, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else if (files.get(0).isOneDriveFile()) {
-      CloudStorage cloudStorageOnedrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-      for (HybridFileParcelable baseFile : files) {
-        try {
-          cloudStorageOnedrive.delete(CloudUtil.stripPath(OpenMode.ONEDRIVE, baseFile.getPath()));
-        } catch (Exception e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    } else {
-      for (HybridFileParcelable file : files) {
-        try {
-          if (file.delete(cd, rootMode)) {
-            wasDeleted = true;
-          } else {
-            wasDeleted = false;
-            break;
-          }
-        } catch (ShellNotRunningException e) {
-          e.printStackTrace();
-          wasDeleted = false;
-          break;
-        }
-      }
-    }
-
-    // delete file from media database
-    if (!files.get(0).isSmb()) {
-      try {
-        for (HybridFileParcelable f : files) {
-          delete(cd, f.getPath());
-        }
-      } catch (Exception e) {
-        FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
-      }
-    }
-
-    // delete file entry from encrypted database
     for (HybridFileParcelable file : files) {
+      try {
+        wasDeleted = doDeleteFile(file);
+        if (!wasDeleted) break;
+      } catch (Exception e) {
+        return new AsyncTaskResult<>(e);
+      }
+
+      // delete file from media database
+      if (!file.isSmb()) {
+        try {
+          deleteFromMediaDatabase(cd, file.getPath());
+        } catch (Exception e) {
+          FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
+        }
+      }
+
+      // delete file entry from encrypted database
       if (file.getName(cd).endsWith(CryptUtil.CRYPT_EXTENSION)) {
         CryptHandler handler = CryptHandler.getInstance();
         handler.clear(file.getPath());
       }
     }
 
-    return wasDeleted;
+    return new AsyncTaskResult<>(wasDeleted);
   }
 
   @Override
-  public void onPostExecute(Boolean wasDeleted) {
+  public void onPostExecute(AsyncTaskResult<Boolean> result) {
 
     Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-    String path = files.get(0).getParent(cd);
-    intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
-    cd.sendBroadcast(intent);
+    if (files.size() > 0) {
+      String path = files.get(0).getParent(cd);
+      intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
+      cd.sendBroadcast(intent);
+    }
 
-    if (!wasDeleted) {
-      Toast.makeText(cd, cd.getResources().getString(R.string.error), Toast.LENGTH_SHORT).show();
+    if (result.result == null || !result.result) {
+      cd.sendBroadcast(
+          new Intent(TAG_INTENT_FILTER_GENERAL)
+              .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, files));
     } else if (compressedExplorerFragment == null) {
-      Toast.makeText(cd, cd.getResources().getString(R.string.done), Toast.LENGTH_SHORT).show();
+      AppConfig.toast(cd, R.string.done);
     }
 
     if (compressedExplorerFragment != null) {
@@ -197,7 +150,34 @@ public class DeleteTask extends AsyncTask<ArrayList<HybridFileParcelable>, Strin
     notificationManager.cancel(NotificationConstants.COPY_ID);
   }
 
-  private void delete(final Context context, final String file) {
+  private boolean doDeleteFile(@NonNull HybridFileParcelable file) throws Exception {
+    switch (file.getMode()) {
+      case OTG:
+        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
+        return documentFile.delete();
+      case DROPBOX:
+      case BOX:
+      case GDRIVE:
+      case ONEDRIVE:
+        CloudStorage cloudStorage = dataUtils.getAccount(file.getMode());
+        try {
+          cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
+          return true;
+        } catch (Exception e) {
+          e.printStackTrace();
+          return false;
+        }
+      default:
+        try {
+          return (file.delete(cd, rootMode));
+        } catch (ShellNotRunningException | SmbException e) {
+          e.printStackTrace();
+          throw e;
+        }
+    }
+  }
+
+  private void deleteFromMediaDatabase(final Context context, final String file) {
     final String where = MediaStore.MediaColumns.DATA + "=?";
     final String[] selectionArgs = new String[] {file};
     final ContentResolver contentResolver = context.getContentResolver();

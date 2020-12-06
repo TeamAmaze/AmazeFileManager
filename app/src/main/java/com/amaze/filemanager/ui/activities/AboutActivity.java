@@ -36,6 +36,7 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.util.Log;
@@ -126,6 +127,9 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                       Utils.getColor(AboutActivity.this, R.color.primary_blue));
               mCollapsingToolbarLayout.setContentScrimColor(mutedColor);
               mCollapsingToolbarLayout.setStatusBarScrimColor(darkMutedColor);
+              if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                getWindow().setStatusBarColor(darkMutedColor);
+              }
             });
 
     mAppBarLayout.addOnOffsetChangedListener(

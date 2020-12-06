@@ -21,12 +21,19 @@
 package com.amaze.filemanager.utils;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.smb.CifsContextFactory;
 
 import android.content.Context;
+import android.net.Uri;
 import android.text.TextUtils;
+
+import jcifs.context.SingletonContext;
+import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbFile;
 
 /**
  * Created by Vishal on 30-05-2017.
@@ -34,6 +41,8 @@ import android.text.TextUtils;
  * <p>Class provides various utility methods for SMB client
  */
 public class SmbUtil {
+
+  public static final String PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck";
 
   /** Parse path to decrypt smb password */
   public static String getSmbDecryptedPath(Context context, String path)
@@ -52,7 +61,7 @@ public class SmbUtil {
       String decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
       buffer.append(decryptedPassword);
     }
-    buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
+    buffer.append(path.substring(path.lastIndexOf("@")));
 
     return buffer.toString();
   }
@@ -73,8 +82,19 @@ public class SmbUtil {
       String encryptPassword = CryptUtil.encryptPassword(context, decryptedPassword);
       buffer.append(encryptPassword);
     }
-    buffer.append(path.substring(path.lastIndexOf("@"), path.length()));
+    buffer.append(path.substring(path.lastIndexOf("@")));
 
     return buffer.toString();
+  }
+
+  public static SmbFile create(String path) throws MalformedURLException {
+    Uri uri = Uri.parse(path);
+    boolean disableIpcSigningCheck =
+        Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
+    return new SmbFile(
+        path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
+        CifsContextFactory.createWithDisableIpcSigningCheck(disableIpcSigningCheck)
+            .withCredentials(
+                new NtlmPasswordAuthentication(SingletonContext.getInstance(), uri.getUserInfo())));
   }
 }

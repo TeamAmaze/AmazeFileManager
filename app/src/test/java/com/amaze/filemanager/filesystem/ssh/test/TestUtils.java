@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.ssh.test;
 
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static org.robolectric.Shadows.shadowOf;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.KeyPair;
@@ -34,6 +37,8 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+
+import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -77,7 +82,7 @@ public abstract class TestUtils {
       privateKeyContents = writer.toString();
     }
 
-    StringBuilder fullUri = new StringBuilder().append("ssh://").append(validUsername);
+    StringBuilder fullUri = new StringBuilder().append(SSH_URI_PREFIX).append(validUsername);
 
     if (validPassword != null) fullUri.append(':').append(validPassword);
 
@@ -101,5 +106,7 @@ public abstract class TestUtils {
               SecurityUtils.getFingerprint(hostKeyPair.getPublic()),
               "id_rsa",
               privateKeyContents));
+
+    shadowOf(Looper.getMainLooper()).idle();
   }
 }

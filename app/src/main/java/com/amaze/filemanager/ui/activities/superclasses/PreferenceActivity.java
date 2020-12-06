@@ -40,6 +40,9 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_USE_CIRCULAR_IMAGES;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.utils.PreferenceUtils;
+
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -62,6 +65,11 @@ public class PreferenceActivity extends BasicActivity {
 
   public boolean isRootExplorer() {
     return getBoolean(PREFERENCE_ROOTMODE);
+  }
+
+  public int getCurrentTab() {
+    return getPrefs()
+        .getInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, PreferenceUtils.DEFAULT_CURRENT_TAB);
   }
 
   public boolean getBoolean(String key) {

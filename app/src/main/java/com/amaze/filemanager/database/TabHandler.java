@@ -30,6 +30,8 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.reactivex.Completable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
 
 /** Created by Vishal on 9/17/2014. */
@@ -50,16 +52,20 @@ public class TabHandler {
     return TabHandlerHolder.INSTANCE;
   }
 
-  public void addTab(@NonNull Tab tab) {
-    database.tabDao().insertTab(tab).subscribeOn(Schedulers.io()).subscribe();
+  public Completable addTab(@NonNull Tab tab) {
+    return database.tabDao().insertTab(tab).subscribeOn(Schedulers.io());
   }
 
   public void update(Tab tab) {
     database.tabDao().update(tab);
   }
 
-  public void clear() {
-    database.tabDao().clear().subscribeOn(Schedulers.io()).subscribe();
+  public Completable clear() {
+    return database
+        .tabDao()
+        .clear()
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread());
   }
 
   @Nullable

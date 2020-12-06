@@ -20,44 +20,26 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.fragments.DbViewerFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.RootUtils;
-import com.amaze.filemanager.utils.Utils;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import android.app.ActivityManager;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ArrayAdapter;
-import android.widget.FrameLayout;
 import android.widget.ListView;
 
-import androidx.annotation.ColorInt;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
 /** Created by Vishal on 02-02-2015. */
@@ -78,59 +60,12 @@ public class DatabaseViewerActivity extends ThemedActivity {
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-
-    if (getAppTheme().equals(AppTheme.DARK)) {
-      setTheme(R.style.appCompatDark);
-      getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-    } else if (getAppTheme().equals(AppTheme.BLACK)) {
-      setTheme(R.style.appCompatBlack);
-      getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
-    }
     setContentView(R.layout.activity_db_viewer);
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    @ColorInt
-    int primaryColor =
-        ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
-
-    if (SDK_INT >= 21) {
-      ActivityManager.TaskDescription taskDescription =
-          new ActivityManager.TaskDescription(
-              "Amaze",
-              ((BitmapDrawable) ContextCompat.getDrawable(this, R.mipmap.ic_launcher)).getBitmap(),
-              primaryColor);
-      setTaskDescription(taskDescription);
-    }
-
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
-
-    boolean useNewStack =
-        sharedPref.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-
+    boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
     getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
-
-    if (SDK_INT == 20 || SDK_INT == 19) {
-      SystemBarTintManager tintManager = new SystemBarTintManager(this);
-      tintManager.setStatusBarTintEnabled(true);
-      tintManager.setStatusBarTintColor(
-          ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab));
-      FrameLayout.MarginLayoutParams p =
-          (ViewGroup.MarginLayoutParams) findViewById(R.id.parentdb).getLayoutParams();
-      SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-      p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-    } else if (SDK_INT >= 21) {
-      Window window = getWindow();
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-      window.setStatusBarColor(PreferenceUtils.getStatusColor(primaryColor));
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
-        window.setNavigationBarColor(PreferenceUtils.getStatusColor(primaryColor));
-    }
 
     path = getIntent().getStringExtra("path");
     pathFile = new File(path);
@@ -148,6 +83,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
           fragmentTransaction.addToBackStack(null);
           fragmentTransaction.commit();
         });
+    initStatusBarResources(findViewById(R.id.parentdb));
   }
 
   private ArrayList<String> getDbTableNames(Cursor c) {
@@ -170,7 +106,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
               if (!file.canRead() && isRootExplorer()) {
 
                 try {
-                  RootUtils.copy(
+                  CopyFilesCommand.INSTANCE.copyFiles(
                       pathFile.getPath(), new File(file1.getPath(), file.getName()).getPath());
                   pathFile = new File(file1.getPath(), file.getName());
                 } catch (ShellNotRunningException e) {

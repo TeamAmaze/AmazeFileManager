@@ -1,9 +1,11 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
-apply plugin: 'jacoco-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.hiya.jacoco-android'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     dexOptions {
         jumboMode = true
@@ -24,9 +26,9 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 89
-        versionName "3.5.0"
+        targetSdkVersion 29
+        versionCode 90
+        versionName "3.5.1"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
@@ -52,6 +54,14 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
         }
+    }
+
+    buildFeatures {
+        viewBinding true
+    }
+
+    androidExtensions {
+        features = ["parcelize"]
     }
 
     lintOptions {
@@ -95,7 +105,8 @@ ext {
     roomVersion = '2.2.5'
     bouncyCastleVersion = '1.65'
     awaitilityVersion = "3.1.6"
-    androidXTestVersion = "1.2.0"
+    androidXTestVersion = "1.3.0"
+    androidXTestExtVersion = "1.1.2"
     junitVersion = "4.13"
     slf4jVersion = "1.7.25"
     mockitoVersion = "3.4.4"
@@ -114,10 +125,10 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "com.android.billingclient:billing:$androidBillingVersion"
-    annotationProcessor "androidx.room:room-compiler:$roomVersion"
+    kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
-    annotationProcessor 'androidx.annotation:annotation:1.1.0'
+    kapt 'androidx.annotation:annotation:1.1.0'
 
     //For tests
     testImplementation "junit:junit:$junitVersion"//tests the app logic
@@ -126,9 +137,10 @@ dependencies {
     testImplementation "androidx.test:core:$androidXTestVersion"
     testImplementation "androidx.test:runner:$androidXTestVersion"
     testImplementation "androidx.test:rules:$androidXTestVersion"
-    testImplementation 'androidx.test.ext:junit:1.1.1'
+    testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     //testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation 'org.jsoup:jsoup:1.11.2'
@@ -139,7 +151,7 @@ dependencies {
     androidTestImplementation "androidx.test:core:$androidXTestVersion"
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     androidTestImplementation 'commons-net:commons-net:3.6'
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
@@ -204,7 +216,7 @@ dependencies {
         // Excludes the support library because it's already included by Glide.
         transitive = false
     }
-    annotationProcessor "com.github.bumptech.glide:compiler:$glideVersion"
+    kapt "com.github.bumptech.glide:compiler:$glideVersion"
 
     implementation "com.leinardi.android:speed-dial:$fabSpeedDialVersion"
 
@@ -230,6 +242,7 @@ dependencies {
     implementation project(':commons_compress_7z')
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "ch.acra:acra-core:5.7.0"
 }
 
 configurations.all {
@@ -266,6 +279,7 @@ jacoco {
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
 }
 
 

@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -39,11 +38,11 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
@@ -51,9 +50,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
-
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
@@ -97,6 +93,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
     for (int i = 0; i < paths.size(); i++) {
       for (HybridFileParcelable baseFile : files.get(i)) {
         String destPath = paths.get(i) + "/" + baseFile.getName(context);
+        if (baseFile.getPath().indexOf('?') > 0)
+          destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
         if (!isMoveOperationValid(baseFile, new HybridFile(mode, paths.get(i)))) {
           // TODO: 30/06/20 Replace runtime exception with generic exception
           Log.w(
@@ -105,19 +103,6 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
           continue;
         }
         switch (mode) {
-          case SMB:
-            try {
-              SmbFile source = new SmbFile(baseFile.getPath());
-              SmbFile dest = new SmbFile(destPath);
-              source.renameTo(dest);
-            } catch (MalformedURLException e) {
-              e.printStackTrace();
-              return false;
-            } catch (SmbException e) {
-              e.printStackTrace();
-              return false;
-            }
-            break;
           case FILE:
             File dest = new File(destPath);
             File source = new File(baseFile.getPath());
@@ -126,7 +111,8 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
               // check if we have root
               if (mainFrag != null && mainFrag.getMainActivity().isRootExplorer()) {
                 try {
-                  if (!RootUtils.rename(baseFile.getPath(), destPath)) return false;
+                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath))
+                    return false;
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();
                   return false;
