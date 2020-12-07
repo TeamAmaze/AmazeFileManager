@@ -47,6 +47,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
@@ -118,6 +119,8 @@ public class SshConnectionPoolTest {
   @After
   public void tearDown() {
     SshConnectionPool.getInstance().shutdown();
+    AppConfig.getInstance().getExplorerDatabase().close();
+    AppConfig.getInstance().getUtilitiesDatabase().close();
   }
 
   @Test

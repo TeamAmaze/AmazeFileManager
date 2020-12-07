@@ -29,11 +29,13 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
+import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.BeforeClass
@@ -67,6 +69,17 @@ abstract class AbstractDeleteTaskTestBase {
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
+    }
+
+    /**
+     * Close database on test finished.
+     */
+    @After
+    fun tearDown() {
+        AppConfig.getInstance().run {
+            explorerDatabase.close()
+            utilitiesDatabase.close()
+        }
     }
 
     protected fun doTestDeleteFileOk(file: HybridFileParcelable) {

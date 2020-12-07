@@ -30,11 +30,13 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
@@ -58,6 +60,12 @@ public class ShadowCryptUtilTest {
   public static void setUpBeforeClass() {
     RxJavaPlugins.reset();
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+  }
+
+  @After
+  public void tearDown() {
+    AppConfig.getInstance().getUtilitiesDatabase().close();
+    AppConfig.getInstance().getExplorerDatabase().close();
   }
 
   @Test

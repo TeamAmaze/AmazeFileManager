@@ -24,12 +24,14 @@ import android.content.Context
 import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
 import com.amaze.filemanager.utils.OpenMode.SMB
 import jcifs.smb.SmbException
+import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -56,6 +58,17 @@ class SmbHybridFileTest {
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
+    }
+
+    /**
+     * Close database on test finished.
+     */
+    @After
+    fun tearDown() {
+        AppConfig.getInstance().run {
+            explorerDatabase.close()
+            utilitiesDatabase.close()
+        }
     }
 
     /**

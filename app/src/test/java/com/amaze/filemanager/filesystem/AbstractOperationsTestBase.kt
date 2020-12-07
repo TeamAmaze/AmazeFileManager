@@ -28,11 +28,16 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.utils.OpenMode
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
+import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.android.util.concurrent.InlineExecutorService
@@ -53,6 +58,17 @@ abstract class AbstractOperationsTestBase {
         override fun invalidName(file: HybridFile?) = Unit
     }
 
+    companion object {
+        /**
+         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
+         */
+        @BeforeClass
+        fun bootstrap() {
+            RxJavaPlugins.reset()
+            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        }
+    }
+
     /**
      * Test case setup.
      *
@@ -62,6 +78,17 @@ abstract class AbstractOperationsTestBase {
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
         ShadowPausedAsyncTask.overrideExecutor(InlineExecutorService())
+    }
+
+    /**
+     * Close database on test finished.
+     */
+    @After
+    fun tearDown() {
+        AppConfig.getInstance().run {
+            explorerDatabase.close()
+            utilitiesDatabase.close()
+        }
     }
 
     protected fun testRenameFileAccessDenied(

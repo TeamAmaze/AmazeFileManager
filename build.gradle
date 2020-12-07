@@ -32,9 +32,9 @@ allprojects {
         mavenCentral()
     }
     tasks.withType(Test) {
-        maxParallelForks = 4
-        maxHeapSize = "4g"
-        forkEvery = 4
+        maxParallelForks = 2
+        maxHeapSize = "2g"
+        forkEvery = 2
     }
 }
 

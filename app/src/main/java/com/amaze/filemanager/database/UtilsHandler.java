@@ -122,6 +122,7 @@ public class UtilsHandler {
             .smbEntryDao()
             .insert(new SmbEntry(operationData.name, operationData.path))
             .subscribeOn(Schedulers.io())
+            .doOnError(Throwable::printStackTrace)
             .subscribe();
         break;
       case SFTP:
@@ -135,6 +136,7 @@ public class UtilsHandler {
                     operationData.sshKeyName,
                     operationData.sshKey))
             .subscribeOn(Schedulers.io())
+            .doOnError(Throwable::printStackTrace)
             .subscribe();
         break;
       default:

@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.ssh
 import android.content.Context
 import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -30,6 +31,7 @@ import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.utils.OpenMode
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
+import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -72,6 +74,17 @@ class SshHybridFileTest {
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
+    }
+
+    /**
+     * Close database on test finished.
+     */
+    @After
+    fun tearDown() {
+        AppConfig.getInstance().run {
+            explorerDatabase.close()
+            utilitiesDatabase.close()
+        }
     }
 
     /**
