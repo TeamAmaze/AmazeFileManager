@@ -46,8 +46,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowSQLiteConnection;
 
-import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
@@ -57,6 +57,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.SSHClient;
@@ -114,13 +115,14 @@ public class SshConnectionPoolTest {
         };
     RxJavaPlugins.reset();
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+    RxAndroidPlugins.reset();
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
   }
 
   @After
   public void tearDown() {
     SshConnectionPool.getInstance().shutdown();
-    AppConfig.getInstance().getExplorerDatabase().close();
-    AppConfig.getInstance().getUtilitiesDatabase().close();
+    ShadowSQLiteConnection.reset();
   }
 
   @Test

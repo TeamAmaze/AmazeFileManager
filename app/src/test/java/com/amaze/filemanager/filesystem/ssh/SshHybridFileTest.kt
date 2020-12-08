@@ -23,30 +23,27 @@ package com.amaze.filemanager.filesystem.ssh
 import android.content.Context
 import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
-import com.amaze.filemanager.application.AppConfig
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.utils.OpenMode
+import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
-import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowAsyncTask
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowAsyncTask::class, ShadowCryptUtil::class],
+    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 class SshHybridFileTest {
@@ -54,17 +51,6 @@ class SshHybridFileTest {
     private var ctx: Context? = null
 
     private val path: String = "ssh://user:password@127.0.0.1:22222/test.file"
-
-    companion object {
-        /**
-         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
-         */
-        @BeforeClass
-        fun bootstrap() {
-            RxJavaPlugins.reset()
-            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        }
-    }
 
     /**
      * Test case setup.
@@ -74,17 +60,10 @@ class SshHybridFileTest {
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
-    }
-
-    /**
-     * Close database on test finished.
-     */
-    @After
-    fun tearDown() {
-        AppConfig.getInstance().run {
-            explorerDatabase.close()
-            utilitiesDatabase.close()
-        }
+        RxJavaPlugins.reset()
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.reset()
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
     /**

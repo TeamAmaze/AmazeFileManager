@@ -28,21 +28,21 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.utils.OpenMode
+import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Assert
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.android.util.concurrent.InlineExecutorService
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowPausedAsyncTask
+import org.robolectric.shadows.ShadowSQLiteConnection
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -58,17 +58,6 @@ abstract class AbstractOperationsTestBase {
         override fun invalidName(file: HybridFile?) = Unit
     }
 
-    companion object {
-        /**
-         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
-         */
-        @BeforeClass
-        fun bootstrap() {
-            RxJavaPlugins.reset()
-            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        }
-    }
-
     /**
      * Test case setup.
      *
@@ -78,6 +67,10 @@ abstract class AbstractOperationsTestBase {
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
         ShadowPausedAsyncTask.overrideExecutor(InlineExecutorService())
+        RxJavaPlugins.reset()
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.reset()
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
     /**
@@ -85,10 +78,7 @@ abstract class AbstractOperationsTestBase {
      */
     @After
     fun tearDown() {
-        AppConfig.getInstance().run {
-            explorerDatabase.close()
-            utilitiesDatabase.close()
-        }
+        ShadowSQLiteConnection.reset()
     }
 
     protected fun testRenameFileAccessDenied(

@@ -25,29 +25,14 @@ import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.utils.OpenMode
-import io.reactivex.plugins.RxJavaPlugins
-import io.reactivex.schedulers.Schedulers
-import org.junit.BeforeClass
 import org.junit.Test
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowAsyncTask
 
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowAsyncTask::class, ShadowCryptUtil::class],
+    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 class SshOperationsTest : AbstractOperationsTestBase() {
-
-    companion object {
-        /**
-         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
-         */
-        @BeforeClass
-        fun bootstrap() {
-            RxJavaPlugins.reset()
-            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        }
-    }
 
     /**
      * Test case to verify rename SSH file failure scenario.

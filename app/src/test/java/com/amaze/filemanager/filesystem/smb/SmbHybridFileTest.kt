@@ -24,7 +24,6 @@ import android.content.Context
 import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
@@ -39,6 +38,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowSQLiteConnection
 
 @RunWith(AndroidJUnit4::class)
 @Config(
@@ -65,10 +65,7 @@ class SmbHybridFileTest {
      */
     @After
     fun tearDown() {
-        AppConfig.getInstance().run {
-            explorerDatabase.close()
-            utilitiesDatabase.close()
-        }
+        ShadowSQLiteConnection.reset()
     }
 
     /**

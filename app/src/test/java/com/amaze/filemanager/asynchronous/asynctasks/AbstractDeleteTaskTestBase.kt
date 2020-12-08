@@ -29,19 +29,19 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
+import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowSQLiteConnection
 import org.robolectric.shadows.ShadowToast
 
 @RunWith(AndroidJUnit4::class)
@@ -49,17 +49,6 @@ import org.robolectric.shadows.ShadowToast
 abstract class AbstractDeleteTaskTestBase {
 
     private var ctx: Context? = null
-
-    companion object {
-        /**
-         * Custom bootstrap function to turn RxJava to fit better in Robolectric tests.
-         */
-        @BeforeClass
-        fun bootstrap() {
-            RxJavaPlugins.reset()
-            RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
-        }
-    }
 
     /**
      * Test case setup.
@@ -69,6 +58,10 @@ abstract class AbstractDeleteTaskTestBase {
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
+        RxJavaPlugins.reset()
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.reset()
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
     }
 
     /**
@@ -76,10 +69,7 @@ abstract class AbstractDeleteTaskTestBase {
      */
     @After
     fun tearDown() {
-        AppConfig.getInstance().run {
-            explorerDatabase.close()
-            utilitiesDatabase.close()
-        }
+        ShadowSQLiteConnection.reset()
     }
 
     protected fun doTestDeleteFileOk(file: HybridFileParcelable) {
