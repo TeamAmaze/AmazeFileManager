@@ -1,7 +1,6 @@
 /*
  * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
- * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com>,
- * Vishnu Sanal. T<t.v.s10123@gmail.com> and Contributors.
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
  *
@@ -124,7 +123,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
           activity.get(),
           rootMode,
           file -> {
-            if (!isCancelled() && !(file.getName().startsWith("."))) {
+            if (!isCancelled() && !file.isHidden()) {
               if (filter.searchFilter(file.getName(activity.get()))) {
                 publishProgress(file);
               }
