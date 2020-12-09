@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
@@ -32,8 +34,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.preference.PreferenceManager;
 import android.util.Log;
-
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
 public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void>
     implements StatefulAsyncTask<SearchWorkerFragment.HelperCallbacks> {
@@ -126,18 +126,19 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
           activity.get(),
           rootMode,
           file -> {
-              boolean showHiddenFiles =
-                      PreferenceManager.getDefaultSharedPreferences(activity.get()).getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
+            boolean showHiddenFiles =
+                PreferenceManager.getDefaultSharedPreferences(activity.get())
+                    .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
 
-              if (!isCancelled())
-                  if (showHiddenFiles || !(!showHiddenFiles && file.isHidden())) {
-                      if (filter.searchFilter(file.getName(activity.get()))) {
-                          publishProgress(file);
-                      }
-                      if (file.isDirectory() && !isCancelled()) {
-                          search(file, filter);
-                      }
-                  }
+            if (!isCancelled())
+              if (showHiddenFiles || !(!showHiddenFiles && file.isHidden())) {
+                if (filter.searchFilter(file.getName(activity.get()))) {
+                  publishProgress(file);
+                }
+                if (file.isDirectory() && !isCancelled()) {
+                  search(file, filter);
+                }
+              }
           });
     } else {
       Log.d(TAG, "Cannot search " + directory.getPath() + ": Permission Denied");
