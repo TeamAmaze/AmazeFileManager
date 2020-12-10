@@ -130,7 +130,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
                 PreferenceManager.getDefaultSharedPreferences(activity.get())
                     .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
 
-            if (!isCancelled() && (showHiddenFiles || !(!showHiddenFiles && file.isHidden()))) {
+            if ((!isCancelled() && (showHiddenFiles || !file.isHidden()))) {
               if (filter.searchFilter(file.getName(activity.get()))) {
                 publishProgress(file);
               }
