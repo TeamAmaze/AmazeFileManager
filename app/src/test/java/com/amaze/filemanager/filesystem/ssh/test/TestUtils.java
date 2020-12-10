@@ -33,7 +33,7 @@ import java.security.SecureRandom;
 
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 
-import com.amaze.filemanager.database.UtilitiesDatabase;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
@@ -42,7 +42,6 @@ import android.os.Looper;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.core.app.ApplicationProvider;
 
 import net.schmizz.sshj.common.SecurityUtils;
 
@@ -64,10 +63,8 @@ public abstract class TestUtils {
       @NonNull String validUsername,
       @Nullable String validPassword,
       @Nullable PrivateKey privateKey) {
-    UtilitiesDatabase utilitiesDatabase =
-        UtilitiesDatabase.initialize(ApplicationProvider.getApplicationContext());
-    UtilsHandler utilsHandler =
-        new UtilsHandler(ApplicationProvider.getApplicationContext(), utilitiesDatabase);
+
+    UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
 
     String privateKeyContents = null;
     if (privateKey != null) {

@@ -30,6 +30,7 @@ import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
 import com.amaze.filemanager.utils.OpenMode.SMB
 import jcifs.smb.SmbException
+import org.junit.After
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -37,6 +38,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import org.robolectric.shadows.ShadowSQLiteConnection
 
 @RunWith(AndroidJUnit4::class)
 @Config(
@@ -56,6 +58,14 @@ class SmbHybridFileTest {
     @Before
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
+    }
+
+    /**
+     * Close database on test finished.
+     */
+    @After
+    fun tearDown() {
+        ShadowSQLiteConnection.reset()
     }
 
     /**
