@@ -186,7 +186,8 @@ public class MainActivityHelper {
                       .buildUpon()
                       .appendPath(textfield.getText().toString())
                       .build()
-                      .toString()),
+                      .toString()
+                      .replace("%20", " ")),
               ma);
           dialog.dismiss();
         },
