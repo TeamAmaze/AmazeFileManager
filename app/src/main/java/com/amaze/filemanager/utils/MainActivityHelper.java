@@ -146,7 +146,7 @@ public class MainActivityHelper {
                   openMode,
                   Uri.parse(path)
                       .buildUpon()
-                      .appendPath(textfield.getText().toString())
+                      .appendEncodedPath(textfield.getText().toString())
                       .build()
                       .toString()),
               ma);
@@ -184,10 +184,9 @@ public class MainActivityHelper {
                   openMode,
                   Uri.parse(path)
                       .buildUpon()
-                      .appendPath(textfield.getText().toString())
+                      .appendEncodedPath(textfield.getText().toString())
                       .build()
-                      .toString()
-                      .replace("%20", " ")),
+                      .toString()),
               ma);
           dialog.dismiss();
         },
