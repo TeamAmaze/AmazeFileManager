@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.fragments;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
@@ -29,7 +30,6 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 
 import java.io.File;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -93,6 +93,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -107,6 +108,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -762,11 +764,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
    *
    * @param isBackButton is it the back button aka '..'
    * @param position the position
-   * @param e the list item
+   * @param layoutElementParcelable the list item
    * @param imageView the check {@link RoundedImageView} that is to be animated
    */
   public void onListItemClicked(
-      boolean isBackButton, int position, LayoutElementParcelable e, ImageView imageView) {
+      boolean isBackButton,
+      int position,
+      LayoutElementParcelable layoutElementParcelable,
+      ImageView imageView) {
     if (results) {
       // check to initialize search results
       // if search task is been running, cancel it
@@ -805,12 +810,15 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           getMainActivity().getAppbar().getSearchView().hideSearchView();
         }
 
-        String path = !e.hasSymlink() ? e.desc : e.symlink;
+        String path =
+            !layoutElementParcelable.hasSymlink()
+                ? layoutElementParcelable.desc
+                : layoutElementParcelable.symlink;
 
-        if (e.isDirectory) {
+        if (layoutElementParcelable.isDirectory) {
           computeScroll();
           loadlist(path, false, openMode);
-        } else if (e.desc.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+        } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)) {
           // decrypt the file
           isEncryptOpen = true;
 
@@ -818,7 +826,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               new HybridFileParcelable(
                   getActivity().getExternalCacheDir().getPath()
                       + "/"
-                      + e.generateBaseFile()
+                      + layoutElementParcelable
+                          .generateBaseFile()
                           .getName(getMainActivity())
                           .replace(CryptUtil.CRYPT_EXTENSION, ""));
           encryptBaseFiles.add(encryptBaseFile);
@@ -828,18 +837,18 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               getMainActivity(),
               this,
               openMode,
-              e.generateBaseFile(),
+              layoutElementParcelable.generateBaseFile(),
               getActivity().getExternalCacheDir().getPath(),
               utilsProvider,
               true);
         } else {
           if (getMainActivity().mReturnIntent) {
             // are we here to return an intent to another app
-            returnIntentResults(e.generateBaseFile());
+            returnIntentResults(layoutElementParcelable.generateBaseFile());
           } else {
-            switch (e.getMode()) {
+            switch (layoutElementParcelable.getMode()) {
               case SMB:
-                launchSMB(e.generateBaseFile(), getMainActivity());
+                launchSMB(layoutElementParcelable.generateBaseFile(), getMainActivity());
                 break;
               case SFTP:
                 Toast.makeText(
@@ -847,11 +856,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                         getResources().getString(R.string.please_wait),
                         Toast.LENGTH_LONG)
                     .show();
-                SshClientUtils.launchSftp(e.generateBaseFile(), getMainActivity());
+                SshClientUtils.launchSftp(
+                    layoutElementParcelable.generateBaseFile(), getMainActivity());
                 break;
               case OTG:
                 FileUtils.openFile(
-                    OTGUtil.getDocumentFile(e.desc, getContext(), false),
+                    OTGUtil.getDocumentFile(layoutElementParcelable.desc, getContext(), false),
                     (MainActivity) getActivity(),
                     sharedPref);
                 break;
@@ -864,14 +874,15 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                         getResources().getString(R.string.please_wait),
                         Toast.LENGTH_LONG)
                     .show();
-                CloudUtil.launchCloud(e.generateBaseFile(), openMode, getMainActivity());
+                CloudUtil.launchCloud(
+                    layoutElementParcelable.generateBaseFile(), openMode, getMainActivity());
                 break;
               default:
-                FileUtils.openFile(new File(e.desc), (MainActivity) getActivity(), sharedPref);
+                FileUtils.openFile(new File(path), (MainActivity) getActivity(), sharedPref);
                 break;
             }
 
-            dataUtils.addHistoryFile(e.desc);
+            dataUtils.addHistoryFile(layoutElementParcelable.desc);
           }
         }
       }
@@ -1180,7 +1191,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   .rename(
                       openMode,
                       f.getPath(),
-                      CURRENT_PATH + "/" + name1,
+                      Uri.parse(CURRENT_PATH)
+                          .buildUpon()
+                          .appendEncodedPath(name1)
+                          .build()
+                          .toString(),
                       getActivity(),
                       getMainActivity().isRootExplorer());
             },
@@ -1235,19 +1250,15 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         if (selection) {
           adapter.toggleChecked(false);
         } else {
-
-          if (openMode == OpenMode.SMB) {
-            try {
-              if (!smbPath.equals(CURRENT_PATH)) {
-                String path = (new SmbFile(CURRENT_PATH).getParent());
-                loadlist((path), true, openMode);
-              } else loadlist(home, false, OpenMode.FILE);
-            } catch (MalformedURLException e) {
-              e.printStackTrace();
-            }
-
-          } else if (openMode == OpenMode.SFTP) {
-            if (!CURRENT_PATH.substring("ssh://".length()).contains("/"))
+          if (OpenMode.SMB.equals(openMode)) {
+            if (!smbPath.equals(CURRENT_PATH)) {
+              StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+              if (CURRENT_PATH.indexOf('?') > 0)
+                path.append(CURRENT_PATH.substring(CURRENT_PATH.indexOf('?')));
+              loadlist(path.toString().replace("%3D", "="), true, openMode);
+            } else loadlist(home, false, OpenMode.FILE);
+          } else if (OpenMode.SFTP.equals(openMode)) {
+            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/"))
               loadlist(home, false, OpenMode.FILE);
             else loadlist(currentFile.getParent(getContext()), true, openMode);
           } else if (CURRENT_PATH.equals("/")
@@ -1334,14 +1345,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         adapter.toggleChecked(false);
       } else {
         if (openMode == OpenMode.SMB) {
-          try {
-            if (!CURRENT_PATH.equals(smbPath)) {
-              String path = (new SmbFile(CURRENT_PATH).getParent());
-              loadlist((path), true, OpenMode.SMB);
-            } else loadlist(home, false, OpenMode.FILE);
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
-          }
+          if (!CURRENT_PATH.equals(smbPath)) {
+            StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+            if (CURRENT_PATH.indexOf('?') > 0)
+              path.append(CURRENT_PATH.substring(CURRENT_PATH.indexOf('?')));
+            loadlist(path.toString(), true, OpenMode.SMB);
+          } else loadlist(home, false, OpenMode.FILE);
         } else if (CURRENT_PATH.equals("/")
             || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
             || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
@@ -1407,8 +1416,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public ArrayList<LayoutElementParcelable> addToSmb(
-      SmbFile[] mFile, String path, boolean showHiddenFiles) throws SmbException {
+      @NonNull SmbFile[] mFile, @NonNull String path, boolean showHiddenFiles) throws SmbException {
     ArrayList<LayoutElementParcelable> smbFileList = new ArrayList<>();
+    String extraParams = Uri.parse(path).getQuery();
+
     if (searchHelper.size() > 500) searchHelper.clear();
     for (SmbFile aMFile : mFile) {
       if ((dataUtils.isFileHidden(aMFile.getPath()) || aMFile.isHidden()) && !showHiddenFiles) {
@@ -1425,11 +1436,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       if (aMFile.isDirectory()) {
         folder_count++;
 
+        Uri.Builder aMFilePathBuilder = Uri.parse(aMFile.getPath()).buildUpon();
+        if (!TextUtils.isEmpty(extraParams)) aMFilePathBuilder.query(extraParams);
+
         LayoutElementParcelable layoutElement =
             new LayoutElementParcelable(
                 getContext(),
                 name,
-                aMFile.getPath(),
+                aMFilePathBuilder.build().toString(),
                 "",
                 "",
                 "",
@@ -1677,7 +1691,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           }
           */
 
-          s.setStreamSrc(new SmbFile(baseFile.getPath()), baseFile.getSize());
+          s.setStreamSrc(baseFile.getSmbFile(), baseFile.getSize());
           activity.runOnUiThread(
               () -> {
                 try {

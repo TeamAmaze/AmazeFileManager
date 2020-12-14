@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.colors;
 
 import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -40,7 +41,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(minSdk = N)
+@Config(minSdk = N, maxSdk = P)
 public class ColorUtilsTest {
 
   @Test

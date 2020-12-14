@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.test;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
@@ -27,10 +30,12 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
 
-import org.junit.BeforeClass;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowSQLiteConnection;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -42,17 +47,27 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class ShadowCryptUtilTest {
 
-  @BeforeClass
-  public static void setUpBeforeClass() {
+  @Before
+  public void setUp() {
     RxJavaPlugins.reset();
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+    RxAndroidPlugins.reset();
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
+  }
+
+  @After
+  public void tearDown() {
+    ShadowSQLiteConnection.reset();
   }
 
   @Test

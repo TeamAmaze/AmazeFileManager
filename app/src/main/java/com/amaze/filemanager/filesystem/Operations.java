@@ -20,27 +20,38 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_FAILED_OPS;
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_GENERAL;
+
 import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.concurrent.Executor;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
+import com.amaze.filemanager.filesystem.root.MakeFileCommand;
+import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.RootUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.documentfile.provider.DocumentFile;
@@ -50,6 +61,10 @@ import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public class Operations {
+
+  private static Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
+
+  private static final String TAG = Operations.class.getSimpleName();
 
   // reserved characters by OS, shall not be allowed in file names
   private static final String FOREWARD_SLASH = "/";
@@ -189,8 +204,8 @@ public class Operations {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
               try {
-
-                RootUtils.mkDir(file.getParent(context), file.getName(context));
+                MakeDirectoryCommand.INSTANCE.makeDirectory(
+                    file.getParent(context), file.getName(context));
               } catch (ShellNotRunningException e) {
                 e.printStackTrace();
               }
@@ -205,7 +220,7 @@ public class Operations {
         }
         return null;
       }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }.executeOnExecutor(executor);
   }
 
   public static void mkfile(
@@ -339,8 +354,7 @@ public class Operations {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
               try {
-
-                RootUtils.mkFile(file.getPath());
+                MakeFileCommand.INSTANCE.makeFile(file.getPath());
               } catch (ShellNotRunningException e) {
                 e.printStackTrace();
               }
@@ -354,15 +368,15 @@ public class Operations {
         }
         return null;
       }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }.executeOnExecutor(executor);
   }
 
   public static void rename(
-      final HybridFile oldFile,
-      final HybridFile newFile,
+      @NonNull final HybridFile oldFile,
+      @NonNull final HybridFile newFile,
       final boolean rootMode,
-      final Context context,
-      final ErrorCallBack errorCallBack) {
+      @NonNull final Context context,
+      @NonNull final ErrorCallBack errorCallBack) {
 
     new AsyncTask<Void, Void, Void>() {
 
@@ -373,7 +387,7 @@ public class Operations {
         // check whether file names for new file are valid or recursion occurs.
         // If rename is on OTG, we are skipping
         if (!(oldFile.mode.equals(newFile.mode) && oldFile.mode.equals(OpenMode.OTG))
-            && !Operations.isFileNameValid(newFile.getSimpleName())) {
+            && !Operations.isFileNameValid(newFile.getName(context))) {
           errorCallBack.invalidName(newFile);
           return null;
         }
@@ -385,18 +399,32 @@ public class Operations {
 
         if (oldFile.isSmb()) {
           try {
-            SmbFile smbFile = new SmbFile(oldFile.getPath());
-            SmbFile smbFile1 = new SmbFile(newFile.getPath());
-            if (smbFile1.exists()) {
+            SmbFile smbFile = oldFile.getSmbFile();
+            // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
+            SmbFile smbFile1 = new SmbFile(new URL(newFile.getPath()), smbFile.getContext());
+            if (newFile.exists()) {
               errorCallBack.exists(newFile);
               return null;
             }
             smbFile.renameTo(smbFile1);
             if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
-          } catch (MalformedURLException e) {
-            e.printStackTrace();
-          } catch (SmbException e) {
-            e.printStackTrace();
+          } catch (SmbException | MalformedURLException e) {
+            String errmsg =
+                context.getString(
+                    R.string.cannot_rename_file,
+                    HybridFile.parseAndFormatUriForDisplay(oldFile.path),
+                    e.getMessage());
+            try {
+              ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
+              failedOps.add(new HybridFileParcelable(oldFile.getSmbFile()));
+              context.sendBroadcast(
+                  new Intent(TAG_INTENT_FILTER_GENERAL)
+                      .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
+            } catch (SmbException exceptionThrownDuringBuildParcelable) {
+              Log.e(
+                  TAG, "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
+            }
+            Log.e(TAG, errmsg, e);
           }
           return null;
         } else if (oldFile.isSftp()) {
@@ -410,7 +438,25 @@ public class Operations {
                         SshClientUtils.extractRemotePathFrom(newFile.getPath()));
                     errorCallBack.done(newFile, true);
                   } catch (IOException e) {
-                    e.printStackTrace();
+                    String errmsg =
+                        context.getString(
+                            R.string.cannot_rename_file,
+                            HybridFile.parseAndFormatUriForDisplay(oldFile.path),
+                            e.getMessage());
+                    Log.e(TAG, errmsg);
+                    ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
+                    // Nobody care the size or actual permission here. Put a simple "r" and zero
+                    // here
+                    failedOps.add(
+                        new HybridFileParcelable(
+                            oldFile.path,
+                            "r",
+                            oldFile.lastModified(),
+                            0,
+                            oldFile.isDirectory(context)));
+                    context.sendBroadcast(
+                        new Intent(TAG_INTENT_FILTER_GENERAL)
+                            .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
                     errorCallBack.done(newFile, false);
                   }
                   return null;
@@ -467,7 +513,7 @@ public class Operations {
             errorCallBack.exists(newFile);
             return null;
           }
-          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getSimpleName()));
+          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
           return null;
         } else {
 
@@ -487,7 +533,7 @@ public class Operations {
                 boolean a = !file.exists() && file1.exists();
                 if (!a && rootMode) {
                   try {
-                    RootUtils.rename(file.getPath(), file1.getPath());
+                    RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
                   } catch (ShellNotRunningException e) {
                     e.printStackTrace();
                   }
@@ -501,7 +547,7 @@ public class Operations {
               break;
             case ROOT:
               try {
-                RootUtils.rename(file.getPath(), file1.getPath());
+                RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
               } catch (ShellNotRunningException e) {
                 e.printStackTrace();
               }
@@ -522,7 +568,7 @@ public class Operations {
           FileUtils.scanFile(context, hybridFiles);
         }
       }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }.executeOnExecutor(executor);
   }
 
   private static int checkFolder(final File folder, Context context) {

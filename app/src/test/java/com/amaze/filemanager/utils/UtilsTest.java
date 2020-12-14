@@ -20,7 +20,10 @@
 
 package com.amaze.filemanager.utils;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.utils.Utils.formatTimer;
 import static com.amaze.filemanager.utils.Utils.sanitizeInput;
 import static org.junit.Assert.assertEquals;
@@ -53,7 +56,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(minSdk = 19)
+@Config(sdk = {JELLY_BEAN, KITKAT, P})
 public class UtilsTest {
   @Test
   public void
@@ -152,7 +155,7 @@ public class UtilsTest {
   }
 
   @Test
-  @Config(minSdk = N)
+  @Config(minSdk = N, maxSdk = P)
   public void testGetVolumeDirectory() throws Exception {
     StorageVolume mock = mock(StorageVolume.class);
     Field f = StorageVolume.class.getDeclaredField("mPath");

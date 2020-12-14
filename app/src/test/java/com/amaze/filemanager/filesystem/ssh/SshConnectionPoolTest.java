@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.filesystem.ssh.test.TestUtils.saveSshConnectionSettings;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -43,6 +46,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowSQLiteConnection;
 
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
@@ -53,6 +57,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.SSHClient;
@@ -62,7 +67,9 @@ import net.schmizz.sshj.userauth.UserAuthException;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class, ShadowCryptUtil.class})
+@Config(
+    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class SshConnectionPoolTest {
 
   private static KeyPair hostKeyPair;
@@ -108,11 +115,14 @@ public class SshConnectionPoolTest {
         };
     RxJavaPlugins.reset();
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+    RxAndroidPlugins.reset();
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
   }
 
   @After
   public void tearDown() {
     SshConnectionPool.getInstance().shutdown();
+    ShadowSQLiteConnection.reset();
   }
 
   @Test

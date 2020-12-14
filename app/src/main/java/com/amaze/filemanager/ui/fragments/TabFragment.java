@@ -217,7 +217,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       sharedPrefs
           .edit()
           .putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab)
-          .commit();
+          .apply();
     }
 
     if (fragments != null && fragments.size() != 0) {
@@ -261,7 +261,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       sharedPrefs
           .edit()
           .putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab)
-          .commit();
+          .apply();
     }
 
     //        Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab, new
@@ -338,8 +338,8 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         addNewTab(1, currentSecondTab, true);
         addNewTab(2, currentFirstTab, false);
       }
-      tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab));
-      tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab));
+      tabHandler.addTab(new Tab(1, currentSecondTab, currentSecondTab)).blockingAwait();
+      tabHandler.addTab(new Tab(2, currentFirstTab, currentFirstTab)).blockingAwait();
 
       if (currentFirstTab.equalsIgnoreCase("/")) {
         sharedPrefs.edit().putBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, true).apply();

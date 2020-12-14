@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
+
 import java.io.IOException;
 import java.net.BindException;
 import java.nio.file.Paths;
@@ -46,7 +50,9 @@ import android.os.Environment;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class})
+@Config(
+    shadows = {ShadowMultiDex.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public abstract class AbstractSftpServerTest {
 
   protected SshServer server;

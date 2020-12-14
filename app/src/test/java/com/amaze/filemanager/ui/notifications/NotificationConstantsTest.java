@@ -22,8 +22,10 @@ package com.amaze.filemanager.ui.notifications;
 
 import static android.app.NotificationManager.IMPORTANCE_HIGH;
 import static android.app.NotificationManager.IMPORTANCE_MIN;
+import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.N;
 import static android.os.Build.VERSION_CODES.O;
+import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_FTP_ID;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.CHANNEL_NORMAL_ID;
 import static com.amaze.filemanager.ui.notifications.NotificationConstants.TYPE_FTP;
@@ -54,7 +56,7 @@ import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
-@Config(minSdk = 19)
+@Config(sdk = {KITKAT, P})
 public class NotificationConstantsTest {
 
   private Context context;
@@ -136,7 +138,7 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(minSdk = O)
+  @Config(minSdk = O, maxSdk = P)
   public void testCreateNormalChannel() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_NORMAL_ID);
     NotificationConstants.setMetadata(context, builder, TYPE_NORMAL);
@@ -151,7 +153,7 @@ public class NotificationConstantsTest {
   }
 
   @Test
-  @Config(minSdk = O)
+  @Config(minSdk = O, maxSdk = P)
   public void testCreateFtpChannel() {
     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_FTP_ID);
     NotificationConstants.setMetadata(context, builder, TYPE_FTP);

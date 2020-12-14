@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.activities;
 
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
@@ -40,25 +39,19 @@ import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.OpenMode;
-import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
-import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -71,20 +64,14 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewAnimationUtils;
-import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
-import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
-
-import androidx.annotation.ColorInt;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
@@ -128,33 +115,12 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    if (getAppTheme().equals(AppTheme.DARK))
-      getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-    else if (getAppTheme().equals(AppTheme.BLACK))
-      getWindow().getDecorView().setBackgroundColor(Utils.getColor(this, android.R.color.black));
-
     setContentView(R.layout.search);
-    searchViewLayout = findViewById(R.id.searchview);
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    @ColorInt
-    int primaryColor =
-        ColorPreferenceHelper.getPrimary(getCurrentColorPreference(), MainActivity.currentTab);
-
-    toolbar.setBackgroundColor(primaryColor);
-    searchViewLayout.setBackgroundColor(primaryColor);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      ActivityManager.TaskDescription taskDescription =
-          new ActivityManager.TaskDescription(
-              "Amaze",
-              ((BitmapDrawable) getResources().getDrawable(R.mipmap.ic_launcher)).getBitmap(),
-              primaryColor);
-      setTaskDescription(taskDescription);
-    }
+    searchViewLayout = findViewById(R.id.searchview);
+    searchViewLayout.setBackgroundColor(getPrimary());
 
     searchEditText = searchViewLayout.findViewById(R.id.search_box);
     upButton = searchViewLayout.findViewById(R.id.prev);
@@ -169,30 +135,10 @@ public class TextEditorActivity extends ThemedActivity
     // downButton.setEnabled(false);
     closeButton.setOnClickListener(this);
 
-    getSupportActionBar().setBackgroundDrawable(new ColorDrawable(primaryColor));
-
     boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
-        || Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      SystemBarTintManager tintManager = new SystemBarTintManager(this);
-      tintManager.setStatusBarTintEnabled(true);
-      tintManager.setStatusBarTintColor(primaryColor);
-      FrameLayout.MarginLayoutParams p =
-          (ViewGroup.MarginLayoutParams) findViewById(R.id.texteditor).getLayoutParams();
-      SystemBarTintManager.SystemBarConfig config = tintManager.getConfig();
-      p.setMargins(0, config.getStatusBarHeight(), 0, 0);
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      boolean colourednavigation = getBoolean(PREFERENCE_COLORED_NAVIGATION);
-      Window window = getWindow();
-      window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-      window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-      window.setStatusBarColor(PreferenceUtils.getStatusColor(primaryColor));
-      if (colourednavigation)
-        window.setNavigationBarColor(PreferenceUtils.getStatusColor(primaryColor));
-    }
     mInput = findViewById(R.id.fname);
     scrollView = findViewById(R.id.editscroll);
 
@@ -227,6 +173,7 @@ public class TextEditorActivity extends ThemedActivity
     } else {
       load();
     }
+    initStatusBarResources(findViewById(R.id.texteditor));
   }
 
   @Override
