@@ -659,5 +659,34 @@
     <string name="move">העברה</string>
     <string name="select_save_location">נא לבחור מיקום לשמירה</string>
     <string name="scp_default_path">נתיב בררת מחדל (רשות)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">זה לא אמור היה לקרות, סליחה.</string>
+    <string name="error_report_button_text">דיווח על השגיאה הזאת בדוא״ל</string>
+    <string name="error_report_button_telegram">דיווח על השגיאה הזאת בטלגרם</string>
+    <string name="copy_for_github">העתקת הדוח המעוצב</string>
+    <string name="error_report_open_issue_button_text">דיווח ב־GitHub</string>
+    <string name="error_report_open_github_notice">נא לבדוק האם הקריסה שלך כבר נדונה היכנשהו.</string>
+    <string name="error_snackbar_message">משהו השתבש, סליחה.</string>
+    <string name="error_snackbar_action">דיווח</string>
+    <string name="what_device_headline">מידע:</string>
+    <string name="what_happened_headline">מה קרה:</string>
+    <string name="info_labels">מה:\\nבקשה:\\nזמן בגריניץ׳:\\nחבילה:\\nגרסה:\\nגרסת מערכת הפעלה:\\nמכשיר:\\nדגם:\\nמוצר:</string>
+    <string name="your_comment">ההערה שלך (באנגלית):</string>
+    <string name="error_details_headline">פרטים:</string>
+    <string name="app_ui_crash">היישומון/מנשק המשתמש קרס</string>
+    <string name="error_report_title">דוח שגיאה</string>
+    <string name="crash_report_copied">דוח הקריסה הועתק ללוח הגזירים</string>
+
+    <string name="disableIpcSignature">השבתת בדיקת חתימת IPC (לשרתי SMBv1 מיושנים - מסוכן!)</string>
+    <string name="cannot_delete_file">לא ניתן למחוק קובץ</string>
+    <string name="cannot_delete_file_with_reason">לא ניתן למחוק קובץ - %s </string>
+    <string name="cannot_rename_file">לא ניתן לשנות את שם הקובץ %s - %s</string>
+    <string name="cannot_read_directory">לא ניתן לקרוא את התיקייה %s - %s</string>
+    <string name="just_once">רק פעם אחת</string>
+    <string name="always">תמיד</string>
+    <string name="choose_different_app">לבחור ביישומון אחר</string>
+    <string name="clear_open_file">פינוי המטמון</string>
+    <string name="clear_open_file_summary">מפנה את יישומוני בררת המחדל שנבחרו לפתיחת סוג הקובץ</string>
 </resources>
 
