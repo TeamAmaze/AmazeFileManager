@@ -1187,7 +1187,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   .rename(
                       openMode,
                       f.getPath(),
-                      Uri.parse(CURRENT_PATH).buildUpon().appendPath(name1).build().toString(),
+                      Uri.parse(CURRENT_PATH)
+                          .buildUpon()
+                          .appendEncodedPath(name1)
+                          .build()
+                          .toString(),
                       getActivity(),
                       getMainActivity().isRootExplorer());
             },

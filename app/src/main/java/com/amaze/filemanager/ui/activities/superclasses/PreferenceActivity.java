@@ -26,6 +26,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -84,6 +85,7 @@ public class PreferenceActivity extends BasicActivity {
       case PREFERENCE_COLORED_NAVIGATION:
       case PREFERENCE_TEXTEDITOR_NEWSTACK:
       case PREFERENCE_CHANGEPATHS:
+      case PREFERENCE_ROOT_LEGACY_LISTING:
         defaultValue = false;
         break;
       case PREFERENCE_SHOW_FILE_SIZE:

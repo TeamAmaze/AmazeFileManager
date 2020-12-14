@@ -166,6 +166,11 @@
             android:title="@string/root_pref"/>
         <com.amaze.filemanager.ui.views.preference.CheckBox
             android:defaultValue="false"
+            android:key="legacyListing"
+            android:summary="@string/legacy_listing_summary"
+            android:title="@string/legacy_listing_title"/>
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            android:defaultValue="false"
             android:key="rootmode"
             android:summary="@string/root_mode_summary"
             android:title="@string/root_mode"/>
