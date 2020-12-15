@@ -260,7 +260,7 @@ public class ErrorActivity extends ThemedActivity {
       case R.id.menu_item_share_error:
         final Intent intent = new Intent();
         intent.setAction(Intent.ACTION_SEND);
-        intent.putExtra(Intent.EXTRA_TEXT, buildJson());
+        intent.putExtra(Intent.EXTRA_TEXT, buildMarkdown());
         intent.setType("text/plain");
         startActivity(Intent.createChooser(intent, getString(R.string.share)));
         break;
@@ -271,7 +271,7 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   private void sendReportEmail() {
-    final Intent i = Utils.buildEmailIntent(buildJson());
+    final Intent i = Utils.buildEmailIntent(buildMarkdown());
     if (i.resolveActivity(getPackageManager()) != null) {
       startActivity(i);
     }

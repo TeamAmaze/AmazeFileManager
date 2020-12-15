@@ -31,6 +31,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.utils.OpenMode
+import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.plugins.RxJavaPlugins
+import io.reactivex.schedulers.Schedulers
+import org.junit.After
 import org.junit.Assert
 import org.junit.Before
 import org.junit.runner.RunWith
@@ -38,6 +42,7 @@ import org.robolectric.Shadows
 import org.robolectric.android.util.concurrent.InlineExecutorService
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowPausedAsyncTask
+import org.robolectric.shadows.ShadowSQLiteConnection
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -62,6 +67,18 @@ abstract class AbstractOperationsTestBase {
     fun setUp() {
         ctx = ApplicationProvider.getApplicationContext()
         ShadowPausedAsyncTask.overrideExecutor(InlineExecutorService())
+        RxJavaPlugins.reset()
+        RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
+        RxAndroidPlugins.reset()
+        RxAndroidPlugins.setInitMainThreadSchedulerHandler { Schedulers.trampoline() }
+    }
+
+    /**
+     * Close database on test finished.
+     */
+    @After
+    fun tearDown() {
+        ShadowSQLiteConnection.reset()
     }
 
     protected fun testRenameFileAccessDenied(

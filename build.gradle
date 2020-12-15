@@ -35,6 +35,7 @@ allprojects {
         maxParallelForks = 4
         maxHeapSize = "4g"
         forkEvery = 4
+        failFast = true
     }
 }
 

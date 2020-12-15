@@ -229,11 +229,9 @@ public class CopyService extends AbstractProgressiveService {
   }
 
   private class DoInBackground extends AsyncTask<Bundle, Void, Void> {
-    ArrayList<HybridFileParcelable> sourceFiles;
     boolean move;
-    Copy copy;
+    private Copy copy;
     private String targetPath;
-    private OpenMode openMode;
     private boolean isRootExplorer;
     private int sourceProgress = 0;
 
@@ -243,7 +241,7 @@ public class CopyService extends AbstractProgressiveService {
 
     protected Void doInBackground(Bundle... p1) {
 
-      sourceFiles = p1[0].getParcelableArrayList(TAG_COPY_SOURCES);
+      ArrayList<HybridFileParcelable> sourceFiles = p1[0].getParcelableArrayList(TAG_COPY_SOURCES);
 
       // setting up service watchers and initial data packages
       // finding total size on background thread (this is necessary condition for SMB!)
@@ -261,7 +259,7 @@ public class CopyService extends AbstractProgressiveService {
 
       targetPath = p1[0].getString(TAG_COPY_TARGET);
       move = p1[0].getBoolean(TAG_COPY_MOVE);
-      openMode = OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE));
+      OpenMode openMode = OpenMode.getOpenMode(p1[0].getInt(TAG_COPY_OPEN_MODE));
       copy = new Copy();
       copy.execute(sourceFiles, targetPath, move, openMode);
 

@@ -99,8 +99,8 @@ public class HybridFile {
   public HybridFile(OpenMode mode, String path, String name, boolean isDirectory) {
     this(mode, path);
     if (path.startsWith(SMB_URI_PREFIX) || isSmb()) {
-      Uri.Builder pathBuilder = Uri.parse(this.path).buildUpon().appendPath(name);
-      if (isDirectory) pathBuilder.appendPath("/");
+      Uri.Builder pathBuilder = Uri.parse(this.path).buildUpon().appendEncodedPath(name);
+      if (isDirectory) pathBuilder.appendEncodedPath("/");
       this.path = pathBuilder.build().toString();
     } else if (path.startsWith(SSH_URI_PREFIX) || isSftp()) {
       this.path += "/" + name;

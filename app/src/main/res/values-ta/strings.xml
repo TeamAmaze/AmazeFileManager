@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -19,9 +19,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">அமேஸ் கோப்பு மேலாளர்</string>
     <string name="drawer_open">ஊடுருவல் பட்டியை திற</string>
     <string name="drawer_close">ஊடுருவல் பட்டியை மூடு</string>
@@ -37,6 +37,7 @@
     <string name="play">ப்ளே ஸ்டோர்</string>
     <string name="properties">பண்புகள்</string>
     <string name="copyingapk">ஏபிகே வை நகலெடுத்துக்கொண்டிருக்கிறது</string>
+    <string name="delbook">புத்தகக்குறியை அழி</string>
     <string name="add_to_bookmarks">புத்தகக்குறியில் சேர்</string>
     <string name="enterpath">பாதையை உள்ளீடு</string>
     <string name="cancel">ரத்து செய்</string>
@@ -51,6 +52,7 @@
     <string name="name">பெயர்</string>
     <string name="date">தேதி</string>
     <string name="location">இடம்</string>
+    <string name="size_capitalized">அளவீடு</string>
     <string name="enterzipname">ஜிப்  பெயரை உள்ளீடவும்</string>
     <string name="no_app_found">இந்த கோப்பினை திறக்கக்கூடிய நிரல் இல்லை</string>
     <string name="copying">நகலெடுகிறது</string>
@@ -69,9 +71,11 @@
     <string name="compress">நெருக்கி அழுத்திவை</string>
     <string name="yes">ஆம்</string>
     <string name="no">இல்லை</string>
+    <string name="dialog_delete_category_directories">அடைவுகள்</string>
+    <string name="dialog_delete_category_files">கோப்புகள்</string>
+    <string name="dialog_delete_disclaimer">நீங்கள் பின்வரும் கோப்புகளை அழிக்க விரும்புகிறீர்களா?</string>
     <string name="dialog_delete_title">உறுதி செய்தல்</string>
     <string name="deleting">அழிக்கிறது</string>
-    <string name="dialog_delete_disclaimer">நீங்கள் பின்வரும் கோப்புகளை அழிக்க விரும்புகிறீர்களா?</string>
     <string name="question_set_path_as_home">நீங்கள் இந்த தாவலுக்கு தற்போதைய பாதையை முகப்பாக அமைக்கவேண்டுமா?</string>
     <string name="directorysort">அடைவு வரிசைபாடு முறை</string>
     <string name="sort_by">வரிசை முறை</string>
@@ -118,8 +122,6 @@
     <string name="overwrite">மேலெழுது</string>
     <string name="not_allowed">அனுமதி இல்லை</string>
     <string name="done">முடிந்தது</string>
-    <string name="items">உருப்படிகள்</string>
-    <string name="item">உருப்படி</string>
     <string name="set">அமை</string>
     <string name="enablerootmde">ரூட் முறையை இயக்கு</string>
     <string name="goback">பின்னே செல்</string>
@@ -225,7 +227,7 @@
     <string name="icon_color_title">படவுறு வண்ணம்</string>
     <string name="icon_color_summary">படவுருகளுக்கு வண்ணத்தை அமை</string>
     <string name="choose_color">வண்ணத்தை தேர்வுசெய்க</string>
-  <string name="files">கோப்புகள்</string>
+    <string name="files">கோப்புகள்</string>
     <string name="textreader">உரை வாசிப்பாளர்</string>
     <string name="databasereader">தரவுத்தள வசிப்பாளர்</string>
     <string name="show_dividers">வகுப்புகளை காண்பி</string>
@@ -289,6 +291,7 @@
     <string name="domain">டொமைன்</string>
     <string name="invalid">தவறான %s</string>
     <string name="ftp_notif_starting">எப்டிபி சேவையகம் தொடங்குகிறது</string>
+    <string name="ftp_notif_starting_title">எப்டீபி சேவையகம்</string>
     <string name="ftp_notif_title">அமேஸ் எப்டிபி சேவையகம் இயங்கிக்கொண்டு இருக்கிறது</string>
     <string name="ftp_notif_text">%s யில்</string>
     <string name="ftp_notif_stop_server">நிறுத்து</string>
@@ -297,12 +300,12 @@
     <string name="ftp_port_change_error_invalid">தகுதியற்ற போர்ட் எண் தேர்வுசெய்யப்பட்டது</string>
     <string name="primary_two_title">முதன்மை வண்ணம் (வலது தாவல்)</string>
     <string name="primary_two_summary">வலது தாவலின் பெரிய இடைமுக கூறுகளுக்கு வண்ணத்தை அமைக்க</string>
-  <string name="support_development">வளர்ச்சிக்கு ஆதரவு</string>
+    <string name="support_development">வளர்ச்சிக்கு ஆதரவு</string>
     <string name="report_bugs_title">பிழைகளின் அறிவித்தல்</string>
     <string name="report_bugs_summary">பிழைகளை அறிவி அல்லது புதிய அம்சத்திற்கு வேண்டுகோள்விடுக்க</string>
     <string name="translate_title">மொழிபெயர்ப்பு</string>
     <string name="translate_summary">அமெஸ்ஸை உன் மொழிக்கு மாற்று</string>
-  <string name="easter_egg_title">ஸ்டூடியோ முறை</string>
+    <string name="easter_egg_title">ஸ்டூடியோ முறை</string>
     <string name="paypal_copy_message">பேபால் ஐடி பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
     <string name="searching_devices">சாதனத்தை தேடுகிறது</string>
     <string name="use_custom_ip">பயனர் ஐபியை பயன்படுத்து</string>
@@ -361,10 +364,15 @@
     <string name="security">பாதுகாப்பு</string>
     <string name="paper_size">இதழின் அளவு</string>
 
+    <!-- %s will be replaced with either copied or moved -->
+    <string name="copy_error">சில கோப்புகள் %s யில் வெற்றி அடையவில்லை</string>
     <string name="copied">நகலெடுக்கப்பட்டது</string>
     <string name="moved">நகர்த்தப்பட்டது</string>
     <string name="copy_complete">முழுமையாக நகலெடுக்கப்பட்டது</string>
     <string name="waiting_title">காத்திருத்தல்</string>
+    <string name="waiting_content">செயல் முடிவடைய காத்திருக்கிறது</string>
+    <string name="extract_complete">முழுமையாக பிரித்தெடுக்கிகிறது</string>
+    <string name="compression_complete">முழுமையாக சுருக்கப்பட்டது</string>
     <string name="compressing">நெருக்கி அழுத்திவைக்கப்பட்டது
 
 </string>
@@ -377,5 +385,24 @@
     <string name="processing_file">செயலாக்கோப்பு
 </string>
     <string name="current_speed">தற்போதைய வேகம்</string>
+    <string name="smb_launch_error">இந்த கோப்பை திறக்க நீங்கள் இதை உங்கள் நினைவாகத்திற்கு நகலெடுக்க வேண்டும்</string>
+    <string name="error_file_not_found">பிழை:கோப்பு காணப்படவில்லை</string>
+    <string name="error_io">I/O பிழை</string>
+    <string name="medium_text">நடுத்தர உரை</string>
+    <string name="permission_read">படித்தல்</string>
+    <string name="permission_write">எழுதுதல்</string>
+    <string name="permission_execute">செயல்படுத்தம்</string>
+    <string name="permission_owner">உரிமையாளர்</string>
+    <string name="permission_group">குழு</string>
+    <string name="permission_other">பிற</string>
+    <string name="clipboard_path_copy">பாதை பிடிப்பு பலகைக்கு நகலெடுக்கப்பட்டது</string>
+    <string name="contributors_6_summary">எப்டீபி சேவையகம்</string>
+    <string name="item">உருப்படி</string>
+	<string name="items">உருப்படிகள்</string>
+	
+	<string name="orange">ஆரஞ்சு</string>
+    <string name="blue">நீலம்</string>
+    <string name="green">பச்சை</string>
+    <string name="close">மூடு</string>
     </resources>
 

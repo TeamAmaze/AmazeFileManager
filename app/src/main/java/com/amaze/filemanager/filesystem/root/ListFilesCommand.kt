@@ -20,13 +20,16 @@
 
 package com.amaze.filemanager.filesystem.root
 
+import android.preference.PreferenceManager
 import android.util.Log
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.OpenMode
 import java.io.File
 import kotlin.collections.ArrayList
@@ -95,7 +98,13 @@ object ListFilesCommand : IRootCommand() {
 
             val command = "stat -c '%A %h %G %U %B %y %N' " +
                 "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
-            return if (!retryWithLs) {
+            return if (!retryWithLs &&
+                !PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
+                    .getBoolean(
+                            PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING,
+                            false
+                        )
+            ) {
                 Log.i(javaClass.simpleName, "Using stat for list parsing")
                 Pair(
                     first = runShellCommandToList(command).map {

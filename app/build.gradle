@@ -27,8 +27,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 90
-        versionName "3.5.1"
+        versionCode 92
+        versionName "3.6.0"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
@@ -240,6 +240,7 @@ dependencies {
     implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
 
     implementation project(':commons_compress_7z')
+    implementation project(':file_operations')
     implementation "androidx.core:core-ktx:+"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"

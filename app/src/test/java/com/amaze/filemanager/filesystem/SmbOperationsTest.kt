@@ -27,10 +27,9 @@ import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_RENAME_
 import com.amaze.filemanager.utils.OpenMode.SMB
 import org.junit.Test
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowAsyncTask
 
 @Config(
-    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class, ShadowAsyncTask::class],
+    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 class SmbOperationsTest : AbstractOperationsTestBase() {

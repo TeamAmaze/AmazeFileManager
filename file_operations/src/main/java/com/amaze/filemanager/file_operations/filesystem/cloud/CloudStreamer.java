@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.cloud;
+package com.amaze.filemanager.file_operations.filesystem.cloud;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +32,8 @@ import jcifs.smb.SmbFile;
 
 /** Created by Vishal on 30-04-2017. */
 public class CloudStreamer extends CloudStreamServer {
+
+  private static final String TAG = "CloudStreamer";
 
   public static final int PORT = 7871;
   public static final String URL = "http://127.0.0.1:" + PORT;
@@ -101,7 +103,7 @@ public class CloudStreamer extends CloudStreamServer {
           }
         }
       }
-      Log.d(CloudUtil.TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
+      Log.d(TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
 
       // Change return code and add Content-Range header when skipping
       // is requested
@@ -116,10 +118,10 @@ public class CloudStreamer extends CloudStreamServer {
           if (endAt < 0) endAt = fileLen - 1;
           long newLen = fileLen - startFrom;
           if (newLen < 0) newLen = 0;
-          Log.d(CloudUtil.TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
+          Log.d(TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
           final long dataLen = newLen;
           source.moveTo(startFrom);
-          Log.d(CloudUtil.TAG, "Skipped " + startFrom + " bytes");
+          Log.d(TAG, "Skipped " + startFrom + " bytes");
 
           res = new CloudStreamServer.Response(HTTP_PARTIALCONTENT, null, source);
           res.addHeader("Content-length", "" + dataLen);

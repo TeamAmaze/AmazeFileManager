@@ -387,7 +387,7 @@ public class Operations {
         // check whether file names for new file are valid or recursion occurs.
         // If rename is on OTG, we are skipping
         if (!(oldFile.mode.equals(newFile.mode) && oldFile.mode.equals(OpenMode.OTG))
-            && !Operations.isFileNameValid(newFile.getSimpleName())) {
+            && !Operations.isFileNameValid(newFile.getName(context))) {
           errorCallBack.invalidName(newFile);
           return null;
         }
@@ -513,7 +513,7 @@ public class Operations {
             errorCallBack.exists(newFile);
             return null;
           }
-          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getSimpleName()));
+          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
           return null;
         } else {
 

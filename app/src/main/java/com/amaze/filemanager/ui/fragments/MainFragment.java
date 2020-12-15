@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS;
@@ -44,6 +45,7 @@ import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
+import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -54,7 +56,6 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
@@ -129,7 +130,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   public ActionMode mActionMode;
   // TODO refactor
-  public int sortby, dsort, asc;
+  public int sortby;
+  public int dsort;
+  public int asc;
   public String home;
   public boolean selection, results = false;
   public OpenMode openMode = OpenMode.FILE;
@@ -307,7 +310,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 if (!IS_LIST) {
                   loadViews();
                 }
-                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.JELLY_BEAN) {
+                if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
                   mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 } else {
                   mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -478,8 +481,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             return true;
           }
 
-          if (getMainActivity().mReturnIntent)
-            if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
+          if (getMainActivity().mReturnIntent && Build.VERSION.SDK_INT >= JELLY_BEAN) {
+            showOption(R.id.openmulti, menu);
+          }
           // tv.setText(positions.size());
           if (!results) {
             hideOption(R.id.openparent, menu);
@@ -1187,7 +1191,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   .rename(
                       openMode,
                       f.getPath(),
-                      Uri.parse(CURRENT_PATH).buildUpon().appendPath(name1).build().toString(),
+                      Uri.parse(CURRENT_PATH)
+                          .buildUpon()
+                          .appendEncodedPath(name1)
+                          .build()
+                          .toString(),
                       getActivity(),
                       getMainActivity().isRootExplorer());
             },
