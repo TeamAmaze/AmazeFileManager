@@ -28,7 +28,7 @@ import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
-import com.amaze.filemanager.utils.OpenMode.SMB
+import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import jcifs.smb.SmbException
 import org.junit.After
 import org.junit.Assert.assertFalse
@@ -75,7 +75,7 @@ class SmbHybridFileTest {
      */
     @Test
     fun testDeleteOk() {
-        val file = HybridFile(SMB, "smb://user:password@1.2.3.4/just/a/file.txt")
+        val file = HybridFile(OpenMode.SMB, "smb://user:password@1.2.3.4/just/a/file.txt")
         file.delete(ctx, false)
         assertFalse(file.exists())
     }
@@ -87,7 +87,7 @@ class SmbHybridFileTest {
      */
     @Test(expected = SmbException::class)
     fun testDeleteAccessDenied() {
-        val file = HybridFile(SMB, PATH_CANNOT_DELETE_FILE)
+        val file = HybridFile(OpenMode.SMB, PATH_CANNOT_DELETE_FILE)
         file.delete(ctx, false)
         assertTrue(file.exists())
     }
