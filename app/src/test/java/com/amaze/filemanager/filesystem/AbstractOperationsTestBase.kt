@@ -82,9 +82,9 @@ abstract class AbstractOperationsTestBase {
     }
 
     protected fun testRenameFileAccessDenied(
-            fileMode: OpenMode,
-            oldFilePath: String,
-            newFilePath: String
+        fileMode: OpenMode,
+        oldFilePath: String,
+        newFilePath: String
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) TestUtils.initializeInternalStorage()
 

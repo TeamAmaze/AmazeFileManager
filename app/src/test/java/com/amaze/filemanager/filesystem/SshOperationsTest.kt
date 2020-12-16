@@ -21,10 +21,10 @@
 package com.amaze.filemanager.filesystem
 
 import android.os.Build.VERSION_CODES.*
+import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowCryptUtil
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import org.junit.Test
 import org.robolectric.annotation.Config
 

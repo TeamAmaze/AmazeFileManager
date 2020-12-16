@@ -24,11 +24,11 @@ import android.content.Context
 import android.os.Build.VERSION_CODES.*
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import jcifs.smb.SmbException
 import org.junit.After
 import org.junit.Assert.assertFalse
