@@ -24,6 +24,7 @@ package com.amaze.filemanager.asynchronous.services.ftp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.util.Log;
 
 public class FtpReceiver extends BroadcastReceiver {
@@ -38,7 +39,11 @@ public class FtpReceiver extends BroadcastReceiver {
       Intent service = new Intent(context, FtpService.class);
       service.putExtras(intent);
       if (intent.getAction().equals(FtpService.ACTION_START_FTPSERVER) && !FtpService.isRunning()) {
-        context.startService(service);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          context.startForegroundService(service);
+        } else {
+          context.startService(service);
+        }
       } else if (intent.getAction().equals(FtpService.ACTION_STOP_FTPSERVER)) {
         context.stopService(service);
       }

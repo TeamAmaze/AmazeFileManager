@@ -150,8 +150,7 @@ public class ZipService extends AbstractProgressiveService {
     super.progressHalted();
     asyncTask = new CompressAsyncTask(this, baseFiles, mZipPath);
     asyncTask.execute();
-    // If we get killed, after returning from here, restart
-    return START_STICKY;
+    return START_NOT_STICKY;
   }
 
   @Override

@@ -41,6 +41,7 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.text.format.Formatter;
 
 import androidx.core.app.NotificationCompat;
@@ -181,7 +182,11 @@ public class ServiceWatcherUtil {
   public static synchronized void runService(final Context context, final Intent intent) {
     switch (pendingIntents.size()) {
       case 0:
-        context.startService(intent);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+          context.startForegroundService(intent);
+        } else {
+          context.startService(intent);
+        }
         break;
       case 1:
         // initialize waiting handlers
@@ -232,7 +237,6 @@ public class ServiceWatcherUtil {
       if (watcherRepeatingRunnable == null || !watcherRepeatingRunnable.isAlive()) {
         if (pendingIntents.size() == 0) {
           cancel(false);
-          return;
         } else {
           if (pendingIntents.size() == 1) {
             notificationManager.cancel(NotificationConstants.WAIT_ID);
@@ -240,9 +244,12 @@ public class ServiceWatcherUtil {
 
           final Context context = this.context.get();
           if (context != null) {
-            context.startService(pendingIntents.element());
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+              context.startForegroundService(pendingIntents.element());
+            } else {
+              context.startService(pendingIntents.element());
+            }
             cancel(true);
-            return;
           }
         }
       }
