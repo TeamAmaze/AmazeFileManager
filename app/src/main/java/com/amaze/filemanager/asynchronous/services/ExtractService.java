@@ -333,7 +333,6 @@ public class ExtractService extends AbstractProgressiveService {
             AppConfig.toast(
                 extractService,
                 extractService.getString(R.string.error_unsupported_v5_rar, compressedPath));
-            paused = false;
             return false;
           } else {
             Log.e(TAG, "Error while extracting file " + compressedPath, e);
