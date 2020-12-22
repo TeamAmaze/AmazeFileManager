@@ -55,6 +55,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.notifications.FtpNotification;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
 
 import android.app.AlarmManager;
 import android.app.Notification;
@@ -92,6 +93,8 @@ public class FtpService extends Service implements Runnable {
       Environment.getExternalStorageDirectory().getAbsolutePath();
   public static final String INITIALS_HOST_FTP = "ftp://";
   public static final String INITIALS_HOST_SFTP = "ftps://";
+
+  private final IBinder binder = new ObtainableServiceBinder<>(this);
 
   private static final String WIFI_AP_ADDRESS_PREFIX = "192.168.43.";
   private static final char[] KEYSTORE_PASSWORD = "vishal007".toCharArray();
@@ -150,7 +153,7 @@ public class FtpService extends Service implements Runnable {
 
   @Override
   public IBinder onBind(Intent intent) {
-    return null;
+    return binder;
   }
 
   @Override
@@ -285,8 +288,9 @@ public class FtpService extends Service implements Runnable {
   public static boolean isConnectedToLocalNetwork(Context context) {
     ConnectivityManager cm =
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+    boolean connected = false;
     NetworkInfo ni = cm.getActiveNetworkInfo();
-    boolean connected =
+    connected =
         ni != null
             && ni.isConnected()
             && (ni.getType() & (ConnectivityManager.TYPE_WIFI | ConnectivityManager.TYPE_ETHERNET))
@@ -309,7 +313,7 @@ public class FtpService extends Service implements Runnable {
   public static boolean isConnectedToWifi(Context context) {
     ConnectivityManager cm =
         (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-    NetworkInfo ni = cm.getActiveNetworkInfo();
+    @Nullable NetworkInfo ni = cm.getActiveNetworkInfo();
     return ni != null && ni.isConnected() && ni.getType() == ConnectivityManager.TYPE_WIFI;
   }
 
@@ -320,6 +324,7 @@ public class FtpService extends Service implements Runnable {
     return enabled != null ? enabled : false;
   }
 
+  @Nullable
   public static InetAddress getLocalInetAddress(Context context) {
     if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
       return null;
@@ -359,7 +364,7 @@ public class FtpService extends Service implements Runnable {
     return null;
   }
 
-  public static InetAddress intToInet(int value) {
+  private static InetAddress intToInet(int value) {
     byte[] bytes = new byte[4];
     for (int i = 0; i < 4; i++) {
       bytes[i] = byteOfInt(value, i);
@@ -372,12 +377,12 @@ public class FtpService extends Service implements Runnable {
     }
   }
 
-  public static byte byteOfInt(int value, int which) {
+  private static byte byteOfInt(int value, int which) {
     int shift = which * 8;
     return (byte) (value >> shift);
   }
 
-  public static int getPort(SharedPreferences preferences) {
+  private static int getPort(SharedPreferences preferences) {
     return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT);
   }
 

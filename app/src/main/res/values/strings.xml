@@ -698,5 +698,6 @@
     <string name="ftp_readonly">Read-only access</string>
     <string name="legacy_listing_title">Use legacy listing for root</string>
     <string name="legacy_listing_summary">If enabled, uses stat for listing, else uses ls</string>
+    <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
 </resources>
 

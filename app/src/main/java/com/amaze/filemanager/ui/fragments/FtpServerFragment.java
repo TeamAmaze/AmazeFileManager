@@ -34,6 +34,7 @@ import org.greenrobot.eventbus.ThreadMode;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -85,7 +86,7 @@ public class FtpServerFragment extends Fragment {
 
   private AppCompatEditText usernameEditText, passwordEditText;
   private TextInputLayout usernameTextInput, passwordTextInput;
-  private AppCompatCheckBox anonymousCheckBox, secureCheckBox, readonlyCheckBox;
+  private AppCompatCheckBox anonymousCheckBox;
   private Button ftpBtn;
   private int accentColor;
   private Spanned spannedStatusNoConnection, spannedStatusConnected, spannedStatusUrl;
@@ -252,9 +253,6 @@ public class FtpServerFragment extends Fragment {
                   setFTPPassword(passwordEditText.getText().toString());
                 }
               }
-
-              setSecurePreference(secureCheckBox.isChecked());
-              setReadonlyPreference(readonlyCheckBox.isChecked());
             });
 
         loginDialogBuilder
@@ -263,6 +261,19 @@ public class FtpServerFragment extends Fragment {
             .build()
             .show();
 
+        return true;
+      case R.id.checkbox_ftp_readonly:
+        boolean shouldReadonly = !item.isChecked();
+        item.setChecked(shouldReadonly);
+        setReadonlyPreference(shouldReadonly);
+        updatePathText();
+        promptUserToRestartServer();
+        return true;
+      case R.id.checkbox_ftp_secure:
+        boolean shouldSecure = !item.isChecked();
+        item.setChecked(shouldSecure);
+        setSecurePreference(shouldSecure);
+        promptUserToRestartServer();
         return true;
       case R.id.ftp_timeout:
         MaterialDialog.Builder timeoutBuilder = new MaterialDialog.Builder(getActivity());
@@ -304,6 +315,8 @@ public class FtpServerFragment extends Fragment {
   @Override
   public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
     getMainActivity().getMenuInflater().inflate(R.menu.ftp_server_menu, menu);
+    menu.findItem(R.id.checkbox_ftp_readonly).setChecked(getReadonlyPreference());
+    menu.findItem(R.id.checkbox_ftp_secure).setChecked(getSecurePreference());
   }
 
   private BroadcastReceiver mWifiReceiver =
@@ -461,8 +474,16 @@ public class FtpServerFragment extends Fragment {
 
     port.setText(
         getResources().getString(R.string.ftp_port) + ": " + getDefaultPortFromPreferences());
-    sharedPath.setText(
-        getResources().getString(R.string.ftp_path) + ": " + getDefaultPathFromPreferences());
+    updatePathText();
+  }
+
+  private void updatePathText() {
+    StringBuilder sb =
+        new StringBuilder(getResources().getString(R.string.ftp_path))
+            .append(": ")
+            .append(getDefaultPathFromPreferences());
+    if (getReadonlyPreference()) sb.append(" \uD83D\uDD12");
+    sharedPath.setText(sb.toString());
   }
 
   /** Updates the status spans */
@@ -526,8 +547,6 @@ public class FtpServerFragment extends Fragment {
     usernameTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_username);
     passwordTextInput = loginDialogView.findViewById(R.id.text_input_dialog_ftp_password);
     anonymousCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_anonymous);
-    secureCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_secure);
-    readonlyCheckBox = loginDialogView.findViewById(R.id.checkbox_ftp_readonly);
 
     anonymousCheckBox.setOnCheckedChangeListener(
         (buttonView, isChecked) -> {
@@ -548,9 +567,6 @@ public class FtpServerFragment extends Fragment {
       usernameEditText.setText(getUsernameFromPreferences());
       passwordEditText.setText(getPasswordFromPreferences());
     }
-
-    secureCheckBox.setChecked(getSecurePreference());
-    readonlyCheckBox.setChecked(getReadonlyPreference());
   }
 
   /** @return address at which server is running */
@@ -683,6 +699,10 @@ public class FtpServerFragment extends Fragment {
         .edit()
         .putBoolean(FtpService.KEY_PREFERENCE_READONLY, isReadonly)
         .apply();
+  }
+
+  private void promptUserToRestartServer() {
+    if (FtpService.isRunning()) AppConfig.toast(getContext(), R.string.ftp_prompt_restart_server);
   }
 
   private void promptUserToEnableWireless(@Nullable NetworkInfo ni) {
