@@ -10,6 +10,7 @@ on:
     branches:
       - 'master'
       - 'release/*'
+      - 'hotfix/*'
 
 jobs:
   build:
@@ -26,7 +27,7 @@ jobs:
         run: |
           ./gradlew assembledebug --stacktrace
       - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace
+        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info
       - name: Publish test cases
         run: |
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}

@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.ssh.test;
 
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static org.robolectric.Shadows.shadowOf;
+
 import java.io.IOException;
 import java.io.StringWriter;
 import java.security.KeyPair;
@@ -30,14 +33,15 @@ import java.security.SecureRandom;
 
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
 
-import com.amaze.filemanager.database.UtilitiesDatabase;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
+import android.os.Looper;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.test.core.app.ApplicationProvider;
 
 import net.schmizz.sshj.common.SecurityUtils;
 
@@ -59,10 +63,8 @@ public abstract class TestUtils {
       @NonNull String validUsername,
       @Nullable String validPassword,
       @Nullable PrivateKey privateKey) {
-    UtilitiesDatabase utilitiesDatabase =
-        UtilitiesDatabase.initialize(ApplicationProvider.getApplicationContext());
-    UtilsHandler utilsHandler =
-        new UtilsHandler(ApplicationProvider.getApplicationContext(), utilitiesDatabase);
+
+    UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
 
     String privateKeyContents = null;
     if (privateKey != null) {
@@ -77,7 +79,7 @@ public abstract class TestUtils {
       privateKeyContents = writer.toString();
     }
 
-    StringBuilder fullUri = new StringBuilder().append("ssh://").append(validUsername);
+    StringBuilder fullUri = new StringBuilder().append(SSH_URI_PREFIX).append(validUsername);
 
     if (validPassword != null) fullUri.append(':').append(validPassword);
 
@@ -101,5 +103,7 @@ public abstract class TestUtils {
               SecurityUtils.getFingerprint(hostKeyPair.getPublic()),
               "id_rsa",
               privateKeyContents));
+
+    shadowOf(Looper.getMainLooper()).idle();
   }
 }

@@ -50,6 +50,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"
         android:label="@string/appbar_name"
+        android:requestLegacyExternalStorage="true"
         android:banner="@drawable/about_header">
 
         <activity
@@ -160,6 +161,11 @@
         <activity android:name=".ui.activities.AboutActivity"
             android:theme="@style/aboutBlack"
             android:label="About"
+            />
+
+        <activity android:name=".crashreport.ErrorActivity"
+            android:theme="@style/appCompatBlack"
+            android:label="Error"
             />
 
         <service

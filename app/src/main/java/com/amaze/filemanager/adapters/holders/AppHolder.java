@@ -39,6 +39,7 @@ public class AppHolder extends RecyclerView.ViewHolder {
   public final RelativeLayout rl;
   public final TextView txtDesc;
   public final ImageButton about;
+  public final RelativeLayout summary;
 
   public AppHolder(View view) {
     super(view);
@@ -48,6 +49,7 @@ public class AppHolder extends RecyclerView.ViewHolder {
     rl = view.findViewById(R.id.second);
     txtDesc = view.findViewById(R.id.date);
     about = view.findViewById(R.id.properties);
+    summary = view.findViewById(R.id.summary);
 
     apkIcon.setVisibility(View.VISIBLE);
   }

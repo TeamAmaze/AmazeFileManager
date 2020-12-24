@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.files;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.lessThan;
 import static org.junit.Assert.assertEquals;
@@ -42,7 +45,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
  * "*{slash}*"
  */
 @RunWith(AndroidJUnit4.class)
-@Config(shadows = {ShadowMultiDex.class, ShadowDateFormat.class})
+@Config(
+    shadows = {ShadowMultiDex.class, ShadowDateFormat.class},
+    sdk = {JELLY_BEAN, KITKAT, P})
 public class FileListSorterTest {
   /**
    * Purpose: when dirsOnTop is 0, if file1 is directory && file2 is not directory, result is -1

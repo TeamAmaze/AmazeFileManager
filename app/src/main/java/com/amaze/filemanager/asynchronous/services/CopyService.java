@@ -34,17 +34,17 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
+import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
+import com.amaze.filemanager.filesystem.root.MoveFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.RootUtils;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -448,8 +448,11 @@ public class CopyService extends AbstractProgressiveService {
       void copyRoot(HybridFileParcelable sourceFile, HybridFile targetFile, boolean move) {
 
         try {
-          if (!move) RootUtils.copy(sourceFile.getPath(), targetFile.getPath());
-          else if (move) RootUtils.move(sourceFile.getPath(), targetFile.getPath());
+          if (!move) {
+            CopyFilesCommand.INSTANCE.copyFiles(sourceFile.getPath(), targetFile.getPath());
+          } else if (move) {
+            MoveFileCommand.INSTANCE.moveFile(sourceFile.getPath(), targetFile.getPath());
+          }
           ServiceWatcherUtil.position += sourceFile.getSize();
         } catch (ShellNotRunningException e) {
           e.printStackTrace();
@@ -508,53 +511,6 @@ public class CopyService extends AbstractProgressiveService {
           copyUtil.copy(sourceFile, targetFile);
         }
       }
-    }
-  }
-
-  // check if copy is successful
-  // avoid using the method as there is no way to know when we would be returning from command
-  // callbacks
-  // rather confirm from the command result itself, inside it's callback
-  boolean checkFiles(HybridFile hFile1, HybridFile hFile2) throws ShellNotRunningException {
-    if (RootHelper.isDirectory(hFile1.getPath(), isRootExplorer, 5)) {
-      if (RootHelper.fileExists(hFile2.getPath())) return false;
-      ArrayList<HybridFileParcelable> baseFiles =
-          RootHelper.getFilesList(hFile1.getPath(), true, true, null);
-      if (baseFiles.size() > 0) {
-        boolean b = true;
-        for (HybridFileParcelable baseFile : baseFiles) {
-          if (!checkFiles(
-              new HybridFile(baseFile.getMode(), baseFile.getPath()),
-              new HybridFile(hFile2.getMode(), hFile2.getPath() + "/" + (baseFile.getName(c)))))
-            b = false;
-        }
-        return b;
-      }
-      return RootHelper.fileExists(hFile2.getPath());
-    } else {
-      ArrayList<HybridFileParcelable> baseFiles =
-          RootHelper.getFilesList(hFile1.getParent(c), true, true, null);
-      int i = -1;
-      int index = -1;
-      for (HybridFileParcelable b : baseFiles) {
-        i++;
-        if (b.getPath().equals(hFile1.getPath())) {
-          index = i;
-          break;
-        }
-      }
-      ArrayList<HybridFileParcelable> baseFiles1 =
-          RootHelper.getFilesList(hFile1.getParent(c), true, true, null);
-      int i1 = -1;
-      int index1 = -1;
-      for (HybridFileParcelable b : baseFiles1) {
-        i1++;
-        if (b.getPath().equals(hFile1.getPath())) {
-          index1 = i1;
-          break;
-        }
-      }
-      return baseFiles.get(index).getSize() == baseFiles1.get(index1).getSize();
     }
   }
 

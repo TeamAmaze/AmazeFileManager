@@ -20,7 +20,10 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.P;
 import static androidx.test.core.app.ActivityScenario.launch;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
@@ -34,7 +37,6 @@ import java.util.concurrent.TimeUnit;
 
 import org.junit.After;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
@@ -57,11 +59,13 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
+    sdk = {JELLY_BEAN, KITKAT, P},
     shadows = {
       ShadowMultiDex.class,
       ShadowStorageManager.class,
@@ -76,15 +80,13 @@ import io.reactivex.schedulers.Schedulers;
 @LooperMode(LooperMode.Mode.PAUSED)
 public class MainActivityTest {
 
-  @BeforeClass
-  public static void setUpBeforeClass() {
-    RxJavaPlugins.reset();
-    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
-  }
-
   @Before
   public void setUp() {
     if (Build.VERSION.SDK_INT >= N) TestUtils.initializeInternalStorage();
+    RxJavaPlugins.reset();
+    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+    RxAndroidPlugins.reset();
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
   }
 
   @After

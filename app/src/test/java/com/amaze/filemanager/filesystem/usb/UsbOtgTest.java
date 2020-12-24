@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem.usb;
 
+import static android.os.Build.VERSION_CODES.N;
+import static android.os.Build.VERSION_CODES.P;
 import static com.amaze.filemanager.filesystem.usb.ReflectionHelpers.addUsbOtgDevice;
 import static org.junit.Assert.assertTrue;
 
@@ -45,7 +47,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class},
-    minSdk = 24)
+    minSdk = N,
+    maxSdk = P)
 public class UsbOtgTest {
 
   @Test

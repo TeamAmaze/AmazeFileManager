@@ -45,6 +45,7 @@
     <string name="loading">Chargement en cours&#8230;</string>
     <string name="file_empty">Le fichier est vide</string>
     <string name="error">Erreur</string>
+    <string name="search_results">Résultats de recherche de %s</string>
     <string name="rename">Renommer</string>
     <string name="save">Sauvegarder</string>
     <string name="bookmarks_added">Favoris ajoutés</string>
@@ -80,6 +81,7 @@
     <string name="question_set_path_as_home">Voulez-vous définir l\'emplacement actuel comme page d\'accueil pour cet onglet ?</string>
     <string name="directorysort">Option de tri des répertoires</string>
     <string name="sort_by">Trier par :</string>
+    <string name="sort_only_this">Uniquement ce dossier</string>
     <string name="theme">Thème</string>
     <string name="random">Apparence aléatoire</string>
     <string name="random_summary">Définir une couleur d\'apparence aléatoire au démarrage</string>
@@ -104,6 +106,7 @@
     <string name="light">Clair</string>
     <string name="dark">Sombre</string>
     <string name="daytime">Jour</string>
+    <string name="black">Noir (pour OLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Dossier en haut</string>
@@ -122,6 +125,7 @@
     <string name="skip">Ignorer</string>
     <string name="overwrite">Écraser</string>
     <string name="not_allowed">Non autorisé</string>
+    <string name="searching">Recherche sur %s</string>
     <string name="done">Terminé</string>
     <string name="set">Définir</string>
     <string name="enablerootmde">Activer le Mode Root</string>
@@ -245,6 +249,7 @@
     <string name="anonymous">Anonyme</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="folders">Dossiers</string>
+    <string name="folderfilecount">%1$d dossiers et %2$d fichiers</string>
     <string name="videos">Vidéos</string>
     <string name="apks">Apks</string>
     <string name="documents">Documents</string>
@@ -307,6 +312,8 @@
         pour l\'onglet de droite.</string>
     <string name="support_development">Aider au développement</string>
     <string name="report_bugs_title">Signaler un bug</string>
+    <string name="source_title">Code source</string>
+    <string name="source_summary">Consultez notre code source sur GitHub</string>
     <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
     <string name="translate_title">Traduire</string>
     <string name="translate_summary">Traduire Amaze dans votre langue</string>
@@ -491,6 +498,7 @@
     <string name="crypt_fingerprint_authenticate">Appuyez sur le capteur pour continuer</string>
     <string name="authenticate_password">Saisissez le mot de passe</string>
 
+    <string name="sidebar_preferences">Barre latérale</string>
     <string name="sidebar_folders_title">Raccourcis de la barre latérale</string>
     <string name="sidebar_quick_access_title">Accès rapide à la barre latérale</string>
     <string name="show_folders_pref_title">Afficher les raccourcis</string>
@@ -519,13 +527,144 @@
 	
 	<string name="byte_singular">octet</string>
 	<string name="bytes">Octets</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">Le fichier doit avoir un nom</string>
+    <string name="add_item">Ajouter un item</string>
+    <string name="failed_smb_decrypt_path">Échec du chargement de la connexion SMB</string>
+    <string name="failed_cloud_new_connection">Échec de l\'ajout d\'une nouvelle connexion au Cloud</string>
+    <string name="failed_cloud_api_key">Échec de l\'authentification du plug-in Cloud</string>
+
+    <string name="local_inet_addr_error">Erreur lors de l\'obtention de l\'adresse inet locale</string>
+    <string name="intent_save_as">Enregistrer sous&#8230;</string>
+    <string name="go">Aller</string>
+    <string name="advanced">Avancé</string>
+    <string name="typeable_paths_title">Chemins personnalisés</string>
+    <string name="typeable_paths_summary">Appuyez longuement sur la barre de chemin pour saisir un chemin personnalisé</string>
+    <string name="send_email_to">Envoyer un courriel à</string>
+
+    <string name="text_editor">Paramètres de l\'éditeur de texte</string>
+    <string name="preference_newstack_title">Ouvrir les fichiers en tant que nouvelle tâche</string>
+    <string name="preference_newstack_summary">Vous permet d\'ouvrir des fichiers dans des tâches séparées. Vous pouvez y accéder à partir de l\'écran des dernières versions du système.</string>
+    <string name="developers">Développeurs</string>
+    <string name="no_bitcoin_app">Veuillez installer une application Bitcoin Wallet</string>
+    <string name="channel_name_normal">Notifications Amaze</string>
+    <string name="channel_description_normal">Notifications d\'Amaze File Manager</string>
+    <string name="channel_name_ftp">Serveur FTP Amaze</string>
+    <string name="channel_description_ftp">Notifications du serveur FTP Amaze File Manager</string>
+
+    <string name="processing">En traitement&#8230;</string>
+    <string name="failed_no_connection">Échec du chargement des fichiers. Veuillez vérifier votre connexion.</string>
+
+    <string name="update">MISE À JOUR</string>
+	<string name="scp_connection">Connexion SCP/SFTP</string>
     <string name="scp_port">Port</string>
+    <string name="ssh_host_key_verification_prompt">L\'authenticité de l\'hôte \'%1$s\' ne peut pas être établi.\n\n%2$sl\'empreinte digitale clé est %3$s.\n\nVeuillez appuyer sur «Oui» pour confirmer l\'identité; sinon, veuillez appuyez sur \"Non\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Vérifier l\'hôte</string>
+    <string name="ssh_select_pem_button">Clé privée SSH</string>
+    <string name="ssh_pem_key_parse_error">Impossible de lire le PEM sélectionné: %s</string>
+    <string name="password_unchanged">(inchangé)</string>
+    <string name="ssh_authentication_failure_password">Échec de la connexion: impossible de s\'authentifier avec le nom d\'utilisateur et le mot de passe fournis.</string>
+    <string name="ssh_authentication_failure_key">Échec de la connexion: impossible de s\'authentifier avec le nom d\'utilisateur et la clé privée fournis.</string>
+    <string name="ssh_connect_failed">Impossible de se connecter %1$s:%2$d:%3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">AVERTISSEMENT: L\'IDENTIFICATION DE L\'HÔTE À DISTANCE A CHANGÉ!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">IL EST POSSIBLE QUE QUELQU\'UN FASSE QUELQUE CHOSE DE MAUVAIS!\n\nQuelqu\'un pourrait vous écouter en ce moment (attaque de l\'homme du milieu)! Il est également possible que la clé d\'hôte vienne d\'être modifiée. L\'empreinte digitale de la clé publique envoyée par l\'hôte distant ne correspond pas à celle stockée dans Amaze.\n\nVeuillez contacter votre administrateur système ou établir une nouvelle connexion pour continuer à vous connecter au serveur.</string>
+    <string name="ssh_key_prompt_passphrase">Veuillez entrer la phrase de passe clé.</string>
+    <string name="add_shortcut_not_supported_by_launcher">La création de raccourcis n\'est pas prise en charge par votre lanceur.</string>
+    
     <string name="select_color_config">Configurer les couleurs</string>
+    <string name="customize">Personnaliser</string>
+    <string name="custom">Personnalisation</string>
     <string name="preselected_configs_title">Couleurs préconfigurées</string>
     <string name="orange">Orange</string>
     <string name="blue">Bleu</string>
     <string name="green">Vert</string>
+    <string name="password_no_match">Le mot de passe ne correspond pas</string>
+    <string name="deselect_all">Tout déselectionner</string>
+    <string name="filename">Nom de fichier</string>
+    <string name="compress_file_suggest_zip_extension">Il est recommandé d\'utiliser \".zip\" comme extension de fichier.</string>
+    <string name="about_amaze">Gestionnaire de fichiers de conception matérielle pour Android</string>
+    <string name="license">Licence</string>
+    <string name="libraries">Librairies</string>
+    <string name="password_repeat">Répéter le mot de passe</string>
+    <string name="create_file_suggest_txt_extension">Il est recommandé d\'utiliser \".txt\" comme extension de fichier.</string>
+    <string name="ssh_select_pem">Sélectionnez la clé privée pour l\'authentification</string>
+    <string name="ssh_key_invalid_passphrase">Mot de passe de clé non valide.</string>
+    <string name="encryption_fail_copy">Échec de la mise à jour de l\'entrée de cryptage dans la base de données</string>
+    <string name="extracted">Extrait</string>
+    <string name="compressed">Compressé</string>
+    <string name="processed">Traité</string>
+    <string name="no_obtainable_info">Il n\'y a aucune information sur ce dossier</string>
+    <string name="reopen_from_source">Impossible, veuillez réouvrir la dernière application</string>
+    <string name="no_file_error">Quelque chose s\'est mal passé, il n\'y a rien à ouvrir</string>
+    <string name="file_read_only">Le fichier ouvert est en lecture seule.</string>
     <string name="got_it">OK !</string>
+    <string name="encrypt_file_save_as">Enregistrer le fichier crypté sous&#8230;</string>
+    <string name="encrypt_folder_save_as">Enregistrer le dossier crypté sous&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Les fichiers cryptés doivent utiliser \".aze\" comme extension de fichier.</string>
+    <string name="cannot_overwrite">Impossible d\'écraser le fichier.</string>
+    <string name="saved_single_file">Fichier enregistré sous le nom de \'%s\'.</string>
+    <string name="saved_multi_files">%d fichiers sauvegardés.</string>
+    <string name="create_hidden_file_warn">Le fichier créé sera masqué dans la liste des fichiers.</string>
+    <string name="grant_apkinstall_permission">L\'application a besoin d\'une autorisation pour continuer à installer les applications.</string>
+    <string name="time_remaining">Temps restant</string>
+    <string name="transfer_rate">Taux de transfert</string>
+    <string name="unknown">inconnue</string>
+    <string name="multiple_invalid_archive_entries">Certains fichiers de l\'archive ne peuvent pas être extraits; l\'archive peut être endommagée ou provenir d\'une source malveillante.</string>
+    <string name="saf_otg_explanation">Vous allez maintenant accéder au système de fichiers d\'Android pour des raisons de sécurité. Veuillez sélectionner le périphérique USB dans la liste de gauche.</string>
+    <string name="donation_thanks">Merci pour le don, cela nous motive! :D</string>
+    <string name="enable_marquee_filename">Activer l\'effet de sélection pour les noms de fichiers</string>
+    <string name="archive_password_prompt">Veuillez saisir le mot de passe d\'archivage:</string>
+    <string name="cannot_extract_archive">Impossible d\'extraire l\'archive \"%s\":%s</string>
+    <string name="archive_unsupported_or_corrupt">Impossible d\'ouvrir l\'archive \"%s\". Soit nous ne pouvons pas ouvrir l\'archive, soit l\'archive a été endommagée.</string>
     <string name="close">Fermer</string>
-    </resources>
+    <string name="bookmark_exists">Le signet existe</string>
+    <string name="hide_media">Masquer des navigateurs multimédias</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">IL EST POSSIBLE QUE QUELQU\'UN FASSE QUELQUE CHOSE DE MAUVAIS!\n\nQuelqu\'un pourrait vous écouter en ce moment (attaque de l\'homme du milieu)! Il est également possible que la clé d\'hôte vienne d\'être modifiée. L\'empreinte digitale de la clé publique envoyée par l\'hôte distant ne correspond pas à celle stockée dans Amaze.\n\nVous pouvez procéder à la mise à jour de l\'empreinte digitale de l\'hôte ou annuler la mise à jour des paramètres de connexion SSH.</string>
+    <string name="update_host_key">Mettre à jour la clé d\'hôte</string>
+    <string name="cancel_recommended">Annuler (recommandé)</string>
+    <string name="failed_install_apk">Échec de l\'installation</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Stockage interne</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">carte SD</string>
+    <string name="choose_folder">Choisissez ce dossier</string>
+    <string name="some_files_failed_invalid_operation">Certains fichiers ont échoué en raison d\'une opération non valide</string>
+    <string name="ftp_server_prompt_connect_to_network">Connectez-vous à un réseau ou activez AP</string>
+    <string name="ftp_server_open_settings">Ouvrir les paramètres</string>
+    <string name="move">Déplacer</string>
+    <string name="select_save_location">Sélectionnez l\'emplacement pour enregistrer</string>
+    <string name="scp_default_path">Chemin par défaut (facultatif)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Désolé, cela n\'aurait pas dû arriver.</string>
+    <string name="error_report_button_text">Signaler cette erreur par e-mail</string>
+    <string name="error_report_button_telegram">Signaler cette erreur par télégramme</string>
+    <string name="copy_for_github">Copier le rapport formaté</string>
+    <string name="error_report_open_issue_button_text">Rapport sur GitHub</string>
+    <string name="error_report_open_github_notice">Veuillez vérifier si un sujet traitant de votre accident existe déjà.</string>
+    <string name="error_snackbar_message">Désolé, quelque chose s\'est mal passé.</string>
+    <string name="error_snackbar_action">Rapport</string>
+    <string name="what_device_headline">Info:</string>
+    <string name="what_happened_headline">Qu\'est-il arrivé:</string>
+    <string name="info_labels">Quoi:\\nRequête:\\nGMT Heure:\\nPackage:\\nVersion:\\nOS version:\\nPériphérique:\\nModèle:\\nProduit:</string>
+    <string name="your_comment">Votre commentaire (en anglais):</string>
+    <string name="error_details_headline">Détails:</string>
+    <string name="app_ui_crash">L\'application/UI a planté</string>
+    <string name="error_report_title">Rapport d\'erreur</string>
+    <string name="crash_report_copied">Rapport de plantage copié dans le presse-papiers</string>
+
+    <string name="disableIpcSignature">Désactiver la vérification de la signature IPC (Pour les anciens serveurs SMBv1 - RISQUÉ!)</string>
+    <string name="cannot_delete_file">Impossible de supprimer le fichier</string>
+    <string name="cannot_delete_file_with_reason">Impossible de supprimer le fichier - %s</string>
+    <string name="cannot_rename_file">Impossible de renommer le fichier %s - %s</string>
+    <string name="cannot_read_directory">Impossible de lire le répertoire %s - %s</string>
+    <string name="just_once">Juste une fois</string>
+    <string name="always">Toujours</string>
+    <string name="choose_different_app">Choisissez une application différente</string>
+    <string name="clear_open_file">Vider le cache</string>
+    <string name="clear_open_file_summary">Efface les applications d\'ouverture de fichiers sélectionnées par défaut</string>
+</resources>
 

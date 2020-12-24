@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.theme;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 

@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.views;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
@@ -28,20 +30,28 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatTextView;
+
 /**
  * Created by vishal on 18/1/17.
  *
- * <p>Class sets text color based on current theme, without explicit method call in app lifecycle
+ * <p>Class sets text color based on current theme, without explicit method call in app lifecycle To
+ * be used only under themed activity context
  */
-public class ThemedTextView extends TextView {
+public class ThemedTextView extends AppCompatTextView {
 
   public ThemedTextView(Context context, AttributeSet attrs) {
     super(context, attrs);
+    setTextViewColor(this, context);
+  }
+
+  public static void setTextViewColor(@NotNull TextView textView, @NonNull Context context) {
     if (((MainActivity) context).getAppTheme().equals(AppTheme.LIGHT)) {
-      setTextColor(Utils.getColor(getContext(), android.R.color.black));
+      textView.setTextColor(Utils.getColor(context, android.R.color.black));
     } else if (((MainActivity) context).getAppTheme().equals(AppTheme.DARK)
         || ((MainActivity) context).getAppTheme().equals(AppTheme.BLACK)) {
-      setTextColor(Utils.getColor(getContext(), android.R.color.white));
+      textView.setTextColor(Utils.getColor(context, android.R.color.white));
     }
   }
 }

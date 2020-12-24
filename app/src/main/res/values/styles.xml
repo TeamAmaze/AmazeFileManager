@@ -126,6 +126,16 @@
         <item name="android:textColor">@color/warningColor</item>
     </style>
 
+    <!-- Bottom sheet dialog -->
+    <style name="appBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="bottomSheetStyle">@style/appModalStyle</item>
+    </style>
+    <style name="appModalStyle" parent="Widget.Design.BottomSheet.Modal">
+        <item name="android:background">@android:color/transparent</item>
+        <item name="behavior_peekHeight">@dimen/material_sheet_peek_height</item>
+        <item name="behavior_hideable">false</item>
+    </style>
+
     <!-- styles for preferences -->
     <!-- light -->
     <style name="pref_accent_light_red" parent="appCompatLight">

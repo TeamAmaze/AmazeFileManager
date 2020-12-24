@@ -59,7 +59,6 @@ import android.widget.Toast;
 
 import androidx.documentfile.provider.DocumentFile;
 
-import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.SFTPClient;
 
@@ -321,7 +320,7 @@ public class CloudUtil {
         break;
       case SMB:
         try {
-          inputStream = new SmbFile(hybridFile.getPath()).getInputStream();
+          inputStream = hybridFile.getSmbFile().getInputStream();
         } catch (IOException e) {
           inputStream = null;
           e.printStackTrace();
