@@ -10,6 +10,14 @@
         android:id="@+id/ftp_login"
         android:title="@string/ftp_login" />
     <item
+        android:id="@+id/checkbox_ftp_secure"
+        android:title="@string/ftp_status_secure_connection"
+        android:checkable="true" />
+    <item
+        android:id="@+id/checkbox_ftp_readonly"
+        android:title="@string/ftp_readonly"
+        android:checkable="true" />
+    <item
         android:id="@+id/ftp_timeout"
         android:title="@string/ftp_timeout" />
 </menu>
