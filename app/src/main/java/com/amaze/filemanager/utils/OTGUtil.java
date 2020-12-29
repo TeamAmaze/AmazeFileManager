@@ -47,7 +47,7 @@ import androidx.annotation.RequiresApi;
 import androidx.documentfile.provider.DocumentFile;
 
 /** Created by Vishal on 27-04-2017. */
-public abstract class OTGUtil {
+public class OTGUtil {
 
   private static final String TAG = OTGUtil.class.getSimpleName();
 
