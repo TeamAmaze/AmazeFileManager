@@ -694,8 +694,10 @@
     <string name="choose_different_app">Choose different application</string>
     <string name="clear_open_file">Clear cache</string>
     <string name="clear_open_file_summary">Clears selected default file opening apps</string>
+    <string name="ftp_readonly">Read-only access</string>
     <string name="legacy_listing_title">Use legacy listing for root</string>
     <string name="legacy_listing_summary">If enabled, uses stat for listing, else uses ls</string>
     <string name="error_unsupported_v5_rar">RAR archive \"%s\" is unsupported RAR v5 archive.</string>
+    <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
 </resources>
 
