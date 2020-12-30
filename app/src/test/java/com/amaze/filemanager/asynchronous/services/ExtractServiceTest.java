@@ -85,6 +85,10 @@ public class ExtractServiceTest {
       new File(Environment.getExternalStorageDirectory(), "test-archive-encrypted.7z");
   private File listPasswordProtected7Zipfile =
       new File(Environment.getExternalStorageDirectory(), "test-archive-encrypted-list.7z");
+  private File multiVolumeRarFile =
+      new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v4.part1.rar");
+  private File multiVolumeRarFileV5 =
+      new File(Environment.getExternalStorageDirectory(), "test-multipart-archive-v5.part1.rar");
 
   private ExtractService service;
 
@@ -130,6 +134,12 @@ public class ExtractServiceTest {
     IOUtils.copy(
         getClass().getClassLoader().getResourceAsStream("test-archive-encrypted-list.7z"),
         new FileOutputStream(listPasswordProtected7Zipfile));
+    IOUtils.copy(
+        getClass().getClassLoader().getResourceAsStream("test-multipart-archive-v4.part1.rar"),
+        new FileOutputStream(multiVolumeRarFile));
+    IOUtils.copy(
+        getClass().getClassLoader().getResourceAsStream("test-multipart-archive-v5.part1.rar"),
+        new FileOutputStream(multiVolumeRarFileV5));
     service = Robolectric.setupService(ExtractService.class);
   }
 
@@ -254,6 +264,28 @@ public class ExtractServiceTest {
     performTest(listPasswordProtected7Zipfile);
     assertNull(ShadowToast.getLatestToast());
     assertNull(ShadowToast.getTextOfLatestToast());
+  }
+
+  @Test
+  public void testExtractMultiVolumeRar() {
+    performTest(multiVolumeRarFile);
+    assertNull(ShadowToast.getLatestToast());
+    assertNull(ShadowToast.getTextOfLatestToast());
+  }
+
+  @Test
+  public void testExtractMultiVolumeRarV5() {
+    performTest(multiVolumeRarFileV5);
+    shadowOf(getMainLooper()).runToEndOfTasks();
+    shadowOf(getMainLooper()).idle();
+    await()
+        .atMost(50, TimeUnit.SECONDS)
+        .until(
+            () -> {
+              ShadowLooper.idleMainLooper();
+              return ShadowToast.getLatestToast() != null
+                  && ShadowLooper.shadowMainLooper().isIdle();
+            });
   }
 
   private void performTest(@NonNull File archiveFile) {

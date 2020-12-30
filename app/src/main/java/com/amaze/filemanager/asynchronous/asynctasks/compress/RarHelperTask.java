@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -33,6 +34,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecom
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.github.junrar.Archive;
 import com.github.junrar.exception.RarException;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 import com.github.junrar.rarfile.FileHeader;
 
 import androidx.annotation.NonNull;
@@ -66,7 +68,7 @@ public class RarHelperTask extends CompressedHelperTask {
       String relativeDirDiffSeparator = relativeDirectory.replace(CompressedHelper.SEPARATOR, "\\");
 
       for (FileHeader rarArchive : zipfile.getFileHeaders()) {
-        String name = rarArchive.getFileNameString(); // This uses \ as separator, not /
+        String name = rarArchive.getFileName();
         if (!CompressedHelper.isEntryPathValid(name)) {
           continue;
         }
@@ -82,11 +84,15 @@ public class RarHelperTask extends CompressedHelperTask {
           elements.add(
               new CompressedObjectParcelable(
                   RarDecompressor.convertName(rarArchive),
-                  0,
-                  rarArchive.getDataSize(),
+                  rarArchive.getMTime().getTime(),
+                  rarArchive.getFullUnpackSize(),
                   rarArchive.isDirectory()));
         }
       }
+    } catch (UnsupportedRarV5Exception e) {
+      throw new ArchiveException("RAR v5 archives are not supported", e);
+    } catch (FileNotFoundException e) {
+      throw new ArchiveException("First part of multipart archive not found", e);
     } catch (RarException | IOException e) {
       throw new ArchiveException(String.format("RAR archive %s is corrupt", fileLocation));
     }

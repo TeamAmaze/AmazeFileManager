@@ -58,23 +58,23 @@ public class RarExtractor extends Extractor {
 
       // iterating archive elements to find file names that are to be extracted
       for (FileHeader header : rarFile.getFileHeaders()) {
-        if (CompressedHelper.isEntryPathValid(header.getFileNameString())) {
-          if (filter.shouldExtract(header.getFileNameString(), header.isDirectory())) {
+        if (CompressedHelper.isEntryPathValid(header.getFileName())) {
+          if (filter.shouldExtract(header.getFileName(), header.isDirectory())) {
             // header to be extracted is at least the entry path (may be more, when it is a
             // directory)
             arrayList.add(header);
             totalBytes += header.getFullUnpackSize();
           }
         } else {
-          invalidArchiveEntries.add(header.getFileNameString());
+          invalidArchiveEntries.add(header.getFileName());
         }
       }
 
-      listener.onStart(totalBytes, arrayList.get(0).getFileNameString());
+      listener.onStart(totalBytes, arrayList.get(0).getFileName());
 
       for (FileHeader entry : arrayList) {
         if (!listener.isCancelled()) {
-          listener.onUpdate(entry.getFileNameString());
+          listener.onUpdate(entry.getFileName());
           extractEntry(context, rarFile, entry, outputPath);
         }
       }
@@ -87,8 +87,7 @@ public class RarExtractor extends Extractor {
   private void extractEntry(
       @NonNull final Context context, Archive zipFile, FileHeader entry, String outputDir)
       throws RarException, IOException {
-    String name =
-        fixEntryName(entry.getFileNameString()).replaceAll("\\\\", CompressedHelper.SEPARATOR);
+    String name = fixEntryName(entry.getFileName()).replaceAll("\\\\", CompressedHelper.SEPARATOR);
     File outputFile = new File(outputDir, name);
 
     if (!outputFile.getCanonicalPath().startsWith(outputDir)) {
@@ -97,11 +96,13 @@ public class RarExtractor extends Extractor {
 
     if (entry.isDirectory()) {
       FileUtil.mkdir(outputFile, context);
+      outputFile.setLastModified(entry.getMTime().getTime());
       return;
     }
 
     if (!outputFile.getParentFile().exists()) {
       FileUtil.mkdir(outputFile.getParentFile(), context);
+      outputFile.getParentFile().setLastModified(entry.getMTime().getTime());
     }
     //	Log.i("Amaze", "Extracting: " + entry);
     BufferedInputStream inputStream = new BufferedInputStream(zipFile.getInputStream(entry));
@@ -119,6 +120,7 @@ public class RarExtractor extends Extractor {
     } finally {
       outputStream.close();
       inputStream.close();
+      outputFile.setLastModified(entry.getMTime().getTime());
     }
   }
 }

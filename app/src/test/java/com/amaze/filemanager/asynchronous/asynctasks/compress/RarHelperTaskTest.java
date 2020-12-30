@@ -20,11 +20,61 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.io.File;
+import java.util.ArrayList;
+
+import org.apache.commons.compress.archivers.ArchiveException;
+import org.junit.Test;
+
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 
 import android.os.Environment;
 
 public class RarHelperTaskTest extends AbstractCompressedHelperTaskTest {
+
+  @Test
+  public void testMultiVolumeRar() {
+    CompressedHelperTask task =
+        new RarHelperTask(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v4.part1.rar")
+                .getAbsolutePath(),
+            "",
+            false,
+            data -> {});
+    AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
+    assertNotNull(result);
+    assertNotNull(result.result);
+    assertEquals(1, result.result.size());
+    assertEquals("test.bin", result.result.get(0).name);
+    assertEquals(1024 * 128, result.result.get(0).size);
+  }
+
+  @Test
+  public void testMultiVolumeRarV5() {
+    CompressedHelperTask task =
+        new RarHelperTask(
+            new File(
+                    Environment.getExternalStorageDirectory(),
+                    "test-multipart-archive-v5.part1.rar")
+                .getAbsolutePath(),
+            "",
+            false,
+            data -> {});
+    AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
+    assertNotNull(result);
+    assertNull(result.result);
+    assertNotNull(result.exception);
+    assertEquals(ArchiveException.class, result.exception.getClass());
+    assertEquals(UnsupportedRarV5Exception.class, result.exception.getCause().getClass());
+  }
 
   @Override
   protected CompressedHelperTask createTask(String relativePath) {

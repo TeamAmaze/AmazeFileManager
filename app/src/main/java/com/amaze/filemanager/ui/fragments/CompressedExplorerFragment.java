@@ -48,7 +48,6 @@ import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.github.junrar.Archive;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.ComponentName;
@@ -105,7 +104,6 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   public CompressedExplorerAdapter compressedExplorerAdapter;
   public ActionMode mActionMode;
   public boolean coloriseIcons, showSize, showLastModified, gobackitem;
-  public Archive archive;
   public ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
   public MainActivity mainActivity;
   public RecyclerView listView;
