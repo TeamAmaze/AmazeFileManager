@@ -51,6 +51,7 @@ import net.schmizz.sshj.SSHClient;
  * {@link SSHClient} can ask for connection here with <code>getConnection(url)</code>.
  */
 public class SshConnectionPool {
+
   public static final int SSH_DEFAULT_PORT = 22;
 
   public static final String SSH_URI_PREFIX = "ssh://";

@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 import java.io.File;

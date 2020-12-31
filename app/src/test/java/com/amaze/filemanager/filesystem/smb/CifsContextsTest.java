@@ -25,37 +25,47 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Properties;
 
+import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import androidx.annotation.NonNull;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import jcifs.ResolverType;
 import jcifs.context.BaseContext;
 
 @Config(sdk = {JELLY_BEAN, KITKAT, P})
-public class CifsContextFactoryTest {
+@RunWith(AndroidJUnit4.class)
+public class CifsContextsTest {
 
   @BeforeClass
   public static void bootstrap() {
     jcifs.Config.registerSmbURLHandler();
   }
 
+  @After
+  public void tearDown() {
+    CifsContexts.clearBaseContexts();
+  }
+
   @Test
   public void testCreateUsingEmptyPropeties() {
-    BaseContext ctx = CifsContextFactory.create(new Properties());
+    BaseContext ctx = CifsContexts.create("smb://user:user@1.2.3.4", new Properties());
     verifyCommonProperties(ctx);
   }
 
   @Test
   public void testCreateWithNull() {
-    BaseContext ctx = CifsContextFactory.create(null);
+    BaseContext ctx = CifsContexts.create("smb://user:user@1.2.3.4", null);
     verifyCommonProperties(ctx);
   }
 
@@ -63,24 +73,66 @@ public class CifsContextFactoryTest {
   public void testCreateUsingCustomProperties() {
     Properties p = new Properties();
     p.setProperty("jcifs.smb.client.ipcSigningEnforced", "false");
-    BaseContext ctx = CifsContextFactory.create(p);
+    BaseContext ctx = CifsContexts.create("smb://user:user@1.2.3.4", p);
     verifyCommonProperties(ctx);
     assertFalse(ctx.getConfig().isIpcSigningEnforced());
   }
 
   @Test
-  public void testRepeatedCreateWithCustomProperties() {
+  public void testRepeatedCreateWithDifferentCustomProperties() {
     Properties p = new Properties();
     p.setProperty("jcifs.smb.client.ipcSigningEnforced", "false");
-    BaseContext ctx = CifsContextFactory.create(p);
+    BaseContext ctx = CifsContexts.create("smb://user:user@1.2.3.4", p);
     verifyCommonProperties(ctx);
     assertFalse(ctx.getConfig().isIpcSigningEnforced());
 
+    CifsContexts.clearBaseContexts();
+
     p = new Properties();
     p.setProperty("jcifs.smb.client.ipcSigningEnforced", "true");
-    ctx = CifsContextFactory.create(p);
+    ctx = CifsContexts.create("smb://user:user@1.2.3.4", p);
     verifyCommonProperties(ctx);
     assertTrue(ctx.getConfig().isIpcSigningEnforced());
+  }
+
+  @Test
+  public void testGetBaseContextFromCachedBaseContexts() {
+    BaseContext ctx1 = CifsContexts.create("smb://user:user@1.2.3.4", null);
+    verifyCommonProperties(ctx1);
+
+    BaseContext ctx2 = CifsContexts.create("smb://user:user@1.2.3.4", null);
+    verifyCommonProperties(ctx2);
+    assertEquals(ctx1.hashCode(), ctx2.hashCode());
+
+    BaseContext ctx3 = CifsContexts.create("smb://foo:bar@5.6.7.8", null);
+    verifyCommonProperties(ctx3);
+    assertEquals(ctx1.hashCode(), ctx2.hashCode());
+    assertNotEquals(ctx1.hashCode(), ctx3.hashCode());
+    assertNotEquals(ctx2.hashCode(), ctx3.hashCode());
+  }
+
+  /*
+   * CifsContexts doesn't parse query parameters, no use check
+   */
+  @Test
+  public void testGetBaseContextShouldDifferIfSpecifyQueryParameterInPath() {
+    BaseContext ctx1 = CifsContexts.create("smb://user:user@1.2.3.4", null);
+    verifyCommonProperties(ctx1);
+
+    BaseContext ctx2 = CifsContexts.create("smb://user:user@1.2.3.4?foo=bar", null);
+    verifyCommonProperties(ctx2);
+    assertNotEquals(ctx1.hashCode(), ctx2.hashCode());
+
+    BaseContext ctx3 = CifsContexts.create("smb://user:user@1.2.3.4?foo=baz", null);
+    verifyCommonProperties(ctx3);
+    assertNotEquals(ctx1.hashCode(), ctx2.hashCode());
+    assertNotEquals(ctx2.hashCode(), ctx3.hashCode());
+
+    BaseContext ctx4 = CifsContexts.create("smb://user:user@1.2.3.4?foo=bar", null);
+    verifyCommonProperties(ctx4);
+    assertNotEquals(ctx1.hashCode(), ctx4.hashCode());
+    assertNotEquals(ctx3.hashCode(), ctx4.hashCode());
+    assertEquals(ctx2.hashCode(), ctx4.hashCode());
   }
 
   private void verifyCommonProperties(@NonNull BaseContext ctx) {

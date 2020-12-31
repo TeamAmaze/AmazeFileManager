@@ -25,7 +25,7 @@ import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.smb.CifsContextFactory;
+import com.amaze.filemanager.filesystem.smb.CifsContexts;
 
 import android.content.Context;
 import android.net.Uri;
@@ -93,7 +93,7 @@ public class SmbUtil {
         Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
     return new SmbFile(
         path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
-        CifsContextFactory.createWithDisableIpcSigningCheck(disableIpcSigningCheck)
+        CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
             .withCredentials(
                 new NtlmPasswordAuthentication(SingletonContext.getInstance(), uri.getUserInfo())));
   }
