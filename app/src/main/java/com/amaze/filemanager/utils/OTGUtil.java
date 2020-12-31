@@ -49,6 +49,8 @@ import androidx.documentfile.provider.DocumentFile;
 /** Created by Vishal on 27-04-2017. */
 public class OTGUtil {
 
+  private static final String TAG = OTGUtil.class.getSimpleName();
+
   public static final String PREFIX_OTG = "otg:/";
 
   public static final String PREFIX_MEDIA_REMOVABLE = "/mnt/media_rw";
@@ -163,10 +165,21 @@ public class OTGUtil {
 
       for (int i = 0; i < device.getInterfaceCount(); i++) {
         if (device.getInterface(i).getInterfaceClass() == UsbConstants.USB_CLASS_MASS_STORAGE) {
-          final @Nullable String serial =
-              Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-                  ? device.getSerialNumber()
-                  : null;
+          @Nullable String serial = null;
+          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            try {
+              serial = device.getSerialNumber();
+            } catch (SecurityException ifPermissionDenied) {
+              // May happen when device is running Android 10 or above.
+              Log.w(
+                  TAG,
+                  "Permission denied reading serial number of device "
+                      + device.getVendorId()
+                      + ":"
+                      + device.getProductId(),
+                  ifPermissionDenied);
+            }
+          }
 
           UsbOtgRepresentation usb =
               new UsbOtgRepresentation(device.getProductId(), device.getVendorId(), serial);
