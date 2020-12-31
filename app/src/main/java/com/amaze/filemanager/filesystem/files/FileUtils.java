@@ -634,31 +634,47 @@ public class FileUtils {
             if (studioCount[0] != null) studioCount[0].cancel();
             studioCount[0] = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
             studioCount[0].show();
-            OpenFileDialogFragment.Companion.openFileOrShow(
-                FileProvider.getUriForFile(m, m.getPackageName(), f),
-                "audio/*",
-                useNewStack,
-                m,
-                false);
+            openFileDialogFragmentFor(f, m, "audio/*");
           }
         }.start();
       } else {
-        OpenFileDialogFragment.Companion.openFileOrShow(
-            FileProvider.getUriForFile(m, m.getPackageName(), f), "*/*", useNewStack, m, false);
+        openFileDialogFragmentFor(f, m);
       }
     } else {
       try {
-        OpenFileDialogFragment.Companion.openFileOrShow(
-            FileProvider.getUriForFile(m, m.getPackageName(), f),
-            MimeTypes.getMimeType(f.getAbsolutePath(), false),
-            useNewStack,
-            m,
-            false);
+        openFileDialogFragmentFor(f, m);
       } catch (Exception e) {
         Toast.makeText(m, m.getString(R.string.no_app_found), Toast.LENGTH_LONG).show();
         openWith(f, m, useNewStack);
       }
     }
+  }
+
+  private static void openFileDialogFragmentFor(
+      @NonNull File file, @NonNull MainActivity mainActivity) {
+    openFileDialogFragmentFor(
+        file, mainActivity, MimeTypes.getMimeType(file.getAbsolutePath(), false));
+  }
+
+  private static void openFileDialogFragmentFor(
+      @NonNull File file, @NonNull MainActivity mainActivity, @NonNull String mimeType) {
+    OpenFileDialogFragment.Companion.openFileOrShow(
+        FileProvider.getUriForFile(mainActivity, mainActivity.getPackageName(), file),
+        mimeType,
+        false,
+        mainActivity,
+        false);
+  }
+
+  private static void openFileDialogFragmentFor(
+      @NonNull DocumentFile file, @NonNull MainActivity mainActivity) {
+    openFileDialogFragmentFor(
+        file.getUri(), mainActivity, MimeTypes.getMimeType(file.getUri().toString(), false));
+  }
+
+  private static void openFileDialogFragmentFor(
+      @NonNull Uri uri, @NonNull MainActivity mainActivity, @NonNull String mimeType) {
+    OpenFileDialogFragment.Companion.openFileOrShow(uri, mimeType, false, mainActivity, false);
   }
 
   private static boolean isSelfDefault(File f, Context c) {
@@ -679,8 +695,7 @@ public class FileUtils {
     boolean useNewStack =
         sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
     try {
-      OpenFileDialogFragment.Companion.openFileOrShow(
-          f.getUri(), MimeTypes.getMimeType(f.getUri().toString(), false), useNewStack, m, false);
+      openFileDialogFragmentFor(f, m);
     } catch (Exception e) {
       Toast.makeText(m, m.getString(R.string.no_app_found), Toast.LENGTH_LONG).show();
       openWith(f, m, useNewStack);
