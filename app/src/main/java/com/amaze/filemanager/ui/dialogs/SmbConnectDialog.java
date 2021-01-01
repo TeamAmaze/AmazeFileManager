@@ -111,7 +111,7 @@ public class SmbConnectDialog extends DialogFragment {
 
   Context context;
   SmbConnectionListener smbConnectionListener;
-  String emptyAddress, emptyName, invalidDomain, invalidUsername;
+  String emptyAddress, emptyShare, emptyName, invalidDomain, invalidUsername;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -127,6 +127,7 @@ public class SmbConnectDialog extends DialogFragment {
     final String name = getArguments().getString("name");
     context = getActivity();
     emptyAddress = getString(R.string.cant_be_empty, getString(R.string.ip));
+    emptyShare = getString(R.string.cant_be_empty, getString(R.string.smb_share));
     emptyName = getString(R.string.cant_be_empty, getString(R.string.connection_name));
     invalidDomain = getString(R.string.invalid, getString(R.string.domain));
     invalidUsername = getString(R.string.invalid, getString(R.string.username).toLowerCase());
@@ -141,6 +142,7 @@ public class SmbConnectDialog extends DialogFragment {
     final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
     final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
     final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
+    final TextInputLayout shareTIL = v2.findViewById(R.id.shareTIL);
     final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
     final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
     final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
@@ -161,6 +163,15 @@ public class SmbConnectDialog extends DialogFragment {
             if (ip.getText().toString().length() == 0) ipTIL.setError(emptyAddress);
             else ipTIL.setError("");
           }
+        });
+    final AppCompatEditText share = v2.findViewById(R.id.shareET);
+    share.addTextChangedListener(
+        new SimpleTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (share.getText().toString().length() == 0) shareTIL.setError(emptyShare);
+                else shareTIL.setError("");
+            }
         });
     final AppCompatEditText domain = v2.findViewById(R.id.domainET);
     domain.addTextChangedListener(
@@ -211,7 +222,7 @@ public class SmbConnectDialog extends DialogFragment {
         });
 
     if (edit) {
-      String userp = "", passp = "", ipp = "", domainp = "";
+      String userp = "", passp = "", ipp = "", domainp = "", sharep = "";
       conName.setText(name);
       try {
         URL a = new URL(path);
@@ -230,7 +241,9 @@ public class SmbConnectDialog extends DialogFragment {
           chkSmbAnonymous.setChecked(true);
         }
         ipp = a.getHost();
+        sharep = a.getPath().replaceAll("/", "");
         ip.setText(ipp);
+        share.setText(sharep);
 
         UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(path);
         if (sanitizer.hasParameter(PARAM_DISABLE_IPC_SIGNING_CHECK)) {
@@ -265,6 +278,7 @@ public class SmbConnectDialog extends DialogFragment {
           String ipa = ip.getText().toString();
           String con_nam = conName.getText().toString();
           String sDomain = domain.getText().toString();
+          String sShare = share.getText().toString();
           String username = user.getText().toString();
           TextInputLayout firstInvalidField = null;
           if (con_nam == null || con_nam.length() == 0) {
@@ -279,6 +293,10 @@ public class SmbConnectDialog extends DialogFragment {
             domainTIL.setError(invalidDomain);
             if (firstInvalidField == null) firstInvalidField = domainTIL;
           }
+          if (sShare == null || sShare.length() == 0) {
+              shareTIL.setError(emptyShare);
+              if (firstInvalidField == null) firstInvalidField = shareTIL;
+          }
           if (username.contains(":")) {
             usernameTIL.setError(invalidUsername);
             if (firstInvalidField == null) firstInvalidField = usernameTIL;
@@ -290,12 +308,12 @@ public class SmbConnectDialog extends DialogFragment {
           SmbFile smbFile;
           String domaind = domain.getText().toString();
           if (chkSmbAnonymous.isChecked())
-            smbFile = createSMBPath(new String[] {ipa, "", "", domaind}, true, false);
+            smbFile = createSMBPath(new String[] {ipa, "", "", domaind, sShare}, true, false);
           else {
             String useraw = user.getText().toString();
             String useru = useraw.replaceAll(" ", "\\ ");
             String passp = pass.getText().toString();
-            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind}, false, false);
+            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
           }
 
           if (smbFile == null) return;
@@ -339,7 +357,7 @@ public class SmbConnectDialog extends DialogFragment {
 
   private SmbFile createSMBPath(String[] auth, boolean anonymous, boolean disableIpcSignCheck) {
     try {
-      String yourPeerIP = auth[0], domain = auth[3];
+      String yourPeerIP = auth[0], domain = auth[3], share = auth[4];
 
       StringBuilder sb = new StringBuilder(SMB_URI_PREFIX);
       if (!android.text.TextUtils.isEmpty(domain))
@@ -350,6 +368,7 @@ public class SmbConnectDialog extends DialogFragment {
             .append(URLEncoder.encode(auth[2], "UTF-8"))
             .append("@");
       sb.append(yourPeerIP).append("/");
+      sb.append(share).append("/");
       SmbFile smbFile =
           new SmbFile(
               sb.toString(),
