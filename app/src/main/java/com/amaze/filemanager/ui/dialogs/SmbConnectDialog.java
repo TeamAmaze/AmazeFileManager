@@ -111,7 +111,7 @@ public class SmbConnectDialog extends DialogFragment {
 
   Context context;
   SmbConnectionListener smbConnectionListener;
-  String emptyAddress, emptyShare, emptyName, invalidDomain, invalidUsername;
+  String emptyAddress, emptyName, invalidDomain, invalidUsername;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -127,7 +127,6 @@ public class SmbConnectDialog extends DialogFragment {
     final String name = getArguments().getString("name");
     context = getActivity();
     emptyAddress = getString(R.string.cant_be_empty, getString(R.string.ip));
-    emptyShare = getString(R.string.cant_be_empty, getString(R.string.smb_share));
     emptyName = getString(R.string.cant_be_empty, getString(R.string.connection_name));
     invalidDomain = getString(R.string.invalid, getString(R.string.domain));
     invalidUsername = getString(R.string.invalid, getString(R.string.username).toLowerCase());
@@ -165,14 +164,6 @@ public class SmbConnectDialog extends DialogFragment {
           }
         });
     final AppCompatEditText share = v2.findViewById(R.id.shareET);
-    share.addTextChangedListener(
-        new SimpleTextWatcher() {
-          @Override
-          public void afterTextChanged(Editable s) {
-            if (share.getText().toString().length() == 0) shareTIL.setError(emptyShare);
-            else shareTIL.setError("");
-          }
-        });
     final AppCompatEditText domain = v2.findViewById(R.id.domainET);
     domain.addTextChangedListener(
         new SimpleTextWatcher() {
@@ -293,10 +284,6 @@ public class SmbConnectDialog extends DialogFragment {
             domainTIL.setError(invalidDomain);
             if (firstInvalidField == null) firstInvalidField = domainTIL;
           }
-          if (sShare == null || sShare.length() == 0) {
-            shareTIL.setError(emptyShare);
-            if (firstInvalidField == null) firstInvalidField = shareTIL;
-          }
           if (username.contains(":")) {
             usernameTIL.setError(invalidUsername);
             if (firstInvalidField == null) firstInvalidField = usernameTIL;
@@ -368,7 +355,9 @@ public class SmbConnectDialog extends DialogFragment {
             .append(URLEncoder.encode(auth[2], "UTF-8"))
             .append("@");
       sb.append(yourPeerIP).append("/");
-      sb.append(share).append("/");
+      if (share != null || share.length() > 0) {
+        sb.append(share).append("/");
+      }
       SmbFile smbFile =
           new SmbFile(
               sb.toString(),
