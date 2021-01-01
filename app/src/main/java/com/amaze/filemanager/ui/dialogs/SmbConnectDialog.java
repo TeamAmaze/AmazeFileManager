@@ -313,8 +313,7 @@ public class SmbConnectDialog extends DialogFragment {
             String useraw = user.getText().toString();
             String useru = useraw.replaceAll(" ", "\\ ");
             String passp = pass.getText().toString();
-            smbFile =
-                createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
+            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
           }
 
           if (smbFile == null) return;
