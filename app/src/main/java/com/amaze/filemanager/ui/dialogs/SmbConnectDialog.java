@@ -167,11 +167,11 @@ public class SmbConnectDialog extends DialogFragment {
     final AppCompatEditText share = v2.findViewById(R.id.shareET);
     share.addTextChangedListener(
         new SimpleTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-                if (share.getText().toString().length() == 0) shareTIL.setError(emptyShare);
-                else shareTIL.setError("");
-            }
+          @Override
+          public void afterTextChanged(Editable s) {
+            if (share.getText().toString().length() == 0) shareTIL.setError(emptyShare);
+            else shareTIL.setError("");
+          }
         });
     final AppCompatEditText domain = v2.findViewById(R.id.domainET);
     domain.addTextChangedListener(
@@ -294,8 +294,8 @@ public class SmbConnectDialog extends DialogFragment {
             if (firstInvalidField == null) firstInvalidField = domainTIL;
           }
           if (sShare == null || sShare.length() == 0) {
-              shareTIL.setError(emptyShare);
-              if (firstInvalidField == null) firstInvalidField = shareTIL;
+            shareTIL.setError(emptyShare);
+            if (firstInvalidField == null) firstInvalidField = shareTIL;
           }
           if (username.contains(":")) {
             usernameTIL.setError(invalidUsername);
@@ -313,7 +313,8 @@ public class SmbConnectDialog extends DialogFragment {
             String useraw = user.getText().toString();
             String useru = useraw.replaceAll(" ", "\\ ");
             String passp = pass.getText().toString();
-            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
+            smbFile =
+                createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
           }
 
           if (smbFile == null) return;
