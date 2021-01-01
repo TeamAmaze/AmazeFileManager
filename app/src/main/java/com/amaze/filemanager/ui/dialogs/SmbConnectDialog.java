@@ -141,7 +141,6 @@ public class SmbConnectDialog extends DialogFragment {
     final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
     final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
     final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
-    final TextInputLayout shareTIL = v2.findViewById(R.id.shareTIL);
     final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
     final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
     final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
