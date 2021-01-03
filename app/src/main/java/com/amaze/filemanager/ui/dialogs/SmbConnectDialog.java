@@ -54,6 +54,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -212,7 +213,12 @@ public class SmbConnectDialog extends DialogFragment {
         });
 
     if (edit) {
-      String userp = "", passp = "", ipp = "", domainp = "", sharep = "";
+      String userp = "";
+      String passp = "";
+      String ipp = "";
+      String domainp = "";
+      String sharep = "";
+
       conName.setText(name);
       try {
         URL a = new URL(path);
@@ -299,7 +305,8 @@ public class SmbConnectDialog extends DialogFragment {
             String useraw = user.getText().toString();
             String useru = useraw.replaceAll(" ", "\\ ");
             String passp = pass.getText().toString();
-            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
+            smbFile =
+                createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
           }
 
           if (smbFile == null) return;
@@ -343,7 +350,9 @@ public class SmbConnectDialog extends DialogFragment {
 
   private SmbFile createSMBPath(String[] auth, boolean anonymous, boolean disableIpcSignCheck) {
     try {
-      String yourPeerIP = auth[0], domain = auth[3], share = auth[4];
+      String yourPeerIP = auth[0];
+      String domain = auth[3];
+      String share = auth[4];
 
       StringBuilder sb = new StringBuilder(SMB_URI_PREFIX);
       if (!android.text.TextUtils.isEmpty(domain))
@@ -354,7 +363,7 @@ public class SmbConnectDialog extends DialogFragment {
             .append(URLEncoder.encode(auth[2], "UTF-8"))
             .append("@");
       sb.append(yourPeerIP).append("/");
-      if (share != null || share.length() > 0) {
+      if (!TextUtils.isEmpty(share)) {
         sb.append(share).append("/");
       }
       SmbFile smbFile =
