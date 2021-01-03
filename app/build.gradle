@@ -103,7 +103,7 @@ ext {
     jcifsVersion = '2.1.3'
     fabSpeedDialVersion = '3.1.1'
     roomVersion = '2.2.5'
-    bouncyCastleVersion = '1.68'
+    bouncyCastleVersion = '1.66'
     awaitilityVersion = "3.1.6"
     androidXTestVersion = "1.3.0"
     androidXTestExtVersion = "1.1.2"
