@@ -237,7 +237,7 @@ public class SmbConnectDialog extends DialogFragment {
           chkSmbAnonymous.setChecked(true);
         }
         ipp = a.getHost();
-        sharep = a.getPath().replaceAll("/", "");
+        sharep = a.getPath().replaceFirst("/", "").replaceAll("/$", "");
         ip.setText(ipp);
         share.setText(sharep);
 
