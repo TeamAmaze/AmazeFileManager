@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.fragments.preference_fragments;
 
 import static com.amaze.filemanager.R.string.feedback;
 import static com.amaze.filemanager.ui.activities.PreferencesActivity.START_PREFERENCE;
-import static com.amaze.filemanager.utils.Utils.EMAIL_VISHAL;
+import static com.amaze.filemanager.utils.Utils.EMAIL_SUPPORT;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -231,7 +231,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         builder.build().show();
         return true;
       case PreferencesConstants.FRAGMENT_FEEDBACK:
-        Intent emailIntent = Utils.buildEmailIntent(null);
+        Intent emailIntent = Utils.buildEmailIntent(null, Utils.EMAIL_SUPPORT);
 
         PackageManager packageManager = getActivity().getPackageManager();
         List activities =
@@ -243,7 +243,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         else
           Toast.makeText(
                   getActivity(),
-                  getResources().getString(R.string.send_email_to) + " " + EMAIL_VISHAL,
+                  getResources().getString(R.string.send_email_to) + " " + EMAIL_SUPPORT,
                   Toast.LENGTH_LONG)
               .show();
         return false;
