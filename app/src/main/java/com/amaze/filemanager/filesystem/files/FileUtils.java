@@ -752,8 +752,12 @@ public class FileUtils {
       ParsePosition pos = new ParsePosition(0);
       SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
       Date stringDate = simpledateformat.parse(date, pos);
+      if (stringDate == null) {
+        Log.w(TAG, "parseName: unable to parse datetime string [" + date + "]");
+      }
       HybridFileParcelable baseFile =
-          new HybridFileParcelable(name.toString(), array[0], stringDate.getTime(), Size, true);
+          new HybridFileParcelable(
+              name.toString(), array[0], stringDate != null ? stringDate.getTime() : 0, Size, true);
       baseFile.setLink(link.toString());
       return baseFile;
     } else {
