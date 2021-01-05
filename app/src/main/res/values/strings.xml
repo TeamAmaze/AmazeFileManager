@@ -297,7 +297,8 @@
     <string name="ftp_status_running">Running</string>
     <string name="ftp_status_not_running">Not Running</string>
     <string name="ftp_no_wifi">Make sure you\'re connected to Wi-Fi</string>
-    <string name="domain">Domain (optional)</string>
+    <string name="domain">Domain</string>
+    <string name="smb_share">Share path</string>
     <string name="invalid">Invalid %s</string>
     <string name="ftp_notif_starting">FTP Server is starting</string>
     <string name="ftp_notif_starting_title">FTP Server</string>
@@ -699,6 +700,5 @@
     <string name="legacy_listing_summary">If enabled, uses stat for listing, else uses ls</string>
     <string name="error_unsupported_v5_rar">RAR archive \"%s\" is unsupported RAR v5 archive.</string>
     <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
-    <string name="smb_share">Share path (optional)</string>
 </resources>
 
