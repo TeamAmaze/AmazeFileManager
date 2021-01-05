@@ -43,63 +43,77 @@ public class ShareTask extends AsyncTask<String, String, Void> {
 
   private Activity contextc;
   private int fab_skin;
-  private ArrayList<Uri> arrayList;
+  private ArrayList<Uri> sharingUris;
   private ArrayList<Intent> targetShareIntents = new ArrayList<>();
-  private ArrayList<String> arrayList1 = new ArrayList<>();
-  private ArrayList<Drawable> arrayList2 = new ArrayList<>();
+  private ArrayList<String> labels = new ArrayList<>();
+  private ArrayList<Drawable> drawables = new ArrayList<>();
 
-  public ShareTask(Activity context, ArrayList<Uri> arrayList, AppTheme appTheme, int fab_skin) {
+  public ShareTask(Activity context, ArrayList<Uri> sharingUris, AppTheme appTheme, int fab_skin) {
     this.contextc = context;
-    this.arrayList = arrayList;
+    this.sharingUris = sharingUris;
     this.appTheme = appTheme;
     this.fab_skin = fab_skin;
   }
 
   @Override
   protected Void doInBackground(String... strings) {
-    String mime = strings[0];
-    Intent shareIntent = new Intent();
-    boolean bluetooth_present = false;
-    shareIntent.setAction(Intent.ACTION_SEND_MULTIPLE);
-    shareIntent.setType(mime);
-    PackageManager packageManager = contextc.getPackageManager();
-    List<ResolveInfo> resInfos = packageManager.queryIntentActivities(shareIntent, 0);
-    if (!resInfos.isEmpty()) {
-      for (ResolveInfo resInfo : resInfos) {
-        String packageName = resInfo.activityInfo.packageName;
-        arrayList2.add(resInfo.loadIcon(packageManager));
-        arrayList1.add(resInfo.loadLabel(packageManager).toString());
-        if (packageName.contains("android.bluetooth")) bluetooth_present = true;
+    if (sharingUris.size() > 0) {
+      String mime = strings[0];
+      boolean bluetooth_present = false;
+      Intent shareIntent = new Intent().setAction(getShareIntentAction()).setType(mime);
+      PackageManager packageManager = contextc.getPackageManager();
+      List<ResolveInfo> resInfos = packageManager.queryIntentActivities(shareIntent, 0);
+      if (!resInfos.isEmpty()) {
+        for (ResolveInfo resInfo : resInfos) {
+          String packageName = resInfo.activityInfo.packageName;
+          drawables.add(resInfo.loadIcon(packageManager));
+          labels.add(resInfo.loadLabel(packageManager).toString());
+          if (packageName.contains("android.bluetooth")) {
+            bluetooth_present = true;
+          }
+          Intent intent = new Intent();
+          intent.setComponent(new ComponentName(packageName, resInfo.activityInfo.name));
+          intent.setAction(getShareIntentAction());
+          intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+          intent.setType(mime);
+          if (sharingUris.size() == 1) {
+            intent.putExtra(Intent.EXTRA_STREAM, sharingUris.get(0));
+          } else {
+            intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, sharingUris);
+          }
+          intent.setPackage(packageName);
+          targetShareIntents.add(intent);
+        }
+      }
+      if (!bluetooth_present && appInstalledOrNot("com.android.bluetooth", packageManager)) {
         Intent intent = new Intent();
-        intent.setComponent(new ComponentName(packageName, resInfo.activityInfo.name));
-        intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-        intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.setComponent(
+            new ComponentName(
+                "com.android.bluetooth", "com.android.bluetooth.opp.BluetoothOppLauncherActivity"));
+        intent.setAction(getShareIntentAction());
         intent.setType(mime);
-        intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayList);
-        intent.setPackage(packageName);
+        if (sharingUris.size() == 1) {
+          intent.putExtra(Intent.EXTRA_STREAM, sharingUris.get(0));
+        } else {
+          intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, sharingUris);
+        }
+        intent.setPackage("com.android.bluetooth");
         targetShareIntents.add(intent);
+        labels.add(contextc.getString(R.string.bluetooth));
+        drawables.add(
+            contextc
+                .getResources()
+                .getDrawable(
+                    appTheme.equals(AppTheme.LIGHT)
+                        ? R.drawable.ic_settings_bluetooth_black_24dp
+                        : R.drawable.ic_settings_bluetooth_white_36dp));
       }
     }
-    if (!bluetooth_present && appInstalledOrNot("com.android.bluetooth", packageManager)) {
-      Intent intent = new Intent();
-      intent.setComponent(
-          new ComponentName(
-              "com.android.bluetooth", "com.android.bluetooth.opp.BluetoothOppLauncherActivity"));
-      intent.setAction(Intent.ACTION_SEND_MULTIPLE);
-      intent.setType(mime);
-      intent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, arrayList);
-      intent.setPackage("com.android.bluetooth");
-      targetShareIntents.add(intent);
-      arrayList1.add(contextc.getString(R.string.bluetooth));
-      arrayList2.add(
-          contextc
-              .getResources()
-              .getDrawable(
-                  appTheme.equals(AppTheme.LIGHT)
-                      ? R.drawable.ic_settings_bluetooth_black_24dp
-                      : R.drawable.ic_settings_bluetooth_white_36dp));
-    }
     return null;
+  }
+
+  private String getShareIntentAction() {
+    return this.sharingUris.size() == 1 ? Intent.ACTION_SEND : Intent.ACTION_SEND_MULTIPLE;
   }
 
   private boolean appInstalledOrNot(String uri, PackageManager pm) {
@@ -119,8 +133,7 @@ public class ShareTask extends AsyncTask<String, String, Void> {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
       builder.title(R.string.share);
       builder.theme(appTheme.getMaterialDialogTheme());
-      ShareAdapter shareAdapter =
-          new ShareAdapter(contextc, targetShareIntents, arrayList1, arrayList2);
+      ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, labels, drawables);
       builder.adapter(shareAdapter, null);
       builder.negativeText(R.string.cancel);
       builder.negativeColor(fab_skin);
