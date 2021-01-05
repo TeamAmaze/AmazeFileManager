@@ -72,6 +72,10 @@ public class SmbConnectDialog extends DialogFragment {
 
   private static final String TAG = "SmbConnectDialog";
 
+  private static void makeRequired (TextInputLayout field) {
+      field.setHint(TextUtils.concat("* ", field.getHint()));
+  }
+
   public interface SmbConnectionListener {
 
     /**
@@ -144,7 +148,13 @@ public class SmbConnectDialog extends DialogFragment {
     final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
     final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
     final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
+    final TextInputLayout passwordTIL = v2.findViewById(R.id.passwordTIL);
     final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
+
+    makeRequired(connectionTIL);
+    makeRequired(ipTIL);
+    makeRequired(usernameTIL);
+    makeRequired(passwordTIL);
 
     conName.addTextChangedListener(
         new SimpleTextWatcher() {
