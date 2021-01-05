@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.fragments;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS;
@@ -957,6 +958,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                     dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
                 mSwipeRefreshLayout.setRefreshing(false);
+              } else {
+                if (path.startsWith(SMB_URI_PREFIX)) {
+                  mSwipeRefreshLayout.setRefreshing(false);
+                  Toast.makeText(
+                          getActivity(), getString(R.string.failed_smb_load), Toast.LENGTH_LONG)
+                      .show();
+                  return;
+                }
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

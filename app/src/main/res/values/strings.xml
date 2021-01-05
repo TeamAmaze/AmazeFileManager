@@ -554,7 +554,7 @@
 
     <string name="no_name">File should have a name</string>
     <string name="add_item">Add Item</string>
-    <string name="failed_smb_decrypt_path">Failed to load SMB connection</string>
+    <string name="failed_smb_load">Failed to load SMB connection</string>
     <string name="failed_cloud_new_connection">Failed to add new Cloud connection</string>
     <string name="failed_cloud_api_key">Failed to authenticate Cloud plug-in</string>
 

@@ -286,8 +286,7 @@ public class UtilsHandler {
         e.printStackTrace();
 
         // failing to decrypt the path, removing entry from database
-        Toast.makeText(
-                context, context.getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG)
+        Toast.makeText(context, context.getString(R.string.failed_smb_load), Toast.LENGTH_LONG)
             .show();
         removeSmbPath(entry.name, "");
         continue;
@@ -305,8 +304,7 @@ public class UtilsHandler {
       if (path == null) {
         Log.e("ERROR", "Error decrypting path: " + entry.path);
         // failing to decrypt the path, removing entry from database
-        Toast.makeText(
-                context, context.getString(R.string.failed_smb_decrypt_path), Toast.LENGTH_LONG)
+        Toast.makeText(context, context.getString(R.string.failed_smb_load), Toast.LENGTH_LONG)
             .show();
       } else {
         retval.add(new String[] {entry.name, path});
