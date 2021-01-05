@@ -21,7 +21,7 @@
 package com.amaze.filemanager.utils;
 
 /** Created by arpitkh996 on 16-01-2016. */
-import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 
 import java.net.UnknownHostException;
 import java.util.ArrayList;
