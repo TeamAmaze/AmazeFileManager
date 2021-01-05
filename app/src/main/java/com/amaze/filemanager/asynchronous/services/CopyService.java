@@ -166,7 +166,7 @@ public class CopyService extends AbstractProgressiveService {
     new DoInBackground(isRootExplorer).execute(b);
 
     // If we get killed, after returning from here, restart
-    return START_STICKY;
+    return START_NOT_STICKY;
   }
 
   @Override

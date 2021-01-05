@@ -151,7 +151,7 @@ public class ExtractService extends AbstractProgressiveService {
     super.progressHalted();
     new DoWork(this, progressHandler, file, extractPath, entries).execute();
 
-    return START_STICKY;
+    return START_NOT_STICKY;
   }
 
   @Override
