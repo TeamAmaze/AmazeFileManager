@@ -72,8 +72,8 @@ public class SmbConnectDialog extends DialogFragment {
 
   private static final String TAG = "SmbConnectDialog";
 
-  private static void makeRequired (TextInputLayout field) {
-      field.setHint(TextUtils.concat("* ", field.getHint()));
+  private static void makeRequired(TextInputLayout field) {
+    field.setHint(TextUtils.concat("* ", field.getHint()));
   }
 
   public interface SmbConnectionListener {
