@@ -231,7 +231,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
         builder.build().show();
         return true;
       case PreferencesConstants.FRAGMENT_FEEDBACK:
-        Intent emailIntent = Utils.buildEmailIntent(null, Utils.EMAIL_SUPPORT);
+        Intent emailIntent = Utils.buildEmailIntent(null, EMAIL_SUPPORT);
 
         PackageManager packageManager = getActivity().getPackageManager();
         List activities =
