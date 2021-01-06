@@ -22,6 +22,7 @@ package com.amaze.filemanager.ui.dialogs;
 
 import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
 import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
+import static com.amaze.filemanager.utils.Utils.makeRequired;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -71,10 +72,6 @@ public class SmbConnectDialog extends DialogFragment {
   private UtilitiesProvider utilsProvider;
 
   private static final String TAG = "SmbConnectDialog";
-
-  private static void makeRequired(TextInputLayout field) {
-    field.setHint(TextUtils.concat("* ", field.getHint()));
-  }
 
   public interface SmbConnectionListener {
 

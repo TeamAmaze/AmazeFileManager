@@ -31,6 +31,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.google.android.material.snackbar.Snackbar;
+import com.google.android.material.textfield.TextInputLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.leinardi.android.speeddial.UiUtils;
 
@@ -45,6 +46,7 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.storage.StorageVolume;
+import android.text.TextUtils;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -398,5 +400,14 @@ public class Utils {
     }
     emailIntent.setType("message/rfc822");
     return emailIntent;
+  }
+
+  /**
+   * Marks a text input field as mandatory (appends * at end)
+   *
+   * @param field given text input field
+   */
+  public static void makeRequired(TextInputLayout field) {
+    field.setHint(TextUtils.concat(field.getHint(), " *"));
   }
 }
