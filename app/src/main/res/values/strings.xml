@@ -697,5 +697,6 @@
     <string name="clear_open_file_summary">Clears selected default file opening apps</string>
     <string name="legacy_listing_title">Use legacy listing for root</string>
     <string name="legacy_listing_summary">If enabled, uses stat for listing, else uses ls</string>
+    <string name="error_permission_denied">Permission denied</string>
 </resources>
 
