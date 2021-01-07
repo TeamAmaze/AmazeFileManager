@@ -68,9 +68,7 @@ public final class PasteHelper implements Parcelable {
 
   private PasteHelper(Parcel in) {
     operation = in.readInt();
-    paths =
-        (HybridFileParcelable[])
-            in.readParcelableArray(HybridFileParcelable.class.getClassLoader());
+    paths = in.createTypedArray(HybridFileParcelable.CREATOR);
   }
 
   @Override
@@ -81,7 +79,7 @@ public final class PasteHelper implements Parcelable {
   @Override
   public void writeToParcel(Parcel dest, int flags) {
     dest.writeInt(operation);
-    dest.writeParcelableArray(paths, 0);
+    dest.writeTypedArray(paths, 0);
   }
 
   public static final Parcelable.Creator CREATOR =
