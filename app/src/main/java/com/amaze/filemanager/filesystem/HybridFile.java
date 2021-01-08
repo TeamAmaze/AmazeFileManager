@@ -335,7 +335,7 @@ public class HybridFile {
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
-        name = path.substring(path.lastIndexOf('/'));
+        name = path.substring(path.lastIndexOf('/') + 1);
     }
     return name;
   }
