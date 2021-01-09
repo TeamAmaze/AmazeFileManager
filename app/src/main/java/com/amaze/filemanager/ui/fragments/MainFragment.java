@@ -338,7 +338,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             switch (adapter.getItemViewType(position)) {
               case RecyclerAdapter.TYPE_HEADER_FILES:
               case RecyclerAdapter.TYPE_HEADER_FOLDERS:
-                return columns;
+                return (columns == 0 || columns == -1) ? 3 : columns;
               default:
                 return 1;
             }
@@ -1090,7 +1090,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
       getMainActivity().updatePaths(no);
       listView.stopScroll();
-      fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
+      fastScroller.setRecyclerView(
+          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
       mToolbarContainer.addOnOffsetChangedListener(
           (appBarLayout, verticalOffset) -> {
             fastScroller.updateHandlePosition(verticalOffset, 112);
