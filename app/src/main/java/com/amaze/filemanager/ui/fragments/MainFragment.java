@@ -954,8 +954,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 boolean isPathLayoutGrid =
                     dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
-              } else {
-                AppConfig.toast(requireContext(), getString(R.string.unknown_error));
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -1323,6 +1321,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             .runOnUiThread(
                 () -> {
                   int i;
+                  AppConfig.toast(requireContext(), getString(R.string.unknown_error));
                   if ((i = dataUtils.containsServer(smbPath)) != -1) {
                     getMainActivity()
                         .showSMBDialog(dataUtils.getServers().get(i)[0], smbPath, true);
