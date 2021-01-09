@@ -130,6 +130,7 @@ public class LoadFilesListTask
           return null;
         } catch (SmbException | NullPointerException e) {
           e.printStackTrace();
+          nullCheckOrInterrupt(mainFragment, this).reauthenticateSmb();
           return null;
         }
         break;

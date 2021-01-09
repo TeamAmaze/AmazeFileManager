@@ -38,6 +38,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
@@ -948,11 +949,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             getBoolean(PREFERENCE_SHOW_THUMB),
             getBoolean(PREFERENCE_SHOW_HIDDENFILES),
             (data) -> {
+              mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
                 boolean isPathLayoutGrid =
                     dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
-                mSwipeRefreshLayout.setRefreshing(false);
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -1320,6 +1321,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             .runOnUiThread(
                 () -> {
                   int i;
+                  AppConfig.toast(requireContext(), getString(R.string.unknown_error));
                   if ((i = dataUtils.containsServer(smbPath)) != -1) {
                     getMainActivity()
                         .showSMBDialog(dataUtils.getServers().get(i)[0], smbPath, true);
