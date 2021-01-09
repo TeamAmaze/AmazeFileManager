@@ -146,7 +146,7 @@ public class DecryptService extends AbstractProgressiveService {
     super.progressHalted();
     new DecryptService.BackgroundTask().execute();
 
-    return START_STICKY;
+    return START_NOT_STICKY;
   }
 
   class BackgroundTask extends AsyncTask<Void, Void, Void> {

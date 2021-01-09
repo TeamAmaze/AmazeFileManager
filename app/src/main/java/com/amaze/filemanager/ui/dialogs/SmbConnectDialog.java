@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
-import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
 
 import java.io.IOException;
@@ -33,7 +33,7 @@ import java.security.GeneralSecurityException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.smb.CifsContextFactory;
+import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -353,7 +353,7 @@ public class SmbConnectDialog extends DialogFragment {
       SmbFile smbFile =
           new SmbFile(
               sb.toString(),
-              CifsContextFactory.createWithDisableIpcSigningCheck(disableIpcSignCheck));
+              CifsContexts.createWithDisableIpcSigningCheck(sb.toString(), disableIpcSignCheck));
       return smbFile;
     } catch (MalformedURLException e) {
       e.printStackTrace();
