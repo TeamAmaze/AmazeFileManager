@@ -38,6 +38,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
@@ -949,9 +950,13 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             getBoolean(PREFERENCE_SHOW_HIDDENFILES),
             (data) -> {
               mSwipeRefreshLayout.setRefreshing(false);
-              boolean isPathLayoutGrid =
-                  dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
-              setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+              if (data != null && data.second != null) {
+                boolean isPathLayoutGrid =
+                    dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
+                setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+              } else {
+                AppConfig.toast(requireContext(), getString(R.string.unknown_error));
+              }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
@@ -986,7 +991,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
    * @param results is the list of elements a result from search
    * @param grid whether to set grid view or list view
    */
-  private void setListElements(
+  public void setListElements(
       ArrayList<LayoutElementParcelable> bitmap,
       boolean back,
       String path,
