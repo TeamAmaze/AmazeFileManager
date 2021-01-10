@@ -142,7 +142,7 @@ public class EncryptService extends AbstractProgressiveService {
     super.progressHalted();
     new BackgroundTask().execute();
 
-    return START_STICKY;
+    return START_NOT_STICKY;
   }
 
   @Override

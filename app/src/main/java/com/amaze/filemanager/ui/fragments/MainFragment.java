@@ -39,6 +39,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
@@ -340,7 +341,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             switch (adapter.getItemViewType(position)) {
               case RecyclerAdapter.TYPE_HEADER_FILES:
               case RecyclerAdapter.TYPE_HEADER_FOLDERS:
-                return columns;
+                return (columns == 0 || columns == -1) ? 3 : columns;
               default:
                 return 1;
             }
@@ -952,11 +953,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             getBoolean(PREFERENCE_SHOW_THUMB),
             getBoolean(PREFERENCE_SHOW_HIDDENFILES),
             (data) -> {
+              mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
                 boolean isPathLayoutGrid =
                     dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
-                mSwipeRefreshLayout.setRefreshing(false);
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -1091,7 +1092,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
       getMainActivity().updatePaths(no);
       listView.stopScroll();
-      fastScroller.setRecyclerView(listView, IS_LIST ? 1 : columns);
+      fastScroller.setRecyclerView(
+          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
       mToolbarContainer.addOnOffsetChangedListener(
           (appBarLayout, verticalOffset) -> {
             fastScroller.updateHandlePosition(verticalOffset, 112);
@@ -1323,6 +1325,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             .runOnUiThread(
                 () -> {
                   int i;
+                  AppConfig.toast(requireContext(), getString(R.string.unknown_error));
                   if ((i = dataUtils.containsServer(smbPath)) != -1) {
                     getMainActivity()
                         .showSMBDialog(dataUtils.getServers().get(i)[0], smbPath, true);
