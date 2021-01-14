@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem.root
 
 import android.preference.PreferenceManager
 import android.util.Log
+import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.exceptions.ShellNotRunningException
@@ -36,6 +37,8 @@ import kotlin.collections.ArrayList
 
 object ListFilesCommand : IRootCommand() {
 
+    private val TAG: String = javaClass.simpleName
+
     /**
      * list files in given directory and invoke callback
      */
@@ -46,7 +49,7 @@ object ListFilesCommand : IRootCommand() {
         openModeCallback: (openMode: OpenMode) -> Unit,
         onFileFoundCallback: (file: HybridFileParcelable) -> Unit
     ) {
-        var mode: OpenMode
+        val mode: OpenMode
         if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
             // we're rooted and we're trying to load file with superuser
             // we're at the root directories, superuser is required!
@@ -145,34 +148,42 @@ object ListFilesCommand : IRootCommand() {
      * @param path the path
      */
     private fun getFilesList(
-        path: String?,
+        path: String,
         showHidden: Boolean,
         listener: (HybridFileParcelable) -> Unit
-    ): ArrayList<HybridFileParcelable>? {
+    ): ArrayList<HybridFileParcelable> {
         val pathFile = File(path)
         val files = ArrayList<HybridFileParcelable>()
         if (pathFile.exists() && pathFile.isDirectory) {
-            pathFile.listFiles().forEach { currentFile ->
-                var size: Long = 0
-                if (!currentFile.isDirectory) size = currentFile.length()
-                HybridFileParcelable(
-                    currentFile.path,
-                    RootHelper.parseFilePermission(currentFile),
-                    currentFile.lastModified(),
-                    size,
-                    currentFile.isDirectory
-                ).let { baseFile ->
-                    baseFile.name = currentFile.name
-                    baseFile.mode = OpenMode.FILE
-                    if (showHidden) {
-                        files.add(baseFile)
-                        listener(baseFile)
-                    } else {
-                        if (!currentFile.isHidden) {
+            val filesInPathFile = pathFile.listFiles()
+            if (filesInPathFile != null) {
+                filesInPathFile.forEach { currentFile ->
+                    var size: Long = 0
+                    if (!currentFile.isDirectory) size = currentFile.length()
+                    HybridFileParcelable(
+                        currentFile.path,
+                        RootHelper.parseFilePermission(currentFile),
+                        currentFile.lastModified(),
+                        size,
+                        currentFile.isDirectory
+                    ).let { baseFile ->
+                        baseFile.name = currentFile.name
+                        baseFile.mode = OpenMode.FILE
+                        if (showHidden) {
                             files.add(baseFile)
                             listener(baseFile)
+                        } else {
+                            if (!currentFile.isHidden) {
+                                files.add(baseFile)
+                                listener(baseFile)
+                            }
                         }
                     }
+                }
+            } else {
+                Log.e(TAG, "Error listing files at [$path]. Access permission denied?")
+                AppConfig.getInstance().run {
+                    AppConfig.toast(this, this.getString(R.string.error_permission_denied))
                 }
             }
         }

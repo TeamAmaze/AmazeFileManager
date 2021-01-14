@@ -40,6 +40,7 @@ import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
@@ -356,7 +357,12 @@ public class DataUtils {
   }
 
   public boolean isFileHidden(String path) {
-    return getHiddenFiles().getValueForExactKey(path) != null;
+    try {
+      return getHiddenFiles().getValueForExactKey(path) != null;
+    } catch (IllegalStateException e) {
+      Log.w(getClass().getSimpleName(), e);
+      return false;
+    }
   }
 
   public ConcurrentRadixTree<VoidValue> getHiddenFiles() {

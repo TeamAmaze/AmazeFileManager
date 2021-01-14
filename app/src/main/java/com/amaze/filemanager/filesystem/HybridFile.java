@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static com.amaze.filemanager.filesystem.smb.CifsContextFactory.SMB_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 import java.io.File;
@@ -335,7 +335,7 @@ public class HybridFile {
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
-        name = path.substring(path.lastIndexOf('/'));
+        name = path.substring(path.lastIndexOf('/') + 1);
     }
     return name;
   }

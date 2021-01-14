@@ -144,7 +144,7 @@
     <string name="gridcolumnno">Nombre de colonnes dans l\'affichage par Grille</string>
     <string name="set_random">Les modifications seront effectives après redémarrage de l\'application</string>
     <string name="authors">Auteurs</string>
-    <string name="changelog">Changlog</string>
+    <string name="changelog">Journal des changements</string>
     <string name="ok">OK</string>
     <string name="ui">Interface</string>
     <string name="general">Général</string>
@@ -666,5 +666,7 @@
     <string name="choose_different_app">Choisissez une application différente</string>
     <string name="clear_open_file">Vider le cache</string>
     <string name="clear_open_file_summary">Efface les applications d\'ouverture de fichiers sélectionnées par défaut</string>
+    <string name="legacy_listing_title">Utiliser l\'ancien affichage pour root</string>
+    <string name="legacy_listing_summary">Si activé, utilise stat pour lister, sinon utilise ls</string>
 </resources>
 

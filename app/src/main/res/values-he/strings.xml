@@ -690,5 +690,6 @@
     <string name="clear_open_file_summary">מפנה את יישומוני בררת המחדל שנבחרו לפתיחת סוג הקובץ</string>
     <string name="legacy_listing_title">להשתמש בתצוגה מיושנת למשתמש על (root)</string>
     <string name="legacy_listing_summary">אם פעיל, יעשה שימוש ב־stat להצגת הקבצים, אם לא אז ls</string>
+    <string name="error_permission_denied">ההרשאה נדחתה</string>
 </resources>
 

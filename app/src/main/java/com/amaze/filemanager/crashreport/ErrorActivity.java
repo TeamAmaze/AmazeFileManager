@@ -50,6 +50,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -271,7 +272,7 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   private void sendReportEmail() {
-    final Intent i = Utils.buildEmailIntent(buildMarkdown());
+    final Intent i = Utils.buildEmailIntent(buildMarkdown(), Utils.EMAIL_NOREPLY_REPORTS);
     if (i.resolveActivity(getPackageManager()) != null) {
       startActivity(i);
     }
@@ -350,13 +351,15 @@ public class ErrorActivity extends ThemedActivity {
     try {
       final StringBuilder htmlErrorReport = new StringBuilder();
 
-      final String userComment = userCommentBox.getText().toString();
-      if (!userComment.isEmpty()) {
-        htmlErrorReport.append(userComment).append("\n");
+      String userComment = "";
+      if (!TextUtils.isEmpty(userCommentBox.getText())) {
+        userComment = userCommentBox.getText().toString();
       }
 
       // basic error info
       htmlErrorReport
+          .append(
+              String.format("## Issue explanation (write below this line)\n\n%s\n\n", userComment))
           .append("## Exception")
           .append("\n* __User Action:__ ")
           .append(errorInfo.userAction)
