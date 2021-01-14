@@ -21,8 +21,8 @@
 package com.amaze.filemanager.ui.fragments;
 
 import com.amaze.filemanager.asynchronous.asynctasks.SearchAsyncTask;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.utils.OpenMode;
 
 import android.content.Context;
 import android.os.Bundle;

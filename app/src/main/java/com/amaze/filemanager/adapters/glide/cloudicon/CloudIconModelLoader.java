@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.glide;
+package com.amaze.filemanager.adapters.glide.cloudicon;
 
 import com.amaze.filemanager.database.CloudHandler;
 import com.bumptech.glide.load.Options;

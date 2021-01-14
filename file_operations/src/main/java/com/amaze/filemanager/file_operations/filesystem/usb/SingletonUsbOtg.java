@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.usb;
+package com.amaze.filemanager.file_operations.filesystem.usb;
 
 import android.net.Uri;
 

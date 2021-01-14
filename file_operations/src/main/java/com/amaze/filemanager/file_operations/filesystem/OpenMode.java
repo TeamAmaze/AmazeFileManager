@@ -18,29 +18,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.glide;
+package com.amaze.filemanager.file_operations.filesystem;
 
-import com.bumptech.glide.load.model.ModelLoader;
-import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+/**
+ * Created by vishal on 10/11/16.
+ *
+ * <p>Class denotes the type of file being handled
+ */
+public enum OpenMode {
+  UNKNOWN,
+  FILE,
+  SMB,
+  SFTP,
 
-import android.content.Context;
-import android.graphics.Bitmap;
+  /** Custom file types like apk/images/downloads (which don't have a defined path) */
+  CUSTOM,
 
-/** Created by Vishal Nehra on 3/27/2018. */
-public class CloudIconModelFactory implements ModelLoaderFactory<String, Bitmap> {
+  ROOT,
+  OTG,
+  GDRIVE,
+  DROPBOX,
+  BOX,
+  ONEDRIVE;
 
-  private Context context;
-
-  public CloudIconModelFactory(Context context) {
-    this.context = context;
+  /**
+   * Get open mode based on the id assigned. Generally used to retrieve this type after config
+   * change or to send enum as argument
+   *
+   * @param ordinal the position of enum starting from 0 for first element
+   */
+  public static OpenMode getOpenMode(int ordinal) {
+    return OpenMode.values()[ordinal];
   }
-
-  @Override
-  public ModelLoader<String, Bitmap> build(MultiModelLoaderFactory multiFactory) {
-    return new CloudIconModelLoader(context);
-  }
-
-  @Override
-  public void teardown() {}
 }

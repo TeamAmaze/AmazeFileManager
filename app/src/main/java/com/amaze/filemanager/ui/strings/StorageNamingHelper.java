@@ -18,26 +18,35 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager;
+package com.amaze.filemanager.ui.strings;
 
-import com.amaze.filemanager.adapters.glide.apkimage.ApkImageModelLoaderFactory;
-import com.amaze.filemanager.adapters.glide.cloudicon.CloudIconModelFactory;
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.Registry;
-import com.bumptech.glide.annotation.GlideModule;
-import com.bumptech.glide.module.AppGlideModule;
+import java.io.File;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 
-/** Ensures that Glide's generated API is created for the Gallery sample. */
-@GlideModule
-public class AmazeFileManagerModule extends AppGlideModule {
-  @Override
-  public void registerComponents(Context context, Glide glide, Registry registry) {
-    registry.prepend(
-        String.class, Drawable.class, new ApkImageModelLoaderFactory(context.getPackageManager()));
-    registry.prepend(String.class, Bitmap.class, new CloudIconModelFactory(context));
+import androidx.annotation.NonNull;
+
+public final class StorageNamingHelper {
+  private StorageNamingHelper() {}
+
+  @NonNull
+  public static String getNameForDeviceDescription(
+      @NonNull Context context,
+      @NonNull File file,
+      @StorageNaming.DeviceDescription int deviceDescription) {
+    switch (deviceDescription) {
+      case StorageNaming.STORAGE_INTERNAL:
+        return context.getString(R.string.storage_internal);
+      case StorageNaming.STORAGE_SD_CARD:
+        return context.getString(R.string.storage_sd_card);
+      case StorageNaming.ROOT:
+        return context.getString(R.string.root_directory);
+      case StorageNaming.NOT_KNOWN:
+      default:
+        return file.getName();
+    }
   }
 }

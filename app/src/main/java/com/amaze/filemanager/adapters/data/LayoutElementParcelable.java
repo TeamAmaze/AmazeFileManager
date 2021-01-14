@@ -23,9 +23,9 @@ package com.amaze.filemanager.adapters.data;
 import java.io.File;
 import java.util.Calendar;
 
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.icons.Icons;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;

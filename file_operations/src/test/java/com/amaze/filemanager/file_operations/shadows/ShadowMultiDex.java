@@ -18,32 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem;
-
-import java.io.File;
-
-import com.amaze.filemanager.R;
+package com.amaze.filemanager.file_operations.shadows;
 
 import android.content.Context;
 
-public final class StorageNaming {
+import androidx.multidex.MultiDex;
 
-  /** Retrofit of {@link android.os.storage.StorageVolume#getDescription(Context)} to older apis */
-  public static String getDeviceDescriptionLegacy(Context context, File file) {
-    String path = file.getPath();
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
 
-    switch (path) {
-      case "/storage/emulated/legacy":
-      case "/storage/emulated/0":
-      case "/mnt/sdcard":
-        return context.getString(R.string.storage_internal);
-      case "/storage/sdcard":
-      case "/storage/sdcard1":
-        return context.getString(R.string.storage_sd_card);
-      case "/":
-        return context.getString(R.string.root_directory);
-      default:
-        return file.getName();
-    }
+@Implements(MultiDex.class)
+public class ShadowMultiDex {
+
+  @Implementation
+  public static void install(Context context) {
+    // Do nothing since with Robolectric nothing is dexed.
   }
 }
