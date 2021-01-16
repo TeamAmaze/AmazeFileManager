@@ -20,14 +20,14 @@
 
 package com.amaze.filemanager.shadows.jcifs.smb;
 
-import org.robolectric.annotation.Implementation;
-import org.robolectric.annotation.Implements;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
 
 import jcifs.smb.NtlmPasswordAuthentication;
 import jcifs.smb.SmbException;
