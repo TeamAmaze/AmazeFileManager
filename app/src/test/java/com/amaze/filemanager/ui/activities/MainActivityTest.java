@@ -45,7 +45,7 @@ import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.ShadowStorageManager;
 
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.shadows.jcifs.smb.ShadowSmbFile;
+import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowCryptUtil;
 import com.amaze.filemanager.test.TestUtils;
