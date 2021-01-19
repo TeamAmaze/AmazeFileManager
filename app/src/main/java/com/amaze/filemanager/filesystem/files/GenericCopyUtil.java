@@ -34,6 +34,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
+import java.util.Objects;
 
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.utils.OnLowMemory;
@@ -216,13 +217,8 @@ public class GenericCopyUtil {
         outChannel = Channels.newChannel(bufferedOutputStream);
       }
 
-      if (inChannel == null) {
-        throw new NullPointerException("Tried to copy from null!");
-      }
-
-      if (outChannel == null) {
-        throw new NullPointerException("Tried to copy to null!");
-      }
+      Objects.requireNonNull(inChannel);
+      Objects.requireNonNull(outChannel);
 
       doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
