@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.ArrayList;
 
 import org.apache.commons.compress.utils.IOUtils;
@@ -52,6 +54,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
     sdk = {JELLY_BEAN, KITKAT, P})
 public abstract class AbstractCompressedHelperTaskTest {
 
+  private static final long EXPECTED_TIMESTAMP =
+      ZonedDateTime.of(2018, 5, 29, 10, 38, 0, 0, ZoneId.of("UTC")).toInstant().toEpochMilli();
+
   @Before
   public void setUp() throws IOException {
     ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED);
@@ -64,6 +69,7 @@ public abstract class AbstractCompressedHelperTaskTest {
     AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("test-archive", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
   }
 
   @Test
@@ -72,50 +78,63 @@ public abstract class AbstractCompressedHelperTaskTest {
     AsyncTaskResult<ArrayList<CompressedObjectParcelable>> result = task.doInBackground();
     assertEquals(5, result.result.size());
     assertEquals("1", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
     assertEquals("2", result.result.get(1).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(1).date);
     assertEquals("3", result.result.get(2).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(2).date);
     assertEquals("4", result.result.get(3).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(3).date);
     assertEquals("a", result.result.get(4).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(4).date);
 
     task = createTask("test-archive/1");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("8", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/2");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("7", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/3");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("6", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/4");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("5", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/a");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("b", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/a/b");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("c", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/a/b/c");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("d", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
 
     task = createTask("test-archive/a/b/c/d");
     result = task.doInBackground();
     assertEquals(1, result.result.size());
     assertEquals("lipsum.bin", result.result.get(0).name);
+    assertEquals(EXPECTED_TIMESTAMP, result.result.get(0).date);
     // assertEquals(512, result.get(0).size);
   }
 
