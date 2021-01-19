@@ -1037,6 +1037,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         nofilesview.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setEnabled(false);
+        getMainActivity().getFAB().show();
+        getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       } else {
         mSwipeRefreshLayout.setEnabled(true);
         nofilesview.setVisibility(View.GONE);
