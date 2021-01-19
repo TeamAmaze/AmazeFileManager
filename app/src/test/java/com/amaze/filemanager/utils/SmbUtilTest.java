@@ -35,6 +35,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.shadows.ShadowSmbUtil;
 import com.amaze.filemanager.test.ShadowCryptUtil;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -43,7 +44,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @RunWith(AndroidJUnit4.class)
 @Config(
     sdk = {JELLY_BEAN, KITKAT, P},
-    shadows = {ShadowCryptUtil.class})
+    shadows = {ShadowCryptUtil.class, ShadowSmbUtil.class})
 public class SmbUtilTest {
 
   @Test
@@ -72,5 +73,24 @@ public class SmbUtilTest {
     String path = "smb://toor@127.0.0.1";
     assertEquals(
         path, SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path));
+  }
+
+  @Test
+  public void testCheckFolder() {
+    assertEquals(
+        MainActivityHelper.DOESNT_EXIST,
+        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/DummyFolder"));
+    assertEquals(
+        MainActivityHelper.DOESNT_EXIST,
+        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/resume.doc"));
+    assertEquals(
+        MainActivityHelper.CAN_CREATE_FILES,
+        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/Documents"));
+    assertEquals(
+        MainActivityHelper.DOESNT_EXIST,
+        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/wirebroken.log"));
+    assertEquals(
+        MainActivityHelper.DOESNT_EXIST,
+        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/failcheck"));
   }
 }

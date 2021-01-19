@@ -401,37 +401,47 @@ public class MainActivityHelper {
 
   public static final int DOESNT_EXIST = 0;
   public static final int WRITABLE_OR_ON_SDCARD = 1;
+  public static final int WRITABLE_ON_REMOTE = 3;
   // For Android 5
   public static final int CAN_CREATE_FILES = 2;
 
   public int checkFolder(final File folder, Context context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      if (FileUtil.isOnExtSdCard(folder, context)) {
-        if (!folder.exists() || !folder.isDirectory()) {
-          return DOESNT_EXIST;
-        }
+    return checkFolder(folder.getAbsolutePath(), OpenMode.FILE, context);
+  }
 
-        // On Android 5, trigger storage access framework.
-        if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
-          guideDialogForLEXA(folder.getPath());
-          return CAN_CREATE_FILES;
-        }
-
-        return WRITABLE_OR_ON_SDCARD;
-      } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-        return WRITABLE_OR_ON_SDCARD;
-      } else return DOESNT_EXIST;
-    } else if (Build.VERSION.SDK_INT == 19) {
-      if (FileUtil.isOnExtSdCard(folder, context)) {
-        // Assume that Kitkat workaround works
-        return WRITABLE_OR_ON_SDCARD;
-      } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-        return WRITABLE_OR_ON_SDCARD;
-      } else return DOESNT_EXIST;
-    } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-      return WRITABLE_OR_ON_SDCARD;
+  public int checkFolder(final String path, OpenMode openMode, Context context) {
+    if (OpenMode.SMB.equals(openMode)) {
+      return SmbUtil.checkFolder(path);
     } else {
-      return DOESNT_EXIST;
+      File folder = new File(path);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (FileUtil.isOnExtSdCard(folder, context)) {
+          if (!folder.exists() || !folder.isDirectory()) {
+            return DOESNT_EXIST;
+          }
+
+          // On Android 5, trigger storage access framework.
+          if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+            guideDialogForLEXA(folder.getPath());
+            return CAN_CREATE_FILES;
+          }
+
+          return WRITABLE_OR_ON_SDCARD;
+        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+          return WRITABLE_OR_ON_SDCARD;
+        } else return DOESNT_EXIST;
+      } else if (Build.VERSION.SDK_INT == 19) {
+        if (FileUtil.isOnExtSdCard(folder, context)) {
+          // Assume that Kitkat workaround works
+          return WRITABLE_OR_ON_SDCARD;
+        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+          return WRITABLE_OR_ON_SDCARD;
+        } else return DOESNT_EXIST;
+      } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+        return WRITABLE_OR_ON_SDCARD;
+      } else {
+        return DOESNT_EXIST;
+      }
     }
   }
 

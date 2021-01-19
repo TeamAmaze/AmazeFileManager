@@ -20,9 +20,11 @@
 
 package com.amaze.filemanager.utils;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
+import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
@@ -30,9 +32,15 @@ import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
+import androidx.annotation.NonNull;
+
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.context.SingletonContext;
 import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /**
@@ -42,7 +50,13 @@ import jcifs.smb.SmbFile;
  */
 public class SmbUtil {
 
+  private static final String TAG = SmbUtil.class.getSimpleName();
+
   public static final String PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck";
+
+  private SmbUtil() {
+    // empty constructor to prevent instantiation
+  }
 
   /** Parse path to decrypt smb password */
   public static String getSmbDecryptedPath(Context context, String path)
@@ -96,5 +110,25 @@ public class SmbUtil {
         CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
             .withCredentials(
                 new NtlmPasswordAuthentication(SingletonContext.getInstance(), uri.getUserInfo())));
+  }
+
+  /**
+   * SMB version of {@link MainActivityHelper#checkFolder(File, Context)}.
+   *
+   * @param path SMB path
+   * @return {@link MainActivityHelper#DOESNT_EXIST} if specified SMB path doesn't exist on server,
+   *     else -1
+   */
+  public static int checkFolder(@NonNull String path) {
+    return Single.fromCallable(() -> {
+      try {
+        SmbFile smbFile = create(path);
+        if (!smbFile.exists() || !smbFile.isDirectory()) return MainActivityHelper.DOESNT_EXIST;
+      } catch (SmbException | MalformedURLException e) {
+        Log.w(TAG, "Error checking folder existence, assuming not exist", e);
+        return MainActivityHelper.DOESNT_EXIST;
+      }
+      return MainActivityHelper.WRITABLE_ON_REMOTE;
+    }).subscribeOn(Schedulers.io()).blockingGet();
   }
 }
