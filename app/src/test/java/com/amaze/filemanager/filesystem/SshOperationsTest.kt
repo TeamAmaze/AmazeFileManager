@@ -25,11 +25,12 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowCryptUtil
+import com.amaze.filemanager.test.ShadowTabHandler
 import org.junit.Test
 import org.robolectric.annotation.Config
 
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
+    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class, ShadowTabHandler::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 class SshOperationsTest : AbstractOperationsTestBase() {
