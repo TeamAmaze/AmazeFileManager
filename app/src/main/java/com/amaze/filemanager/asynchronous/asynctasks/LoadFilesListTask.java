@@ -97,8 +97,8 @@ public class LoadFilesListTask
   protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
     HybridFile hFile = null;
 
-    if (openmode == OpenMode.UNKNOWN) {
-      hFile = new HybridFile(OpenMode.UNKNOWN, path);
+    if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
+      hFile = new HybridFile(openmode, path);
       hFile.generateMode(nullCheckOrInterrupt(mainFragment, this).getActivity());
       openmode = hFile.getMode();
 

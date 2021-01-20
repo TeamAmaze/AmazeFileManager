@@ -147,7 +147,9 @@ public class HybridFile {
           mode = OpenMode.ROOT;
         }
 
-        if (mode == OpenMode.UNKNOWN) {
+        // In some cases, non-numeric path is passed into HybridFile while mode is still
+        // CUSTOM here. We are forcing OpenMode.FILE in such case too. See #2225
+        if (OpenMode.UNKNOWN.equals(mode) || OpenMode.CUSTOM.equals(mode)) {
           mode = OpenMode.FILE;
         }
       }
