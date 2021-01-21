@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,29 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.glide;
+package com.amaze.filemanager.test
 
-import com.bumptech.glide.load.model.ModelLoader;
-import com.bumptech.glide.load.model.ModelLoaderFactory;
-import com.bumptech.glide.load.model.MultiModelLoaderFactory;
+import com.amaze.filemanager.database.TabHandler
+import com.amaze.filemanager.database.models.explorer.Tab
+import org.robolectric.annotation.Implementation
+import org.robolectric.annotation.Implements
 
-import android.content.Context;
-import android.graphics.Bitmap;
+@Implements(TabHandler::class)
+class ShadowTabHandler {
 
-/** Created by Vishal Nehra on 3/27/2018. */
-public class CloudIconModelFactory implements ModelLoaderFactory<String, Bitmap> {
-
-  private Context context;
-
-  public CloudIconModelFactory(Context context) {
-    this.context = context;
-  }
-
-  @Override
-  public ModelLoader<String, Bitmap> build(MultiModelLoaderFactory multiFactory) {
-    return new CloudIconModelLoader(context);
-  }
-
-  @Override
-  public void teardown() {}
+    /**
+     * For places where Activity is launched, but we are not actually looking at the Tabs loaded.
+     *
+     * @see TabHandler.getAllTabs
+     */
+    @Implementation
+    fun getAllTabs(): Array<Tab> = emptyArray()
 }

@@ -112,6 +112,7 @@ ext {
     mockitoVersion = "3.4.4"
     androidBillingVersion = "2.1.0"
     junrarVersion = "7.4.0"
+    zip4jVersion = "2.6.4"
 }
 
 dependencies {
@@ -157,8 +158,7 @@ dependencies {
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     //Detect memory leaks
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:1.5.3'
-    releaseImplementation 'com.squareup.leakcanary:leakcanary-android-no-op:1.5.3'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
 
     implementation 'org.apache.commons:commons-compress:1.18'
 
@@ -225,7 +225,7 @@ dependencies {
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
     //zip4j: support password-protected zips
-    implementation 'net.lingala.zip4j:zip4j:1.3.2'
+    implementation "net.lingala.zip4j:zip4j:$zip4jVersion"
 
     implementation 'org.tukaani:xz:1.8'
 

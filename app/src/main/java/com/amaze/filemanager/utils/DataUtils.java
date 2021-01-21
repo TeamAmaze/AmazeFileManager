@@ -27,6 +27,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -49,6 +50,8 @@ import androidx.annotation.Nullable;
 
 // Central data being used across activity,fragments and classes
 public class DataUtils {
+
+  private static final String TAG = DataUtils.class.getSimpleName();
 
   public static final int DELETE = 0,
       COPY = 1,
@@ -360,7 +363,7 @@ public class DataUtils {
     try {
       return getHiddenFiles().getValueForExactKey(path) != null;
     } catch (IllegalStateException e) {
-      Log.w(getClass().getSimpleName(), e);
+      Log.w(TAG, e);
       return false;
     }
   }
@@ -419,7 +422,14 @@ public class DataUtils {
 
   public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
     menuMetadataMap.put(item, metadata);
-    if (!TextUtils.isEmpty(metadata.path)) tree.put(metadata.path, item.getItemId());
+    if (!TextUtils.isEmpty(metadata.path)) {
+      try {
+        tree.put(metadata.path, item.getItemId());
+      } catch (IllegalStateException e) {
+        Log.w(TAG, e);
+        menuMetadataMap.remove(item);
+      }
+    }
   }
 
   /**

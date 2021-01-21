@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.cloud;
+package com.amaze.filemanager.file_operations.filesystem.smbstreamer;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
@@ -27,12 +27,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 import org.junit.After;
@@ -40,74 +37,72 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadow.api.Shadow;
 
-import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamSource;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.file_operations.filesystem.smbstreamer.StreamSource;
+import com.amaze.filemanager.file_operations.shadows.ShadowMultiDex;
+import com.amaze.filemanager.file_operations.shadows.jcifs.smb.ShadowSmbFile;
 
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-/** Created by Rustam Khadipash on 31/3/2018. */
+import jcifs.smb.SmbFile;
+
+/** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class},
+    shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
     sdk = {JELLY_BEAN, KITKAT, P})
-public class CloudStreamSourceTest {
-  private CloudStreamSource cs;
-  private String testFilePath;
+public class StreamSourceTest {
+  private SmbFile file;
+  private StreamSource ss;
   private byte[] text;
-  private long len;
-  private String fn = "Test.txt";
 
-  // File Test.txt is 20 characters length
-  // And contains "This is a test file." phrase
   @Before
-  public void setUp() throws Exception {
-    File testFile = createFile();
+  public void setUp() throws IOException {
+    StringBuilder textInFile = new StringBuilder();
+    for (int i = 0; i < 20; i++) textInFile.append("a");
 
-    testFilePath = testFile.getAbsolutePath();
-    len = Files.size(Paths.get(testFilePath));
-    text = Files.readAllBytes(Paths.get(testFilePath));
-    cs = new CloudStreamSource(fn, len, new FileInputStream(testFile));
+    text = textInFile.toString().getBytes();
+    file = createFile();
+    ss = new StreamSource(file, file.length());
   }
 
   @After
   public void tearDown() {
-    if (cs != null) cs.close();
+    if (ss != null) ss.close();
   }
 
-  private File createFile() throws IOException {
-    File testFile = new File(Environment.getExternalStorageDirectory(), fn);
+  private SmbFile createFile() throws IOException {
+    File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
     testFile.createNewFile();
 
     OutputStream is = new FileOutputStream(testFile);
-    for (int i = 0; i < 20; i++) is.write("a".getBytes());
+    is.write(text);
     is.flush();
     is.close();
 
-    return testFile;
+    SmbFile file = new SmbFile("smb://127.0.0.1/Test.txt");
+    ShadowSmbFile shadowSmbFile = Shadow.extract(file);
+    shadowSmbFile.setFile(testFile);
+
+    return file;
   }
+
+  /*
+   From now on ssEmpty will not be used since StreamSource()
+   constructor does not initialize any internal variables
+  */
 
   /** Purpose: Open an existing file Input: no Expected: cs.read() = 1 buff[0] = text[0] */
   @Test
-  public void open() throws IOException {
-    cs.open();
+  public void openExisting() throws IOException {
+    ss.open();
     byte[] buff = new byte[1];
 
-    assertEquals(buff.length, cs.read(buff));
+    assertEquals(buff.length, ss.read(buff));
     assertEquals(text[0], buff[0]);
-  }
-
-  /**
-   * Purpose: Throw an exception when a file does not exist Input: CloudStreamSource (FileName,
-   * FileLength, Null pointer) Expected: IOException is thrown
-   */
-  @Test(expected = IOException.class)
-  public void openNoFileException() throws IOException {
-    cs = new CloudStreamSource(fn, len, null);
-    cs.moveTo(10); // move pointer to non-existing position
-    cs.open();
   }
 
   /**
@@ -116,8 +111,9 @@ public class CloudStreamSourceTest {
    */
   @Test
   public void read() throws IOException {
+    ss.open();
     byte[] buff = new byte[10];
-    int n = cs.read(buff);
+    int n = ss.read(buff);
     byte[] temp = Arrays.copyOfRange(text, 0, buff.length);
 
     assertArrayEquals(temp, buff);
@@ -130,13 +126,14 @@ public class CloudStreamSourceTest {
    */
   @Test
   public void readExceed() throws IOException {
+    ss.open();
     byte[] buff = new byte[100];
-    int n = cs.read(buff);
+    int n = ss.read(buff);
     // erase dummy values in the end of buffer
     byte[] buffer = Arrays.copyOfRange(buff, 0, n);
 
     assertArrayEquals(text, buffer);
-    assertEquals(len, n);
+    assertEquals(text.length, n);
   }
 
   /**
@@ -145,9 +142,10 @@ public class CloudStreamSourceTest {
    */
   @Test(expected = IOException.class)
   public void readClosedException() throws IOException {
-    cs.close();
-    byte[] buff = new byte[(int) len];
-    int n = cs.read(buff);
+    ss.open();
+    ss.close();
+    byte[] buff = new byte[text.length];
+    int n = ss.read(buff);
   }
 
   /**
@@ -156,11 +154,12 @@ public class CloudStreamSourceTest {
    */
   @Test
   public void readStartEnd() throws IOException {
+    ss.open();
     byte[] buff = new byte[100];
     int start = 5;
     int end = 10;
 
-    int n = cs.read(buff, start, end);
+    int n = ss.read(buff, start, end);
     byte[] file = Arrays.copyOfRange(text, 0, end - start);
     byte[] buffer = Arrays.copyOfRange(buff, start, end);
 
@@ -175,11 +174,13 @@ public class CloudStreamSourceTest {
    */
   @Test(expected = IndexOutOfBoundsException.class)
   public void readStartEndExceedException() throws IOException {
+    ss.open();
+
     byte[] buff = new byte[100];
     int start = 95;
     int end = 110;
 
-    cs.read(buff, start, end);
+    ss.read(buff, start, end);
   }
 
   /**
@@ -188,12 +189,13 @@ public class CloudStreamSourceTest {
    */
   @Test(expected = IOException.class)
   public void readStartEndClosedException() throws IOException {
-    cs.close();
+    ss.open();
+    ss.close();
     byte[] buff = new byte[100];
     int start = 5;
     int end = 10;
 
-    int n = cs.read(buff, start, end);
+    int n = ss.read(buff, start, end);
   }
 
   /**
@@ -202,13 +204,13 @@ public class CloudStreamSourceTest {
    */
   @Test
   public void moveTo() throws IOException {
-    int readPosition = (int) len - 10;
+    int readPosition = text.length - 10;
     byte[] buff = new byte[1];
 
-    cs.moveTo(readPosition);
-    cs.open();
+    ss.moveTo(readPosition);
+    ss.open();
 
-    int n = cs.read(buff);
+    int n = ss.read(buff);
     assertEquals(text[readPosition], buff[0]);
     assertEquals(buff.length, n);
   }
@@ -219,8 +221,8 @@ public class CloudStreamSourceTest {
    */
   @Test(expected = IllegalArgumentException.class)
   public void moveToException() throws IllegalArgumentException, IOException {
-    cs.open();
-    cs.moveTo(-1);
+    ss.open();
+    ss.moveTo(-1);
   }
 
   /**
@@ -228,29 +230,36 @@ public class CloudStreamSourceTest {
    * from the file is unavailable
    */
   @Test
-  public void close() {
-    cs.close();
+  public void close() throws IOException {
+    ss.open();
+    ss.close();
 
     int n = -1;
     try {
       byte[] buff = new byte[1];
-      n = cs.read(buff);
+      n = ss.read(buff);
     } catch (IOException ignored) {
     }
 
     assertEquals(-1, n);
   }
 
+  /** Purpose: Get MIME type Input: no Expected: return "txt" */
+  @Test
+  public void getMimeType() {
+    assertEquals("txt", ss.getMimeType());
+  }
+
   /** Purpose: Get length of the text from a file Input: no Expected: return len */
   @Test
   public void length() {
-    assertEquals(len, cs.length());
+    assertEquals(text.length, ss.length());
   }
 
-  /** Purpose: Get name of a file Input: no Expected: return fn */
+  /** Purpose: Get name of a file Input: no Expected: return "Test.txt" */
   @Test
   public void getName() {
-    assertEquals(fn, cs.getName());
+    assertEquals(file.getName(), ss.getName());
   }
 
   /**
@@ -260,16 +269,22 @@ public class CloudStreamSourceTest {
   @Test
   public void available() throws IOException {
     int amount = 12;
-    cs.moveTo((int) len - amount);
-    assertEquals(amount, cs.availableExact());
+    ss.moveTo(text.length - amount);
+    assertEquals(amount, ss.availableExact());
   }
 
   /** Purpose: Move reading position to the beginning of a file Input: no Expected: return len */
   @Test
   public void reset() throws IOException {
-    cs.moveTo(10);
-    assertEquals(len - 10, cs.availableExact());
-    cs.reset();
-    assertEquals(len, cs.availableExact());
+    ss.moveTo(10);
+    assertEquals(text.length - 10, ss.availableExact());
+    ss.reset();
+    assertEquals(text.length, ss.availableExact());
+  }
+
+  /** Purpose: Get a file object Input: no Expected: return SmbFile */
+  @Test
+  public void getFile() {
+    assertEquals(file, ss.getFile());
   }
 }

@@ -18,22 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.application;
+package com.amaze.filemanager.file_operations.shadows;
 
-import androidx.multidex.MultiDexApplication;
+import android.content.Context;
 
-/** @author Emmanuel on 28/8/2017, at 18:12. */
-public class LeakCanaryApplication extends MultiDexApplication {
+import androidx.multidex.MultiDex;
 
-  @Override
-  public void onCreate() {
-    super.onCreate();
-    /*
-    if (LeakCanary.isInAnalyzerProcess(this)) {
-        // This process is dedicated to LeakCanary for heap analysis.
-        // You should not init your app in this process.
-        return;
-    }
-    LeakCanary.install(this);*/
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
+
+@Implements(MultiDex.class)
+public class ShadowMultiDex {
+
+  @Implementation
+  public static void install(Context context) {
+    // Do nothing since with Robolectric nothing is dexed.
   }
 }

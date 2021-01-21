@@ -123,6 +123,7 @@ public class GzipExtractor extends Extractor {
       }
     } finally {
       outputStream.close();
+      outputFile.setLastModified(entry.getModTime().getTime());
     }
   }
 }

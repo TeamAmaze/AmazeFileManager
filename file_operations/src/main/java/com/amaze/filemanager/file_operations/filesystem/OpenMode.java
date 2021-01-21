@@ -18,32 +18,36 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem;
+package com.amaze.filemanager.file_operations.filesystem;
 
-import java.io.File;
+/**
+ * Created by vishal on 10/11/16.
+ *
+ * <p>Class denotes the type of file being handled
+ */
+public enum OpenMode {
+  UNKNOWN,
+  FILE,
+  SMB,
+  SFTP,
 
-import com.amaze.filemanager.R;
+  /** Custom file types like apk/images/downloads (which don't have a defined path) */
+  CUSTOM,
 
-import android.content.Context;
+  ROOT,
+  OTG,
+  GDRIVE,
+  DROPBOX,
+  BOX,
+  ONEDRIVE;
 
-public final class StorageNaming {
-
-  /** Retrofit of {@link android.os.storage.StorageVolume#getDescription(Context)} to older apis */
-  public static String getDeviceDescriptionLegacy(Context context, File file) {
-    String path = file.getPath();
-
-    switch (path) {
-      case "/storage/emulated/legacy":
-      case "/storage/emulated/0":
-      case "/mnt/sdcard":
-        return context.getString(R.string.storage_internal);
-      case "/storage/sdcard":
-      case "/storage/sdcard1":
-        return context.getString(R.string.storage_sd_card);
-      case "/":
-        return context.getString(R.string.root_directory);
-      default:
-        return file.getName();
-    }
+  /**
+   * Get open mode based on the id assigned. Generally used to retrieve this type after config
+   * change or to send enum as argument
+   *
+   * @param ordinal the position of enum starting from 0 for first element
+   */
+  public static OpenMode getOpenMode(int ordinal) {
+    return OpenMode.values()[ordinal];
   }
 }
