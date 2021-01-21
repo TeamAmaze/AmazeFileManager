@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.dialogs;
 
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
-import static com.amaze.filemanager.utils.Utils.makeRequired;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -35,6 +34,7 @@ import java.security.GeneralSecurityException;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -148,10 +148,10 @@ public class SmbConnectDialog extends DialogFragment {
     final TextInputLayout passwordTIL = v2.findViewById(R.id.passwordTIL);
     final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
 
-    makeRequired(connectionTIL);
-    makeRequired(ipTIL);
-    makeRequired(usernameTIL);
-    makeRequired(passwordTIL);
+    ExtensionsKt.makeRequired(connectionTIL);
+    ExtensionsKt.makeRequired(ipTIL);
+    ExtensionsKt.makeRequired(usernameTIL);
+    ExtensionsKt.makeRequired(passwordTIL);
 
     conName.addTextChangedListener(
         new SimpleTextWatcher() {
