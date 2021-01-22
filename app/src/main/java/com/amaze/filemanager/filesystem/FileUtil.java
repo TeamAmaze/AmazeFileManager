@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static android.os.Build.VERSION_CODES.Q;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
@@ -37,6 +38,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -64,6 +66,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
 import android.os.ParcelFileDescriptor;
 import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
@@ -91,13 +94,18 @@ public abstract class FileUtil {
   private static final Pattern FILENAME_REGEX =
       Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
 
-  /**
-   * Determine the camera folder. There seems to be no Android API to work for real devices, so this
-   * is a best guess.
-   *
-   * @return the default camera folder.
-   */
-  // TODO the function?
+  private static final String EXTERNAL_STORAGE_PREFIX;
+
+  private static final List<String> EXCLUDED_DIRS =
+      Arrays.asList(
+          new File(Environment.getExternalStorageDirectory(), "Android/data").getAbsolutePath(),
+          new File(Environment.getExternalStorageDirectory(), "Android/obb").getAbsolutePath());
+
+  static {
+    String prefix = Environment.getExternalStorageDirectory().getAbsolutePath();
+    prefix = prefix.substring(0, prefix.lastIndexOf('/'));
+    EXTERNAL_STORAGE_PREFIX = prefix;
+  }
 
   /**
    * Copy a file. The target file may even be on external SD card for Kitkat.
@@ -1064,6 +1072,14 @@ public abstract class FileUtil {
     } catch (IOException e) {
       Log.e(LOG, "Could not copy dummy files.", e);
       return null;
+    }
+  }
+
+  public static @NonNull String remapPathForApi30OrAbove(@NonNull String path, boolean isRoot) {
+    if (Build.VERSION.SDK_INT > Q && isRoot && EXCLUDED_DIRS.contains(path)) {
+      return "/data/media" + path.substring(EXTERNAL_STORAGE_PREFIX.length());
+    } else {
+      return path;
     }
   }
 

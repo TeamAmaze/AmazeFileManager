@@ -944,10 +944,19 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       loadFilesListTask.cancel(true);
     }
 
+    final String _path =
+        FileUtil.remapPathForApi30OrAbove(path, getMainActivity().isRootExplorer());
+
+    if (!path.equals(_path)) {
+      AppConfig.toast(
+          getMainActivity(),
+          getResources().getString(R.string.redirected_to_path_using_root, _path));
+    }
+
     loadFilesListTask =
         new LoadFilesListTask(
             getActivity(),
-            path,
+            _path,
             this,
             openMode,
             getBoolean(PREFERENCE_SHOW_THUMB),
@@ -956,8 +965,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
                 boolean isPathLayoutGrid =
-                    dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
-                setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+                    dataUtils.getListOrGridForPath(_path, DataUtils.LIST) == DataUtils.GRID;
+                setListElements(data.second, back, _path, data.first, false, isPathLayoutGrid);
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

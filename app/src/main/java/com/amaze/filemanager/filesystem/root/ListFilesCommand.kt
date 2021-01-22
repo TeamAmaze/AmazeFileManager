@@ -198,7 +198,7 @@ object ListFilesCommand : IRootCommand() {
         path: String,
         isStat: Boolean
     ): HybridFileParcelable? {
-        return FileUtils.parseName(
+        FileUtils.parseName(
             if (isStat) rawFile.replace(
                 "('|`)".toRegex(),
                 ""
@@ -230,6 +230,12 @@ object ListFilesCommand : IRootCommand() {
                 }
             } else {
                 this.isDirectory = isDirectory(this)
+            }
+        }.let {
+            return if (!".".equals(it?.name) && !"..".equals(it?.name)) {
+                it
+            } else {
+                null
             }
         }
     }
