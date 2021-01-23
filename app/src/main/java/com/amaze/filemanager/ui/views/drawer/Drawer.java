@@ -712,7 +712,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
           CloudUtil.checkToken(meta.path, mainActivity);
         }
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT
             && (meta.path.contains(OTGUtil.PREFIX_OTG)
                 || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
             && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
