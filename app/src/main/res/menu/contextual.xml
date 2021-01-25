@@ -71,4 +71,7 @@
         android:title="@string/extract"
         android:visible="false"
         app:showAsAction="always"/>
+    <item
+        android:id="@+id/selectbetween"
+        android:title="@string/select_between"/>
 </menu>

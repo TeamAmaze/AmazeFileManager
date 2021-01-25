@@ -486,12 +486,15 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             showOption(R.id.openmulti, menu);
           }
           // tv.setText(positions.size());
+          Log.d("THING", String.valueOf(results));
+          Log.d("THING", String.valueOf(positions.size()));
           if (!results) {
             hideOption(R.id.openparent, menu);
             if (positions.size() == 1) {
               showOption(R.id.addshortcut, menu);
               showOption(R.id.openwith, menu);
               showOption(R.id.share, menu);
+              hideOption(R.id.selectbetween, menu);
 
               File x = new File(adapter.getCheckedItems().get(0).desc);
 
@@ -504,6 +507,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               if (getMainActivity().mReturnIntent)
                 if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
 
+            } else if (positions.size() == 2) {
+              showOption(R.id.selectbetween, menu);
             } else {
               try {
                 showOption(R.id.share, menu);
@@ -528,6 +533,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               showOption(R.id.openparent, menu);
               showOption(R.id.openwith, menu);
               showOption(R.id.share, menu);
+              hideOption(R.id.selectbetween, menu);
 
               File x = new File(adapter.getCheckedItems().get(0).desc);
 
@@ -539,9 +545,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               if (getMainActivity().mReturnIntent)
                 if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
 
+            } else if (positions.size() == 2) {
+              showOption(R.id.selectbetween, menu);
             } else {
               hideOption(R.id.openparent, menu);
               hideOption(R.id.addshortcut, menu);
+              hideOption(R.id.selectbetween, menu);
 
               if (getMainActivity().mReturnIntent)
                 if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
