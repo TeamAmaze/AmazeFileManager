@@ -486,8 +486,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             showOption(R.id.openmulti, menu);
           }
           // tv.setText(positions.size());
-          Log.d("THING", String.valueOf(results));
-          Log.d("THING", String.valueOf(positions.size()));
           if (!results) {
             hideOption(R.id.openparent, menu);
             if (positions.size() == 1) {
@@ -711,6 +709,20 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             case R.id.addshortcut:
               addShortcut(checkedItems.get(0));
               mode.finish();
+              return true;
+            case R.id.selectbetween:
+              ArrayList<Integer> selectedIndices = adapter.getCheckedItemsIndex();
+              // The list is already ordered
+              Integer first = selectedIndices.get(0);
+              Integer last = selectedIndices.get(selectedIndices.size() - 1);
+
+              for (Integer i = first; i < last; i++) {
+                // This is a toggle so we only want to change what's not already selected
+                if (!selectedIndices.contains(i)) {
+                  adapter.toggleChecked(i, null);
+                }
+              }
+
               return true;
             default:
               return false;
