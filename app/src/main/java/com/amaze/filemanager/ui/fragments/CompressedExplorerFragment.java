@@ -48,6 +48,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.Utils;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.ComponentName;
@@ -73,6 +74,7 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -424,14 +426,14 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                   swipeRefreshLayout.setRefreshing(false);
                   updateBottomBar();
                 } else {
-                  archiveCorruptOrUnsupportedToast();
+                  archiveCorruptOrUnsupportedToast(result.exception);
                 }
               })
           .execute();
       swipeRefreshLayout.setRefreshing(true);
       updateBottomBar();
     } else {
-      archiveCorruptOrUnsupportedToast();
+      archiveCorruptOrUnsupportedToast(null);
     }
   }
 
@@ -527,12 +529,17 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     return folder == null || folder.isEmpty();
   }
 
-  private void archiveCorruptOrUnsupportedToast() {
+  private void archiveCorruptOrUnsupportedToast(@Nullable Throwable e) {
+    @StringRes
+    int msg =
+        (e != null
+                && e.getCause() != null
+                && UnsupportedRarV5Exception.class.isAssignableFrom(e.getCause().getClass()))
+            ? R.string.error_unsupported_v5_rar
+            : R.string.archive_unsupported_or_corrupt;
     Toast.makeText(
             getActivity(),
-            getActivity()
-                .getString(
-                    R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()),
+            getActivity().getString(msg, compressedFile.getAbsolutePath()),
             Toast.LENGTH_LONG)
         .show();
     getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
