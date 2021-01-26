@@ -23,8 +23,7 @@ package com.amaze.filemanager.filesystem.files
 import android.os.Build.VERSION_CODES.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.filesystem.files.FileUtils.getPathsInPath
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -337,6 +336,26 @@ class FileUtilsTest {
                 ),
                 this
             )
+        }
+    }
+
+    /**
+     * Test [FileUtils.splitUri]
+     */
+    @Test
+    fun testSplitUri() {
+        assertNull(FileUtils.splitUri("/"))
+        assertNull(FileUtils.splitUri("/system/lib/"))
+        assertNull(FileUtils.splitUri("/storage/emulated/10"))
+
+        FileUtils.splitUri("ftp://user:password@1.2.3.4:3721/あ/い/う/え/お")!!.run {
+            assertEquals("ftp://user:password@1.2.3.4:3721", first)
+            assertEquals("/あ/い/う/え/お", second)
+        }
+
+        FileUtils.splitUri("smb://user;workgroup:password@1.2.3.4/user/My Documents")!!.run {
+            assertEquals("smb://user;workgroup:password@1.2.3.4", first)
+            assertEquals("/user/My Documents", second)
         }
     }
 }

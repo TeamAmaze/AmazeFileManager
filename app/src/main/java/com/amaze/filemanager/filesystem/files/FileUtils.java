@@ -82,7 +82,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
 import jcifs.smb.SmbFile;
@@ -595,11 +597,11 @@ public class FileUtils {
     path = path.trim();
 
     ArrayList<String> paths = new ArrayList<>();
-    Uri uri = Uri.parse(path);
-    String urlPrefix = null;
-    if (uri.getScheme() != null) {
-      urlPrefix = uri.getScheme() + "://" + uri.getAuthority();
-      path = path.substring(path.indexOf(uri.getAuthority()) + uri.getAuthority().length());
+    @Nullable String urlPrefix = null;
+    @Nullable Pair<String, String> splitUri = splitUri(path);
+    if (splitUri != null) {
+      urlPrefix = splitUri.first;
+      path = splitUri.second;
     }
 
     if (!path.startsWith("/")) {
@@ -627,6 +629,28 @@ public class FileUtils {
     Collections.reverse(paths);
 
     return paths.toArray(new String[paths.size()]);
+  }
+
+  /**
+   * Splits a given path to URI prefix (if exists) and path.
+   *
+   * @param path
+   * @return {@link Pair} tuple if given path is URI (scheme is not null). Tuple contains:
+   *     <ul>
+   *       <li>First: URI section of the given path, if given path is an URI
+   *       <li>Second: Path section of the given path. Never null
+   *     </ul>
+   */
+  public static @Nullable Pair<String, String> splitUri(@NonNull final String path) {
+    Uri uri = Uri.parse(path);
+    if (uri.getScheme() != null) {
+      String urlPrefix = uri.getScheme() + "://" + uri.getAuthority();
+      String retPath =
+          path.substring(path.indexOf(uri.getAuthority()) + uri.getAuthority().length());
+      return new Pair<>(urlPrefix, retPath);
+    } else {
+      return null;
+    }
   }
 
   public static boolean canListFiles(File f) {
