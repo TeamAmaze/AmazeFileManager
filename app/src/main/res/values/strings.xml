@@ -298,6 +298,7 @@
     <string name="ftp_status_not_running">Not Running</string>
     <string name="ftp_no_wifi">Make sure you\'re connected to Wi-Fi</string>
     <string name="domain">Domain</string>
+    <string name="smb_share">Share path</string>
     <string name="invalid">Invalid %s</string>
     <string name="ftp_notif_starting">FTP Server is starting</string>
     <string name="ftp_notif_starting_title">FTP Server</string>

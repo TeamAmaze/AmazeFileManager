@@ -958,6 +958,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 boolean isPathLayoutGrid =
                     dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+              } else {
+                AppConfig.toast(requireContext(), getString(R.string.unknown_error));
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);

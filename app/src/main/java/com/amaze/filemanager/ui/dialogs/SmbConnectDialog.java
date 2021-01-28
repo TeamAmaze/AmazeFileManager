@@ -34,6 +34,7 @@ import java.security.GeneralSecurityException;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -54,6 +55,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -143,7 +145,13 @@ public class SmbConnectDialog extends DialogFragment {
     final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
     final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
     final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
+    final TextInputLayout passwordTIL = v2.findViewById(R.id.passwordTIL);
     final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
+
+    ExtensionsKt.makeRequired(connectionTIL);
+    ExtensionsKt.makeRequired(ipTIL);
+    ExtensionsKt.makeRequired(usernameTIL);
+    ExtensionsKt.makeRequired(passwordTIL);
 
     conName.addTextChangedListener(
         new SimpleTextWatcher() {
@@ -162,6 +170,7 @@ public class SmbConnectDialog extends DialogFragment {
             else ipTIL.setError("");
           }
         });
+    final AppCompatEditText share = v2.findViewById(R.id.shareET);
     final AppCompatEditText domain = v2.findViewById(R.id.domainET);
     domain.addTextChangedListener(
         new SimpleTextWatcher() {
@@ -211,7 +220,12 @@ public class SmbConnectDialog extends DialogFragment {
         });
 
     if (edit) {
-      String userp = "", passp = "", ipp = "", domainp = "";
+      String userp = "";
+      String passp = "";
+      String ipp = "";
+      String domainp = "";
+      String sharep = "";
+
       conName.setText(name);
       try {
         URL a = new URL(path);
@@ -230,7 +244,9 @@ public class SmbConnectDialog extends DialogFragment {
           chkSmbAnonymous.setChecked(true);
         }
         ipp = a.getHost();
+        sharep = a.getPath().replaceFirst("/", "").replaceAll("/$", "");
         ip.setText(ipp);
+        share.setText(sharep);
 
         UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(path);
         if (sanitizer.hasParameter(PARAM_DISABLE_IPC_SIGNING_CHECK)) {
@@ -265,6 +281,7 @@ public class SmbConnectDialog extends DialogFragment {
           String ipa = ip.getText().toString();
           String con_nam = conName.getText().toString();
           String sDomain = domain.getText().toString();
+          String sShare = share.getText().toString();
           String username = user.getText().toString();
           TextInputLayout firstInvalidField = null;
           if (con_nam == null || con_nam.length() == 0) {
@@ -290,12 +307,13 @@ public class SmbConnectDialog extends DialogFragment {
           SmbFile smbFile;
           String domaind = domain.getText().toString();
           if (chkSmbAnonymous.isChecked())
-            smbFile = createSMBPath(new String[] {ipa, "", "", domaind}, true, false);
+            smbFile = createSMBPath(new String[] {ipa, "", "", domaind, sShare}, true, false);
           else {
             String useraw = user.getText().toString();
             String useru = useraw.replaceAll(" ", "\\ ");
             String passp = pass.getText().toString();
-            smbFile = createSMBPath(new String[] {ipa, useru, passp, domaind}, false, false);
+            smbFile =
+                createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
           }
 
           if (smbFile == null) return;
@@ -339,7 +357,9 @@ public class SmbConnectDialog extends DialogFragment {
 
   private SmbFile createSMBPath(String[] auth, boolean anonymous, boolean disableIpcSignCheck) {
     try {
-      String yourPeerIP = auth[0], domain = auth[3];
+      String yourPeerIP = auth[0];
+      String domain = auth[3];
+      String share = auth[4];
 
       StringBuilder sb = new StringBuilder(SMB_URI_PREFIX);
       if (!android.text.TextUtils.isEmpty(domain))
@@ -350,6 +370,9 @@ public class SmbConnectDialog extends DialogFragment {
             .append(URLEncoder.encode(auth[2], "UTF-8"))
             .append("@");
       sb.append(yourPeerIP).append("/");
+      if (!TextUtils.isEmpty(share)) {
+        sb.append(share).append("/");
+      }
       SmbFile smbFile =
           new SmbFile(
               sb.toString(),
