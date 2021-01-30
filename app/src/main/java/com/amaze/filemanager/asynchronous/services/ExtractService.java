@@ -212,6 +212,7 @@ public class ExtractService extends AbstractProgressiveService {
 
   @Override
   public void onDestroy() {
+    super.onDestroy();
     unregisterReceiver(receiver1);
   }
 

@@ -85,7 +85,7 @@ public class ServiceWatcherUtil {
   }
 
   private static final class ServiceWatcherRepeatingRunnable extends AbstractRepeatingRunnable {
-    private final ServiceStatusCallbacks serviceStatusCallbacks;
+    private final WeakReference<ServiceStatusCallbacks> serviceStatusCallbacks;
     private final ProgressHandler progressHandler;
 
     public ServiceWatcherRepeatingRunnable(
@@ -94,12 +94,19 @@ public class ServiceWatcherUtil {
         ProgressHandler progressHandler) {
       super(1, 1, TimeUnit.SECONDS, startImmediately);
 
-      this.serviceStatusCallbacks = serviceStatusCallbacks;
+      this.serviceStatusCallbacks = new WeakReference<>(serviceStatusCallbacks);
       this.progressHandler = progressHandler;
     }
 
     @Override
     public void run() {
+      final ServiceStatusCallbacks serviceStatusCallbacks = this.serviceStatusCallbacks.get();
+      if (serviceStatusCallbacks == null) {
+        // the service was destroyed, clean up
+        cancel(false);
+        return;
+      }
+
       // we don't have a file name yet, wait for service to set
       if (progressHandler.getFileName() == null) {
         return;
