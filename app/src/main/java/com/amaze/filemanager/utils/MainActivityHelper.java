@@ -65,6 +65,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.IntDef;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -404,7 +405,10 @@ public class MainActivityHelper {
   // For Android 5
   public static final int CAN_CREATE_FILES = 2;
 
-  public int checkFolder(final File folder, Context context) {
+  @IntDef({DOESNT_EXIST, WRITABLE_OR_ON_SDCARD, CAN_CREATE_FILES})
+  public @interface FolderState {}
+
+  public @FolderState int checkFolder(final File folder, Context context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       if (FileUtil.isOnExtSdCard(folder, context)) {
         if (!folder.exists() || !folder.isDirectory()) {
