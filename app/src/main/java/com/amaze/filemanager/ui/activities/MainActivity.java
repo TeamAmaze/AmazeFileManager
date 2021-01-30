@@ -488,9 +488,7 @@ public class MainActivity extends PermissionsActivity
       } else if (CompressedMimeParsingHelper.isFileCompressed(type) && uri != null) {
         if (uri.toString().startsWith("content")) {
           Snackbar.make(
-                  findViewById(R.id.content_frame),
-                  R.string.unsupported_uri,
-                  Snackbar.LENGTH_SHORT)
+                  findViewById(R.id.content_frame), R.string.unsupported_uri, Snackbar.LENGTH_SHORT)
               .show();
           return;
         }
