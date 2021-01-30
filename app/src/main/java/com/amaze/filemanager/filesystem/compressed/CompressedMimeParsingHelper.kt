@@ -17,24 +17,23 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.filesystem.compressed
 
-package com.amaze.filemanager.filesystem.compressed;
-
-/** Parse the MIME type of a compressed file */
-public final class CompressedMimeParsing {
-  public static boolean isFileCompressed(String mimeType) {
-    if (mimeType.startsWith("resource")) {
-      mimeType = mimeType.replace("resource", "application");
+/** Parse the MIME type of a compressed file  */
+object CompressedMimeParsingHelper {
+    @JvmStatic
+    fun isFileCompressed(mimeType: String): Boolean {
+        var mimeType = mimeType
+        if (mimeType.startsWith("resource")) {
+            mimeType = mimeType.replace("resource", "application")
+        }
+        if (!mimeType.startsWith("application")) {
+            return false
+        }
+        if (mimeType.endsWith("/folder")) {
+            return false
+        } else {
+            return mimeType.endsWith("/zip")
+        }
     }
-
-    if (!mimeType.startsWith("application")) {
-      return false;
-    }
-
-    if (mimeType.endsWith("/folder")) {
-      return false;
-    }
-
-    return mimeType.endsWith("/zip");
-  }
 }
