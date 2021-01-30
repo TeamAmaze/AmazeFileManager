@@ -333,7 +333,7 @@ public class HybridFile {
         break;
       case FILE:
       case ROOT:
-        return getFile().getName();
+        if (getFile().getName()!=null) return getFile().getName();
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
