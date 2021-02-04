@@ -33,6 +33,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.FolderState;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -69,6 +70,10 @@ import androidx.annotation.IntDef;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+
+import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
 
 /** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
@@ -399,14 +404,6 @@ public class MainActivityHelper {
           }
         });
   }
-
-  public static final int DOESNT_EXIST = 0;
-  public static final int WRITABLE_OR_ON_SDCARD = 1;
-  // For Android 5
-  public static final int CAN_CREATE_FILES = 2;
-
-  @IntDef({DOESNT_EXIST, WRITABLE_OR_ON_SDCARD, CAN_CREATE_FILES})
-  public @interface FolderState {}
 
   public @FolderState int checkFolder(final File folder, Context context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

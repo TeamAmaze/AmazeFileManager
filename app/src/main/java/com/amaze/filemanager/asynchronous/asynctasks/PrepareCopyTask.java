@@ -51,6 +51,8 @@ import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+
 /**
  * Created by arpitkh996 on 12-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
  *
@@ -323,7 +325,7 @@ public class PrepareCopyTask
 
     if (filesToCopyPerFolder.size() != 0) {
       int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
-      if (mode == MainActivityHelper.CAN_CREATE_FILES && !path.contains("otg:/")) {
+      if (mode == CAN_CREATE_FILES && !path.contains("otg:/")) {
         // This is used because in newer devices the user has to accept a permission,
         // see MainActivity.onActivityResult()
         mainActivity.oparrayListList = filesToCopyPerFolder;
