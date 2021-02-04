@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils;
 
+import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -33,6 +37,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.FolderState;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -399,12 +404,7 @@ public class MainActivityHelper {
         });
   }
 
-  public static final int DOESNT_EXIST = 0;
-  public static final int WRITABLE_OR_ON_SDCARD = 1;
-  // For Android 5
-  public static final int CAN_CREATE_FILES = 2;
-
-  public int checkFolder(final File folder, Context context) {
+  public @FolderState int checkFolder(final File folder, Context context) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       if (FileUtil.isOnExtSdCard(folder, context)) {
         if (!folder.exists() || !folder.isDirectory()) {
