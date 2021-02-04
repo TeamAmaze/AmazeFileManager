@@ -89,14 +89,16 @@ class RarExtractor(
                 invalidArchiveEntries = second.map { it.fileName }
             }
 
-            listener.onStart(totalBytes, fileHeaders[0].fileName)
-            fileHeaders.forEach { entry ->
-                if (!listener.isCancelled) {
-                    listener.onUpdate(entry.fileName)
-                    extractEntry(context, rarFile, entry, outputPath)
+            if (fileHeaders.isNotEmpty()) {
+                listener.onStart(totalBytes, fileHeaders[0].fileName)
+                fileHeaders.forEach { entry ->
+                    if (!listener.isCancelled) {
+                        listener.onUpdate(entry.fileName)
+                        extractEntry(context, rarFile, entry, outputPath)
+                    }
                 }
+                listener.onFinish()
             }
-            listener.onFinish()
         } catch (e: RarException) {
             throw IOException(e)
         }
