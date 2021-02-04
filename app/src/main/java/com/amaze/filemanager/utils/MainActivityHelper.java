@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils;
 
+import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -66,14 +70,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.IntDef;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-
-import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
 
 /** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
