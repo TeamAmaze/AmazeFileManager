@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,11 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-public interface AppConstants {
-
-  String NEW_FILE_DELIMITER = ".";
-  String NEW_FILE_EXTENSION_TXT = "txt";
-  String NEW_LINE = "\n";
+/** @author Emmanuel on 14/9/2017, at 21:00.
+ */
+interface OnAsyncTaskFinished<T> {
+    fun onAsyncTaskFinished(data: T)
 }
