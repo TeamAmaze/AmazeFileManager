@@ -17,37 +17,33 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.utils
 
-package com.amaze.filemanager.utils;
+import android.graphics.Color
 
-import android.graphics.Color;
+/** Created by Vishal on 12-05-2015 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>  */
+object PreferenceUtils {
+    const val DEFAULT_PRIMARY = 4
+    const val DEFAULT_ACCENT = 1
+    const val DEFAULT_ICON = -1
+    const val DEFAULT_CURRENT_TAB = 1
+    fun getStatusColor(skin: String?): Int {
+        return darker(Color.parseColor(skin))
+    }
 
-/** Created by Vishal on 12-05-2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
-public class PreferenceUtils {
+    fun getStatusColor(skin: Int): Int {
+        return darker(skin)
+    }
 
-  public static final int DEFAULT_PRIMARY = 4;
-  public static final int DEFAULT_ACCENT = 1;
-  public static final int DEFAULT_ICON = -1;
-  public static final int DEFAULT_CURRENT_TAB = 1;
-
-  public static int getStatusColor(String skin) {
-    return darker(Color.parseColor(skin));
-  }
-
-  public static int getStatusColor(int skin) {
-    return darker(skin);
-  }
-
-  private static int darker(int color) {
-    int a = Color.alpha(color);
-    int r = Color.red(color);
-    int g = Color.green(color);
-    int b = Color.blue(color);
-
-    return Color.argb(
-        a,
-        Math.max((int) (r * 0.6f), 0),
-        Math.max((int) (g * 0.6f), 0),
-        Math.max((int) (b * 0.6f), 0));
-  }
+    private fun darker(color: Int): Int {
+        val a = Color.alpha(color)
+        val r = Color.red(color)
+        val g = Color.green(color)
+        val b = Color.blue(color)
+        return Color.argb(
+                a,
+                Math.max((r * 0.6f).toInt(), 0),
+                Math.max((g * 0.6f).toInt(), 0),
+                Math.max((b * 0.6f).toInt(), 0))
+    }
 }
