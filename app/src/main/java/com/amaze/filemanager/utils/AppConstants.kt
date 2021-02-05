@@ -20,10 +20,8 @@
 
 package com.amaze.filemanager.utils
 
-interface AppConstants {
-    companion object {
-        const val NEW_FILE_DELIMITER = "."
-        const val NEW_FILE_EXTENSION_TXT = "txt"
-        const val NEW_LINE = "\n"
-    }
+object AppConstants {
+    const val NEW_FILE_DELIMITER = "."
+    const val NEW_FILE_EXTENSION_TXT = "txt"
+    const val NEW_LINE = "\n"
 }
