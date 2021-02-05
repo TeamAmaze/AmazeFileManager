@@ -55,8 +55,8 @@ object TinyDB {
     fun getBooleanArray(
         preferences: SharedPreferences,
         key: String?,
-        defaultValue: Array<Boolean?>
-    ): Array<Boolean?> {
+        defaultValue: Array<Boolean?>?
+    ): Array<Boolean?>? {
         val prefValue = preferences.getString(key, "")
         if (prefValue == "") {
             return defaultValue
