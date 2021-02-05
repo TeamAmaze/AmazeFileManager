@@ -140,7 +140,7 @@ public class SubnetScanner extends AsyncTask<Void, ComputerParcelable, Void> {
                     (ComputerParcelable) ((Future) this.tasks.get(i)).get(1, TimeUnit.MILLISECONDS);
                 this.tasks.remove(i);
                 size--;
-                if (computer.name != null) {
+                if (computer.getName() != null) {
                   publishProgress(computer);
                 }
                 ipAddress = size;
