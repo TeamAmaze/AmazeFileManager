@@ -41,7 +41,6 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
-import com.amaze.filemanager.ui.activities.superclasses.BaseAsyncTask;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
@@ -67,8 +66,7 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class LoadFilesListTask
-    extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>>
-    implements BaseAsyncTask {
+    extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
   private String path;
   private WeakReference<MainFragment> mainFragment;
