@@ -96,13 +96,14 @@ public class LoadFilesListTask
   }
 
   @Override
-  protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
+  protected @NonNull Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
     final MainFragment mainFragment = this.mainFragment.get();
     final Context context = this.context.get();
 
-    if(mainFragment == null || context == null) {
+    if (mainFragment == null || context == null) {
       cancel(true);
-      return null;
+      // Return object so thing down the line don't NPE if cancellation is not instantaneous
+      return new Pair<>(openmode, null);
     }
 
     HybridFile hFile = null;
@@ -221,11 +222,7 @@ public class LoadFilesListTask
               });
         } catch (CloudPluginException e) {
           e.printStackTrace();
-          AppConfig.toast(
-              context,
-              context
-                  .getResources()
-                  .getString(R.string.failed_no_connection));
+          AppConfig.toast(context, context.getResources().getString(R.string.failed_no_connection));
           return new Pair<>(openmode, list);
         }
         break;
@@ -264,8 +261,7 @@ public class LoadFilesListTask
         asc = -1;
         sortby = t - 4;
       }
-      Collections.sort(
-          list, new FileListSorter(mainFragment.dsort, sortby, asc));
+      Collections.sort(list, new FileListSorter(mainFragment.dsort, sortby, asc));
     }
 
     return new Pair<>(openmode, list);
@@ -283,7 +279,7 @@ public class LoadFilesListTask
     listener.onAsyncTaskFinished(list);
   }
 
-  private LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
+  private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
     if (dataUtils.isFileHidden(baseFile.getPath())) {
       return null;
     }
@@ -291,7 +287,7 @@ public class LoadFilesListTask
     final MainFragment mainFragment = this.mainFragment.get();
     final Context context = this.context.get();
 
-    if(mainFragment == null || context == null) {
+    if (mainFragment == null || context == null) {
       cancel(true);
       return null;
     }
@@ -347,11 +343,11 @@ public class LoadFilesListTask
     return listMediaCommon(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection, selection);
   }
 
-  private @NonNull ArrayList<LayoutElementParcelable> listMediaCommon(
+  private @Nullable ArrayList<LayoutElementParcelable> listMediaCommon(
       Uri contentUri, @NonNull String[] projection, @Nullable String selection) {
     final Context context = this.context.get();
 
-    if(context == null) {
+    if (context == null) {
       cancel(true);
       return null;
     }
@@ -375,10 +371,10 @@ public class LoadFilesListTask
     return retval;
   }
 
-  private ArrayList<LayoutElementParcelable> listDocs() {
+  private @Nullable ArrayList<LayoutElementParcelable> listDocs() {
     final Context context = this.context.get();
 
-    if(context == null) {
+    if (context == null) {
       cancel(true);
       return null;
     }
@@ -433,10 +429,10 @@ public class LoadFilesListTask
     return docs;
   }
 
-  private ArrayList<LayoutElementParcelable> listApks() {
+  private @Nullable ArrayList<LayoutElementParcelable> listApks() {
     final Context context = this.context.get();
 
-    if(context == null) {
+    if (context == null) {
       cancel(true);
       return null;
     }
@@ -466,9 +462,9 @@ public class LoadFilesListTask
     return apks;
   }
 
-  private ArrayList<LayoutElementParcelable> listRecent() {
+  private @Nullable ArrayList<LayoutElementParcelable> listRecent() {
     final MainFragment mainFragment = this.mainFragment.get();
-    if(mainFragment == null) {
+    if (mainFragment == null) {
       cancel(true);
       return null;
     }
@@ -494,10 +490,10 @@ public class LoadFilesListTask
     return songs;
   }
 
-  private ArrayList<LayoutElementParcelable> listRecentFiles() {
+  private @Nullable ArrayList<LayoutElementParcelable> listRecentFiles() {
     final Context context = this.context.get();
 
-    if(context == null) {
+    if (context == null) {
       cancel(true);
       return null;
     }
@@ -545,7 +541,7 @@ public class LoadFilesListTask
   private void listOtg(String path, OnFileFound fileFound) {
     final Context context = this.context.get();
 
-    if(context == null) {
+    if (context == null) {
       cancel(true);
       return;
     }
@@ -558,7 +554,7 @@ public class LoadFilesListTask
       throws CloudPluginException {
     final Context context = this.context.get();
 
-    if(context == null) {
+    if (context == null) {
       cancel(true);
       return;
     }
