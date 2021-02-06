@@ -72,7 +72,7 @@ public class LoadFilesListTask
 
   private String path;
   private WeakReference<MainFragment> mainFragment;
-  private Context context;
+  private WeakReference<Context> context;
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
   private DataUtils dataUtils = DataUtils.getInstance();
@@ -89,7 +89,7 @@ public class LoadFilesListTask
     this.path = path;
     this.mainFragment = new WeakReference<>(mainFragment);
     this.openmode = openmode;
-    this.context = context;
+    this.context = new WeakReference<>(context);
     this.showThumbs = showThumbs;
     this.showHiddenFiles = showHiddenFiles;
     this.listener = l;
@@ -98,7 +98,9 @@ public class LoadFilesListTask
   @Override
   protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
     final MainFragment mainFragment = this.mainFragment.get();
-    if(mainFragment == null) {
+    final Context context = this.context.get();
+
+    if(mainFragment == null || context == null) {
       cancel(true);
       return null;
     }
@@ -151,7 +153,7 @@ public class LoadFilesListTask
         list = new ArrayList<LayoutElementParcelable>();
 
         sftpHFile.forEachChildrenFile(
-            nullCheckOrInterrupt(context, this),
+            context,
             false,
             file -> {
               if (!(dataUtils.isFileHidden(file.getPath())
@@ -220,8 +222,8 @@ public class LoadFilesListTask
         } catch (CloudPluginException e) {
           e.printStackTrace();
           AppConfig.toast(
-              nullCheckOrInterrupt(context, this),
-              nullCheckOrInterrupt(context, this)
+              context,
+              context
                   .getResources()
                   .getString(R.string.failed_no_connection));
           return new Pair<>(openmode, list);
@@ -252,7 +254,7 @@ public class LoadFilesListTask
 
     if (list != null
         && !(openmode == OpenMode.CUSTOM && ((path).equals("5") || (path).equals("6")))) {
-      int t = SortHandler.getSortType(nullCheckOrInterrupt(context, this), path);
+      int t = SortHandler.getSortType(context, path);
       int sortby;
       int asc;
       if (t <= 3) {
@@ -287,7 +289,9 @@ public class LoadFilesListTask
     }
 
     final MainFragment mainFragment = this.mainFragment.get();
-    if(mainFragment == null) {
+    final Context context = this.context.get();
+
+    if(mainFragment == null || context == null) {
       cancel(true);
       return null;
     }
@@ -301,7 +305,7 @@ public class LoadFilesListTask
       if (baseFile.getSize() != -1) {
         try {
           longSize = baseFile.getSize();
-          size = Formatter.formatFileSize(nullCheckOrInterrupt(context, this), longSize);
+          size = Formatter.formatFileSize(context, longSize);
         } catch (NumberFormatException e) {
           e.printStackTrace();
         }
@@ -312,8 +316,8 @@ public class LoadFilesListTask
 
     LayoutElementParcelable layoutElement =
         new LayoutElementParcelable(
-            nullCheckOrInterrupt(context, this),
-            baseFile.getName(nullCheckOrInterrupt(context, this)),
+            context,
+            baseFile.getName(context),
             baseFile.getPath(),
             baseFile.getPermission(),
             baseFile.getLink(),
@@ -345,6 +349,13 @@ public class LoadFilesListTask
 
   private @NonNull ArrayList<LayoutElementParcelable> listMediaCommon(
       Uri contentUri, @NonNull String[] projection, @Nullable String selection) {
+    final Context context = this.context.get();
+
+    if(context == null) {
+      cancel(true);
+      return null;
+    }
+
     Cursor cursor =
         context.getContentResolver().query(contentUri, projection, selection, null, null);
 
@@ -365,6 +376,13 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listDocs() {
+    final Context context = this.context.get();
+
+    if(context == null) {
+      cancel(true);
+      return null;
+    }
+
     ArrayList<LayoutElementParcelable> docs = new ArrayList<>();
     final String[] projection = {MediaStore.Files.FileColumns.DATA};
     Cursor cursor =
@@ -416,6 +434,13 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listApks() {
+    final Context context = this.context.get();
+
+    if(context == null) {
+      cancel(true);
+      return null;
+    }
+
     ArrayList<LayoutElementParcelable> apks = new ArrayList<>();
     final String[] projection = {MediaStore.Files.FileColumns.DATA};
 
@@ -470,13 +495,20 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecentFiles() {
+    final Context context = this.context.get();
+
+    if(context == null) {
+      cancel(true);
+      return null;
+    }
+
     ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
     final String[] projection = {MediaStore.Files.FileColumns.DATA};
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
     Cursor cursor =
-        this.context
+        context
             .getContentResolver()
             .query(
                 MediaStore.Files.getContentUri("external"),
@@ -511,12 +543,26 @@ public class LoadFilesListTask
    *     OTG
    */
   private void listOtg(String path, OnFileFound fileFound) {
+    final Context context = this.context.get();
+
+    if(context == null) {
+      cancel(true);
+      return;
+    }
+
     OTGUtil.getDocumentFiles(path, context, fileFound);
   }
 
   private void listCloud(
       String path, CloudStorage cloudStorage, OpenMode openMode, OnFileFound fileFoundCallback)
       throws CloudPluginException {
+    final Context context = this.context.get();
+
+    if(context == null) {
+      cancel(true);
+      return;
+    }
+
     if (!CloudSheetFragment.isCloudProviderAvailable(context)) {
       throw new CloudPluginException();
     }
