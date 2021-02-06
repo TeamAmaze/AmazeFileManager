@@ -21,6 +21,14 @@
 package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.KITKAT_WATCH;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static android.os.Build.VERSION_CODES.M;
+import static android.os.Build.VERSION_CODES.N;
 import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.COMPRESS;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.COPY;
@@ -32,6 +40,7 @@ import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FOLDER;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.RENAME;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.SAVE_FILE;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.UNDEFINED;
+import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
@@ -543,7 +552,7 @@ public class MainActivity extends PermissionsActivity
     Objects.requireNonNull(mainActivity);
 
     if (uris != null && uris.size() > 0) {
-      if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (SDK_INT >= LOLLIPOP) {
         File folder = new File(mainFragment.getCurrentPath());
         int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
         if (result == WRITABLE_OR_ON_SDCARD) {
@@ -615,7 +624,7 @@ public class MainActivity extends PermissionsActivity
   /** @return paths to all available volumes in the system (include emulated) */
   public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectories() {
     ArrayList<StorageDirectoryParcelable> volumes;
-    if (SDK_INT >= Build.VERSION_CODES.N) {
+    if (SDK_INT >= N) {
       volumes = getStorageDirectoriesNew();
     } else {
       volumes = getStorageDirectoriesLegacy();
@@ -633,7 +642,7 @@ public class MainActivity extends PermissionsActivity
   /**
    * @return All available storage volumes (including internal storage, SD-Cards and USB devices)
    */
-  @TargetApi(Build.VERSION_CODES.N)
+  @TargetApi(N)
   public synchronized ArrayList<StorageDirectoryParcelable> getStorageDirectoriesNew() {
     // Final set of paths
     ArrayList<StorageDirectoryParcelable> volumes = new ArrayList<>();
@@ -700,7 +709,7 @@ public class MainActivity extends PermissionsActivity
       // Device has emulated storage; external storage paths should have
       // userId burned into them.
       final String rawUserId;
-      if (SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1) {
+      if (SDK_INT < JELLY_BEAN_MR1) {
         rawUserId = "";
       } else {
         final String path = Environment.getExternalStorageDirectory().getAbsolutePath();
@@ -727,8 +736,8 @@ public class MainActivity extends PermissionsActivity
       final String[] rawSecondaryStorages = rawSecondaryStoragesStr.split(File.pathSeparator);
       Collections.addAll(rv, rawSecondaryStorages);
     }
-    if (SDK_INT >= Build.VERSION_CODES.M && checkStoragePermission()) rv.clear();
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    if (SDK_INT >= M && checkStoragePermission()) rv.clear();
+    if (SDK_INT >= KITKAT) {
       String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
       for (String s : strings) {
         File f = new File(s);
@@ -738,7 +747,7 @@ public class MainActivity extends PermissionsActivity
     File usb = getUsbDrive();
     if (usb != null && !rv.contains(usb.getPath())) rv.add(usb.getPath());
 
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    if (SDK_INT >= KITKAT) {
       if (SingletonUsbOtg.getInstance().isDeviceConnected()) {
         rv.add(OTGUtil.PREFIX_OTG + "/");
       }
@@ -1166,7 +1175,7 @@ public class MainActivity extends PermissionsActivity
     unregisterReceiver(mainActivityHelper.mNotificationReceiver);
     unregisterReceiver(receiver2);
 
-    if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+    if (SDK_INT >= KITKAT) {
       unregisterReceiver(mOtgReceiver);
     }
 
@@ -1290,7 +1299,7 @@ public class MainActivity extends PermissionsActivity
   private void closeInteractiveShell() {
     if (isRootExplorer()) {
       // close interactive shell and handler thread associated with it
-      if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      if (SDK_INT >= JELLY_BEAN_MR2) {
         // let it finish up first with what it's doing
         handlerThread.quitSafely();
       } else handlerThread.quit();
@@ -1392,7 +1401,7 @@ public class MainActivity extends PermissionsActivity
       // After confirmation, update stored value of folder.
       // Persist access permissions.
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      if (SDK_INT >= KITKAT) {
         getContentResolver()
             .takePersistableUriPermission(
                 treeUri,
@@ -1477,6 +1486,11 @@ public class MainActivity extends PermissionsActivity
         mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
         drawer.closeIfNotLocked();
         if (drawer.isLocked()) drawer.onDrawerClosed();
+      } else if (requestCode == REQUEST_CODE_SAF_FTP) {
+        FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
+        ftpServerFragment.changeFTPServerPath(intent.getData().toString());
+        Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+
       } else {
         Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
         // otg access not provided
@@ -1541,15 +1555,14 @@ public class MainActivity extends PermissionsActivity
 
     drawer.setBackgroundColor(colorDrawable.getColor());
 
-    if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    if (SDK_INT >= LOLLIPOP) {
       // for lollipop devices, the status bar color
       mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
       if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
         mainActivity
             .getWindow()
             .setNavigationBarColor(PreferenceUtils.getStatusColor(colorDrawable.getColor()));
-    } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
-        || SDK_INT == Build.VERSION_CODES.KITKAT) {
+    } else if (SDK_INT == KITKAT_WATCH || SDK_INT == KITKAT) {
 
       // for kitkat devices, the status bar color
       SystemBarTintManager tintManager = new SystemBarTintManager(this);
@@ -1671,7 +1684,7 @@ public class MainActivity extends PermissionsActivity
     } else if (intent.getAction() != null) {
       checkForExternalIntent(intent);
 
-      if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
+      if (SDK_INT >= KITKAT) {
         if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
           SingletonUsbOtg.getInstance().resetUsbOtgRoot();
           drawer.refreshDrawer();
