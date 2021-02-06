@@ -55,6 +55,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -118,7 +119,9 @@ public class LoadFilesListTask
         if (hFile == null) {
           hFile = new HybridFile(OpenMode.SMB, path);
         }
-
+        if (!hFile.getPath().endsWith("/")) {
+          hFile.setPath(hFile.getPath() + "/");
+        }
         try {
           SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
           list = nullCheckOrInterrupt(mainFragment, this).addToSmb(smbFile, path, showHiddenFiles);
@@ -127,9 +130,10 @@ public class LoadFilesListTask
           if (!e.getMessage().toLowerCase().contains("denied")) {
             nullCheckOrInterrupt(mainFragment, this).reauthenticateSmb();
           }
+          e.printStackTrace();
           return null;
         } catch (SmbException | NullPointerException e) {
-          e.printStackTrace();
+          Log.w(getClass().getSimpleName(), "Failed to load smb files for path: " + path, e);
           nullCheckOrInterrupt(mainFragment, this).reauthenticateSmb();
           return null;
         }

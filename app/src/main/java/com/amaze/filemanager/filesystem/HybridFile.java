@@ -346,6 +346,7 @@ public class HybridFile {
       smbFile.setConnectTimeout(timeout);
       return smbFile;
     } catch (MalformedURLException e) {
+      e.printStackTrace();
       return null;
     }
   }
@@ -354,6 +355,7 @@ public class HybridFile {
     try {
       return SmbUtil.create(path);
     } catch (MalformedURLException e) {
+      e.printStackTrace();
       return null;
     }
   }

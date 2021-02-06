@@ -575,6 +575,10 @@ public class FileUtils {
 
   public static String[] getFolderNamesInPath(String path) {
     if (!path.endsWith("/")) path += "/";
+    @Nullable Pair<String, String> splitUri = splitUri(path);
+    if (splitUri != null) {
+      path = splitUri.second;
+    }
     return ("root" + path).split("/");
   }
 
@@ -644,9 +648,8 @@ public class FileUtils {
   public static @Nullable Pair<String, String> splitUri(@NonNull final String path) {
     Uri uri = Uri.parse(path);
     if (uri.getScheme() != null) {
-      String urlPrefix = uri.getScheme() + "://" + uri.getAuthority();
-      String retPath =
-          path.substring(path.indexOf(uri.getAuthority()) + uri.getAuthority().length());
+      String urlPrefix = uri.getScheme() + "://" + uri.getEncodedAuthority();
+      String retPath = path.substring(urlPrefix.length());
       return new Pair<>(urlPrefix, retPath);
     } else {
       return null;
