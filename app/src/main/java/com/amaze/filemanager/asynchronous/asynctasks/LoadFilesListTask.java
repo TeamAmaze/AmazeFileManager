@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
@@ -70,7 +71,7 @@ public class LoadFilesListTask
     implements BaseAsyncTask {
 
   private String path;
-  private MainFragment mainFragment;
+  private WeakReference<MainFragment> mainFragment;
   private Context context;
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
@@ -86,7 +87,7 @@ public class LoadFilesListTask
       boolean showHiddenFiles,
       OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
     this.path = path;
-    this.mainFragment = mainFragment;
+    this.mainFragment = new WeakReference<>(mainFragment);
     this.openmode = openmode;
     this.context = context;
     this.showThumbs = showThumbs;
@@ -96,22 +97,28 @@ public class LoadFilesListTask
 
   @Override
   protected Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
+    final MainFragment mainFragment = this.mainFragment.get();
+    if(mainFragment == null) {
+      cancel(true);
+      return null;
+    }
+
     HybridFile hFile = null;
 
     if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
       hFile = new HybridFile(openmode, path);
-      hFile.generateMode(nullCheckOrInterrupt(mainFragment, this).getActivity());
+      hFile.generateMode(mainFragment.getActivity());
       openmode = hFile.getMode();
 
       if (hFile.isSmb()) {
-        nullCheckOrInterrupt(mainFragment, this).smbPath = path;
+        mainFragment.smbPath = path;
       }
     }
 
     if (isCancelled()) return null;
 
-    nullCheckOrInterrupt(mainFragment, this).folder_count = 0;
-    nullCheckOrInterrupt(mainFragment, this).file_count = 0;
+    mainFragment.folder_count = 0;
+    mainFragment.file_count = 0;
     final ArrayList<LayoutElementParcelable> list;
 
     switch (openmode) {
@@ -124,17 +131,17 @@ public class LoadFilesListTask
         }
         try {
           SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
-          list = nullCheckOrInterrupt(mainFragment, this).addToSmb(smbFile, path, showHiddenFiles);
+          list = mainFragment.addToSmb(smbFile, path, showHiddenFiles);
           openmode = OpenMode.SMB;
         } catch (SmbAuthException e) {
           if (!e.getMessage().toLowerCase().contains("denied")) {
-            nullCheckOrInterrupt(mainFragment, this).reauthenticateSmb();
+            mainFragment.reauthenticateSmb();
           }
           e.printStackTrace();
           return null;
         } catch (SmbException | NullPointerException e) {
           Log.w(getClass().getSimpleName(), "Failed to load smb files for path: " + path, e);
-          nullCheckOrInterrupt(mainFragment, this).reauthenticateSmb();
+          mainFragment.reauthenticateSmb();
           return null;
         }
         break;
@@ -226,7 +233,7 @@ public class LoadFilesListTask
         final OpenMode[] currentOpenMode = new OpenMode[1];
         ListFilesCommand.INSTANCE.listFiles(
             path,
-            nullCheckOrInterrupt(mainFragment, this).getMainActivity().isRootExplorer(),
+            mainFragment.getMainActivity().isRootExplorer(),
             showHiddenFiles,
             mode -> {
               currentOpenMode[0] = mode;
@@ -256,7 +263,7 @@ public class LoadFilesListTask
         sortby = t - 4;
       }
       Collections.sort(
-          list, new FileListSorter(nullCheckOrInterrupt(mainFragment, this).dsort, sortby, asc));
+          list, new FileListSorter(mainFragment.dsort, sortby, asc));
     }
 
     return new Pair<>(openmode, list);
@@ -275,43 +282,49 @@ public class LoadFilesListTask
   }
 
   private LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
-    if (!dataUtils.isFileHidden(baseFile.getPath())) {
-      String size = "";
-      long longSize = 0;
-
-      if (baseFile.isDirectory()) {
-        nullCheckOrInterrupt(mainFragment, this).folder_count++;
-      } else {
-        if (baseFile.getSize() != -1) {
-          try {
-            longSize = baseFile.getSize();
-            size = Formatter.formatFileSize(nullCheckOrInterrupt(context, this), longSize);
-          } catch (NumberFormatException e) {
-            e.printStackTrace();
-          }
-        }
-
-        nullCheckOrInterrupt(mainFragment, this).file_count++;
-      }
-
-      LayoutElementParcelable layoutElement =
-          new LayoutElementParcelable(
-              nullCheckOrInterrupt(context, this),
-              baseFile.getName(nullCheckOrInterrupt(context, this)),
-              baseFile.getPath(),
-              baseFile.getPermission(),
-              baseFile.getLink(),
-              size,
-              longSize,
-              false,
-              baseFile.getDate() + "",
-              baseFile.isDirectory(),
-              showThumbs,
-              baseFile.getMode());
-      return layoutElement;
+    if (dataUtils.isFileHidden(baseFile.getPath())) {
+      return null;
     }
 
-    return null;
+    final MainFragment mainFragment = this.mainFragment.get();
+    if(mainFragment == null) {
+      cancel(true);
+      return null;
+    }
+
+    String size = "";
+    long longSize = 0;
+
+    if (baseFile.isDirectory()) {
+      mainFragment.folder_count++;
+    } else {
+      if (baseFile.getSize() != -1) {
+        try {
+          longSize = baseFile.getSize();
+          size = Formatter.formatFileSize(nullCheckOrInterrupt(context, this), longSize);
+        } catch (NumberFormatException e) {
+          e.printStackTrace();
+        }
+      }
+
+      mainFragment.file_count++;
+    }
+
+    LayoutElementParcelable layoutElement =
+        new LayoutElementParcelable(
+            nullCheckOrInterrupt(context, this),
+            baseFile.getName(nullCheckOrInterrupt(context, this)),
+            baseFile.getPath(),
+            baseFile.getPermission(),
+            baseFile.getLink(),
+            size,
+            longSize,
+            false,
+            baseFile.getDate() + "",
+            baseFile.isDirectory(),
+            showThumbs,
+            baseFile.getMode());
+    return layoutElement;
   }
 
   private ArrayList<LayoutElementParcelable> listImages() {
@@ -429,6 +442,12 @@ public class LoadFilesListTask
   }
 
   private ArrayList<LayoutElementParcelable> listRecent() {
+    final MainFragment mainFragment = this.mainFragment.get();
+    if(mainFragment == null) {
+      cancel(true);
+      return null;
+    }
+
     UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
     final LinkedList<String> paths = utilsHandler.getHistoryLinkedList();
     ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
@@ -437,7 +456,7 @@ public class LoadFilesListTask
         HybridFileParcelable hybridFileParcelable =
             RootHelper.generateBaseFile(new File(f), showHiddenFiles);
         if (hybridFileParcelable != null) {
-          hybridFileParcelable.generateMode(nullCheckOrInterrupt(mainFragment, this).getActivity());
+          hybridFileParcelable.generateMode(mainFragment.getActivity());
           if (!hybridFileParcelable.isSmb()
               && !hybridFileParcelable.isDirectory()
               && hybridFileParcelable.exists()) {
