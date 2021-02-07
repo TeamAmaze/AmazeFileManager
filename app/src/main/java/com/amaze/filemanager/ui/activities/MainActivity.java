@@ -1330,7 +1330,7 @@ public class MainActivity extends PermissionsActivity
     fragmentTransaction.commitAllowingStateLoss();
   }
 
-  public MainFragment getCurrentMainFragment() {
+  public @Nullable MainFragment getCurrentMainFragment() {
     TabFragment tab = getTabFragment();
 
     if (tab != null && tab.getCurrentTabFragment() instanceof MainFragment) {
