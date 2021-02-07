@@ -632,7 +632,7 @@ public class FileUtils {
     }
     Collections.reverse(paths);
 
-    return paths.toArray(new String[paths.size()]);
+    return paths.toArray(new String[0]);
   }
 
   /**
