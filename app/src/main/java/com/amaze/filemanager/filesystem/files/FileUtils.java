@@ -618,10 +618,10 @@ public class FileUtils {
       } else {
         paths.add(path);
       }
-      if (path.lastIndexOf('/') < 0) {
-        break;
-      } else {
+      if (path.contains("/")) {
         path = path.substring(0, path.lastIndexOf('/'));
+      } else {
+        break;
       }
     }
 
