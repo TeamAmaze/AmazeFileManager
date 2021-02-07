@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,7 +40,6 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.Utils;
 
 import android.app.ProgressDialog;
@@ -326,8 +327,8 @@ public class PrepareCopyTask
     }
 
     if (filesToCopyPerFolder.size() != 0) {
-      int mode = mainActivity.mainActivityHelper.checkFolder(path, openMode, context);
-      if (mode == MainActivityHelper.CAN_CREATE_FILES && !path.contains("otg:/")) {
+      int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
+      if (mode == CAN_CREATE_FILES && !path.contains("otg:/")) {
         // This is used because in newer devices the user has to accept a permission,
         // see MainActivity.onActivityResult()
         mainActivity.oparrayListList = filesToCopyPerFolder;

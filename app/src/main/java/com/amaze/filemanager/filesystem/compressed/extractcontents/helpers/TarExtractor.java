@@ -121,6 +121,7 @@ public class TarExtractor extends Extractor {
       }
     } finally {
       outputStream.close();
+      outputFile.setLastModified(entry.getModTime().getTime());
     }
   }
 }

@@ -9,7 +9,7 @@ on:
 jobs:
   apk:
     runs-on: ubuntu-latest
-    if: github.event.comment.body == 'Build test apk' && github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess'
+    if: github.event.comment.body == 'Build test apk' && (github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess')
     steps:
       - name: Github API Request
         id: request
@@ -29,8 +29,8 @@ jobs:
         uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: ${{ fromJson(steps.request.outputs.data).head.repo.full_name }}
-          ref: ${{ steps.pr_data.outputs.branch }}
+          repository: ${{fromJson(steps.request.outputs.data).head.repo.full_name}}
+          ref: ${{fromJson(steps.request.outputs.data).head.ref}}
       - name: Set up JDK 1.8
         uses: actions/setup-java@v1
         with:
@@ -39,6 +39,8 @@ jobs:
         run: |
           echo Run on-demand by ${GITHUB_ACTOR}
           bash ./gradlew assembleDebug --stacktrace
+        env:
+          TZ: UTC
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v2
         with:

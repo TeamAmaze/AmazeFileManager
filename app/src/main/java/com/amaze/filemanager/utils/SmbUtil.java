@@ -20,11 +20,13 @@
 
 package com.amaze.filemanager.utils;
 
+import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
-import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
@@ -116,19 +118,22 @@ public class SmbUtil {
    * SMB version of {@link MainActivityHelper#checkFolder(File, Context)}.
    *
    * @param path SMB path
-   * @return {@link MainActivityHelper#DOESNT_EXIST} if specified SMB path doesn't exist on server,
-   *     else -1
+   * @return {@link com.amaze.filemanager.filesystem.FolderStateKt#DOESNT_EXIST} if specified SMB
+   *     path doesn't exist on server, else -1
    */
   public static int checkFolder(@NonNull String path) {
-    return Single.fromCallable(() -> {
-      try {
-        SmbFile smbFile = create(path);
-        if (!smbFile.exists() || !smbFile.isDirectory()) return MainActivityHelper.DOESNT_EXIST;
-      } catch (SmbException | MalformedURLException e) {
-        Log.w(TAG, "Error checking folder existence, assuming not exist", e);
-        return MainActivityHelper.DOESNT_EXIST;
-      }
-      return MainActivityHelper.WRITABLE_ON_REMOTE;
-    }).subscribeOn(Schedulers.io()).blockingGet();
+    return Single.fromCallable(
+            () -> {
+              try {
+                SmbFile smbFile = create(path);
+                if (!smbFile.exists() || !smbFile.isDirectory()) return DOESNT_EXIST;
+              } catch (SmbException | MalformedURLException e) {
+                Log.w(TAG, "Error checking folder existence, assuming not exist", e);
+                return DOESNT_EXIST;
+              }
+              return WRITABLE_ON_REMOTE;
+            })
+        .subscribeOn(Schedulers.io())
+        .blockingGet();
   }
 }

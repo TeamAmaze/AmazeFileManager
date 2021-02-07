@@ -38,7 +38,7 @@ import android.content.Context;
 
 import androidx.annotation.NonNull;
 
-import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 import net.lingala.zip4j.model.FileHeader;
 
@@ -59,7 +59,7 @@ public class ZipExtractor extends Extractor {
     try {
       ZipFile zipfile = new ZipFile(filePath);
       if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
-        zipfile.setPassword(ArchivePasswordCache.getInstance().get(filePath));
+        zipfile.setPassword(ArchivePasswordCache.getInstance().get(filePath).toCharArray());
       }
 
       // iterating archive elements to find file names that are to be extracted
@@ -99,11 +99,8 @@ public class ZipExtractor extends Extractor {
    */
   private void extractEntry(
       @NonNull final Context context, ZipFile zipFile, FileHeader entry, String outputDir)
-      throws IOException, ZipException {
+      throws IOException {
     final File outputFile = new File(outputDir, fixEntryName(entry.getFileName()));
-
-    if (ArchivePasswordCache.getInstance().containsKey(filePath))
-      entry.setPassword(ArchivePasswordCache.getInstance().get(filePath).toCharArray());
 
     if (!outputFile.getCanonicalPath().startsWith(outputDir)) {
       throw new IOException("Incorrect ZipEntry path!");
@@ -136,6 +133,7 @@ public class ZipExtractor extends Extractor {
     } finally {
       outputStream.close();
       inputStream.close();
+      outputFile.setLastModified(entry.getLastModifiedTimeEpoch());
     }
   }
 }

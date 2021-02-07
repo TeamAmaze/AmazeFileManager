@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
@@ -530,7 +531,7 @@ public class MainActivity extends PermissionsActivity
       if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         File folder = new File(getCurrentMainFragment().getCurrentPath());
         int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
-        if (result == MainActivityHelper.WRITABLE_OR_ON_SDCARD) {
+        if (result == WRITABLE_OR_ON_SDCARD) {
           FileUtil.writeUriToStorage(
               MainActivity.this,
               uris,

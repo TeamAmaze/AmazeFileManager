@@ -36,6 +36,21 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
+        android:id="@+id/shareTIL"
+        app:errorEnabled="true"
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.AppCompatEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:inputType="textUri"
+            android:hint="@string/smb_share"
+            android:id="@+id/shareET"
+            android:layout_gravity="center_horizontal" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:layout_width="match_parent"
         android:id="@+id/domainTIL"
         app:errorEnabled="true"
         android:layout_height="wrap_content">
@@ -66,7 +81,8 @@
     <com.google.android.material.textfield.TextInputLayout
         android:layout_width="match_parent"
         app:errorEnabled="true"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:id="@+id/passwordTIL">
         <androidx.appcompat.widget.AppCompatEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

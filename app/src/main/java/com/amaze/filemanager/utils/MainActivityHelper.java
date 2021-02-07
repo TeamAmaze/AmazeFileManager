@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils;
 
+import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+
 import java.io.File;
 import java.util.ArrayList;
 
@@ -33,6 +37,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.FolderState;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -399,17 +404,11 @@ public class MainActivityHelper {
         });
   }
 
-  public static final int DOESNT_EXIST = 0;
-  public static final int WRITABLE_OR_ON_SDCARD = 1;
-  public static final int WRITABLE_ON_REMOTE = 3;
-  // For Android 5
-  public static final int CAN_CREATE_FILES = 2;
-
-  public int checkFolder(final File folder, Context context) {
+  public @FolderState int checkFolder(final File folder, Context context) {
     return checkFolder(folder.getAbsolutePath(), OpenMode.FILE, context);
   }
 
-  public int checkFolder(final String path, OpenMode openMode, Context context) {
+  public @FolderState int checkFolder(final String path, OpenMode openMode, Context context) {
     if (OpenMode.SMB.equals(openMode)) {
       return SmbUtil.checkFolder(path);
     } else {

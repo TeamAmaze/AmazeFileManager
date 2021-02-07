@@ -51,6 +51,8 @@ import androidx.annotation.Nullable;
 // Central data being used across activity,fragments and classes
 public class DataUtils {
 
+  private static final String TAG = DataUtils.class.getSimpleName();
+
   public static final int DELETE = 0,
       COPY = 1,
       MOVE = 2,
@@ -361,7 +363,7 @@ public class DataUtils {
     try {
       return getHiddenFiles().getValueForExactKey(path) != null;
     } catch (IllegalStateException e) {
-      Log.w(getClass().getSimpleName(), e);
+      Log.w(TAG, e);
       return false;
     }
   }
@@ -420,7 +422,14 @@ public class DataUtils {
 
   public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
     menuMetadataMap.put(item, metadata);
-    if (!TextUtils.isEmpty(metadata.path)) tree.put(metadata.path, item.getItemId());
+    if (!TextUtils.isEmpty(metadata.path)) {
+      try {
+        tree.put(metadata.path, item.getItemId());
+      } catch (IllegalStateException e) {
+        Log.w(TAG, e);
+        menuMetadataMap.remove(item);
+      }
+    }
   }
 
   /**

@@ -122,6 +122,7 @@ public class SevenZipExtractor extends Extractor {
       }
     } finally {
       outputStream.close();
+      outputFile.setLastModified(entry.getLastModifiedDate().getTime());
     }
   }
 }

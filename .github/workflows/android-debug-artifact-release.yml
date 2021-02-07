@@ -16,6 +16,8 @@ jobs:
       - name: Build with Gradle
         run: |
           bash ./gradlew assembleDebug --stacktrace
+        env:
+          TZ: UTC
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v2
         with:

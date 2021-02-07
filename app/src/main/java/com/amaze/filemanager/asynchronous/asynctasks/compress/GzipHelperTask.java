@@ -87,7 +87,7 @@ public class GzipHelperTask extends CompressedHelperTask {
           elements.add(
               new CompressedObjectParcelable(
                   entry.getName(),
-                  entry.getLastModifiedDate().getTime(),
+                  entry.getModTime().getTime(),
                   entry.getSize(),
                   entry.isDirectory()));
         }
