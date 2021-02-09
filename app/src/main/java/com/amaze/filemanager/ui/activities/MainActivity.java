@@ -61,7 +61,6 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.compressed.CompressedMimeParsingHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -81,6 +80,7 @@ import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
@@ -485,7 +485,7 @@ public class MainActivity extends PermissionsActivity
           // no data field, open home for the tab in later processing
           path = null;
         }
-      } else if (CompressedMimeParsingHelper.isFileCompressed(type) && uri != null) {
+      } else if (MimeTypes.isFileCompressed(type) && uri != null) {
         if (uri.toString().startsWith("content")) {
           Snackbar.make(
                   findViewById(R.id.content_frame), R.string.unsupported_uri, Snackbar.LENGTH_SHORT)

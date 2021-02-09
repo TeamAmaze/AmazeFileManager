@@ -167,4 +167,21 @@ public final class MimeTypes {
     if (path.contains(".")) return path.substring(path.lastIndexOf(".") + 1).toLowerCase();
     else return "";
   }
+
+  /** Parse the MIME type of a compressed file */
+  public static boolean isFileCompressed(String mimeType) {
+    if (mimeType.startsWith("resource")) {
+      mimeType = mimeType.replace("resource", "application");
+    }
+
+    if (!mimeType.startsWith("application")) {
+      return false;
+    }
+
+    if (mimeType.endsWith("/folder")) {
+      return false;
+    }
+
+    return mimeType.endsWith("/zip");
+  }
 }
