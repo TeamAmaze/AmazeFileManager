@@ -25,9 +25,17 @@ import android.util.DisplayMetrics
 import kotlin.math.roundToInt
 
 class ScreenUtils(private val activity: Activity) {
+    /**
+     * Converts Density Pixels to real Pixels in screen
+     * It uses context to retrieve the density.
+     */
     fun convertDbToPx(dp: Float): Int =
         (activity.resources.displayMetrics.density * dp).roundToInt()
 
+    /**
+     * Converts real Pixels in screen to Density Pixels
+     * It uses context to retrieve the density.
+     */
     fun convertPxToDb(px: Float): Int =
         (px / activity.resources.displayMetrics.density).roundToInt()
 

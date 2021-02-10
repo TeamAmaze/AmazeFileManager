@@ -28,6 +28,9 @@ import androidx.annotation.DrawableRes
  * @author Emmanuel on 20/8/2017, at 13:35.
  */
 interface BottomBarButtonPath {
+    /**
+     * This allows the fragment to change the path represented in the BottomBar directly
+     */
     fun changePath(path: String?)
     val path: String?
 
