@@ -39,6 +39,7 @@ import android.content.Intent;
 import android.text.format.Formatter;
 import android.widget.RemoteViews;
 
+import androidx.annotation.CallSuper;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 
@@ -108,6 +109,15 @@ public abstract class AbstractProgressiveService extends Service
             Math.round(getProgressHandler().getPercentProgress()),
             false);
     getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
+  }
+
+  @Override
+  @CallSuper
+  public void onDestroy() {
+    super.onDestroy();
+    // remove the listener on destruction to prevent
+    // implicit AbstractProgressiveService instance from leaking (as "this")
+    getProgressHandler().setProgressListener(null);
   }
 
   /**

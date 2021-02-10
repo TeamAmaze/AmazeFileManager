@@ -286,7 +286,10 @@ class ZipService : AbstractProgressiveService() {
 
     override fun onBind(arg0: Intent): IBinder = mBinder
 
-    override fun onDestroy() = unregisterReceiver(receiver1)
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(receiver1)
+    }
 
     companion object {
         const val KEY_COMPRESS_PATH = "zip_path"
