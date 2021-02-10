@@ -110,6 +110,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   public SwipeRefreshLayout swipeRefreshLayout;
   public boolean isOpen = false; // flag states whether to open file after service extracts it
 
+  private FastScroller fastScroller = null;
   private UtilitiesProvider utilsProvider;
   private Decompressor decompressor;
   private View rootView;
@@ -120,6 +121,13 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   private View mToolbarContainer;
   private boolean stopAnims = true;
   private int file = 0, folder = 0;
+  private final AppBarLayout.OnOffsetChangedListener offsetListenerForToolbar =
+      (appBarLayout, verticalOffset) -> {
+        if (fastScroller == null) {
+          return;
+        }
+        fastScroller.updateHandlePosition(verticalOffset, 112);
+      };
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -135,14 +143,16 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     listView = rootView.findViewById(R.id.listView);
     listView.setOnTouchListener(
         (view, motionEvent) -> {
-          if (compressedExplorerAdapter != null) {
-            if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
-              stopAnim();
-            }
-            compressedExplorerAdapter.stoppedAnimation = true;
-
-            stopAnims = false;
+          if (compressedExplorerAdapter == null) {
+            return false;
           }
+
+          if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
+            stopAnim();
+          }
+          compressedExplorerAdapter.stoppedAnimation = true;
+
+          stopAnims = false;
           return false;
         });
     swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -358,6 +368,12 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   @Override
   public void onDestroyView() {
     super.onDestroyView();
+
+    // Clearing the touch listeners allows the fragment to
+    // be cleaned after it is destroyed, preventing leaks
+    mToolbarContainer.setOnTouchListener(null);
+    ((AppBarLayout) mToolbarContainer).removeOnOffsetChangedListener(offsetListenerForToolbar);
+
     mainActivity.supportInvalidateOptionsMenu();
 
     // needed to remove any extracted file from cache, when onResume was not called
@@ -497,14 +513,10 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
       // listView.addItemDecoration(headersDecor);
       addheader = false;
     }
-    final FastScroller fastScroller = rootView.findViewById(R.id.fastscroll);
+    fastScroller = rootView.findViewById(R.id.fastscroll);
     fastScroller.setRecyclerView(listView, 1);
     fastScroller.setPressedHandleColor(mainActivity.getAccent());
-    ((AppBarLayout) mToolbarContainer)
-        .addOnOffsetChangedListener(
-            (appBarLayout, verticalOffset) -> {
-              fastScroller.updateHandlePosition(verticalOffset, 112);
-            });
+    ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener(offsetListenerForToolbar);
     listView.stopScroll();
     relativeDirectory = dir;
     updateBottomBar();
