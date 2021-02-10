@@ -23,6 +23,8 @@ package com.amaze.filemanager.utils;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
+import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 import static org.junit.Assert.assertTrue;
@@ -78,19 +80,14 @@ public class SmbUtilTest {
   @Test
   public void testCheckFolder() {
     assertEquals(
-        MainActivityHelper.DOESNT_EXIST,
-        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/DummyFolder"));
+        DOESNT_EXIST, SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/DummyFolder"));
     assertEquals(
-        MainActivityHelper.DOESNT_EXIST,
-        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/resume.doc"));
+        DOESNT_EXIST, SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/resume.doc"));
     assertEquals(
-        MainActivityHelper.CAN_CREATE_FILES,
-        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/Documents"));
+        WRITABLE_ON_REMOTE, SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/Documents"));
     assertEquals(
-        MainActivityHelper.DOESNT_EXIST,
-        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/wirebroken.log"));
+        DOESNT_EXIST, SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/wirebroken.log"));
     assertEquals(
-        MainActivityHelper.DOESNT_EXIST,
-        SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/failcheck"));
+        DOESNT_EXIST, SmbUtil.checkFolder("smb://user:password@5.6.7.8/newfolder/failcheck"));
   }
 }
