@@ -157,7 +157,7 @@ public class BottomBar implements View.OnTouchListener {
                 Fragment fragmentAtFrame = mainActivity.getFragmentAtFrame();
                 if (fragmentAtFrame instanceof TabFragment) {
                   MainFragment m = mainActivity.getCurrentMainFragment();
-                  if (m.openMode == OpenMode.FILE) {
+                  if (OpenMode.CUSTOM != m.openMode) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
@@ -227,16 +227,9 @@ public class BottomBar implements View.OnTouchListener {
 
       buttonRoot.setImageDrawable(
           mainActivity.getResources().getDrawable(buttonPathInterface.getRootDrawable()));
-      buttonRoot.setOnClickListener(
-          p1 -> {
-            buttonPathInterface.changePath("/");
-            timer.cancel();
-            timer.start();
-          });
 
       String[] names = FileUtils.getFolderNamesInPath(path);
       final String[] paths = FileUtils.getPathsInPath(path);
-
       View view = new View(mainActivity);
       LinearLayout.LayoutParams params1 =
           new LinearLayout.LayoutParams(
@@ -246,7 +239,15 @@ public class BottomBar implements View.OnTouchListener {
 
       for (int i = 0; i < names.length; i++) {
         final int k = i;
-        if (paths[i].equals("/")) {
+        if (i == 0) {
+          buttonRoot.setOnClickListener(
+              p1 -> {
+                if (paths.length != 0) {
+                  buttonPathInterface.changePath(paths[k]);
+                  timer.cancel();
+                  timer.start();
+                }
+              });
           buttons.addView(buttonRoot);
         } else if (FileUtils.isStorage(paths[i])) {
           buttonStorage.setOnClickListener(

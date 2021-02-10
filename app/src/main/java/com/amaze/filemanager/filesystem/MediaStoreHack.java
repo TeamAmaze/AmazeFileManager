@@ -148,7 +148,7 @@ public class MediaStoreHack {
       Uri uri =
           MediaStore.Files.getContentUri("external")
               .buildUpon()
-              .appendPath(Integer.toString(imageId))
+              .appendEncodedPath(Integer.toString(imageId))
               .build();
       filecursor.close();
       return uri;

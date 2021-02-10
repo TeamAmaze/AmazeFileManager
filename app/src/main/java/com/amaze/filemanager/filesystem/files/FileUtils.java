@@ -82,7 +82,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
 import jcifs.smb.SmbFile;
@@ -573,23 +575,85 @@ public class FileUtils {
 
   public static String[] getFolderNamesInPath(String path) {
     if (!path.endsWith("/")) path += "/";
+    @Nullable Pair<String, String> splitUri = splitUri(path);
+    if (splitUri != null) {
+      path = splitUri.second;
+    }
     return ("root" + path).split("/");
   }
 
+  /**
+   * Parse a given path to a string array of the &quot;steps&quot; to target.
+   *
+   * <p>For local paths, output will be like <code>
+   * ["/", "/storage", "/storage/emulated", "/storage/emulated/0", "/storage/emulated/0/Download", "/storage/emulated/0/Download/file.zip"]
+   * </code> For URI paths, output will be like <code>
+   * ["smb://user;workgroup:passw0rd@12.3.4", "smb://user;workgroup:passw0rd@12.3.4/user", "smb://user;workgroup:passw0rd@12.3.4/user/Documents", "smb://user;workgroup:passw0rd@12.3.4/user/Documents/flare.doc"]
+   * </code>
+   *
+   * @param path
+   * @return string array of incremental path segments
+   */
   public static String[] getPathsInPath(String path) {
-    if (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+    if (path.endsWith("/")) {
+      path = path.substring(0, path.length() - 1);
+    }
+    path = path.trim();
 
     ArrayList<String> paths = new ArrayList<>();
-
-    while (path.length() > 0) {
-      paths.add(path);
-      path = path.substring(0, path.lastIndexOf("/"));
+    @Nullable String urlPrefix = null;
+    @Nullable Pair<String, String> splitUri = splitUri(path);
+    if (splitUri != null) {
+      urlPrefix = splitUri.first;
+      path = splitUri.second;
     }
 
-    paths.add("/");
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
+
+    while (path.length() > 0) {
+      if (urlPrefix != null) {
+        paths.add(urlPrefix + path);
+      } else {
+        paths.add(path);
+      }
+      if (path.contains("/")) {
+        path = path.substring(0, path.lastIndexOf('/'));
+      } else {
+        break;
+      }
+    }
+
+    if (urlPrefix != null) {
+      paths.add(urlPrefix);
+    } else {
+      paths.add("/");
+    }
     Collections.reverse(paths);
 
-    return paths.toArray(new String[paths.size()]);
+    return paths.toArray(new String[0]);
+  }
+
+  /**
+   * Splits a given path to URI prefix (if exists) and path.
+   *
+   * @param path
+   * @return {@link Pair} tuple if given path is URI (scheme is not null). Tuple contains:
+   *     <ul>
+   *       <li>First: URI section of the given path, if given path is an URI
+   *       <li>Second: Path section of the given path. Never null
+   *     </ul>
+   */
+  public static @Nullable Pair<String, String> splitUri(@NonNull final String path) {
+    Uri uri = Uri.parse(path);
+    if (uri.getScheme() != null) {
+      String urlPrefix = uri.getScheme() + "://" + uri.getEncodedAuthority();
+      String retPath = path.substring(urlPrefix.length());
+      return new Pair<>(urlPrefix, retPath);
+    } else {
+      return null;
+    }
   }
 
   public static boolean canListFiles(File f) {
