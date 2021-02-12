@@ -97,6 +97,7 @@
     <string name="select_all">Select All</string>
     <string name="delete">Delete</string>
     <string name="set_as_home">Set As Home</string>
+    <string name="operation_not_supported">Operation not supported</string>
 
     <!-- New -->
     <!-- Array -->

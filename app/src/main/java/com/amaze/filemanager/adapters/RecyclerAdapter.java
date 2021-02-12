@@ -42,6 +42,7 @@ import com.amaze.filemanager.adapters.glide.RecyclerPreloadSizeProvider;
 import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
@@ -176,6 +177,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    * @param imageView the check {@link CircleGradientDrawable} that is to be animated
    */
   public void toggleChecked(int position, ImageView imageView) {
+    if (itemsDigested.size() <= position) {
+      AppConfig.toast(context, R.string.operation_not_supported);
+      return;
+    }
+
     if (itemsDigested.get(position).getChecked() == ListItem.UNCHECKABLE) {
       throw new IllegalArgumentException("You have checked a header");
     }
