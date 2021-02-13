@@ -22,6 +22,7 @@ package com.amaze.filemanager.database.models.utilities;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -43,7 +44,7 @@ public abstract class OperationData {
   @ColumnInfo(name = UtilitiesDatabase.COLUMN_PATH)
   public String path;
 
-  public OperationData(String path) {
+  public OperationData(@NonNull String path) {
     this.path = path;
   }
 

@@ -22,6 +22,7 @@ package com.amaze.filemanager.database.models.utilities;
 
 import com.amaze.filemanager.database.UtilitiesDatabase;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
@@ -39,7 +40,7 @@ public abstract class OperationDataWithName extends OperationData {
   @ColumnInfo(name = UtilitiesDatabase.COLUMN_NAME)
   public String name;
 
-  public OperationDataWithName(String name, String path) {
+  public OperationDataWithName(@NonNull String name, @NonNull String path) {
     super(path);
     this.name = name;
   }
