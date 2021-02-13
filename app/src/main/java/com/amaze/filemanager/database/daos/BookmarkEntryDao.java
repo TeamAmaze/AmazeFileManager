@@ -30,6 +30,7 @@ import com.amaze.filemanager.database.models.utilities.Bookmark;
 
 import androidx.room.Dao;
 import androidx.room.Insert;
+import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
 import androidx.room.Update;
 
@@ -47,7 +48,7 @@ import io.reactivex.Single;
 @Dao
 public interface BookmarkEntryDao {
 
-  @Insert
+  @Insert(onConflict = OnConflictStrategy.IGNORE)
   Completable insert(Bookmark instance);
 
   @Update

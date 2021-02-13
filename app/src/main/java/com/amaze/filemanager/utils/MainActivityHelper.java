@@ -23,6 +23,12 @@ package com.amaze.filemanager.utils;
 import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
 import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
 import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.COMPRESS;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.DELETE;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.EXTRACT;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FILE;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FOLDER;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.RENAME;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -345,7 +351,7 @@ public class MainActivityHelper {
                   if (toast != null) toast.cancel();
                   mainActivity.oppathe = file.getPath();
                   mainActivity.oppathe1 = file1.getPath();
-                  mainActivity.operation = DataUtils.RENAME;
+                  mainActivity.operation = RENAME;
                   guideDialogForLEXA(mainActivity.oppathe1);
                 });
           }
@@ -454,7 +460,7 @@ public class MainActivityHelper {
     int mode = checkFolder(file.getParentFile(), mainActivity);
     if (mode == 2) {
       mainActivity.oppathe = (file.getPath());
-      mainActivity.operation = DataUtils.COMPRESS;
+      mainActivity.operation = COMPRESS;
       mainActivity.oparrayList = baseFiles;
     } else if (mode == 1) {
       Intent intent2 = new Intent(mainActivity, ZipService.class);
@@ -502,7 +508,7 @@ public class MainActivityHelper {
                     () -> {
                       if (toast != null) toast.cancel();
                       mainActivity.oppathe = path.getPath();
-                      mainActivity.operation = DataUtils.NEW_FILE;
+                      mainActivity.operation = NEW_FILE;
                       guideDialogForLEXA(mainActivity.oppathe);
                     });
           }
@@ -582,7 +588,7 @@ public class MainActivityHelper {
                 .runOnUiThread(
                     () -> {
                       mainActivity.oppathe = path.getPath();
-                      mainActivity.operation = DataUtils.NEW_FOLDER;
+                      mainActivity.operation = NEW_FOLDER;
                       guideDialogForLEXA(mainActivity.oppathe);
                     });
           }
@@ -634,7 +640,7 @@ public class MainActivityHelper {
     int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
     if (mode == 2) {
       mainActivity.oparrayList = (files);
-      mainActivity.operation = DataUtils.DELETE;
+      mainActivity.operation = DELETE;
     } else if (mode == 1 || mode == 0) new DeleteTask(mainActivity).execute((files));
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
@@ -643,7 +649,7 @@ public class MainActivityHelper {
     int mode = checkFolder(file.getParentFile(), mainActivity);
     if (mode == 2) {
       mainActivity.oppathe = (file.getPath());
-      mainActivity.operation = DataUtils.EXTRACT;
+      mainActivity.operation = EXTRACT;
     } else if (mode == 1) {
       Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
       decompressor.decompress(file.getPath());

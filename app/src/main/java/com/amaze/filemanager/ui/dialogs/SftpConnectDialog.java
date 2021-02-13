@@ -76,7 +76,7 @@ import net.schmizz.sshj.common.SecurityUtils;
 
 /** SSH/SFTP connection setup dialog. */
 public class SftpConnectDialog extends DialogFragment {
-  private static final String TAG = "SftpConnectDialog";
+  private static final String TAG = SftpConnectDialog.class.getSimpleName();
 
   // Idiotic code
   // FIXME: agree code on
@@ -93,6 +93,8 @@ public class SftpConnectDialog extends DialogFragment {
   private KeyPair selectedParsedKeyPair = null;
 
   private String selectedParsedKeyPairName = null;
+
+  private String oldPath = null;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -131,6 +133,14 @@ public class SftpConnectDialog extends DialogFragment {
         selectedParsedKeyPairName = getArguments().getString("keypairName");
         selectPemBTN.setText(selectedParsedKeyPairName);
       }
+      oldPath =
+          deriveSftpPathFrom(
+              getArguments().getString("address"),
+              getArguments().getInt("port"),
+              getArguments().getString("defaultPath", ""),
+              getArguments().getString("username"),
+              getArguments().getString("password"),
+              selectedParsedKeyPair);
     }
 
     // For convenience, so I don't need to press backspace all the time
@@ -477,18 +487,8 @@ public class SftpConnectDialog extends DialogFragment {
         return false;
       }
     } else {
-      String originalDefaultPath = getArguments().getString("defaultPath");
-      if (originalDefaultPath == null) originalDefaultPath = "";
-      String originalPath =
-          deriveSftpPathFrom(
-              getArguments().getString("address"),
-              getArguments().getInt("port"),
-              originalDefaultPath,
-              getArguments().getString("username"),
-              getArguments().getString("password"),
-              selectedParsedKeyPair);
 
-      DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(originalPath));
+      DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(oldPath));
       DataUtils.getInstance().addServer(new String[] {connectionName, path});
       Collections.sort(DataUtils.getInstance().getServers(), new BookSorter());
       ((MainActivity) getActivity()).getDrawer().refreshDrawer();

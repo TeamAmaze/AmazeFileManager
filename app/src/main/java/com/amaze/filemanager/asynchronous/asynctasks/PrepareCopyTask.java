@@ -21,6 +21,8 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
 import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.COPY;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.MOVE;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -39,7 +41,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.Utils;
 
 import android.app.ProgressDialog;
@@ -333,7 +334,7 @@ public class PrepareCopyTask
         // see MainActivity.onActivityResult()
         mainActivity.oparrayListList = filesToCopyPerFolder;
         mainActivity.oparrayList = null;
-        mainActivity.operation = move ? DataUtils.MOVE : DataUtils.COPY;
+        mainActivity.operation = move ? MOVE : COPY;
         mainActivity.oppatheList = paths;
       } else {
         if (!move) {

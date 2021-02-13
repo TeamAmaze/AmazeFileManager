@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,30 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.models.utilities;
+package com.amaze.filemanager.filesystem
 
-import com.amaze.filemanager.database.UtilitiesDatabase;
+import androidx.annotation.IntDef
 
-import androidx.annotation.NonNull;
-import androidx.room.ColumnInfo;
-import androidx.room.Entity;
+const val UNDEFINED = -1
+const val DELETE = 0
+const val COPY = 1
+const val MOVE = 2
+const val NEW_FOLDER = 3
+const val RENAME = 4
+const val NEW_FILE = 5
+const val EXTRACT = 6
+const val COMPRESS = 7
+const val SAVE_FILE = 8
 
-/**
- * Base class {@link Entity} representation of tables in utilities.db.
- *
- * <p>This class is the base class extending {@link OperationData} adding the <code>name</code>
- * column.
- *
- * @see OperationData
- * @see UtilitiesDatabase
- */
-public abstract class OperationDataWithName extends OperationData {
-
-  @ColumnInfo(name = UtilitiesDatabase.COLUMN_NAME)
-  public String name;
-
-  public OperationDataWithName(@NonNull String name, @NonNull String path) {
-    super(path);
-    this.name = name;
-  }
-}
+@IntDef(UNDEFINED, DELETE, COPY, MOVE, NEW_FOLDER, RENAME, NEW_FILE, EXTRACT, COMPRESS, SAVE_FILE)
+annotation class OperationType

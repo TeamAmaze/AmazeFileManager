@@ -225,7 +225,8 @@ public class CopyService extends AbstractProgressiveService {
   }
 
   public void onDestroy() {
-    this.unregisterReceiver(receiver3);
+    super.onDestroy();
+    unregisterReceiver(receiver3);
   }
 
   private class DoInBackground extends AsyncTask<Bundle, Void, Void> {

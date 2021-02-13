@@ -22,6 +22,16 @@ package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.COMPRESS;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.COPY;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.DELETE;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.EXTRACT;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.MOVE;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FILE;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FOLDER;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.RENAME;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.SAVE_FILE;
+import static com.amaze.filemanager.filesystem.OperationTypeKt.UNDEFINED;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
@@ -540,7 +550,7 @@ public class MainActivity extends PermissionsActivity
           finish();
         } else {
           // Trigger SAF intent, keep uri until finish
-          operation = DataUtils.SAVE_FILE;
+          operation = SAVE_FILE;
           urisToBeSaved = uris;
           mainActivityHelper.checkFolder(folder, MainActivity.this);
         }
@@ -1404,10 +1414,10 @@ public class MainActivity extends PermissionsActivity
                 Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
       }
       switch (operation) {
-        case DataUtils.DELETE: // deletion
+        case DELETE: // deletion
           new DeleteTask(mainActivity).execute((oparrayList));
           break;
-        case DataUtils.COPY: // copying
+        case COPY: // copying
           // legacy compatibility
           if (oparrayList != null && oparrayList.size() != 0) {
             oparrayListList = new ArrayList<>();
@@ -1425,7 +1435,7 @@ public class MainActivity extends PermissionsActivity
             ServiceWatcherUtil.runService(this, intent1);
           }
           break;
-        case DataUtils.MOVE: // moving
+        case MOVE: // moving
           // legacy compatibility
           if (oparrayList != null && oparrayList.size() != 0) {
             oparrayListList = new ArrayList<>();
@@ -1443,27 +1453,27 @@ public class MainActivity extends PermissionsActivity
                   OpenMode.FILE)
               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
           break;
-        case DataUtils.NEW_FOLDER: // mkdir
+        case NEW_FOLDER: // mkdir
           mainActivityHelper.mkDir(
               RootHelper.generateBaseFile(new File(oppathe), true), getCurrentMainFragment());
           break;
-        case DataUtils.RENAME:
+        case RENAME:
           MainFragment ma = getCurrentMainFragment();
           mainActivityHelper.rename(
               ma.openMode, (oppathe), (oppathe1), mainActivity, isRootExplorer());
           ma.updateList();
           break;
-        case DataUtils.NEW_FILE:
+        case NEW_FILE:
           mainActivityHelper.mkFile(
               new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
           break;
-        case DataUtils.EXTRACT:
+        case EXTRACT:
           mainActivityHelper.extractFile(new File(oppathe));
           break;
-        case DataUtils.COMPRESS:
+        case COMPRESS:
           mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
           break;
-        case DataUtils.SAVE_FILE:
+        case SAVE_FILE:
           FileUtil.writeUriToStorage(
               this, urisToBeSaved, getContentResolver(), getCurrentMainFragment().getCurrentPath());
           urisToBeSaved = null;
@@ -1472,7 +1482,7 @@ public class MainActivity extends PermissionsActivity
         default:
           LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
       }
-      operation = -1;
+      operation = UNDEFINED;
     } else if (requestCode == REQUEST_CODE_SAF) {
       if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
         // otg access

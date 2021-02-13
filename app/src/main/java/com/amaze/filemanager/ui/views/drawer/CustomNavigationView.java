@@ -134,7 +134,7 @@ public class CustomNavigationView extends NavigationView
    * the crash see https://github.com/TeamAmaze/AmazeFileManager/issues/1101.
    */
   public boolean isNavigationViewSavedStateMissing() {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
   }
 
   static class SavedState extends BaseSavedState {
