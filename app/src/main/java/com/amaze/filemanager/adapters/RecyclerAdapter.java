@@ -177,7 +177,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    * @param imageView the check {@link CircleGradientDrawable} that is to be animated
    */
   public void toggleChecked(int position, ImageView imageView) {
-    if (itemsDigested.size() <= position) {
+    if (itemsDigested.size() <= position || position < 0) {
       AppConfig.toast(context, R.string.operation_not_supported);
       return;
     }
