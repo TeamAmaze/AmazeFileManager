@@ -50,6 +50,7 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -417,6 +418,8 @@ public class MainActivityHelper {
   public @FolderState int checkFolder(final String path, OpenMode openMode, Context context) {
     if (OpenMode.SMB.equals(openMode)) {
       return SmbUtil.checkFolder(path);
+    } else if (OpenMode.SFTP.equals(openMode)) {
+      return SshClientUtils.checkFolder(path);
     } else {
       File folder = new File(path);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -637,11 +640,14 @@ public class MainActivityHelper {
       new DeleteTask(mainActivity).execute((files));
       return;
     }
-    int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
-    if (mode == 2) {
+    @FolderState
+    int mode =
+        checkFolder(files.get(0).getParent(mainActivity), files.get(0).getMode(), mainActivity);
+    if (mode == CAN_CREATE_FILES) {
       mainActivity.oparrayList = (files);
       mainActivity.operation = DELETE;
-    } else if (mode == 1 || mode == 0) new DeleteTask(mainActivity).execute((files));
+    } else if (mode == WRITABLE_OR_ON_SDCARD || mode == DOESNT_EXIST)
+      new DeleteTask(mainActivity).execute((files));
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 

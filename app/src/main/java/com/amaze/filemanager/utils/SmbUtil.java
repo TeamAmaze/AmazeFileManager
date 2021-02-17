@@ -119,7 +119,8 @@ public class SmbUtil {
    *
    * @param path SMB path
    * @return {@link com.amaze.filemanager.filesystem.FolderStateKt#DOESNT_EXIST} if specified SMB
-   *     path doesn't exist on server, else -1
+   *     path doesn't exist on server, else {@link
+   *     com.amaze.filemanager.filesystem.FolderStateKt#WRITABLE_ON_REMOTE}
    */
   public static int checkFolder(@NonNull String path) {
     return Single.fromCallable(
