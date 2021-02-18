@@ -40,6 +40,8 @@ import com.amaze.filemanager.test.ShadowCryptUtil;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import jcifs.smb.NtlmPasswordAuthenticator;
+
 @RunWith(AndroidJUnit4.class)
 @Config(
     sdk = {JELLY_BEAN, KITKAT, P},
@@ -72,5 +74,50 @@ public class SmbUtilTest {
     String path = "smb://toor@127.0.0.1";
     assertEquals(
         path, SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path));
+  }
+
+  @Test
+  public void testCreateNtlmPasswordAuthenticator() {
+    NtlmPasswordAuthenticator auth = SmbUtil.createFrom(null);
+    assertEquals("", auth.getUserDomain());
+    assertEquals("", auth.getUsername());
+    assertEquals("", auth.getPassword());
+
+    auth = SmbUtil.createFrom("");
+    assertEquals("", auth.getUserDomain());
+    assertEquals("", auth.getUsername());
+    assertEquals("", auth.getPassword());
+
+    auth = SmbUtil.createFrom("username:password");
+    assertEquals("", auth.getUserDomain());
+    assertEquals("username", auth.getUsername());
+    assertEquals("password", auth.getPassword());
+
+    auth = SmbUtil.createFrom("WORKGROUP;username:password");
+    assertEquals("WORKGROUP", auth.getUserDomain());
+    assertEquals("username", auth.getUsername());
+    assertEquals("password", auth.getPassword());
+
+    auth = SmbUtil.createFrom("WORKGROUP;username");
+    assertEquals("WORKGROUP", auth.getUserDomain());
+    assertEquals("username", auth.getUsername());
+    assertEquals("", auth.getPassword());
+
+    // #2313 major symptom
+    auth = SmbUtil.createFrom("username:pass%w0rd");
+    assertEquals("", auth.getUserDomain());
+    assertEquals("username", auth.getUsername());
+    assertEquals("pass%w0rd", auth.getPassword());
+
+    // Shall not happen - we should rarely have % in username/workgroup names, but anyway.
+    auth = SmbUtil.createFrom("WORKGROUP;user%1");
+    assertEquals("WORKGROUP", auth.getUserDomain());
+    assertEquals("user%1", auth.getUsername());
+    assertEquals("", auth.getPassword());
+
+    auth = SmbUtil.createFrom("WORKGROUP%2;user%1:pass%word");
+    assertEquals("WORKGROUP%2", auth.getUserDomain());
+    assertEquals("user%1", auth.getUsername());
+    assertEquals("pass%word", auth.getPassword());
   }
 }
