@@ -1067,6 +1067,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           if (description.endsWith(fileExtensionZip)
               || description.endsWith(fileExtensionJar)
               || description.endsWith(fileExtensionApk)
+              || description.endsWith(fileExtensionApks)
               || description.endsWith(fileExtensionRar)
               || description.endsWith(fileExtensionTar)
               || description.endsWith(fileExtensionGzipTarLong)
