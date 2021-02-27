@@ -98,7 +98,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -123,6 +122,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -226,8 +226,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 
     accentColor = getMainActivity().getAccent();
-    primaryColor = getMainActivity().getCurrentColorPreference().primaryFirstTab;
-    primaryTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
+    primaryColor = getMainActivity().getCurrentColorPreference().getPrimaryFirstTab();
+    primaryTwoColor = getMainActivity().getCurrentColorPreference().getPrimarySecondTab();
   }
 
   @Override

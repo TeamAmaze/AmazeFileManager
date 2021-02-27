@@ -18,32 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.preference
+package com.amaze.filemanager.ui.colors
 
-import android.R
-import android.content.Context
-import android.util.AttributeSet
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.annotation.ColorInt
-import androidx.appcompat.widget.AppCompatTextView
-import androidx.preference.PreferenceCategory
-import androidx.preference.PreferenceViewHolder
-import com.amaze.filemanager.utils.PreferenceUtils
+import kotlinx.android.parcel.Parcelize
 
-/** @author Emmanuel on 15/10/2017, at 20:46.
- */
-class InvalidablePreferenceCategory(context: Context?, attrs: AttributeSet?) :
-    PreferenceCategory(context, attrs) {
+@Parcelize
+class UserColorPreferences(
+    @ColorInt val primaryFirstTab: Int,
+    @ColorInt val primarySecondTab: Int,
+    @ColorInt val accent: Int,
+    @ColorInt val iconSkin: Int
+) : Parcelable {
 
-    private var titleColor = 0
-
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
-        super.onBindViewHolder(holder)
-        val title: AppCompatTextView = holder?.findViewById(R.id.title) as AppCompatTextView
-        title.setTextColor(titleColor)
+    override fun writeToParcel(dest: Parcel, flags: Int) {
+        dest.writeInt(primaryFirstTab)
+        dest.writeInt(primarySecondTab)
+        dest.writeInt(accent)
+        dest.writeInt(iconSkin)
     }
 
-    fun invalidate(@ColorInt accentColor: Int) {
-        titleColor = PreferenceUtils.getStatusColor(accentColor)
-        notifyChanged()
+    override fun describeContents(): Int {
+        return 0
     }
 }

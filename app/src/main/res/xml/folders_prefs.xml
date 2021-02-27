@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <Preference android:key="add_shortcut"
-                android:title="@string/add_item"
-                android:order="10"/>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference app:key="add_shortcut"
+                app:title="@string/add_item"
+                app:order="10"/>
 </PreferenceScreen>

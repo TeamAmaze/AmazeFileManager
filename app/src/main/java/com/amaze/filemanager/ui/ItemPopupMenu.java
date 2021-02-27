@@ -43,11 +43,12 @@ import com.amaze.filemanager.utils.DataUtils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
+
+import androidx.preference.PreferenceManager;
 
 /**
  * This class contains the functionality of the PopupMenu for each file in the MainFragment

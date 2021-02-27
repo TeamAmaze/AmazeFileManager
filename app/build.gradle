@@ -122,6 +122,9 @@ ext {
     androidBillingVersion = "2.1.0"
     junrarVersion = "7.4.0"
     zip4jVersion = "2.6.4"
+    androidXAppCompatVersion = "1.1.0"
+    androidXPrefVersion = "1.1.1"
+    materialDialogsVersion = "0.9.6.0"
 }
 
 dependencies {
@@ -141,6 +144,9 @@ dependencies {
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
     kapt 'androidx.annotation:annotation:1.1.0'
+
+    implementation "androidx.preference:preference:$androidXPrefVersion"
+    implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
 
     //For tests
     testImplementation "junit:junit:$junitVersion"//tests the app logic
@@ -175,8 +181,8 @@ dependencies {
 
     implementation "com.github.junrar:junrar:$junrarVersion"
 
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
+    implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
 

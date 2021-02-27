@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,68 +18,90 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.preference;
+package com.amaze.filemanager.ui.views.preference
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.views.CircularColorsView;
-
-import android.annotation.SuppressLint;
-import android.content.Context;
-import android.graphics.Color;
-import android.preference.DialogPreference;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
+import android.content.Context
+import android.content.res.TypedArray
+import android.graphics.Color
+import android.os.Parcelable
+import android.util.AttributeSet
+import android.view.View
+import androidx.preference.DialogPreference
+import androidx.preference.PreferenceViewHolder
+import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.dialogs.ColorPickerDialog
+import com.amaze.filemanager.ui.views.CircularColorsView
 
 /**
  * This is the external notification that shows some text and a CircularColorsView.
  *
  * @author Emmanuel on 6/10/2017, at 15:36.
  */
-public class SelectedColorsPreference extends DialogPreference {
+class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
+    DialogPreference(context, attrs) {
+    private var colors = intArrayOf(
+        Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT
+    )
+    private var backgroundColor = 0
+    private var visibility = View.VISIBLE
+    private var selectedIndex = -1
 
-  private int[] colors = {
-    Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT
-  };
-  private int backgroundColor;
-  private int visibility = View.VISIBLE;
+    init {
+        widgetLayoutResource = R.layout.selectedcolors_preference
+        dialogLayoutResource = R.layout.dialog_colorpicker
+        setPositiveButtonText(android.R.string.ok)
+        setNegativeButtonText(android.R.string.cancel)
+        dialogIcon = null
+    }
 
-  public SelectedColorsPreference(Context context, AttributeSet attrs) {
-    super(context, attrs);
-  }
+    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+        super.onBindViewHolder(holder)
+        (holder?.findViewById(R.id.colorsection) as CircularColorsView).let { colorsView ->
+            colorsView.setColors(colors[0], colors[1], colors[2], colors[3])
+            colorsView.setDividerColor(backgroundColor)
+            colorsView.visibility = visibility
+        }
+    }
 
-  @Override
-  protected View onCreateView(ViewGroup parent) {
-    setWidgetLayoutResource(R.layout.selectedcolors_preference);
-    return super.onCreateView(parent);
-  }
+    override fun getSummary(): CharSequence = ""
 
-  @SuppressLint("WrongConstant")
-  @Override
-  protected void onBindView(View view) {
-    super.onBindView(view); // Keep this before things that need changing what's on screen
+    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
+        return a!!.getString(index)!!
+    }
 
-    CircularColorsView colorsView = view.findViewById(R.id.colorsection);
-    colorsView.setColors(colors[0], colors[1], colors[2], colors[3]);
-    colorsView.setDividerColor(backgroundColor);
-    colorsView.setVisibility(visibility);
-  }
+    override fun onSaveInstanceState(): Parcelable? {
+        val myState = ColorPickerDialog.SavedState(super.onSaveInstanceState())
+        myState.selectedItem = selectedIndex
+        return myState
+    }
 
-  public void setColorsVisibility(int visibility) {
-    this.visibility = visibility;
-    notifyChanged();
-  }
+    override fun onRestoreInstanceState(state: Parcelable?) {
+        if (state == null || state.javaClass != ColorPickerDialog.SavedState::class.java) {
+            // Didn't save state for us in onSaveInstanceState
+            super.onRestoreInstanceState(state)
+            return
+        }
+        val myState = state as ColorPickerDialog.SavedState
+        selectedIndex = myState.selectedItem
+        super.onRestoreInstanceState(myState.superState) // onBindDialogView(View view)
+        // select(selectedItem, true)
+    }
 
-  public void setDividerColor(int color) {
-    backgroundColor = color;
-  }
+    fun setColorsVisibility(visibility: Int) {
+        this.visibility = visibility
+        notifyChanged()
+    }
 
-  public void setColors(int color, int color1, int color2, int color3) {
-    colors = new int[] {color, color1, color2, color3};
-    notifyChanged();
-  }
+    fun setDividerColor(color: Int) {
+        backgroundColor = color
+    }
 
-  public void invalidateColors() {
-    notifyChanged();
-  }
+    fun setColors(color: Int, color1: Int, color2: Int, color3: Int) {
+        colors = intArrayOf(color, color1, color2, color3)
+        notifyChanged()
+    }
+
+    fun invalidateColors() {
+        notifyChanged()
+    }
 }

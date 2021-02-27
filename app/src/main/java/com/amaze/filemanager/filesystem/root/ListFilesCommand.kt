@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.filesystem.root
 
-import android.preference.PreferenceManager
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException

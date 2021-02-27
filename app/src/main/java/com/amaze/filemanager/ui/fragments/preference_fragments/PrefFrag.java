@@ -55,9 +55,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +63,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
-public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class PrefFrag extends PreferenceFragmentCompat
+    implements Preference.OnPreferenceClickListener {
 
   private static final String[] PREFERENCE_KEYS = {
     PreferencesConstants.PREFERENCE_GRID_COLUMNS,
@@ -91,8 +92,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
   private ListView listView;
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
     // Load the preferences from an XML resource
@@ -118,7 +118,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     CheckBox checkBoxFingerprint =
         (CheckBox) findPreference(PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT);
 
-    try {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
       // finger print sensor
       FingerprintManager fingerprintManager = null;
@@ -166,16 +166,15 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
               return false;
             }
 
-            masterPasswordPreference.setEnabled(false);
-            return true;
-          });
-    } catch (NoClassDefFoundError | ClassCastException error) {
-      error.printStackTrace();
+              masterPasswordPreference.setEnabled(false);
+              return true;
+            });
+      } else {
 
-      // fingerprint manager class not defined in the framework
-      checkBoxFingerprint.setEnabled(false);
+        // fingerprint manager class not defined in the framework
+        checkBoxFingerprint.setEnabled(false);
+      }
     }
-  }
 
   @Override
   public boolean onPreferenceClick(Preference preference) {

@@ -1626,7 +1626,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void initFabTitle(@IdRes int id, @StringRes int fabTitle, @DrawableRes int icon) {
-    int iconSkin = getCurrentColorPreference().iconSkin;
+    int iconSkin = getCurrentColorPreference().getIconSkin();
 
     SpeedDialActionItem.Builder builder =
         new SpeedDialActionItem.Builder(id, icon)

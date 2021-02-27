@@ -51,7 +51,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RemoteViews;
@@ -59,6 +58,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import net.lingala.zip4j.exception.ZipException;
 
@@ -105,7 +105,7 @@ public class ExtractService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
