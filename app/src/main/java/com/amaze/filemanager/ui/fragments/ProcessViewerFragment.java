@@ -152,8 +152,8 @@ public class ProcessViewerFragment extends Fragment {
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
-    int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
-    int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+    int skin_color = mainActivity.getCurrentColorPreference().getPrimaryFirstTab();
+    int skinTwoColor = mainActivity.getCurrentColorPreference().getPrimarySecondTab();
     accentColor = mainActivity.getAccent();
 
     mainActivity.updateViews(

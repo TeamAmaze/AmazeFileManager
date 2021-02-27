@@ -117,7 +117,7 @@ public class ThemedActivity extends PreferenceActivity {
   }
 
   public @ColorInt int getAccent() {
-    return getColorPreference().getCurrentUserColorPreferences(this, getPrefs()).accent;
+    return getColorPreference().getCurrentUserColorPreferences(this, getPrefs()).getAccent();
   }
 
   private void setKitkatStatusBarMargin(View parentView) {

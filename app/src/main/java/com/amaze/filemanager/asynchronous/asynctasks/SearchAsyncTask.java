@@ -32,8 +32,9 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 
 import android.app.Activity;
 import android.os.AsyncTask;
-import android.preference.PreferenceManager;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void>
     implements StatefulAsyncTask<SearchWorkerFragment.HelperCallbacks> {

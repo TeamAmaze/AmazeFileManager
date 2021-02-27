@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,21 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.fragments.preference_fragments;
+package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import com.amaze.filemanager.R;
+import android.os.Bundle
+import androidx.preference.PreferenceFragmentCompat
+import com.amaze.filemanager.R
 
-import android.os.Bundle;
-import android.preference.PreferenceFragment;
+/** @author Emmanuel on 8/5/2017, at 11:30.
+ */
+class AdvancedSearchPref : PreferenceFragmentCompat() {
 
-/** @author Emmanuel on 8/5/2017, at 11:30. */
-public class AdvancedSearchPref extends PreferenceFragment {
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    // Load the preferences from an XML resource
-    addPreferencesFromResource(R.xml.advancedsearch_prefs);
-  }
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.advancedsearch_prefs)
+    }
 }

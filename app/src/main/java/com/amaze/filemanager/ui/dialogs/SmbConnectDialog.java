@@ -53,7 +53,6 @@ import android.graphics.Color;
 import android.net.UrlQuerySanitizer;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.view.View;
@@ -63,6 +62,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.AppCompatCheckBox;
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbFile;
 

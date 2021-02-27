@@ -45,11 +45,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
 public class EncryptService extends AbstractProgressiveService {
@@ -97,7 +97,7 @@ public class EncryptService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     OpenMode openMode =
         OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];

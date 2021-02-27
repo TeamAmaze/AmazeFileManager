@@ -60,12 +60,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;

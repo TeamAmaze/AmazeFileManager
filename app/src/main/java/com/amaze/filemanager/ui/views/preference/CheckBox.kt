@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,50 +18,40 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.preference;
+package com.amaze.filemanager.ui.views.preference
 
-import android.content.Context;
-import android.preference.SwitchPreference;
-import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Switch;
+import android.content.Context
+import android.util.AttributeSet
+import android.view.ViewGroup
+import android.widget.Switch
+import androidx.preference.PreferenceViewHolder
+import androidx.preference.SwitchPreference
 
-/** Created by Arpit on 10/18/2015 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
-public class CheckBox extends SwitchPreference {
+/** Created by Arpit on 10/18/2015 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>  */
+class CheckBox(context: Context?, attrs: AttributeSet?) : SwitchPreference(context, attrs) {
 
-  public CheckBox(Context context, AttributeSet attrs) {
-    super(context, attrs);
-  }
-
-  @Override
-  protected void onBindView(View view) {
-    // Clean listener before invoke SwitchPreference.onBindView
-    clearListenerInViewGroup((ViewGroup) view);
-    super.onBindView(view);
-  }
-
-  /**
-   * Clear listener in Switch for specify ViewGroup.
-   *
-   * @param viewGroup The ViewGroup that will need to clear the listener.
-   */
-  private void clearListenerInViewGroup(ViewGroup viewGroup) {
-    if (null == viewGroup) {
-      return;
+    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+        clearListenerInViewGroup(holder?.itemView as ViewGroup)
+        super.onBindViewHolder(holder)
     }
 
-    int count = viewGroup.getChildCount();
-    for (int n = 0; n < count; ++n) {
-      View childView = viewGroup.getChildAt(n);
-      if (childView instanceof Switch) {
-        final Switch switchView = (Switch) childView;
-        switchView.setOnCheckedChangeListener(null);
-        return;
-      } else if (childView instanceof ViewGroup) {
-        ViewGroup childGroup = (ViewGroup) childView;
-        clearListenerInViewGroup(childGroup);
-      }
+    /**
+     * Clear listener in Switch for specify ViewGroup.
+     *
+     * @param viewGroup The ViewGroup that will need to clear the listener.
+     */
+    private fun clearListenerInViewGroup(viewGroup: ViewGroup?) {
+        if (null == viewGroup) {
+            return
+        }
+        for (n in 0 until viewGroup.childCount) {
+            val childView = viewGroup.getChildAt(n)
+            if (childView is Switch) {
+                childView.setOnCheckedChangeListener(null)
+                return
+            } else if (childView is ViewGroup) {
+                clearListenerInViewGroup(childView)
+            }
+        }
     }
-  }
 }

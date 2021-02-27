@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,63 +18,54 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.fragments.preference_fragments;
+package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import static java.lang.Boolean.TRUE;
+import android.content.SharedPreferences
+import android.os.Bundle
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
+import androidx.preference.PreferenceManager
+import androidx.preference.SwitchPreference
+import com.amaze.filemanager.R
+import com.amaze.filemanager.utils.TinyDB
+import java.util.*
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+/** @author Emmanuel on 17/4/2017, at 23:17.
+ */
+class QuickAccessPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener {
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.utils.TinyDB;
+    companion object {
+        const val KEY = "quick access array"
+        val KEYS = arrayOf(
+            "fastaccess", "recent", "image", "video", "audio", "documents", "apks"
+        )
+        val DEFAULT = arrayOf(true, true, true, true, true, true, true)
+        private var prefPos: Map<String, Int> = HashMap()
 
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.preference.SwitchPreference;
-
-/** @author Emmanuel on 17/4/2017, at 23:17. */
-public class QuickAccessPref extends PreferenceFragment
-    implements Preference.OnPreferenceClickListener {
-
-  public static final String KEY = "quick access array";
-  public static final String[] KEYS = {
-    "fastaccess", "recent", "image", "video", "audio", "documents", "apks"
-  };
-  public static final Boolean[] DEFAULT = {TRUE, TRUE, TRUE, TRUE, TRUE, TRUE, TRUE};
-  private static Map<String, Integer> prefPos = new HashMap<>();
-
-  static {
-    Map<String, Integer> mem = new HashMap<>();
-    for (int i = 0; i < KEYS.length; i++) mem.put(KEYS[i], i);
-    prefPos = Collections.unmodifiableMap(mem);
-  }
-
-  private SharedPreferences preferences;
-  private Boolean[] currentValue;
-
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
-    // Load the preferences from an XML resource
-    addPreferencesFromResource(R.xml.fastaccess_prefs);
-
-    preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    currentValue = TinyDB.getBooleanArray(preferences, KEY, DEFAULT);
-
-    for (int i = 0; i < getPreferenceScreen().getPreferenceCount(); i++) {
-      getPreferenceScreen().getPreference(i).setOnPreferenceClickListener(this);
+        init {
+            prefPos = KEYS.withIndex().associate {
+                Pair(it.value, it.index)
+            }
+        }
     }
-  }
 
-  @Override
-  public boolean onPreferenceClick(Preference preference) {
-    currentValue[prefPos.get(preference.getKey())] = ((SwitchPreference) preference).isChecked();
-    TinyDB.putBooleanArray(preferences, KEY, currentValue);
-    return true;
-  }
+    private var preferences: SharedPreferences? = null
+    private var currentValue: Array<Boolean>? = null
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+
+        // Load the preferences from an XML resource
+        addPreferencesFromResource(R.xml.fastaccess_prefs)
+        preferences = PreferenceManager.getDefaultSharedPreferences(activity)
+        currentValue = TinyDB.getBooleanArray(preferences, KEY, DEFAULT)
+        for (i in 0 until preferenceScreen.preferenceCount) {
+            preferenceScreen.getPreference(i).onPreferenceClickListener = this
+        }
+    }
+
+    override fun onPreferenceClick(preference: Preference): Boolean {
+        currentValue!![prefPos[preference.key]!!] = (preference as SwitchPreference).isChecked
+        TinyDB.putBooleanArray(preferences, KEY, currentValue)
+        return true
+    }
 }

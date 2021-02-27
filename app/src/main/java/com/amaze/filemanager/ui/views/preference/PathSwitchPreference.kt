@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,59 +18,47 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.preference;
+package com.amaze.filemanager.ui.views.preference
 
-import com.amaze.filemanager.R;
+import android.content.Context
+import android.view.View
+import androidx.annotation.IdRes
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
+import com.amaze.filemanager.R
 
-import android.content.Context;
-import android.preference.Preference;
-import android.view.View;
-import android.view.ViewGroup;
+/** @author Emmanuel on 17/4/2017, at 22:22.
+ */
+class PathSwitchPreference(context: Context?) : Preference(context) {
+    var lastItemClicked = -1
+        private set
 
-import androidx.annotation.IdRes;
+    init {
+        widgetLayoutResource = R.layout.namepathswitch_preference
+    }
 
-/** @author Emmanuel on 17/4/2017, at 22:22. */
-public class PathSwitchPreference extends Preference {
+    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+        holder?.itemView.let { view ->
+            setListener(view, R.id.edit, EDIT)
+            setListener(view, R.id.delete, DELETE)
+            view?.setOnClickListener(null)
+        }
 
-  public static final int EDIT = 0, DELETE = 1;
+        // Keep this before things that need changing what's on screen
+        super.onBindViewHolder(holder)
+    }
 
-  private int lastItemClicked = -1;
+    private fun setListener(v: View?, @IdRes id: Int, elem: Int): View.OnClickListener {
+        val l = View.OnClickListener {
+            lastItemClicked = elem
+            onPreferenceClickListener.onPreferenceClick(this)
+        }
+        v?.findViewById<View>(id)?.setOnClickListener(l)
+        return l
+    }
 
-  public PathSwitchPreference(Context context) {
-    super(context);
-  }
-
-  @Override
-  protected View onCreateView(ViewGroup parent) {
-    setWidgetLayoutResource(R.layout.namepathswitch_preference);
-    return super.onCreateView(parent);
-  }
-
-  @Override
-  protected void onBindView(View view) {
-    setListener(view, R.id.edit, EDIT);
-    setListener(view, R.id.delete, DELETE);
-
-    view.setOnClickListener(null);
-
-    super.onBindView(view); // Keep this before things that need changing what's on screen
-  }
-
-  public int getLastItemClicked() {
-    return lastItemClicked;
-  }
-
-  private View.OnClickListener setListener(final View v, @IdRes int id, final int elem) {
-    final PathSwitchPreference t = this;
-
-    View.OnClickListener l =
-        view -> {
-          lastItemClicked = elem;
-          getOnPreferenceClickListener().onPreferenceClick(t);
-        };
-
-    v.findViewById(id).setOnClickListener(l);
-
-    return l;
-  }
+    companion object {
+        const val EDIT = 0
+        const val DELETE = 1
+    }
 }

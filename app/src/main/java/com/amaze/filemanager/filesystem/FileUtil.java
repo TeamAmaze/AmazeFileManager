@@ -65,7 +65,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.os.ParcelFileDescriptor;
-import android.preference.PreferenceManager;
 import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -74,6 +73,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
 import io.reactivex.Maybe;
 import io.reactivex.MaybeObserver;

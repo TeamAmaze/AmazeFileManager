@@ -60,7 +60,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -76,6 +75,7 @@ import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -210,7 +210,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
 
     accentColor = mainActivity.getAccent();
-    iconskin = mainActivity.getCurrentColorPreference().iconSkin;
+    iconskin = mainActivity.getCurrentColorPreference().getIconSkin();
 
     // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
