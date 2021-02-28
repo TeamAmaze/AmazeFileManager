@@ -668,5 +668,6 @@
     <string name="clear_open_file_summary">Efface les applications d\'ouverture de fichiers sélectionnées par défaut</string>
     <string name="legacy_listing_title">Utiliser l\'ancien affichage pour root</string>
     <string name="legacy_listing_summary">Si activé, utilise stat pour lister, sinon utilise ls</string>
+    <string name="error_permission_denied">Permission refusée</string>
 </resources>
 
