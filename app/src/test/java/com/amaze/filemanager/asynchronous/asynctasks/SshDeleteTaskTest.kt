@@ -20,23 +20,15 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks
 
-import android.os.Build.VERSION_CODES.*
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
-import com.amaze.filemanager.shadows.ShadowMultiDex
-import com.amaze.filemanager.test.ShadowCryptUtil
 import net.schmizz.sshj.sftp.FileAttributes
 import net.schmizz.sshj.sftp.RemoteResourceInfo
 import net.schmizz.sshj.xfer.FilePermission
 import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import org.robolectric.annotation.Config
 
-@Config(
-    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
-)
 class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
     /**
