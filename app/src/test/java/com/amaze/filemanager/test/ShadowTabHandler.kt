@@ -22,11 +22,35 @@ package com.amaze.filemanager.test
 
 import com.amaze.filemanager.database.TabHandler
 import com.amaze.filemanager.database.models.explorer.Tab
+import io.reactivex.Completable
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
+import org.robolectric.util.ReflectionHelpers
 
 @Implements(TabHandler::class)
 class ShadowTabHandler {
+
+    companion object {
+        /**
+         * Implements [TabHandler.getInstance]
+         */
+        @JvmStatic @Implementation
+        fun getInstance(): TabHandler = ReflectionHelpers.newInstance(TabHandler::class.java)
+    }
+
+    /**
+     * Implements [TabHandler.addTab]
+     */
+    @Implementation
+    fun addTab(tab: Tab): Completable {
+        return Completable.fromCallable { true }
+    }
+
+    /**
+     * Implements [TabHandler.update]
+     */
+    @Implementation
+    fun update(tab: Tab) = Unit
 
     /**
      * For places where Activity is launched, but we are not actually looking at the Tabs loaded.

@@ -33,6 +33,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
+import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -52,7 +53,12 @@ import org.robolectric.shadows.ShadowToast
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowSmbUtil::class, ShadowTabHandler::class],
+    shadows = [
+        ShadowMultiDex::class,
+        ShadowSmbUtil::class,
+        ShadowTabHandler::class,
+        ShadowCryptUtil::class
+    ],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 abstract class AbstractDeleteTaskTestBase {

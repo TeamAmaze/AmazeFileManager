@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem
 
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION_CODES.*
 import android.os.Looper
 import android.os.storage.StorageManager
 import androidx.lifecycle.Lifecycle
@@ -29,6 +30,9 @@ import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.shadows.ShadowSmbUtil
+import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -40,12 +44,17 @@ import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.Shadows
 import org.robolectric.android.util.concurrent.InlineExecutorService
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowPausedAsyncTask
 import org.robolectric.shadows.ShadowSQLiteConnection
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class, ShadowTabHandler::class],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 abstract class AbstractOperationsTestBase {
 
     protected var ctx: Context? = null
