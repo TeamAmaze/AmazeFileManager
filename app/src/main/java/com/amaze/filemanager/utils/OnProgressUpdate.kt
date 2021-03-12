@@ -26,6 +26,6 @@ package com.amaze.filemanager.utils
  * @author Emmanuel on 13/5/2017, at 22:45.
  */
 interface OnProgressUpdate<T> {
-    @Suppress
+    @Suppress("UndocumentedPublicFunction")
     fun onUpdate(data: T)
 }
