@@ -38,6 +38,7 @@ import android.os.SystemClock
 import android.preference.PreferenceManager
 import android.widget.Toast
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.ui.notifications.FtpNotification
@@ -129,12 +130,7 @@ class FtpService : Service(), Runnable {
                     isPasswordProtected = true
                 }.onFailure {
                     it.printStackTrace()
-                    Toast.makeText(
-                        applicationContext,
-                        resources.getString(R.string.error),
-                        Toast.LENGTH_SHORT
-                    )
-                        .show()
+                    AppConfig.toast(applicationContext, R.string.error)
                     preferences.edit().putString(KEY_PREFERENCE_PASSWORD, "").apply()
                     isPasswordProtected = false
                 }
