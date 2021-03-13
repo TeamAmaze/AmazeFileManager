@@ -324,6 +324,12 @@ public class ExtractService extends AbstractProgressiveService {
               || e.getCause() != null
                   && ZipException.class.isAssignableFrom(e.getCause().getClass())) {
             Log.d(TAG, "Archive is password protected.", e);
+            if (ArchivePasswordCache.getInstance().containsKey(compressedPath)) {
+              ArchivePasswordCache.getInstance().remove(compressedPath);
+              AppConfig.toast(
+                  extractService,
+                  extractService.getString(R.string.error_archive_password_incorrect));
+            }
             passwordProtected = true;
             paused = true;
             publishProgress(e);
@@ -377,6 +383,7 @@ public class ExtractService extends AbstractProgressiveService {
 
     @Override
     public void onPostExecute(Boolean hasInvalidEntries) {
+      ArchivePasswordCache.getInstance().remove(compressedPath);
       final ExtractService extractService = this.extractService.get();
       if (extractService == null) return;
 
@@ -390,6 +397,12 @@ public class ExtractService extends AbstractProgressiveService {
 
       if (!hasInvalidEntries)
         AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
+    }
+
+    @Override
+    protected void onCancelled() {
+      super.onCancelled();
+      ArchivePasswordCache.getInstance().remove(compressedPath);
     }
 
     private void toastOnParseError(IOException result) {

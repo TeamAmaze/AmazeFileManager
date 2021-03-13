@@ -700,5 +700,6 @@
     <string name="error_unsupported_v5_rar">RAR archive \"%s\" is unsupported RAR v5 archive.</string>
     <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
     <string name="error_permission_denied">Permission denied</string>
+    <string name="error_archive_password_incorrect">Wrong archive password.</string>
 </resources>
 
