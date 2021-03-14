@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,21 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-import java.util.Comparator;
+import android.text.Editable
+import android.text.TextWatcher
 
-/** Created by Arpit on 20-11-2015. */
-public class BookSorter implements Comparator<String[]> {
-
-  @Override
-  public int compare(String[] lhs, String[] rhs) {
-    int result = lhs[0].compareToIgnoreCase(rhs[0]);
-
-    if (result == 0) {
-      // the title is same, compare their paths
-      result = lhs[1].compareToIgnoreCase(rhs[1]);
-    }
-    return result;
-  }
+open class SimpleTextWatcher : TextWatcher {
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) = Unit
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) = Unit
+    override fun afterTextChanged(s: Editable) = Unit
 }

@@ -182,23 +182,23 @@ public class SmbSearchDialog extends DialogFragment {
               dismiss();
               MainActivity mainActivity = (MainActivity) getActivity();
               mainActivity.showSMBDialog(
-                  listViewAdapter.items.get(position).name,
-                  listViewAdapter.items.get(position).addr,
+                  listViewAdapter.items.get(position).getName(),
+                  listViewAdapter.items.get(position).getAddr(),
                   false);
             }
           });
 
-      holder.txtTitle.setText(f.name);
+      holder.txtTitle.setText(f.getName());
       holder.image.setImageResource(R.drawable.ic_settings_remote_white_48dp);
       if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
         holder.image.setColorFilter(Color.parseColor("#666666"));
-      holder.txtDesc.setText(f.addr);
+      holder.txtDesc.setText(f.getAddr());
     }
 
     @Override
     public int getItemViewType(int position) {
       ComputerParcelable f = items.get(position);
-      if (f.addr.equals("-1")) {
+      if (f.getAddr().equals("-1")) {
         return VIEW_PROGRESSBAR;
       } else {
         return VIEW_ELEMENT;

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,20 +18,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-import androidx.annotation.DrawableRes;
-
-/**
- * This lets BottomBar be independent of the Fragment MainActivity is housing
- *
- * @author Emmanuel on 20/8/2017, at 13:35.
- */
-public interface BottomBarButtonPath {
-  void changePath(String path);
-
-  String getPath();
-
-  @DrawableRes
-  int getRootDrawable();
+object AppConstants {
+    const val NEW_FILE_DELIMITER = "."
+    const val NEW_FILE_EXTENSION_TXT = "txt"
+    const val NEW_LINE = "\n"
 }

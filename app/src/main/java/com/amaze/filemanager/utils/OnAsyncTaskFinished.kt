@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,20 +18,11 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-import android.text.Editable;
-import android.text.TextWatcher;
-
-/** @author Emmanuel on 28/4/2017, at 16:32. */
-public class SimpleTextWatcher implements TextWatcher {
-
-  @Override
-  public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-  @Override
-  public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-  @Override
-  public void afterTextChanged(Editable s) {}
+/** @author Emmanuel on 14/9/2017, at 21:00.
+ */
+interface OnAsyncTaskFinished<T> {
+    @Suppress("UndocumentedPublicFunction")
+    fun onAsyncTaskFinished(data: T)
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,15 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import android.graphics.Color
 
-/**
- * This allows the caller of a function to know when a file has ben found and deal with it ASAP
- *
- * @author Emmanuel on 21/9/2017, at 15:23.
- */
-public interface OnFileFound {
-  void onFileFound(HybridFileParcelable file);
+object PreferenceUtils {
+    const val DEFAULT_CURRENT_TAB = 1
+
+    @JvmStatic
+    fun getStatusColor(color: Int): Int =
+        Color.argb(
+            Color.alpha(color),
+            (Color.red(color) * 0.6f).toInt().coerceAtLeast(0),
+            (Color.green(color) * 0.6f).toInt().coerceAtLeast(0),
+            (Color.blue(color) * 0.6f).toInt().coerceAtLeast(0)
+        )
 }

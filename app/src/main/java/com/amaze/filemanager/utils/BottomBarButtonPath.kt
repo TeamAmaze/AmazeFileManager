@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,9 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-public interface OnOperationPerform {
+import androidx.annotation.DrawableRes
 
-  void callback(boolean isSuccess);
+/**
+ * This lets BottomBar be independent of the Fragment MainActivity is housing
+ *
+ * @author Emmanuel on 20/8/2017, at 13:35.
+ */
+interface BottomBarButtonPath {
+    /**
+     * This allows the fragment to change the path represented in the BottomBar directly
+     */
+    fun changePath(path: String?)
+    val path: String?
+
+    @get:DrawableRes
+    val rootDrawable: Int
 }

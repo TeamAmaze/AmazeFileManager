@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,11 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-public interface AppConstants {
+import com.amaze.filemanager.filesystem.HybridFileParcelable
 
-  String NEW_FILE_DELIMITER = ".";
-  String NEW_FILE_EXTENSION_TXT = "txt";
-  String NEW_LINE = "\n";
+/**
+ * This allows the caller of a function to know when a file has ben found and deal with it ASAP
+ *
+ * @author Emmanuel on 21/9/2017, at 15:23.
+ */
+interface OnFileFound {
+    @Suppress("UndocumentedPublicFunction")
+    fun onFileFound(file: HybridFileParcelable?)
 }
