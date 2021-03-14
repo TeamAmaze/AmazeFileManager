@@ -116,7 +116,6 @@ public class SshConnectionPool {
    * @throws IOException IOExceptions that occur during connection setup
    */
   public SSHClient getConnection(@NonNull String url) {
-    url = SshClientUtils.extractBaseUriFrom(url);
 
     SSHClient client = connections.get(url);
     if (client == null) {

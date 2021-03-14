@@ -1746,7 +1746,7 @@ public class MainActivity extends PermissionsActivity
     }
     bundle.putBoolean("edit", edit);
     sftpConnectDialog.setArguments(bundle);
-    sftpConnectDialog.show(getFragmentManager(), "sftpdialog");
+    sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
   }
 
   /**
