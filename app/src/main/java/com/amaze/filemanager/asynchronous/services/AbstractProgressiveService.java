@@ -244,7 +244,9 @@ public abstract class AbstractProgressiveService extends Service
       throw new IllegalStateException("This is not the first datapoint!");
     }
 
-    DatapointParcelable intent1 = new DatapointParcelable(name, amountOfFiles, totalBytes, move);
+    DatapointParcelable intent1 =
+        DatapointParcelable.Companion.buildDatapointParcelable(
+            name, amountOfFiles, totalBytes, move);
     putDataPackage(intent1);
   }
 
@@ -256,7 +258,7 @@ public abstract class AbstractProgressiveService extends Service
     putDataPackage(datapoint);
     if (getProgressListener() != null) {
       getProgressListener().onUpdate(datapoint);
-      if (datapoint.completed) getProgressListener().refresh();
+      if (datapoint.getCompleted()) getProgressListener().refresh();
     }
   }
 

@@ -76,12 +76,17 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   public static final <T> T execute(@NonNull SshClientTemplate template) {
-    SSHClient client = SshConnectionPool.getInstance().getConnection(template.url);
+    SSHClient client =
+        SshConnectionPool.getInstance().getConnection(extractBaseUriFrom(template.url));
+    if (client == null) {
+      client = SshConnectionPool.getInstance().getConnection(template.url);
+    }
     T retval = null;
     if (client != null) {
+      final SSHClient _client = client;
       try {
         retval =
-            Single.fromCallable((Callable<T>) () -> template.execute(client))
+            Single.fromCallable((Callable<T>) () -> template.execute(_client))
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
       } catch (Exception e) {

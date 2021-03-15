@@ -137,7 +137,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         Bundle args = new Bundle();
         args.putBoolean("edit", false);
         sftpConnectDialog.setArguments(args);
-        sftpConnectDialog.show(getActivity().getFragmentManager(), "tab");
+        sftpConnectDialog.show(getFragmentManager(), "tab");
         return;
       case R.id.linear_layout_box:
         ((MainActivity) getActivity()).addConnection(OpenMode.BOX);

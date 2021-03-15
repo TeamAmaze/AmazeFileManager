@@ -106,15 +106,15 @@ class MultipartRarExtractorTest {
             ).extractEverything()
             Assert.fail("No exception was thrown")
         } catch (expected: IOException) {
+            expected.printStackTrace()
             Assert.assertEquals(UnsupportedRarV5Exception::class.java, expected.cause!!.javaClass)
         }
     }
 
-    @Throws(IOException::class)
     private fun copyArchivesToStorage() {
-        for (f in File("src/test/resources").listFiles()) {
-            FileInputStream(f)
-                .copyTo(FileOutputStream(File(Environment.getExternalStorageDirectory(), f.name)))
+        File("src/test/resources").listFiles()?.forEach {
+            FileInputStream(it)
+                .copyTo(FileOutputStream(File(Environment.getExternalStorageDirectory(), it.name)))
         }
     }
 }

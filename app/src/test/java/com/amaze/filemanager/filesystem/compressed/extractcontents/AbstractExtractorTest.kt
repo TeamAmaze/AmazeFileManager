@@ -110,7 +110,12 @@ abstract class AbstractExtractorTest {
                 ApplicationProvider.getApplicationContext(),
                 archiveFile.absolutePath,
                 Environment.getExternalStorageDirectory().absolutePath,
-                null
+                object : OnUpdate {
+                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
+                    override fun onUpdate(entryPath: String) = Unit
+                    override fun isCancelled(): Boolean = false
+                    override fun onFinish() = Unit
+                }
             )
         assertEquals("test.txt", extractor.fixEntryName("test.txt"))
         assertEquals("test.txt", extractor.fixEntryName("/test.txt"))
@@ -215,10 +220,10 @@ abstract class AbstractExtractorTest {
     }
 
     private fun copyArchivesToStorage() {
-        for (f in File("src/test/resources").listFiles()) {
-            FileInputStream(f).copyTo(
+        File("src/test/resources").listFiles()?.forEach {
+            FileInputStream(it).copyTo(
                 FileOutputStream(
-                    File(Environment.getExternalStorageDirectory(), f.name)
+                    File(Environment.getExternalStorageDirectory(), it.name)
                 )
             )
         }

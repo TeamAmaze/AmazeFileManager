@@ -37,11 +37,11 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
-import jcifs.context.SingletonContext;
-import jcifs.smb.NtlmPasswordAuthentication;
+import jcifs.smb.NtlmPasswordAuthenticator;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
@@ -107,11 +107,46 @@ public class SmbUtil {
     Uri uri = Uri.parse(path);
     boolean disableIpcSigningCheck =
         Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
+    String userInfo = uri.getUserInfo();
     return new SmbFile(
         path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
         CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-            .withCredentials(
-                new NtlmPasswordAuthentication(SingletonContext.getInstance(), uri.getUserInfo())));
+            .withCredentials(createFrom(userInfo)));
+  }
+
+  /**
+   * Create {@link NtlmPasswordAuthenticator} from given userInfo parameter.
+   *
+   * <p>Logic borrowed directly from jcifs-ng's own code. They should make that protected
+   * constructor public...
+   *
+   * @param userInfo authentication string, must be already URL decoded. {@link Uri} shall do this
+   *     for you already
+   * @return {@link NtlmPasswordAuthenticator} instance
+   */
+  protected static @NonNull NtlmPasswordAuthenticator createFrom(@Nullable String userInfo) {
+    if (!TextUtils.isEmpty(userInfo)) {
+      String dom = null;
+      String user = null;
+      String pass = null;
+      int i;
+      int u;
+      int end = userInfo.length();
+      for (i = 0, u = 0; i < end; i++) {
+        char c = userInfo.charAt(i);
+        if (c == ';') {
+          dom = userInfo.substring(0, i);
+          u = i + 1;
+        } else if (c == ':') {
+          pass = userInfo.substring(i + 1);
+          break;
+        }
+      }
+      user = userInfo.substring(u, i);
+      return new NtlmPasswordAuthenticator(dom, user, pass);
+    } else {
+      return new NtlmPasswordAuthenticator();
+    }
   }
 
   /**
