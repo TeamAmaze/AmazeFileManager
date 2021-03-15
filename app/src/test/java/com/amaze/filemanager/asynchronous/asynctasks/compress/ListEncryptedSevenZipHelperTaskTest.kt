@@ -31,7 +31,7 @@ class ListEncryptedSevenZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
             "test-archive-encrypted-list.7z"
         ).absolutePath.let {
             ArchivePasswordCache.getInstance()[it] = "123456"
-            return SevenZipHelperTask(it, relativePath, false) { }
+            return SevenZipHelperTask(it, relativePath, false, emptyCallback)
         }
     }
 }

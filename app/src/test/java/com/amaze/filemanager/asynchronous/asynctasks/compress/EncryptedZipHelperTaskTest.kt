@@ -32,6 +32,7 @@ class EncryptedZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
             "test-archive-encrypted.zip"
         ).absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }
