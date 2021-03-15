@@ -94,14 +94,13 @@ public class LoadFilesListTask
   }
 
   @Override
-  protected @NonNull Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
+  protected @Nullable Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
     final MainFragment mainFragment = this.mainFragment.get();
     final Context context = this.context.get();
 
     if (mainFragment == null || context == null) {
       cancel(true);
-      // Return object so thing down the line don't NPE if cancellation is not instantaneous
-      return new Pair<>(openmode, null);
+      return null;
     }
 
     HybridFile hFile = null;
@@ -267,13 +266,11 @@ public class LoadFilesListTask
 
   @Override
   protected void onCancelled() {
-    super.onCancelled();
-    listener.onAsyncTaskFinished(new Pair<>(openmode, null));
+    listener.onAsyncTaskFinished(null);
   }
 
   @Override
-  protected void onPostExecute(Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
-    super.onPostExecute(list);
+  protected void onPostExecute(@Nullable Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
     listener.onAsyncTaskFinished(list);
   }
 
