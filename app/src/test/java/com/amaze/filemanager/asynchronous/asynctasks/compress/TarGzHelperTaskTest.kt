@@ -29,6 +29,7 @@ class TarGzHelperTaskTest : AbstractCompressedHelperTaskTest() {
         ApplicationProvider.getApplicationContext(),
         File(Environment.getExternalStorageDirectory(), "test-archive.tar.gz").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

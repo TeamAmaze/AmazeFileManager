@@ -30,6 +30,7 @@ class SevenZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
             "test-archive.7z"
         ).absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }
