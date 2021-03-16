@@ -32,6 +32,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
+import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -52,7 +53,12 @@ import org.robolectric.shadows.ShadowSQLiteConnection
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class, ShadowTabHandler::class],
+    shadows = [
+        ShadowSmbUtil::class,
+        ShadowMultiDex::class,
+        ShadowTabHandler::class,
+        ShadowCryptUtil::class
+    ],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 abstract class AbstractOperationsTestBase {
