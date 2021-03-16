@@ -41,8 +41,9 @@ class RarHelperTaskTest : AbstractCompressedHelperTaskTest() {
             )
                 .absolutePath,
             "",
-            false
-        ) { }
+            false,
+            emptyCallback
+        )
         val result = task.doInBackground()
         assertNotNull(result)
         assertNotNull(result.result)
@@ -63,8 +64,9 @@ class RarHelperTaskTest : AbstractCompressedHelperTaskTest() {
             )
                 .absolutePath,
             "",
-            false
-        ) { }
+            false,
+            emptyCallback
+        )
         val result = task.doInBackground()
         assertNotNull(result)
         assertNull(result.result)
@@ -76,6 +78,7 @@ class RarHelperTaskTest : AbstractCompressedHelperTaskTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = RarHelperTask(
         File(Environment.getExternalStorageDirectory(), "test-archive.rar").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

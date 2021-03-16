@@ -29,6 +29,7 @@ class ZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
         ApplicationProvider.getApplicationContext(),
         File(Environment.getExternalStorageDirectory(), "test-archive.zip").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

@@ -27,6 +27,7 @@ class TarHelperTaskTest : AbstractCompressedHelperTaskTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = TarHelperTask(
         File(Environment.getExternalStorageDirectory(), "test-archive.tar").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

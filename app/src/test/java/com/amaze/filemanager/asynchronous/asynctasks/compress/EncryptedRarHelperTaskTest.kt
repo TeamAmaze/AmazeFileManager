@@ -31,6 +31,7 @@ class EncryptedRarHelperTaskTest : AbstractCompressedHelperTaskTest() {
             "test-archive-encrypted.rar"
         ).absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

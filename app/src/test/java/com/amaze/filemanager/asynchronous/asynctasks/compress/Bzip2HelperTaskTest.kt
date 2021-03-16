@@ -31,6 +31,7 @@ class Bzip2HelperTaskTest : AbstractCompressedHelperTaskTest() {
             "test-archive.tar.bz2"
         ).absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

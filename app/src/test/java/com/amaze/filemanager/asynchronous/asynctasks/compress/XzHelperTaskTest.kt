@@ -27,6 +27,7 @@ class XzHelperTaskTest : AbstractCompressedHelperTaskTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = XzHelperTask(
         File(Environment.getExternalStorageDirectory(), "test-archive.tar.xz").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

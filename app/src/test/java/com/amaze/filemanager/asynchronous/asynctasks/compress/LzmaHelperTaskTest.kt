@@ -27,6 +27,7 @@ class LzmaHelperTaskTest : AbstractCompressedHelperTaskTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = LzmaHelperTask(
         File(Environment.getExternalStorageDirectory(), "test-archive.tar.lzma").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }

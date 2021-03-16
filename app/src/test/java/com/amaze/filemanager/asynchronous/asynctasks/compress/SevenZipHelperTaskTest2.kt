@@ -43,6 +43,7 @@ class SevenZipHelperTaskTest2 : AbstractCompressedHelperTaskTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = SevenZipHelperTask(
         File(Environment.getExternalStorageDirectory(), "compress.7z").absolutePath,
         relativePath,
-        false
-    ) { }
+        false,
+        emptyCallback
+    )
 }
