@@ -49,7 +49,6 @@ import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
-import org.robolectric.shadows.ShadowLooper
 import org.robolectric.shadows.ShadowNetworkInfo
 import org.robolectric.util.ReflectionHelpers
 import java.io.ByteArrayInputStream
@@ -105,6 +104,48 @@ class FtpServiceTest {
      */
     @Before
     fun setUp() {
+        setupNetwork()
+        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
+            .run {
+                edit().putString(
+                    FtpService.KEY_PREFERENCE_PATH,
+                    Environment.getExternalStorageDirectory().absolutePath
+                )
+                    .apply()
+            }
+
+        File(Environment.getExternalStorageDirectory(), "test.bin").let { file ->
+            file.writeBytes(randomContent)
+            shadowOf(ApplicationProvider.getApplicationContext<Context>().contentResolver)
+                .registerInputStream(Uri.fromFile(file), FileInputStream(file))
+        }
+
+        FtpServerFactory().run {
+            val connectionConfigFactory = ConnectionConfigFactory()
+            val user = BaseUser()
+            user.name = "anonymous"
+            user.homeDirectory = Environment.getExternalStorageDirectory().absolutePath
+            connectionConfigFactory.isAnonymousLoginEnabled = true
+            connectionConfig = connectionConfigFactory.createConnectionConfig()
+            userManager.save(user)
+
+            fileSystem = AndroidFileSystemFactory(
+                ApplicationProvider.getApplicationContext()
+            )
+            addListener(
+                "default",
+                ListenerFactory().also {
+                    it.port = FTP_PORT
+                }.createListener()
+            )
+
+            server = createServer().apply {
+                start()
+            }
+        }
+    }
+
+    private fun setupNetwork() {
         val cm = shadowOf(
             ApplicationProvider.getApplicationContext<Context>()
                 .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
@@ -139,40 +180,6 @@ class FtpServiceTest {
                     InetAddress.getLoopbackAddress()
                 )
             )
-        }
-        PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-            .run {
-                edit().putString(
-                    FtpService.KEY_PREFERENCE_PATH,
-                    Environment.getExternalStorageDirectory().absolutePath
-                )
-                    .apply()
-            }
-
-        File(Environment.getExternalStorageDirectory(), "test.bin").let { file ->
-            file.writeBytes(randomContent)
-            shadowOf(ApplicationProvider.getApplicationContext<Context>().contentResolver)
-                .registerInputStream(Uri.fromFile(file), FileInputStream(file))
-        }
-
-        FtpServerFactory().run {
-            val connectionConfigFactory = ConnectionConfigFactory()
-            val user = BaseUser()
-            user.name = "anonymous"
-            user.homeDirectory = Environment.getExternalStorageDirectory().absolutePath
-            connectionConfigFactory.isAnonymousLoginEnabled = true
-            connectionConfig = connectionConfigFactory.createConnectionConfig()
-            userManager.save(user)
-
-            fileSystem = AndroidFileSystemFactory(
-                    ApplicationProvider.getApplicationContext())
-            addListener("default", ListenerFactory().also {
-                it.port = FTP_PORT
-            }.createListener())
-
-            server = createServer().apply {
-                start()
-            }
         }
     }
 

@@ -36,7 +36,6 @@ import android.os.Environment
 import android.os.IBinder
 import android.os.SystemClock
 import android.preference.PreferenceManager
-import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.files.CryptUtil

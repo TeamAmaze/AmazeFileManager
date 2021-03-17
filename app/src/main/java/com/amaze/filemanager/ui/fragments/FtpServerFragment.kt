@@ -76,6 +76,7 @@ import java.util.*
  * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed
  * FTP Server while usi
  */
+@Suppress("TooManyFunctions")
 class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private val statusText: TextView get() = binding.textViewFtpStatus
@@ -99,6 +100,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
+    @Suppress("LabeledExpression")
     private val activityResultHandler = registerForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) {
@@ -187,6 +189,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         return binding.root
     }
 
+    // Pending upgrading material-dialogs to simplify the logic here.
+    @Suppress("ComplexMethod", "LongMethod")
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.choose_ftp_port -> {
@@ -265,22 +269,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     .negativeText(getString(R.string.cancel))
                     .build()
 
-//                val textWatcher: SimpleTextWatcher = object: SimpleTextWatcher(){
-//                    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-//                        dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-//                            loginDialogView.checkboxFtpAnonymous.isChecked or (
-//                            true == loginDialogView.editTextDialogFtpUsername.text?.isNotEmpty() &&
-//                            true == loginDialogView.editTextDialogFtpPassword.text?.isNotEmpty())
-//                        if(loginDialogView.editTextDialogFtpUsername.text.isNullOrEmpty()) {
-//                            loginDialogView.textInputDialogFtpUsername.error = getString(R.string.field_empty)
-//                        }
-//                        if(loginDialogView.editTextDialogFtpPassword.text.isNullOrEmpty()) {
-//                            loginDialogView.textInputDialogFtpPassword.error = getString(R.string.field_empty)
-//                        }
-//                    }
-//                }
-//                loginDialogView.editTextDialogFtpUsername.addTextChangedListener(textWatcher)
-//                loginDialogView.editTextDialogFtpPassword.addTextChangedListener(textWatcher)
+                // TextWatcher for port number was deliberately removed. It didn't work anyway, so
+                // no reason to keep here. Pending reimplementation when material-dialogs lib is
+                // upgraded.
 
                 dialog.show()
                 return true
@@ -364,7 +355,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
     }
 
+    /**
+     * Handles messages sent from [EventBus].
+     *
+     * @param signal as [FtpReceiverActions]
+     */
     @Subscribe(threadMode = ThreadMode.MAIN_ORDERED)
+    @Suppress("StringLiteralDuplication")
     fun onFtpReceiveActions(signal: FtpReceiverActions) {
         updateSpans()
         when (signal) {
@@ -553,8 +550,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
     }
 
-    /** @return address at which server is running
-     */
+    // return address the FTP server is running
     private val ftpAddressString: String?
         get() {
             val ia = getLocalInetAddress(requireContext()) ?: return null
@@ -631,6 +627,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         updateStatus()
     }
 
+    /**
+     * Update FTP server shared path in [android.content.SharedPreferences].
+     *
+     * @param path new shared path. Can be either absolute path (pre 4.4) or URI, which can be
+     * <code>file:///</code> or <code>content://</code> as prefix
+     */
     fun changeFTPServerPath(path: String) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
         preferences.edit().putString(FtpService.KEY_PREFERENCE_PATH, path).apply()
@@ -667,11 +669,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         updateStatus()
     }
 
-    /**
-     * Returns timeout from preferences
-     *
-     * @return timeout in seconds
-     */
+    // Returns timeout from preferences, in seconds
     private var ftpTimeout: Int
         get() = mainActivity
             .prefs
