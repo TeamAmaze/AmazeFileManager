@@ -1174,7 +1174,7 @@ public class MainActivity extends PermissionsActivity
     }
 
     final Toast toast = this.toast.get();
-    if(toast != null) {
+    if (toast != null) {
       toast.cancel();
     }
     this.toast = new WeakReference<>(null);
