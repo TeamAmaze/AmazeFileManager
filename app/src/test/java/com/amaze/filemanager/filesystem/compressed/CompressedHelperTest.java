@@ -40,6 +40,7 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.LzmaExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.XzExtractor;
