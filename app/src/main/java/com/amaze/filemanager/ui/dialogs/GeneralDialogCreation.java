@@ -1405,7 +1405,8 @@ public class GeneralDialogCreation {
 
   public static void showChangePathsDialog(
       final MainActivity mainActivity, final SharedPreferences prefs) {
-    final MainFragment mainFragment = Objects.requireNonNull(mainActivity.getCurrentMainFragment());
+    final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+    Objects.requireNonNull(mainActivity);
     final MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
     a.input(
         null,

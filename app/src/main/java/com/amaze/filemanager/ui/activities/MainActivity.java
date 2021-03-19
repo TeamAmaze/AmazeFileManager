@@ -538,7 +538,8 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void saveExternalIntent(final ArrayList<Uri> uris) {
-    final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainActivity);
 
     if (uris != null && uris.size() > 0) {
       if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -570,7 +571,8 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void saveExternalIntentExtras() {
-    final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainFragment);
 
     Bundle extras = intent.getExtras();
     StringBuilder data = new StringBuilder();
@@ -784,7 +786,8 @@ public class MainActivity extends PermissionsActivity
       if (floatingActionButton.isOpen()) {
         floatingActionButton.close(true);
       } else {
-        final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+        final MainFragment mainFragment = getCurrentMainFragment();
+        Objects.requireNonNull(mainFragment);
         mainFragment.goBack();
       }
     } else if (fragment instanceof CompressedExplorerFragment) {
@@ -914,7 +917,8 @@ public class MainActivity extends PermissionsActivity
         s.setTitle(getResources().getString(R.string.listview));
       }
       try {
-        final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+        final MainFragment mainFragment = getCurrentMainFragment();
+        Objects.requireNonNull(mainFragment);
         if (mainFragment.IS_LIST) s.setTitle(R.string.gridview);
         else s.setTitle(R.string.listview);
         appbar
@@ -1009,7 +1013,8 @@ public class MainActivity extends PermissionsActivity
     if (drawer.onOptionsItemSelected(item)) return true;
 
     // Handle action buttons
-    final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainFragment);
 
     switch (item.getItemId()) {
       case R.id.home:
@@ -1406,7 +1411,8 @@ public class MainActivity extends PermissionsActivity
                 Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
       }
 
-      final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+      final MainFragment mainFragment = getCurrentMainFragment();
+      Objects.requireNonNull(mainFragment);
 
       switch (operation) {
         case DELETE: // deletion
@@ -1473,7 +1479,8 @@ public class MainActivity extends PermissionsActivity
       }
       operation = UNDEFINED;
     } else if (requestCode == REQUEST_CODE_SAF) {
-      final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+      final MainFragment mainFragment = getCurrentMainFragment();
+      Objects.requireNonNull(mainFragment);
 
       if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
         // otg access
@@ -1772,7 +1779,8 @@ public class MainActivity extends PermissionsActivity
             new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
 
         // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-        final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+        final MainFragment mainFragment = getCurrentMainFragment();
+        Objects.requireNonNull(mainFragment);
         mainFragment.loadlist(path, false, OpenMode.UNKNOWN);
       } else {
         Snackbar.make(
@@ -1860,7 +1868,8 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void onPreExecute(String query) {
-    final MainFragment mainFragment = Objects.requireNonNull(getCurrentMainFragment());
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainFragment);
 
     mainFragment.mSwipeRefreshLayout.setRefreshing(true);
     mainFragment.onSearchPreExecute(query);
