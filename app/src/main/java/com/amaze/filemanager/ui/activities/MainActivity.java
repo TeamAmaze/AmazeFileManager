@@ -38,6 +38,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -220,7 +221,7 @@ public class MainActivity extends PermissionsActivity
   private boolean openProcesses = false;
   private MaterialDialog materialDialog;
   private boolean backPressedToExitOnce = false;
-  private Toast toast = null;
+  private WeakReference<Toast> toast = new WeakReference<>(null);
   private Intent intent;
   private View indicator_layout;
 
@@ -844,7 +845,9 @@ public class MainActivity extends PermissionsActivity
       }
     } else {
       this.backPressedToExitOnce = true;
-      showToast(getString(R.string.press_again));
+      final Toast toast = Toast.makeText(this, getString(R.string.press_again), Toast.LENGTH_SHORT);
+      this.toast = new WeakReference<>(toast);
+      toast.show();
       new Handler()
           .postDelayed(
               () -> {
@@ -983,26 +986,6 @@ public class MainActivity extends PermissionsActivity
       invalidatePasteSnackbar(false);
     }
     return super.onPrepareOptionsMenu(menu);
-  }
-
-  void showToast(String message) {
-    if (this.toast == null) {
-      // Create toast if found null, it would he the case of first call only
-      this.toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-    } else if (this.toast.getView() == null) {
-      // Toast not showing, so create new one
-      this.toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-    } else {
-      // Updating toast message is showing
-      this.toast.setText(message);
-    }
-
-    // Showing toast finally
-    this.toast.show();
-  }
-
-  void killToast() {
-    if (this.toast != null) this.toast.cancel();
   }
 
   // called when the user exits the action mode
@@ -1189,7 +1172,12 @@ public class MainActivity extends PermissionsActivity
     if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       unregisterReceiver(mOtgReceiver);
     }
-    killToast();
+
+    final Toast toast = this.toast.get();
+    if (toast != null) {
+      toast.cancel();
+    }
+    this.toast = new WeakReference<>(null);
   }
 
   @Override
