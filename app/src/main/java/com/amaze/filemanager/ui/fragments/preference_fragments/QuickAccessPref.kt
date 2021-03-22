@@ -57,7 +57,7 @@ class QuickAccessPref : PreferenceFragmentCompat(), Preference.OnPreferenceClick
         // Load the preferences from an XML resource
         addPreferencesFromResource(R.xml.fastaccess_prefs)
         preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        currentValue = TinyDB.getBooleanArray(preferences, KEY, DEFAULT)
+        currentValue = TinyDB.getBooleanArray(preferences!!, KEY, DEFAULT)
         for (i in 0 until preferenceScreen.preferenceCount) {
             preferenceScreen.getPreference(i).onPreferenceClickListener = this
         }
@@ -65,7 +65,7 @@ class QuickAccessPref : PreferenceFragmentCompat(), Preference.OnPreferenceClick
 
     override fun onPreferenceClick(preference: Preference): Boolean {
         currentValue!![prefPos[preference.key]!!] = (preference as SwitchPreference).isChecked
-        TinyDB.putBooleanArray(preferences, KEY, currentValue)
+        TinyDB.putBooleanArray(preferences!!, KEY, currentValue!!)
         return true
     }
 }
