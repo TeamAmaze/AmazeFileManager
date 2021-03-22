@@ -41,7 +41,7 @@ object TinyDB {
      * @param array array of Booleans to be added
      */
     @JvmStatic
-    fun putBooleanArray(preferences: SharedPreferences, key: String?, array: Array<Boolean?>) {
+    fun putBooleanArray(preferences: SharedPreferences, key: String?, array: Array<Boolean>) {
         preferences.edit().putString(key, TextUtils.join(DIVIDER, array)).apply()
     }
 
@@ -55,16 +55,15 @@ object TinyDB {
     fun getBooleanArray(
         preferences: SharedPreferences,
         key: String?,
-        defaultValue: Array<Boolean?>?
-    ): Array<Boolean?>? {
+        defaultValue: Array<Boolean>?
+    ): Array<Boolean>? {
         val prefValue = preferences.getString(key, "")
         if (prefValue == "") {
             return defaultValue
         }
 
-        val temp = TextUtils.split(prefValue, DIVIDER)
-        val newArray = arrayOfNulls<Boolean>(temp.size)
-        for (i in temp.indices) newArray[i] = java.lang.Boolean.valueOf(temp[i])
-        return newArray
+        return TextUtils.split(prefValue, DIVIDER).map {
+            java.lang.Boolean.valueOf(it)
+        }.toTypedArray()
     }
 }

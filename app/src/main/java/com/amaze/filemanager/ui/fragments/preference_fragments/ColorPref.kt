@@ -242,14 +242,14 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 ColorPickerDialog.NO_DATA
             ) == ColorPickerDialog.CUSTOM_INDEX
             ).apply {
-                findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN)?.isEnabled =
-                    this
-                findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN_TWO)?.isEnabled =
-                    this
-                findPreference<Preference>(PreferencesConstants.PREFERENCE_ACCENT)?.isEnabled =
-                    this
-                findPreference<Preference>(PreferencesConstants.PREFERENCE_ICON_SKIN)?.isEnabled =
-                    this
+            findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN)?.isEnabled =
+                this
+            findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN_TWO)?.isEnabled =
+                this
+            findPreference<Preference>(PreferencesConstants.PREFERENCE_ACCENT)?.isEnabled =
+                this
+            findPreference<Preference>(PreferencesConstants.PREFERENCE_ICON_SKIN)?.isEnabled =
+                this
         }
     }
 

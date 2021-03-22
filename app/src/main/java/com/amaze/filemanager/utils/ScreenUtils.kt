@@ -22,9 +22,15 @@ package com.amaze.filemanager.utils
 
 import android.app.Activity
 import android.util.DisplayMetrics
+import java.lang.ref.WeakReference
 import kotlin.math.roundToInt
 
-class ScreenUtils(private val activity: Activity) {
+class ScreenUtils(act: Activity) {
+
+    private val _activity: WeakReference<Activity> = WeakReference(act)
+    private val activity: Activity
+        get() = _activity.get()!!
+
     /**
      * Converts Density Pixels to real Pixels in screen
      * It uses context to retrieve the density.
