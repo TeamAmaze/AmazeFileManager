@@ -130,7 +130,6 @@ public final class PasteHelper implements Parcelable {
     if (shouldClearPasteData) {
       mainActivity.setPaste(null);
     }
-    Utils.invalidateFab(mainActivity, null, false);
   }
 
   private void showSnackbar() {
@@ -145,7 +144,7 @@ public final class PasteHelper implements Parcelable {
               @Override
               public void onSuccess(Spanned spanned) {
                 snackbar =
-                    Utils.showThemedSnackbar(
+                    Utils.showCutCopySnackBar(
                         mainActivity,
                         spanned,
                         BaseTransientBottomBar.LENGTH_INDEFINITE,
@@ -163,8 +162,8 @@ public final class PasteHelper implements Parcelable {
                                   mainActivity.isRootExplorer())
                               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                           dismissSnackbar(true);
-                        });
-                Utils.invalidateFab(mainActivity, () -> dismissSnackbar(true), true);
+                        },
+                        () -> dismissSnackbar(true));
               }
 
               @Override
