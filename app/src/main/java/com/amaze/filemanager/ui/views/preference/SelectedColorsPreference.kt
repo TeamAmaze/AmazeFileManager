@@ -87,20 +87,32 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
         // select(selectedItem, true)
     }
 
+    /**
+     * Set colours' visibility.
+     */
     fun setColorsVisibility(visibility: Int) {
         this.visibility = visibility
         notifyChanged()
     }
 
+    /**
+     * Sets the divider's colour.
+     */
     fun setDividerColor(color: Int) {
         backgroundColor = color
     }
 
+    /**
+     * set colours to specified and notify colour changed.
+     */
     fun setColors(color: Int, color1: Int, color2: Int, color3: Int) {
         colors = intArrayOf(color, color1, color2, color3)
         notifyChanged()
     }
 
+    /**
+     * notify colour changed.
+     */
     fun invalidateColors() {
         notifyChanged()
     }

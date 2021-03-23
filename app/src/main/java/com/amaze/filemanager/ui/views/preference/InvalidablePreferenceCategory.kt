@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.views.preference
 
-import android.R
 import android.content.Context
 import android.util.AttributeSet
 import androidx.annotation.ColorInt
@@ -38,10 +37,13 @@ class InvalidablePreferenceCategory(context: Context?, attrs: AttributeSet?) :
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
-        val title: AppCompatTextView = holder?.findViewById(R.id.title) as AppCompatTextView
+        val title: AppCompatTextView = holder?.findViewById(android.R.id.title) as AppCompatTextView
         title.setTextColor(titleColor)
     }
 
+    /**
+     * notify change of title colour as necessary
+     */
     fun invalidate(@ColorInt accentColor: Int) {
         titleColor = PreferenceUtils.getStatusColor(accentColor)
         notifyChanged()

@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import android.R
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.os.Build
@@ -51,6 +50,7 @@ import com.amaze.filemanager.ui.views.preference.SelectedColorsPreference
  *
  * Created by Arpit on 21-06-2015 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>
  */
+@Suppress("TooManyFunctions")
 class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener {
 
     private var currentSection = SECTION_0
@@ -77,13 +77,16 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
 
     /** Deal with the "up" button going to last fragment, instead of section 0.  */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == R.id.home && currentSection != SECTION_0) {
+        if (item.itemId == com.amaze.filemanager.R.id.home && currentSection != SECTION_0) {
             switchSections()
             return true
         }
         return super.onOptionsItemSelected(item)
     }
 
+    /**
+     * Handle back button behaviour, returns to first section of colour preferences as necessary
+     */
     fun onBackPressed(): Boolean {
         return if (currentSection != SECTION_0) {
             switchSections()
