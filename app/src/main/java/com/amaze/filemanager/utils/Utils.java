@@ -343,9 +343,9 @@ public class Utils {
     Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
     snackBarLayout.setPadding(0, 0, 0, 0);
 
-    Button actionButton = (Button) customSnackView.findViewById(R.id.snackBarActionButton);
-    Button cancelButton = (Button) customSnackView.findViewById(R.id.snackBarCancelButton);
-    TextView textView = (TextView) customSnackView.findViewById(R.id.snackBarTextTV);
+    Button actionButton = customSnackView.findViewById(R.id.snackBarActionButton);
+    Button cancelButton = customSnackView.findViewById(R.id.snackBarCancelButton);
+    TextView textView = customSnackView.findViewById(R.id.snackBarTextTV);
 
     actionButton.setText(actionTextId);
     textView.setText(text);
@@ -355,11 +355,8 @@ public class Utils {
 
     snackBarLayout.addView(customSnackView, 0);
 
-    if (mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
-      ((CardView) snackBarLayout.findViewById(R.id.snackBarCardView))
-          .setCardBackgroundColor(mainActivity.getResources().getColor(android.R.color.white));
-      textView.setTextColor(mainActivity.getResources().getColor(android.R.color.black));
-    }
+    ((CardView) snackBarLayout.findViewById(R.id.snackBarCardView))
+        .setCardBackgroundColor(mainActivity.getAccent());
 
     snackbar.show();
     return snackbar;
@@ -390,8 +387,8 @@ public class Utils {
    */
   public static Intent buildEmailIntent(String text, String supportMail) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
-    String aEmailList[] = {supportMail};
-    String aEmailCCList[] = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
+    String[] aEmailList = {supportMail};
+    String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
     emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
     emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
     emailIntent.putExtra(
