@@ -232,17 +232,16 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
   @Override
   public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    MainFragment mainFragment = mainActivity.getCurrentMainFragment();
-    if (mainFragment != null
-        && !mainFragment
-            .selection) { // we do not want to update toolbar colors when ActionMode is activated
-      // during the config change
-      @ColorInt
-      int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
-
-      colorDrawable.setColor(color);
-      mainActivity.updateViews(colorDrawable);
+    final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+    if (mainFragment == null || mainFragment.selection) {
+      return; // we do not want to update toolbar colors when ActionMode is activated
     }
+
+    // during the config change
+    @ColorInt int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
+
+    colorDrawable.setColor(color);
+    mainActivity.updateViews(colorDrawable);
   }
 
   @Override

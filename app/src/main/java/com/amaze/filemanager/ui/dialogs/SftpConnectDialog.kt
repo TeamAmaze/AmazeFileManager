@@ -478,7 +478,7 @@ class SftpConnectDialog : DialogFragment() {
                         )
                     )
                     val ma = (activity as MainActivity).currentMainFragment
-                    ma.loadlist(path, false, OpenMode.SFTP)
+                    ma?.loadlist(path, false, OpenMode.SFTP)
                     dismiss()
                 } else {
                     Snackbar.make(
