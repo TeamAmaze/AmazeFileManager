@@ -34,7 +34,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry;
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile;
 import com.amaze.filemanager.ui.activities.MainActivity;

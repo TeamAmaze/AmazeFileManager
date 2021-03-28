@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed;
+package com.amaze.filemanager.file_operations.filesystem.compressed;
 
 import java.util.Collection;
 import java.util.HashMap;

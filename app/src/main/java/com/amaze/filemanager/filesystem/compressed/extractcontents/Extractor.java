@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -39,17 +41,20 @@ public abstract class Extractor {
   protected String filePath, outputPath;
   protected OnUpdate listener;
   protected List<String> invalidArchiveEntries;
+  protected UpdatePosition updatePosition;
 
   public Extractor(
       @NonNull Context context,
       @NonNull String filePath,
       @NonNull String outputPath,
-      @NonNull Extractor.OnUpdate listener) {
+      @NonNull Extractor.OnUpdate listener,
+      @NonNull UpdatePosition updatePosition) {
     this.context = context;
     this.filePath = filePath;
     this.outputPath = outputPath;
     this.listener = listener;
     this.invalidArchiveEntries = new ArrayList<>();
+    this.updatePosition = updatePosition;
   }
 
   public void extractFiles(String[] files) throws IOException {

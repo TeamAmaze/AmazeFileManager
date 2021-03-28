@@ -31,7 +31,7 @@ import org.tukaani.xz.CorruptedInputException;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -308,7 +308,8 @@ public class ExtractService extends AbstractProgressiveService {
                   public boolean isCancelled() {
                     return progressHandler.getCancelled();
                   }
-                });
+                },
+                ServiceWatcherUtil.UPDATE_POSITION);
 
         try {
           if (entriesToExtract != null) {
