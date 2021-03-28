@@ -31,6 +31,7 @@ import org.apache.ftpserver.ftplet.FileSystemView
 import org.apache.ftpserver.ftplet.FtpFile
 import java.io.File
 import java.net.URI
+import java.net.URLDecoder
 
 @RequiresApi(KITKAT)
 class AndroidFtpFileSystemView(private var context: Context, root: String) : FileSystemView {
@@ -60,7 +61,7 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 if (currentPath.isNullOrEmpty() || currentPath == "/")
                     false
                 else {
-                    currentPath = URI("$currentPath/$dir").normalize().toString()
+                    currentPath = normalizePath("$currentPath/$dir")
                     resolveDocumentFileFromRoot(currentPath) != null
                 }
             }
@@ -68,7 +69,7 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 currentPath = if (currentPath.isNullOrEmpty() || currentPath == "/") {
                     dir
                 } else {
-                    URI("$currentPath/$dir").normalize().toString()
+                    normalizePath("$currentPath/$dir")
                 }
                 resolveDocumentFileFromRoot(currentPath) != null
             }
@@ -83,7 +84,7 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
         } else {
             "$currentPath/$file"
         }
-        return URI(path).normalize().toString().let { normalizedPath ->
+        return normalizePath(path).let { normalizedPath ->
             AndroidFtpFile(
                 context,
                 rootDocumentFile,
@@ -96,6 +97,10 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
 
     override fun dispose() {
         // context = null!!
+    }
+
+    private fun normalizePath(path: String): String {
+        return URI(path.replace(" ", "%20")).normalize().toString().replace("%20", " ")
     }
 
     private fun createDocumentFileFrom(path: String): DocumentFile {
