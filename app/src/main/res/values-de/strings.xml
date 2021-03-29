@@ -22,7 +22,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">Amaze File Manager</string>
+    <string name="app_name">Amaze Dateimanager</string>
     <string name="drawer_open">Öffne Navigationsleiste</string>
     <string name="drawer_close">Schließe Navigationsleiste</string>
     <string name="icon">Symbol</string>
@@ -311,6 +311,8 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="primary_two_summary">Setze Farbe für große UI Elemente in dem rechten Tab</string>
     <string name="support_development">Unterstütze die Entwicklung</string>
     <string name="report_bugs_title">Melde Fehler</string>
+    <string name="source_title">Quelltext</string>
+    <string name="source_summary">Quelltext auf Github anzeigen</string>
     <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
     <string name="translate_title">Übersetzen</string>
     <string name="translate_summary">Übersetze Amaze in deine Sprache</string>
@@ -516,6 +518,7 @@ andernfalls wird nach Treffern gesucht.</string>
 
     <string name="text_editor">Einstellungen für den Texteditor</string>
     <string name="preference_newstack_title">Dateien als neue Aufgabe öffnen</string>
+    <string name="preference_newstack_summary">Erlaubt es Ihnen, Dateien in verschiedenen Aufgaben zu öffnen. Greifen Sie über die Anzeige des letzten Bildschirms des Systems zu.</string>
     <string name="developers">Entwickler</string>
     <string name="no_bitcoin_app">Bitte installieren Sie eine Bitcoin-Wallet-App</string>
     <string name="channel_name_normal">Amaze Benachrichtigungen</string>
@@ -538,20 +541,106 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ssh_authentication_failure_key">Anmeldung fehlgeschlagen: Benutzername oder Privater Schlüssel ungültig.</string>
     <string name="ssh_connect_failed">Kann keine Verbindung herstellen zu %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">WARNUNG: DIE ID DES ENTFERNTEN COMPUTERS HAT SICH VERÄNDERT!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (Mittelsmann-Attacke)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nBitte kontaktieren Sie Ihren Systemadministrator oder richten Sie eine neue Verbindung ein, um sich weiterhin mit dem Server zu verbinden.</string>
+    <string name="ssh_key_prompt_passphrase">Bitte geben Sie die Schlüsselpassphrase ein.</string>
+    <string name="add_shortcut_not_supported_by_launcher">Die Erstellung von Verknüpfungen wird von Ihrem Launcher nicht unterstützt.</string>
+    
+    <string name="select_color_config">Farbkonfiguration auswählen</string>
     <string name="customize">Anpassen</string>
     <string name="custom">Angepasst</string>
+    <string name="preselected_configs_title">Vorausgewählte Konfigurationen</string>
     <string name="orange">Orange</string>
     <string name="blue">Blau</string>
     <string name="green">Grün</string>
+    <string name="password_no_match">Passwort stimmt nicht überein</string>
+    <string name="deselect_all">Alles abwählen</string>
     <string name="filename">Dateiname</string>
+    <string name="compress_file_suggest_zip_extension">Es wird empfohlen \".zip\" als Dateierweiterung zu verwenden.</string>
+    <string name="about_amaze">Dateimanager im Material Design für Android</string>
     <string name="license">Lizenz</string>
     <string name="libraries">Bibliotheken</string>
     <string name="password_repeat">Passwort wiederholen</string>
+    <string name="create_file_suggest_txt_extension">Es wird empfohlen \".txt\" als Dateierweiterung zu verwenden.</string>
+    <string name="ssh_select_pem">Privaten Schlüssel für die Authentifizierung auswählen</string>
+    <string name="ssh_key_invalid_passphrase">Schlüsselpassphrase ungültig.</string>
+    <string name="encryption_fail_copy">Fehler beim Aktualisieren des Verschlüsselungseintrags in der Datenbank</string>
+    <string name="extracted">Extrahiert</string>
     <string name="compressed">Komprimiert</string>
+    <string name="processed">Verarbeitet</string>
+    <string name="no_obtainable_info">Es gibt keine Info zu dieser Datei</string>
+    <string name="reopen_from_source">Klappt nicht, bitte erneut von letzter App aus öffnen</string>
+    <string name="no_file_error">Etwas ist schief gelaufen, hier gibt es nichts zu öffnen</string>
+    <string name="file_read_only">Die Datei wurde als nur lesend geöffnet.</string>
     <string name="got_it">Alles klar!</string>
+    <string name="encrypt_file_save_as">Verschlüsselte Datei speichern als&#8230;</string>
+    <string name="encrypt_folder_save_as">Verschlüsselten Ordner speichern als&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Verschlüsselte Dateien müssen \".aze\" als Dateierweiterung verwenden.</string>
+    <string name="cannot_overwrite">Datei kann nicht überschrieben werden.</string>
+    <string name="saved_single_file">Datei als \'%s\' gespeichert.</string>
+    <string name="saved_multi_files">%d Dateien gespeichert.</string>
+    <string name="create_hidden_file_warn">Die erstellte Datei wird in der Dateiliste ausgeblendet.</string>
+    <string name="grant_apkinstall_permission">App benötigt die Berechtigung zum Installieren von Apps um Fortzufahren.</string>
+    <string name="time_remaining">Zeit verbleibend</string>
     <string name="transfer_rate">Transferrate</string>
     <string name="unknown">unbekannt</string>
+    <string name="multiple_invalid_archive_entries">Einige Dateien aus dem Archiv können nicht extrahiert werden. Das Archiv könnte beschädigt sein oder stammt von einer bösartigen Quelle.</string>
+    <string name="saf_otg_explanation">Aus Sicherheitsgründen wird nun das Dateisystem von Android selbst aufgerufen. Bitte wählen Sie das USB-Gerät aus der Liste auf der linken Seite.</string>
+    <string name="donation_thanks">Vielen Dank für Ihre Spende. Das hält uns motiviert! (:</string>
+    <string name="enable_marquee_filename">Markisen-Effekt für Dateinamen aktivieren</string>
+    <string name="archive_password_prompt">Bitte geben Sie das Archivpasswort ein:</string>
+    <string name="cannot_extract_archive">Kann Archiv \"%s\":%s nicht extrahieren</string>
+    <string name="archive_unsupported_or_corrupt">Das ARchiv \"%s\" kann nicht geöffnet werden. Entweder können wir das Archiv nicht öffnen oder das Archiv wurde beschädigt.</string>
     <string name="close">Schließen</string>
     <string name="bookmark_exists">Lesezeichen existiert</string>
-    </resources>
+    <string name="hide_media">Vor Media-Browser verstecken</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (Mittelsmann-Attacke)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nSie können den Fingerabdruck des Geräts aktualisieren oder die Aktualisierung der Einstellungen für SSH-Verbindungen abbrechen.</string>
+    <string name="update_host_key">Geräteschlüssel aktualisieren</string>
+    <string name="cancel_recommended">Abbrechen (empfohlen)</string>
+    <string name="failed_install_apk">Installation fehlgeschlagen</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Interner Speicher</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD-Karte</string>
+    <string name="choose_folder">Diesen Ordner wählen</string>
+    <string name="some_files_failed_invalid_operation">Einige Dateien sind wegen einer ungültigen Aktion fehlgeschlagen</string>
+    <string name="ftp_server_prompt_connect_to_network">Verbinden Sie sich mit einem Netzwerk oder aktivieren Sie den AP</string>
+    <string name="ftp_server_open_settings">Einstellungen öffnen</string>
+    <string name="move">Verschieben</string>
+    <string name="select_save_location">Ort zum Speichern auswählen</string>
+    <string name="scp_default_path">Standardpfad (optional)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Entschuldigung. Das sollte nicht passieren.</string>
+    <string name="error_report_button_text">Diesen Fehler per E-Mail melden</string>
+    <string name="error_report_button_telegram">Diesen Fehler per Telegram melden</string>
+    <string name="copy_for_github">Formatierten Bericht kopieren</string>
+    <string name="error_report_open_issue_button_text">Auf Github melden</string>
+    <string name="error_report_open_github_notice">Bitte prüfen Sie, ob Ihr Absturz bereits in einem Eintrag diskutiert wird.</string>
+    <string name="error_snackbar_message">Entschuldigung. Etwas ist schief gegangen.</string>
+    <string name="error_snackbar_action">Bericht</string>
+    <string name="what_device_headline">Info:</string>
+    <string name="what_happened_headline">Was ist passiert:</string>
+    <string name="info_labels">Was:\\nAnfrage:\\nGMT-Zeit:\\nPaket:\\nVersion:\\nOS-Version:\\nGerät:\\nModell:\\nProdukt:</string>
+    <string name="your_comment">Ihr Kommentar (auf Englisch):</string>
+    <string name="error_details_headline">Details:</string>
+    <string name="app_ui_crash">App/Oberfläche abgestürzt</string>
+    <string name="error_report_title">Fehlerbericht</string>
+    <string name="crash_report_copied">Fehlerbericht in Zwischenablage kopiert</string>
+
+    <string name="disableIpcSignature">IPC Signaturprüfung deaktivieren (Für veraltete SMBv1 Server - UNSICHER!)</string>
+    <string name="cannot_delete_file">Datei kann nicht gelöscht werden</string>
+    <string name="cannot_delete_file_with_reason">Datei %s kann nicht gelöscht werden</string>
+    <string name="cannot_rename_file">Datei %s - %s kann nicht umbenannt werden</string>
+    <string name="cannot_read_directory">Verzeichnis %s - %s kann nicht gelesen werden</string>
+    <string name="just_once">Nur einmal</string>
+    <string name="always">Immer</string>
+    <string name="choose_different_app">Andere Anwendung auswählen</string>
+    <string name="clear_open_file">Cache leeren</string>
+    <string name="clear_open_file_summary">Setzt die Auswahl der Standard-Apps für das Öffnen von Dateien zurück</string>
+    <string name="legacy_listing_title">Alte Auflistung für Root verwenden</string>
+    <string name="legacy_listing_summary">Wenn aktiviert wird stat anstelle von ls für das Auflisten verwendet</string>
+    <string name="error_permission_denied">Berechtigung verweigert</string>
+</resources>
 
