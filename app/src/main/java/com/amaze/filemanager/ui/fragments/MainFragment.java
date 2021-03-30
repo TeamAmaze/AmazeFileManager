@@ -681,9 +681,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                     item.getItemId() == R.id.cpy
                         ? PasteHelper.OPERATION_COPY
                         : PasteHelper.OPERATION_CUT;
-
-                PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
-                getMainActivity().setPaste(pasteHelper);
+                // Making sure we don't cause an IllegalArgumentException
+                // when passing copies to PasteHelper
+                if(copies.length > 0){
+                  PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
+                  getMainActivity().setPaste(pasteHelper);
+                }
                 mode.finish();
                 return true;
               }
