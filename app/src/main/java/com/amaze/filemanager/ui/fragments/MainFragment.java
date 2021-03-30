@@ -683,7 +683,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                         : PasteHelper.OPERATION_CUT;
                 // Making sure we don't cause an IllegalArgumentException
                 // when passing copies to PasteHelper
-                if(copies.length > 0){
+                if (copies.length > 0) {
                   PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
                   getMainActivity().setPaste(pasteHelper);
                 }
