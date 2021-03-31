@@ -31,8 +31,6 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.google.android.material.snackbar.Snackbar;
-import com.leinardi.android.speeddial.SpeedDialView;
-import com.leinardi.android.speeddial.UiUtils;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -41,6 +39,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -48,13 +47,15 @@ import android.os.storage.StorageVolume;
 import android.text.format.DateUtils;
 import android.util.DisplayMetrics;
 import android.view.View;
+import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorRes;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
+import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
 import androidx.core.graphics.drawable.DrawableCompat;
@@ -305,47 +306,6 @@ public class Utils {
     return string == null || string.length() == 0;
   }
 
-  /**
-   * Clears the fab action items and animate the main fab to open/close icon (i.e. without any
-   * background overlay) Generally used in combination with snackbar, to show/hide snackbar using
-   * FAB
-   *
-   * @param mainActivity main activity
-   * @param callback callback, can be null when fab open is false
-   * @param open should open / close the fab
-   */
-  public static void invalidateFab(
-      MainActivity mainActivity, @Nullable Runnable callback, boolean open) {
-    if (open) {
-      mainActivity.clearFabActionItems();
-      mainActivity.getFAB().getMainFab().setImageResource(R.drawable.ic_close_white_24dp);
-      mainActivity
-          .getFAB()
-          .setOnChangeListener(
-              new SpeedDialView.OnChangeListener() {
-                @Override
-                public boolean onMainActionSelected() {
-                  if (callback != null) {
-                    callback.run();
-                  }
-                  return false;
-                }
-
-                @Override
-                public void onToggleChanged(boolean isOpen) {
-                  // do nothing
-                }
-              });
-      // Ensure the FAB menu is visible
-      mainActivity.getFAB().setVisibility(View.VISIBLE);
-    } else {
-      UiUtils.rotateBackward(mainActivity.getFAB().getMainFab(), true);
-      mainActivity.getFAB().getMainFab().setImageResource(R.drawable.ic_add_white_24dp);
-      mainActivity.initializeFabActionViews();
-      mainActivity.getFAB().setOnChangeListener(null);
-    }
-  }
-
   public static Snackbar showThemedSnackbar(
       MainActivity mainActivity,
       CharSequence text,
@@ -361,6 +321,43 @@ public class Utils {
           .setBackgroundColor(mainActivity.getResources().getColor(android.R.color.white));
       snackbar.setTextColor(mainActivity.getResources().getColor(android.R.color.black));
     }
+    snackbar.show();
+    return snackbar;
+  }
+
+  public static Snackbar showCutCopySnackBar(
+      MainActivity mainActivity,
+      CharSequence text,
+      int length,
+      @StringRes int actionTextId,
+      Runnable actionCallback,
+      Runnable cancelCallback) {
+
+    final Snackbar snackbar =
+        Snackbar.make(mainActivity.findViewById(R.id.content_frame), "", length);
+
+    View customSnackView =
+        View.inflate(mainActivity.getApplicationContext(), R.layout.snackbar_view, null);
+    snackbar.getView().setBackgroundColor(Color.TRANSPARENT);
+
+    Snackbar.SnackbarLayout snackBarLayout = (Snackbar.SnackbarLayout) snackbar.getView();
+    snackBarLayout.setPadding(0, 0, 0, 0);
+
+    Button actionButton = customSnackView.findViewById(R.id.snackBarActionButton);
+    Button cancelButton = customSnackView.findViewById(R.id.snackBarCancelButton);
+    TextView textView = customSnackView.findViewById(R.id.snackBarTextTV);
+
+    actionButton.setText(actionTextId);
+    textView.setText(text);
+
+    actionButton.setOnClickListener(v -> actionCallback.run());
+    cancelButton.setOnClickListener(v -> cancelCallback.run());
+
+    snackBarLayout.addView(customSnackView, 0);
+
+    ((CardView) snackBarLayout.findViewById(R.id.snackBarCardView))
+        .setCardBackgroundColor(mainActivity.getAccent());
+
     snackbar.show();
     return snackbar;
   }
@@ -390,8 +387,8 @@ public class Utils {
    */
   public static Intent buildEmailIntent(String text, String supportMail) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
-    String aEmailList[] = {supportMail};
-    String aEmailCCList[] = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
+    String[] aEmailList = {supportMail};
+    String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
     emailIntent.putExtra(Intent.EXTRA_EMAIL, aEmailList);
     emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
     emailIntent.putExtra(

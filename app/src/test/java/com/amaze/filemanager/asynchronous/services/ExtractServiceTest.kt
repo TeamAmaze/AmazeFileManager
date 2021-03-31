@@ -27,7 +27,7 @@ import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.awaitility.Awaitility.await
 import org.junit.After

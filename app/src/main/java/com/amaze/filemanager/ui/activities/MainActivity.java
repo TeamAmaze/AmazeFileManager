@@ -38,9 +38,11 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -220,7 +222,7 @@ public class MainActivity extends PermissionsActivity
   private boolean openProcesses = false;
   private MaterialDialog materialDialog;
   private boolean backPressedToExitOnce = false;
-  private Toast toast = null;
+  private WeakReference<Toast> toast = new WeakReference<>(null);
   private Intent intent;
   private View indicator_layout;
 
@@ -537,16 +539,16 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void saveExternalIntent(final ArrayList<Uri> uris) {
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainActivity);
+
     if (uris != null && uris.size() > 0) {
       if (SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        File folder = new File(getCurrentMainFragment().getCurrentPath());
+        File folder = new File(mainFragment.getCurrentPath());
         int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
         if (result == WRITABLE_OR_ON_SDCARD) {
           FileUtil.writeUriToStorage(
-              MainActivity.this,
-              uris,
-              getContentResolver(),
-              getCurrentMainFragment().getCurrentPath());
+              MainActivity.this, uris, getContentResolver(), mainFragment.getCurrentPath());
           finish();
         } else {
           // Trigger SAF intent, keep uri until finish
@@ -556,25 +558,23 @@ public class MainActivity extends PermissionsActivity
         }
       } else {
         FileUtil.writeUriToStorage(
-            MainActivity.this,
-            uris,
-            getContentResolver(),
-            getCurrentMainFragment().getCurrentPath());
+            MainActivity.this, uris, getContentResolver(), mainFragment.getCurrentPath());
       }
     } else {
       saveExternalIntentExtras();
     }
     Toast.makeText(
             MainActivity.this,
-            getResources().getString(R.string.saving)
-                + " to "
-                + getCurrentMainFragment().getCurrentPath(),
+            getResources().getString(R.string.saving) + " to " + mainFragment.getCurrentPath(),
             Toast.LENGTH_LONG)
         .show();
     finish();
   }
 
   private void saveExternalIntentExtras() {
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainFragment);
+
     Bundle extras = intent.getExtras();
     StringBuilder data = new StringBuilder();
     if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_SUBJECT))) {
@@ -586,9 +586,7 @@ public class MainActivity extends PermissionsActivity
     String fileName = Long.toString(System.currentTimeMillis());
     AppConfig.getInstance()
         .runInBackground(
-            () ->
-                FileUtil.mktextfile(
-                    data.toString(), getCurrentMainFragment().getCurrentPath(), fileName));
+            () -> FileUtil.mktextfile(data.toString(), mainFragment.getCurrentPath(), fileName));
   }
 
   public void clearFabActionItems() {
@@ -789,7 +787,9 @@ public class MainActivity extends PermissionsActivity
       if (floatingActionButton.isOpen()) {
         floatingActionButton.close(true);
       } else {
-        getCurrentMainFragment().goBack();
+        final MainFragment mainFragment = getCurrentMainFragment();
+        Objects.requireNonNull(mainFragment);
+        mainFragment.goBack();
       }
     } else if (fragment instanceof CompressedExplorerFragment) {
       CompressedExplorerFragment compressedExplorerFragment =
@@ -844,7 +844,9 @@ public class MainActivity extends PermissionsActivity
       }
     } else {
       this.backPressedToExitOnce = true;
-      showToast(getString(R.string.press_again));
+      final Toast toast = Toast.makeText(this, getString(R.string.press_again), Toast.LENGTH_SHORT);
+      this.toast = new WeakReference<>(toast);
+      toast.show();
       new Handler()
           .postDelayed(
               () -> {
@@ -918,19 +920,20 @@ public class MainActivity extends PermissionsActivity
         s.setTitle(getResources().getString(R.string.listview));
       }
       try {
-        MainFragment ma = getCurrentMainFragment();
-        if (ma.IS_LIST) s.setTitle(R.string.gridview);
+        final MainFragment mainFragment = getCurrentMainFragment();
+        Objects.requireNonNull(mainFragment);
+        if (mainFragment.IS_LIST) s.setTitle(R.string.gridview);
         else s.setTitle(R.string.listview);
         appbar
             .getBottomBar()
             .updatePath(
-                ma.getCurrentPath(),
-                ma.results,
+                mainFragment.getCurrentPath(),
+                mainFragment.results,
                 MainActivityHelper.SEARCH_TEXT,
-                ma.openMode,
-                ma.folder_count,
-                ma.file_count,
-                ma);
+                mainFragment.openMode,
+                mainFragment.folder_count,
+                mainFragment.file_count,
+                mainFragment);
       } catch (Exception e) {
       }
 
@@ -985,26 +988,6 @@ public class MainActivity extends PermissionsActivity
     return super.onPrepareOptionsMenu(menu);
   }
 
-  void showToast(String message) {
-    if (this.toast == null) {
-      // Create toast if found null, it would he the case of first call only
-      this.toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-    } else if (this.toast.getView() == null) {
-      // Toast not showing, so create new one
-      this.toast = Toast.makeText(this, message, Toast.LENGTH_SHORT);
-    } else {
-      // Updating toast message is showing
-      this.toast.setText(message);
-    }
-
-    // Showing toast finally
-    this.toast.show();
-  }
-
-  void killToast() {
-    if (this.toast != null) this.toast.cancel();
-  }
-
   // called when the user exits the action mode
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
@@ -1013,20 +996,18 @@ public class MainActivity extends PermissionsActivity
     if (drawer.onOptionsItemSelected(item)) return true;
 
     // Handle action buttons
-    MainFragment ma = getCurrentMainFragment();
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainFragment);
 
     switch (item.getItemId()) {
       case R.id.home:
-        if (ma != null) ma.home();
+        mainFragment.home();
         break;
       case R.id.history:
-        if (ma != null)
-          GeneralDialogCreation.showHistoryDialog(dataUtils, getPrefs(), ma, getAppTheme());
+        GeneralDialogCreation.showHistoryDialog(dataUtils, getPrefs(), mainFragment, getAppTheme());
         break;
       case R.id.sethome:
-        if (ma == null) return super.onOptionsItemSelected(item);
-        final MainFragment main = ma;
-        if (main.openMode != OpenMode.FILE && main.openMode != OpenMode.ROOT) {
+        if (mainFragment.openMode != OpenMode.FILE && mainFragment.openMode != OpenMode.ROOT) {
           Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
           break;
         }
@@ -1041,8 +1022,8 @@ public class MainActivity extends PermissionsActivity
             .getActionButton(DialogAction.POSITIVE)
             .setOnClickListener(
                 (v) -> {
-                  main.home = main.getCurrentPath();
-                  updatePaths(main.no);
+                  mainFragment.home = mainFragment.getCurrentPath();
+                  updatePaths(mainFragment.no);
                   dialog.dismiss();
                 });
         dialog.show();
@@ -1057,10 +1038,9 @@ public class MainActivity extends PermissionsActivity
         }
         break;
       case R.id.sortby:
-        if (ma != null) GeneralDialogCreation.showSortDialog(ma, getAppTheme(), getPrefs());
+        GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
         break;
       case R.id.dsort:
-        if (ma == null) return super.onOptionsItemSelected(item);
         String[] sort = getResources().getStringArray(R.array.directorysortmode);
         MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
         builder.theme(getAppTheme().getMaterialDialogTheme());
@@ -1069,7 +1049,7 @@ public class MainActivity extends PermissionsActivity
             Integer.parseInt(
                 getPrefs().getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
 
-        final MainFragment mainFrag = ma;
+        final MainFragment mainFrag = mainFragment;
 
         builder
             .items(sort)
@@ -1088,12 +1068,12 @@ public class MainActivity extends PermissionsActivity
         builder.build().show();
         break;
       case R.id.hiddenitems:
-        GeneralDialogCreation.showHiddenDialog(dataUtils, getPrefs(), ma, getAppTheme());
+        GeneralDialogCreation.showHiddenDialog(dataUtils, getPrefs(), mainFragment, getAppTheme());
         break;
       case R.id.view:
-        final MainFragment mainFragment = ma;
-        int pathLayout = dataUtils.getListOrGridForPath(ma.getCurrentPath(), DataUtils.LIST);
-        if (ma.IS_LIST) {
+        int pathLayout =
+            dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
+        if (mainFragment.IS_LIST) {
           if (pathLayout == DataUtils.LIST) {
             AppConfig.getInstance()
                 .runInBackground(
@@ -1106,7 +1086,7 @@ public class MainActivity extends PermissionsActivity
           utilsHandler.saveToDatabase(
               new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
 
-          dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.GRID);
+          dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.GRID);
         } else {
           if (pathLayout == DataUtils.GRID) {
             AppConfig.getInstance()
@@ -1121,9 +1101,9 @@ public class MainActivity extends PermissionsActivity
           utilsHandler.saveToDatabase(
               new OperationData(UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
 
-          dataUtils.setPathAsGridOrList(ma.getCurrentPath(), DataUtils.LIST);
+          dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.LIST);
         }
-        ma.switchView();
+        mainFragment.switchView();
         break;
       case R.id.extract:
         Fragment fragment1 = getFragmentAtFrame();
@@ -1189,7 +1169,12 @@ public class MainActivity extends PermissionsActivity
     if (SDK_INT >= Build.VERSION_CODES.KITKAT) {
       unregisterReceiver(mOtgReceiver);
     }
-    killToast();
+
+    final Toast toast = this.toast.get();
+    if (toast != null) {
+      toast.cancel();
+    }
+    this.toast = new WeakReference<>(null);
   }
 
   @Override
@@ -1330,7 +1315,7 @@ public class MainActivity extends PermissionsActivity
     fragmentTransaction.commitAllowingStateLoss();
   }
 
-  public MainFragment getCurrentMainFragment() {
+  public @Nullable MainFragment getCurrentMainFragment() {
     TabFragment tab = getTabFragment();
 
     if (tab != null && tab.getCurrentTabFragment() instanceof MainFragment) {
@@ -1413,6 +1398,10 @@ public class MainActivity extends PermissionsActivity
                 treeUri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
       }
+
+      final MainFragment mainFragment = getCurrentMainFragment();
+      Objects.requireNonNull(mainFragment);
+
       switch (operation) {
         case DELETE: // deletion
           new DeleteTask(mainActivity).execute((oparrayList));
@@ -1446,26 +1435,20 @@ public class MainActivity extends PermissionsActivity
             oppathe = "";
           }
 
-          new MoveFiles(
-                  oparrayListList,
-                  getCurrentMainFragment(),
-                  getCurrentMainFragment().getActivity(),
-                  OpenMode.FILE)
+          new MoveFiles(oparrayListList, mainFragment, mainFragment.getActivity(), OpenMode.FILE)
               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
           break;
         case NEW_FOLDER: // mkdir
           mainActivityHelper.mkDir(
-              RootHelper.generateBaseFile(new File(oppathe), true), getCurrentMainFragment());
+              RootHelper.generateBaseFile(new File(oppathe), true), mainFragment);
           break;
         case RENAME:
-          MainFragment ma = getCurrentMainFragment();
           mainActivityHelper.rename(
-              ma.openMode, (oppathe), (oppathe1), mainActivity, isRootExplorer());
-          ma.updateList();
+              mainFragment.openMode, (oppathe), (oppathe1), mainActivity, isRootExplorer());
+          mainFragment.updateList();
           break;
         case NEW_FILE:
-          mainActivityHelper.mkFile(
-              new HybridFile(OpenMode.FILE, oppathe), getCurrentMainFragment());
+          mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), mainFragment);
           break;
         case EXTRACT:
           mainActivityHelper.extractFile(new File(oppathe));
@@ -1475,7 +1458,7 @@ public class MainActivity extends PermissionsActivity
           break;
         case SAVE_FILE:
           FileUtil.writeUriToStorage(
-              this, urisToBeSaved, getContentResolver(), getCurrentMainFragment().getCurrentPath());
+              this, urisToBeSaved, getContentResolver(), mainFragment.getCurrentPath());
           urisToBeSaved = null;
           finish();
           break;
@@ -1484,11 +1467,14 @@ public class MainActivity extends PermissionsActivity
       }
       operation = UNDEFINED;
     } else if (requestCode == REQUEST_CODE_SAF) {
+      final MainFragment mainFragment = getCurrentMainFragment();
+      Objects.requireNonNull(mainFragment);
+
       if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
         // otg access
         Uri usbOtgRoot = intent.getData();
         SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
-        getCurrentMainFragment().loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
+        mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
         drawer.closeIfNotLocked();
         if (drawer.isLocked()) drawer.onDrawerClosed();
       } else {
@@ -1655,10 +1641,12 @@ public class MainActivity extends PermissionsActivity
 
     if (path != null) {
       if (new File(path).isDirectory()) {
-        MainFragment ma = getCurrentMainFragment();
-        if (ma != null) {
-          ma.loadlist(path, false, OpenMode.FILE);
-        } else goToMain(path);
+        final MainFragment mainFragment = getCurrentMainFragment();
+        if (mainFragment != null) {
+          mainFragment.loadlist(path, false, OpenMode.FILE);
+        } else {
+          goToMain(path);
+        }
       } else FileUtils.openFile(new File(path), mainActivity, getPrefs());
     } else if (i.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
       ArrayList<HybridFileParcelable> failedOps =
@@ -1779,8 +1767,9 @@ public class MainActivity extends PermissionsActivity
             new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
 
         // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-        MainFragment ma = getCurrentMainFragment();
-        if (ma != null) getCurrentMainFragment().loadlist(path, false, OpenMode.UNKNOWN);
+        final MainFragment mainFragment = getCurrentMainFragment();
+        Objects.requireNonNull(mainFragment);
+        mainFragment.loadlist(path, false, OpenMode.UNKNOWN);
       } else {
         Snackbar.make(
                 findViewById(R.id.navigation),
@@ -1867,25 +1856,45 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void onPreExecute(String query) {
-    getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(true);
-    getCurrentMainFragment().onSearchPreExecute(query);
+    final MainFragment mainFragment = getCurrentMainFragment();
+    Objects.requireNonNull(mainFragment);
+
+    mainFragment.mSwipeRefreshLayout.setRefreshing(true);
+    mainFragment.onSearchPreExecute(query);
   }
 
   @Override
   public void onPostExecute(String query) {
-    getCurrentMainFragment().onSearchCompleted(query);
-    getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(false);
+    final MainFragment mainFragment = getCurrentMainFragment();
+    if (mainFragment == null) {
+      // TODO cancel search
+      return;
+    }
+
+    mainFragment.onSearchCompleted(query);
+    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
   }
 
   @Override
   public void onProgressUpdate(HybridFileParcelable val, String query) {
-    getCurrentMainFragment().addSearchResult(val, query);
+    final MainFragment mainFragment = getCurrentMainFragment();
+    if (mainFragment == null) {
+      // TODO cancel search
+      return;
+    }
+
+    mainFragment.addSearchResult(val, query);
   }
 
   @Override
   public void onCancelled() {
-    getCurrentMainFragment().reloadListElements(false, false, !getCurrentMainFragment().IS_LIST);
-    getCurrentMainFragment().mSwipeRefreshLayout.setRefreshing(false);
+    final MainFragment mainFragment = getCurrentMainFragment();
+    if (mainFragment == null) {
+      return;
+    }
+
+    mainFragment.reloadListElements(false, false, !mainFragment.IS_LIST);
+    mainFragment.mSwipeRefreshLayout.setRefreshing(false);
   }
 
   @Override

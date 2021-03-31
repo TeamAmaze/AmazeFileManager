@@ -38,6 +38,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.test.DummyFileGenerator;
 import com.amaze.filemanager.utils.ProgressHandler;
 
@@ -84,7 +85,9 @@ public class GenericCopyUtilEspressoTest {
   private void doTestCopyFile1(int size) throws IOException, NoSuchAlgorithmException {
     byte[] checksum = DummyFileGenerator.createFile(file1, size);
     copyUtil.doCopy(
-        new FileInputStream(file1).getChannel(), Channels.newChannel(new FileOutputStream(file2)));
+        new FileInputStream(file1).getChannel(),
+        Channels.newChannel(new FileOutputStream(file2)),
+        ServiceWatcherUtil.UPDATE_POSITION);
     assertEquals(file1.length(), file2.length());
     assertSha1Equals(checksum, file2);
   }
@@ -93,7 +96,9 @@ public class GenericCopyUtilEspressoTest {
   private void doTestCopyFile2(int size) throws IOException, NoSuchAlgorithmException {
     byte[] checksum = DummyFileGenerator.createFile(file1, size);
     copyUtil.copyFile(
-        new FileInputStream(file1).getChannel(), new FileOutputStream(file2).getChannel());
+        new FileInputStream(file1).getChannel(),
+        new FileOutputStream(file2).getChannel(),
+        ServiceWatcherUtil.UPDATE_POSITION);
     assertEquals(file1.length(), file2.length());
     assertSha1Equals(checksum, file2);
   }
@@ -103,7 +108,8 @@ public class GenericCopyUtilEspressoTest {
     byte[] checksum = DummyFileGenerator.createFile(file1, size);
     copyUtil.copyFile(
         new BufferedInputStream(new FileInputStream(file1)),
-        new BufferedOutputStream(new FileOutputStream(file2)));
+        new BufferedOutputStream(new FileOutputStream(file2)),
+        ServiceWatcherUtil.UPDATE_POSITION);
     assertEquals(file1.length(), file2.length());
     assertSha1Equals(checksum, file2);
   }

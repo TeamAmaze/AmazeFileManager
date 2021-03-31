@@ -27,9 +27,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
@@ -48,8 +48,9 @@ public class ZipExtractor extends Extractor {
       @NonNull Context context,
       @NonNull String filePath,
       @NonNull String outputPath,
-      @NonNull OnUpdate listener) {
-    super(context, filePath, outputPath, listener);
+      @NonNull OnUpdate listener,
+      @NonNull UpdatePosition updatePosition) {
+    super(context, filePath, outputPath, listener, updatePosition);
   }
 
   @Override
@@ -127,7 +128,7 @@ public class ZipExtractor extends Extractor {
       while ((len = inputStream.read(buf)) != -1) {
         if (!listener.isCancelled()) {
           outputStream.write(buf, 0, len);
-          ServiceWatcherUtil.position += len;
+          updatePosition.updatePosition(len);
         } else break;
       }
     } finally {

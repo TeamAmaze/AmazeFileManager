@@ -30,7 +30,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream;
 
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
@@ -46,8 +46,9 @@ public class GzipExtractor extends Extractor {
       @NonNull Context context,
       @NonNull String filePath,
       @NonNull String outputPath,
-      @NonNull OnUpdate listener) {
-    super(context, filePath, outputPath, listener);
+      @NonNull OnUpdate listener,
+      @NonNull UpdatePosition updatePosition) {
+    super(context, filePath, outputPath, listener, updatePosition);
   }
 
   @Override
@@ -118,7 +119,7 @@ public class GzipExtractor extends Extractor {
       while ((len = inputStream.read(buf)) != -1) {
         if (!listener.isCancelled()) {
           outputStream.write(buf, 0, len);
-          ServiceWatcherUtil.position += len;
+          updatePosition.updatePosition(len);
         } else break;
       }
     } finally {

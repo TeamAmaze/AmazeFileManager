@@ -30,7 +30,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream;
 
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
@@ -45,8 +45,9 @@ public class Bzip2Extractor extends Extractor {
       @NonNull Context context,
       @NonNull String filePath,
       @NonNull String outputPath,
-      @NonNull OnUpdate listener) {
-    super(context, filePath, outputPath, listener);
+      @NonNull OnUpdate listener,
+      @NonNull UpdatePosition updatePosition) {
+    super(context, filePath, outputPath, listener, updatePosition);
   }
 
   @Override
@@ -107,7 +108,7 @@ public class Bzip2Extractor extends Extractor {
       byte buf[] = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
       while ((len = inputStream.read(buf)) != -1) {
         outputStream.write(buf, 0, len);
-        ServiceWatcherUtil.position += len;
+        updatePosition.updatePosition(len);
       }
     } finally {
       outputStream.close();

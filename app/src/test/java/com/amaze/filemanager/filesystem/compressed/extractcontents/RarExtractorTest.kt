@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 import android.content.Context
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor
 import com.github.junrar.Archive
 import org.junit.Assert.assertEquals
@@ -54,7 +55,8 @@ class RarExtractorTest : AbstractExtractorTest() {
                 override fun onUpdate(entryPath: String) = Unit
                 override fun isCancelled(): Boolean = false
                 override fun onFinish() = Unit
-            }
+            },
+            ServiceWatcherUtil.UPDATE_POSITION
         )
         val verify = RarExtractor::class.java.getDeclaredMethod(
             "tryExtractSmallestFileInArchive",

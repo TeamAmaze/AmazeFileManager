@@ -27,7 +27,9 @@ import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor.OnUpdate
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.junit.After
@@ -104,7 +106,8 @@ abstract class AbstractExtractorTest {
                 Context::class.java,
                 String::class.java,
                 String::class.java,
-                OnUpdate::class.java
+                OnUpdate::class.java,
+                UpdatePosition::class.java
             )
             .newInstance(
                 ApplicationProvider.getApplicationContext(),
@@ -115,7 +118,8 @@ abstract class AbstractExtractorTest {
                     override fun onUpdate(entryPath: String) = Unit
                     override fun isCancelled(): Boolean = false
                     override fun onFinish() = Unit
-                }
+                },
+                ServiceWatcherUtil.UPDATE_POSITION
             )
         assertEquals("test.txt", extractor.fixEntryName("test.txt"))
         assertEquals("test.txt", extractor.fixEntryName("/test.txt"))
@@ -152,7 +156,8 @@ abstract class AbstractExtractorTest {
                 Context::class.java,
                 String::class.java,
                 String::class.java,
-                OnUpdate::class.java
+                OnUpdate::class.java,
+                UpdatePosition::class.java
             )
             .newInstance(
                 ApplicationProvider.getApplicationContext(),
@@ -171,7 +176,8 @@ abstract class AbstractExtractorTest {
                             fail("Error verifying extracted archive contents")
                         }
                     }
-                }
+                },
+                ServiceWatcherUtil.UPDATE_POSITION
             )
         extractor.extractEverything()
         latch.await()

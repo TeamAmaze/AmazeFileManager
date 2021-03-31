@@ -24,6 +24,7 @@ import android.os.Build
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor.OnUpdate
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -83,7 +84,8 @@ class MultipartRarExtractorTest {
                     Assert.assertTrue(verify.exists())
                     Assert.assertEquals((1024 * 128).toLong(), verify.length())
                 }
-            }
+            },
+            ServiceWatcherUtil.UPDATE_POSITION
         ).extractEverything()
         latch.await()
     }
@@ -102,7 +104,8 @@ class MultipartRarExtractorTest {
                 )
                     .absolutePath,
                 Environment.getExternalStorageDirectory().absolutePath,
-                callback
+                callback,
+                ServiceWatcherUtil.UPDATE_POSITION
             ).extractEverything()
             Assert.fail("No exception was thrown")
         } catch (expected: IOException) {
