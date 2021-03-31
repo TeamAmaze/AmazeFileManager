@@ -2060,11 +2060,10 @@ public class MainActivity extends PermissionsActivity
 
     @Override
     public boolean onActionSelected(SpeedDialActionItem actionItem) {
-      final MainFragment ma =
-          (MainFragment)
-              ((TabFragment)
-                      mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame))
-                  .getCurrentTabFragment();
+      Fragment tabFragment =
+          mainActivity.getSupportFragmentManager().findFragmentById(R.id.content_frame);
+      if (tabFragment == null || !(tabFragment instanceof TabFragment)) return true;
+      final MainFragment ma = (MainFragment) ((TabFragment) tabFragment).getCurrentTabFragment();
       final String path = ma.getCurrentPath();
 
       switch (actionItem.getId()) {
