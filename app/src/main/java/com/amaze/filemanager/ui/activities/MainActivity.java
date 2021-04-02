@@ -867,7 +867,7 @@ public class MainActivity extends PermissionsActivity
     }
     transaction.replace(R.id.content_frame, tabFragment);
     // Commit the transaction
-    transaction.addToBackStack("tabt" + 1);
+    transaction.addToBackStack("tab" + 1);
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
     floatingActionButton.show();
