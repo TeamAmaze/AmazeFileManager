@@ -67,6 +67,9 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
             reloadListeners()
         } else {
             onRestoreInstanceState(savedInstanceState)
+            activity.supportFragmentManager.findFragmentByTag(KEY_SELECT_COLOR_CONFIG)?.apply {
+                (this as ColorPickerDialog).setListener(createColorPickerDialogListener())
+            }
         }
     }
 
@@ -116,7 +119,7 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
         if (preference is SelectedColorsPreference) {
-            openSelectColorDialog(preference.getKey())
+            openSelectColorDialog(preference)
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
@@ -212,30 +215,31 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
         checkCustomization()
     }
 
-    private fun openSelectColorDialog(prefKey: String) {
-        val dialog = ColorPickerDialog.newInstance(prefKey)
-        dialog.setColorPreference(
-            activity.colorPreference,
+    private fun openSelectColorDialog(pref: SelectedColorsPreference) {
+        val dialog = ColorPickerDialog.newInstance(
+            pref.key,
             activity.currentColorPreference,
             activity.appTheme
         )
-        dialog.setListener {
-            activity.setRestartActivity()
-            checkCustomization()
-            invalidateEverything()
-            sharedPref!!.getInt(
-                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-                ColorPickerDialog.NO_DATA
-            ).let { colorPickerPref ->
-                if (colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
-                    AppConfig.toast(getActivity(), com.amaze.filemanager.R.string.set_random)
-                }
-            }
-        }
+        dialog.setListener(createColorPickerDialogListener())
         (findPreference<Preference>("category") as InvalidablePreferenceCategory?)
             ?.invalidate(activity.accent)
         dialog.setTargetFragment(this, 0)
-        dialog.show(parentFragmentManager, "selectcolourdialog")
+        dialog.show(parentFragmentManager, KEY_SELECT_COLOR_CONFIG)
+    }
+
+    private fun createColorPickerDialogListener() = ColorPickerDialog.OnAcceptedConfig {
+        activity.setRestartActivity()
+        checkCustomization()
+        invalidateEverything()
+        sharedPref!!.getInt(
+            PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+            ColorPickerDialog.NO_DATA
+        ).let { colorPickerPref ->
+            if (colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
+                AppConfig.toast(getActivity(), com.amaze.filemanager.R.string.set_random)
+            }
+        }
     }
 
     private fun checkCustomization() {
