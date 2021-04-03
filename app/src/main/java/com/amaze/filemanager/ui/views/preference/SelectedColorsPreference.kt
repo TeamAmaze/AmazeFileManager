@@ -69,7 +69,7 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
         return a!!.getString(index)!!
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    override fun onSaveInstanceState(): Parcelable {
         val myState = ColorPickerDialog.SavedState(super.onSaveInstanceState())
         myState.selectedItem = selectedIndex
         return myState
@@ -81,6 +81,7 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
             super.onRestoreInstanceState(state)
             return
         }
+
         val myState = state as ColorPickerDialog.SavedState
         selectedIndex = myState.selectedItem
         super.onRestoreInstanceState(myState.superState) // onBindDialogView(View view)

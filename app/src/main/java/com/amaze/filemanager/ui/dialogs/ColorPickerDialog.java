@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.dialogs;
 
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -101,27 +101,23 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
             })
       };
 
+  private static final String ARG_COLOR_PREF = "colorPref";
+  private static final String ARG_APP_THEME = "appTheme";
+
   private SharedPreferences sharedPrefs;
-  private ColorPreferenceHelper colorPreferenceHelper;
-  private UserColorPreferences colorPref;
-  private AppTheme appTheme;
   private OnAcceptedConfig listener;
   private View selectedItem = null;
   private int selectedIndex = -1;
 
-  public static ColorPickerDialog newInstance(String key) {
+  public static ColorPickerDialog newInstance(
+      String key, UserColorPreferences color, AppTheme theme) {
     ColorPickerDialog retval = new ColorPickerDialog();
-    final Bundle b = new Bundle(1);
+    final Bundle b = new Bundle(2);
     b.putString(ARG_KEY, key);
+    b.putParcelable(ARG_COLOR_PREF, color);
+    b.putInt(ARG_APP_THEME, theme.ordinal());
     retval.setArguments(b);
     return retval;
-  }
-
-  public void setColorPreference(
-      ColorPreferenceHelper colorPreferenceHelper, UserColorPreferences color, AppTheme theme) {
-    this.colorPreferenceHelper = colorPreferenceHelper;
-    colorPref = color;
-    appTheme = theme;
   }
 
   public void setListener(OnAcceptedConfig l) {
@@ -131,7 +127,8 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
   @Override
   public void onBindDialogView(View view) {
     sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
-    int accentColor = colorPref.getAccent();
+    int accentColor =
+        ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();
     if (selectedIndex == NO_DATA) { // if instance was restored the value is already set
       boolean isUsingDefault =
           sharedPrefs.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, NO_DATA) == NO_DATA
@@ -172,6 +169,7 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
       ((TextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
       CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
       colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
+      AppTheme appTheme = AppTheme.getTheme(requireArguments().getInt(ARG_APP_THEME));
       if (appTheme.getMaterialDialogTheme() == Theme.LIGHT) colorsView.setDividerColor(Color.WHITE);
       else colorsView.setDividerColor(Color.BLACK);
       container.addView(child);
@@ -239,6 +237,12 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
     return child;
   }
 
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle outState) {
+    super.onSaveInstanceState(outState);
+    outState.putInt("selectedIndex", selectedIndex);
+  }
+
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -246,7 +250,8 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
     dialog.show();
 
     Resources res = requireContext().getResources();
-    int accentColor = colorPref.getAccent();
+    int accentColor =
+        ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();
 
     // Button views
     ((TextView) dialog.findViewById(res.getIdentifier("button1", "id", "android")))
@@ -267,13 +272,16 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
           .apply();
 
       if (selectedIndex != CUSTOM_INDEX && selectedIndex != RANDOM_INDEX) {
-        colorPreferenceHelper.saveColorPreferences(
-            sharedPrefs,
-            new UserColorPreferences(
-                getColor(selectedIndex, 0),
-                getColor(selectedIndex, 1),
-                getColor(selectedIndex, 2),
-                getColor(selectedIndex, 3)));
+        AppConfig.getInstance()
+            .getUtilsProvider()
+            .getColorPreference()
+            .saveColorPreferences(
+                sharedPrefs,
+                new UserColorPreferences(
+                    getColor(selectedIndex, 0),
+                    getColor(selectedIndex, 1),
+                    getColor(selectedIndex, 2),
+                    getColor(selectedIndex, 3)));
       }
 
       listener.onAcceptedConfig();
