@@ -288,6 +288,9 @@ public class MainActivity extends PermissionsActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
 
+    // Had to do this hack to test this! It was crashing due to null intent
+    intent = getIntent();
+
     dataUtils = DataUtils.getInstance();
 
     initialisePreferences();
@@ -309,9 +312,9 @@ public class MainActivity extends PermissionsActivity
       LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
     }
 
-    path = getIntent().getStringExtra("path");
-    openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
-    intent = getIntent();
+    path = intent.getStringExtra("path");
+    openProcesses = intent.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
+    intent = intent;
 
     if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
       ArrayList<HybridFileParcelable> failedOps =
@@ -322,6 +325,7 @@ public class MainActivity extends PermissionsActivity
     }
 
     checkForExternalIntent(intent);
+    setShortcutClickListener(intent);
 
     drawer.setDrawerIndicatorEnabled();
 
@@ -363,6 +367,23 @@ public class MainActivity extends PermissionsActivity
               }
             });
     initStatusBarResources(findViewById(R.id.drawer_layout));
+  }
+
+  /** Handles the clicks from App Shortcuts */
+  private void setShortcutClickListener(Intent intent) {
+    // TODO:06/04/2021 -> Implement this!
+    if (null != intent && null != intent.getAction()) {
+      Toast.makeText(mainActivity, intent.getAction(), Toast.LENGTH_SHORT).show();
+      if ("com.amaze.filemanager.openQuickAccess".equals(intent.getAction())) {
+
+      } else if ("com.amaze.filemanager.openRecent".equals(intent.getAction())) {
+
+      } else if ("com.amaze.filemanager.openAppManager".equals(intent.getAction())) {
+
+      } else if ("com.amaze.filemanager.openFTPServer".equals(intent.getAction())) {
+
+      }
+    }
   }
 
   private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
