@@ -10,6 +10,7 @@
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
 [<img alt="Get it on AFH" height="80" width="207" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
 
+[Amaze Web Page](teamamaze.xyz)
 
 Overview
 ---
