@@ -1,11 +1,12 @@
-# <a href="teamamaze.xyz">Amaze File Manager</a>
+# <a href="https://teamamaze.xyz">Amaze File Manager</a>
+
+<img height="50px" src="icon.png" data-canonical-src="icon.png" >
+
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![Chat on Telegram](https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)  
-
-<img height="50px" src="icon.png" data-canonical-src="icon.png" >
 
 Downloads
 ---
@@ -14,6 +15,12 @@ Downloads
 [<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.amaze.filemanager/)  
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
 [<img alt="Get it on AFH" width="200" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
+
+Support
+---
+[Paypal](https://www.paypal.me/vishalnehra)  
+Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud):  
+Supports Google Drive, Dropbox, OneDrive and Box accounts.
 
 Overview
 ---
@@ -58,15 +65,6 @@ Social
 Head over to our XDA thread [here](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)  
 [Official Telegram channel](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)
 
-Support
----
-Support the development by purchasing our [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud)  
-Cloud plugin supports Google Drive, Dropbox, OneDrive and Box accounts.
-
-Authors
----
-- Arpit Khurana
-- Vishal Nehra
 
 ### License: 
 
