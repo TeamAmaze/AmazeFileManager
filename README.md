@@ -5,8 +5,9 @@
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
-[![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
-[![Chat on Telegram](https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)  
+[![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)  
+[![Chat on Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)
+[![XDA Developers](https://img.shields.io/badge/XDA-Developers%20-%23AC6E2F.svg?&style=for-the-badge&logo=XDA-Developers&logoColor=white)](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
 
 Downloads
 ---
