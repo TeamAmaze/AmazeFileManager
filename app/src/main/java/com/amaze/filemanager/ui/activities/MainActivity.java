@@ -1006,16 +1006,17 @@ public class MainActivity extends PermissionsActivity
 
     // Handle action buttons
     final MainFragment mainFragment = getCurrentMainFragment();
-    Objects.requireNonNull(mainFragment);
 
     switch (item.getItemId()) {
       case R.id.home:
-        mainFragment.home();
+        Objects.requireNonNull(mainFragment).home();
         break;
       case R.id.history:
-        GeneralDialogCreation.showHistoryDialog(dataUtils, getPrefs(), mainFragment, getAppTheme());
+        GeneralDialogCreation.showHistoryDialog(
+            dataUtils, getPrefs(), Objects.requireNonNull(mainFragment), getAppTheme());
         break;
       case R.id.sethome:
+        Objects.requireNonNull(mainFragment);
         if (mainFragment.openMode != OpenMode.FILE && mainFragment.openMode != OpenMode.ROOT) {
           Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
           break;
@@ -1047,7 +1048,8 @@ public class MainActivity extends PermissionsActivity
         }
         break;
       case R.id.sortby:
-        GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
+        GeneralDialogCreation.showSortDialog(
+            Objects.requireNonNull(mainFragment), getAppTheme(), getPrefs());
         break;
       case R.id.dsort:
         String[] sort = getResources().getStringArray(R.array.directorysortmode);
@@ -1058,7 +1060,7 @@ public class MainActivity extends PermissionsActivity
             Integer.parseInt(
                 getPrefs().getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
 
-        final MainFragment mainFrag = mainFragment;
+        final MainFragment mainFrag = Objects.requireNonNull(mainFragment);
 
         builder
             .items(sort)
@@ -1077,9 +1079,11 @@ public class MainActivity extends PermissionsActivity
         builder.build().show();
         break;
       case R.id.hiddenitems:
-        GeneralDialogCreation.showHiddenDialog(dataUtils, getPrefs(), mainFragment, getAppTheme());
+        GeneralDialogCreation.showHiddenDialog(
+            dataUtils, getPrefs(), Objects.requireNonNull(mainFragment), getAppTheme());
         break;
       case R.id.view:
+        Objects.requireNonNull(mainFragment);
         int pathLayout =
             dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
         if (mainFragment.IS_LIST) {
