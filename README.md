@@ -1,5 +1,4 @@
-<img height="50px" src="icon.png" data-canonical-src="icon.png" >
-# <a href="https://teamamaze.xyz">Amaze File Manager</a>
+# <img height="50px" src="icon.png" data-canonical-src="icon.png" > <a href="https://teamamaze.xyz">Amaze File Manager</a>
 
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
@@ -19,7 +18,7 @@ Downloads
 Support
 ---
 [Paypal](https://www.paypal.me/vishalnehra)  
-Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud):  
+Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud)  
 Supports Google Drive, Dropbox, OneDrive and Box accounts.
 
 Overview
