@@ -61,12 +61,6 @@ The device vendors/ROM developers are free to include Amaze apk pre-installed in
 
 We strongly recommend using apk signed by us (either Play Store version or from AFH link above) so that users would be able to update directly from Play Store after distribution. Furthermore, a change in digital signature will break plug-ins.
 
-Social
----
-Head over to our XDA thread [here](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)  
-[Official Telegram channel](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)
-
-
 ### License: 
 
     Copyright (C) 2014-2018 Arpit Khurana <arpitkh96@gmail.com>
