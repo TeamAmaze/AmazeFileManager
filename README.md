@@ -1,6 +1,5 @@
-# <a href="https://teamamaze.xyz">Amaze File Manager</a>
-
 <img height="50px" src="icon.png" data-canonical-src="icon.png" >
+# <a href="https://teamamaze.xyz">Amaze File Manager</a>
 
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
@@ -13,7 +12,7 @@ Downloads
 ---
 
 [<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
-[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.amaze.filemanager/)  
+[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.amaze.filemanager/)
 [<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
 [<img alt="Get it on AFH" width="200" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
 
