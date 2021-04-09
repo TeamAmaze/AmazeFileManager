@@ -28,8 +28,10 @@ import android.widget.EditText
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
+import com.afollestad.materialdialogs.customview.customView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.UtilsHandler
@@ -109,41 +111,44 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         dialogBinding.textInput2.hint = getString(R.string.directory)
         val txtShortcutName = dialogBinding.text1
         val txtShortcutPath = dialogBinding.text2
-        val dialog = MaterialDialog.Builder(requireActivity())
-            .title(R.string.create_shortcut)
-            .theme(mainActivity.appTheme.materialDialogTheme)
-            .positiveColor(fab_skin)
-            .positiveText(R.string.create)
-            .negativeColor(fab_skin)
-            .negativeText(android.R.string.cancel)
-            .customView(v, false)
-            .build()
-        dialog.getActionButton(DialogAction.POSITIVE).isEnabled = false
-        disableButtonIfTitleEmpty(txtShortcutName, dialog)
-        disableButtonIfNotPath(txtShortcutPath, dialog)
-        dialog.getActionButton(DialogAction.POSITIVE)
-            .setOnClickListener {
-                val p = PathSwitchPreference(getActivity())
-                p.title = txtShortcutName.text
-                p.summary = txtShortcutPath.text
-                p.onPreferenceClickListener = this@FoldersPref
-                position[p] = dataUtils!!.books.size
-                preferenceScreen.addPreference(p)
-                val values = arrayOf(
-                    txtShortcutName.text.toString(),
-                    txtShortcutPath.text.toString()
-                )
-                dataUtils!!.addBook(values)
-                utilsHandler!!.saveToDatabase(
-                    OperationData(
-                        UtilsHandler.Operation.BOOKMARKS,
+        MaterialDialog(requireActivity()).show {
+            title(R.string.create_shortcut)
+            // FIXME
+//            theme(mainActivity.appTheme.materialDialogTheme)
+            customView(view = v, scrollable = false)
+            disableButtonIfTitleEmpty(txtShortcutName, this)
+            disableButtonIfNotPath(txtShortcutPath, this)
+            positiveButton(
+                R.string.create,
+                click = {
+                    val p = PathSwitchPreference(requireActivity())
+                    p.title = txtShortcutName.text
+                    p.summary = txtShortcutPath.text
+                    p.onPreferenceClickListener = this@FoldersPref
+                    position[p] = dataUtils!!.books.size
+                    preferenceScreen.addPreference(p)
+                    val values = arrayOf(
                         txtShortcutName.text.toString(),
                         txtShortcutPath.text.toString()
                     )
-                )
-                dialog.dismiss()
+                    dataUtils!!.addBook(values)
+                    utilsHandler!!.saveToDatabase(
+                        OperationData(
+                            UtilsHandler.Operation.BOOKMARKS,
+                            txtShortcutName.text.toString(),
+                            txtShortcutPath.text.toString()
+                        )
+                    )
+                    it.dismiss()
+                }
+            )
+            negativeButton(android.R.string.cancel)
+            getActionButton(WhichButton.POSITIVE).apply {
+                isEnabled = false
+                setTextColor(fab_skin)
             }
-        dialog.show()
+            getActionButton(WhichButton.NEGATIVE).setTextColor(fab_skin)
+        }
     }
 
     private fun loadEditDialog(p: PathSwitchPreference) {
@@ -155,78 +160,81 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         val editText2 = dialogBinding.text2
         editText1.setText(p.title)
         editText2.setText(p.summary)
-        val dialog = MaterialDialog.Builder(mainActivity)
-            .title(R.string.edit_shortcut)
-            .theme(mainActivity.appTheme.materialDialogTheme)
-            .positiveColor(fab_skin)
-            .positiveText(getString(R.string.edit).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase()
-            .negativeColor(fab_skin)
-            .negativeText(android.R.string.cancel)
-            .customView(v, false)
-            .build()
-        dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-            FileUtils.isPathAccessible(editText2.text.toString(), sharedPrefs)
-        disableButtonIfTitleEmpty(editText1, dialog)
-        disableButtonIfNotPath(editText2, dialog)
-        dialog.getActionButton(DialogAction.POSITIVE)
-            .setOnClickListener {
-                val oldName = p.title.toString()
-                val oldPath = p.summary.toString()
-                dataUtils!!.removeBook(position[p]!!)
-                position.remove(p)
-                preferenceScreen.removePreference(p)
-                p.title = editText1.text
-                p.summary = editText2.text
-                position[p] = position.size
-                preferenceScreen.addPreference(p)
-                val values = arrayOf(editText1.text.toString(), editText2.text.toString())
-                dataUtils!!.addBook(values)
-                AppConfig.getInstance()
-                    .runInBackground {
-                        utilsHandler!!.renameBookmark(
-                            oldName,
-                            oldPath,
-                            editText1.text.toString(),
-                            editText2.text.toString()
-                        )
-                    }
-                dialog.dismiss()
+        MaterialDialog(mainActivity).show {
+            customView(view = v, scrollable = false)
+            title(R.string.edit_shortcut)
+            // FIXME
+            // theme(mainActivity.appTheme.materialDialogTheme)
+            disableButtonIfTitleEmpty(editText1, this)
+            disableButtonIfNotPath(editText2, this)
+            positiveButton(
+                text = getString(R.string.edit).uppercase(),
+                click = {
+                    val oldName = p.title.toString()
+                    val oldPath = p.summary.toString()
+                    dataUtils!!.removeBook(position[p]!!)
+                    position.remove(p)
+                    preferenceScreen.removePreference(p)
+                    p.title = editText1.text
+                    p.summary = editText2.text
+                    position[p] = position.size
+                    preferenceScreen.addPreference(p)
+                    val values = arrayOf(editText1.text.toString(), editText2.text.toString())
+                    dataUtils!!.addBook(values)
+                    AppConfig.getInstance()
+                        .runInBackground {
+                            utilsHandler!!.renameBookmark(
+                                oldName,
+                                oldPath,
+                                editText1.text.toString(),
+                                editText2.text.toString()
+                            )
+                        }
+                    it.dismiss()
+                }
+            )
+            negativeButton(android.R.string.cancel)
+            getActionButton(WhichButton.POSITIVE).apply {
+                setTextColor(fab_skin)
+                isEnabled = FileUtils.isPathAccessible(editText2.text.toString(), sharedPrefs)
             }
-        dialog.show()
+            getActionButton(WhichButton.NEGATIVE).setTextColor(fab_skin)
+        }
     }
 
     private fun loadDeleteDialog(p: PathSwitchPreference) {
         val fab_skin = mainActivity.accent
-        val dialog = MaterialDialog.Builder(mainActivity)
-            .title(R.string.question_delete_shortcut)
-            .theme(mainActivity.appTheme.materialDialogTheme)
-            .positiveColor(fab_skin)
-            .positiveText(getString(R.string.delete).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
-            .negativeColor(fab_skin)
-            .negativeText(android.R.string.cancel)
-            .build()
-        dialog.getActionButton(DialogAction.POSITIVE)
-            .setOnClickListener {
-                dataUtils!!.removeBook(position[p]!!)
-                utilsHandler!!.removeFromDatabase(
-                    OperationData(
-                        UtilsHandler.Operation.BOOKMARKS,
-                        p.title.toString(),
-                        p.summary.toString()
+        MaterialDialog(mainActivity).show {
+            title(R.string.question_delete_shortcut)
+            // FIXME
+            // theme(mainActivity.appTheme.materialDialogTheme)
+            positiveButton(
+                text = getString(R.string.delete).uppercase(),
+                click = {
+                    dataUtils!!.removeBook(position[p]!!)
+                    utilsHandler!!.removeFromDatabase(
+                        OperationData(
+                            UtilsHandler.Operation.BOOKMARKS,
+                            p.title.toString(),
+                            p.summary.toString()
+                        )
                     )
-                )
-                preferenceScreen.removePreference(p)
-                position.remove(p)
-                dialog.dismiss()
-            }
-        dialog.show()
+                    preferenceScreen.removePreference(p)
+                    position.remove(p)
+                    it.dismiss()
+                }
+            )
+            negativeButton(android.R.string.cancel)
+            getActionButton(WhichButton.POSITIVE).setTextColor(fab_skin)
+            getActionButton(WhichButton.NEGATIVE).setTextColor(fab_skin)
+        }
     }
 
     private fun disableButtonIfNotPath(path: EditText, dialog: MaterialDialog) {
         path.addTextChangedListener(
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
-                    dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
+                    dialog.getActionButton(WhichButton.POSITIVE).isEnabled =
                         FileUtils.isPathAccessible(s.toString(), sharedPrefs)
                 }
             })
@@ -236,7 +244,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         title.addTextChangedListener(
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
-                    dialog.getActionButton(DialogAction.POSITIVE).isEnabled = title.length() > 0
+                    dialog.getActionButton(WhichButton.POSITIVE).isEnabled = title.length() > 0
                 }
             })
     }

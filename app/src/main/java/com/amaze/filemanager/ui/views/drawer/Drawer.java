@@ -28,7 +28,6 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -713,16 +712,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             && (meta.path.contains(OTGUtil.PREFIX_OTG)
                 || meta.path.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE))
             && SingletonUsbOtg.getInstance().getUsbOtgRoot() == null) {
-          MaterialDialog dialog = GeneralDialogCreation.showOtgSafExplanationDialog(mainActivity);
-          dialog
-              .getActionButton(DialogAction.POSITIVE)
-              .setOnClickListener(
+          MaterialDialog dialog =
+              GeneralDialogCreation.showOtgSafExplanationDialog(
+                  mainActivity,
                   (v) -> {
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
                     mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
-                    dialog.dismiss();
+                    v.dismiss();
+                    return null;
                   });
-          dialog.show();
         } else {
           pendingPath = meta.path;
           closeIfNotLocked();

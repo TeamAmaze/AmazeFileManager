@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.widget.EditText
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
@@ -108,7 +107,7 @@ class SevenZipHelperTask(
                 AppConfig.getInstance().utilsProvider.appTheme,
                 R.string.archive_password_prompt,
                 R.string.authenticate_password,
-                { dialog: MaterialDialog, _: DialogAction? ->
+                { dialog: MaterialDialog ->
                     val editText = dialog.view.findViewById<EditText>(R.id.singleedittext_input)
                     val password = editText.text.toString()
                     ArchivePasswordCache.getInstance()[filePath] = password

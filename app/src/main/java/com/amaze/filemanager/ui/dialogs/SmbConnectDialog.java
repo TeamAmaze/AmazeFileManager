@@ -32,6 +32,7 @@ import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import com.amaze.filemanager.ui.ExtensionsKt;
@@ -137,222 +138,253 @@ public class SmbConnectDialog extends DialogFragment {
     }
     final SharedPreferences sharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(context);
-    final MaterialDialog.Builder ba3 = new MaterialDialog.Builder(context);
-    ba3.title((R.string.smb_connection));
-    ba3.autoDismiss(false);
-    final View v2 = getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
-    final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
-    final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
-    final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
-    final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
-    final TextInputLayout passwordTIL = v2.findViewById(R.id.passwordTIL);
-    final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
+    final MaterialDialog retval =
+        new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                dialog -> {
+                  dialog.noAutoDismiss().title(R.string.smb_connection, null);
 
-    ExtensionsKt.makeRequired(connectionTIL);
-    ExtensionsKt.makeRequired(ipTIL);
-    ExtensionsKt.makeRequired(usernameTIL);
-    ExtensionsKt.makeRequired(passwordTIL);
+                  final View v2 =
+                      getActivity().getLayoutInflater().inflate(R.layout.smb_dialog, null);
+                  final TextInputLayout connectionTIL = v2.findViewById(R.id.connectionTIL);
+                  final TextInputLayout ipTIL = v2.findViewById(R.id.ipTIL);
+                  final TextInputLayout domainTIL = v2.findViewById(R.id.domainTIL);
+                  final TextInputLayout usernameTIL = v2.findViewById(R.id.usernameTIL);
+                  final TextInputLayout passwordTIL = v2.findViewById(R.id.passwordTIL);
+                  final AppCompatEditText conName = v2.findViewById(R.id.connectionET);
 
-    conName.addTextChangedListener(
-        new SimpleTextWatcher() {
-          @Override
-          public void afterTextChanged(Editable s) {
-            if (conName.getText().toString().length() == 0) connectionTIL.setError(emptyName);
-            else connectionTIL.setError("");
-          }
-        });
-    final AppCompatEditText ip = v2.findViewById(R.id.ipET);
-    ip.addTextChangedListener(
-        new SimpleTextWatcher() {
-          @Override
-          public void afterTextChanged(Editable s) {
-            if (ip.getText().toString().length() == 0) ipTIL.setError(emptyAddress);
-            else ipTIL.setError("");
-          }
-        });
-    final AppCompatEditText share = v2.findViewById(R.id.shareET);
-    final AppCompatEditText domain = v2.findViewById(R.id.domainET);
-    domain.addTextChangedListener(
-        new SimpleTextWatcher() {
-          @Override
-          public void afterTextChanged(Editable s) {
-            if (domain.getText().toString().contains(";")) domainTIL.setError(invalidDomain);
-            else domainTIL.setError("");
-          }
-        });
-    final AppCompatEditText user = v2.findViewById(R.id.usernameET);
-    user.addTextChangedListener(
-        new SimpleTextWatcher() {
-          @Override
-          public void afterTextChanged(Editable s) {
-            if (user.getText().toString().contains(":")) usernameTIL.setError(invalidUsername);
-            else usernameTIL.setError("");
-          }
-        });
+                  ExtensionsKt.makeRequired(connectionTIL);
+                  ExtensionsKt.makeRequired(ipTIL);
+                  ExtensionsKt.makeRequired(usernameTIL);
+                  ExtensionsKt.makeRequired(passwordTIL);
 
-    int accentColor = ((ThemedActivity) getActivity()).getAccent();
-    final AppCompatEditText pass = v2.findViewById(R.id.passwordET);
-    final AppCompatCheckBox chkSmbAnonymous = v2.findViewById(R.id.chkSmbAnonymous);
-    final AppCompatCheckBox chkSmbDisableIpcSignature =
-        v2.findViewById(R.id.chkSmbDisableIpcSignature);
-    TextView help = v2.findViewById(R.id.wanthelp);
+                  conName.addTextChangedListener(
+                      new SimpleTextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                          if (conName.getText().toString().length() == 0)
+                            connectionTIL.setError(emptyName);
+                          else connectionTIL.setError("");
+                        }
+                      });
+                  final AppCompatEditText ip = v2.findViewById(R.id.ipET);
+                  ip.addTextChangedListener(
+                      new SimpleTextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                          if (ip.getText().toString().length() == 0) ipTIL.setError(emptyAddress);
+                          else ipTIL.setError("");
+                        }
+                      });
+                  final AppCompatEditText share = v2.findViewById(R.id.shareET);
+                  final AppCompatEditText domain = v2.findViewById(R.id.domainET);
+                  domain.addTextChangedListener(
+                      new SimpleTextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                          if (domain.getText().toString().contains(";"))
+                            domainTIL.setError(invalidDomain);
+                          else domainTIL.setError("");
+                        }
+                      });
+                  final AppCompatEditText user = v2.findViewById(R.id.usernameET);
+                  user.addTextChangedListener(
+                      new SimpleTextWatcher() {
+                        @Override
+                        public void afterTextChanged(Editable s) {
+                          if (user.getText().toString().contains(":"))
+                            usernameTIL.setError(invalidUsername);
+                          else usernameTIL.setError("");
+                        }
+                      });
 
-    EditTextColorStateUtil.setTint(context, conName, accentColor);
-    EditTextColorStateUtil.setTint(context, user, accentColor);
-    EditTextColorStateUtil.setTint(context, pass, accentColor);
+                  int accentColor = ((ThemedActivity) getActivity()).getAccent();
+                  final AppCompatEditText pass = v2.findViewById(R.id.passwordET);
+                  final AppCompatCheckBox chkSmbAnonymous = v2.findViewById(R.id.chkSmbAnonymous);
+                  final AppCompatCheckBox chkSmbDisableIpcSignature =
+                      v2.findViewById(R.id.chkSmbDisableIpcSignature);
+                  TextView help = v2.findViewById(R.id.wanthelp);
 
-    Utils.setTint(context, chkSmbAnonymous, accentColor);
-    help.setOnClickListener(
-        v -> {
-          int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
-          GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
-        });
+                  EditTextColorStateUtil.setTint(context, conName, accentColor);
+                  EditTextColorStateUtil.setTint(context, user, accentColor);
+                  EditTextColorStateUtil.setTint(context, pass, accentColor);
 
-    chkSmbAnonymous.setOnClickListener(
-        view -> {
-          if (chkSmbAnonymous.isChecked()) {
-            user.setEnabled(false);
-            pass.setEnabled(false);
-          } else {
-            user.setEnabled(true);
-            pass.setEnabled(true);
-          }
-        });
+                  Utils.setTint(context, chkSmbAnonymous, accentColor);
+                  help.setOnClickListener(
+                      v -> {
+                        int accentColor1 = ((ThemedActivity) getActivity()).getAccent();
+                        GeneralDialogCreation.showSMBHelpDialog(context, accentColor1);
+                      });
 
-    if (edit) {
-      String userp = "";
-      String passp = "";
-      String ipp = "";
-      String domainp = "";
-      String sharep = "";
+                  chkSmbAnonymous.setOnClickListener(
+                      view -> {
+                        if (chkSmbAnonymous.isChecked()) {
+                          user.setEnabled(false);
+                          pass.setEnabled(false);
+                        } else {
+                          user.setEnabled(true);
+                          pass.setEnabled(true);
+                        }
+                      });
 
-      conName.setText(name);
-      try {
-        URL a = new URL(path);
-        String userinfo = a.getUserInfo();
-        if (userinfo != null) {
-          String inf = URLDecoder.decode(userinfo, "UTF-8");
-          int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
-          domainp = inf.substring(0, domainDelim);
-          if (domainp != null && domainp.length() > 0) inf = inf.substring(domainDelim + 1);
-          userp = inf.substring(0, inf.indexOf(":"));
-          passp = inf.substring(inf.indexOf(":") + 1, inf.length());
-          domain.setText(domainp);
-          user.setText(userp);
-          pass.setText(passp);
-        } else {
-          chkSmbAnonymous.setChecked(true);
-        }
-        ipp = a.getHost();
-        sharep = a.getPath().replaceFirst("/", "").replaceAll("/$", "");
-        ip.setText(ipp);
-        share.setText(sharep);
+                  if (edit) {
+                    String userp = "";
+                    String passp = "";
+                    String ipp = "";
+                    String domainp = "";
+                    String sharep = "";
 
-        UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(path);
-        if (sanitizer.hasParameter(PARAM_DISABLE_IPC_SIGNING_CHECK)) {
-          chkSmbDisableIpcSignature.setChecked(
-              Boolean.parseBoolean(sanitizer.getValue(PARAM_DISABLE_IPC_SIGNING_CHECK)));
-        }
+                    conName.setText(name);
+                    try {
+                      URL a = new URL(path);
+                      String userinfo = a.getUserInfo();
+                      if (userinfo != null) {
+                        String inf = URLDecoder.decode(userinfo, "UTF-8");
+                        int domainDelim = !inf.contains(";") ? 0 : inf.indexOf(';');
+                        domainp = inf.substring(0, domainDelim);
+                        if (domainp != null && domainp.length() > 0)
+                          inf = inf.substring(domainDelim + 1);
+                        userp = inf.substring(0, inf.indexOf(":"));
+                        passp = inf.substring(inf.indexOf(":") + 1, inf.length());
+                        domain.setText(domainp);
+                        user.setText(userp);
+                        pass.setText(passp);
+                      } else {
+                        chkSmbAnonymous.setChecked(true);
+                      }
+                      ipp = a.getHost();
+                      sharep = a.getPath().replaceFirst("/", "").replaceAll("/$", "");
+                      ip.setText(ipp);
+                      share.setText(sharep);
 
-      } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
-      } catch (MalformedURLException e) {
-        e.printStackTrace();
-      }
+                      UrlQuerySanitizer sanitizer = new UrlQuerySanitizer(path);
+                      if (sanitizer.hasParameter(PARAM_DISABLE_IPC_SIGNING_CHECK)) {
+                        chkSmbDisableIpcSignature.setChecked(
+                            Boolean.parseBoolean(
+                                sanitizer.getValue(PARAM_DISABLE_IPC_SIGNING_CHECK)));
+                      }
 
-    } else if (path != null && path.length() > 0) {
-      conName.setText(name);
-      ip.setText(path);
-      user.requestFocus();
-    } else {
-      conName.setText(R.string.smb_connection);
-      conName.requestFocus();
-    }
+                    } catch (UnsupportedEncodingException e) {
+                      e.printStackTrace();
+                    } catch (MalformedURLException e) {
+                      e.printStackTrace();
+                    }
 
-    ba3.customView(v2, true);
-    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-    ba3.neutralText(R.string.cancel);
-    ba3.positiveText(R.string.create);
-    if (edit) ba3.negativeText(R.string.delete);
-    ba3.positiveColor(accentColor).negativeColor(accentColor).neutralColor(accentColor);
-    ba3.onPositive(
-        (dialog, which) -> {
-          String s[];
-          String ipa = ip.getText().toString();
-          String con_nam = conName.getText().toString();
-          String sDomain = domain.getText().toString();
-          String sShare = share.getText().toString();
-          String username = user.getText().toString();
-          TextInputLayout firstInvalidField = null;
-          if (con_nam == null || con_nam.length() == 0) {
-            connectionTIL.setError(emptyName);
-            firstInvalidField = connectionTIL;
-          }
-          if (ipa == null || ipa.length() == 0) {
-            ipTIL.setError(emptyAddress);
-            if (firstInvalidField == null) firstInvalidField = ipTIL;
-          }
-          if (sDomain.contains(";")) {
-            domainTIL.setError(invalidDomain);
-            if (firstInvalidField == null) firstInvalidField = domainTIL;
-          }
-          if (username.contains(":")) {
-            usernameTIL.setError(invalidUsername);
-            if (firstInvalidField == null) firstInvalidField = usernameTIL;
-          }
-          if (firstInvalidField != null) {
-            firstInvalidField.requestFocus();
-            return;
-          }
-          SmbFile smbFile;
-          String domaind = domain.getText().toString();
-          if (chkSmbAnonymous.isChecked())
-            smbFile = createSMBPath(new String[] {ipa, "", "", domaind, sShare}, true, false);
-          else {
-            String useraw = user.getText().toString();
-            String useru = useraw.replaceAll(" ", "\\ ");
-            String passp = pass.getText().toString();
-            smbFile =
-                createSMBPath(new String[] {ipa, useru, passp, domaind, sShare}, false, false);
-          }
+                  } else if (path != null && path.length() > 0) {
+                    conName.setText(name);
+                    ip.setText(path);
+                    user.requestFocus();
+                  } else {
+                    conName.setText(R.string.smb_connection);
+                    conName.requestFocus();
+                  }
 
-          if (smbFile == null) return;
+                  DialogCustomViewExtKt.customView(dialog, null, v2, true, false, false, false)
+                      .positiveButton(
+                          R.string.create,
+                          null,
+                          dia -> {
+                            String s[];
+                            String ipa = ip.getText().toString();
+                            String con_nam = conName.getText().toString();
+                            String sDomain = domain.getText().toString();
+                            String sShare = share.getText().toString();
+                            String username = user.getText().toString();
+                            TextInputLayout firstInvalidField = null;
+                            if (con_nam == null || con_nam.length() == 0) {
+                              connectionTIL.setError(emptyName);
+                              firstInvalidField = connectionTIL;
+                            }
+                            if (ipa == null || ipa.length() == 0) {
+                              ipTIL.setError(emptyAddress);
+                              if (firstInvalidField == null) firstInvalidField = ipTIL;
+                            }
+                            if (sDomain.contains(";")) {
+                              domainTIL.setError(invalidDomain);
+                              if (firstInvalidField == null) firstInvalidField = domainTIL;
+                            }
+                            if (username.contains(":")) {
+                              usernameTIL.setError(invalidUsername);
+                              if (firstInvalidField == null) firstInvalidField = usernameTIL;
+                            }
+                            if (firstInvalidField != null) {
+                              firstInvalidField.requestFocus();
+                              return null;
+                            }
+                            SmbFile smbFile;
+                            String domaind = domain.getText().toString();
+                            if (chkSmbAnonymous.isChecked())
+                              smbFile =
+                                  createSMBPath(
+                                      new String[] {ipa, "", "", domaind, sShare}, true, false);
+                            else {
+                              String useraw = user.getText().toString();
+                              String useru = useraw.replaceAll(" ", "\\ ");
+                              String passp = pass.getText().toString();
+                              smbFile =
+                                  createSMBPath(
+                                      new String[] {ipa, useru, passp, domaind, sShare},
+                                      false,
+                                      false);
+                            }
 
-          StringBuilder extraParams = new StringBuilder();
-          if (chkSmbDisableIpcSignature.isChecked())
-            extraParams.append(PARAM_DISABLE_IPC_SIGNING_CHECK).append('=').append(true);
+                            if (smbFile == null) return null;
 
-          try {
-            s =
-                new String[] {
-                  conName.getText().toString(),
-                  SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
-                };
-          } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-            Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_LONG).show();
-            return;
-          }
+                            StringBuilder extraParams = new StringBuilder();
+                            if (chkSmbDisableIpcSignature.isChecked())
+                              extraParams
+                                  .append(PARAM_DISABLE_IPC_SIGNING_CHECK)
+                                  .append('=')
+                                  .append(true);
 
-          if (smbConnectionListener != null) {
-            // encrypted path means path with encrypted pass
-            String qs = extraParams.length() > 0 ? extraParams.insert(0, '?').toString() : "";
-            smbConnectionListener.addConnection(
-                edit, s[0], smbFile.getPath() + qs, s[1] + qs, name, path);
-          }
-          dismiss();
-        });
-    ba3.onNegative(
-        (dialog, which) -> {
-          if (smbConnectionListener != null) {
-            smbConnectionListener.deleteConnection(name, path);
-          }
+                            try {
+                              s =
+                                  new String[] {
+                                    conName.getText().toString(),
+                                    SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
+                                  };
+                            } catch (GeneralSecurityException | IOException e) {
+                              e.printStackTrace();
+                              Toast.makeText(
+                                      getActivity(), getString(R.string.error), Toast.LENGTH_LONG)
+                                  .show();
+                              return null;
+                            }
 
-          dismiss();
-        });
-    ba3.onNeutral((dialog, which) -> dismiss());
+                            if (smbConnectionListener != null) {
+                              // encrypted path means path with encrypted pass
+                              String qs =
+                                  extraParams.length() > 0
+                                      ? extraParams.insert(0, '?').toString()
+                                      : "";
+                              smbConnectionListener.addConnection(
+                                  edit, s[0], smbFile.getPath() + qs, s[1] + qs, name, path);
+                            }
+                            dismiss();
+                            return null;
+                          })
+                      .neutralButton(
+                          R.string.cancel,
+                          null,
+                          dia -> {
+                            dismiss();
+                            return null;
+                          });
 
-    return ba3.build();
+                  return null;
+                })
+            .negativeButton(
+                (edit) ? R.string.delete : R.string.cancel,
+                null,
+                dia -> {
+                  if (smbConnectionListener != null) {
+                    smbConnectionListener.deleteConnection(name, path);
+                  }
+
+                  dismiss();
+                  return null;
+                });
+    return retval;
   }
 
   private SmbFile createSMBPath(String[] auth, boolean anonymous, boolean disableIpcSignCheck) {

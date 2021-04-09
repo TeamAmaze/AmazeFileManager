@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.theme.AppTheme;
 
@@ -130,16 +131,16 @@ public class ShareTask extends AsyncTask<String, String, Void> {
   @Override
   public void onPostExecute(Void v) {
     if (!targetShareIntents.isEmpty()) {
-      MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
-      builder.title(R.string.share);
-      builder.theme(appTheme.getMaterialDialogTheme());
       ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, labels, drawables);
-      builder.adapter(shareAdapter, null);
-      builder.negativeText(R.string.cancel);
-      builder.negativeColor(fab_skin);
-      MaterialDialog b = builder.build();
-      shareAdapter.updateMatDialog(b);
-      b.show();
+      new MaterialDialog(contextc, MaterialDialog.getDEFAULT_BEHAVIOR())
+          .show(
+              dialog -> {
+                dialog.setTitle(R.string.share);
+                dialog.negativeButton(R.string.cancel, null, null);
+                DialogListExtKt.customListAdapter(dialog, shareAdapter, null);
+                shareAdapter.updateMatDialog(dialog);
+                return null;
+              });
     } else {
       Toast.makeText(contextc, R.string.no_app_found, Toast.LENGTH_SHORT).show();
     }

@@ -27,6 +27,10 @@ import java.lang.ref.WeakReference;
 import java.util.Objects;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.WhichButton;
+import com.afollestad.materialdialogs.actions.DialogActionExtKt;
+import com.afollestad.materialdialogs.internal.button.DialogActionButton;
+import com.afollestad.materialdialogs.list.DialogSingleChoiceExtKt;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsAdapter;
@@ -63,7 +67,7 @@ public class AppsListFragment extends ListFragment
 
   private AppsAdapter adapter;
 
-  private SharedPreferences sharedPreferences;
+  public SharedPreferences sharedPreferences;
   private Parcelable listViewState;
   private boolean isAscending;
   private int sortby;
@@ -177,39 +181,32 @@ public class AppsListFragment extends ListFragment
     WeakReference<AppsListFragment> appsListFragment = new WeakReference<>(this);
 
     int accentColor = mainActivity.getAccent();
-    String[] sort = getResources().getStringArray(R.array.sortbyApps);
-    MaterialDialog.Builder builder =
-        new MaterialDialog.Builder(mainActivity)
-            .theme(appTheme.getMaterialDialogTheme())
-            .items(sort)
-            .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
-            .negativeText(R.string.ascending)
-            .positiveColor(accentColor)
-            .positiveText(R.string.descending)
-            .negativeColor(accentColor)
-            .onNegative(
-                (dialog, which) -> {
-                  final AppsListFragment $this = appsListFragment.get();
-                  if ($this == null) {
-                    return;
-                  }
-
-                  $this.saveAndReload(dialog.getSelectedIndex(), true);
-                  dialog.dismiss();
-                })
-            .onPositive(
-                (dialog, which) -> {
-                  final AppsListFragment $this = appsListFragment.get();
-                  if ($this == null) {
-                    return;
-                  }
-
-                  $this.saveAndReload(dialog.getSelectedIndex(), false);
-                  dialog.dismiss();
-                })
-            .title(R.string.sort_by);
-
-    builder.build().show();
+    new MaterialDialog(mainActivity, MaterialDialog.getDEFAULT_BEHAVIOR()).show(dialog -> {
+      dialog.setTitle(R.string.sort_by);
+      DialogSingleChoiceExtKt.listItemsSingleChoice(
+        dialog,
+        R.array.sortbyApps,
+        null,
+        null,
+        -1,
+        true,
+        (d, idx, text) -> {
+          final AppsListFragment $this = appsListFragment.get();
+          if ($this == null) {
+            return null;
+          }
+          $this.saveAndReload(idx, text.equals(getText(R.string.ascending)));
+          d.dismiss();
+          return null;
+        });
+      DialogActionButton btn = DialogActionExtKt.getActionButton(dialog, WhichButton.POSITIVE);
+      btn.setText(R.string.descending);
+      btn.setTextColor(accentColor);
+      btn = DialogActionExtKt.getActionButton(dialog, WhichButton.NEGATIVE);
+      btn.setText(R.string.ascending);
+      btn.setTextColor(accentColor);
+      return null;
+    });
   }
 
   private void saveAndReload(int newSortby, boolean newIsAscending) {

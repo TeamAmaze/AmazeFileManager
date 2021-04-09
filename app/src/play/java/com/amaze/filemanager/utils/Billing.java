@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.DonationViewHolder;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
@@ -226,11 +227,19 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
   }
 
   private void showPaymentsDialog(final BasicActivity context) {
-    final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-    builder.title(R.string.donate);
-    builder.adapter(this, null);
-    builder.theme(context.getAppTheme().getMaterialDialogTheme());
-    builder.cancelListener(dialog -> purchaseProduct.purchaseCancel());
-    builder.show();
+    new MaterialDialog(context, MaterialDialog.getDEFAULT_BEHAVIOR())
+        .show(
+            dialog -> {
+              dialog.setTitle(R.string.donate);
+              DialogListExtKt.customListAdapter(dialog, this, null);
+              dialog.negativeButton(
+                  R.string.cancel,
+                  null,
+                  dialog1 -> {
+                    purchaseProduct.purchaseCancel();
+                    return null;
+                  });
+              return null;
+            });
   }
 }

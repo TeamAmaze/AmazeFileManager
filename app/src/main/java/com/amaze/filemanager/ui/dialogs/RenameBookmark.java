@@ -26,10 +26,9 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.google.android.material.textfield.TextInputLayout;
@@ -84,114 +83,129 @@ public class RenameBookmark extends DialogFragment {
 
     studiomode = sp.getInt("studio", 0);
     if (dataUtils.containsBooks(new String[] {title, path}) != -1) {
-      final MaterialDialog materialDialog;
-      String pa = path;
-      MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
-      builder.title(R.string.rename_bookmark);
-      builder.positiveColor(accentColor);
-      builder.negativeColor(accentColor);
-      builder.neutralColor(accentColor);
-      builder.positiveText(R.string.save);
-      builder.neutralText(R.string.cancel);
-      builder.negativeText(R.string.delete);
-      builder.theme(((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme());
-      builder.autoDismiss(false);
-      View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
-      builder.customView(v2, true);
-      final TextInputLayout t1 = v2.findViewById(R.id.t1);
-      final TextInputLayout t2 = v2.findViewById(R.id.t2);
-      final AppCompatEditText conName = v2.findViewById(R.id.editText4);
-      conName.setText(title);
-      final String s1 = getString(R.string.cant_be_empty, c.getString(R.string.name));
-      final String s2 = getString(R.string.cant_be_empty, c.getString(R.string.path));
-      conName.addTextChangedListener(
-          new SimpleTextWatcher() {
-            @Override
-            public void afterTextChanged(Editable s) {
-              if (conName.getText().toString().length() == 0) t1.setError(s2);
-              else t1.setError("");
-            }
-          });
-      final AppCompatEditText ip = v2.findViewById(R.id.editText);
-      if (studiomode != 0) {
-        if (path.startsWith(SMB_URI_PREFIX)) {
-          try {
-            URL a = new URL(path);
-            String userinfo = a.getUserInfo();
-            if (userinfo != null) {
-              String inf = URLDecoder.decode(userinfo, "UTF-8");
-              user = inf.substring(0, inf.indexOf(":"));
-              pass = inf.substring(inf.indexOf(":") + 1, inf.length());
-              String ipp = a.getHost();
-              pa = SMB_URI_PREFIX + ipp + a.getPath();
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-        ip.addTextChangedListener(
-            new SimpleTextWatcher() {
-              @Override
-              public void afterTextChanged(Editable s) {
-                if (ip.getText().toString().length() == 0) t2.setError(s1);
-                else t2.setError("");
-              }
-            });
-      } else t2.setVisibility(View.GONE);
-      ip.setText(pa);
-      builder.onNeutral((dialog, which) -> dialog.dismiss());
 
-      materialDialog = builder.build();
-      materialDialog
-          .getActionButton(DialogAction.POSITIVE)
-          .setOnClickListener(
-              v -> {
-                String t = ip.getText().toString();
-                String name = conName.getText().toString();
-                if (studiomode != 0 && t.startsWith(SMB_URI_PREFIX)) {
-                  try {
-                    URL a = new URL(t);
-                    String userinfo = a.getUserInfo();
-                    if (userinfo == null && user.length() > 0) {
-                      t =
-                          SMB_URI_PREFIX
-                              + ((URLEncoder.encode(user, "UTF-8")
-                                  + ":"
-                                  + URLEncoder.encode(pass, "UTF-8")
-                                  + "@"))
-                              + a.getHost()
-                              + a.getPath();
-                    }
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-                }
-                int i = -1;
-                if ((i = dataUtils.containsBooks(new String[] {title, path})) != -1) {
-                  if (!t.equals(title) && t.length() >= 1) {
-                    dataUtils.removeBook(i);
-                    dataUtils.addBook(new String[] {name, t});
-                    dataUtils.sortBook();
-                    if (bookmarkCallback != null) {
-                      bookmarkCallback.modify(path, title, t, name);
-                    }
-                  }
-                }
-                materialDialog.dismiss();
-              });
-      materialDialog
-          .getActionButton(DialogAction.NEGATIVE)
-          .setOnClickListener(
-              v -> {
-                int i;
-                if ((i = dataUtils.containsBooks(new String[] {title, path})) != -1) {
-                  dataUtils.removeBook(i);
-                  if (bookmarkCallback != null) {
-                    bookmarkCallback.delete(title, path);
-                  }
-                }
-                materialDialog.dismiss();
-              });
+      MaterialDialog materialDialog =
+          new MaterialDialog(c, MaterialDialog.getDEFAULT_BEHAVIOR())
+              .show(
+                  dialog -> {
+                    String pa = path;
+                    View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
+
+                    final TextInputLayout t1 = v2.findViewById(R.id.t1);
+                    final TextInputLayout t2 = v2.findViewById(R.id.t2);
+                    final AppCompatEditText conName = v2.findViewById(R.id.editText4);
+                    conName.setText(title);
+                    final String s1 = getString(R.string.cant_be_empty, c.getString(R.string.name));
+                    final String s2 = getString(R.string.cant_be_empty, c.getString(R.string.path));
+                    conName.addTextChangedListener(
+                        new SimpleTextWatcher() {
+                          @Override
+                          public void afterTextChanged(Editable s) {
+                            if (conName.getText().toString().length() == 0) t1.setError(s2);
+                            else t1.setError("");
+                          }
+                        });
+                    final AppCompatEditText ip = v2.findViewById(R.id.editText);
+                    if (studiomode != 0) {
+                      if (path.startsWith(SMB_URI_PREFIX)) {
+                        try {
+                          URL a = new URL(path);
+                          String userinfo = a.getUserInfo();
+                          if (userinfo != null) {
+                            String inf = URLDecoder.decode(userinfo, "UTF-8");
+                            user = inf.substring(0, inf.indexOf(":"));
+                            pass = inf.substring(inf.indexOf(":") + 1, inf.length());
+                            String ipp = a.getHost();
+                            pa = SMB_URI_PREFIX + ipp + a.getPath();
+                          }
+                        } catch (Exception e) {
+                          e.printStackTrace();
+                        }
+                      }
+                      ip.addTextChangedListener(
+                          new SimpleTextWatcher() {
+                            @Override
+                            public void afterTextChanged(Editable s) {
+                              if (ip.getText().toString().length() == 0) t2.setError(s1);
+                              else t2.setError("");
+                            }
+                          });
+                    } else t2.setVisibility(View.GONE);
+                    ip.setText(pa);
+
+                    DialogCustomViewExtKt.customView(
+                        dialog
+                            .title(R.string.rename_bookmark, null)
+                            .positiveButton(
+                                R.string.save,
+                                null,
+                                dia -> {
+                                  String t = ip.getText().toString();
+                                  String name = conName.getText().toString();
+                                  if (studiomode != 0 && t.startsWith(SMB_URI_PREFIX)) {
+                                    try {
+                                      URL a = new URL(t);
+                                      String userinfo = a.getUserInfo();
+                                      if (userinfo == null && user.length() > 0) {
+                                        t =
+                                            SMB_URI_PREFIX
+                                                + ((URLEncoder.encode(user, "UTF-8")
+                                                    + ":"
+                                                    + URLEncoder.encode(pass, "UTF-8")
+                                                    + "@"))
+                                                + a.getHost()
+                                                + a.getPath();
+                                      }
+                                    } catch (Exception e) {
+                                      e.printStackTrace();
+                                    }
+                                  }
+                                  int i = -1;
+                                  if ((i = dataUtils.containsBooks(new String[] {title, path}))
+                                      != -1) {
+                                    if (!t.equals(title) && t.length() >= 1) {
+                                      dataUtils.removeBook(i);
+                                      dataUtils.addBook(new String[] {name, t});
+                                      dataUtils.sortBook();
+                                      if (bookmarkCallback != null) {
+                                        bookmarkCallback.modify(path, title, t, name);
+                                      }
+                                    }
+                                  }
+                                  dia.dismiss();
+                                  return null;
+                                })
+                            .neutralButton(
+                                R.string.cancel,
+                                null,
+                                dia -> {
+                                  dia.dismiss();
+                                  return null;
+                                })
+                            .negativeButton(
+                                R.string.delete,
+                                null,
+                                dia -> {
+                                  int i;
+                                  if ((i = dataUtils.containsBooks(new String[] {title, path}))
+                                      != -1) {
+                                    dataUtils.removeBook(i);
+                                    if (bookmarkCallback != null) {
+                                      bookmarkCallback.delete(title, path);
+                                    }
+                                  }
+                                  dia.dismiss();
+                                  return null;
+                                })
+                            .noAutoDismiss(),
+                        null,
+                        v2,
+                        true,
+                        false,
+                        false,
+                        false);
+                    return null;
+                  });
       return materialDialog;
     }
     return null;

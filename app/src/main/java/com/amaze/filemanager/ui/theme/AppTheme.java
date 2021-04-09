@@ -22,7 +22,7 @@ package com.amaze.filemanager.ui.theme;
 
 import java.util.Calendar;
 
-import com.afollestad.materialdialogs.Theme;
+// import com.afollestad.materialdialogs.Theme;
 
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
@@ -66,20 +66,20 @@ public enum AppTheme {
    * @return The Theme enum to provide to {@link
    *     com.afollestad.materialdialogs.MaterialDialog.Builder}
    */
-  public Theme getMaterialDialogTheme() {
+  public AppTheme getMaterialDialogTheme() {
     switch (id) {
       default:
       case LIGHT_INDEX:
-        return Theme.LIGHT;
+        return LIGHT;
       case DARK_INDEX:
       case BLACK_INDEX:
-        return Theme.DARK;
+        return DARK;
       case TIME_INDEX:
         int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
         if (hour <= 6 || hour >= 18) {
-          return Theme.DARK;
+          return DARK;
         } else {
-          return Theme.LIGHT;
+          return LIGHT;
         }
     }
   }

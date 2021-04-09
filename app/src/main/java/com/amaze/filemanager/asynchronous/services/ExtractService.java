@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import org.apache.commons.compress.PasswordRequiredException;
 import org.tukaani.xz.CorruptedInputException;
 
+import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
@@ -366,20 +367,23 @@ public class ExtractService extends AbstractProgressiveService {
           AppConfig.getInstance().getUtilsProvider().getAppTheme(),
           R.string.archive_password_prompt,
           R.string.authenticate_password,
-          (dialog, which) -> {
-            EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+          (dialog) -> {
+            EditText editText =
+                DialogCustomViewExtKt.getCustomView(dialog).findViewById(R.id.singleedittext_input);
             ArchivePasswordCache.getInstance().put(compressedPath, editText.getText().toString());
             this.extractService.get().getDataPackages().clear();
             this.paused = false;
             dialog.dismiss();
+            return null;
           },
-          ((dialog, which) -> {
+          ((dialog) -> {
             dialog.dismiss();
             toastOnParseError(result);
             cancel(true); // This cancels the AsyncTask...
             progressHandler.setCancelled(true);
             stopSelf(); // and this stops the ExtractService altogether.
             this.paused = false;
+            return null;
           }));
     }
 

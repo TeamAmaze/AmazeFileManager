@@ -24,22 +24,24 @@ import static com.amaze.filemanager.R.string.feedback;
 import static com.amaze.filemanager.ui.activities.PreferencesActivity.START_PREFERENCE;
 import static com.amaze.filemanager.utils.Utils.EMAIL_SUPPORT;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.util.Arrays;
 import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.afollestad.materialdialogs.files.DialogFolderChooserExtKt;
+import com.afollestad.materialdialogs.input.DialogInputExtKt;
+import com.afollestad.materialdialogs.list.DialogSingleChoiceExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.preference.CheckBox;
 import com.amaze.filemanager.utils.Utils;
 
@@ -55,6 +57,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
+import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -178,86 +181,90 @@ public class PrefFrag extends PreferenceFragmentCompat
 
   @Override
   public boolean onPreferenceClick(Preference preference) {
-    final String[] sort;
-    final String[] dragToMoveArray;
-    MaterialDialog.Builder builder;
-    MaterialDialog.Builder dragDialogBuilder;
-
     switch (preference.getKey()) {
       case PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE:
         OpenFileDialogFragment.Companion.clearPreferences(sharedPref);
         AppConfig.toast(getActivity(), getActivity().getString(R.string.done));
         return true;
       case PreferencesConstants.PREFERENCE_GRID_COLUMNS:
-        sort = getResources().getStringArray(R.array.columns);
-        builder = new MaterialDialog.Builder(getActivity());
-        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        builder.title(R.string.gridcolumnno);
-        int current =
-            Integer.parseInt(
-                sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1"));
-        current = current == -1 ? 0 : current;
-        if (current != 0) current = current - 1;
-        builder
-            .items(sort)
-            .itemsCallbackSingleChoice(
-                current,
-                (dialog, view, which, text) -> {
-                  sharedPref
-                      .edit()
-                      .putString(
-                          PreferencesConstants.PREFERENCE_GRID_COLUMNS,
-                          "" + (which != 0 ? sort[which] : "" + -1))
-                      .apply();
-                  dialog.dismiss();
-                  return true;
+        new MaterialDialog(getActivity(), MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                dialog -> {
+                  int current =
+                      Integer.parseInt(
+                          sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1"));
+                  current = current == -1 ? 0 : current;
+                  if (current != 0) current = current - 1;
+
+                  DialogSingleChoiceExtKt.listItemsSingleChoice(
+                          dialog,
+                          R.array.columns,
+                          null,
+                          null,
+                          current,
+                          true,
+                          (dia, index, text) -> {
+                            sharedPref
+                                .edit()
+                                .putString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "" + index)
+                                .apply();
+                            dia.dismiss();
+                            return null;
+                          })
+                      .title(R.string.gridcolumnno, null);
+                  return null;
                 });
-        builder.build().show();
         return true;
       case PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE:
-        dragToMoveArray = getResources().getStringArray(R.array.dragAndDropPreference);
-        dragDialogBuilder = new MaterialDialog.Builder(getActivity());
-        dragDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        dragDialogBuilder.title(R.string.drag_and_drop_preference);
-        int currentDragPreference =
+        new MaterialDialog(requireActivity(), MaterialDialog.getDEFAULT_BEHAVIOR()).show(dialog -> {
+          int currentDragPreference =
             sharedPref.getInt(
-                PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-                PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
-        dragDialogBuilder
-            .items(dragToMoveArray)
-            .itemsCallbackSingleChoice(
-                currentDragPreference,
-                (dialog, view, which, text) -> {
-                  sharedPref
-                      .edit()
-                      .putInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which)
-                      .apply();
-                  sharedPref
-                      .edit()
-                      .putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null)
-                      .apply();
-                  dialog.dismiss();
-                  return true;
-                });
-        dragDialogBuilder.build().show();
+              PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+              PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+          dialog.setTitle(R.string.drag_and_drop_preference);
+          DialogSingleChoiceExtKt.listItemsSingleChoice(dialog,
+            R.array.dragAndDropPreference,
+            null,
+            null,
+            currentDragPreference,
+            true,
+            (d, which, text) -> {
+              sharedPref
+                .edit()
+                .putInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which)
+                .apply();
+              sharedPref
+                .edit()
+                .putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null)
+                .apply();
+              d.dismiss();
+              return null;
+            });
+          return null;
+        });
         return true;
       case PreferencesConstants.FRAGMENT_THEME:
-        sort = getResources().getStringArray(R.array.theme);
-        current = Integer.parseInt(sharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "0"));
-        builder = new MaterialDialog.Builder(getActivity());
-        // builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        builder
-            .items(sort)
-            .itemsCallbackSingleChoice(
-                current,
-                (dialog, view, which, text) -> {
-                  utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
-                  dialog.dismiss();
-                  restartPC(getActivity());
-                  return true;
+        new MaterialDialog(getActivity(), MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                dialog -> {
+                  int current =
+                      Integer.parseInt(
+                          sharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "0"));
+                  DialogSingleChoiceExtKt.listItemsSingleChoice(
+                          dialog,
+                          R.array.theme,
+                          null,
+                          null,
+                          current,
+                          true,
+                          (dia, index, text) -> {
+                            dia.dismiss();
+                            restartPC(getActivity());
+                            return null;
+                          })
+                      .title(R.string.theme, null);
+                  return null;
                 });
-        builder.title(R.string.theme);
-        builder.build().show();
         return true;
       case PreferencesConstants.FRAGMENT_FEEDBACK:
         Intent emailIntent = Utils.buildEmailIntent(null, EMAIL_SUPPORT);
@@ -295,91 +302,113 @@ public class PrefFrag extends PreferenceFragmentCompat
             .selectItem(PreferencesActivity.ADVANCEDSEARCH_PREFERENCE);
         return true;
       case PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD:
-        MaterialDialog.Builder masterPasswordDialogBuilder =
-            new MaterialDialog.Builder(getActivity());
-        masterPasswordDialogBuilder.title(
-            getResources().getString(R.string.crypt_pref_master_password_title));
+        new MaterialDialog(getActivity(), MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                dialog -> {
+                  String decryptedPassword = null;
+                  try {
+                    String preferencePassword =
+                        sharedPref.getString(
+                            PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                            PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT);
+                    if (!preferencePassword.equals(
+                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
 
-        String decryptedPassword = null;
-        try {
-          String preferencePassword =
-              sharedPref.getString(
-                  PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                  PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT);
-          if (!preferencePassword.equals(
-              PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
-
-            // password is set, try to decrypt
-            decryptedPassword = CryptUtil.decryptPassword(getActivity(), preferencePassword);
-          } else {
-            // no password set in preferences, just leave the field empty
-            decryptedPassword = "";
-          }
-        } catch (GeneralSecurityException | IOException e) {
-          e.printStackTrace();
-        }
-
-        masterPasswordDialogBuilder.input(
-            getResources().getString(R.string.authenticate_password),
-            decryptedPassword,
-            true,
-            (dialog, input) -> {});
-        masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
-        masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
-        masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
-        masterPasswordDialogBuilder.positiveColor(((ThemedActivity) getActivity()).getAccent());
-        masterPasswordDialogBuilder.negativeColor(((ThemedActivity) getActivity()).getAccent());
-
-        masterPasswordDialogBuilder.onPositive(
-            (dialog, which) -> {
-              try {
-
-                String inputText = dialog.getInputEditText().getText().toString();
-                if (!inputText.equals(
-                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
-
-                  sharedPref
-                      .edit()
-                      .putString(
-                          PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                          CryptUtil.encryptPassword(
-                              getActivity(), dialog.getInputEditText().getText().toString()))
-                      .apply();
-                } else {
-                  // empty password, remove the preference
-                  sharedPref
-                      .edit()
-                      .putString(PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD, "")
-                      .apply();
-                }
-              } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
-                sharedPref
-                    .edit()
-                    .putString(
-                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
-                    .apply();
-              }
-            });
-
-        masterPasswordDialogBuilder.onNegative((dialog, which) -> dialog.cancel());
-
-        masterPasswordDialogBuilder.build().show();
+                      // password is set, try to decrypt
+                      decryptedPassword =
+                          CryptUtil.decryptPassword(getActivity(), preferencePassword);
+                    } else {
+                      // no password set in preferences, just leave the field empty
+                      decryptedPassword = "";
+                    }
+                  } catch (GeneralSecurityException | IOException e) {
+                    e.printStackTrace();
+                  }
+                  dialog =
+                      DialogInputExtKt.input(
+                              dialog,
+                              null,
+                              R.string.authenticate_password,
+                              decryptedPassword,
+                              null,
+                              InputType.TYPE_CLASS_TEXT,
+                              null,
+                              true,
+                              false,
+                              (dia, input) -> {
+                                return null;
+                              })
+                          .title(R.string.crypt_pref_master_password_title, null)
+                          .positiveButton(
+                              R.string.ok,
+                              null,
+                              dia -> {
+                                try {
+                                  String inputText =
+                                      DialogInputExtKt.getInputField(dia).getText().toString();
+                                  if (!inputText.equals(
+                                      PreferencesConstants
+                                          .PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
+                                    sharedPref
+                                        .edit()
+                                        .putString(
+                                            PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                            CryptUtil.encryptPassword(getActivity(), inputText))
+                                        .apply();
+                                  } else {
+                                    // empty password, remove the preference
+                                    sharedPref
+                                        .edit()
+                                        .putString(
+                                            PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                            "")
+                                        .apply();
+                                  }
+                                } catch (GeneralSecurityException | IOException e) {
+                                  e.printStackTrace();
+                                  sharedPref
+                                      .edit()
+                                      .putString(
+                                          PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                                          PreferencesConstants
+                                              .PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
+                                      .apply();
+                                }
+                                return null;
+                              });
+                  dialog.negativeButton(
+                      R.string.cancel,
+                      null,
+                      dia -> {
+                        dia.cancel();
+                        return null;
+                      });
+                  return null;
+                });
         return true;
         // If there is no directory set, default to storage root (/storage/sdcard...)
       case PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH:
-        new FolderChooserDialog.Builder(getActivity())
-            .tag(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)
-            .goUpLabel(getString(R.string.folder_go_up_one_level))
-            .chooseButton(R.string.choose_folder)
-            .cancelButton(R.string.cancel)
-            .initialPath(
-                sharedPref.getString(
-                    PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
-                    Environment.getExternalStorageDirectory().getPath()))
-            .build()
-            .show((PreferencesActivity) getActivity());
+        new MaterialDialog(getActivity(), MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                dialog -> {
+                  DialogFolderChooserExtKt.folderChooser(
+                          dialog,
+                          getActivity(),
+                          new File(
+                              sharedPref.getString(
+                                  PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
+                                  Environment.getExternalStorageDirectory().getPath())),
+                          null,
+                          true,
+                          R.string.files_default_empty_text,
+                          false,
+                          null,
+                          null)
+                      .positiveButton(R.string.choose_folder, null, null)
+                      .negativeButton(R.string.cancel, null, null);
+                  // FIXME: on select action
+                  return null;
+                });
         return true;
     }
 

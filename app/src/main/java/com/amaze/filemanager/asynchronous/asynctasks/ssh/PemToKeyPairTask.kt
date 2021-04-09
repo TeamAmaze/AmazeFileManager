@@ -22,11 +22,13 @@ package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
 import android.os.AsyncTask
 import android.text.InputType
-import android.view.View
 import android.widget.EditText
 import android.widget.Toast
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
@@ -114,57 +116,55 @@ class PemToKeyPairTask(
             return
         }
         val result = values[0]
-        val builder = MaterialDialog.Builder(AppConfig.getInstance().mainActivityContext!!)
-        val dialogLayout = View.inflate(
-            AppConfig.getInstance().mainActivityContext,
-            R.layout.dialog_singleedittext,
-            null
-        )
-        val wilTextfield: WarnableTextInputLayout =
-            dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout)
-        val textfield = dialogLayout.findViewById<EditText>(R.id.singleedittext_input)
-        textfield.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
-        builder
-            .customView(dialogLayout, false)
-            .autoDismiss(false)
-            .title(R.string.ssh_key_prompt_passphrase)
-            .positiveText(R.string.ok)
-            .onPositive { dialog: MaterialDialog, which: DialogAction? ->
-                passwordFinder = object : PasswordFinder {
-                    override fun reqPassword(resource: Resource<*>?): CharArray {
-                        return textfield.text.toString().toCharArray()
-                    }
+        MaterialDialog(AppConfig.getInstance().mainActivityContext!!).show {
+            title(R.string.ssh_key_prompt_passphrase)
+            customView(R.layout.dialog_singleedittext, scrollable = false)
+            noAutoDismiss()
+            val wilTextfield: WarnableTextInputLayout =
+                getCustomView().findViewById(R.id.singleedittext_warnabletextinputlayout)
+            val textfield = getCustomView().findViewById<EditText>(R.id.singleedittext_input)
+            textfield.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            positiveButton(
+                R.string.ok,
+                click = {
+                    passwordFinder = object : PasswordFinder {
+                        override fun reqPassword(resource: Resource<*>?): CharArray {
+                            return textfield.text.toString().toCharArray()
+                        }
 
-                    override fun shouldRetry(resource: Resource<*>?): Boolean {
-                        return false
+                        override fun shouldRetry(resource: Resource<*>?): Boolean {
+                            return false
+                        }
                     }
+                    paused = false
+                    dismiss()
                 }
-                paused = false
-                dialog.dismiss()
+            )
+            negativeButton(
+                R.string.cancel,
+                click = {
+                    dismiss()
+                    toastOnParseError(result!!)
+                    cancel(true)
+                }
+            )
+            WarnableTextInputValidator(
+                AppConfig.getInstance().mainActivityContext,
+                textfield,
+                wilTextfield,
+                getActionButton(WhichButton.POSITIVE)
+            ) { text: String ->
+                if (text.isEmpty()) {
+                    ReturnState(
+                        ReturnState.STATE_ERROR, R.string.field_empty
+                    )
+                }
+                ReturnState()
             }
-            .negativeText(R.string.cancel)
-            .onNegative { dialog: MaterialDialog, which: DialogAction? ->
-                dialog.dismiss()
-                toastOnParseError(result!!)
-                cancel(true)
+            if (errorMessage != null) {
+                wilTextfield.error = errorMessage
+                textfield.selectAll()
             }
-        val dialog = builder.show()
-        WarnableTextInputValidator(
-            AppConfig.getInstance().mainActivityContext,
-            textfield,
-            wilTextfield,
-            dialog.getActionButton(DialogAction.POSITIVE)
-        ) { text: String ->
-            if (text.isEmpty()) {
-                ReturnState(
-                    ReturnState.STATE_ERROR, R.string.field_empty
-                )
-            }
-            ReturnState()
-        }
-        if (errorMessage != null) {
-            wilTextfield.error = errorMessage
-            textfield.selectAll()
         }
     }
 

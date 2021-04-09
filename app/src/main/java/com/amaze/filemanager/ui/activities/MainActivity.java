@@ -48,7 +48,6 @@ import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_NAME;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PASSWORD;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PORT;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_USERNAME;
-import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
@@ -61,9 +60,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.afollestad.materialdialogs.list.DialogSingleChoiceExtKt;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.TagsHelper;
@@ -193,8 +191,7 @@ public class MainActivity extends PermissionsActivity
         BookmarkCallback,
         SearchWorkerFragment.HelperCallbacks,
         CloudConnectionCallbacks,
-        LoaderManager.LoaderCallbacks<Cursor>,
-        FolderChooserDialog.FolderCallback {
+        LoaderManager.LoaderCallbacks<Cursor> {
 
   private static final String TAG = TagsHelper.getTag(MainActivity.class);
 
@@ -1087,17 +1084,14 @@ public class MainActivity extends PermissionsActivity
                       R.string.question_set_path_as_home,
                       R.string.set_as_home,
                       R.string.yes,
-                      R.string.no);
-              dialog
-                  .getActionButton(DialogAction.POSITIVE)
-                  .setOnClickListener(
-                      (v) -> {
-                        mainFragment
-                            .getMainFragmentViewModel()
-                            .setHome(mainFragment.getCurrentPath());
-                        updatePaths(mainFragment.getMainFragmentViewModel().getNo());
-                        dialog.dismiss();
-                      });
+                      R.string.no, d -> {
+                            mainFragment
+                                    .getMainFragmentViewModel()
+                                    .setHome(mainFragment.getCurrentPath());
+                            updatePaths(mainFragment.getMainFragmentViewModel().getNo());
+                            d.dismiss();
+                        return null;
+                          }, null);
               dialog.show();
               break;
             case R.id.exit:
@@ -1107,36 +1101,34 @@ public class MainActivity extends PermissionsActivity
               GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
               break;
             case R.id.dsort:
-              String[] sort = getResources().getStringArray(R.array.directorysortmode);
-              MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(getAppTheme().getMaterialDialogTheme());
-              builder.title(R.string.directorysort);
               int current =
                   Integer.parseInt(
                       getPrefs()
                           .getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
-
-              builder
-                  .items(sort)
-                  .itemsCallbackSingleChoice(
-                      current,
-                      (dialog1, view, which, text) -> {
-                        getPrefs()
-                            .edit()
-                            .putString(
-                                PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
-                            .commit();
-                        mainFragment
-                            .getMainFragmentViewModel()
-                            .initSortModes(
-                                SortHandler.getSortType(
-                                    this, mainFragment.getMainFragmentViewModel().getCurrentPath()),
-                                getPrefs());
-                        mainFragment.updateList();
-                        dialog1.dismiss();
-                        return true;
-                      });
-              builder.build().show();
+              new MaterialDialog(mainActivity, MaterialDialog.getDEFAULT_BEHAVIOR()).show(dialog1 -> {
+                DialogSingleChoiceExtKt.listItemsSingleChoice(dialog1,
+                  R.array.directorysortmode,
+                  null,
+                  null,
+                  current,
+                  true,
+                  (d, which, text) -> {
+                    getPrefs()
+                      .edit()
+                      .putString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
+                      .apply();
+                    mainFragment
+                      .getMainFragmentViewModel()
+                      .initSortModes(
+                        SortHandler.getSortType(
+                        this, mainFragment.getMainFragmentViewModel().getCurrentPath()),
+                        getPrefs());
+                    mainFragment.updateList();
+                    d.dismiss();
+                    return null;
+                  }).title(R.string.directorysort, null);
+                return null;
+              });
               break;
             case R.id.hiddenitems:
               GeneralDialogCreation.showHiddenDialog(
@@ -1566,11 +1558,6 @@ public class MainActivity extends PermissionsActivity
               mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
               drawer.closeIfNotLocked();
               if (drawer.isLocked()) drawer.onDrawerClosed();
-            } else if (requestCode == REQUEST_CODE_SAF_FTP) {
-              FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
-              ftpServerFragment.changeFTPServerPath(intent.getData().toString());
-              Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
-
             } else {
               Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
               // otg access not provided
@@ -2192,53 +2179,6 @@ public class MainActivity extends PermissionsActivity
       floatingActionButton.close(true);
       return true;
     }
-  }
-  /**
-   * Invoke {@link FtpServerFragment#changeFTPServerPath(String)} to change FTP server share path.
-   *
-   * @see FtpServerFragment#changeFTPServerPath(String)
-   * @see FolderChooserDialog
-   * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
-   * @param dialog
-   * @param folder selected folder
-   */
-  @Override
-  public void onFolderSelection(@NonNull FolderChooserDialog dialog, @NonNull File folder) {
-    switch (dialog.getTag()) {
-      case FtpServerFragment.TAG:
-        FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
-        if (folder.exists() && folder.isDirectory()) {
-          ftpServerFragment.changeFTPServerPath(folder.getPath());
-          Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
-        } else {
-          // try to get parent
-          File pathParentFile = new File(folder.getParent());
-          if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-
-            ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
-            Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
-          } else {
-            // don't have access, print error
-            Toast.makeText(this, R.string.ftp_path_change_error_invalid, Toast.LENGTH_SHORT).show();
-          }
-        }
-        dialog.dismiss();
-        break;
-      default:
-        dialog.dismiss();
-        break;
-    }
-  }
-
-  /**
-   * Do nothing other than dismissing the folder selection dialog.
-   *
-   * @see com.afollestad.materialdialogs.folderselector.FolderChooserDialog.FolderCallback
-   * @param dialog
-   */
-  @Override
-  public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
-    dialog.dismiss();
   }
 
   private void executeWithMainFragment(@NonNull Function<MainFragment, Void> lambda) {

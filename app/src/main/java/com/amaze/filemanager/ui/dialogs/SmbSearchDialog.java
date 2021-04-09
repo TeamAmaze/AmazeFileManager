@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
@@ -74,26 +75,33 @@ public class SmbSearchDialog extends DialogFragment {
 
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(getActivity());
-    builder.title(R.string.searching_devices);
-    builder.negativeColor(accentColor);
-    builder.negativeText(R.string.cancel);
-    builder.onNegative(
-        (dialog, which) -> {
-          if (subnetScanner != null) subnetScanner.cancel(true);
-          dismiss();
-        });
-    builder.onPositive(
-        (dialog, which) -> {
-          if (subnetScanner != null) subnetScanner.cancel(true);
-          if (getActivity() != null && getActivity() instanceof MainActivity) {
-            dismiss();
-            MainActivity mainActivity = (MainActivity) getActivity();
-            mainActivity.showSMBDialog("", "", false);
-          }
-        });
-    builder.positiveText(R.string.use_custom_ip);
-    builder.positiveColor(accentColor);
+    MaterialDialog dialog =
+        new MaterialDialog(getActivity(), MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                builder -> {
+                  builder.setTitle(R.string.searching_devices);
+                  builder.positiveButton(
+                      R.string.use_custom_ip,
+                      null,
+                      dia -> {
+                        if (subnetScanner != null) subnetScanner.cancel(true);
+                        if (getActivity() != null && getActivity() instanceof MainActivity) {
+                          dismiss();
+                          MainActivity mainActivity = (MainActivity) getActivity();
+                          mainActivity.showSMBDialog("", "", false);
+                        }
+                        return null;
+                      });
+                  builder.negativeButton(
+                      R.string.cancel,
+                      null,
+                      dia -> {
+                        if (subnetScanner != null) subnetScanner.cancel(true);
+                        dismiss();
+                        return null;
+                      });
+                  return null;
+                });
     computers.add(new ComputerParcelable("-1", "-1"));
     listViewAdapter = new ListViewAdapter(getActivity(), computers);
     subnetScanner = new SubnetScanner(getActivity());
@@ -134,9 +142,7 @@ public class SmbSearchDialog extends DialogFragment {
           }
         });
     subnetScanner.execute();
-
-    builder.adapter(listViewAdapter, null);
-    return builder.build();
+    return DialogListExtKt.customListAdapter(dialog, null, null);
   }
 
   private class ListViewAdapter extends RecyclerView.Adapter<ElementViewHolder> {

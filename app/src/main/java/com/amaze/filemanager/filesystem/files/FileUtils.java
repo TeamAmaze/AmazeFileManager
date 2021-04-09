@@ -26,12 +26,14 @@ import java.io.File;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.list.DialogListExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -461,71 +463,78 @@ public class FileUtils {
 
   public static void openWith(
       final Uri uri, final PreferenceActivity activity, final boolean useNewStack) {
-    MaterialDialog.Builder a = new MaterialDialog.Builder(activity);
-    a.title(activity.getString(R.string.open_as));
-    String[] items =
-        new String[] {
-          activity.getString(R.string.text),
-          activity.getString(R.string.image),
-          activity.getString(R.string.video),
-          activity.getString(R.string.audio),
-          activity.getString(R.string.database),
-          activity.getString(R.string.other)
-        };
+    new MaterialDialog(activity, MaterialDialog.getDEFAULT_BEHAVIOR())
+        .show(
+            dialog -> {
+              dialog.setTitle(R.string.open_as);
+              String[] items =
+                  new String[] {
+                    activity.getString(R.string.text),
+                    activity.getString(R.string.image),
+                    activity.getString(R.string.video),
+                    activity.getString(R.string.audio),
+                    activity.getString(R.string.database),
+                    activity.getString(R.string.other)
+                  };
+              DialogListExtKt.listItems(
+                  dialog,
+                  null,
+                  Arrays.asList(items),
+                  null,
+                  true,
+                  ((dialog1, i, text) -> {
+                    String mimeType = null;
+                    Intent intent = null;
 
-    a.items(items)
-        .itemsCallback(
-            (materialDialog, view, i, charSequence) -> {
-              String mimeType = null;
-              Intent intent = null;
-
-              switch (i) {
-                case 0:
-                  mimeType = "text/*";
-                  break;
-                case 1:
-                  mimeType = "image/*";
-                  break;
-                case 2:
-                  mimeType = "video/*";
-                  break;
-                case 3:
-                  mimeType = "audio/*";
-                  break;
-                case 4:
-                  intent = new Intent(activity, DatabaseViewerActivity.class);
-                  intent.setAction(Intent.ACTION_VIEW);
-                  intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    intent.addFlags(Intent.FLAG_ACTIVITY_RETAIN_IN_RECENTS);
-                  }
-                  // DatabaseViewerActivity only accepts java.io.File paths, need to strip the URI
-                  // to file's absolute path
-                  intent.putExtra(
-                      "path",
-                      uri.getPath()
-                          .substring(
-                              uri.getPath().indexOf(FILE_PROVIDER_PREFIX) - 1,
-                              FILE_PROVIDER_PREFIX.length() + 1));
-                  break;
-                case 5:
-                  mimeType = "*/*";
-                  break;
-              }
-              try {
-                if (intent != null) {
-                  activity.startActivity(intent);
-                } else {
-                  OpenFileDialogFragment.Companion.openFileOrShow(
-                      uri, mimeType, useNewStack, activity, true);
-                }
-              } catch (Exception e) {
-                Toast.makeText(activity, R.string.no_app_found, Toast.LENGTH_SHORT).show();
-                openWith(uri, activity, useNewStack);
-              }
+                    switch (i) {
+                      case 0:
+                        mimeType = "text/*";
+                        break;
+                      case 1:
+                        mimeType = "image/*";
+                        break;
+                      case 2:
+                        mimeType = "video/*";
+                        break;
+                      case 3:
+                        mimeType = "audio/*";
+                        break;
+                      case 4:
+                        intent = new Intent(activity, DatabaseViewerActivity.class);
+                        intent.setAction(Intent.ACTION_VIEW);
+                        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                          intent.addFlags(Intent.FLAG_ACTIVITY_RETAIN_IN_RECENTS);
+                        }
+                        // DatabaseViewerActivity only accepts java.io.File paths, need to strip the
+                        // URI
+                        // to file's absolute path
+                        intent.putExtra(
+                            "path",
+                            uri.getPath()
+                                .substring(
+                                    uri.getPath().indexOf(FILE_PROVIDER_PREFIX) - 1,
+                                    FILE_PROVIDER_PREFIX.length() + 1));
+                        break;
+                      case 5:
+                        mimeType = "*/*";
+                        break;
+                    }
+                    try {
+                      if (intent != null) {
+                        activity.startActivity(intent);
+                      } else {
+                        OpenFileDialogFragment.Companion.openFileOrShow(
+                            uri, mimeType, useNewStack, activity, true);
+                      }
+                    } catch (Exception e) {
+                      Toast.makeText(activity, R.string.no_app_found, Toast.LENGTH_SHORT).show();
+                      openWith(uri, activity, useNewStack);
+                    }
+                    return null;
+                  }));
+              return null;
             });
-
-    a.build().show();
   }
 
   /** Method determines if there is something to go back to */

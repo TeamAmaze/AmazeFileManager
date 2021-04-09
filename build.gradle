@@ -24,7 +24,7 @@ buildscript {
         zip4jVersion = "2.6.4"
         espressoVersion = "3.3.0"
         androidXPrefVersion = "1.1.1"
-        materialDialogsVersion = "0.9.6.0"
+        materialDialogsVersion = "3.3.0"
         jacocoVersion = "0.8.7"
     }
     repositories {

@@ -28,9 +28,9 @@ import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import androidx.fragment.app.DialogFragment
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.Theme
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.customview.getCustomView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -90,13 +90,13 @@ class DragAndDropDialog : DialogFragment() {
         }
         private fun newInstance(pasteLocation: String, files: ArrayList<HybridFileParcelable>):
             DragAndDropDialog {
-                val dragAndDropDialog = DragAndDropDialog()
-                val args = Bundle()
-                args.putString(KEY_PASTE_LOCATION, pasteLocation)
-                args.putParcelableArrayList(KEY_FILES, files)
-                dragAndDropDialog.arguments = args
-                return dragAndDropDialog
-            }
+            val dragAndDropDialog = DragAndDropDialog()
+            val args = Bundle()
+            args.putString(KEY_PASTE_LOCATION, pasteLocation)
+            args.putParcelableArrayList(KEY_FILES, files)
+            dragAndDropDialog.arguments = args
+            return dragAndDropDialog
+        }
 
         private fun startCopyOrMoveTask(
             pasteLocation: String,
@@ -132,50 +132,46 @@ class DragAndDropDialog : DialogFragment() {
             pasteLocation, operationFiles
         ) {
             context, dialogTheme, accent, pasteLocation, operationFiles ->
-            val dialog: MaterialDialog = MaterialDialog.Builder(context)
-                .title(getString(R.string.choose_operation))
-                .customView(R.layout.dialog_drag_drop, true)
-                .theme(dialogTheme)
-                .negativeText(getString(R.string.cancel).toUpperCase())
-                .negativeColor(accent)
-                .cancelable(false)
-                .onNeutral { _: MaterialDialog?, _: DialogAction? ->
-                    dismiss()
-                }
-                .build()
-
-            dialog.customView?.run {
-                // Get views from custom layout to set text values.
-                val rememberCheckbox = this.findViewById<CheckBox>(R.id.remember_drag)
-                val moveButton = this.findViewById<Button>(R.id.button_move)
-                moveButton.setOnClickListener {
-                    mainActivity?.run {
-                        if (rememberCheckbox.isChecked) {
-                            rememberDragOperation(true)
+            val dialog: MaterialDialog = MaterialDialog(context).show {
+                title(R.string.choose_operation)
+                customView(R.layout.dialog_drag_drop)
+                negativeButton(text = getString(R.string.cancel).uppercase())
+                cancelable(false)
+                neutralButton { dismiss() }
+                getCustomView()?.run {
+                    // Get views from custom layout to set text values.
+                    val rememberCheckbox = this.findViewById<CheckBox>(R.id.remember_drag)
+                    val moveButton = this.findViewById<Button>(R.id.button_move)
+                    moveButton.setOnClickListener {
+                        mainActivity?.run {
+                            if (rememberCheckbox.isChecked) {
+                                rememberDragOperation(true)
+                            }
+                            startCopyOrMoveTask(pasteLocation, operationFiles, true, this)
+                            dismiss()
                         }
-                        startCopyOrMoveTask(pasteLocation, operationFiles, true, this)
-                        dismiss()
                     }
-                }
-                val copyButton = this.findViewById<Button>(R.id.button_copy)
-                copyButton.setOnClickListener {
-                    mainActivity?.run {
-                        if (rememberCheckbox.isChecked) {
-                            rememberDragOperation(false)
+                    val copyButton = this.findViewById<Button>(R.id.button_copy)
+                    copyButton.setOnClickListener {
+                        mainActivity?.run {
+                            if (rememberCheckbox.isChecked) {
+                                rememberDragOperation(false)
+                            }
+                            startCopyOrMoveTask(pasteLocation, operationFiles, false, this)
+                            dismiss()
                         }
-                        startCopyOrMoveTask(pasteLocation, operationFiles, false, this)
-                        dismiss()
                     }
-                }
-                if (dialogTheme == Theme.LIGHT) {
-                    moveButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_baseline_content_cut_24,
-                        0, 0, 0
-                    )
-                    copyButton.setCompoundDrawablesWithIntrinsicBounds(
-                        R.drawable.ic_baseline_content_copy_24,
-                        0, 0, 0
-                    )
+                    // FIXME: theming problem
+                    //                if (dialogTheme == Theme.LIGHT) {
+//                moveButton.setCompoundDrawablesWithIntrinsicBounds(
+//                    R.drawable.ic_baseline_content_cut_24,
+//                    0, 0, 0
+//                )
+//                copyButton.setCompoundDrawablesWithIntrinsicBounds(
+//                    R.drawable.ic_baseline_content_copy_24,
+//                    0, 0, 0
+//                )
+//                }
                 }
             }
             return dialog

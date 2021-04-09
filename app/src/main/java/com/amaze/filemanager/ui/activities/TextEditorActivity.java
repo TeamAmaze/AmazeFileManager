@@ -187,21 +187,28 @@ public class TextEditorActivity extends ThemedActivity
 
   private void checkUnsavedChanges() {
     if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
-      new MaterialDialog.Builder(this)
-          .title(R.string.unsaved_changes)
-          .content(R.string.unsaved_changes_description)
-          .positiveText(R.string.yes)
-          .negativeText(R.string.no)
-          .positiveColor(getAccent())
-          .negativeColor(getAccent())
-          .onPositive(
-              (dialog, which) -> {
-                saveFile(mInput.getText().toString());
-                finish();
-              })
-          .onNegative((dialog, which) -> finish())
-          .build()
-          .show();
+      new MaterialDialog(this, MaterialDialog.getDEFAULT_BEHAVIOR())
+          .show(
+              dialog -> {
+                dialog.setTitle(R.string.unsaved_changes);
+                dialog.message(R.string.unsaved_changes_description, null, null);
+                dialog.positiveButton(
+                    R.string.yes,
+                    null,
+                    dialog1 -> {
+                      saveFile(mInput.getText().toString());
+                      finish();
+                      return null;
+                    });
+                dialog.negativeButton(
+                    R.string.no,
+                    null,
+                    dialog1 -> {
+                      finish();
+                      return null;
+                    });
+                return null;
+              });
     } else {
       finish();
     }

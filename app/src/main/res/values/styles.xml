@@ -305,4 +305,5 @@
     <style name="pref_accent_black_super_su" parent="appCompatBlack">
         <item name="colorAccent">@color/accent_super_su</item>
     </style>
+
 </resources>

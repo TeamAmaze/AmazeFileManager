@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
 import android.content.SharedPreferences
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -32,7 +31,9 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.Theme
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
+import com.afollestad.materialdialogs.customview.customView
 import com.amaze.filemanager.adapters.ColorAdapter
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.DialogGridBinding
@@ -165,22 +166,25 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 it.onItemClickListener = adapter
             }
             val fab_skin = activity.accent
-            dialog = MaterialDialog.Builder(activity)
-                .positiveText(com.amaze.filemanager.R.string.cancel)
-                .title(com.amaze.filemanager.R.string.choose_color)
-                .theme(activity.appTheme.materialDialogTheme)
-                .autoDismiss(true)
-                .positiveColor(fab_skin)
-                .neutralColor(fab_skin)
-                .neutralText(com.amaze.filemanager.R.string.default_string)
-                .onNeutral { _, _ ->
-                    activity.setRestartActivity()
-                    activity
-                        .colorPreference
-                        .saveColorPreferences(sharedPref, userColorPreferences)
-                    invalidateEverything()
-                }.customView(v, false)
-                .show()
+            dialog = MaterialDialog(activity).show {
+                title(com.amaze.filemanager.R.string.choose_color)
+                noAutoDismiss()
+                positiveButton(com.amaze.filemanager.R.string.cancel)
+                neutralButton(
+                    com.amaze.filemanager.R.string.default_string,
+                    click = {
+                        activity.setRestartActivity()
+                        activity
+                            .colorPreference
+                            .saveColorPreferences(sharedPref, userColorPreferences)
+                        invalidateEverything()
+                    }
+                )
+                customView(view = v, scrollable = false)
+                getActionButton(WhichButton.POSITIVE).setTextColor(fab_skin)
+                getActionButton(WhichButton.NEGATIVE).setTextColor(fab_skin)
+                getActionButton(WhichButton.NEUTRAL).setTextColor(fab_skin)
+            }
         }
     }
 
@@ -309,11 +313,12 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 userColorPreferences.accent,
                 userColorPreferences.iconSkin
             )
-            if (activity.appTheme.materialDialogTheme == Theme.LIGHT) {
-                selectedColors.setDividerColor(Color.WHITE)
-            } else {
-                selectedColors.setDividerColor(Color.BLACK)
-            }
+            // FIXME!
+//            if (activity.appTheme.materialDialogTheme == Theme.LIGHT) {
+//                selectedColors.setDividerColor(Color.WHITE)
+//            } else {
+//                selectedColors.setDividerColor(Color.BLACK)
+//            }
         } else {
             selectedColors!!.setColorsVisibility(View.GONE)
         }

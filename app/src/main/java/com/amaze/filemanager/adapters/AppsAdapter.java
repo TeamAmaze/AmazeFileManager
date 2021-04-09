@@ -246,36 +246,41 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         != 0) {
                       // system package
                       if (sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false)) {
-                        MaterialDialog.Builder builder1 =
-                            new MaterialDialog.Builder(fragment.requireContext());
-                        builder1
-                            .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
-                            .content(fragment.getString(R.string.unin_system_apk))
-                            .title(fragment.getString(R.string.warning))
-                            .negativeColor(colorAccent)
-                            .positiveColor(colorAccent)
-                            .negativeText(fragment.getString(R.string.no))
-                            .positiveText(fragment.getString(R.string.yes))
-                            .onNegative(((dialog, which) -> dialog.cancel()))
-                            .onPositive(
-                                ((dialog, which) -> {
-                                  ArrayList<HybridFileParcelable> files = new ArrayList<>();
-                                  if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                                    String parent = f1.getParent(fragment.getContext());
-                                    if (!parent.equals("app") && !parent.equals("priv-app")) {
-                                      HybridFileParcelable baseFile =
-                                          new HybridFileParcelable(
-                                              f1.getParent(fragment.getContext()));
-                                      baseFile.setMode(OpenMode.ROOT);
-                                      files.add(baseFile);
-                                    } else files.add(f1);
-                                  } else {
-                                    files.add(f1);
-                                  }
-                                  new DeleteTask(fragment.requireContext()).execute((files));
-                                }))
-                            .build()
-                            .show();
+                        new MaterialDialog(
+                                fragment.requireContext(), MaterialDialog.getDEFAULT_BEHAVIOR())
+                            .show(
+                                dialog -> {
+                                  dialog.message(R.string.unin_system_apk, null, null);
+                                  dialog.setTitle(R.string.warning);
+                                  dialog.positiveButton(
+                                      R.string.yes,
+                                      null,
+                                      dialog1 -> {
+                                        ArrayList<HybridFileParcelable> files = new ArrayList<>();
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                          String parent = f1.getParent(fragment.getContext());
+                                          if (!parent.equals("app") && !parent.equals("priv-app")) {
+                                            HybridFileParcelable baseFile =
+                                                new HybridFileParcelable(
+                                                    f1.getParent(fragment.getContext()));
+                                            baseFile.setMode(OpenMode.ROOT);
+                                            files.add(baseFile);
+                                          } else files.add(f1);
+                                        } else {
+                                          files.add(f1);
+                                        }
+                                        new DeleteTask(fragment.requireContext()).execute((files));
+                                        return null;
+                                      });
+                                  dialog.negativeButton(
+                                      R.string.no,
+                                      null,
+                                      dialog1 -> {
+                                        dialog1.cancel();
+                                        return null;
+                                      });
+                                  return null;
+                                });
                       } else {
                         Toast.makeText(
                                 fragment.getContext(),

@@ -20,8 +20,9 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.WhichButton;
+import com.afollestad.materialdialogs.actions.DialogActionExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.Utils;
@@ -38,6 +39,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.ActivityCompat;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public class PermissionsActivity extends ThemedActivity
     implements ActivityCompat.OnRequestPermissionsResultCallback {
@@ -83,9 +87,13 @@ public class PermissionsActivity extends ThemedActivity
             R.string.grant_storage_permission,
             R.string.grantper,
             R.string.grant,
-            R.string.cancel);
-    materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> finish());
-    materialDialog.setCancelable(false);
+            R.string.cancel,
+            null,
+            v -> {
+              finish();
+              return null;
+            });
+    materialDialog.cancelable(false);
 
     requestPermission(
         Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -104,11 +112,13 @@ public class PermissionsActivity extends ThemedActivity
             R.string.grant_apkinstall_permission,
             R.string.grantper,
             R.string.grant,
-            R.string.cancel);
-    materialDialog
-        .getActionButton(DialogAction.NEGATIVE)
-        .setOnClickListener(v -> materialDialog.dismiss());
-    materialDialog.setCancelable(false);
+            R.string.cancel,
+            null,
+            v -> {
+              v.dismiss();
+              return null;
+            });
+    materialDialog.cancelable(false);
 
     requestPermission(
         Manifest.permission.REQUEST_INSTALL_PACKAGES,
@@ -138,8 +148,7 @@ public class PermissionsActivity extends ThemedActivity
     permissionCallbacks[code] = onPermissionGranted;
 
     if (ActivityCompat.shouldShowRequestPermissionRationale(this, permission)) {
-      rationale
-          .getActionButton(DialogAction.POSITIVE)
+      DialogActionExtKt.getActionButton(rationale, WhichButton.POSITIVE)
           .setOnClickListener(
               v -> {
                 ActivityCompat.requestPermissions(
@@ -167,6 +176,14 @@ public class PermissionsActivity extends ThemedActivity
 
   private boolean isGranted(int[] grantResults) {
     return grantResults.length == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED;
+  }
+
+  private Function1<MaterialDialog, Unit> createPositiveCallback(String permission, int code) {
+    return dialog -> {
+      ActivityCompat.requestPermissions(PermissionsActivity.this, new String[] {permission}, code);
+      dialog.dismiss();
+      return null;
+    };
   }
 
   public interface OnPermissionGranted {

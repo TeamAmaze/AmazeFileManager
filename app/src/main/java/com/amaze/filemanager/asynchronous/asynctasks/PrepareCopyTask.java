@@ -31,12 +31,13 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.WhichButton;
+import com.afollestad.materialdialogs.actions.DialogActionExtKt;
+import com.afollestad.materialdialogs.customview.DialogCustomViewExtKt;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
-import com.amaze.filemanager.databinding.CopyDialogBinding;
 import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -49,9 +50,9 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.IntDef;
@@ -211,40 +212,53 @@ public class PrepareCopyTask
       final ArrayList<HybridFileParcelable> filesToCopy,
       final ArrayList<HybridFileParcelable> conflictingFiles) {
     int accentColor = mainActivity.get().getAccent();
-    final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context.get());
-    CopyDialogBinding copyDialogBinding =
-        CopyDialogBinding.inflate(LayoutInflater.from(mainActivity.get()));
-    dialogBuilder.customView(copyDialogBinding.getRoot(), true);
+    final MaterialDialog dialog =
+        new MaterialDialog(mainActivity.get(), MaterialDialog.getDEFAULT_BEHAVIOR())
+            .show(
+                dialog1 -> {
+                  dialog1 =
+                      DialogCustomViewExtKt.customView(
+                          dialog1, R.layout.copy_dialog, null, false, false, false, false);
+                  dialog1.setTitle(R.string.paste);
 
-    // textView
-    copyDialogBinding.fileNameText.setText(conflictingFiles.get(counter).getName(context.get()));
+                  View view = DialogCustomViewExtKt.getCustomView(dialog1);
 
-    // checkBox
-    final CheckBox checkBox = copyDialogBinding.checkBox;
-    Utils.setTint(context.get(), checkBox, accentColor);
-    dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme());
-    dialogBuilder.title(context.get().getResources().getString(R.string.paste));
-    dialogBuilder.positiveText(R.string.skip);
-    dialogBuilder.negativeText(R.string.overwrite);
-    dialogBuilder.neutralText(R.string.cancel);
-    dialogBuilder.positiveColor(accentColor);
-    dialogBuilder.negativeColor(accentColor);
-    dialogBuilder.neutralColor(accentColor);
-    dialogBuilder.onPositive(
-        (dialog, which) -> {
-          if (checkBox.isChecked()) dialogState = DO_NOT_REPLACE;
-          doNotReplaceFiles(path, filesToCopy, conflictingFiles);
-        });
-    dialogBuilder.onNegative(
-        (dialog, which) -> {
-          if (checkBox.isChecked()) dialogState = REPLACE;
-          replaceFiles(path, filesToCopy, conflictingFiles);
-        });
+                  // textView
+                  TextView textView = view.findViewById(R.id.fileNameText);
+                  textView.setText(conflictingFiles.get(counter).getName(mainActivity.get()));
 
-    final MaterialDialog dialog = dialogBuilder.build();
+                  // checkBox
+                  final CheckBox checkBox = view.findViewById(R.id.checkBox);
+                  Utils.setTint(mainActivity.get(), checkBox, accentColor);
+
+                  dialog1.positiveButton(
+                      R.string.skip,
+                      null,
+                      dialog2 -> {
+                        if (checkBox.isChecked()) dialogState = DO_NOT_REPLACE;
+                        doNotReplaceFiles(path, filesToCopy, conflictingFiles);
+                        return null;
+                      });
+                  dialog1.negativeButton(
+                      R.string.overwrite,
+                      null,
+                      dialog2 -> {
+                        if (checkBox.isChecked()) dialogState = REPLACE;
+                        replaceFiles(path, filesToCopy, conflictingFiles);
+                        return null;
+                      });
+                  dialog1.neutralButton(
+                      R.string.cancel,
+                      null,
+                      dialog2 -> {
+                        dialog2.dismiss();
+                        return null;
+                      });
+                  return null;
+                });
     dialog.show();
-    if (filesToCopy.get(0).getParent(context.get()).equals(path)) {
-      View negative = dialog.getActionButton(DialogAction.NEGATIVE);
+    if (filesToCopy.get(0).getParent(mainActivity.get()).equals(path)) {
+      View negative = DialogActionExtKt.getActionButton(dialog, WhichButton.NEGATIVE);
       negative.setEnabled(false);
     }
   }

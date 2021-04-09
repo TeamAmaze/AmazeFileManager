@@ -37,9 +37,11 @@ import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.isDigitsOnly
 import androidx.fragment.app.DialogFragment
-import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.internal.MDButton
+import com.afollestad.materialdialogs.WhichButton
+import com.afollestad.materialdialogs.actions.getActionButton
+import com.afollestad.materialdialogs.customview.customView
+import com.afollestad.materialdialogs.internal.button.DialogActionButton
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
@@ -119,37 +121,39 @@ class SftpConnectDialog : DialogFragment() {
         }
 
         // Define action for buttons
-        val dialogBuilder = MaterialDialog.Builder(ctx!!.get()!!)
-            .title(R.string.scp_connection)
-            .autoDismiss(false)
-            .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.materialDialogTheme)
-            .negativeText(R.string.cancel)
-            .positiveText(if (edit) R.string.update else R.string.create)
-            .positiveColor(accentColor)
-            .negativeColor(accentColor)
-            .neutralColor(accentColor)
-            .onPositive(handleOnPositiveButton(edit))
-            .onNegative { dialog: MaterialDialog, _: DialogAction? ->
-                dialog.dismiss()
+        return MaterialDialog(ctx!!.get()!!).show {
+            title(R.string.scp_connection)
+            noAutoDismiss()
+            customView(view = binding.root, scrollable = true)
+            positiveButton(
+                res = if (edit) R.string.update else R.string.create,
+                click = handleOnPositiveButton(edit)
+            )
+            negativeButton(
+                R.string.cancel,
+                click = {
+                    dismiss()
+                }
+            )
+            // If we are editing connection settings, give new actions for neutral and negative buttons
+            if (edit) {
+                appendButtonListenersForEdit(this)
             }
 
-        // If we are editing connection settings, give new actions for neutral and negative buttons
-        if (edit) {
-            appendButtonListenersForEdit(dialogBuilder)
-        }
-        val dialog = dialogBuilder.build()
+            // Some validations to make sure the Create/Update button is clickable only when required
+            // setting values are given
+            val okBTN: DialogActionButton = getActionButton(WhichButton.POSITIVE)
+            if (!edit) okBTN.isEnabled = false
+            val validator: TextWatcher = createValidator(edit, okBTN)
+            binding.ipET.addTextChangedListener(validator)
+            binding.portET.addTextChangedListener(validator)
+            binding.usernameET.addTextChangedListener(validator)
+            binding.passwordET.addTextChangedListener(validator)
 
-        // Some validations to make sure the Create/Update button is clickable only when required
-        // setting values are given
-        val okBTN: MDButton = dialog.getActionButton(DialogAction.POSITIVE)
-        if (!edit) okBTN.isEnabled = false
-        val validator: TextWatcher = createValidator(edit, okBTN)
-        binding.ipET.addTextChangedListener(validator)
-        binding.portET.addTextChangedListener(validator)
-        binding.usernameET.addTextChangedListener(validator)
-        binding.passwordET.addTextChangedListener(validator)
-        return dialog
+            getActionButton(WhichButton.POSITIVE).setTextColor(accentColor)
+            getActionButton(WhichButton.NEGATIVE).setTextColor(accentColor)
+            getActionButton(WhichButton.NEUTRAL).setTextColor(accentColor)
+        }
     }
 
     private fun initForm(edit: Boolean) = binding.run {
@@ -192,12 +196,12 @@ class SftpConnectDialog : DialogFragment() {
     }
 
     private fun appendButtonListenersForEdit(
-        dialogBuilder: MaterialDialog.Builder
+        dialog: MaterialDialog
     ) {
         createConnectionSettings().run {
-            dialogBuilder
-                .negativeText(R.string.delete)
-                .onNegative { dialog: MaterialDialog, _: DialogAction? ->
+            dialog.negativeButton(
+                R.string.delete,
+                click = {
                     val path = SshClientUtils.deriveSftpPathFrom(
                         hostname,
                         port,
@@ -226,13 +230,18 @@ class SftpConnectDialog : DialogFragment() {
                             }
                         (activity as MainActivity).drawer.refreshDrawer()
                     }
-                    dialog.dismiss()
-                }.neutralText(R.string.cancel)
-                .onNeutral { dialog: MaterialDialog, _: DialogAction? -> dialog.dismiss() }
+                    it.dismiss()
+                }
+            ).neutralButton(
+                R.string.cancel,
+                click = {
+                    it.dismiss()
+                }
+            )
         }
     }
 
-    private fun createValidator(edit: Boolean, okBTN: MDButton): SimpleTextWatcher {
+    private fun createValidator(edit: Boolean, okBTN: DialogActionButton): SimpleTextWatcher {
         return object : SimpleTextWatcher() {
             override fun afterTextChanged(s: Editable) {
                 val portETValue = binding.portET.text.toString()
@@ -261,40 +270,38 @@ class SftpConnectDialog : DialogFragment() {
         }
     }
 
-    private fun handleOnPositiveButton(edit: Boolean):
-        MaterialDialog.SingleButtonCallback =
-            MaterialDialog.SingleButtonCallback { _, _ ->
-                createConnectionSettings().run {
-                    // Get original SSH host key
-                    AppConfig.getInstance().utilsHandler.getSshHostKey(
-                        SshClientUtils.deriveSftpPathFrom(
-                            hostname,
-                            port,
-                            defaultPath,
-                            username,
-                            arguments?.getString(ARG_PASSWORD, null),
-                            selectedParsedKeyPair
-                        )
-                    )?.let { sshHostKey ->
-                        SshConnectionPool.removeConnection(
-                            SshClientUtils.deriveSftpPathFrom(
-                                hostname,
-                                port,
-                                defaultPath,
-                                username,
-                                password,
-                                selectedParsedKeyPair
-                            )
-                        ) {
-                            reconnectToServerToVerifyHostFingerprint(
-                                this,
-                                sshHostKey,
-                                edit
-                            )
-                        }
-                    } ?: firstConnectToServer(this, edit)
+    private fun handleOnPositiveButton(edit: Boolean): ((MaterialDialog) -> Unit) = {
+        createConnectionSettings().run {
+            // Get original SSH host key
+            AppConfig.getInstance().utilsHandler.getSshHostKey(
+                SshClientUtils.deriveSftpPathFrom(
+                    hostname,
+                    port,
+                    defaultPath,
+                    username,
+                    arguments?.getString(ARG_PASSWORD, null),
+                    selectedParsedKeyPair
+                )
+            )?.let { sshHostKey ->
+                SshConnectionPool.removeConnection(
+                    SshClientUtils.deriveSftpPathFrom(
+                        hostname,
+                        port,
+                        defaultPath,
+                        username,
+                        password,
+                        selectedParsedKeyPair
+                    )
+                ) {
+                    reconnectToServerToVerifyHostFingerprint(
+                        this,
+                        sshHostKey,
+                        edit
+                    )
                 }
-            }
+            } ?: firstConnectToServer(this, edit)
+        }
+    }
 
     private fun firstConnectToServer(
         connectionSettings: ConnectionSettings,
@@ -402,7 +409,7 @@ class SftpConnectDialog : DialogFragment() {
                                         .indexOf('/') + 1
                                 )
                             val okBTN = (dialog as MaterialDialog)
-                                .getActionButton(DialogAction.POSITIVE)
+                                .getActionButton(WhichButton.POSITIVE)
                             okBTN.isEnabled = okBTN.isEnabled || true
                             binding.selectPemBTN.text = selectedParsedKeyPairName
                         }.execute()

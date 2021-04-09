@@ -25,7 +25,6 @@ import static com.amaze.filemanager.utils.Utils.getColor;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -137,7 +136,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
   }
 
   private void updateChart(String totalSpace, List<PieEntry> entries) {
-    boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
+    boolean isDarkTheme = appTheme.getMaterialDialogTheme() == AppTheme.DARK;
 
     PieDataSet set = new PieDataSet(entries, null);
     set.setColors(COLORS);
