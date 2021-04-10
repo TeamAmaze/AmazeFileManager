@@ -16,13 +16,13 @@
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_star_white_24dp"
-        android:shortcutId="shortcut_quick_access   "
+        android:shortcutId="shortcut_quick_access"
         android:shortcutLongLabel="@string/quick"
         android:shortcutShortLabel="@string/quick">
         <intent
             android:action="com.amaze.filemanager.openQuickAccess"
             android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
-            android:targetPackage="com.amaze.filemanager" />
+            android:targetPackage="com.amaze.filemanager.debug" />
     </shortcut>
 
     <shortcut
@@ -34,7 +34,7 @@
         <intent
             android:action="com.amaze.filemanager.openRecent"
             android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
-            android:targetPackage="com.amaze.filemanager" />
+            android:targetPackage="com.amaze.filemanager.debug" />
     </shortcut>
 
     <shortcut
@@ -46,7 +46,7 @@
         <intent
             android:action="com.amaze.filemanager.openAppManager"
             android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
-            android:targetPackage="com.amaze.filemanager" />
+            android:targetPackage="com.amaze.filemanager.debug" />
     </shortcut>
 
     <shortcut
@@ -58,7 +58,7 @@
         <intent
             android:action="com.amaze.filemanager.openFTPServer"
             android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
-            android:targetPackage="com.amaze.filemanager" />
+            android:targetPackage="com.amaze.filemanager.debug" />
     </shortcut>
 
 </shortcuts>

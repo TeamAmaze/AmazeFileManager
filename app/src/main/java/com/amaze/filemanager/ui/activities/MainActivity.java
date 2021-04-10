@@ -288,7 +288,8 @@ public class MainActivity extends PermissionsActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
 
-    // Had to do this hack to test this! It was crashing due to null intent
+    // FIXME: Had to do this hack to test this! It was crashing due to null intent -> Any other way
+    // to fix it? Is this done anywhere else?
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
@@ -373,15 +374,21 @@ public class MainActivity extends PermissionsActivity
   private void setShortcutClickListener(Intent intent) {
     // TODO:06/04/2021 -> Implement this!
     if (null != intent && null != intent.getAction()) {
-      Toast.makeText(mainActivity, intent.getAction(), Toast.LENGTH_SHORT).show();
       if ("com.amaze.filemanager.openQuickAccess".equals(intent.getAction())) {
+
+        Toast.makeText(mainActivity, "Opening Quick Access...", Toast.LENGTH_SHORT).show();
 
       } else if ("com.amaze.filemanager.openRecent".equals(intent.getAction())) {
 
+        Toast.makeText(mainActivity, "Opening Recents...", Toast.LENGTH_SHORT).show();
+
       } else if ("com.amaze.filemanager.openAppManager".equals(intent.getAction())) {
+
+        Toast.makeText(mainActivity, "Opening App Manager...", Toast.LENGTH_SHORT).show();
 
       } else if ("com.amaze.filemanager.openFTPServer".equals(intent.getAction())) {
 
+        Toast.makeText(mainActivity, "Opening FTP Server...", Toast.LENGTH_SHORT).show();
       }
     }
   }
