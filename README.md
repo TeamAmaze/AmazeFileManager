@@ -1,5 +1,3 @@
-# <img height="50px" src="icon.png" data-canonical-src="icon.png" > <a href="https://teamamaze.xyz">Amaze File Manager</a>
-
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
@@ -7,22 +5,17 @@
 [![Chat on Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/joinchat/NNFgWxQUB8fFE3yCsC0w4g)
 [![XDA Developers](https://img.shields.io/badge/XDA-Developers%20-%23AC6E2F.svg?&style=for-the-badge&logo=XDA-Developers&logoColor=white)](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
 
-Downloads
----
+# <a href="https://teamamaze.xyz">Amaze File Manager</a>
 
-[<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
-[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.amaze.filemanager/)
-[<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
-[<img alt="Get it on AFH" width="200" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
-
-Support
----
-[Paypal](https://www.paypal.me/vishalnehra)  
-Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud)  
-Supports Google Drive, Dropbox, OneDrive and Box accounts.
+Simple and attractive Material Design file manager for Android
 
 Overview
 ---
+
+<img src="icon.png" align="right" width="40%" height="100%"></img>
+
+<div style="display:flex;">
+    
 - Open Source, light and smooth
 - Based on Material Design guidelines
 - Basic features like cut, copy, delete, compress, extract etc. easily accessible
@@ -37,6 +30,22 @@ Overview
 - Inbuilt Database Reader, Zip/Rar Reader, Apk Reader, Text Reader
 - No ads or In-app purchases
 - lots more...
+
+</div>
+
+Downloads
+---
+
+[<img alt="Get it on Google Play" height="80" src="https://play.google.com/intl/en_us/badges/images/generic/en_badge_web_generic.png">](https://play.google.com/store/apps/details?id=com.amaze.filemanager)
+[<img alt="Get it on F-Droid" height="80" src="https://fdroid.gitlab.io/artwork/badge/get-it-on.png">](https://f-droid.org/packages/com.amaze.filemanager/)
+[<img alt="Get it on IzzyOnDroid" height="80" src="https://gitlab.com/IzzyOnDroid/repo/-/raw/master/assets/IzzyOnDroid.png">](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)
+[<img alt="Get it on AFH" height="50px" src="https://www.androidfilehost.com/images/afh.png">](https://www.androidfilehost.com/?w=files&flid=73967)
+
+Support
+---
+[OpenCollective](https://opencollective.com/TeamAmaze)
+[Paypal](https://www.paypal.me/vishalnehra)  
+Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive, Dropbox, OneDrive and Box accounts.  
 
 Warning
 ---
