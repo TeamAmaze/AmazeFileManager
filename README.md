@@ -43,8 +43,8 @@ Downloads
 
 Support
 ---
-<a href="https://opencollective.com/TeamAmaze"><img width="20%" alt="OpenCollective" src="https://www.vectorlogo.zone/logos/opencollective/opencollective-ar21.svg" ></a>
-<a href="https://www.paypal.me/vishalnehra"><img width="20%" src="https://www.vectorlogo.zone/logos/paypal/paypal-ar21.svg" alt="PayPal"></a>  
+<a href="https://opencollective.com/TeamAmaze"><img width="20%" alt="OpenCollective" src="opencollective.svg" ></a>
+<a href="https://www.paypal.me/vishalnehra"><img width="20%" src="paypal.svg" alt="PayPal"></a>  
 Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive, Dropbox, OneDrive and Box accounts.  
 
 Warning
