@@ -43,7 +43,7 @@ Downloads
 
 Support
 ---
-[OpenCollective](https://opencollective.com/TeamAmaze)
+[OpenCollective](https://opencollective.com/TeamAmaze)  
 [Paypal](https://www.paypal.me/vishalnehra)  
 Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive, Dropbox, OneDrive and Box accounts.  
 
