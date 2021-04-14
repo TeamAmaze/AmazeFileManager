@@ -187,12 +187,9 @@
   <string name="unin_system_apk">این یک برنامه ی سیستمی میباشد.حذف آن ممکن است در برنامه های سیستمی مشکل ایجاد شود.ادامه میدهید؟</string>
   <string name="warning">اختار</string>
   <string name="donate">اهدا</string>
-  <string name="archive_preferences">آرشیو ترجیحات</string>
-  <string name="archive_extract_folder">آرشیو پوشه استخراجی</string>
-  <string name="zip_create_folder">ساخت پوشه فشرده</string>
+    <string name="archive_extract_folder">آرشیو پوشه استخراجی</string>
   <string name="archive_summary">فایل آرشیو به این پوشه استخراج خواهد شد.پوشه ی پیشفرض پوشه ای است که این فایل در آن قرار دارد </string>
-  <string name="zip_summary">فایل های زیپ جدید  در این پوشه ساخته خواهند شد.پوشه ی پیشفرض پوشه ای است که این فایل در آن قرار دارد</string>
-  <string name="open_as">باز کردن بر اساس</string>
+    <string name="open_as">باز کردن بر اساس</string>
   <string name="text">متنt</string>
   <string name="audio">صوت</string>
   <string name="video">تصویری</string>

@@ -203,11 +203,8 @@
     <string name="unin_system_apk">Toto je systémová aplikácia, jej zmazanie môže viesť k nestabilite systému.\nVymazať?</string>
     <string name="warning">Upozornenie</string>
     <string name="donate">Podporte nás</string>
-    <string name="archive_preferences">Nastavenia archívu</string>
     <string name="archive_extract_folder">Priečinok pre rozbaľovanie archívov</string>
-    <string name="zip_create_folder">Priečinok pre vytváranie archívov</string>
     <string name="archive_summary">Archívne súbory budú extrahované do tohoto priečinku. Predvolená hodnota je priečinok, v ktorom archív uložený</string>
-    <string name="zip_summary">Nové archívne súbory budú vytvorené v tomto priečinku. Predvolená hodnota je priečinok, v ktorom sú súbory uložené</string>
     <string name="open_as">Otvoriť ako</string>
     <string name="text">Text</string>
     <string name="audio">Zvuk</string>

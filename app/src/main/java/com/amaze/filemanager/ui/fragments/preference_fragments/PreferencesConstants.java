@@ -67,7 +67,6 @@ public class PreferencesConstants {
   public static final boolean PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT = false;
 
   public static final String PREFERENCE_ZIP_EXTRACT_PATH = "extractpath";
-  public static final String PREFERENCE_ZIP_CREATE_PATH = "zippath";
   // END preferences.xml constants
 
   // START color_prefs.xml constants

@@ -199,11 +199,8 @@
     <string name="unin_system_apk">Đây là một ứng dụng hệ thống, xóa nó có thể dẫn đến sự mất ổn định hệ thống.\nThực thi?</string>
     <string name="warning">Cảnh báo</string>
     <string name="donate">Ủng hộ</string>
-    <string name="archive_preferences">Tuỳ chọn lưu trữ</string>
     <string name="archive_extract_folder">Thư mục lưu trữ giải nén</string>
-    <string name="zip_create_folder">Tạo thư mục Zip</string>
     <string name="archive_summary">Tệp tin lưu trữ sẽ được giải nén vào thư mục này. Giá trị mặc định là thư mục mà tệp lưu trữ đã hiện diện</string>
-    <string name="zip_summary">Tệp zip sẽ được tạo trên thư mục này. Giá trị mặc định là thư mục mà tệp tin hiện diện</string>
     <string name="open_as">Mở dưới dạng</string>
     <string name="text">Văn bản</string>
     <string name="audio">Âm thanh</string>

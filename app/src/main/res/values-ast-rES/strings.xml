@@ -200,11 +200,8 @@
 inestable\'l preséu.\\n¿Siguir?</string>
     <string name="warning">Alvertencia</string>
     <string name="donate">Donar</string>
-    <string name="archive_preferences">Preferencies d\'archivos</string>
     <string name="archive_extract_folder">Carpeta d\'estraición d\'archivos</string>
-    <string name="zip_create_folder">Carpeta de creación de ZIPs</string>
     <string name="archive_summary">Los archivos estrayeránse nesta carpeta. El valor por defeutu ye\'l direutoriu nel que l\'archivu ta presente</string>
-    <string name="zip_summary">Los ficheros ZIP nuevos crearánse nesta carpeta. El volor por defeutu ye\'l direutoriu nel que los ficheros tán presentes</string>
     <string name="open_as">Abrir como</string>
     <string name="text">Testu</string>
     <string name="audio">Audiu</string>

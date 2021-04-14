@@ -80,7 +80,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     PreferencesConstants.FRAGMENT_FOLDERS,
     PreferencesConstants.FRAGMENT_QUICKACCESSES,
     PreferencesConstants.FRAGMENT_ADVANCED_SEARCH,
-    PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
     PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
     PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE
   };
@@ -348,19 +347,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             .initialPath(
                 sharedPref.getString(
                     PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
-                    Environment.getExternalStorageDirectory().getPath()))
-            .build()
-            .show((PreferencesActivity) getActivity());
-        return true;
-      case PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH:
-        new FolderChooserDialog.Builder(getActivity())
-            .tag(PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH)
-            .goUpLabel(getString(R.string.folder_go_up_one_level))
-            .chooseButton(R.string.choose_folder)
-            .cancelButton(R.string.cancel)
-            .initialPath(
-                sharedPref.getString(
-                    PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
                     Environment.getExternalStorageDirectory().getPath()))
             .build()
             .show((PreferencesActivity) getActivity());

@@ -199,11 +199,8 @@
     <string name="unin_system_apk">இது முறைமை நிரல், இதை நீக்கினால் முறைமை நிலையற்றதாகிவிடும்.\\nதொடரவேண்டுமா?</string>
     <string name="warning">எச்சரிக்கை</string>
     <string name="donate">பண உதவி</string>
-    <string name="archive_preferences">சுருக்ககாப்பு விருப்பங்கள்</string>
     <string name="archive_extract_folder">சுருக்ககாப்பை பிரிக்கும் கோப்புறை</string>
-    <string name="zip_create_folder">ஜிப் உருவாக்கும் கோப்புறை</string>
     <string name="archive_summary">சுருக்ககாப்பு கோப்புகள் இந்த கோப்புறையில் பிரித்தெடுக்கப்படும். சுருக்ககாப்பு இருக்கும் அடைவிலேயே இயல்பாக பிரித்தெடுக்கும்.</string>
-    <string name="zip_summary">புதிய ஜிப் கோப்புகள் இந்த கோப்புறையில் உருவாக்கப்படும். கோப்புகள் இருக்கும் அடைவிலேயே இயல்பாக ஜிப் உருவாக்கப்படும்.</string>
     <string name="open_as">இந்த முறையில் திறக்க</string>
     <string name="text">உரை</string>
     <string name="audio">கேட்பொலி</string>

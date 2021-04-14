@@ -209,11 +209,8 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.\\nProcedere?</string>
     <string name="warning">Attenzione</string>
     <string name="donate">Fai una donazione</string>
-    <string name="archive_preferences">Preferenze archivio</string>
     <string name="archive_extract_folder">Cartella estrazione archivio</string>
-    <string name="zip_create_folder">Cartella creazione file ZIP</string>
     <string name="archive_summary">Gli archivi verranno estratti in questa cartella. Il valore predefinito è la cartella in cui l\'archivio è presente.</string>
-    <string name="zip_summary">I nuovi file ZIP verranno creati in questa cartella. Il valore predefinito è la cartella in cui i file sono presenti.</string>
     <string name="open_as">Apri come</string>
     <string name="text">Testo</string>
     <string name="audio">Audio</string>

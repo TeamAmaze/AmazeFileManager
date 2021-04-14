@@ -207,11 +207,8 @@
     <string name="unin_system_apk">Sistemaren aplikazio bat da hau, ezabatzeak sistemaren ezegonkortasuna ekar lezake.\nJarraitu?</string>
     <string name="warning">Abisua</string>
     <string name="donate">Egin dohaintza</string>
-    <string name="archive_preferences">Artxiboen hobespenak</string>
     <string name="archive_extract_folder">Erauzitako artxiboen karpeta</string>
-    <string name="zip_create_folder">Zip fitxategiak sortzeko karpeta</string>
     <string name="archive_summary">Artxibo fitxategiak karpeta honetara erauziko dira. Lehenetsitako balioa artxiboaren karpeta bera da</string>
-    <string name="zip_summary">Zip fitxategi berriak karpeta honetan sortuko dira. Lehenetsitako balioa fitxategien karpeta bera da</string>
     <string name="open_as">Ireki honela</string>
     <string name="text">Testua</string>
     <string name="audio">Audioa</string>

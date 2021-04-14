@@ -207,11 +207,8 @@
     <string name="unin_system_apk">これはシステムアプリです。削除するとシステムが不安定になる可能性があります。\\n続行しますか?</string>
     <string name="warning">警告</string>
     <string name="donate">寄付</string>
-    <string name="archive_preferences">アーカイブ設定</string>
     <string name="archive_extract_folder">アーカイブ抽出フォルダー</string>
-    <string name="zip_create_folder">Zip 作成フォルダー</string>
     <string name="archive_summary">アーカイブファイルは、このフォルダーに抽出されます。デフォルト値は、アーカイブが存在するディレクトリーです</string>
-    <string name="zip_summary">新しい zip ファイルがこのフォルダーに作成されます。デフォルト値は、ファイルが存在するディレクトリーです</string>
     <string name="open_as">...として開く</string>
     <string name="text">テキスト</string>
     <string name="audio">オーディオ</string>

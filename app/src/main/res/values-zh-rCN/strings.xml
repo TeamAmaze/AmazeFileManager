@@ -207,11 +207,8 @@
     <string name="unin_system_apk">这是一个系统应用，删除它可能导致系统不稳定。\n请问您是否继续？</string>
     <string name="warning">警告</string>
     <string name="donate">捐赠</string>
-    <string name="archive_preferences">压缩设置</string>
     <string name="archive_extract_folder">压缩包提取目录</string>
-    <string name="zip_create_folder">ZIP 创建目录</string>
     <string name="archive_summary">压缩包内的文件会被解压到此目录，默认解压到压缩包所在目录。</string>
-    <string name="zip_summary">新 ZIP 文件会被创建到此目录，默认创建压缩包到当前目录。</string>
     <string name="open_as">打开方式</string>
     <string name="text">文本</string>
     <string name="audio">音乐</string>

@@ -193,12 +193,9 @@
   <string name="unin_system_apk">Esta es una aplicación del sistema, borrarla puede provocar inestabilidad en el sistema.\n¿Continuar?</string>
   <string name="warning">Aviso</string>
   <string name="donate">Donar</string>
-  <string name="archive_preferences">Archivadores</string>
-  <string name="archive_extract_folder">Carpeta donde extraer los archivadores</string>
-  <string name="zip_create_folder">Carpeta para crear ZIPs</string>
+    <string name="archive_extract_folder">Carpeta donde extraer los archivadores</string>
   <string name="archive_summary">Los ficheros del archivador se extraerán en esta carpeta. El valor por defecto es el directorio donde se encuentre el archivador</string>
-  <string name="zip_summary">Los nuevos archivos ZIP se crearán en esta carpeta. El valor por defecto es el directorio donde los ficheros se encuentran.</string>
-  <string name="open_as">Abrir como</string>
+    <string name="open_as">Abrir como</string>
   <string name="text">Texto</string>
   <string name="audio">Audio</string>
   <string name="video">Vídeo</string>

@@ -180,12 +180,9 @@
   <string name="unin_system_apk">Aceasta este o aplicație de sistem, ștergerea ei ar putea duce la instabilitatea sistemului.\nContinuaţi?</string>
   <string name="warning">Avertizare</string>
   <string name="donate">Donaţi</string>
-  <string name="archive_preferences">Preferinţe arhive</string>
-  <string name="archive_extract_folder">Dosar extragere arhivă</string>
-  <string name="zip_create_folder">Dosar creare Zip</string>
+    <string name="archive_extract_folder">Dosar extragere arhivă</string>
   <string name="archive_summary">Fișierele arhivă vor fi extrase în acest dosar. Valoarea implicită este dosarul în care este arhiva în prezent</string>
-  <string name="zip_summary">Fișierele zip noi vor fi create în acest dosar. Valoarea implicită este dosarul în care fișierele sunt în prezent</string>
-  <string name="open_as">Deschidere ca</string>
+    <string name="open_as">Deschidere ca</string>
   <string name="video">Videoclip</string>
   <string name="other">Altele</string>
   <string name="image">Imagine</string>
