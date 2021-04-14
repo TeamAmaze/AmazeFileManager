@@ -655,21 +655,29 @@ public abstract class FileUtil {
     FileOutputStream out = null;
     OutputStreamWriter outputWriter = null;
     try {
-      f.createNewFile();
-      out = new FileOutputStream(f, false);
-      outputWriter = new OutputStreamWriter(out);
-      outputWriter.write(data);
-      return true;
+      if (f.createNewFile()) {
+        out = new FileOutputStream(f, false);
+        outputWriter = new OutputStreamWriter(out);
+        outputWriter.write(data);
+        return true;
+      } else {
+        return false;
+      }
     } catch (IOException io) {
-      Log.e(FileUtil.LOG, io.getMessage());
+      Log.e(FileUtil.LOG, "Error writing file contents", io);
       return false;
     } finally {
       try {
-        outputWriter.close();
-        out.flush();
-        out.close();
+        if (outputWriter != null) {
+          outputWriter.flush();
+          outputWriter.close();
+        }
+        if (out != null) {
+          out.flush();
+          out.close();
+        }
       } catch (IOException e) {
-        Log.e(FileUtil.LOG, e.getMessage());
+        Log.e(FileUtil.LOG, "Error closing file output stream", e);
       }
     }
   }
