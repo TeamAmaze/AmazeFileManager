@@ -235,6 +235,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           }
           return false;
         });
+    //    listView.setOnDragListener(new MainFragmentDragListener());
     mToolbarContainer.setOnTouchListener(
         (view, motionEvent) -> {
           if (adapter != null && stopAnims) {

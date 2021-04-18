@@ -47,6 +47,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
+import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.Icons;
@@ -135,6 +136,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       genericColor,
       apkColor;
   private int offset = 0;
+  private boolean enableMarquee;
+  private int dragAndDropPreference;
 
   public RecyclerAdapter(
       PreferenceActivity preferenceActivity,
@@ -151,6 +154,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     this.utilsProvider = utilsProvider;
     this.context = context;
     this.sharedPrefs = sharedPrefs;
+    this.enableMarquee =
+        sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
+    this.dragAndDropPreference =
+        sharedPrefs.getInt(
+            PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+            PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
 
     mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     accentColor = m.getMainActivity().getAccent();
@@ -217,13 +226,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     notifyItemChanged(position);
+    invalidateActionMode();
+  }
+
+  public void invalidateActionMode() {
     if (mainFrag.mActionMode != null && mainFrag.selection) {
       // we have the actionmode visible, invalidate it's views
       mainFrag.mActionMode.invalidate();
     }
     if (getCheckedItems().size() == 0) {
       mainFrag.selection = false;
-      mainFrag.mActionMode.finish();
+      if (mainFrag.mActionMode != null) {
+        mainFrag.mActionMode.finish();
+      }
       mainFrag.mActionMode = null;
     }
   }
@@ -241,18 +256,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(i);
       }
     }
-
-    if (mainFrag.mActionMode != null) {
-      mainFrag.mActionMode.invalidate();
-    }
-
-    if (getCheckedItems().size() == 0) {
-      mainFrag.selection = false;
-      if (mainFrag.mActionMode != null) {
-        mainFrag.mActionMode.finish();
-      }
-      mainFrag.mActionMode = null;
-    }
+    invalidateActionMode();
   }
 
   /**
@@ -271,16 +275,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(i);
       }
     }
-
-    if (mainFrag.mActionMode != null) {
-      mainFrag.mActionMode.invalidate();
-    }
-
-    if (getCheckedItems().size() == 0) {
-      mainFrag.selection = false;
-      if (mainFrag.mActionMode != null) mainFrag.mActionMode.finish();
-      mainFrag.mActionMode = null;
-    }
+    invalidateActionMode();
   }
 
   public ArrayList<LayoutElementParcelable> getCheckedItems() {
@@ -293,6 +288,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     return selected;
+  }
+
+  public ArrayList<ListItem> getItemsDigested() {
+    return itemsDigested;
   }
 
   public boolean areAllChecked(String path) {
@@ -325,6 +324,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (holder instanceof ItemViewHolder) {
       ((ItemViewHolder) holder).rl.clearAnimation();
       ((ItemViewHolder) holder).txtTitle.setSelected(false);
+      ((ItemViewHolder) holder).rl.setOnDragListener(null);
     }
     super.onViewDetachedFromWindow(holder);
   }
@@ -519,9 +519,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
     if (vholder instanceof ItemViewHolder) {
       final ItemViewHolder holder = (ItemViewHolder) vholder;
-
-      boolean enableMarquee =
-          sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
       holder.txtTitle.setEllipsize(
           enableMarquee ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.MIDDLE);
 
@@ -545,7 +542,41 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         itemsDigested.get(p).setAnimate(true);
       }
       final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
+      if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+          || rowItem.isDirectory) {
+        holder.rl.setOnDragListener(
+            new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
+      }
 
+      holder.rl.setOnLongClickListener(
+          p1 -> {
+            if (!isBackButton) {
+              if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+                toggleChecked(
+                    vholder.getAdapterPosition(),
+                    mainFrag.IS_LIST ? holder.checkImageView : holder.checkImageViewGrid);
+              }
+              if (itemsDigested.get(p).getChecked() == ListItem.CHECKED
+                  || dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+                // toggle drag flag to true for list item due to the fact
+                // that we might have set it false in a previous drag event
+                if (!itemsDigested.get(p).shouldToggleDragChecked) {
+                  itemsDigested.get(p).toggleShouldToggleDragChecked();
+                }
+                View.DragShadowBuilder dragShadowBuilder =
+                    new View.DragShadowBuilder(
+                        dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+                            ? holder.dummyView
+                            : holder.iconLayout);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                  p1.startDragAndDrop(null, dragShadowBuilder, null, 0);
+                } else {
+                  p1.startDrag(null, dragShadowBuilder, null, 0);
+                }
+              }
+            }
+            return true;
+          });
       if (mainFrag.IS_LIST) {
         // clear previously cached icon
         GlideApp.with(mainFrag).clear(holder.genericIcon);
@@ -572,16 +603,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                   utilsProvider.getAppTheme(),
                   mainFrag.getResources().getDisplayMetrics()));
         }
-
-        holder.rl.setOnLongClickListener(
-            p1 -> {
-              // check if the item on which action is performed is not the first {goback} item
-              if (!isBackButton) {
-                toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
-              }
-
-              return true;
-            });
         holder.txtTitle.setText(rowItem.title);
         holder.genericText.setText("");
 
@@ -745,14 +766,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             v -> {
               mainFrag.onListItemClicked(
                   isBackButton, vholder.getAdapterPosition(), rowItem, holder.checkImageViewGrid);
-            });
-
-        holder.rl.setOnLongClickListener(
-            p1 -> {
-              if (!isBackButton) {
-                toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
-              }
-              return true;
             });
         holder.txtTitle.setText(rowItem.title);
         holder.imageView1.setVisibility(View.INVISIBLE);
@@ -1093,13 +1106,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     return preferenceActivity.getBoolean(key);
   }
 
-  private static class ListItem {
+  public static class ListItem {
     public static final int CHECKED = 0, NOT_CHECKED = 1, UNCHECKABLE = 2;
 
     private LayoutElementParcelable elem;
     private @ListElemType int specialType;
     private boolean checked;
     private boolean animate;
+    private boolean shouldToggleDragChecked = true;
 
     ListItem(LayoutElementParcelable elem) {
       this(false, elem);
@@ -1122,6 +1136,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       if (checked) return CHECKED;
       else if (specialType == TYPE_ITEM) return NOT_CHECKED;
       else return UNCHECKABLE;
+    }
+
+    public LayoutElementParcelable getElem() {
+      return elem;
+    }
+
+    public int getSpecialType() {
+      return this.specialType;
+    }
+
+    public boolean getShouldToggleDragChecked() {
+      return this.shouldToggleDragChecked;
+    }
+
+    public void toggleShouldToggleDragChecked() {
+      this.shouldToggleDragChecked = !this.shouldToggleDragChecked;
     }
 
     public void setAnimate(boolean animating) {

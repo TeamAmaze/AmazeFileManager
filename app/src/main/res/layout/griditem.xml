@@ -161,4 +161,11 @@
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
+    <View
+        android:id="@+id/dummy_view"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:visibility="invisible"
+        android:background="@null"
+        />
 </FrameLayout>

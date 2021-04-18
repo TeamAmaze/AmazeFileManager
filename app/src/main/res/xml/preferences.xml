@@ -109,6 +109,9 @@
             android:defaultValue="true"
             android:key="enableMarqueeFilename"
             android:title="@string/enable_marquee_filename"/>
+        <Preference
+            android:key="dragAndDropPreference"
+            android:title="@string/drag_and_drop_preference"/>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/archive_preferences">

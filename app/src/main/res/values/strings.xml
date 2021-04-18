@@ -703,5 +703,9 @@
     <string name="ftp_prompt_restart_server">You will need to restart the FTP server for changes to take effect.</string>
     <string name="error_permission_denied">Permission denied</string>
     <string name="error_archive_password_incorrect">Wrong archive password.</string>
+    <string name="drag_and_drop_preference">Select drag and drop preference</string>
+    <string name="drag_to_move">Touch and drag to move files</string>
+    <string name="drag_to_copy">Touch and drag to copy files</string>
+    <string name="drag_to_select">Touch and drag to select files</string>
 </resources>
 

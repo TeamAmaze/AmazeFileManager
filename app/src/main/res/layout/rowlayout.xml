@@ -27,9 +27,10 @@
     android:paddingStart="@dimen/minimal_material_padding"
     android:paddingRight="@dimen/minimal_material_padding"
     android:paddingEnd="@dimen/minimal_material_padding"
+    android:focusable="true"
     >
     <RelativeLayout
-        android:id="@+id/icon_frame_parent"
+        android:id="@+id/icon_frame_grid"
         android:layout_width="@dimen/minimal_icon_parent_width"
         android:layout_height="@dimen/minimal_row_size"
         android:layout_alignParentStart="true"
@@ -103,8 +104,8 @@
         android:src="@drawable/ic_more_vert_black_48dp"/>
 
     <RelativeLayout
-        android:layout_toRightOf="@id/icon_frame_parent"
-        android:layout_toEndOf="@id/icon_frame_parent"
+        android:layout_toRightOf="@id/icon_frame_grid"
+        android:layout_toEndOf="@id/icon_frame_grid"
         android:layout_toLeftOf="@id/properties"
         android:layout_toStartOf="@id/properties"
         android:layout_width="match_parent"
@@ -164,5 +165,13 @@
                 />
         </RelativeLayout>
     </RelativeLayout>
-
+    <View
+        android:id="@+id/dummy_view"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentLeft="true"
+        android:visibility="invisible"
+        android:background="@null"
+        />
 </RelativeLayout>

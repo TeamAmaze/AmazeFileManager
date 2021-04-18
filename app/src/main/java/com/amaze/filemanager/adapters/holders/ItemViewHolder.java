@@ -53,6 +53,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
   public final ImageView checkImageView;
   public final ImageView checkImageViewGrid;
   public final RelativeLayout iconLayout;
+  public final View dummyView;
 
   public ItemViewHolder(View view) {
     super(view);
@@ -71,5 +72,6 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
     genericIcon = view.findViewById(R.id.generic_icon);
     checkImageViewGrid = view.findViewById(R.id.check_icon_grid);
     iconLayout = view.findViewById(R.id.icon_frame_grid);
+    dummyView = view.findViewById(R.id.dummy_view);
   }
 }
