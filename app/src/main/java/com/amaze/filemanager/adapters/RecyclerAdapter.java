@@ -322,7 +322,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (holder instanceof ItemViewHolder) {
       ((ItemViewHolder) holder).rl.clearAnimation();
       ((ItemViewHolder) holder).txtTitle.setSelected(false);
-      ((ItemViewHolder) holder).rl.setOnDragListener(null);
+      if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT) {
+        ((ItemViewHolder) holder).rl.setOnDragListener(null);
+      }
     }
     super.onViewDetachedFromWindow(holder);
   }
@@ -540,8 +542,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         itemsDigested.get(p).setAnimate(true);
       }
       final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
-      holder.rl.setOnDragListener(
-          new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
+      if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT) {
+        holder.rl.setOnDragListener(
+            new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
+      }
 
       holder.rl.setOnLongClickListener(
           p1 -> {
@@ -551,8 +555,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     vholder.getAdapterPosition(),
                     mainFrag.IS_LIST ? holder.checkImageView : holder.checkImageViewGrid);
               }
-              if (itemsDigested.get(p).getChecked() == ListItem.CHECKED
-                  || dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+              if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT
+                  && (itemsDigested.get(p).getChecked() == ListItem.CHECKED
+                      || dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT)) {
                 // toggle drag flag to true for list item due to the fact
                 // that we might have set it false in a previous drag event
                 if (!itemsDigested.get(p).shouldToggleDragChecked) {
@@ -568,12 +573,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else {
                   p1.startDrag(null, dragShadowBuilder, null, 0);
                 }
-                mainFrag.initCornerDragListeners(
-                    false,
-                    dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT,
-                    dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
-                        ? holder.dummyView
-                        : holder.iconLayout);
+                mainFrag
+                    .getMainActivity()
+                    .initCornersDragListener(
+                        false,
+                        dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
               }
             }
             return true;

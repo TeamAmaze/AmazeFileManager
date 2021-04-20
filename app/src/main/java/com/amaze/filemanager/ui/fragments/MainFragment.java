@@ -62,7 +62,9 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -113,7 +115,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -198,6 +199,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   /** For caching the back button */
   private LayoutElementParcelable back = null;
 
+  private int dragAndDropPreference;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -207,6 +210,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     dataUtils = DataUtils.getInstance();
     utilsProvider = getMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    dragAndDropPreference =
+        sharedPref.getInt(
+            PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+            PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
     res = getResources();
 
     no = getArguments().getInt("no", 1);
@@ -1752,11 +1759,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     return LIST_ELEMENTS;
   }
 
-  public void initCornerDragListeners(
-      boolean destroy, boolean shouldInvokeLeftAndRight, @Nullable View shadowView) {
+  public void initTopAndEmptyAreaDragListeners(boolean destroy) {
     if (destroy) {
       mToolbarContainer.setOnDragListener(null);
       listView.stopScroll();
+      listView.setOnDragListener(null);
+      nofilesview.setOnDragListener(null);
     } else {
       mToolbarContainer.setOnDragListener(
           new TabFragmentBottomDragListener(
@@ -1768,22 +1776,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 stopSmoothScrollListView();
                 return null;
               }));
-      View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        mToolbarContainer.startDragAndDrop(null, dragShadowBuilder, null, 0);
-      } else {
-        mToolbarContainer.startDrag(null, dragShadowBuilder, null, 0);
-      }
+      listView.setOnDragListener(
+          new RecyclerAdapterDragListener(adapter, null, dragAndDropPreference, this));
+      nofilesview.setOnDragListener(
+          new RecyclerAdapterDragListener(adapter, null, dragAndDropPreference, this));
     }
-    if (shouldInvokeLeftAndRight) {
-      initLeftRightAndBottomDragListeners(destroy, shadowView);
-    }
-    getMainActivity().initBottomDragListener(destroy, shadowView);
-  }
-
-  private void initLeftRightAndBottomDragListeners(boolean destroy, @Nullable View shadowView) {
-    TabFragment tabFragment = getMainActivity().getTabFragment();
-    tabFragment.initLeftAndRightDragListeners(destroy, shadowView);
   }
 
   public void disableActionMode() {

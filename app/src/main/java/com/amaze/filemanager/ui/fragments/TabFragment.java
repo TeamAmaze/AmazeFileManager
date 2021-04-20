@@ -54,7 +54,6 @@ import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -426,8 +425,19 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
             mainFragment);
   }
 
-  public void initLeftAndRightDragListeners(boolean destroy, @Nullable View shadowView) {
-    View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
+  public void initLeftRightAndTopDragListeners(boolean destroy, boolean shouldInvokeLeftAndRight) {
+    if (shouldInvokeLeftAndRight) {
+      initLeftAndRightDragListeners(destroy);
+    }
+    for (Fragment fragment : fragments) {
+      if (fragment instanceof MainFragment) {
+        MainFragment m = (MainFragment) fragment;
+        m.initTopAndEmptyAreaDragListeners(destroy);
+      }
+    }
+  }
+
+  private void initLeftAndRightDragListeners(boolean destroy) {
     final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
     View leftPlaceholder = rootView.findViewById(R.id.placeholder_drag_left);
     View rightPlaceholder = rootView.findViewById(R.id.placeholder_drag_right);
@@ -464,13 +474,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
                 }
                 return null;
               }));
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        leftPlaceholder.startDragAndDrop(null, dragShadowBuilder, null, 0);
-        rightPlaceholder.startDragAndDrop(null, dragShadowBuilder, null, 0);
-      } else {
-        leftPlaceholder.startDrag(null, dragShadowBuilder, null, 0);
-        rightPlaceholder.startDrag(null, dragShadowBuilder, null, 0);
-      }
     }
   }
 }

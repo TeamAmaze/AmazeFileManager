@@ -103,7 +103,8 @@ public class PreferencesConstants {
   // END sort preferences
 
   // drag and drop preferences
-  public static final int PREFERENCE_DRAG_TO_MOVE = 0;
-  public static final int PREFERENCE_DRAG_TO_COPY = 1;
-  public static final int PREFERENCE_DRAG_TO_SELECT = 2;
+  public static final int PREFERENCE_DRAG_DEFAULT = 0;
+  public static final int PREFERENCE_DRAG_TO_MOVE = 1;
+  public static final int PREFERENCE_DRAG_TO_COPY = 2;
+  public static final int PREFERENCE_DRAG_TO_SELECT = 3;
 }

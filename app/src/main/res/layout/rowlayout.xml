@@ -28,6 +28,7 @@
     android:paddingRight="@dimen/minimal_material_padding"
     android:paddingEnd="@dimen/minimal_material_padding"
     android:focusable="true"
+    android:focusableInTouchMode="true"
     >
     <RelativeLayout
         android:id="@+id/icon_frame_grid"

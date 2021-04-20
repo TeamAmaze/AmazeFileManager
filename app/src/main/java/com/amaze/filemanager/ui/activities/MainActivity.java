@@ -2049,9 +2049,13 @@ public class MainActivity extends PermissionsActivity
     // For passing code check
   }
 
-  public void initBottomDragListener(boolean destroy, @Nullable View shadowView) {
+  public void initCornersDragListener(boolean destroy, boolean shouldInvokeLeftAndRight) {
+    initBottomDragListener(destroy);
+    initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
+  }
+
+  private void initBottomDragListener(boolean destroy) {
     View bottomPlaceholder = findViewById(R.id.placeholder_drag_bottom);
-    View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
     if (destroy) {
       bottomPlaceholder.setOnDragListener(null);
       bottomPlaceholder.setVisibility(View.GONE);
@@ -2067,12 +2071,12 @@ public class MainActivity extends PermissionsActivity
                 getCurrentMainFragment().stopSmoothScrollListView();
                 return null;
               }));
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-        bottomPlaceholder.startDragAndDrop(null, dragShadowBuilder, null, 0);
-      } else {
-        bottomPlaceholder.startDrag(null, dragShadowBuilder, null, 0);
-      }
     }
+  }
+
+  private void initLeftRightAndTopDragListeners(boolean destroy, boolean shouldInvokeLeftAndRight) {
+    TabFragment tabFragment = getTabFragment();
+    tabFragment.initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
   }
 
   private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {

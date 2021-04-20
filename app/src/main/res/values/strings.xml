@@ -707,5 +707,6 @@
     <string name="drag_to_move">Touch and drag to move files</string>
     <string name="drag_to_copy">Touch and drag to copy files</string>
     <string name="drag_to_select">Touch and drag to select files</string>
+    <string name="disable">Disable</string>
 </resources>
 

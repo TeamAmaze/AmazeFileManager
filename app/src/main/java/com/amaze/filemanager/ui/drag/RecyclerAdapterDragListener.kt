@@ -24,10 +24,12 @@ import android.os.AsyncTask
 import android.util.Log
 import android.view.DragEvent
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.adapters.holders.ItemViewHolder
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
+import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
@@ -36,7 +38,7 @@ import java.util.*
 
 class RecyclerAdapterDragListener(
     private val adapter: RecyclerAdapter,
-    private val holder: ItemViewHolder,
+    private val holder: ItemViewHolder?,
     private val dragAndDropPref: Int,
     private val mainFragment: MainFragment
 ) : View.OnDragListener {
@@ -46,12 +48,11 @@ class RecyclerAdapterDragListener(
     override fun onDrag(p0: View?, p1: DragEvent?): Boolean {
         return when (p1?.action) {
             DragEvent.ACTION_DRAG_ENDED -> {
-                Log.d("TAG", "ENDING DRAG, DISABLE CORNERS")
-                mainFragment.initCornerDragListeners(
+                Log.d(TAG, "ENDING DRAG, DISABLE CORNERS")
+                mainFragment.mainActivity.initCornersDragListener(
                     true,
                     dragAndDropPref
-                        != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT,
-                    null
+                        != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
                 )
                 if (dragAndDropPref
                     != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
@@ -62,32 +63,53 @@ class RecyclerAdapterDragListener(
                 true
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
-                if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                    if (adapter.itemsDigested.size != 0 &&
-                        holder.adapterPosition < adapter.itemsDigested.size
-                    ) {
-                        val listItem = (adapter.itemsDigested[holder.adapterPosition])
-                        if (listItem.specialType != RecyclerAdapter.TYPE_BACK &&
-                            listItem.shouldToggleDragChecked
+                holder?.run {
+                    if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+                        if (adapter.itemsDigested.size != 0 &&
+                            holder.adapterPosition < adapter.itemsDigested.size
                         ) {
-                            listItem.toggleShouldToggleDragChecked()
-                            adapter.toggleChecked(
-                                holder.adapterPosition,
-                                if (mainFragment.IS_LIST) holder.checkImageView
-                                else holder.checkImageViewGrid
-                            )
+                            val listItem = (adapter.itemsDigested[holder.adapterPosition])
+                            if (listItem.specialType != RecyclerAdapter.TYPE_BACK &&
+                                listItem.shouldToggleDragChecked
+                            ) {
+                                listItem.toggleShouldToggleDragChecked()
+                                adapter.toggleChecked(
+                                    holder.adapterPosition,
+                                    if (mainFragment.IS_LIST) holder.checkImageView
+                                    else holder.checkImageViewGrid
+                                )
+                            }
+                        }
+                    } else {
+                        val listItem = adapter.itemsDigested[holder.adapterPosition]
+                        val currentElement = listItem.elem
+                        if (currentElement.isDirectory && listItem.specialType !=
+                            RecyclerAdapter.TYPE_BACK
+                        ) {
+                            holder.rl.isSelected = true
                         }
                     }
                 }
                 true
             }
             DragEvent.ACTION_DRAG_EXITED -> {
-                if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                    if (adapter.itemsDigested.size != 0 &&
-                        holder.adapterPosition < adapter.itemsDigested.size
-                    ) {
-                        val listItem = (adapter.itemsDigested[holder.adapterPosition])
-                        listItem.toggleShouldToggleDragChecked()
+                holder?.run {
+                    if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+                        if (adapter.itemsDigested.size != 0 &&
+                            holder.adapterPosition < adapter.itemsDigested.size
+                        ) {
+                            val listItem = (adapter.itemsDigested[holder.adapterPosition])
+                            listItem.toggleShouldToggleDragChecked()
+                        }
+                    } else {
+                        var checkedItems: ArrayList<LayoutElementParcelable> = adapter.checkedItems
+                        val listItem = adapter.itemsDigested[holder.adapterPosition]
+                        val currentElement = listItem.elem
+                        if (currentElement.isDirectory && listItem.specialType !=
+                            RecyclerAdapter.TYPE_BACK && !checkedItems.contains(currentElement)
+                        ) {
+                            holder.rl.isSelected = false
+                        }
                     }
                 }
                 true
@@ -96,6 +118,11 @@ class RecyclerAdapterDragListener(
                 return true
             }
             DragEvent.ACTION_DRAG_LOCATION -> {
+                holder?.run {
+                    if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+                        holder.rl.requestFocus()
+                    }
+                }
                 true
             }
             DragEvent.ACTION_DROP -> {
@@ -103,13 +130,36 @@ class RecyclerAdapterDragListener(
                     var checkedItems: ArrayList<LayoutElementParcelable> = adapter.checkedItems
                     var currentFileParcelable: HybridFileParcelable? = null
                     var isCurrentElementDirectory: Boolean? = null
+                    var isEmptyArea: Boolean? = null
                     var pasteLocation: String = if (adapter.itemsDigested.size == 0) {
                         mainFragment.currentPath
                     } else {
-                        val currentElement = adapter.itemsDigested[holder.adapterPosition].elem
-                        currentFileParcelable = currentElement.generateBaseFile()
-                        isCurrentElementDirectory = currentElement.isDirectory
-                        currentElement.desc
+                        if (holder == null || holder.adapterPosition == RecyclerView.NO_POSITION) {
+                            Log.d(TAG, "Trying to drop into empty area")
+                            isEmptyArea = true
+                            mainFragment.currentPath
+                        } else {
+                            if (adapter.itemsDigested[holder.adapterPosition].specialType
+                                == RecyclerAdapter.TYPE_BACK
+                            ) {
+                                // dropping in goback button
+                                // hack to get the parent path
+                                Log.d(TAG, "Drop on goback button")
+                                val hybridFileParcelable = mainFragment
+                                    .elementsList[1].generateBaseFile()
+                                val hybridFile = HybridFile(
+                                    hybridFileParcelable.mode,
+                                    hybridFileParcelable.getParent(mainFragment.context)
+                                )
+                                hybridFile.getParent(mainFragment.context)
+                            } else {
+                                val currentElement = adapter
+                                    .itemsDigested[holder.adapterPosition].elem
+                                currentFileParcelable = currentElement.generateBaseFile()
+                                isCurrentElementDirectory = currentElement.isDirectory
+                                currentElement.desc
+                            }
+                        }
                     }
                     if (checkedItems.size == 0) {
                         // probably because we switched tabs and
@@ -127,9 +177,15 @@ class RecyclerAdapterDragListener(
                         val file = it.generateBaseFile()
                         if (it.desc.equals(pasteLocation) ||
                             (
-                                isCurrentElementDirectory == false &&
-                                    currentFileParcelable?.getParent(mainFragment.context)
-                                        .equals(file.getParent(mainFragment.context))
+                                (
+                                    isCurrentElementDirectory == false &&
+                                        currentFileParcelable?.getParent(mainFragment.context)
+                                            .equals(file.getParent(mainFragment.context))
+                                    ) ||
+                                    (
+                                        isEmptyArea == true && mainFragment.currentPath
+                                            .equals(file.getParent(mainFragment.context))
+                                        )
                                 )
                         ) {
                             Log.d(
@@ -143,7 +199,7 @@ class RecyclerAdapterDragListener(
                         }
                         arrayList.add(it.generateBaseFile())
                     }
-                    if (isCurrentElementDirectory == false) {
+                    if (isCurrentElementDirectory == false || isEmptyArea == true) {
                         pasteLocation = mainFragment.currentPath
                     }
                     Log.d(
