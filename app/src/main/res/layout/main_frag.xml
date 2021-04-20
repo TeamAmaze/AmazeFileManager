@@ -89,11 +89,4 @@
             </RelativeLayout>
         </androidx.core.widget.NestedScrollView>
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
-    <View
-        android:id="@+id/placeholder_drag_bottom"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/material_generic_medium"
-        android:background="@null"
-        android:visibility="gone"
-        />
 </FrameLayout>

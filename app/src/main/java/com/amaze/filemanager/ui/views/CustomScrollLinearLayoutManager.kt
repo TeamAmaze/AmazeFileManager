@@ -18,34 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.drag
+package com.amaze.filemanager.ui.views
 
-import android.view.DragEvent
-import android.view.View
+import android.content.Context
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 
-class TabFragmentSideDragListener(private val dragEventCallback: () -> Unit) : View.OnDragListener {
-    override fun onDrag(p0: View?, p1: DragEvent?): Boolean {
-        return when (p1?.action) {
-            DragEvent.ACTION_DRAG_ENDED -> {
-                true
-            }
-            DragEvent.ACTION_DRAG_ENTERED -> {
-                dragEventCallback()
-                true
-            }
-            DragEvent.ACTION_DRAG_EXITED -> {
-                true
-            }
-            DragEvent.ACTION_DRAG_STARTED -> {
-                true
-            }
-            DragEvent.ACTION_DRAG_LOCATION -> {
-                true
-            }
-            DragEvent.ACTION_DROP -> {
-                true
-            }
-            else -> false
-        }
+class CustomScrollLinearLayoutManager(context: Context?) : LinearLayoutManager(context) {
+
+    override fun smoothScrollToPosition(
+        recyclerView: RecyclerView?,
+        state: RecyclerView.State?,
+        position: Int
+    ) {
+        val linearSmoothScroller = CustomLinearSmoothScroller(recyclerView!!.context, true)
+        linearSmoothScroller.targetPosition = position
+        startSmoothScroll(linearSmoothScroller)
     }
 }

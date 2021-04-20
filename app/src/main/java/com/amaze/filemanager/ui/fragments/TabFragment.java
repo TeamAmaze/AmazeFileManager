@@ -30,9 +30,11 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
+import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
@@ -52,6 +54,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -86,13 +89,14 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
   // colors relative to current visible tab
   private @ColorInt int startColor, endColor;
+  private ViewGroup rootView;
 
   private ArgbEvaluator evaluator = new ArgbEvaluator();
 
   @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-    ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
+    rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
 
     fragmentManager = getActivity().getSupportFragmentManager();
 
@@ -420,5 +424,53 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
             mainFragment.folder_count,
             mainFragment.file_count,
             mainFragment);
+  }
+
+  public void initLeftAndRightDragListeners(boolean destroy, @Nullable View shadowView) {
+    View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
+    final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+    View leftPlaceholder = rootView.findViewById(R.id.placeholder_drag_left);
+    View rightPlaceholder = rootView.findViewById(R.id.placeholder_drag_right);
+    DataUtils dataUtils = DataUtils.getInstance();
+    if (destroy) {
+      leftPlaceholder.setOnDragListener(null);
+      rightPlaceholder.setOnDragListener(null);
+      leftPlaceholder.setVisibility(View.GONE);
+      rightPlaceholder.setVisibility(View.GONE);
+    } else {
+      leftPlaceholder.setVisibility(View.VISIBLE);
+      rightPlaceholder.setVisibility(View.VISIBLE);
+      leftPlaceholder.setOnDragListener(
+          new TabFragmentSideDragListener(
+              () -> {
+                if (mViewPager.getCurrentItem() == 1) {
+                  if (mainFragment != null) {
+                    dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
+                    mainFragment.disableActionMode();
+                  }
+                  mViewPager.setCurrentItem(0, true);
+                }
+                return null;
+              }));
+      rightPlaceholder.setOnDragListener(
+          new TabFragmentSideDragListener(
+              () -> {
+                if (mViewPager.getCurrentItem() == 0) {
+                  if (mainFragment != null) {
+                    dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
+                    mainFragment.disableActionMode();
+                  }
+                  mViewPager.setCurrentItem(1, true);
+                }
+                return null;
+              }));
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        leftPlaceholder.startDragAndDrop(null, dragShadowBuilder, null, 0);
+        rightPlaceholder.startDragAndDrop(null, dragShadowBuilder, null, 0);
+      } else {
+        leftPlaceholder.startDrag(null, dragShadowBuilder, null, 0);
+        rightPlaceholder.startDrag(null, dragShadowBuilder, null, 0);
+      }
+    }
   }
 }

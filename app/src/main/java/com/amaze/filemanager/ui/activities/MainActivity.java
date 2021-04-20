@@ -83,6 +83,7 @@ import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
+import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -2046,6 +2047,32 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void onLoaderReset(Loader<Cursor> loader) {
     // For passing code check
+  }
+
+  public void initBottomDragListener(boolean destroy, @Nullable View shadowView) {
+    View bottomPlaceholder = findViewById(R.id.placeholder_drag_bottom);
+    View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
+    if (destroy) {
+      bottomPlaceholder.setOnDragListener(null);
+      bottomPlaceholder.setVisibility(View.GONE);
+    } else {
+      bottomPlaceholder.setVisibility(View.VISIBLE);
+      bottomPlaceholder.setOnDragListener(
+          new TabFragmentBottomDragListener(
+              () -> {
+                getCurrentMainFragment().smoothScrollListView(false);
+                return null;
+              },
+              () -> {
+                getCurrentMainFragment().stopSmoothScrollListView();
+                return null;
+              }));
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        bottomPlaceholder.startDragAndDrop(null, dragShadowBuilder, null, 0);
+      } else {
+        bottomPlaceholder.startDrag(null, dragShadowBuilder, null, 0);
+      }
+    }
   }
 
   private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {

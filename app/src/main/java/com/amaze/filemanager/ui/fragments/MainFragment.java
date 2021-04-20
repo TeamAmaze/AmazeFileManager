@@ -62,9 +62,12 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
+import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
@@ -110,6 +113,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -278,12 +282,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     listView.setHasFixedSize(true);
     columns = Integer.parseInt(sharedPref.getString(PREFERENCE_GRID_COLUMNS, "-1"));
     if (IS_LIST) {
-      mLayoutManager = new LinearLayoutManager(getContext());
+      mLayoutManager = new CustomScrollLinearLayoutManager(getContext());
       listView.setLayoutManager(mLayoutManager);
     } else {
       if (columns == -1 || columns == 0)
-        mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
-      else mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+        mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
+      else mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), columns);
       setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
       listView.setLayoutManager(mLayoutManagerGrid);
     }
@@ -335,7 +339,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   void setGridLayoutSpanSizeLookup(GridLayoutManager mLayoutManagerGrid) {
 
     mLayoutManagerGrid.setSpanSizeLookup(
-        new GridLayoutManager.SpanSizeLookup() {
+        new CustomScrollGridLayoutManager.SpanSizeLookup() {
 
           @Override
           public int getSpanSize(int position) {
@@ -361,8 +365,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
     if (mLayoutManagerGrid == null)
       if (columns == -1 || columns == 0)
-        mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
-      else mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+        mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
+      else mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), columns);
     setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
     listView.setLayoutManager(mLayoutManagerGrid);
     listView.clearOnScrollListeners();
@@ -377,7 +381,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       listView.setBackgroundDrawable(null);
     }
 
-    if (mLayoutManager == null) mLayoutManager = new LinearLayoutManager(getActivity());
+    if (mLayoutManager == null) mLayoutManager = new CustomScrollLinearLayoutManager(getActivity());
     listView.setLayoutManager(mLayoutManager);
     listView.clearOnScrollListeners();
     adapter = null;
@@ -1746,6 +1750,64 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   public ArrayList<LayoutElementParcelable> getElementsList() {
     return LIST_ELEMENTS;
+  }
+
+  public void initCornerDragListeners(
+      boolean destroy, boolean shouldInvokeLeftAndRight, @Nullable View shadowView) {
+    if (destroy) {
+      mToolbarContainer.setOnDragListener(null);
+      listView.stopScroll();
+    } else {
+      mToolbarContainer.setOnDragListener(
+          new TabFragmentBottomDragListener(
+              () -> {
+                smoothScrollListView(true);
+                return null;
+              },
+              () -> {
+                stopSmoothScrollListView();
+                return null;
+              }));
+      View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        mToolbarContainer.startDragAndDrop(null, dragShadowBuilder, null, 0);
+      } else {
+        mToolbarContainer.startDrag(null, dragShadowBuilder, null, 0);
+      }
+    }
+    if (shouldInvokeLeftAndRight) {
+      initLeftRightAndBottomDragListeners(destroy, shadowView);
+    }
+    getMainActivity().initBottomDragListener(destroy, shadowView);
+  }
+
+  private void initLeftRightAndBottomDragListeners(boolean destroy, @Nullable View shadowView) {
+    TabFragment tabFragment = getMainActivity().getTabFragment();
+    tabFragment.initLeftAndRightDragListeners(destroy, shadowView);
+  }
+
+  public void disableActionMode() {
+    this.selection = false;
+    if (this.mActionMode != null) {
+      this.mActionMode.finish();
+    }
+    this.mActionMode = null;
+  }
+
+  public void smoothScrollListView(boolean upDirection) {
+    if (listView != null) {
+      if (upDirection) {
+        listView.smoothScrollToPosition(0);
+      } else {
+        listView.smoothScrollToPosition(adapter.getItemsDigested().size());
+      }
+    }
+  }
+
+  public void stopSmoothScrollListView() {
+    if (listView != null) {
+      listView.stopScroll();
+    }
   }
 
   @Override

@@ -20,12 +20,40 @@
 
 package com.amaze.filemanager.ui.drag
 
+import android.util.Log
 import android.view.DragEvent
 import android.view.View
-import com.amaze.filemanager.ui.fragments.MainFragment
 
-class MainFragmentBottomDragListener(private val mainFragment: MainFragment) : View.OnDragListener {
-    override fun onDrag(v: View?, event: DragEvent?): Boolean {
-        TODO("Not yet implemented")
+class TabFragmentBottomDragListener(
+    private val dragEnterCallBack: () -> Unit,
+    private val dragExitCallBack: () -> Unit
+) : View.OnDragListener {
+
+    override fun onDrag(p0: View?, p1: DragEvent?): Boolean {
+        return when (p1?.action) {
+            DragEvent.ACTION_DRAG_ENDED -> {
+                true
+            }
+            DragEvent.ACTION_DRAG_ENTERED -> {
+                Log.d("TAG", "BOTTOM DRAG ENTER CALLBACK")
+                dragEnterCallBack()
+                true
+            }
+            DragEvent.ACTION_DRAG_EXITED -> {
+                Log.d("TAG", "BOTTOM DRAG EXIT CALLBACK")
+                dragExitCallBack()
+                true
+            }
+            DragEvent.ACTION_DRAG_STARTED -> {
+                true
+            }
+            DragEvent.ACTION_DRAG_LOCATION -> {
+                true
+            }
+            DragEvent.ACTION_DROP -> {
+                true
+            }
+            else -> false
+        }
     }
 }

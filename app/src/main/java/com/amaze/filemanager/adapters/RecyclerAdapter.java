@@ -202,6 +202,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
       Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
       if (imageView != null) {
+        imageView.clearAnimation();
         imageView.startAnimation(iconAnimation);
       } else {
         // TODO: we don't have the check icon object probably because of config change
@@ -212,6 +213,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
       Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
       if (imageView != null) {
+        imageView.clearAnimation();
         imageView.startAnimation(iconAnimation);
       } else {
         // TODO: we don't have the check icon object probably because of config change
@@ -235,11 +237,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       mainFrag.mActionMode.invalidate();
     }
     if (getCheckedItems().size() == 0) {
-      mainFrag.selection = false;
-      if (mainFrag.mActionMode != null) {
-        mainFrag.mActionMode.finish();
-      }
-      mainFrag.mActionMode = null;
+      mainFrag.disableActionMode();
     }
   }
 
@@ -542,11 +540,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         itemsDigested.get(p).setAnimate(true);
       }
       final LayoutElementParcelable rowItem = itemsDigested.get(p).elem;
-      if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
-          || rowItem.isDirectory) {
-        holder.rl.setOnDragListener(
-            new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
-      }
+      holder.rl.setOnDragListener(
+          new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
 
       holder.rl.setOnLongClickListener(
           p1 -> {
@@ -573,6 +568,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 } else {
                   p1.startDrag(null, dragShadowBuilder, null, 0);
                 }
+                mainFrag.initCornerDragListeners(
+                    false,
+                    dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT,
+                    dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+                        ? holder.dummyView
+                        : holder.iconLayout);
               }
             }
             return true;

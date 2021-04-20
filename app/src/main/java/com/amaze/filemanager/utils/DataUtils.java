@@ -26,6 +26,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
@@ -73,6 +74,8 @@ public class DataUtils {
   private ArrayList<String[]> books = new ArrayList<>();
 
   private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
+
+  private ArrayList<LayoutElementParcelable> checkedItemsList;
 
   private DataChangeListener dataChangeListener;
 
@@ -428,6 +431,14 @@ public class DataUtils {
    */
   public @Nullable Integer findLongestContainingDrawerItem(CharSequence path) {
     return tree.getValueForLongestKeyPrefixing(path);
+  }
+
+  public ArrayList<LayoutElementParcelable> getCheckedItemsList() {
+    return this.checkedItemsList;
+  }
+
+  public void setCheckedItemsList(ArrayList<LayoutElementParcelable> layoutElementParcelables) {
+    this.checkedItemsList = layoutElementParcelables;
   }
 
   /**

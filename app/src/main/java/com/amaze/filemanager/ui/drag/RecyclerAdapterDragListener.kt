@@ -31,6 +31,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.utils.DataUtils
 import java.util.*
 
 class RecyclerAdapterDragListener(
@@ -43,31 +44,51 @@ class RecyclerAdapterDragListener(
     private val TAG = javaClass.simpleName
 
     override fun onDrag(p0: View?, p1: DragEvent?): Boolean {
-        val checkedItems: ArrayList<LayoutElementParcelable> = adapter.checkedItems
-        val listItem = (adapter.itemsDigested[holder.adapterPosition])
-        val currentElement = adapter.itemsDigested[holder.adapterPosition].elem
         return when (p1?.action) {
             DragEvent.ACTION_DRAG_ENDED -> {
+                Log.d("TAG", "ENDING DRAG, DISABLE CORNERS")
+                mainFragment.initCornerDragListeners(
+                    true,
+                    dragAndDropPref
+                        != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT,
+                    null
+                )
+                if (dragAndDropPref
+                    != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+                ) {
+                    val dataUtils = DataUtils.getInstance()
+                    dataUtils.checkedItemsList = null
+                }
                 true
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
                 if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                    if (listItem.specialType != RecyclerAdapter.TYPE_BACK &&
-                        listItem.shouldToggleDragChecked
+                    if (adapter.itemsDigested.size != 0 &&
+                        holder.adapterPosition < adapter.itemsDigested.size
                     ) {
-                        listItem.toggleShouldToggleDragChecked()
-                        adapter.toggleChecked(
-                            holder.adapterPosition,
-                            if (mainFragment.IS_LIST) holder.checkImageView
-                            else holder.checkImageViewGrid
-                        )
+                        val listItem = (adapter.itemsDigested[holder.adapterPosition])
+                        if (listItem.specialType != RecyclerAdapter.TYPE_BACK &&
+                            listItem.shouldToggleDragChecked
+                        ) {
+                            listItem.toggleShouldToggleDragChecked()
+                            adapter.toggleChecked(
+                                holder.adapterPosition,
+                                if (mainFragment.IS_LIST) holder.checkImageView
+                                else holder.checkImageViewGrid
+                            )
+                        }
                     }
                 }
                 true
             }
             DragEvent.ACTION_DRAG_EXITED -> {
                 if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                    listItem.toggleShouldToggleDragChecked()
+                    if (adapter.itemsDigested.size != 0 &&
+                        holder.adapterPosition < adapter.itemsDigested.size
+                    ) {
+                        val listItem = (adapter.itemsDigested[holder.adapterPosition])
+                        listItem.toggleShouldToggleDragChecked()
+                    }
                 }
                 true
             }
@@ -79,33 +100,62 @@ class RecyclerAdapterDragListener(
             }
             DragEvent.ACTION_DROP -> {
                 if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                    if (!currentElement.isDirectory) {
+                    var checkedItems: ArrayList<LayoutElementParcelable> = adapter.checkedItems
+                    var currentFileParcelable: HybridFileParcelable? = null
+                    var isCurrentElementDirectory: Boolean? = null
+                    var pasteLocation: String = if (adapter.itemsDigested.size == 0) {
+                        mainFragment.currentPath
+                    } else {
+                        val currentElement = adapter.itemsDigested[holder.adapterPosition].elem
+                        currentFileParcelable = currentElement.generateBaseFile()
+                        isCurrentElementDirectory = currentElement.isDirectory
+                        currentElement.desc
+                    }
+                    if (checkedItems.size == 0) {
+                        // probably because we switched tabs and
+                        // this adapter doesn't have any checked items, get from data utils
+                        val dataUtils = DataUtils.getInstance()
                         Log.d(
                             TAG,
-                            (
-                                "Trying to drop into a non-directory, not allowed " +
-                                    "%s"
-                                ).format(currentElement.desc)
+                            "Didn't find checked items in adapter, " +
+                                "checking dataUtils size ${dataUtils.checkedItemsList.size}"
                         )
-                        return false
+                        checkedItems = dataUtils.checkedItemsList
                     }
                     val arrayList = ArrayList<HybridFileParcelable>(checkedItems.size)
                     checkedItems.forEach {
-                        if (it.desc.equals(currentElement.desc)) {
+                        val file = it.generateBaseFile()
+                        if (it.desc.equals(pasteLocation) ||
+                            (
+                                isCurrentElementDirectory == false &&
+                                    currentFileParcelable?.getParent(mainFragment.context)
+                                        .equals(file.getParent(mainFragment.context))
+                                )
+                        ) {
                             Log.d(
                                 TAG,
                                 (
-                                    "Trying to drop into one of checked items, not allowed " +
-                                        "%s"
-                                    ).format(it.desc)
+                                    "Trying to drop into one of checked items or current " +
+                                        "location, not allowed ${it.desc}"
+                                    )
                             )
                             return false
                         }
                         arrayList.add(it.generateBaseFile())
                     }
+                    if (isCurrentElementDirectory == false) {
+                        pasteLocation = mainFragment.currentPath
+                    }
+                    Log.d(
+                        TAG,
+                        (
+                            "Trying to drop into one of checked items " +
+                                "%s"
+                            ).format(pasteLocation)
+                    )
                     PrepareCopyTask(
                         mainFragment,
-                        currentElement.desc,
+                        pasteLocation,
                         dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE,
                         mainFragment.mainActivity,
                         mainFragment.mainActivity.isRootExplorer
