@@ -358,4 +358,45 @@ class FileUtilsTest {
             assertEquals("/user/My Documents", second)
         }
     }
+
+    /**
+     * Test [FileUtils.parseName]
+     */
+    @Test
+    fun testParseStringForHybridFileParcelable() {
+        // ls
+        val a = "-rwxr-x---   1 root   shell    29431 2009-01-01 08:00 init.rc"
+        val b = "lrw-r--r--   1 root   root        15 2009-01-01 08:00 product -> /system/product"
+        val c = "drwxr-xr-x  17 root   root      4096 1970-05-19 08:40 system"
+
+        // stat with old toybox or busybox
+        // val a1 = "-rwxr-x--- 1 shell root 512 2009-01-01 08:00:00.000000000 `init.rc'"
+        // val b1 = "lrw-r--r-- 1 root root 512 2009-01-01 08:00:00.000000000 `product' -> `/system/product'"
+        // val c1 = "drwxr-xr-x 17 root root 512 1970-05-19 08:40:27.269999949 `system'"
+
+        // stat with new toybox
+        val a2 = "-rwxr-x--- 1 shell root 512 1230796800 `init.rc'"
+        val b2 = "lrw-r--r-- 1 root root 512 1230796800 `product' -> `/system/product'"
+        val c2 = "drwxr-xr-x 17 root root 512 11922027 `system'"
+
+        var result1 = FileUtils.parseName(a, false)
+        var result2 = FileUtils.parseName(a2.replace("('|`)".toRegex(), ""), true)
+        assertEquals(result1.date, result2.date)
+        assertEquals(result1.name, result2.name)
+        assertEquals(result1.path, result2.path)
+
+        result1 = FileUtils.parseName(b, false)
+        result2 = FileUtils.parseName(b2.replace("('|`)".toRegex(), ""), true)
+        assertEquals(result1.date, result2.date)
+        assertEquals(result1.name, result2.name)
+        assertEquals(result1.path, result2.path)
+        assertEquals(result1.link, result2.link)
+
+        result1 = FileUtils.parseName(c, false)
+        result2 = FileUtils.parseName(c2.replace("('|`)".toRegex(), ""), true)
+        // if using stat, seconds will also be available, so they won't be equal
+        assertNotEquals(result1.date, result2.date)
+        assertEquals(result1.name, result2.name)
+        assertEquals(result1.path, result2.path)
+    }
 }

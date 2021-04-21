@@ -99,7 +99,7 @@ object ListFilesCommand : IRootCommand() {
                 else -> sanitizedPath.plus("/")
             }
 
-            val command = "stat -c '%A %h %G %U %B %y %N' " +
+            val command = "stat -c '%A %h %G %U %B %Y %N' " +
                 "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
             return if (!retryWithLs &&
                 !PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
@@ -202,7 +202,8 @@ object ListFilesCommand : IRootCommand() {
             if (isStat) rawFile.replace(
                 "('|`)".toRegex(),
                 ""
-            ) else rawFile
+            ) else rawFile,
+            isStat
         )?.apply {
             this.mode = OpenMode.ROOT
             this.name = this.path

@@ -783,7 +783,7 @@ public class FileUtils {
    *
    * @param line must be the line returned from 'ls' or 'stat' command
    */
-  public static HybridFileParcelable parseName(String line) {
+  public static HybridFileParcelable parseName(String line, boolean isStat) {
     boolean linked = false;
     StringBuilder name = new StringBuilder();
     StringBuilder link = new StringBuilder();
@@ -794,12 +794,17 @@ public class FileUtils {
     for (String anArray : array) {
       if (anArray.contains("->") && array[0].startsWith("l")) {
         linked = true;
+        break;
       }
     }
     int p = getColonPosition(array);
     if (p != -1) {
       date = array[p - 1] + " | " + array[p];
       size = array[p - 2];
+    } else if (isStat) {
+      date = array[5];
+      size = array[4];
+      p = 5;
     }
     if (!linked) {
       for (int i = p + 1; i < array.length; i++) {
@@ -818,7 +823,7 @@ public class FileUtils {
       link = new StringBuilder(link.toString().trim());
     }
     long Size = (size == null || size.trim().length() == 0) ? -1 : Long.parseLong(size);
-    if (date.trim().length() > 0) {
+    if (date.trim().length() > 0 && !isStat) {
       ParsePosition pos = new ParsePosition(0);
       SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
       Date stringDate = simpledateformat.parse(date, pos);
@@ -828,6 +833,12 @@ public class FileUtils {
       HybridFileParcelable baseFile =
           new HybridFileParcelable(
               name.toString(), array[0], stringDate != null ? stringDate.getTime() : 0, Size, true);
+      baseFile.setLink(link.toString());
+      return baseFile;
+    } else if (isStat) {
+      HybridFileParcelable baseFile =
+          new HybridFileParcelable(
+              name.toString(), array[0], Long.parseLong(date) * 1000, Size, true);
       baseFile.setLink(link.toString());
       return baseFile;
     } else {
