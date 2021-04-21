@@ -199,11 +199,8 @@
     <string name="unin_system_apk">Esta é uma aplicação do sistema. Se a remover, pode afetar a estabilidade do sistema.\\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Donativos</string>
-    <string name="archive_preferences">Preferências do arquivador</string>
     <string name="archive_extract_folder">Pasta de extração dos arquivos</string>
-    <string name="zip_create_folder">Pasta de criação dos arquivos</string>
     <string name="archive_summary">Os ficheiros de arquivos serão extraídos para esta pasta. Normalmente, é utilizada a pasta em que o arquivo está.</string>
-    <string name="zip_summary">Os ficheiros zip serão criados nesta pasta. Normalmente, é utilizada a pasta em que o ficheiro está.</string>
     <string name="open_as">Abrir como</string>
     <string name="text">Texto</string>
     <string name="audio">Áudio</string>

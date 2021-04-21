@@ -207,11 +207,8 @@
     <string name="unin_system_apk">זוהי אפליקציית מערכת, ולכן מחיקתה עלולה להוביל לאי יציבות. האם להמשיך?</string>
     <string name="warning">אזהרה</string>
     <string name="donate">תרומה</string>
-    <string name="archive_preferences">העדפות ארכיון</string>
     <string name="archive_extract_folder">תיקייה לחילוץ מארכיון</string>
-    <string name="zip_create_folder">תיקייה ליצירת Zip</string>
     <string name="archive_summary">קובצי ארכיון יחולצו לתיקייה זו. ערך בררת המחדל היא התיקייה בה נמצא הארכיון.</string>
-    <string name="zip_summary">קובצי zip חדשים יווצרו בתיקייה זו. ערך בררת המחדל היא התיקייה בה הקבצים נמצאים.</string>
     <string name="open_as">פתח כ...</string>
     <string name="text">טקסט</string>
     <string name="audio">שמע</string>

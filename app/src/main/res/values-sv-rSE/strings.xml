@@ -197,11 +197,8 @@
     <string name="unin_system_apk">Detta är en systemapp, borttagning kan leda till instabilitet. Fortsätta?</string>
     <string name="warning">Varning</string>
     <string name="donate">Donera</string>
-    <string name="archive_preferences">Arkivinställningar</string>
     <string name="archive_extract_folder">Arkivera Uppackningsmapp</string>
-    <string name="zip_create_folder">Zippa Skapakatalog</string>
     <string name="archive_summary">Arkivfiler kommer att bli uppackade till denna katalog. Standard är katalogen där arkivet ligger</string>
-    <string name="zip_summary">Nya ZIP-filer kommer att bli skapade i denna katalog. Standard är den katalog som filerna är i.</string>
     <string name="open_as">Öppna som</string>
     <string name="text">Text</string>
     <string name="audio">Ljud</string>

@@ -111,19 +111,6 @@
             android:title="@string/enable_marquee_filename"/>
     </PreferenceCategory>
 
-    <PreferenceCategory android:title="@string/archive_preferences">
-        <Preference
-            android:key="extractpath"
-            android:summary="@string/archive_summary"
-            android:title="@string/archive_extract_folder">
-        </Preference>
-        <Preference
-            android:key="zippath"
-            android:summary="@string/zip_summary"
-            android:title="@string/zip_create_folder">
-        </Preference>
-    </PreferenceCategory>
-
     <PreferenceCategory android:title="@string/security">
         <Preference
             android:key="crypt_password"
@@ -156,6 +143,12 @@
             android:key="texteditor_newstack"
             android:title="@string/preference_newstack_title"
             android:summary="@string/preference_newstack_summary"/>
+
+        <Preference
+            android:key="extractpath"
+            android:summary="@string/archive_summary"
+            android:title="@string/archive_extract_folder">
+        </Preference>
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/advanced">

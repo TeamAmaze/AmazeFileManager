@@ -203,11 +203,8 @@
     <string name="unin_system_apk">這是一個系統應用，刪除它可能導致系統不穩定。\n是否繼續？</string>
     <string name="warning">警告</string>
     <string name="donate">捐贈</string>
-    <string name="archive_preferences">壓縮</string>
     <string name="archive_extract_folder">壓縮包提取目錄</string>
-    <string name="zip_create_folder">ZIP 創建目錄</string>
     <string name="archive_summary">壓縮包檔將會被提取到該目錄，默認提取到壓縮包所在目錄</string>
-    <string name="zip_summary">新 ZIP 檔將會創建到該目錄，默認創建壓縮包到當前目錄</string>
     <string name="open_as">打開方式</string>
     <string name="text">文本</string>
     <string name="audio">音頻</string>
