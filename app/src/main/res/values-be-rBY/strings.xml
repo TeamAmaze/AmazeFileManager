@@ -197,12 +197,9 @@
   <string name="unin_system_apk">Гэта сістэмнае прыкладанне, выдаленне можа прывесці да нестабільнасці сістэмы.\nПрацягнуць?</string>
   <string name="warning">Папярэджанне</string>
   <string name="donate">Ахвяраваць</string>
-  <string name="archive_preferences">Налады архівавання</string>
-  <string name="archive_extract_folder">Тэчка для распакавання архіва</string>
-  <string name="zip_create_folder">Тэчка для стварэння zip</string>
+    <string name="archive_extract_folder">Тэчка для распакавання архіва</string>
   <string name="archive_summary">Файлы з архіва будуць распакаваны ў азначаную тэчку. Па змаўчанні гэта тэчка, у якой знаходзіцца архіў</string>
-  <string name="zip_summary">Новыя zip-архівы будуць стварацца ва ўказанай тэчцы. Па змаўчанні гэта тэчка, у якой знаходзяцца файлы</string>
-  <string name="open_as">Адчыніць як</string>
+    <string name="open_as">Адчыніць як</string>
   <string name="text">Тэкст</string>
   <string name="audio">Аўдыё</string>
   <string name="video">Відэа</string>

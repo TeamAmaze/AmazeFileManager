@@ -128,7 +128,7 @@ public class RootHelper {
       for (String currentLine : resultLines) {
         if (contains(currentLine.split(" "), name)) {
           try {
-            HybridFileParcelable parsedFile = FileUtils.parseName(currentLine);
+            HybridFileParcelable parsedFile = FileUtils.parseName(currentLine, true);
             if (parsedFile.getPermission().trim().startsWith("d")) return true;
             else if (parsedFile.getPermission().trim().startsWith("l")) {
               if (count > 5) return file.isDirectory();

@@ -203,11 +203,8 @@
     <string name="unin_system_apk">Toto je systémová aplikace, její odstranění může narušit stabilitu systému. \nChcete pokračovat?</string>
     <string name="warning">Varování</string>
     <string name="donate">Přispět</string>
-    <string name="archive_preferences">Předvolby archivu</string>
     <string name="archive_extract_folder">Složka pro extrahování archivu</string>
-    <string name="zip_create_folder">Složka pro vytváření archivu</string>
     <string name="archive_summary">Archivované soubory budou extrahované do této složky. Výchozí hodnota je složka, ve které je archiv uložen</string>
-    <string name="zip_summary">Nové archivované soubory budou vytvořeny v této složce. Výchozí hodnota je složka, ve které jsou soubory uloženy</string>
     <string name="open_as">Otevřít jako</string>
     <string name="text">Text</string>
     <string name="audio">Zvuk</string>

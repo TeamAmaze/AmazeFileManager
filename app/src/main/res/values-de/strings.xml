@@ -207,11 +207,8 @@
     <string name="unin_system_apk">Das ist eine Systemanwendung. Das Löschen könnte zu einer Instabilität des Systems führen. Ausführen?</string>
     <string name="warning">Warnung</string>
     <string name="donate">Spenden</string>
-    <string name="archive_preferences">Archiv-Einstellungen</string>
     <string name="archive_extract_folder">Verzeichnis zum Entpacken von Archiven</string>
-    <string name="zip_create_folder">Zip Erstellungsordner</string>
     <string name="archive_summary">Archiv-Dateien werden in dieses Verzeichnis entpackt. Standardmäßig ist dies dasjenige Verzeichnis, in welchem sich das Archiv befindet.</string>
-    <string name="zip_summary">Neue zip Dateien werden in diesem Ordner erstellt. Die Standardeinstellung ist der Ordner, in denen die Dateien liegen.</string>
     <string name="open_as">Öffnen als</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>

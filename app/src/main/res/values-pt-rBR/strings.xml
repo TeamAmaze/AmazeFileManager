@@ -207,11 +207,8 @@
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Doação</string>
-    <string name="archive_preferences">Preferências de pacotes</string>
     <string name="archive_extract_folder">Pasta de extração de arquivos</string>
-    <string name="zip_create_folder">Pasta de criação de arquivos Zip</string>
     <string name="archive_summary">Os arquivos do pacote serão extraídos nesta pasta. A pasta padrão é a de localização do arquivo.</string>
-    <string name="zip_summary">Novos arquivos zip serão criados nesta pasta. A pasta padrão é a de localização do arquivo.</string>
     <string name="open_as">Abrir como</string>
     <string name="text">Texto</string>
     <string name="audio">Áudio</string>

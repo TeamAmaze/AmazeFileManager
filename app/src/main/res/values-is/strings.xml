@@ -207,11 +207,8 @@
     <string name="unin_system_apk">Þetta er kerfisforrit, ef því er eytt gæti kerfið orðið óstöðugt.\nHalda áfram?</string>
     <string name="warning">Aðvörun</string>
     <string name="donate">Styrkja</string>
-    <string name="archive_preferences">Kjörstillingar safnskrár</string>
     <string name="archive_extract_folder">Mappa undir afþjöppun safnskrár</string>
-    <string name="zip_create_folder">Mappa til að útbúa í ZIP-skrár</string>
     <string name="archive_summary">Safnskrár verða afþjappaðar í þessa möppu. Sjálfgefið er að það sé mappan þar sem safnskráin er staðsett.</string>
-    <string name="zip_summary">Nýjar ZIP-safnskrár verða búnar til í þessari möppu. Sjálfgefið er að það sé mappan þar sem skrárnar eru staðsettar.</string>
     <string name="open_as">Opna sem</string>
     <string name="text">Texti</string>
     <string name="audio">Hljóð</string>

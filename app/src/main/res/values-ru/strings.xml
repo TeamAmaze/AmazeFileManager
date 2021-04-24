@@ -204,11 +204,8 @@
 Продолжить?</string>
     <string name="warning">Предупреждение</string>
     <string name="donate">Пожертвовать</string>
-    <string name="archive_preferences">Настройки архивирования</string>
     <string name="archive_extract_folder">Папка для распаковки архивов</string>
-    <string name="zip_create_folder">Папка для новых архивов</string>
     <string name="archive_summary">Файлы из архивов будут распакованы в указанную папку. По умолчанию это папка, в которой находятся zip-файлы</string>
-    <string name="zip_summary">Новые zip-архивы будут создаваться в указанной папке. По умолчанию это папка, в которой находятся файлы</string>
     <string name="open_as">Открыть как</string>
     <string name="text">Текст</string>
     <string name="audio">Аудио</string>

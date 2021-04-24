@@ -173,7 +173,6 @@
     <string name="unin_system_apk">Това е системно приложение, изтриването му може да доведе до нестабилност на системата. \nДа продължа ли?</string>
     <string name="warning">Внимание</string>
     <string name="donate">Дарение</string>
-    <string name="archive_preferences">Преференции за Архива</string>
     <string name="archive_extract_folder">Папка за извличане на архива</string>
     <string name="open_as">Отвори като</string>
     <string name="text">Текст</string>

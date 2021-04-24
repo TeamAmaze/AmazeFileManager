@@ -200,11 +200,8 @@
 Ви хочете продовжити?</string>
     <string name="warning">Попередження</string>
     <string name="donate">Пожертвувати</string>
-    <string name="archive_preferences">Налаштування архівування</string>
     <string name="archive_extract_folder">Тека для розпаковування архівів</string>
-    <string name="zip_create_folder">Тека для нових архівів</string>
     <string name="archive_summary">Файли з архіву буде розпаковано до вказаної теки. За замовчуванням це тека та ж тека, де знаходиться архів</string>
-    <string name="zip_summary">Нові архіви буде створено у вказаній теці. За замовчуванням це та ж тека, у якій знаходяться файли</string>
     <string name="open_as">Відкрити як</string>
     <string name="text">Текст</string>
     <string name="audio">Аудіо</string>
