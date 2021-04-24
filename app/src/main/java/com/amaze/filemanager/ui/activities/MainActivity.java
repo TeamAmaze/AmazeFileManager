@@ -1857,7 +1857,7 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void onPreExecute(String query) {
     final MainFragment mainFragment = getCurrentMainFragment();
-    Objects.requireNonNull(mainFragment);
+    if (mainFragment == null) return;
 
     mainFragment.mSwipeRefreshLayout.setRefreshing(true);
     mainFragment.onSearchPreExecute(query);
