@@ -111,7 +111,8 @@ public class CustomLinearSmoothScroller extends RecyclerView.SmoothScroller {
 
   // Temporary variables to keep track of the interim scroll target. These values do not
   // point to a real item position, rather point to an estimated location pixels.
-  protected int mInterimTargetDx = 0, mInterimTargetDy = 0;
+  protected int mInterimTargetDx = 0;
+  protected int mInterimTargetDy = 0;
 
   public CustomLinearSmoothScroller(Context context, boolean isListView) {
     mDisplayMetrics = context.getResources().getDisplayMetrics();

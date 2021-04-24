@@ -35,6 +35,7 @@ import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
 import java.util.*
+import kotlin.collections.ArrayList
 
 class RecyclerAdapterDragListener(
     private val adapter: RecyclerAdapter,
@@ -209,19 +210,23 @@ class RecyclerAdapterDragListener(
                                 "%s"
                             ).format(pasteLocation)
                     )
-                    PrepareCopyTask(
-                        mainFragment,
-                        pasteLocation,
-                        dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE,
-                        mainFragment.mainActivity,
-                        mainFragment.mainActivity.isRootExplorer
-                    )
-                        .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList)
-                    adapter.toggleChecked(false)
+                    startCopyTask(pasteLocation, arrayList)
                 }
                 true
             }
             else -> false
         }
+    }
+
+    private fun startCopyTask(pasteLocation: String, arrayList: ArrayList<HybridFileParcelable>) {
+        PrepareCopyTask(
+            mainFragment,
+            pasteLocation,
+            dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE,
+            mainFragment.mainActivity,
+            mainFragment.mainActivity.isRootExplorer
+        )
+            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList)
+        adapter.toggleChecked(false)
     }
 }

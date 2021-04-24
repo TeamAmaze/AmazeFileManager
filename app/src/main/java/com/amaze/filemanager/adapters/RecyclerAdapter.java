@@ -104,10 +104,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       TYPE_HEADER_FILES = 2,
       EMPTY_LAST_ITEM = 3,
       TYPE_BACK = 4;
-
-  @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})
-  public @interface ListElemType {}
-
   private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
 
   public boolean stoppedAnimation = false;
@@ -1110,6 +1106,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private boolean getBoolean(String key) {
     return preferenceActivity.getBoolean(key);
   }
+
+  @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})
+  public @interface ListElemType {}
 
   public static class ListItem {
     public static final int CHECKED = 0, NOT_CHECKED = 1, UNCHECKABLE = 2;
