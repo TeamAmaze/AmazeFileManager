@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.colors
 
-import android.os.Parcel
 import android.os.Parcelable
 import androidx.annotation.ColorInt
 import kotlinx.android.parcel.Parcelize
@@ -31,16 +30,4 @@ class UserColorPreferences(
     @ColorInt val primarySecondTab: Int,
     @ColorInt val accent: Int,
     @ColorInt val iconSkin: Int
-) : Parcelable {
-
-    override fun writeToParcel(dest: Parcel, flags: Int) {
-        dest.writeInt(primaryFirstTab)
-        dest.writeInt(primarySecondTab)
-        dest.writeInt(accent)
-        dest.writeInt(iconSkin)
-    }
-
-    override fun describeContents(): Int {
-        return 0
-    }
-}
+) : Parcelable
