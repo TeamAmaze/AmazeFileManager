@@ -25,6 +25,7 @@ import static com.amaze.filemanager.filesystem.OperationTypeKt.COPY;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.MOVE;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -35,7 +36,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.databinding.CopyDialogBinding;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.FolderState;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -50,8 +53,9 @@ import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.IntDef;
 
 /**
  * Created by arpitkh996 on 12-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
@@ -66,21 +70,16 @@ import android.widget.Toast;
 public class PrepareCopyTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, PrepareCopyTask.CopyNode> {
 
-  private enum DO_FOR_ALL_ELEMENTS {
-    DO_NOT_REPLACE,
-    REPLACE
-  }
-
-  private MainFragment mainFrag;
-  private String path;
-  private Boolean move;
+  private final MainFragment mainFrag;
+  private final String path;
+  private final Boolean move;
+  private final WeakReference<MainActivity> mainActivity;
+  private final WeakReference<Context> context;
   private int counter = 0;
-  private MainActivity mainActivity;
-  private Context context;
   private ProgressDialog dialog;
   private boolean rootMode = false;
   private OpenMode openMode = OpenMode.FILE;
-  private DO_FOR_ALL_ELEMENTS dialogState = null;
+  private @DialogState int dialogState = UNKNOWN;
   private boolean isRenameMoveSupport = false;
 
   // causes folder containing filesToCopy to be deleted
@@ -90,12 +89,19 @@ public class PrepareCopyTask
   private final ArrayList<ArrayList<HybridFileParcelable>> filesToCopyPerFolder = new ArrayList<>();
   private ArrayList<HybridFileParcelable> filesToCopy; // a copy of params sent to this
 
+  private static final int UNKNOWN = -1;
+  private static final int DO_NOT_REPLACE = 0;
+  private static final int REPLACE = 1;
+
+  @IntDef({UNKNOWN, DO_NOT_REPLACE, REPLACE})
+  @interface DialogState {}
+
   public PrepareCopyTask(
       MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
     mainFrag = ma;
     this.move = move;
-    mainActivity = con;
-    context = con;
+    mainActivity = new WeakReference<>(con);
+    context = new WeakReference<>(con);
     openMode = mainFrag.openMode;
     this.rootMode = rootMode;
 
@@ -105,12 +111,13 @@ public class PrepareCopyTask
   @Override
   protected void onPreExecute() {
     super.onPreExecute();
-    dialog = ProgressDialog.show(context, "", context.getString(R.string.processing), true);
+    dialog =
+        ProgressDialog.show(context.get(), "", context.get().getString(R.string.processing), true);
   }
 
   @Override
   public void onProgressUpdate(String... message) {
-    Toast.makeText(context, message[0], Toast.LENGTH_LONG).show();
+    Toast.makeText(context.get(), message[0], Toast.LENGTH_LONG).show();
   }
 
   @Override
@@ -129,7 +136,7 @@ public class PrepareCopyTask
     }
 
     HybridFile destination = new HybridFile(openMode, path);
-    destination.generateMode(context);
+    destination.generateMode(context.get());
 
     if (move
         && destination.getMode() == openMode
@@ -138,10 +145,10 @@ public class PrepareCopyTask
       isRenameMoveSupport = true;
     }
 
-    totalBytes = FileUtils.getTotalBytes(filesToCopy, context);
+    totalBytes = FileUtils.getTotalBytes(filesToCopy, context.get());
 
     if (destination.getUsableSpace() < totalBytes && !isRenameMoveSupport) {
-      publishProgress(context.getResources().getString(R.string.in_safe));
+      publishProgress(context.get().getResources().getString(R.string.in_safe));
       return null;
     }
 
@@ -154,11 +161,11 @@ public class PrepareCopyTask
       final ArrayList<HybridFileParcelable> filesToCopy, HybridFile destination) {
     final ArrayList<HybridFileParcelable> conflictingFiles = new ArrayList<>();
     destination.forEachChildrenFile(
-        context,
+        context.get(),
         rootMode,
         file -> {
           for (HybridFileParcelable j : filesToCopy) {
-            if (file.getName(context).equals((j).getName(context))) {
+            if (file.getName(context.get()).equals((j).getName(context.get()))) {
               conflictingFiles.add(j);
             }
           }
@@ -193,35 +200,33 @@ public class PrepareCopyTask
 
   private void startService(
       ArrayList<HybridFileParcelable> sourceFiles, String target, OpenMode openmode) {
-    Intent intent = new Intent(context, CopyService.class);
+    Intent intent = new Intent(context.get(), CopyService.class);
     intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, sourceFiles);
     intent.putExtra(CopyService.TAG_COPY_TARGET, target);
     intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, openmode.ordinal());
     intent.putExtra(CopyService.TAG_COPY_MOVE, move);
     intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, rootMode);
-    ServiceWatcherUtil.runService(context, intent);
+    ServiceWatcherUtil.runService(context.get(), intent);
   }
 
   private void showDialog(
       final String path,
       final ArrayList<HybridFileParcelable> filesToCopy,
       final ArrayList<HybridFileParcelable> conflictingFiles) {
-    int accentColor = mainActivity.getAccent();
-    final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context);
-    LayoutInflater layoutInflater =
-        (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-    View view = layoutInflater.inflate(R.layout.copy_dialog, null);
-    dialogBuilder.customView(view, true);
+    int accentColor = mainActivity.get().getAccent();
+    final MaterialDialog.Builder dialogBuilder = new MaterialDialog.Builder(context.get());
+    CopyDialogBinding copyDialogBinding =
+        CopyDialogBinding.inflate(LayoutInflater.from(mainActivity.get()));
+    dialogBuilder.customView(copyDialogBinding.getRoot(), true);
 
     // textView
-    TextView textView = view.findViewById(R.id.fileNameText);
-    textView.setText(conflictingFiles.get(counter).getName(context));
+    copyDialogBinding.fileNameText.setText(conflictingFiles.get(counter).getName(context.get()));
 
     // checkBox
-    final CheckBox checkBox = view.findViewById(R.id.checkBox);
-    Utils.setTint(context, checkBox, accentColor);
-    dialogBuilder.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
-    dialogBuilder.title(context.getResources().getString(R.string.paste));
+    final CheckBox checkBox = copyDialogBinding.checkBox;
+    Utils.setTint(context.get(), checkBox, accentColor);
+    dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme());
+    dialogBuilder.title(context.get().getResources().getString(R.string.paste));
     dialogBuilder.positiveText(R.string.skip);
     dialogBuilder.negativeText(R.string.overwrite);
     dialogBuilder.neutralText(R.string.cancel);
@@ -230,18 +235,18 @@ public class PrepareCopyTask
     dialogBuilder.neutralColor(accentColor);
     dialogBuilder.onPositive(
         (dialog, which) -> {
-          if (checkBox.isChecked()) dialogState = DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE;
+          if (checkBox.isChecked()) dialogState = DO_NOT_REPLACE;
           doNotReplaceFiles(path, filesToCopy, conflictingFiles);
         });
     dialogBuilder.onNegative(
         (dialog, which) -> {
-          if (checkBox.isChecked()) dialogState = DO_FOR_ALL_ELEMENTS.REPLACE;
+          if (checkBox.isChecked()) dialogState = REPLACE;
           replaceFiles(path, filesToCopy, conflictingFiles);
         });
 
     final MaterialDialog dialog = dialogBuilder.build();
     dialog.show();
-    if (filesToCopy.get(0).getParent(context).equals(path)) {
+    if (filesToCopy.get(0).getParent(context.get()).equals(path)) {
       View negative = dialog.getActionButton(DialogAction.NEGATIVE);
       negative.setEnabled(false);
     }
@@ -254,11 +259,13 @@ public class PrepareCopyTask
     if (conflictingFiles != null
         && counter != conflictingFiles.size()
         && conflictingFiles.size() > 0) {
-      if (dialogState == null) showDialog(path, filesToCopy, conflictingFiles);
-      else if (dialogState == DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE)
+      if (dialogState == UNKNOWN) {
+        showDialog(path, filesToCopy, conflictingFiles);
+      } else if (dialogState == DO_NOT_REPLACE) {
         doNotReplaceFiles(path, filesToCopy, conflictingFiles);
-      else if (dialogState == DO_FOR_ALL_ELEMENTS.REPLACE)
+      } else if (dialogState == REPLACE) {
         replaceFiles(path, filesToCopy, conflictingFiles);
+      }
     } else {
       CopyNode c = !copyFolder.hasStarted() ? copyFolder.startCopy() : copyFolder.goToNextNode();
 
@@ -268,11 +275,13 @@ public class PrepareCopyTask
         paths.add(c.getPath());
         filesToCopyPerFolder.add(c.filesToCopy);
 
-        if (dialogState == null) onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
-        else if (dialogState == DO_FOR_ALL_ELEMENTS.DO_NOT_REPLACE)
+        if (dialogState == UNKNOWN) {
+          onEndDialog(c.path, c.filesToCopy, c.conflictingFiles);
+        } else if (dialogState == DO_NOT_REPLACE) {
           doNotReplaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
-        else if (dialogState == DO_FOR_ALL_ELEMENTS.REPLACE)
+        } else if (dialogState == REPLACE) {
           replaceFiles(c.path, c.filesToCopy, c.conflictingFiles);
+        }
       } else {
         finishCopying(paths, filesToCopyPerFolder);
       }
@@ -284,7 +293,7 @@ public class PrepareCopyTask
       ArrayList<HybridFileParcelable> filesToCopy,
       ArrayList<HybridFileParcelable> conflictingFiles) {
     if (counter < conflictingFiles.size()) {
-      if (dialogState != null) {
+      if (dialogState != UNKNOWN) {
         filesToCopy.remove(conflictingFiles.get(counter));
         counter++;
       } else {
@@ -303,7 +312,7 @@ public class PrepareCopyTask
       ArrayList<HybridFileParcelable> filesToCopy,
       ArrayList<HybridFileParcelable> conflictingFiles) {
     if (counter < conflictingFiles.size()) {
-      if (dialogState != null) {
+      if (dialogState != UNKNOWN) {
         counter++;
       } else {
         counter = conflictingFiles.size();
@@ -324,29 +333,29 @@ public class PrepareCopyTask
     }
 
     if (filesToCopyPerFolder.size() != 0) {
-      int mode = mainActivity.mainActivityHelper.checkFolder(new File(path), context);
+      @FolderState
+      int mode = mainActivity.get().mainActivityHelper.checkFolder(path, openMode, context.get());
       if (mode == CAN_CREATE_FILES && !path.contains("otg:/")) {
         // This is used because in newer devices the user has to accept a permission,
         // see MainActivity.onActivityResult()
-        mainActivity.oparrayListList = filesToCopyPerFolder;
-        mainActivity.oparrayList = null;
-        mainActivity.operation = move ? MOVE : COPY;
-        mainActivity.oppatheList = paths;
+        mainActivity.get().oparrayListList = filesToCopyPerFolder;
+        mainActivity.get().oparrayList = null;
+        mainActivity.get().operation = move ? MOVE : COPY;
+        mainActivity.get().oppatheList = paths;
       } else {
         if (!move) {
           for (int i = 0; i < filesToCopyPerFolder.size(); i++) {
-
             startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
           }
         } else {
-          new MoveFiles(filesToCopyPerFolder, mainFrag, context, openMode)
+          new MoveFiles(filesToCopyPerFolder, mainFrag, context.get(), openMode)
               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
         }
       }
     } else {
       Toast.makeText(
-              context,
-              context.getResources().getString(R.string.no_file_overwrite),
+              context.get(),
+              context.get().getResources().getString(R.string.no_file_overwrite),
               Toast.LENGTH_SHORT)
           .show();
     }
@@ -372,8 +381,8 @@ public class PrepareCopyTask
 
           nextNodes.add(
               new CopyNode(
-                  path + "/" + conflictingFiles.get(i).getName(context),
-                  conflictingFiles.get(i).listFiles(context, rootMode)));
+                  path + "/" + conflictingFiles.get(i).getName(context.get()),
+                  conflictingFiles.get(i).listFiles(context.get(), rootMode)));
 
           filesToCopy.remove(filesToCopy.indexOf(conflictingFiles.get(i)));
           conflictingFiles.remove(i);
