@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.KITKAT;
@@ -51,7 +50,6 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.regex.Pattern;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -148,6 +146,7 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -162,6 +161,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
+import androidx.arch.core.util.Function;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -548,54 +548,60 @@ public class MainActivity extends PermissionsActivity
   }
 
   private void saveExternalIntent(final ArrayList<Uri> uris) {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    Objects.requireNonNull(mainActivity);
-
-    if (uris != null && uris.size() > 0) {
-      if (SDK_INT >= LOLLIPOP) {
-        File folder = new File(mainFragment.getCurrentPath());
-        int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
-        if (result == WRITABLE_OR_ON_SDCARD) {
-          FileUtil.writeUriToStorage(
-              MainActivity.this, uris, getContentResolver(), mainFragment.getCurrentPath());
+    executeWithMainFragment(
+        mainFragment -> {
+          if (uris != null && uris.size() > 0) {
+            if (SDK_INT >= LOLLIPOP) {
+              File folder = new File(mainFragment.getCurrentPath());
+              int result = mainActivityHelper.checkFolder(folder, MainActivity.this);
+              if (result == WRITABLE_OR_ON_SDCARD) {
+                FileUtil.writeUriToStorage(
+                    MainActivity.this, uris, getContentResolver(), mainFragment.getCurrentPath());
+                finish();
+              } else {
+                // Trigger SAF intent, keep uri until finish
+                operation = SAVE_FILE;
+                urisToBeSaved = uris;
+                mainActivityHelper.checkFolder(folder, MainActivity.this);
+              }
+            } else {
+              FileUtil.writeUriToStorage(
+                  MainActivity.this, uris, getContentResolver(), mainFragment.getCurrentPath());
+            }
+          } else {
+            saveExternalIntentExtras();
+          }
+          Toast.makeText(
+                  MainActivity.this,
+                  getResources().getString(R.string.saving)
+                      + " to "
+                      + mainFragment.getCurrentPath(),
+                  Toast.LENGTH_LONG)
+              .show();
           finish();
-        } else {
-          // Trigger SAF intent, keep uri until finish
-          operation = SAVE_FILE;
-          urisToBeSaved = uris;
-          mainActivityHelper.checkFolder(folder, MainActivity.this);
-        }
-      } else {
-        FileUtil.writeUriToStorage(
-            MainActivity.this, uris, getContentResolver(), mainFragment.getCurrentPath());
-      }
-    } else {
-      saveExternalIntentExtras();
-    }
-    Toast.makeText(
-            MainActivity.this,
-            getResources().getString(R.string.saving) + " to " + mainFragment.getCurrentPath(),
-            Toast.LENGTH_LONG)
-        .show();
-    finish();
+          return null;
+        });
   }
 
   private void saveExternalIntentExtras() {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    Objects.requireNonNull(mainFragment);
-
-    Bundle extras = intent.getExtras();
-    StringBuilder data = new StringBuilder();
-    if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_SUBJECT))) {
-      data.append(extras.getString(Intent.EXTRA_SUBJECT));
-    }
-    if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_TEXT))) {
-      data.append(AppConstants.NEW_LINE).append(extras.getString(Intent.EXTRA_TEXT));
-    }
-    String fileName = Long.toString(System.currentTimeMillis());
-    AppConfig.getInstance()
-        .runInBackground(
-            () -> FileUtil.mktextfile(data.toString(), mainFragment.getCurrentPath(), fileName));
+    executeWithMainFragment(
+        mainFragment -> {
+          Bundle extras = intent.getExtras();
+          StringBuilder data = new StringBuilder();
+          if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_SUBJECT))) {
+            data.append(extras.getString(Intent.EXTRA_SUBJECT));
+          }
+          if (!Utils.isNullOrEmpty(extras.getString(Intent.EXTRA_TEXT))) {
+            data.append(AppConstants.NEW_LINE).append(extras.getString(Intent.EXTRA_TEXT));
+          }
+          String fileName = Long.toString(System.currentTimeMillis());
+          AppConfig.getInstance()
+              .runInBackground(
+                  () ->
+                      FileUtil.mktextfile(
+                          data.toString(), mainFragment.getCurrentPath(), fileName));
+          return null;
+        });
   }
 
   public void clearFabActionItems() {
@@ -796,9 +802,11 @@ public class MainActivity extends PermissionsActivity
       if (floatingActionButton.isOpen()) {
         floatingActionButton.close(true);
       } else {
-        final MainFragment mainFragment = getCurrentMainFragment();
-        Objects.requireNonNull(mainFragment);
-        mainFragment.goBack();
+        executeWithMainFragment(
+            mainFragment -> {
+              mainFragment.goBack();
+              return null;
+            });
       }
     } else if (fragment instanceof CompressedExplorerFragment) {
       CompressedExplorerFragment compressedExplorerFragment =
@@ -929,20 +937,22 @@ public class MainActivity extends PermissionsActivity
         s.setTitle(getResources().getString(R.string.listview));
       }
       try {
-        final MainFragment mainFragment = getCurrentMainFragment();
-        Objects.requireNonNull(mainFragment);
-        if (mainFragment.IS_LIST) s.setTitle(R.string.gridview);
-        else s.setTitle(R.string.listview);
-        appbar
-            .getBottomBar()
-            .updatePath(
-                mainFragment.getCurrentPath(),
-                mainFragment.results,
-                MainActivityHelper.SEARCH_TEXT,
-                mainFragment.openMode,
-                mainFragment.folder_count,
-                mainFragment.file_count,
-                mainFragment);
+        executeWithMainFragment(
+            mainFragment -> {
+              if (mainFragment.IS_LIST) s.setTitle(R.string.gridview);
+              else s.setTitle(R.string.listview);
+              appbar
+                  .getBottomBar()
+                  .updatePath(
+                      mainFragment.getCurrentPath(),
+                      mainFragment.results,
+                      MainActivityHelper.SEARCH_TEXT,
+                      mainFragment.openMode,
+                      mainFragment.folder_count,
+                      mainFragment.file_count,
+                      mainFragment);
+              return null;
+            });
       } catch (Exception e) {
       }
 
@@ -1005,129 +1015,132 @@ public class MainActivity extends PermissionsActivity
     if (drawer.onOptionsItemSelected(item)) return true;
 
     // Handle action buttons
-    final MainFragment mainFragment = getCurrentMainFragment();
+    executeWithMainFragment(
+        mainFragment -> {
+          switch (item.getItemId()) {
+            case R.id.home:
+              mainFragment.home();
+              break;
+            case R.id.history:
+              GeneralDialogCreation.showHistoryDialog(
+                  dataUtils, getPrefs(), mainFragment, getAppTheme());
+              break;
+            case R.id.sethome:
+              if (mainFragment.openMode != OpenMode.FILE
+                  && mainFragment.openMode != OpenMode.ROOT) {
+                Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+                break;
+              }
+              final MaterialDialog dialog =
+                  GeneralDialogCreation.showBasicDialog(
+                      mainActivity,
+                      R.string.question_set_path_as_home,
+                      R.string.set_as_home,
+                      R.string.yes,
+                      R.string.no);
+              dialog
+                  .getActionButton(DialogAction.POSITIVE)
+                  .setOnClickListener(
+                      (v) -> {
+                        mainFragment.home = mainFragment.getCurrentPath();
+                        updatePaths(mainFragment.no);
+                        dialog.dismiss();
+                      });
+              dialog.show();
+              break;
+            case R.id.exit:
+              finish();
+              break;
+            case R.id.sort:
+              Fragment fragment = getFragmentAtFrame();
+              if (fragment instanceof AppsListFragment) {
+                GeneralDialogCreation.showSortDialog((AppsListFragment) fragment, getAppTheme());
+              }
+              break;
+            case R.id.sortby:
+              GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
+              break;
+            case R.id.dsort:
+              String[] sort = getResources().getStringArray(R.array.directorysortmode);
+              MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
+              builder.theme(getAppTheme().getMaterialDialogTheme());
+              builder.title(R.string.directorysort);
+              int current =
+                  Integer.parseInt(
+                      getPrefs()
+                          .getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
 
-    switch (item.getItemId()) {
-      case R.id.home:
-        Objects.requireNonNull(mainFragment).home();
-        break;
-      case R.id.history:
-        GeneralDialogCreation.showHistoryDialog(
-            dataUtils, getPrefs(), Objects.requireNonNull(mainFragment), getAppTheme());
-        break;
-      case R.id.sethome:
-        Objects.requireNonNull(mainFragment);
-        if (mainFragment.openMode != OpenMode.FILE && mainFragment.openMode != OpenMode.ROOT) {
-          Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
-          break;
-        }
-        final MaterialDialog dialog =
-            GeneralDialogCreation.showBasicDialog(
-                mainActivity,
-                R.string.question_set_path_as_home,
-                R.string.set_as_home,
-                R.string.yes,
-                R.string.no);
-        dialog
-            .getActionButton(DialogAction.POSITIVE)
-            .setOnClickListener(
-                (v) -> {
-                  mainFragment.home = mainFragment.getCurrentPath();
-                  updatePaths(mainFragment.no);
-                  dialog.dismiss();
-                });
-        dialog.show();
-        break;
-      case R.id.exit:
-        finish();
-        break;
-      case R.id.sort:
-        Fragment fragment = getFragmentAtFrame();
-        if (fragment instanceof AppsListFragment) {
-          GeneralDialogCreation.showSortDialog((AppsListFragment) fragment, getAppTheme());
-        }
-        break;
-      case R.id.sortby:
-        GeneralDialogCreation.showSortDialog(
-            Objects.requireNonNull(mainFragment), getAppTheme(), getPrefs());
-        break;
-      case R.id.dsort:
-        String[] sort = getResources().getStringArray(R.array.directorysortmode);
-        MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-        builder.theme(getAppTheme().getMaterialDialogTheme());
-        builder.title(R.string.directorysort);
-        int current =
-            Integer.parseInt(
-                getPrefs().getString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "0"));
+              builder
+                  .items(sort)
+                  .itemsCallbackSingleChoice(
+                      current,
+                      (dialog1, view, which, text) -> {
+                        getPrefs()
+                            .edit()
+                            .putString(
+                                PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
+                            .commit();
+                        mainFragment.getSortModes();
+                        mainFragment.updateList();
+                        dialog1.dismiss();
+                        return true;
+                      });
+              builder.build().show();
+              break;
+            case R.id.hiddenitems:
+              GeneralDialogCreation.showHiddenDialog(
+                  dataUtils, getPrefs(), mainFragment, getAppTheme());
+              break;
+            case R.id.view:
+              int pathLayout =
+                  dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
+              if (mainFragment.IS_LIST) {
+                if (pathLayout == DataUtils.LIST) {
+                  AppConfig.getInstance()
+                      .runInBackground(
+                          () -> {
+                            utilsHandler.removeFromDatabase(
+                                new OperationData(
+                                    UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
+                          });
+                }
+                utilsHandler.saveToDatabase(
+                    new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
 
-        final MainFragment mainFrag = Objects.requireNonNull(mainFragment);
+                dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.GRID);
+              } else {
+                if (pathLayout == DataUtils.GRID) {
+                  AppConfig.getInstance()
+                      .runInBackground(
+                          () -> {
+                            utilsHandler.removeFromDatabase(
+                                new OperationData(
+                                    UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
+                          });
+                }
 
-        builder
-            .items(sort)
-            .itemsCallbackSingleChoice(
-                current,
-                (dialog1, view, which, text) -> {
-                  getPrefs()
-                      .edit()
-                      .putString(PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
-                      .commit();
-                  mainFrag.getSortModes();
-                  mainFrag.updateList();
-                  dialog1.dismiss();
-                  return true;
-                });
-        builder.build().show();
-        break;
-      case R.id.hiddenitems:
-        GeneralDialogCreation.showHiddenDialog(
-            dataUtils, getPrefs(), Objects.requireNonNull(mainFragment), getAppTheme());
-        break;
-      case R.id.view:
-        Objects.requireNonNull(mainFragment);
-        int pathLayout =
-            dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
-        if (mainFragment.IS_LIST) {
-          if (pathLayout == DataUtils.LIST) {
-            AppConfig.getInstance()
-                .runInBackground(
-                    () -> {
-                      utilsHandler.removeFromDatabase(
-                          new OperationData(
-                              UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
-                    });
+                utilsHandler.saveToDatabase(
+                    new OperationData(UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
+
+                dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.LIST);
+              }
+              mainFragment.switchView();
+              break;
+            case R.id.extract:
+              Fragment fragment1 = getFragmentAtFrame();
+              if (fragment1 instanceof CompressedExplorerFragment) {
+                mainActivityHelper.extractFile(
+                    ((CompressedExplorerFragment) fragment1).compressedFile);
+              }
+              break;
+            case R.id.search:
+              getAppbar().getSearchView().revealSearchView();
+              break;
           }
-          utilsHandler.saveToDatabase(
-              new OperationData(UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
+          return null;
+        },
+        true);
 
-          dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.GRID);
-        } else {
-          if (pathLayout == DataUtils.GRID) {
-            AppConfig.getInstance()
-                .runInBackground(
-                    () -> {
-                      utilsHandler.removeFromDatabase(
-                          new OperationData(
-                              UtilsHandler.Operation.GRID, mainFragment.getCurrentPath()));
-                    });
-          }
-
-          utilsHandler.saveToDatabase(
-              new OperationData(UtilsHandler.Operation.LIST, mainFragment.getCurrentPath()));
-
-          dataUtils.setPathAsGridOrList(mainFragment.getCurrentPath(), DataUtils.LIST);
-        }
-        mainFragment.switchView();
-        break;
-      case R.id.extract:
-        Fragment fragment1 = getFragmentAtFrame();
-        if (fragment1 instanceof CompressedExplorerFragment) {
-          mainActivityHelper.extractFile(((CompressedExplorerFragment) fragment1).compressedFile);
-        }
-        break;
-      case R.id.search:
-        getAppbar().getSearchView().revealSearchView();
-        break;
-    }
     return super.onOptionsItemSelected(item);
   }
 
@@ -1394,7 +1407,7 @@ public class MainActivity extends PermissionsActivity
           getPrefs()
               .edit()
               .putString(PreferencesConstants.PREFERENCE_URI, treeUri.toString())
-              .commit();
+              .apply();
       } else {
         // If not confirmed SAF, or if still not writable, then revert settings.
         /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);
@@ -1412,94 +1425,99 @@ public class MainActivity extends PermissionsActivity
                 Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
       }
 
-      final MainFragment mainFragment = getCurrentMainFragment();
-      Objects.requireNonNull(mainFragment);
+      executeWithMainFragment(
+          mainFragment -> {
+            switch (operation) {
+              case DELETE: // deletion
+                new DeleteTask(mainActivity).execute((oparrayList));
+                break;
+              case COPY: // copying
+                // legacy compatibility
+                if (oparrayList != null && oparrayList.size() != 0) {
+                  oparrayListList = new ArrayList<>();
+                  oparrayListList.add(oparrayList);
+                  oparrayList = null;
+                  oppatheList = new ArrayList<>();
+                  oppatheList.add(oppathe);
+                  oppathe = "";
+                }
+                for (int i = 0; i < oparrayListList.size(); i++) {
+                  ArrayList<HybridFileParcelable> sourceList = oparrayListList.get(i);
+                  Intent intent1 = new Intent(this, CopyService.class);
+                  intent1.putExtra(CopyService.TAG_COPY_SOURCES, sourceList);
+                  intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
+                  ServiceWatcherUtil.runService(this, intent1);
+                }
+                break;
+              case MOVE: // moving
+                // legacy compatibility
+                if (oparrayList != null && oparrayList.size() != 0) {
+                  oparrayListList = new ArrayList<>();
+                  oparrayListList.add(oparrayList);
+                  oparrayList = null;
+                  oppatheList = new ArrayList<>();
+                  oppatheList.add(oppathe);
+                  oppathe = "";
+                }
 
-      switch (operation) {
-        case DELETE: // deletion
-          new DeleteTask(mainActivity).execute((oparrayList));
-          break;
-        case COPY: // copying
-          // legacy compatibility
-          if (oparrayList != null && oparrayList.size() != 0) {
-            oparrayListList = new ArrayList<>();
-            oparrayListList.add(oparrayList);
-            oparrayList = null;
-            oppatheList = new ArrayList<>();
-            oppatheList.add(oppathe);
-            oppathe = "";
-          }
-          for (int i = 0; i < oparrayListList.size(); i++) {
-            ArrayList<HybridFileParcelable> sourceList = oparrayListList.get(i);
-            Intent intent1 = new Intent(this, CopyService.class);
-            intent1.putExtra(CopyService.TAG_COPY_SOURCES, sourceList);
-            intent1.putExtra(CopyService.TAG_COPY_TARGET, oppatheList.get(i));
-            ServiceWatcherUtil.runService(this, intent1);
-          }
-          break;
-        case MOVE: // moving
-          // legacy compatibility
-          if (oparrayList != null && oparrayList.size() != 0) {
-            oparrayListList = new ArrayList<>();
-            oparrayListList.add(oparrayList);
-            oparrayList = null;
-            oppatheList = new ArrayList<>();
-            oppatheList.add(oppathe);
-            oppathe = "";
-          }
-
-          new MoveFiles(oparrayListList, mainFragment, mainFragment.getActivity(), OpenMode.FILE)
-              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
-          break;
-        case NEW_FOLDER: // mkdir
-          mainActivityHelper.mkDir(
-              RootHelper.generateBaseFile(new File(oppathe), true), mainFragment);
-          break;
-        case RENAME:
-          mainActivityHelper.rename(
-              mainFragment.openMode, (oppathe), (oppathe1), mainActivity, isRootExplorer());
-          mainFragment.updateList();
-          break;
-        case NEW_FILE:
-          mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), mainFragment);
-          break;
-        case EXTRACT:
-          mainActivityHelper.extractFile(new File(oppathe));
-          break;
-        case COMPRESS:
-          mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
-          break;
-        case SAVE_FILE:
-          FileUtil.writeUriToStorage(
-              this, urisToBeSaved, getContentResolver(), mainFragment.getCurrentPath());
-          urisToBeSaved = null;
-          finish();
-          break;
-        default:
-          LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
-      }
+                new MoveFiles(
+                        oparrayListList, mainFragment, mainFragment.getActivity(), OpenMode.FILE)
+                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
+                break;
+              case NEW_FOLDER: // mkdir
+                mainActivityHelper.mkDir(
+                    RootHelper.generateBaseFile(new File(oppathe), true), mainFragment);
+                break;
+              case RENAME:
+                mainActivityHelper.rename(
+                    mainFragment.openMode, (oppathe), (oppathe1), mainActivity, isRootExplorer());
+                mainFragment.updateList();
+                break;
+              case NEW_FILE:
+                mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), mainFragment);
+                break;
+              case EXTRACT:
+                mainActivityHelper.extractFile(new File(oppathe));
+                break;
+              case COMPRESS:
+                mainActivityHelper.compressFiles(new File(oppathe), oparrayList);
+                break;
+              case SAVE_FILE:
+                FileUtil.writeUriToStorage(
+                    this, urisToBeSaved, getContentResolver(), mainFragment.getCurrentPath());
+                urisToBeSaved = null;
+                finish();
+                break;
+              default:
+                LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
+            }
+            return null;
+          },
+          true);
       operation = UNDEFINED;
     } else if (requestCode == REQUEST_CODE_SAF) {
-      final MainFragment mainFragment = getCurrentMainFragment();
-      Objects.requireNonNull(mainFragment);
+      executeWithMainFragment(
+          mainFragment -> {
+            if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
+              // otg access
+              Uri usbOtgRoot = intent.getData();
+              SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
+              mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
+              drawer.closeIfNotLocked();
+              if (drawer.isLocked()) drawer.onDrawerClosed();
+            } else if (requestCode == REQUEST_CODE_SAF_FTP) {
+              FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
+              ftpServerFragment.changeFTPServerPath(intent.getData().toString());
+              Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
 
-      if (responseCode == Activity.RESULT_OK && intent.getData() != null) {
-        // otg access
-        Uri usbOtgRoot = intent.getData();
-        SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
-        mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
-        drawer.closeIfNotLocked();
-        if (drawer.isLocked()) drawer.onDrawerClosed();
-      } else if (requestCode == REQUEST_CODE_SAF_FTP) {
-        FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
-        ftpServerFragment.changeFTPServerPath(intent.getData().toString());
-        Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
-
-      } else {
-        Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
-        // otg access not provided
-        drawer.resetPendingPath();
-      }
+            } else {
+              Toast.makeText(this, R.string.error, Toast.LENGTH_SHORT).show();
+              // otg access not provided
+              drawer.resetPendingPath();
+            }
+            return null;
+          },
+          true);
     }
   }
 
@@ -1784,9 +1802,12 @@ public class MainActivity extends PermissionsActivity
             new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
 
         // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-        final MainFragment mainFragment = getCurrentMainFragment();
-        Objects.requireNonNull(mainFragment);
-        mainFragment.loadlist(path, false, OpenMode.UNKNOWN);
+        executeWithMainFragment(
+            mainFragment -> {
+              mainFragment.loadlist(path, false, OpenMode.UNKNOWN);
+              return null;
+            },
+            true);
       } else {
         Snackbar.make(
                 findViewById(R.id.navigation),
@@ -1873,11 +1894,12 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void onPreExecute(String query) {
-    final MainFragment mainFragment = getCurrentMainFragment();
-    Objects.requireNonNull(mainFragment);
-
-    mainFragment.mSwipeRefreshLayout.setRefreshing(true);
-    mainFragment.onSearchPreExecute(query);
+    executeWithMainFragment(
+        mainFragment -> {
+          mainFragment.mSwipeRefreshLayout.setRefreshing(true);
+          mainFragment.onSearchPreExecute(query);
+          return null;
+        });
   }
 
   @Override
@@ -2148,5 +2170,23 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void onFolderChooserDismissed(@NonNull FolderChooserDialog dialog) {
     dialog.dismiss();
+  }
+
+  private void executeWithMainFragment(@NonNull Function<MainFragment, Void> lambda) {
+    executeWithMainFragment(lambda, false);
+  }
+
+  @Nullable
+  private void executeWithMainFragment(
+      @NonNull Function<MainFragment, Void> lambda, boolean showToastIfMainFragmentIsNull) {
+    final MainFragment mainFragment = getCurrentMainFragment();
+    if (mainFragment != null) {
+      lambda.apply(mainFragment);
+    } else {
+      if (showToastIfMainFragmentIsNull) {
+        Log.e(TAG, "MainFragment is null");
+        AppConfig.toast(this, R.string.operation_unsuccesful);
+      }
+    }
   }
 }

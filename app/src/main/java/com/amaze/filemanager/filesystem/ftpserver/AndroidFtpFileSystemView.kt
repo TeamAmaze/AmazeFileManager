@@ -31,7 +31,6 @@ import org.apache.ftpserver.ftplet.FileSystemView
 import org.apache.ftpserver.ftplet.FtpFile
 import java.io.File
 import java.net.URI
-import java.net.URLDecoder
 
 @RequiresApi(KITKAT)
 class AndroidFtpFileSystemView(private var context: Context, root: String) : FileSystemView {
@@ -100,7 +99,17 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
     }
 
     private fun normalizePath(path: String): String {
-        return URI(path.replace(" ", "%20")).normalize().toString().replace("%20", " ")
+        return when {
+            path == "\\" || path == "/" -> {
+                "/"
+            }
+            path.length <= 1 -> {
+                path
+            }
+            else -> {
+                Uri.decode(URI(Uri.encode(path, "/")).normalize().toString())
+            }
+        }
     }
 
     private fun createDocumentFileFrom(path: String): DocumentFile {
