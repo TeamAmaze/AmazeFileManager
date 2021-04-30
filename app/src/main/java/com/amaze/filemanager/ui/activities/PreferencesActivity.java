@@ -86,23 +86,26 @@ public class PreferencesActivity extends ThemedActivity
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.prefsfrag);
-    Toolbar toolbar = findViewById(R.id.toolbar);
-    invalidateRecentsColorAndIcon();
-    setSupportActionBar(toolbar);
-    getSupportActionBar()
-        .setDisplayOptions(
-            androidx.appcompat.app.ActionBar.DISPLAY_HOME_AS_UP
-                | androidx.appcompat.app.ActionBar.DISPLAY_SHOW_TITLE);
 
-    if (savedInstanceState != null) {
-      selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
-    } else if (getIntent().getExtras() != null) {
-      selectItem(getIntent().getExtras().getInt(KEY_CURRENT_FRAG_OPEN));
-    } else {
-      selectItem(0);
+    if (savedInstanceState == null) {
+      setContentView(R.layout.prefsfrag);
+      Toolbar toolbar = findViewById(R.id.toolbar);
+      invalidateRecentsColorAndIcon();
+      setSupportActionBar(toolbar);
+      getSupportActionBar()
+          .setDisplayOptions(
+              androidx.appcompat.app.ActionBar.DISPLAY_HOME_AS_UP
+                  | androidx.appcompat.app.ActionBar.DISPLAY_SHOW_TITLE);
+
+      if (savedInstanceState != null) {
+        selectedItem = savedInstanceState.getInt(KEY_CURRENT_FRAG_OPEN, 0);
+      } else if (getIntent().getExtras() != null) {
+        selectItem(getIntent().getExtras().getInt(KEY_CURRENT_FRAG_OPEN));
+      } else {
+        selectItem(0);
+      }
+      initStatusBarResources(findViewById(R.id.preferences));
     }
-    initStatusBarResources(findViewById(R.id.preferences));
   }
 
   @Override
