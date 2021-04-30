@@ -166,15 +166,15 @@ public class PrefFrag extends PreferenceFragmentCompat
               return false;
             }
 
-              masterPasswordPreference.setEnabled(false);
-              return true;
-            });
-      } else {
+            masterPasswordPreference.setEnabled(false);
+            return true;
+          });
+    } else {
 
-        // fingerprint manager class not defined in the framework
-        checkBoxFingerprint.setEnabled(false);
-      }
+      // fingerprint manager class not defined in the framework
+      checkBoxFingerprint.setEnabled(false);
     }
+  }
 
   @Override
   public boolean onPreferenceClick(Preference preference) {

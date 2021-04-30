@@ -198,7 +198,6 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
       child.findViewById(R.id.circularColorsView).setVisibility(View.INVISIBLE);
       container.addView(child);
     }
-    // super.onBindDialogView(view);
   }
 
   private void select(View listChild, boolean checked) {
@@ -237,18 +236,11 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
     return child;
   }
 
-  @Override
-  public void onSaveInstanceState(@NonNull Bundle outState) {
-    super.onSaveInstanceState(outState);
-    outState.putInt("selectedIndex", selectedIndex);
-  }
-
   @NonNull
   @Override
   public Dialog onCreateDialog(Bundle savedInstanceState) {
     Dialog dialog = super.onCreateDialog(savedInstanceState);
     dialog.show();
-
     Resources res = requireContext().getResources();
     int accentColor =
         ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();

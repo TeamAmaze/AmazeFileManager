@@ -118,6 +118,7 @@
 
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation|screenSize"
             android:label="@string/setting"
             android:name=".ui.activities.PreferencesActivity"
             android:theme="@style/appCompatBlack">
