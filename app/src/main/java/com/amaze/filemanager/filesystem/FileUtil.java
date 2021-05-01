@@ -72,6 +72,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import io.reactivex.Maybe;
@@ -181,6 +182,7 @@ public abstract class FileUtil {
     return true;
   }
 
+  @Nullable
   public static OutputStream getOutputStream(final File target, Context context)
       throws FileNotFoundException {
     OutputStream outStream = null;

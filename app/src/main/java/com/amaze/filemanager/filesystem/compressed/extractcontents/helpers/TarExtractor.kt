@@ -18,22 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks.compress
+package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
-import android.os.Environment
-import androidx.test.core.app.ApplicationProvider
-import java.io.File
+import android.content.Context
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import java.io.InputStream
 
-class Bzip2HelperTaskTest : AbstractCompressedHelperTaskTest() {
+class TarExtractor(
+    context: Context,
+    filePath: String,
+    outputPath: String,
+    listener: OnUpdate,
+    updatePosition: UpdatePosition
+) : AbstractCommonsArchiveExtractor(
+    context, filePath, outputPath, listener, updatePosition
+) {
 
-    override fun createTask(relativePath: String): CompressedHelperTask = Bzip2HelperTask(
-        ApplicationProvider.getApplicationContext(),
-        File(
-            Environment.getExternalStorageDirectory(),
-            "test-archive.tar.bz2"
-        ).absolutePath,
-        relativePath,
-        false,
-        emptyCallback
-    )
+    override fun createFrom(inputStream: InputStream): TarArchiveInputStream =
+        TarArchiveInputStream(inputStream)
 }

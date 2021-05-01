@@ -206,7 +206,7 @@ class ZipService : AbstractProgressiveService() {
          * Main logic for zipping specified files.
          */
         fun execute(context: Context, baseFiles: ArrayList<File>, zipPath: String?) {
-            val out: OutputStream
+            val out: OutputStream?
             val zipDirectory = File(zipPath)
             watcherUtil = ServiceWatcherUtil(progressHandler)
             watcherUtil!!.watch(this@ZipService)
