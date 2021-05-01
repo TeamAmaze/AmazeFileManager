@@ -110,10 +110,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 directoryUri,
                 Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             )
-            mainActivity
-                .prefs
-                .edit()
-                .putString(FtpService.KEY_PREFERENCE_PATH, directoryUri.toString()).apply()
+            changeFTPServerPath(directoryUri.toString())
             updatePathText()
         }
     }
