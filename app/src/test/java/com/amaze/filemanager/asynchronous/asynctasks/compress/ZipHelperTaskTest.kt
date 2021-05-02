@@ -22,9 +22,30 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
+import org.junit.Assert.assertEquals
+import org.junit.Test
 import java.io.File
 
 class ZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
+
+    @Test
+    fun testVariableYAssignment() {
+        var a = "aaz"
+        var y = a.apply {
+            if (startsWith("/"))
+                substring(1, length)
+        }
+        assertEquals("aaz", y)
+        a = "/abcdefg"
+        y = a.let {
+            if (it.startsWith("/"))
+                it.substring(1, it.length)
+            else
+                it
+        }
+        assertEquals("abcdefg", y)
+    }
+
     override fun createTask(relativePath: String): CompressedHelperTask = ZipHelperTask(
         ApplicationProvider.getApplicationContext(),
         File(Environment.getExternalStorageDirectory(), "test-archive.zip").absolutePath,

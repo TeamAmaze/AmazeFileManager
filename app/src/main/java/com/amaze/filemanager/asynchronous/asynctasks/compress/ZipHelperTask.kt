@@ -52,86 +52,83 @@ class ZipHelperTask(
 
     @Throws(ArchiveException::class)
     @Suppress("ComplexMethod", "LongMethod")
-    public override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
-        try {
-            val zipfile = ZipFile(fileLocation.path)
-            val wholelist = filterValidEntryList(zipfile)
-            val strings = ArrayList<String>()
-            for (entry in wholelist) {
-                val file = File(entry.path)
-                if (relativeDirectory == null || relativeDirectory.trim { it <= ' ' }.isEmpty()) {
-                    var y = entry.path
-                    if (y.startsWith("/")) {
-                        y = y.substring(1, y.length)
-                    }
-                    if (file.parent == null || file.parent.isEmpty() || file.parent == "/") {
-                        if (!strings.contains(y)) {
-                            elements.add(
-                                CompressedObjectParcelable(
-                                    y,
-                                    entry.date,
-                                    entry.size,
-                                    entry.directory
-                                )
+    public override fun addElements(elements: ArrayList<CompressedObjectParcelable>) = try {
+        val zipfile = ZipFile(fileLocation.path)
+        val wholelist = filterValidEntryList(zipfile)
+        val strings = ArrayList<String>()
+        for (entry in wholelist) {
+            val file = File(entry.path)
+            val y = entry.path.let {
+                if (it.startsWith("/")) {
+                    it.substring(1, it.length)
+                } else {
+                    it
+                }
+            }
+            if (relativeDirectory == null || relativeDirectory.trim { it <= ' ' }.isEmpty()) {
+                var path: String
+                var zipObj: CompressedObjectParcelable
+                if (file.parent == null || file.parent!!.isEmpty() || file.parent == "/") {
+                    path = y
+                    zipObj = CompressedObjectParcelable(
+                        y,
+                        entry.date,
+                        entry.size,
+                        entry.directory
+                    )
+                } else {
+                    path = y.substring(0, y.indexOf("/") + 1)
+                    zipObj = CompressedObjectParcelable(
+                        path,
+                        entry.date,
+                        entry.size,
+                        true
+                    )
+                }
+                if (!strings.contains(path)) {
+                    elements.add(zipObj)
+                    strings.add(path)
+                }
+            } else {
+                if (file.parent != null &&
+                    (
+                        file.parent == relativeDirectory ||
+                            file.parent == "/$relativeDirectory"
+                        )
+                ) {
+                    if (!strings.contains(y)) {
+                        elements.add(
+                            CompressedObjectParcelable(
+                                y,
+                                entry.date,
+                                entry.size,
+                                entry.directory
                             )
-                            strings.add(y)
-                        }
-                    } else {
-                        val path = y.substring(0, y.indexOf("/") + 1)
-                        if (!strings.contains(path)) {
-                            val zipObj = CompressedObjectParcelable(
-                                path,
+                        )
+                        strings.add(y)
+                    }
+                } else if (y.startsWith("$relativeDirectory/") &&
+                    y.length > relativeDirectory.length + 1
+                ) {
+                    val path1 = y.substring(relativeDirectory.length + 1, y.length)
+                    val index = relativeDirectory.length + 1 + path1.indexOf("/")
+                    val path = y.substring(0, index + 1)
+                    if (!strings.contains(path)) {
+                        elements.add(
+                            CompressedObjectParcelable(
+                                y.substring(0, index + 1),
                                 entry.date,
                                 entry.size,
                                 true
                             )
-                            strings.add(path)
-                            elements.add(zipObj)
-                        }
-                    }
-                } else {
-                    var y = entry.path
-                    if (entry.path.startsWith("/")) {
-                        y = y.substring(1, y.length)
-                    }
-                    if (file.parent != null &&
-                        (
-                            file.parent == relativeDirectory ||
-                                file.parent == "/$relativeDirectory"
-                            )
-                    ) {
-                        if (!strings.contains(y)) {
-                            elements.add(
-                                CompressedObjectParcelable(
-                                    y,
-                                    entry.date,
-                                    entry.size,
-                                    entry.directory
-                                )
-                            )
-                            strings.add(y)
-                        }
-                    } else {
-                        if (y.startsWith("$relativeDirectory/") &&
-                            y.length > relativeDirectory.length + 1
-                        ) {
-                            val path1 = y.substring(relativeDirectory.length + 1, y.length)
-                            val index = relativeDirectory.length + 1 + path1.indexOf("/")
-                            val path = y.substring(0, index + 1)
-                            if (!strings.contains(path)) {
-                                val zipObj = CompressedObjectParcelable(
-                                    y.substring(0, index + 1), entry.date, entry.size, true
-                                )
-                                strings.add(path)
-                                elements.add(zipObj)
-                            }
-                        }
+                        )
+                        strings.add(path)
                     }
                 }
             }
-        } catch (e: ZipException) {
-            throw ArchiveException("Zip file is corrupt", e)
         }
+    } catch (e: ZipException) {
+        throw ArchiveException("Zip file is corrupt", e)
     }
 
     private fun filterValidEntryList(zipFile: ZipFile): List<CompressedObjectParcelable> {
