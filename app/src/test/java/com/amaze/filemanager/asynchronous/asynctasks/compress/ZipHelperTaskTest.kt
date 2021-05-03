@@ -22,12 +22,18 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
+import org.apache.commons.compress.archivers.ArchiveException
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
 class ZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
 
+    /**
+     * Verification on logic in [ZipHelperTask] assigning zip entry path.
+     *
+     * @see ZipHelperTask.addElements
+     */
     @Test
     fun testVariableYAssignment() {
         var a = "aaz"
@@ -44,6 +50,20 @@ class ZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
                 it
         }
         assertEquals("abcdefg", y)
+    }
+
+    /**
+     * Test behaviour when URI that cannot be recognized as file is passed into ZipHelperTask.
+     */
+    @Test(expected = ArchiveException::class)
+    fun testInvalidFileUriShouldThrowArchiveException() {
+        ZipHelperTask(
+            ApplicationProvider.getApplicationContext(),
+            "mailto:test@test.com",
+            "",
+            false,
+            emptyCallback
+        ).addElements(ArrayList())
     }
 
     override fun createTask(relativePath: String): CompressedHelperTask = ZipHelperTask(
