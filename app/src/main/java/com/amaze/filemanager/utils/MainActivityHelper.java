@@ -241,7 +241,8 @@ public class MainActivityHelper {
       String prefill,
       final MaterialDialog.SingleButtonCallback onPositiveAction,
       final WarnableTextInputValidator.OnTextValidate validator) {
-    GeneralDialogCreation.showNameDialog(
+    MaterialDialog dialog =
+        GeneralDialogCreation.showNameDialog(
             mainActivity,
             mainActivity.getResources().getString(R.string.entername),
             prefill,
@@ -250,8 +251,15 @@ public class MainActivityHelper {
             mainActivity.getResources().getString(R.string.cancel),
             null,
             onPositiveAction,
-            validator)
-        .show();
+            validator);
+    dialog.show();
+
+    // place cursor at the beginning
+    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+    textfield.post(
+        () -> {
+          textfield.setSelection(0);
+        });
   }
 
   public String getIntegralNames(String path) {
