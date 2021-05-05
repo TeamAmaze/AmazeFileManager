@@ -94,8 +94,6 @@ public class GenericCopyUtil {
    */
   private void startCopy(boolean lowOnMemory) throws IOException {
 
-    FileInputStream inputStream = null;
-    FileOutputStream outputStream = null;
     FileChannel inChannel = null;
     FileChannel outChannel = null;
     BufferedInputStream bufferedInputStream = null;
@@ -316,9 +314,15 @@ public class GenericCopyUtil {
         else if (outChannel != null) copyFile(inChannel, outChannel);
       }
       // till now file might not be written to disk yet, but to an OS buffer.
-      if (outputStream != null) outputStream.close();
-      if (outChannel != null) outChannel.close();
-      if (bufferedOutputStream != null) bufferedOutputStream.close();
+      if (bufferedOutputStream != null) {
+        bufferedOutputStream.close();
+        bufferedOutputStream = null;
+      }
+      if (outChannel != null) {
+        outChannel.close();
+        outChannel = null;
+      }
+
       if (!mTargetFile.setLastModified(mSourceFile.getDate()))
         Log.e(getClass().getSimpleName(), "Can't set last modified time for " + mTargetFile.getPath());
     } catch (IOException e) {
@@ -336,8 +340,9 @@ public class GenericCopyUtil {
 
       try {
         if (inChannel != null) inChannel.close();
-        if (inputStream != null) inputStream.close();
+        if (outChannel != null) outChannel.close();
         if (bufferedInputStream != null) bufferedInputStream.close();
+        if (bufferedOutputStream != null) bufferedOutputStream.close();
       } catch (IOException e) {
         e.printStackTrace();
         // failure in closing stream
