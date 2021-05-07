@@ -1139,7 +1139,7 @@ public class MainActivity extends PermissionsActivity
           }
           return null;
         },
-        true);
+        false);
 
     return super.onOptionsItemSelected(item);
   }
@@ -2183,8 +2183,8 @@ public class MainActivity extends PermissionsActivity
     if (mainFragment != null) {
       lambda.apply(mainFragment);
     } else {
+      Log.w(TAG, "MainFragment is null");
       if (showToastIfMainFragmentIsNull) {
-        Log.e(TAG, "MainFragment is null");
         AppConfig.toast(this, R.string.operation_unsuccesful);
       }
     }

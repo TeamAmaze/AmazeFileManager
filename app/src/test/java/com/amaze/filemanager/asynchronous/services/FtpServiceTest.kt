@@ -43,7 +43,6 @@ import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Before
-import org.junit.BeforeClass
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
@@ -70,6 +69,8 @@ class FtpServiceTest {
 
     private val randomContent = Random.nextBytes(16)
 
+    private var ftpClient: FTPClient? = null
+
     companion object {
 
         val directories = arrayOf(
@@ -85,18 +86,6 @@ class FtpServiceTest {
             Environment.DIRECTORY_DOCUMENTS,
             "1/2/3/4/5/6/7"
         )
-
-        /**
-         * Create directories before tests start
-         */
-        @BeforeClass @JvmStatic
-        fun bootstrap() {
-            Environment.getExternalStorageDirectory().run {
-                directories.forEach { dir ->
-                    File(this, dir).mkdirs()
-                }
-            }
-        }
     }
 
     /**
@@ -104,6 +93,12 @@ class FtpServiceTest {
      */
     @Before
     fun setUp() {
+        Environment.getExternalStorageDirectory().run {
+            directories.forEach { dir ->
+                File(this, dir).mkdirs()
+            }
+        }
+
         setupNetwork()
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .run {
@@ -142,6 +137,12 @@ class FtpServiceTest {
             server = createServer().apply {
                 start()
             }
+        }
+
+        ftpClient = FTPClient().also {
+            it.connect("127.0.0.1", FTP_PORT)
+            it.login("anonymous", "no@e.mail")
+            it.enterLocalPassiveMode()
         }
     }
 
@@ -188,19 +189,16 @@ class FtpServiceTest {
      */
     @After
     fun tearDown() {
+        ftpClient?.logout()
         server?.stop()
     }
 
     /**
-     * FIXME: documentation, making sense on the test cases
+     * Test on change directory functions
      */
     @Test
-    fun testBasicFunctions() {
-        assertEquals(2, 1 + 1)
-        FTPClient().run {
-            connect("127.0.0.1", FTP_PORT)
-            login("anonymous", "no@e.mail")
-            enterLocalPassiveMode()
+    fun testChdir() {
+        ftpClient!!.run {
             assertEquals(directories.size + 1, listFiles().size)
             assertTrue(changeWorkingDirectory("Download"))
             assertEquals(0, listFiles().size)
@@ -214,6 +212,15 @@ class FtpServiceTest {
             assertTrue(printWorkingDirectory().startsWith("/1/2/3/4/5"))
             assertTrue(changeWorkingDirectory("../../.."))
             assertTrue(printWorkingDirectory().startsWith("/1/2"))
+        }
+    }
+
+    /**
+     * Test remove directory function
+     */
+    @Test
+    fun testRmDir() {
+        ftpClient!!.run {
             assertTrue(changeWorkingDirectory("/"))
             assertTrue(makeDirectory("foobar"))
             assertEquals(directories.size + 2, listFiles().size)
@@ -221,6 +228,15 @@ class FtpServiceTest {
             assertEquals(directories.size + 1, listFiles().size)
             assertFalse(changeWorkingDirectory("foobar"))
             assertTrue(listFiles("/foobar").isNullOrEmpty())
+        }
+    }
+
+    /**
+     * Test download file
+     */
+    @Test
+    fun testDownloadFile() {
+        ftpClient!!.run {
             assertFalse(deleteFile("/nonexist.file.txt"))
             assertNull(retrieveFileStream("/not/existing/file"))
             assertFalse(
@@ -236,7 +252,15 @@ class FtpServiceTest {
             }
             completePendingCommand()
             assertTrue(printWorkingDirectory() == "/")
-            assertTrue(printWorkingDirectory() == "/")
+        }
+    }
+
+    /**
+     * Test upload file
+     */
+    @Test
+    fun testUploadFile() {
+        ftpClient!!.run {
             storeFileStream("/test2.bin").let {
                 ByteArrayInputStream(Random.nextBytes(24)).copyTo(it)
                 it.flush()
@@ -244,7 +268,38 @@ class FtpServiceTest {
             }
             completePendingCommand()
             assertTrue(rename("/test2.bin", "/test2.arc.bin"))
-            logout()
+        }
+    }
+
+    /**
+     * Test working with files and folders at subfolders
+     */
+    @Test
+    fun testUploadFileToSubDir() {
+        ftpClient!!.run {
+            assertTrue(makeDirectory("/CROSS OVER"))
+            storeFileStream("/CROSS OVER/test3.bin").let {
+                ByteArrayInputStream(Random.nextBytes(24)).copyTo(it)
+                it.flush()
+                it.close()
+            }
+            completePendingCommand()
+            assertTrue(changeWorkingDirectory("/CROSS OVER"))
+            listFiles().let {
+                assertEquals(1, it.size)
+                assertEquals("test3.bin", it[0].name)
+            }
+            assertTrue(makeDirectory("/CROSS OVER/multiple"))
+            assertTrue(makeDirectory("/CROSS OVER/multiple/levels down"))
+            assertTrue(changeWorkingDirectory("/CROSS OVER/multiple"))
+            assertTrue(changeWorkingDirectory("levels down"))
+            assertEquals("/CROSS OVER/multiple/levels down", printWorkingDirectory())
+            assertTrue(deleteFile("/CROSS OVER/test3.bin"))
+            assertTrue(changeWorkingDirectory("/CROSS OVER"))
+            listFiles().let {
+                assertEquals(1, it.size)
+                assertEquals("multiple", it[0].name)
+            }
         }
     }
 }

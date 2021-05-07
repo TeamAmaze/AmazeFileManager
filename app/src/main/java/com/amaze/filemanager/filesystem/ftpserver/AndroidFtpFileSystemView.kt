@@ -65,10 +65,10 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 }
             }
             else -> {
-                currentPath = if (currentPath.isNullOrEmpty() || currentPath == "/") {
-                    dir
-                } else {
-                    normalizePath("$currentPath/$dir")
+                currentPath = when {
+                    currentPath.isNullOrEmpty() || currentPath == "/" -> dir
+                    !dir.startsWith("/") -> normalizePath("$currentPath/$dir")
+                    else -> normalizePath(dir)
                 }
                 resolveDocumentFileFromRoot(currentPath) != null
             }
@@ -86,7 +86,7 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
         return normalizePath(path).let { normalizedPath ->
             AndroidFtpFile(
                 context,
-                rootDocumentFile,
+                resolveDocumentFileFromRoot(getParentFrom(normalizedPath))!!, // rootDocumentFile,
                 resolveDocumentFileFromRoot(normalizedPath), normalizedPath
             )
         }
@@ -107,8 +107,20 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 path
             }
             else -> {
-                Uri.decode(URI(Uri.encode(path, "/")).normalize().toString())
+                Uri.decode(
+                    URI(Uri.encode(path, "/"))
+                        .normalize()
+                        .toString()
+                ).replace("//", "/")
             }
+        }
+    }
+
+    private fun getParentFrom(normalizedPath: String): String {
+        return if (normalizedPath.length <= 1) {
+            normalizedPath
+        } else {
+            normalizedPath.substringBeforeLast('/')
         }
     }
 
