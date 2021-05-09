@@ -241,7 +241,8 @@ public class MainActivityHelper {
       String prefill,
       final MaterialDialog.SingleButtonCallback onPositiveAction,
       final WarnableTextInputValidator.OnTextValidate validator) {
-    GeneralDialogCreation.showNameDialog(
+    MaterialDialog dialog =
+        GeneralDialogCreation.showNameDialog(
             mainActivity,
             mainActivity.getResources().getString(R.string.entername),
             prefill,
@@ -250,8 +251,15 @@ public class MainActivityHelper {
             mainActivity.getResources().getString(R.string.cancel),
             null,
             onPositiveAction,
-            validator)
-        .show();
+            validator);
+    dialog.show();
+
+    // place cursor at the beginning
+    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+    textfield.post(
+        () -> {
+          textfield.setSelection(0);
+        });
   }
 
   public String getIntegralNames(String path) {
@@ -283,6 +291,10 @@ public class MainActivityHelper {
   }
 
   public void guideDialogForLEXA(String path) {
+    guideDialogForLEXA(path, 3);
+  }
+
+  public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
     x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     x.title(R.string.needs_access);
@@ -301,7 +313,7 @@ public class MainActivityHelper {
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)
         .negativeColor(accentColor)
-        .onPositive((dialog, which) -> triggerStorageAccessFramework())
+        .onPositive((dialog, which) -> triggerStorageAccessFramework(requestCode))
         .onNegative(
             (dialog, which) ->
                 Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show());
@@ -309,9 +321,9 @@ public class MainActivityHelper {
     y.show();
   }
 
-  private void triggerStorageAccessFramework() {
+  private void triggerStorageAccessFramework(int requestCode) {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-    mainActivity.startActivityForResult(intent, 3);
+    mainActivity.startActivityForResult(intent, requestCode);
   }
 
   public void rename(

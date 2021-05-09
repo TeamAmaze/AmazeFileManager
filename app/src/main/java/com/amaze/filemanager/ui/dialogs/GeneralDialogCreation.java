@@ -163,6 +163,16 @@ public class GeneralDialogCreation {
     WarnableTextInputLayout tilTextfield =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
+    tilTextfield.requestFocus();
+
+    textfield.postDelayed(
+        () -> {
+          InputMethodManager inputMethodManager =
+              (InputMethodManager) m.getSystemService(Context.INPUT_METHOD_SERVICE);
+          inputMethodManager.showSoftInput(textfield, InputMethodManager.SHOW_IMPLICIT);
+        },
+        100);
+
     builder
         .customView(dialogView, false)
         .widgetColor(accentColor)
