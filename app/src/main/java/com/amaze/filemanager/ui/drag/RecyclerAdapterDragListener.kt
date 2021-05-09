@@ -107,6 +107,8 @@ class RecyclerAdapterDragListener(
                                 !checkedItems.contains(currentElement)
                             ) {
                                 holder.rl.isSelected = false
+                                holder.rl.isFocusable = false
+                                holder.rl.isFocusableInTouchMode = false
                             }
                         }
                     }
@@ -119,6 +121,8 @@ class RecyclerAdapterDragListener(
             DragEvent.ACTION_DRAG_LOCATION -> {
                 holder?.run {
                     if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+                        holder.rl.isFocusable = true
+                        holder.rl.isFocusableInTouchMode = true
                         holder.rl.requestFocus()
                     }
                 }
