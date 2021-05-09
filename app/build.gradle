@@ -109,9 +109,12 @@ ext {
     roomVersion = '2.2.5'
     bouncyCastleVersion = '1.66'
     awaitilityVersion = "3.1.6"
+    androidMaterialVersion = "1.3.0"
+    androidXFragmentVersion = "1.3.0"
+    androidXAppCompatVersion = "1.2.0"
     androidXTestVersion = "1.3.0"
     androidXTestExtVersion = "1.1.2"
-    junitVersion = "4.13"
+    junitVersion = "4.13.2"
     slf4jVersion = "1.7.25"
     mockitoVersion = "3.4.4"
     androidBillingVersion = "2.1.0"
@@ -125,9 +128,10 @@ dependencies {
 
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.palette:palette:1.0.0'
+    implementation "com.google.android.material:material:$androidMaterialVersion"
+    implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
+    implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "com.android.billingclient:billing:$androidBillingVersion"
@@ -150,10 +154,11 @@ dependencies {
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation 'org.jsoup:jsoup:1.11.2'
-    testAnnotationProcessor "com.google.auto.service:auto-service:1.0-rc4"
+    testImplementation 'commons-net:commons-net:3.6'
+    kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
     androidTestImplementation "androidx.test:core:$androidXTestVersion"
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"

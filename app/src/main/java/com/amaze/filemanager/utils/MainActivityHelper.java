@@ -291,6 +291,10 @@ public class MainActivityHelper {
   }
 
   public void guideDialogForLEXA(String path) {
+    guideDialogForLEXA(path, 3);
+  }
+
+  public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
     x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     x.title(R.string.needs_access);
@@ -309,7 +313,7 @@ public class MainActivityHelper {
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)
         .negativeColor(accentColor)
-        .onPositive((dialog, which) -> triggerStorageAccessFramework())
+        .onPositive((dialog, which) -> triggerStorageAccessFramework(requestCode))
         .onNegative(
             (dialog, which) ->
                 Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show());
@@ -317,9 +321,9 @@ public class MainActivityHelper {
     y.show();
   }
 
-  private void triggerStorageAccessFramework() {
+  private void triggerStorageAccessFramework(int requestCode) {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-    mainActivity.startActivityForResult(intent, 3);
+    mainActivity.startActivityForResult(intent, requestCode);
   }
 
   public void rename(
