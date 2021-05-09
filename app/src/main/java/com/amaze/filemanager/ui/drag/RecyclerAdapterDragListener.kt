@@ -66,24 +66,24 @@ class RecyclerAdapterDragListener(
             DragEvent.ACTION_DRAG_ENTERED -> {
                 holder?.run {
                     if (adapter.itemsDigested.size != 0 &&
-                            holder.adapterPosition < adapter.itemsDigested.size
+                        holder.adapterPosition < adapter.itemsDigested.size
                     ) {
                         val listItem = (adapter.itemsDigested[holder.adapterPosition])
                         if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
                             if (listItem.specialType != RecyclerAdapter.TYPE_BACK &&
-                                    listItem.shouldToggleDragChecked
+                                listItem.shouldToggleDragChecked
                             ) {
                                 listItem.toggleShouldToggleDragChecked()
                                 adapter.toggleChecked(
-                                        holder.adapterPosition,
-                                        if (mainFragment.IS_LIST) holder.checkImageView
-                                        else holder.checkImageViewGrid
+                                    holder.adapterPosition,
+                                    if (mainFragment.IS_LIST) holder.checkImageView
+                                    else holder.checkImageViewGrid
                                 )
                             }
                         } else {
                             val currentElement = listItem.elem
                             if (currentElement.isDirectory && listItem.specialType !=
-                                    RecyclerAdapter.TYPE_BACK
+                                RecyclerAdapter.TYPE_BACK
                             ) {
                                 holder.rl.isSelected = true
                             }
@@ -95,14 +95,16 @@ class RecyclerAdapterDragListener(
             DragEvent.ACTION_DRAG_EXITED -> {
                 holder?.run {
                     if (adapter.itemsDigested.size != 0 &&
-                            holder.adapterPosition < adapter.itemsDigested.size
+                        holder.adapterPosition < adapter.itemsDigested.size
                     ) {
                         val listItem = (adapter.itemsDigested[holder.adapterPosition])
                         if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                            val checkedItems: ArrayList<LayoutElementParcelable> = adapter.checkedItems
+                            val checkedItems:
+                                ArrayList<LayoutElementParcelable> = adapter.checkedItems
                             val currentElement = listItem.elem
                             if (currentElement.isDirectory && listItem.specialType !=
-                                    RecyclerAdapter.TYPE_BACK && !checkedItems.contains(currentElement)
+                                RecyclerAdapter.TYPE_BACK &&
+                                !checkedItems.contains(currentElement)
                             ) {
                                 holder.rl.isSelected = false
                             }
