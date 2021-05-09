@@ -1162,6 +1162,7 @@ public class HybridFile {
               } catch (IOException e) {
                 e.printStackTrace();
               }
+              // FIXME: anything better than throwing a null to make Rx happy?
               return null;
             }
           });

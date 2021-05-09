@@ -18,22 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks.compress
+package com.amaze.filemanager.filesystem.ftpserver
 
-import android.os.Environment
-import androidx.test.core.app.ApplicationProvider
-import java.io.File
+import android.content.Context
+import android.os.Build.VERSION_CODES.KITKAT
+import androidx.annotation.RequiresApi
+import com.amaze.filemanager.asynchronous.services.ftp.FtpService
+import org.apache.ftpserver.ftplet.FileSystemFactory
+import org.apache.ftpserver.ftplet.FileSystemView
+import org.apache.ftpserver.ftplet.User
 
-class Bzip2HelperTaskTest : AbstractCompressedHelperTaskTest() {
+@RequiresApi(KITKAT)
+class AndroidFileSystemFactory(private val context: Context) : FileSystemFactory {
 
-    override fun createTask(relativePath: String): CompressedHelperTask = Bzip2HelperTask(
-        ApplicationProvider.getApplicationContext(),
-        File(
-            Environment.getExternalStorageDirectory(),
-            "test-archive.tar.bz2"
-        ).absolutePath,
-        relativePath,
-        false,
-        emptyCallback
-    )
+    override fun createFileSystemView(user: User?): FileSystemView =
+        AndroidFtpFileSystemView(context, user?.homeDirectory ?: FtpService.DEFAULT_PATH)
 }
