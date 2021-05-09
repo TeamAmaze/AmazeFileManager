@@ -1151,7 +1151,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     public boolean getShouldToggleDragChecked() {
-      return this.shouldToggleDragChecked;
+      return !checked && this.shouldToggleDragChecked;
     }
 
     public void toggleShouldToggleDragChecked() {
