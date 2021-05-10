@@ -43,6 +43,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
@@ -96,7 +97,8 @@ public class CryptUtil {
   private static final String PREFERENCE_KEY = "aes_key";
   // TODO: Generate a random IV every time, and keep track of it (in database against encrypted
   // files)
-  private static final String IV = "LxbHiJhhUXcj"; // 12 byte long IV supported by android for GCM
+  private static final String IV =
+      BuildConfig.CRYPTO_IV; // 12 byte long IV supported by android for GCM
 
   public static final String CRYPT_EXTENSION = ".aze";
 
