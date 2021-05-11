@@ -512,7 +512,7 @@ public class MainActivity extends PermissionsActivity
         }
 
       } else if (actionIntent.equals(Intent.ACTION_SEND)) {
-        if (type.equals("text/plain")) {
+        if ("text/plain".equals(type)) {
           initFabToSave(null);
         } else {
           // save a single file to filesystem

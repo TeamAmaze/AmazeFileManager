@@ -46,6 +46,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             testProguardFile 'tests-proguard.cfg'
+            buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
         }
 
         release {
@@ -53,6 +54,7 @@ android {
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
         }
     }
 
