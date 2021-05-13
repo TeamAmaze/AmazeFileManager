@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="@dimen/minimal_row_size"
+    android:layout_height="@dimen/minimal_row_size"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ImageView
+        android:id="@+id/icon"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:background="@drawable/circle_shape"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <View
+        android:id="@+id/files_count_parent"
+        android:layout_width="@dimen/tick_icon_size"
+        android:layout_height="@dimen/tick_icon_size"
+        android:padding="@dimen/check_icon_padding"
+        android:layout_marginBottom="@dimen/check_icon_margin_bottom_right"
+        android:layout_marginRight="@dimen/check_icon_margin_bottom_right"
+        android:layout_marginEnd="@dimen/check_icon_margin_bottom_right"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        >
+
+        <TextView
+            android:id="@+id/files_count"
+            android:layout_width="@dimen/tick_icon_size"
+            android:layout_height="@dimen/tick_icon_size"
+            android:textColor="@android:color/white"/>
+    </View>
+</RelativeLayout>

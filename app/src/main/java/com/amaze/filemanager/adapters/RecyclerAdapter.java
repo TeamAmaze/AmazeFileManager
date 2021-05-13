@@ -43,6 +43,7 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.databinding.DragPlaceholderBinding;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
@@ -551,30 +552,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                     vholder.getAdapterPosition(),
                     mainFrag.IS_LIST ? holder.checkImageView : holder.checkImageViewGrid);
               }
-              if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT
-                  && (itemsDigested.get(p).getChecked() == ListItem.CHECKED
-                      || dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT)) {
-                // toggle drag flag to true for list item due to the fact
-                // that we might have set it false in a previous drag event
-                if (!itemsDigested.get(p).shouldToggleDragChecked) {
-                  itemsDigested.get(p).toggleShouldToggleDragChecked();
-                }
-                View.DragShadowBuilder dragShadowBuilder =
-                    new View.DragShadowBuilder(
-                        dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
-                            ? holder.dummyView
-                            : holder.iconLayout);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                  p1.startDragAndDrop(null, dragShadowBuilder, null, 0);
-                } else {
-                  p1.startDrag(null, dragShadowBuilder, null, 0);
-                }
-                mainFrag
-                    .getMainActivity()
-                    .initCornersDragListener(
-                        false,
-                        dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
-              }
+              initDragListener(p, p1, holder);
             }
             return true;
           });
@@ -920,6 +898,45 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return VIEW_GENERIC;
       }
     }
+  }
+
+  private void initDragListener(int position, View view, ItemViewHolder itemViewHolder) {
+    if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT
+        && (itemsDigested.get(position).getChecked() == ListItem.CHECKED
+            || dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT)) {
+      // toggle drag flag to true for list item due to the fact
+      // that we might have set it false in a previous drag event
+      if (!itemsDigested.get(position).shouldToggleDragChecked) {
+        itemsDigested.get(position).toggleShouldToggleDragChecked();
+      }
+
+      View shadowView =
+          dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+              ? itemViewHolder.dummyView
+              : getDragShadow(getCheckedItems().size());
+      View.DragShadowBuilder dragShadowBuilder = new View.DragShadowBuilder(shadowView);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+        view.startDragAndDrop(null, dragShadowBuilder, null, 0);
+      } else {
+        view.startDrag(null, dragShadowBuilder, null, 0);
+      }
+      mainFrag
+          .getMainActivity()
+          .initCornersDragListener(
+              false, dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+    }
+  }
+
+  private View getDragShadow(int selectionCount) {
+    DragPlaceholderBinding binding = DragPlaceholderBinding.inflate(mInflater);
+    binding.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.folder_fab));
+    GradientDrawable gradientDrawable = (GradientDrawable) binding.icon.getBackground();
+    gradientDrawable.setColor(grey_color);
+    binding.filesCount.setText(selectionCount);
+    binding.filesCountParent.setBackgroundDrawable(
+        new CircleGradientDrawable(
+            accentColor, utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
+    return binding.getRoot();
   }
 
   private void showThumbnailWithBackground(
