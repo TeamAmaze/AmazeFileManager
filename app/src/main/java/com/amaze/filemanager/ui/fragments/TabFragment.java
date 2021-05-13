@@ -54,6 +54,7 @@ import android.widget.ImageView;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
@@ -91,6 +92,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   private ViewGroup rootView;
 
   private ArgbEvaluator evaluator = new ArgbEvaluator();
+  private ConstraintLayout dragPlaceholder;
 
   @Override
   public View onCreateView(
@@ -98,6 +100,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     rootView = (ViewGroup) inflater.inflate(R.layout.tabfragment, container, false);
 
     fragmentManager = getActivity().getSupportFragmentManager();
+    dragPlaceholder = rootView.findViewById(R.id.drag_placeholder);
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       indicator = getActivity().findViewById(R.id.indicator);
@@ -409,6 +412,10 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
       circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
     }
+  }
+
+  public ConstraintLayout getDragPlaceholder() {
+    return this.dragPlaceholder;
   }
 
   private void updateBottomBar(MainFragment mainFragment) {

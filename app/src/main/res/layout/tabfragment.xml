@@ -60,4 +60,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         />
+    <include
+        android:id="@+id/drag_placeholder"
+        layout="@layout/drag_placeholder"
+        android:layout_width="@dimen/drag_icon_size"
+        android:layout_height="@dimen/drag_icon_size"
+        android:visibility="invisible"
+        app:layout_constraintTop_toBottomOf="parent"
+        android:layout_margin="@dimen/material_generic_large"
+        />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,37 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="@dimen/minimal_row_size"
-    android:layout_height="@dimen/minimal_row_size"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="@dimen/drag_icon_size"
+    android:layout_height="@dimen/drag_icon_size">
 
-    <ImageView
-        android:id="@+id/icon"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:padding="8dp"
-        android:background="@drawable/circle_shape"
-        app:layout_constraintLeft_toLeftOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="@dimen/icon_width"
+        android:layout_height="@dimen/icon_width"
+        android:layout_marginLeft="@dimen/material_generic_medium"
+        android:layout_marginBottom="@dimen/material_generic"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent">
 
-    <View
-        android:id="@+id/files_count_parent"
-        android:layout_width="@dimen/tick_icon_size"
-        android:layout_height="@dimen/tick_icon_size"
-        android:padding="@dimen/check_icon_padding"
-        android:layout_marginBottom="@dimen/check_icon_margin_bottom_right"
-        android:layout_marginRight="@dimen/check_icon_margin_bottom_right"
-        android:layout_marginEnd="@dimen/check_icon_margin_bottom_right"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        >
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="@dimen/sixty_four"
+            android:layout_height="@dimen/sixty_four"
+            android:layout_marginRight="@dimen/md_content_padding_top"
+            android:background="@drawable/circle_shape"
+            android:padding="@dimen/material_generic_title_summary"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/files_count"
-            android:layout_width="@dimen/tick_icon_size"
-            android:layout_height="@dimen/tick_icon_size"
-            android:textColor="@android:color/white"/>
-    </View>
-</RelativeLayout>
+        <RelativeLayout
+            android:id="@+id/files_count_parent"
+            android:layout_width="@dimen/material_generic_medium"
+            android:layout_height="@dimen/material_generic_medium"
+            android:padding="@dimen/check_icon_padding"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintRight_toRightOf="parent">
+
+            <TextView
+                android:id="@+id/files_count"
+                android:layout_width="@dimen/material_generic_medium"
+                android:layout_height="@dimen/material_generic_medium"
+                android:gravity="center_vertical|center_horizontal"
+                android:textColor="@android:color/white" />
+        </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

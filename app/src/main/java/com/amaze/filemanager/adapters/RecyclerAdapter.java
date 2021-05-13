@@ -43,7 +43,6 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.databinding.DragPlaceholderBinding;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
@@ -82,6 +81,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.TextView;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.Nullable;
@@ -928,15 +928,29 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private View getDragShadow(int selectionCount) {
-    DragPlaceholderBinding binding = DragPlaceholderBinding.inflate(mInflater);
-    binding.icon.setImageDrawable(context.getResources().getDrawable(R.drawable.folder_fab));
-    GradientDrawable gradientDrawable = (GradientDrawable) binding.icon.getBackground();
+    mainFrag.getMainActivity().getTabFragment().getDragPlaceholder().setVisibility(View.VISIBLE);
+    ImageView icon =
+        mainFrag.getMainActivity().getTabFragment().getDragPlaceholder().findViewById(R.id.icon);
+    View filesCountParent =
+        mainFrag
+            .getMainActivity()
+            .getTabFragment()
+            .getDragPlaceholder()
+            .findViewById(R.id.files_count_parent);
+    TextView filesCount =
+        mainFrag
+            .getMainActivity()
+            .getTabFragment()
+            .getDragPlaceholder()
+            .findViewById(R.id.files_count);
+    icon.setImageDrawable(context.getResources().getDrawable(R.drawable.folder_fab));
+    GradientDrawable gradientDrawable = (GradientDrawable) icon.getBackground();
     gradientDrawable.setColor(grey_color);
-    binding.filesCount.setText(selectionCount);
-    binding.filesCountParent.setBackgroundDrawable(
+    filesCount.setText(String.valueOf(selectionCount));
+    filesCountParent.setBackgroundDrawable(
         new CircleGradientDrawable(
             accentColor, utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
-    return binding.getRoot();
+    return mainFrag.getMainActivity().getTabFragment().getDragPlaceholder();
   }
 
   private void showThumbnailWithBackground(

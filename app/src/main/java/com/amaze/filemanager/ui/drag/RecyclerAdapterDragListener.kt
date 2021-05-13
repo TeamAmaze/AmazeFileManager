@@ -60,6 +60,8 @@ class RecyclerAdapterDragListener(
                 ) {
                     val dataUtils = DataUtils.getInstance()
                     dataUtils.checkedItemsList = null
+                    mainFragment.mainActivity
+                        .tabFragment.dragPlaceholder?.visibility = View.INVISIBLE
                 }
                 true
             }
