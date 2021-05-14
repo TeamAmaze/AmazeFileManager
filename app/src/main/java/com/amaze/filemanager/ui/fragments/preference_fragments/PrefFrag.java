@@ -233,6 +233,10 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                       .edit()
                       .putInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which)
                       .apply();
+                  sharedPref
+                      .edit()
+                      .putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null)
+                      .apply();
                   dialog.dismiss();
                   return true;
                 });

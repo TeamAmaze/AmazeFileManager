@@ -59,9 +59,8 @@
 
     <string-array name="dragAndDropPreference">
         <item>@string/disable</item>
-        <item>@string/drag_to_move</item>
-        <item>@string/drag_to_copy</item>
         <item>@string/drag_to_select</item>
+        <item>@string/drag_to_move_copy</item>
     </string-array>
 
 </resources>

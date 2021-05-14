@@ -701,10 +701,11 @@
     <string name="error_permission_denied">Permission denied</string>
     <string name="error_archive_password_incorrect">Wrong archive password.</string>
     <string name="error_archive_cannot_extract">Cannot extract archive entry \"%s\" to \"%s\".</string>
-    <string name="drag_and_drop_preference">Select drag and drop preference</string>
-    <string name="drag_to_move">Touch and drag to move files</string>
-    <string name="drag_to_copy">Touch and drag to copy files</string>
+    <string name="drag_and_drop_preference">Select drag and drop preference (Experimental)</string>
+    <string name="drag_to_move_copy">Touch and drag to move or copy files</string>
     <string name="drag_to_select">Touch and drag to select files</string>
     <string name="disable">Disable</string>
+    <string name="choose_operation">Choose operation to perform</string>
+    <string name="remember">Remember for next time</string>
 </resources>
 

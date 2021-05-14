@@ -1462,7 +1462,11 @@ public class MainActivity extends PermissionsActivity
                 }
 
                 new MoveFiles(
-                        oparrayListList, mainFragment, mainFragment.getActivity(), OpenMode.FILE)
+                        oparrayListList,
+                        isRootExplorer(),
+                        mainFragment.getCurrentPath(),
+                        mainFragment.getActivity(),
+                        OpenMode.FILE)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                 break;
               case NEW_FOLDER: // mkdir

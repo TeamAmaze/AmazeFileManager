@@ -44,6 +44,7 @@ public class PreferencesConstants {
   public static final String PREFERENCE_ENABLE_MARQUEE_FILENAME = "enableMarqueeFilename";
   public static final String PREFERENCE_ROOT_LEGACY_LISTING = "legacyListing";
   public static final String PREFERENCE_DRAG_AND_DROP_PREFERENCE = "dragAndDropPreference";
+  public static final String PREFERENCE_DRAG_AND_DROP_REMEMBERED = "dragOperationRemembered";
 
   public static final String PREFERENCE_CLEAR_OPEN_FILE = "clear_open_file";
   public static final String PREFERENCE_BOOKMARKS_ADDED = "books_added";
@@ -103,7 +104,8 @@ public class PreferencesConstants {
 
   // drag and drop preferences
   public static final int PREFERENCE_DRAG_DEFAULT = 0;
-  public static final int PREFERENCE_DRAG_TO_MOVE = 1;
-  public static final int PREFERENCE_DRAG_TO_COPY = 2;
-  public static final int PREFERENCE_DRAG_TO_SELECT = 3;
+  public static final int PREFERENCE_DRAG_TO_SELECT = 1;
+  public static final int PREFERENCE_DRAG_TO_MOVE_COPY = 2;
+  public static final String PREFERENCE_DRAG_REMEMBER_COPY = "copy";
+  public static final String PREFERENCE_DRAG_REMEMBER_MOVE = "move";
 }

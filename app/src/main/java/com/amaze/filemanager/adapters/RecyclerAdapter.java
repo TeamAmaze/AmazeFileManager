@@ -74,6 +74,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -195,6 +196,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (!stoppedAnimation) mainFrag.stopAnimation();
     if (itemsDigested.get(position).getChecked() == ListItem.CHECKED) {
       // if the view at position is checked, un-check it
+      Log.d(
+          getClass().getSimpleName(),
+          String.format("the view at position %s is checked, un-check it", position));
       itemsDigested.get(position).setChecked(false);
 
       Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
@@ -206,6 +210,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       }
     } else {
       // if view is un-checked, check it
+      Log.d(
+          getClass().getSimpleName(),
+          String.format("the view at position %s is unchecked, check it", position));
       itemsDigested.get(position).setChecked(true);
 
       Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);
@@ -547,7 +554,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       holder.rl.setOnLongClickListener(
           p1 -> {
             if (!isBackButton) {
-              if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
+              if (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_DEFAULT
+                  || (dragAndDropPreference == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY
+                      && itemsDigested.get(vholder.getAdapterPosition()).getChecked()
+                          != ListItem.CHECKED)) {
                 toggleChecked(
                     vholder.getAdapterPosition(),
                     mainFrag.IS_LIST ? holder.checkImageView : holder.checkImageViewGrid);
@@ -929,6 +939,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   private View getDragShadow(int selectionCount) {
     mainFrag.getMainActivity().getTabFragment().getDragPlaceholder().setVisibility(View.VISIBLE);
+    String rememberMovePreference =
+        sharedPrefs.getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, "");
     ImageView icon =
         mainFrag.getMainActivity().getTabFragment().getDragPlaceholder().findViewById(R.id.icon);
     View filesCountParent =
@@ -943,7 +955,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             .getTabFragment()
             .getDragPlaceholder()
             .findViewById(R.id.files_count);
-    icon.setImageDrawable(context.getResources().getDrawable(R.drawable.folder_fab));
+    icon.setImageDrawable(
+        context.getResources().getDrawable(getDragIconReference(rememberMovePreference)));
     GradientDrawable gradientDrawable = (GradientDrawable) icon.getBackground();
     gradientDrawable.setColor(grey_color);
     filesCount.setText(String.valueOf(selectionCount));
@@ -951,6 +964,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         new CircleGradientDrawable(
             accentColor, utilsProvider.getAppTheme(), mainFrag.getResources().getDisplayMetrics()));
     return mainFrag.getMainActivity().getTabFragment().getDragPlaceholder();
+  }
+
+  private int getDragIconReference(String rememberMovePreference) {
+    int iconRef = R.drawable.ic_add_white_24dp;
+    if (rememberMovePreference.equalsIgnoreCase(
+        PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE)) {
+      iconRef = R.drawable.ic_content_cut_white_36dp;
+    } else if (rememberMovePreference.equalsIgnoreCase(
+        PreferencesConstants.PREFERENCE_DRAG_REMEMBER_COPY)) {
+      iconRef = R.drawable.ic_content_copy_white_24dp;
+    }
+    return iconRef;
   }
 
   private void showThumbnailWithBackground(

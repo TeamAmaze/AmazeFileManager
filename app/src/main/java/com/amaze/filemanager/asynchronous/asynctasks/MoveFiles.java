@@ -41,7 +41,6 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.DataUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
@@ -59,23 +58,26 @@ import android.widget.Toast;
 public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
 
   private ArrayList<ArrayList<HybridFileParcelable>> files;
-  private MainFragment mainFrag;
   private ArrayList<String> paths;
   private Context context;
   private OpenMode mode;
   private long totalBytes = 0l;
   private long destinationSize = 0l;
   private boolean invalidOperation = false;
+  private boolean isRootExplorer;
+  private String currentPath;
 
   public MoveFiles(
       ArrayList<ArrayList<HybridFileParcelable>> files,
-      MainFragment ma,
+      boolean isRootExplorer,
+      String currentPath,
       Context context,
       OpenMode mode) {
-    mainFrag = ma;
     this.context = context;
     this.files = files;
     this.mode = mode;
+    this.isRootExplorer = isRootExplorer;
+    this.currentPath = currentPath;
   }
 
   @Override
@@ -109,7 +111,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
             if (!source.renameTo(dest)) {
 
               // check if we have root
-              if (mainFrag != null && mainFrag.getMainActivity().isRootExplorer()) {
+              if (isRootExplorer) {
                 try {
                   if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath))
                     return false;
@@ -152,7 +154,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
   @Override
   public void onPostExecute(Boolean movedCorrectly) {
     if (movedCorrectly) {
-      if (mainFrag != null && mainFrag.getCurrentPath().equals(paths.get(0))) {
+      if (currentPath.equals(paths.get(0))) {
         // mainFrag.updateList();
         Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
 
@@ -219,8 +221,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
         intent.putExtra(CopyService.TAG_COPY_TARGET, paths.get(i));
         intent.putExtra(CopyService.TAG_COPY_MOVE, true);
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
-        intent.putExtra(
-            CopyService.TAG_IS_ROOT_EXPLORER, mainFrag.getMainActivity().isRootExplorer());
+        intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, isRootExplorer);
 
         ServiceWatcherUtil.runService(context, intent);
       }

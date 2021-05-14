@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.drag
 
-import android.os.AsyncTask
 import android.util.Log
 import android.view.DragEvent
 import android.view.View
@@ -28,9 +27,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.adapters.holders.ItemViewHolder
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.ui.dialogs.DragAndDropDialog
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
@@ -108,9 +107,12 @@ class RecyclerAdapterDragListener(
                                 RecyclerAdapter.TYPE_BACK &&
                                 !checkedItems.contains(currentElement)
                             ) {
-                                holder.rl.isSelected = false
-                                holder.rl.isFocusable = false
-                                holder.rl.isFocusableInTouchMode = false
+                                holder.rl.run {
+                                    isSelected = false
+                                    isFocusable = false
+                                    isFocusableInTouchMode = false
+                                    clearFocus()
+                                }
                             }
                         }
                     }
@@ -123,9 +125,11 @@ class RecyclerAdapterDragListener(
             DragEvent.ACTION_DRAG_LOCATION -> {
                 holder?.run {
                     if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                        holder.rl.isFocusable = true
-                        holder.rl.isFocusableInTouchMode = true
-                        holder.rl.requestFocus()
+                        holder.rl.run {
+                            isFocusable = true
+                            isFocusableInTouchMode = true
+                            requestFocus()
+                        }
                     }
                 }
                 true
@@ -214,23 +218,21 @@ class RecyclerAdapterDragListener(
                                 "%s"
                             ).format(pasteLocation)
                     )
-                    startCopyTask(pasteLocation, arrayList)
+                    DragAndDropDialog.showDialogOrPerformOperation(
+                        pasteLocation,
+                        arrayList, mainFragment.mainActivity
+                    )
+                    adapter.toggleChecked(false)
+                    holder?.rl?.run {
+                        isSelected = false
+                        isFocusable = false
+                        isFocusableInTouchMode = false
+                        clearFocus()
+                    }
                 }
                 true
             }
             else -> false
         }
-    }
-
-    private fun startCopyTask(pasteLocation: String, arrayList: ArrayList<HybridFileParcelable>) {
-        PrepareCopyTask(
-            mainFragment,
-            pasteLocation,
-            dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE,
-            mainFragment.mainActivity,
-            mainFragment.mainActivity.isRootExplorer
-        )
-            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList)
-        adapter.toggleChecked(false)
     }
 }

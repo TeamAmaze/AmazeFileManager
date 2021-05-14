@@ -18,7 +18,7 @@
             android:layout_height="@dimen/sixty_four"
             android:layout_marginRight="@dimen/md_content_padding_top"
             android:background="@drawable/circle_shape"
-            android:padding="@dimen/material_generic_title_summary"
+            android:padding="@dimen/material_generic"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 

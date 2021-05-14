@@ -43,7 +43,6 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.Utils;
 
 import android.app.ProgressDialog;
@@ -70,7 +69,6 @@ import androidx.annotation.IntDef;
 public class PrepareCopyTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, PrepareCopyTask.CopyNode> {
 
-  private final MainFragment mainFrag;
   private final String path;
   private final Boolean move;
   private final WeakReference<MainActivity> mainActivity;
@@ -97,12 +95,11 @@ public class PrepareCopyTask
   @interface DialogState {}
 
   public PrepareCopyTask(
-      MainFragment ma, String path, Boolean move, MainActivity con, boolean rootMode) {
-    mainFrag = ma;
+      String path, Boolean move, MainActivity con, boolean rootMode, OpenMode openMode) {
     this.move = move;
     mainActivity = new WeakReference<>(con);
     context = new WeakReference<>(con);
-    openMode = mainFrag.openMode;
+    this.openMode = openMode;
     this.rootMode = rootMode;
 
     this.path = path;
@@ -348,7 +345,7 @@ public class PrepareCopyTask
             startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
           }
         } else {
-          new MoveFiles(filesToCopyPerFolder, mainFrag, context.get(), openMode)
+          new MoveFiles(filesToCopyPerFolder, rootMode, path, context.get(), openMode)
               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
         }
       }
