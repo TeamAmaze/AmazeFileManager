@@ -35,6 +35,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.utils.safeLet
 
 class DragAndDropDialog : DialogFragment() {
 
@@ -47,6 +48,10 @@ class DragAndDropDialog : DialogFragment() {
         private const val KEY_PASTE_LOCATION = "pasteLocation"
         private const val KEY_FILES = "files"
 
+        /**
+         * Show move / copy dialog on drop or perform the operation directly based on
+         * remember preference selected by user previously in this dialog
+         */
         fun showDialogOrPerformOperation(
             pasteLocation: String,
             files: ArrayList<HybridFileParcelable>,
@@ -121,42 +126,48 @@ class DragAndDropDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        context?.run {
-            val dialog: MaterialDialog = MaterialDialog.Builder(this)
+        safeLet(
+            context, mainActivity?.appTheme?.materialDialogTheme, mainActivity?.accent,
+            pasteLocation, operationFiles
+        ) {
+            context, dialogTheme, accent, pasteLocation, operationFiles ->
+            val dialog: MaterialDialog = MaterialDialog.Builder(context)
                 .title(getString(R.string.choose_operation))
                 .customView(R.layout.dialog_drag_drop, true)
-                .theme(mainActivity?.appTheme?.materialDialogTheme!!)
+                .theme(dialogTheme)
                 .negativeText(getString(R.string.cancel).toUpperCase())
-                .negativeColor(mainActivity?.accent!!)
+                .negativeColor(accent)
                 .cancelable(false)
                 .onNeutral { _: MaterialDialog?, _: DialogAction? ->
                     dismiss()
                 }
                 .build()
 
-            // Get views from custom layout to set text values.
-            val rememberCheckbox = dialog.customView!!.findViewById<CheckBox>(R.id.remember_drag)
-            val moveButton = dialog.customView!!.findViewById<Button>(R.id.button_move)
-            moveButton.setOnClickListener {
-                mainActivity?.run {
-                    if (rememberCheckbox.isChecked) {
-                        rememberDragOperation(true)
+            dialog.customView?.run {
+                // Get views from custom layout to set text values.
+                val rememberCheckbox = this.findViewById<CheckBox>(R.id.remember_drag)
+                val moveButton = this.findViewById<Button>(R.id.button_move)
+                moveButton.setOnClickListener {
+                    mainActivity?.run {
+                        if (rememberCheckbox.isChecked) {
+                            rememberDragOperation(true)
+                        }
+                        startCopyOrMoveTask(pasteLocation, operationFiles, true, this)
+                        dismiss()
                     }
-                    startCopyOrMoveTask(pasteLocation!!, operationFiles!!, true, this)
-                    dismiss()
                 }
-            }
-            val copyButton = dialog.customView!!.findViewById<Button>(R.id.button_copy)
-            copyButton.setOnClickListener {
-                mainActivity?.run {
-                    if (rememberCheckbox.isChecked) {
-                        rememberDragOperation(false)
+                val copyButton = this.findViewById<Button>(R.id.button_copy)
+                copyButton.setOnClickListener {
+                    mainActivity?.run {
+                        if (rememberCheckbox.isChecked) {
+                            rememberDragOperation(false)
+                        }
+                        startCopyOrMoveTask(pasteLocation, operationFiles, false, this)
+                        dismiss()
                     }
-                    startCopyOrMoveTask(pasteLocation!!, operationFiles!!, false, this)
-                    dismiss()
                 }
+                return dialog
             }
-            return dialog
         }
         Log.w(javaClass.simpleName, "Failed to show drag drop dialog view")
         return super.onCreateDialog(savedInstanceState)
