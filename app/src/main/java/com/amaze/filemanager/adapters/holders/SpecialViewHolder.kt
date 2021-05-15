@@ -33,7 +33,12 @@ import com.amaze.filemanager.utils.Utils
  *
  * @author Emmanuel on 29/5/2017, at 04:22.
  */
-class SpecialViewHolder(c: Context, view: View, utilsProvider: UtilitiesProvider, val type: Int) : RecyclerView.ViewHolder(view) {
+class SpecialViewHolder(
+    c: Context,
+    view: View,
+    utilsProvider: UtilitiesProvider,
+    val type: Int,
+) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
     private val txtTitle: TextView = view.findViewById(R.id.text)
 

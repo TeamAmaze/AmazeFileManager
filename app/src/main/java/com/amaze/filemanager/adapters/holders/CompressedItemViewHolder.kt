@@ -30,31 +30,31 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 /** @author Emmanuel Messulam<emmanuelbendavid></emmanuelbendavid>@gmail.com> on 17/9/2017, at 18:13.
  */
 class CompressedItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-    // each data item is just a string in this case
-    @JvmField
-    val pictureIcon: RoundedImageView = view.findViewById(R.id.picture_icon)
+  // each data item is just a string in this case
+  @JvmField
+  val pictureIcon: RoundedImageView = view.findViewById(R.id.picture_icon)
 
-    @JvmField
-    val genericIcon: ImageView = view.findViewById(R.id.generic_icon)
+  @JvmField
+  val genericIcon: ImageView = view.findViewById(R.id.generic_icon)
 
-    @JvmField
-    val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
+  @JvmField
+  val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
 
-    @JvmField
-    val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
+  @JvmField
+  val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
 
-    @JvmField
-    val txtDesc: TextView = view.findViewById(R.id.secondLine)
+  @JvmField
+  val txtDesc: TextView = view.findViewById(R.id.secondLine)
 
-    @JvmField
-    val date: TextView = view.findViewById(R.id.date)
+  @JvmField
+  val date: TextView = view.findViewById(R.id.date)
 
-    val perm: TextView = view.findViewById(R.id.permis)
+  val perm: TextView = view.findViewById(R.id.permis)
 
-    @JvmField
-    val rl: View = view.findViewById(R.id.second)
+  @JvmField
+  val rl: View = view.findViewById(R.id.second)
 
-    @JvmField
-    val checkImageView: ImageView = view.findViewById(R.id.check_icon)
+  @JvmField
+  val checkImageView: ImageView = view.findViewById(R.id.check_icon)
 
 }

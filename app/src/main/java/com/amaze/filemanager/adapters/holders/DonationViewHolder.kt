@@ -26,16 +26,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 
 class DonationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-    @JvmField
-    val ROOT_VIEW: LinearLayout = itemView.findViewById(R.id.adapter_donation_root)
+  @JvmField
+  val ROOT_VIEW: LinearLayout = itemView.findViewById(R.id.adapter_donation_root)
 
-    @JvmField
-    val TITLE: TextView = itemView.findViewById(R.id.adapter_donation_title)
+  @JvmField
+  val TITLE: TextView = itemView.findViewById(R.id.adapter_donation_title)
 
-    @JvmField
-    val SUMMARY: TextView = itemView.findViewById(R.id.adapter_donation_summary)
+  @JvmField
+  val SUMMARY: TextView = itemView.findViewById(R.id.adapter_donation_summary)
 
-    @JvmField
-    val PRICE: TextView = itemView.findViewById(R.id.adapter_donation_price)
+  @JvmField
+  val PRICE: TextView = itemView.findViewById(R.id.adapter_donation_price)
 
 }
