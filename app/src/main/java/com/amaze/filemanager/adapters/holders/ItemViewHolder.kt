@@ -37,46 +37,46 @@ import com.amaze.filemanager.ui.views.ThemedTextView
  * @author Emmanuel on 29/5/2017, at 04:19.
  */
 class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-  // each data item is just a string in this case
-  @JvmField
-  val pictureIcon: RoundedImageView = view.findViewById(R.id.picture_icon)
+    // each data item is just a string in this case
+    @JvmField
+    val pictureIcon: RoundedImageView = view.findViewById(R.id.picture_icon)
 
-  @JvmField
-  val genericIcon: ImageView = view.findViewById(R.id.generic_icon)
+    @JvmField
+    val genericIcon: ImageView = view.findViewById(R.id.generic_icon)
 
-  @JvmField
-  val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
+    @JvmField
+    val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
 
-  @JvmField
-  val imageView1: ImageView = view.findViewById(R.id.icon_thumb)
+    @JvmField
+    val imageView1: ImageView = view.findViewById(R.id.icon_thumb)
 
-  @JvmField
-  val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
+    @JvmField
+    val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
 
-  @JvmField
-  val txtDesc: TextView = view.findViewById(R.id.secondLine)
+    @JvmField
+    val txtDesc: TextView = view.findViewById(R.id.secondLine)
 
-  @JvmField
-  val date: TextView = view.findViewById(R.id.date)
+    @JvmField
+    val date: TextView = view.findViewById(R.id.date)
 
-  @JvmField
-  val perm: TextView = view.findViewById(R.id.permis)
+    @JvmField
+    val perm: TextView = view.findViewById(R.id.permis)
 
-  @JvmField
-  val rl: View = view.findViewById(R.id.second)
+    @JvmField
+    val rl: View = view.findViewById(R.id.second)
 
-  @JvmField
-  val genericText: TextView = view.findViewById(R.id.generictext)
+    @JvmField
+    val genericText: TextView = view.findViewById(R.id.generictext)
 
-  @JvmField
-  val about: ImageButton = view.findViewById(R.id.properties)
+    @JvmField
+    val about: ImageButton = view.findViewById(R.id.properties)
 
-  @JvmField
-  val checkImageView: ImageView = view.findViewById(R.id.check_icon)
+    @JvmField
+    val checkImageView: ImageView = view.findViewById(R.id.check_icon)
 
-  @JvmField
-  val checkImageViewGrid: ImageView = view.findViewById(R.id.check_icon_grid)
+    @JvmField
+    val checkImageViewGrid: ImageView = view.findViewById(R.id.check_icon_grid)
 
-  @JvmField
-  val iconLayout: RelativeLayout = view.findViewById(R.id.icon_frame_grid)
+    @JvmField
+    val iconLayout: RelativeLayout = view.findViewById(R.id.icon_frame_grid)
 }

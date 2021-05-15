@@ -35,15 +35,15 @@ import com.amaze.filemanager.R
  * @see com.amaze.filemanager.adapters.HiddenAdapter
  */
 class HiddenViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-  @JvmField
-  val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
+    @JvmField
+    val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
 
-  @JvmField
-  val textTitle: TextView = view.findViewById(R.id.filename)
+    @JvmField
+    val textTitle: TextView = view.findViewById(R.id.filename)
 
-  @JvmField
-  val textDescription: TextView = view.findViewById(R.id.file_path)
+    @JvmField
+    val textDescription: TextView = view.findViewById(R.id.file_path)
 
-  @JvmField
-  val row: LinearLayout = view.findViewById(R.id.bookmarkrow)
+    @JvmField
+    val row: LinearLayout = view.findViewById(R.id.bookmarkrow)
 }
