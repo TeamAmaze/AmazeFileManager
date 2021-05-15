@@ -48,7 +48,7 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
 
     @JvmField
-    val imageView1: ImageView = view.findViewById(R.id.icon_thumb)
+    val imageView1: ImageView? = view.findViewById(R.id.icon_thumb)
 
     @JvmField
     val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
@@ -75,8 +75,8 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val checkImageView: ImageView = view.findViewById(R.id.check_icon)
 
     @JvmField
-    val checkImageViewGrid: ImageView = view.findViewById(R.id.check_icon_grid)
+    val checkImageViewGrid: ImageView? = view.findViewById(R.id.check_icon_grid)
 
     @JvmField
-    val iconLayout: RelativeLayout = view.findViewById(R.id.icon_frame_grid)
+    val iconLayout: RelativeLayout? = view.findViewById(R.id.icon_frame_grid)
 }
