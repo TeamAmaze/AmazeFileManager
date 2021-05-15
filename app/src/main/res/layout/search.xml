@@ -54,6 +54,8 @@
             android:background="@null"
             android:fontFamily="sans-serif-light"
             android:textSize="14sp"
+            android:layout_marginRight="7dp"
+            android:layout_marginLeft="7dp"
             android:ems="10"
             android:gravity="left|top"
             android:inputType="textCapSentences|textMultiLine"
