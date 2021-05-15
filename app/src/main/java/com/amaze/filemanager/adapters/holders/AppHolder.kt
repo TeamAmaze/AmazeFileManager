@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.adapters.holders
 
 import android.view.View
@@ -28,28 +29,27 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.views.ThemedTextView
 
-/** @author Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com> on 10/12/2017, at 14:45.
- */
+/** @author Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com> on 10/12/2017, at 14:45. */
 class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
-  @JvmField
-  val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
+    @JvmField
+    val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
 
-  @JvmField
-  val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
+    @JvmField
+    val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
 
-  @JvmField
-  val rl: RelativeLayout = view.findViewById(R.id.second)
+    @JvmField
+    val rl: RelativeLayout = view.findViewById(R.id.second)
 
-  @JvmField
-  val txtDesc: TextView = view.findViewById(R.id.date)
+    @JvmField
+    val txtDesc: TextView = view.findViewById(R.id.date)
 
-  @JvmField
-  val about: ImageButton = view.findViewById(R.id.properties)
+    @JvmField
+    val about: ImageButton = view.findViewById(R.id.properties)
 
-  @JvmField
-  val summary: RelativeLayout = view.findViewById(R.id.summary)
+    @JvmField
+    val summary: RelativeLayout = view.findViewById(R.id.summary)
 
-  init {
-    apkIcon.visibility = View.VISIBLE
-  }
+    init {
+        apkIcon.visibility = View.VISIBLE
+    }
 }
