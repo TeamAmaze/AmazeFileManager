@@ -17,20 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.adapters.holders
 
-package com.amaze.filemanager.adapters.holders;
+import android.view.View
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.amaze.filemanager.R
 
-import android.view.View;
+class DonationViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    @JvmField
+    val ROOT_VIEW: LinearLayout = itemView.findViewById(R.id.adapter_donation_root)
 
-import androidx.recyclerview.widget.RecyclerView;
+    @JvmField
+    val TITLE: TextView = itemView.findViewById(R.id.adapter_donation_title)
 
-/**
- * Check RecyclerAdapter's doc.
- *
- * @author Emmanuel on 29/5/2017, at 22:48.
- */
-public class EmptyViewHolder extends RecyclerView.ViewHolder {
-  public EmptyViewHolder(View view) {
-    super(view);
-  }
+    @JvmField
+    val SUMMARY: TextView = itemView.findViewById(R.id.adapter_donation_summary)
+
+    @JvmField
+    val PRICE: TextView = itemView.findViewById(R.id.adapter_donation_price)
+
 }

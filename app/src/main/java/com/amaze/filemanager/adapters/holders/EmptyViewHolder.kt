@@ -17,27 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.adapters.holders
 
-package com.amaze.filemanager.adapters.holders;
+import android.view.View
+import androidx.recyclerview.widget.RecyclerView
 
-import com.amaze.filemanager.R;
-
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.recyclerview.widget.RecyclerView;
-
-public class DonationViewHolder extends RecyclerView.ViewHolder {
-
-  public final LinearLayout ROOT_VIEW;
-  public final TextView TITLE, SUMMARY, PRICE;
-
-  public DonationViewHolder(View itemView) {
-    super(itemView);
-    ROOT_VIEW = itemView.findViewById(R.id.adapter_donation_root);
-    TITLE = itemView.findViewById(R.id.adapter_donation_title);
-    SUMMARY = itemView.findViewById(R.id.adapter_donation_summary);
-    PRICE = itemView.findViewById(R.id.adapter_donation_price);
-  }
-}
+/**
+ * Check RecyclerAdapter's doc.
+ *
+ * @author Emmanuel on 29/5/2017, at 22:48.
+ */
+class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)
