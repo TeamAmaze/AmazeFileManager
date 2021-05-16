@@ -30,6 +30,7 @@ import android.widget.CheckBox
 import androidx.fragment.app.DialogFragment
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -166,8 +167,18 @@ class DragAndDropDialog : DialogFragment() {
                         dismiss()
                     }
                 }
-                return dialog
+                if (dialogTheme == Theme.LIGHT) {
+                    moveButton.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_baseline_content_cut_24,
+                        0, 0, 0
+                    )
+                    copyButton.setCompoundDrawablesWithIntrinsicBounds(
+                        R.drawable.ic_baseline_content_copy_24,
+                        0, 0, 0
+                    )
+                }
             }
+            return dialog
         }
         Log.w(javaClass.simpleName, "Failed to show drag drop dialog view")
         return super.onCreateDialog(savedInstanceState)
