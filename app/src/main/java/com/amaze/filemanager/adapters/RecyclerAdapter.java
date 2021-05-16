@@ -577,7 +577,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             p1 -> {
               // check if the item on which action is performed is not the first {goback} item
               if (!isBackButton) {
-                toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                int position = vholder.getAdapterPosition();
+                if(position!=RecyclerView.NO_POSITION)
+                toggleChecked(position, holder.checkImageView);
               }
 
               return true;
@@ -596,7 +598,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
               if (id == R.id.generic_icon || id == R.id.picture_icon || id == R.id.apk_icon) {
                 // TODO: transform icon on press to the properties dialog with animation
                 if (!isBackButton) {
-                  toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                  int position = vholder.getAdapterPosition();
+                  if(position!=RecyclerView.NO_POSITION)
+                    toggleChecked(position, holder.checkImageView);
                 } else mainFrag.goBack();
               }
             });
@@ -604,14 +608,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.pictureIcon.setOnClickListener(
             view -> {
               if (!isBackButton) {
-                toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                int position = vholder.getAdapterPosition();
+                if(position!=RecyclerView.NO_POSITION)
+                    toggleChecked(position, holder.checkImageView);
               } else mainFrag.goBack();
             });
 
         holder.apkIcon.setOnClickListener(
             view -> {
               if (!isBackButton) {
-                toggleChecked(vholder.getAdapterPosition(), holder.checkImageView);
+                int position = vholder.getAdapterPosition();
+                if(position!=RecyclerView.NO_POSITION)
+                  toggleChecked(position, holder.checkImageView);
               } else mainFrag.goBack();
             });
 
@@ -750,7 +758,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.rl.setOnLongClickListener(
             p1 -> {
               if (!isBackButton) {
-                toggleChecked(vholder.getAdapterPosition(), holder.checkImageViewGrid);
+                int position = vholder.getAdapterPosition();
+                if(position!=RecyclerView.NO_POSITION)
+                  toggleChecked(position, holder.checkImageViewGrid);
               }
               return true;
             });

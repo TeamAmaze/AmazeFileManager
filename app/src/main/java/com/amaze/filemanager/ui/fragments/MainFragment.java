@@ -93,6 +93,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -309,7 +310,14 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
                 }
                 if (!IS_LIST) {
-                  loadViews();
+                  new Handler().postDelayed(new Runnable() {
+
+                    @Override
+                    public void run() {
+                      loadViews();
+                    }
+                  }, 100);
+
                 }
                 if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
                   mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
@@ -318,7 +326,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 }
               }
             });
-    loadViews();
+    new Handler().postDelayed(new Runnable() {
+      @Override
+      public void run() {
+        loadViews();
+      }
+    }, 100);
   }
 
   public void stopAnimation() {
