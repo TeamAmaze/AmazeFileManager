@@ -30,8 +30,6 @@ import com.amaze.filemanager.R
 /**
  * This is the ViewHolder that formats the hidden files as defined in bookmarkrow.xml.
  *
- * @author Emmanuel on 20/11/2017, at 18:38.
- * @author Bowie Chen on 2019-10-26.
  * @see com.amaze.filemanager.adapters.HiddenAdapter
  */
 class HiddenViewHolder(view: View) : RecyclerView.ViewHolder(view) {

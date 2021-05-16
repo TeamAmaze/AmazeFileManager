@@ -31,8 +31,6 @@ import com.amaze.filemanager.utils.Utils
 
 /**
  * Check [com.amaze.filemanager.adapters.RecyclerAdapter]'s doc.
- *
- * @author Emmanuel on 29/5/2017, at 04:22.
  */
 class SpecialViewHolder(
     c: Context,

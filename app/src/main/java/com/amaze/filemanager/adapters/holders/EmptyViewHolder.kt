@@ -25,7 +25,5 @@ import androidx.recyclerview.widget.RecyclerView
 
 /**
  * Check RecyclerAdapter's doc.
- *
- * @author Emmanuel on 29/5/2017, at 22:48.
  */
 class EmptyViewHolder(view: View) : RecyclerView.ViewHolder(view)

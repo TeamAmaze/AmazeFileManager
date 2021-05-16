@@ -28,8 +28,6 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.views.RoundedImageView
 import com.amaze.filemanager.ui.views.ThemedTextView
 
-/** @author Emmanuel Messulam<emmanuelbendavid></emmanuelbendavid>@gmail.com> on 17/9/2017, at 18:13.
- */
 class CompressedItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
     @JvmField

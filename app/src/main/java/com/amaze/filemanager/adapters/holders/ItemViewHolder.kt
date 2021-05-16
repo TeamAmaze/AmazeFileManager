@@ -33,8 +33,6 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 /**
  * Check RecyclerAdapter's doc. TODO load everything related to this item here instead of in
  * RecyclerAdapter.
- *
- * @author Emmanuel on 29/5/2017, at 04:19.
  */
 class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case

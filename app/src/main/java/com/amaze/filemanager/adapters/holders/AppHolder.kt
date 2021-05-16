@@ -29,7 +29,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.views.ThemedTextView
 
-/** @author Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com> on 10/12/2017, at 14:45. */
 class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
     @JvmField
     val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
