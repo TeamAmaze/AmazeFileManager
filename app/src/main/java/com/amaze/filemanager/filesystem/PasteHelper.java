@@ -53,6 +53,7 @@ import io.reactivex.schedulers.Schedulers;
  */
 public final class PasteHelper implements Parcelable {
 
+
   public static final int OPERATION_COPY = 0, OPERATION_CUT = 1;
 
   private final int operation;
