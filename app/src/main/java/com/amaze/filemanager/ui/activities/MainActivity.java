@@ -1045,7 +1045,8 @@ public class MainActivity extends PermissionsActivity
                         case R.id.paste:
                             pasteHelper.pasteItems();
                         case R.id.home:
-                            mainFragment.home();
+                            if (pasteHelper == null || pasteHelper.getDestPath() == null)
+                                mainFragment.home();
                             break;
                         case R.id.history:
                             GeneralDialogCreation.showHistoryDialog(
@@ -2210,20 +2211,6 @@ public class MainActivity extends PermissionsActivity
 
     private void executeWithMainFragment(@NonNull Function<MainFragment, Void> lambda) {
         executeWithMainFragment(lambda, false);
-    }
-
-    @Nullable
-    private void executeWithMainFragment(
-            @NonNull Function<MainFragment, Void> lambda, boolean showToastIfMainFragmentIsNull) {
-        final MainFragment mainFragment = getCurrentMainFragment();
-        if (mainFragment != null) {
-            lambda.apply(mainFragment);
-        } else {
-            Log.w(TAG, "MainFragment is null");
-            if (showToastIfMainFragmentIsNull) {
-                AppConfig.toast(this, R.string.operation_unsuccesful);
-            }
-        }
     }
 
     public MenuItem getPasteMenuItem() {
