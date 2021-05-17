@@ -1045,7 +1045,7 @@ public class MainActivity extends PermissionsActivity
                         case R.id.paste:
                             pasteHelper.pasteItems();
                         case R.id.home:
-                            mainFragment.home();
+                            //mainFragment.home();
                             break;
                         case R.id.history:
                             GeneralDialogCreation.showHistoryDialog(

@@ -991,6 +991,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                                 boolean isPathLayoutGrid =
                                         dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
                                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+                                if (getMainActivity().getPendingForPaste().get()){
+                                    PasteHelper pasteHelper = getMainActivity().getPaste();
+                                    if (pasteHelper.getDestPath() != null)
+                                        pasteHelper.hidePaste();
+                                }
                             } else {
                                 AppConfig.toast(requireContext(), getString(R.string.unknown_error));
                             }
