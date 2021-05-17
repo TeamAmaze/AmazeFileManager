@@ -32,12 +32,12 @@ public class AppThemeManager {
   public AppThemeManager(SharedPreferences preferences) {
     this.preferences = preferences;
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "0");
-    appTheme = AppTheme.getTheme(Integer.parseInt(themeId)).getSimpleTheme();
+    appTheme = AppTheme.getTheme(Integer.parseInt(themeId));
   }
 
   /** @return The current Application theme */
   public AppTheme getAppTheme() {
-    return appTheme.getSimpleTheme();
+    return appTheme;
   }
 
   /**

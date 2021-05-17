@@ -107,6 +107,7 @@
     <string name="light">Material Light</string>
     <string name="dark">Material Dark</string>
     <string name="daytime">Daytime</string>
+    <string name="system">System</string>
     <string name="black">Black (for OLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->

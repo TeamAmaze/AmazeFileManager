@@ -30,6 +30,8 @@ import androidx.appcompat.app.AppCompatActivity;
 /** Created by rpiotaix on 17/10/16. */
 public class BasicActivity extends AppCompatActivity {
 
+  private static final int REQUEST_PERMISSION_LOCATION_STATE = 1;
+
   protected AppConfig getAppConfig() {
     return (AppConfig) getApplication();
   }
@@ -38,11 +40,63 @@ public class BasicActivity extends AppCompatActivity {
     return getAppConfig().getUtilsProvider().getColorPreference();
   }
 
-  public AppTheme getAppTheme() {
-    return getAppConfig().getUtilsProvider().getAppTheme();
+  ublic AppTheme getAppTheme() {
+    AppTheme appTheme = getAppConfig().getUtilsProvider().getAppTheme();
+
+    if (appTheme == AppTheme.SYSTEM) {
+      appTheme = getSystemTheme();
+    } else if (appTheme == AppTheme.TIMED) {
+      appTheme = getDaytimeTheme();
+    }
+    return appTheme;
+  }
+
+  private AppTheme getSystemTheme() {
+    AppTheme appTheme = AppTheme.LIGHT;
+    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+    if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
+      appTheme = AppTheme.DARK;
+    }
+
+    return appTheme;
+  }
+
+  private AppTheme getDaytimeTheme() {
+    AppTheme appTheme = AppTheme.LIGHT;
+
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(this,
+              new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
+              , REQUEST_PERMISSION_LOCATION_STATE);
+    } else if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
+      ActivityCompat.requestPermissions(this,
+              new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}
+              , REQUEST_PERMISSION_LOCATION_STATE);
+    } else {
+      LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+      Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+
+      if (location != null) {
+        long time = Calendar.getInstance().getTime().getTime();
+        int state = new TwilightCalculator().calculateTwilight(time, location.getLatitude(), location.getLongitude());
+        if (state == TwilightCalculator.NIGHT) {
+          appTheme = AppTheme.DARK;
+        }
+      } else {
+        int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+        if (hour <= 6 || hour >= 18) {
+          appTheme = AppTheme.DARK;
+        }
+      }
+    }
+
+
+    return appTheme;
   }
 
   public UtilitiesProvider getUtilsProvider() {
     return getAppConfig().getUtilsProvider();
   }
+
+
 }

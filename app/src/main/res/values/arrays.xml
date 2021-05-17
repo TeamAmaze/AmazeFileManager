@@ -27,6 +27,7 @@
         <item>@string/light</item>
         <item>@string/dark</item>
         <item>@string/daytime</item>
+        <item>@string/system</item>
         <item>@string/black</item>
 
     </string-array>
