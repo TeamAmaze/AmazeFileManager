@@ -95,8 +95,13 @@ public class FileListSorter implements Comparator<LayoutElementParcelable> {
       if (!file1.isDirectory && !file2.isDirectory) {
 
         return asc * Long.valueOf(file1.longSize).compareTo(file2.longSize);
-      } else {
+        //the following lines have been added to solve issue #2318
+      } else if(file1.isDirectory && file2.isDirectory){
 
+        return asc * Long.valueOf(file1.longSize).compareTo(file2.longSize);
+      }
+      else
+      {
         return file1.title.compareToIgnoreCase(file2.title);
       }
 

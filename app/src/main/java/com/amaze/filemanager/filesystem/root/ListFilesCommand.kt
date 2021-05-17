@@ -32,6 +32,7 @@ import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.utils.Utils
 import java.io.File
 import kotlin.collections.ArrayList
 
@@ -159,7 +160,14 @@ object ListFilesCommand : IRootCommand() {
             if (filesInPathFile != null) {
                 filesInPathFile.forEach { currentFile ->
                     var size: Long = 0
-                    if (!currentFile.isDirectory) size = currentFile.length()
+                    /*
+                        we will set size of folders as their actual size to resolve issue #2318.
+                     */
+                    if (!currentFile.isDirectory) {
+                        size = currentFile.length()
+                    }
+                    else
+                        size = Utils.folderSize(currentFile)
                     HybridFileParcelable(
                         currentFile.path,
                         RootHelper.parseFilePermission(currentFile),

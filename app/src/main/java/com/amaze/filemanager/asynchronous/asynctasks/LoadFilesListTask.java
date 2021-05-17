@@ -281,6 +281,16 @@ public class LoadFilesListTask
 
       if (baseFile.isDirectory()) {
         nullCheckOrInterrupt(mainFragment, this).folder_count++;
+         /*
+        to solve issue #2318, we will pass the real size of the folders
+        as the size parameters to layoutElement .
+         */
+        try {
+          longSize = baseFile.getSize();
+          size = Formatter.formatFileSize(nullCheckOrInterrupt(context, this), longSize);
+        } catch (NumberFormatException e) {
+          e.printStackTrace();
+        }
       } else {
         if (baseFile.getSize() != -1) {
           try {

@@ -399,4 +399,17 @@ public class Utils {
     emailIntent.setType("message/rfc822");
     return emailIntent;
   }
+  /*
+ this method will be used to solve issue #2318 (sorting folders)
+ */
+  public static long folderSize(File directory) {
+    long length = 0;
+    for (File file : directory.listFiles()) {
+      if (file.isFile())
+        length += file.length();
+      else
+        length += folderSize(file);
+    }
+    return length;
+  }
 }
