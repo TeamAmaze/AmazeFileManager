@@ -20,50 +20,66 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/search"
-        android:title="@string/search"
-        android:icon="@drawable/ic_search_white_24dp"
-        app:showAsAction="always" />
-    <item android:id="@+id/home"
-        android:title="@string/home"
-        app:showAsAction="ifRoom"
-        android:icon="@drawable/ic_home_white_24dp"/>
+        android:id="@+id/addToList"
+        android:icon="@drawable/ic_add_white_24dp"
+        android:title="@string/add"
+        app:showAsAction="always"
+        />
     <item
-        app:showAsAction="ifRoom"
+        android:id="@+id/paste"
+        android:icon="@drawable/ic_content_paste_white_24dp"
+        android:title="@string/paste"
+        app:showAsAction="always"
+        />
+    <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/home"
+        android:icon="@drawable/ic_home_white_24dp"
+        android:title="@string/home"
+        app:showAsAction="ifRoom" />
+    <item
         android:id="@+id/sort"
+        android:icon="@drawable/ic_sort_white_24dp"
         android:title="@string/sort"
-        android:icon="@drawable/ic_sort_white_24dp">
-        <menu >
-            <item android:title="@string/sort_by"
-                android:id="@+id/sortby"/>
-            <item android:title="@string/directorysort"
-                android:id="@+id/dsort"/>
+        app:showAsAction="ifRoom">
+        <menu>
+            <item
+                android:id="@+id/sortby"
+                android:title="@string/sort_by" />
+            <item
+                android:id="@+id/dsort"
+                android:title="@string/directorysort" />
         </menu>
 
     </item>
-    <item android:id="@+id/history"
+    <item
+        android:id="@+id/history"
         android:icon="@drawable/ic_history_white_24dp"
-        app:showAsAction="ifRoom"
-        android:title="@string/history"/>
+        android:title="@string/history"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/view"
-        android:title=""/>
+        android:title="" />
     <item
         android:id="@+id/hiddenitems"
-        android:visible="false"
-        android:title="@string/hiddenfiles" />
+        android:title="@string/hiddenfiles"
+        android:visible="false" />
     <item
         android:id="@+id/sethome"
-        android:title="@string/set_as_home"/>
+        android:title="@string/set_as_home" />
     <item
         android:id="@+id/extract"
         android:title="@string/extract"
-        android:visible="false"/>
+        android:visible="false" />
 
     <!-- orderInCategory=100 to have the element exit always at the end of the list -->
     <item
         android:id="@+id/exit"
-        android:title="@string/exit"
-        android:orderInCategory="100"/>
+        android:orderInCategory="100"
+        android:title="@string/exit" />
 
 </menu>
