@@ -321,7 +321,7 @@ public class MainActivity extends PermissionsActivity
         cloudHandler = new CloudHandler(this, AppConfig.getInstance().getExplorerDatabase());
 
         initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
-        mainActivityHelper = new MainActivityHelper(this);
+        mainActivityHelper = MainActivityHelper.getInstance(this);
 
         if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -992,7 +992,7 @@ public class MainActivity extends PermissionsActivity
             menu.findItem(R.id.hiddenitems).setVisible(true);
             menu.findItem(R.id.view).setVisible(true);
             menu.findItem(R.id.extract).setVisible(false);
-//      invalidatePasteSnackbar(true);
+            invalidatePasteSnackbar(true);
             findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
         } else if (fragment instanceof AppsListFragment
                 || fragment instanceof ProcessViewerFragment
@@ -1013,7 +1013,7 @@ public class MainActivity extends PermissionsActivity
             }
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
-//      invalidatePasteSnackbar(false);
+            invalidatePasteSnackbar(false);
         } else if (fragment instanceof CompressedExplorerFragment) {
             appbar.setTitle(R.string.appbar_name);
             menu.findItem(R.id.sethome).setVisible(false);
@@ -1026,7 +1026,7 @@ public class MainActivity extends PermissionsActivity
             menu.findItem(R.id.hiddenitems).setVisible(false);
             menu.findItem(R.id.view).setVisible(false);
             menu.findItem(R.id.extract).setVisible(true);
-//      invalidatePasteSnackbar(false);
+            invalidatePasteSnackbar(false);
         }
         return super.onPrepareOptionsMenu(menu);
     }
@@ -1045,7 +1045,7 @@ public class MainActivity extends PermissionsActivity
                         case R.id.paste:
                             pasteHelper.pasteItems();
                         case R.id.home:
-                            //mainFragment.home();
+                            mainFragment.home();
                             break;
                         case R.id.history:
                             GeneralDialogCreation.showHistoryDialog(
@@ -2248,5 +2248,19 @@ public class MainActivity extends PermissionsActivity
 
     public void setAddToCutListMenuItem(MenuItem addToCutListMenuItem) {
         this.addToCutListMenuItem = addToCutListMenuItem;
+    }
+
+    @Nullable
+    private void executeWithMainFragment(
+            @NonNull Function<MainFragment, Void> lambda, boolean showToastIfMainFragmentIsNull) {
+        final MainFragment mainFragment = getCurrentMainFragment();
+        if (mainFragment != null) {
+            lambda.apply(mainFragment);
+        } else {
+            Log.w(TAG, "MainFragment is null");
+            if (showToastIfMainFragmentIsNull) {
+                AppConfig.toast(this, R.string.operation_unsuccesful);
+            }
+        }
     }
 }
