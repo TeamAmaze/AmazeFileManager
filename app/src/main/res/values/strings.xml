@@ -703,5 +703,7 @@
     <string name="error_archive_cannot_extract">Cannot extract archive entry \"%s\" to \"%s\".</string>
     <string name="add">Add</string>
     <string name="file_copied_alert">File copied</string>
+    <string name="add_to_cutting_list">Add to cutting list</string>
+    <string name="add_to_copying_list">Add to copying list</string>
 </resources>
 

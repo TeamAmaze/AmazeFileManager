@@ -22,6 +22,8 @@ package com.amaze.filemanager.filesystem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 import java.util.Objects;
 
 import com.amaze.filemanager.R;
@@ -58,7 +60,7 @@ public final class PasteHelper implements Parcelable {
     public static final int OPERATION_COPY = 0, OPERATION_CUT = 1;
 
     private final int operation;
-    private final HybridFileParcelable[] paths;
+    private HybridFileParcelable[] paths;
     private Snackbar snackbar;
     private MainActivity mainActivity;
 
@@ -69,6 +71,13 @@ public final class PasteHelper implements Parcelable {
         this.mainActivity = mainActivity;
         showPaste();
 //        showSnackbar();
+    }
+
+    public void addPaths(HybridFileParcelable[] paths) {
+        List<HybridFileParcelable> newPaths = new ArrayList<>();
+        Collections.addAll(newPaths, this.paths);
+        Collections.addAll(newPaths, paths);
+        this.paths = newPaths.toArray(new HybridFileParcelable[newPaths.size()]);
     }
 
     private PasteHelper(Parcel in) {
@@ -224,6 +233,9 @@ public final class PasteHelper implements Parcelable {
 
     private void hidePaste() {
         mainActivity.getPasteMenuItem().setVisible(false);
+        mainActivity.getAddToCopyListMenuItem().setVisible(false);
+        mainActivity.getPendingForPaste().set(false);
+        mainActivity.getAddToCutListMenuItem().setVisible(false);
         mainActivity.setPaste(null);
     }
 }

@@ -291,6 +291,8 @@ public class MainActivity extends PermissionsActivity
 
     private PasteHelper pasteHelper;
     private MenuItem pasteMenuItem;
+    private MenuItem addToCopyListMenuItem;
+    private MenuItem addToCutListMenuItem;
     private AtomicBoolean pendingForPaste = new AtomicBoolean(false);
 
 
@@ -977,6 +979,10 @@ public class MainActivity extends PermissionsActivity
             if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
             if (pendingForPaste.get()) {
                 pasteMenuItem.setVisible(true);
+                if (pasteHelper.getOperation() == PasteHelper.OPERATION_COPY)
+                    addToCopyListMenuItem.setVisible(true);
+                else
+                    addToCutListMenuItem.setVisible(true);
             }
             menu.findItem(R.id.search).setVisible(true);
             menu.findItem(R.id.home).setVisible(true);
@@ -2226,5 +2232,21 @@ public class MainActivity extends PermissionsActivity
 
     public AtomicBoolean getPendingForPaste() {
         return pendingForPaste;
+    }
+
+    public MenuItem getAddToCopyListMenuItem() {
+        return addToCopyListMenuItem;
+    }
+
+    public MenuItem getAddToCutListMenuItem() {
+        return addToCutListMenuItem;
+    }
+
+    public void setAddToCopyListMenuItem(MenuItem addToCopyListMenuItem) {
+        this.addToCopyListMenuItem = addToCopyListMenuItem;
+    }
+
+    public void setAddToCutListMenuItem(MenuItem addToCutListMenuItem) {
+        this.addToCutListMenuItem = addToCutListMenuItem;
     }
 }
