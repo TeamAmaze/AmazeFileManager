@@ -291,7 +291,6 @@ public class MainActivity extends PermissionsActivity
 
     private PasteHelper pasteHelper;
     private MenuItem pasteMenuItem;
-    private MenuItem addToListMenuItem;
     private AtomicBoolean pendingForPaste = new AtomicBoolean(false);
 
 
@@ -942,7 +941,6 @@ public class MainActivity extends PermissionsActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem s = menu.findItem(R.id.view);
         MenuItem search = menu.findItem(R.id.search);
-        addToListMenuItem = menu.findItem(R.id.addToList);
         pasteMenuItem = menu.findItem(R.id.paste);
         Fragment fragment = getFragmentAtFrame();
         if (fragment instanceof TabFragment) {
@@ -974,12 +972,10 @@ public class MainActivity extends PermissionsActivity
 
             appbar.getBottomBar().setClickListener();
 
-            addToListMenuItem.setVisible(false);
             pasteMenuItem.setVisible(false);
             search.setVisible(true);
             if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
             if (pendingForPaste.get()) {
-                addToListMenuItem.setVisible(true);
                 pasteMenuItem.setVisible(true);
             }
             menu.findItem(R.id.search).setVisible(true);
@@ -2226,10 +2222,6 @@ public class MainActivity extends PermissionsActivity
 
     public MenuItem getPasteMenuItem() {
         return pasteMenuItem;
-    }
-
-    public MenuItem getAddToListMenuItem() {
-        return addToListMenuItem;
     }
 
     public AtomicBoolean getPendingForPaste() {

@@ -220,12 +220,10 @@ public final class PasteHelper implements Parcelable {
         Toast.makeText(mainActivity.getBaseContext(), R.string.file_copied_alert, Toast.LENGTH_SHORT);
         mainActivity.getPendingForPaste().set(true);
         mainActivity.getPasteMenuItem().setVisible(true);
-        mainActivity.getAddToListMenuItem().setVisible(true);
     }
 
     private void hidePaste() {
         mainActivity.getPasteMenuItem().setVisible(false);
-        mainActivity.getAddToListMenuItem().setVisible(false);
         mainActivity.setPaste(null);
     }
 }
