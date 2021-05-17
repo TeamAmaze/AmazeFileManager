@@ -20,21 +20,21 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/search"
-        android:icon="@drawable/ic_search_white_24dp"
-        android:title="@string/search"
-        app:showAsAction="always" />
-    <item
         android:id="@+id/paste"
         android:icon="@drawable/ic_content_paste_white_24dp"
         android:title="@string/paste"
         app:showAsAction="always"
         />
     <item
+        android:id="@+id/search"
+        android:icon="@drawable/ic_search_white_24dp"
+        android:title="@string/search"
+        app:showAsAction="always" />
+    <item
         android:id="@+id/home"
         android:icon="@drawable/ic_home_white_24dp"
         android:title="@string/home"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/sort"
         android:icon="@drawable/ic_sort_white_24dp"
