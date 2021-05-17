@@ -49,12 +49,12 @@
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        <com.amaze.filemanager.ui.views.FastScroller
-            android:id="@+id/fastscroll"
-            android:orientation="vertical"
-            android:layout_width="0dp"
-            android:layout_gravity="end"
-            android:layout_height="match_parent"/>
+<!--        <com.amaze.filemanager.ui.views.FastScroller-->
+<!--            android:id="@+id/fastscroll"-->
+<!--            android:orientation="vertical"-->
+<!--            android:layout_width="0dp"-->
+<!--            android:layout_gravity="end"-->
+<!--            android:layout_height="match_parent"/>-->
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/nofilelayout"

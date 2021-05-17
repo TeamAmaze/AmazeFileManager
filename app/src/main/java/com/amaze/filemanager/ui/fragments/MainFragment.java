@@ -170,7 +170,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   private HashMap<String, Bundle> scrolls = new HashMap<>();
   private View rootView;
   private View actionModeView;
-  private FastScroller fastScroller;
+//  private FastScroller fastScroller;
   private CustomFileObserver customFileObserver;
   private DataUtils dataUtils;
   private boolean isEncryptOpen =
@@ -225,8 +225,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     rootView = inflater.inflate(R.layout.main_frag, container, false);
     listView = rootView.findViewById(R.id.listView);
     mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
-    fastScroller = rootView.findViewById(R.id.fastscroll);
-    fastScroller.setPressedHandleColor(accentColor);
+//    fastScroller = rootView.findViewById(R.id.fastscroll);
+//    fastScroller.setPressedHandleColor(accentColor);
     listView.setOnTouchListener(
         (view, motionEvent) -> {
           if (adapter != null && stopAnims) {
@@ -1099,19 +1099,19 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       getMainActivity().getFAB().show();
       getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       listView.stopScroll();
-      fastScroller.setRecyclerView(
-          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
-      mToolbarContainer.addOnOffsetChangedListener(
-          (appBarLayout, verticalOffset) -> {
-            fastScroller.updateHandlePosition(verticalOffset, 112);
-          });
-      fastScroller.registerOnTouchListener(
-          () -> {
-            if (stopAnims && adapter != null) {
-              stopAnimation();
-              stopAnims = false;
-            }
-          });
+//      fastScroller.setRecyclerView(
+//          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
+//      mToolbarContainer.addOnOffsetChangedListener(
+//          (appBarLayout, verticalOffset) -> {
+//            fastScroller.updateHandlePosition(verticalOffset, 112);
+//          });
+//      fastScroller.registerOnTouchListener(
+//          () -> {
+//            if (stopAnims && adapter != null) {
+//              stopAnimation();
+//              stopAnims = false;
+//            }
+//          });
 
       startFileObserver();
     } else {

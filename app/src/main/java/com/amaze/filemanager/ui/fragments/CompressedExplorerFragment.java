@@ -112,7 +112,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   public SwipeRefreshLayout swipeRefreshLayout;
   public boolean isOpen = false; // flag states whether to open file after service extracts it
 
-  private FastScroller fastScroller = null;
+//  private FastScroller fastScroller = null;
   private UtilitiesProvider utilsProvider;
   private Decompressor decompressor;
   private View rootView;
@@ -123,13 +123,13 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   private View mToolbarContainer;
   private boolean stopAnims = true;
   private int file = 0, folder = 0;
-  private final AppBarLayout.OnOffsetChangedListener offsetListenerForToolbar =
-      (appBarLayout, verticalOffset) -> {
-        if (fastScroller == null) {
-          return;
-        }
-        fastScroller.updateHandlePosition(verticalOffset, 112);
-      };
+//  private final AppBarLayout.OnOffsetChangedListener offsetListenerForToolbar =
+//      (appBarLayout, verticalOffset) -> {
+//        if (fastScroller == null) {
+//          return;
+//        }
+//        fastScroller.updateHandlePosition(verticalOffset, 112);
+//      };
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -374,7 +374,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     // Clearing the touch listeners allows the fragment to
     // be cleaned after it is destroyed, preventing leaks
     mToolbarContainer.setOnTouchListener(null);
-    ((AppBarLayout) mToolbarContainer).removeOnOffsetChangedListener(offsetListenerForToolbar);
+//    ((AppBarLayout) mToolbarContainer).removeOnOffsetChangedListener(offsetListenerForToolbar);
 
     mainActivity.supportInvalidateOptionsMenu();
 
@@ -515,10 +515,10 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
       // listView.addItemDecoration(headersDecor);
       addheader = false;
     }
-    fastScroller = rootView.findViewById(R.id.fastscroll);
-    fastScroller.setRecyclerView(listView, 1);
-    fastScroller.setPressedHandleColor(mainActivity.getAccent());
-    ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener(offsetListenerForToolbar);
+//    fastScroller = rootView.findViewById(R.id.fastscroll);
+//    fastScroller.setRecyclerView(listView, 1);
+//    fastScroller.setPressedHandleColor(mainActivity.getAccent());
+//    ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener(offsetListenerForToolbar);
     listView.stopScroll();
     relativeDirectory = dir;
     updateBottomBar();
