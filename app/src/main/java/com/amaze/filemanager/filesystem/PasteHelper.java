@@ -64,6 +64,12 @@ public final class PasteHelper implements Parcelable {
     private Snackbar snackbar;
     private MainActivity mainActivity;
 
+    public String getDestPath() {
+        return destPath;
+    }
+
+    private String destPath;
+
     public PasteHelper(MainActivity mainActivity, int op, HybridFileParcelable[] paths) {
         if (paths == null || paths.length == 0) throw new IllegalArgumentException();
         operation = op;
@@ -181,19 +187,17 @@ public final class PasteHelper implements Parcelable {
     public void pasteItems() {
         final MainFragment mainFragment =
                 Objects.requireNonNull(mainActivity.getCurrentMainFragment());
-        String path = mainFragment.getCurrentPath();
+        destPath = mainFragment.getCurrentPath();
         ArrayList<HybridFileParcelable> arrayList =
                 new ArrayList<>(Arrays.asList(paths));
         boolean move = operation == PasteHelper.OPERATION_CUT;
         new PrepareCopyTask(
                 mainFragment,
-                path,
+                destPath,
                 move,
                 mainActivity,
                 mainActivity.isRootExplorer())
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-        hidePaste();
-        //dismissSnackbar(true);
     }
 
     private Spanned getSnackbarContent() {
@@ -231,11 +235,11 @@ public final class PasteHelper implements Parcelable {
         mainActivity.getPasteMenuItem().setVisible(true);
     }
 
-    private void hidePaste() {
-        mainActivity.getPasteMenuItem().setVisible(false);
+    public void hidePaste() {
         mainActivity.getAddToCopyListMenuItem().setVisible(false);
-        mainActivity.getPendingForPaste().set(false);
         mainActivity.getAddToCutListMenuItem().setVisible(false);
+        mainActivity.getPendingForPaste().set(false);
+        mainActivity.getPasteMenuItem().setVisible(false);
         mainActivity.setPaste(null);
     }
 }
