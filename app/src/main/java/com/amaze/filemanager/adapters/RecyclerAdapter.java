@@ -32,6 +32,9 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
@@ -43,6 +46,8 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
@@ -101,6 +106,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
+    private final ExecutorService executor = Executors.newFixedThreadPool(3);
     public static final int TYPE_ITEM = 0,
             TYPE_HEADER_FOLDERS = 1,
             TYPE_HEADER_FILES = 2,
@@ -727,12 +733,18 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 if (getBoolean(PREFERENCE_SHOW_PERMISSIONS))
                     holder.perm.setText(rowItem.permissions);
                 if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
-                    holder.date.setText(rowItem.dateModification);
+                    StringBuilder builder = new StringBuilder();
+                    HybridFileParcelable file = rowItem.generateBaseFile();
+                    if (file.isDirectory(context))
+                        builder.append(getItemsCount(file));
+                    else
+                        builder.append(rowItem.dateModificationAndItemsCount);
+                    holder.dateAndItemsCount.setText(builder.toString());
                 } else {
-                    holder.date.setVisibility(View.GONE);
+                    holder.dateAndItemsCount.setVisibility(View.GONE);
                 }
                 if (isBackButton) {
-                    holder.date.setText(rowItem.size);
+                    holder.dateAndItemsCount.setText(rowItem.size);
                     holder.txtDesc.setText("");
                 } else if (getBoolean(PREFERENCE_SHOW_FILE_SIZE)) {
                     holder.txtDesc.setText(rowItem.size);
@@ -876,10 +888,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                 }
 
                 if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
-                    holder.date.setText(rowItem.dateModification);
+                    holder.dateAndItemsCount.setText(rowItem.dateModificationAndItemsCount);
                 }
                 if (isBackButton) {
-                    holder.date.setText(rowItem.size);
+                    holder.dateAndItemsCount.setText(rowItem.size);
                     holder.txtDesc.setText("");
                 }
                 if (getBoolean(PREFERENCE_SHOW_PERMISSIONS))
@@ -1157,4 +1169,25 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public interface OnImageProcessed {
         void onImageProcessed(boolean isImageBroken);
     }
+
+    private String getItemsCount(HybridFile myFile) {
+        String items = "";
+
+        final AtomicInteger x = new AtomicInteger(0);
+        myFile.forEachChildrenFile(context, false, file -> x.incrementAndGet());
+        if (x.get() == 0) {
+            items = preferenceActivity.getString(R.string.empty);
+        } else
+            items = getText(x.get());
+        return items;
+    }
+
+    private String getText(int filesInFolder) {
+        String numOfItems =
+                (filesInFolder != 0 ? filesInFolder + " " : "")
+                        + context.getResources().getQuantityString(R.plurals.items, filesInFolder);
+
+        return numOfItems;
+    }
+
 }

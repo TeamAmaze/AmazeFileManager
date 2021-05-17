@@ -45,7 +45,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
   public final ImageView imageView1;
   public final ThemedTextView txtTitle;
   public final TextView txtDesc;
-  public final TextView date;
+  public final TextView dateAndItemsCount;
   public final TextView perm;
   public final View rl;
   public final TextView genericText;
@@ -61,7 +61,7 @@ public class ItemViewHolder extends RecyclerView.ViewHolder {
     pictureIcon = view.findViewById(R.id.picture_icon);
     rl = view.findViewById(R.id.second);
     perm = view.findViewById(R.id.permis);
-    date = view.findViewById(R.id.date);
+    dateAndItemsCount = view.findViewById(R.id.date);
     txtDesc = view.findViewById(R.id.secondLine);
     apkIcon = view.findViewById(R.id.apk_icon);
     genericText = view.findViewById(R.id.generictext);
