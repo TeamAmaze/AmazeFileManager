@@ -39,6 +39,8 @@ import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
+import android.view.MenuItem;
+import android.widget.Toast;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -53,159 +55,177 @@ import io.reactivex.schedulers.Schedulers;
  */
 public final class PasteHelper implements Parcelable {
 
-  public static final int OPERATION_COPY = 0, OPERATION_CUT = 1;
+    public static final int OPERATION_COPY = 0, OPERATION_CUT = 1;
 
-  private final int operation;
-  private final HybridFileParcelable[] paths;
-  private Snackbar snackbar;
-  private MainActivity mainActivity;
+    private final int operation;
+    private final HybridFileParcelable[] paths;
+    private Snackbar snackbar;
+    private MainActivity mainActivity;
 
-  public PasteHelper(MainActivity mainActivity, int op, HybridFileParcelable[] paths) {
-    if (paths == null || paths.length == 0) throw new IllegalArgumentException();
-    operation = op;
-    this.paths = paths;
-    this.mainActivity = mainActivity;
-    showSnackbar();
-  }
+    public PasteHelper(MainActivity mainActivity, int op, HybridFileParcelable[] paths) {
+        if (paths == null || paths.length == 0) throw new IllegalArgumentException();
+        operation = op;
+        this.paths = paths;
+        this.mainActivity = mainActivity;
+        showPaste();
+//        showSnackbar();
+    }
 
-  private PasteHelper(Parcel in) {
-    operation = in.readInt();
-    paths = in.createTypedArray(HybridFileParcelable.CREATOR);
-  }
+    private PasteHelper(Parcel in) {
+        operation = in.readInt();
+        paths = in.createTypedArray(HybridFileParcelable.CREATOR);
+    }
 
-  @Override
-  public int describeContents() {
-    return 0;
-  }
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
-  @Override
-  public void writeToParcel(Parcel dest, int flags) {
-    dest.writeInt(operation);
-    dest.writeTypedArray(paths, 0);
-  }
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(operation);
+        dest.writeTypedArray(paths, 0);
+    }
 
-  public static final Parcelable.Creator CREATOR =
-      new Parcelable.Creator() {
-        public PasteHelper createFromParcel(Parcel in) {
-          return new PasteHelper(in);
+    public static final Parcelable.Creator CREATOR =
+            new Parcelable.Creator() {
+                public PasteHelper createFromParcel(Parcel in) {
+                    return new PasteHelper(in);
+                }
+
+                public PasteHelper[] newArray(int size) {
+                    return new PasteHelper[size];
+                }
+            };
+
+    public int getOperation() {
+        return this.operation;
+    }
+
+    public HybridFileParcelable[] getPaths() {
+        return paths;
+    }
+
+    /**
+     * Invalidates the snackbar after fragment changes / reapply config changes. Keeping the contents
+     * to copy/move intact
+     *
+     * @param mainActivity main activity
+     * @param showSnackbar whether to show snackbar or hide
+     */
+    public void invalidateSnackbar(MainActivity mainActivity, boolean showSnackbar) {
+        this.mainActivity = mainActivity;
+        if (showSnackbar) {
+            showSnackbar();
+        } else {
+            dismissSnackbar(false);
         }
+    }
 
-        public PasteHelper[] newArray(int size) {
-          return new PasteHelper[size];
+    /**
+     * Dismisses snackbar and fab
+     *
+     * @param shouldClearPasteData should the paste data be cleared
+     */
+    private void dismissSnackbar(boolean shouldClearPasteData) {
+        if (snackbar != null) {
+            snackbar.dismiss();
+            snackbar = null;
         }
-      };
-
-  public int getOperation() {
-    return this.operation;
-  }
-
-  public HybridFileParcelable[] getPaths() {
-    return paths;
-  }
-
-  /**
-   * Invalidates the snackbar after fragment changes / reapply config changes. Keeping the contents
-   * to copy/move intact
-   *
-   * @param mainActivity main activity
-   * @param showSnackbar whether to show snackbar or hide
-   */
-  public void invalidateSnackbar(MainActivity mainActivity, boolean showSnackbar) {
-    this.mainActivity = mainActivity;
-    if (showSnackbar) {
-      showSnackbar();
-    } else {
-      dismissSnackbar(false);
+        if (shouldClearPasteData) {
+            mainActivity.setPaste(null);
+        }
     }
-  }
 
-  /**
-   * Dismisses snackbar and fab
-   *
-   * @param shouldClearPasteData should the paste data be cleared
-   */
-  private void dismissSnackbar(boolean shouldClearPasteData) {
-    if (snackbar != null) {
-      snackbar.dismiss();
-      snackbar = null;
+    private void showSnackbar() {
+        Single.fromCallable(() -> getSnackbarContent())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                        new SingleObserver<Spanned>() {
+                            @Override
+                            public void onSubscribe(Disposable d) {
+                            }
+
+                            @Override
+                            public void onSuccess(Spanned spanned) {
+                                snackbar =
+                                        Utils.showCutCopySnackBar(
+                                                mainActivity,
+                                                spanned,
+                                                BaseTransientBottomBar.LENGTH_INDEFINITE,
+                                                R.string.paste,
+                                                () -> pasteItems(),
+                                                () -> dismissSnackbar(true));
+                            }
+
+                            @Override
+                            public void onError(Throwable e) {
+                                Log.e(
+                                        getClass().getSimpleName(),
+                                        "Failed to show paste snackbar due to " + e.getCause());
+                                e.printStackTrace();
+                            }
+                        });
     }
-    if (shouldClearPasteData) {
-      mainActivity.setPaste(null);
+
+    public void pasteItems() {
+        final MainFragment mainFragment =
+                Objects.requireNonNull(mainActivity.getCurrentMainFragment());
+        String path = mainFragment.getCurrentPath();
+        ArrayList<HybridFileParcelable> arrayList =
+                new ArrayList<>(Arrays.asList(paths));
+        boolean move = operation == PasteHelper.OPERATION_CUT;
+        new PrepareCopyTask(
+                mainFragment,
+                path,
+                move,
+                mainActivity,
+                mainActivity.isRootExplorer())
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+        hidePaste();
+        //dismissSnackbar(true);
     }
-  }
 
-  private void showSnackbar() {
-    Single.fromCallable(() -> getSnackbarContent())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(
-            new SingleObserver<Spanned>() {
-              @Override
-              public void onSubscribe(Disposable d) {}
+    private Spanned getSnackbarContent() {
+        String operationText = "<b>%s</b>";
+        operationText =
+                String.format(
+                        operationText,
+                        operation == OPERATION_COPY
+                                ? mainActivity.getString(R.string.copy)
+                                : mainActivity.getString(R.string.move));
+        operationText = operationText.concat(": ");
+        int foldersCount = 0;
+        int filesCount = 0;
+        for (HybridFileParcelable fileParcelable : paths) {
+            if (fileParcelable.isDirectory(mainActivity.getApplicationContext())) {
+                foldersCount++;
+            } else {
+                filesCount++;
+            }
+        }
+        operationText =
+                operationText.concat(
+                        mainActivity.getString(R.string.folderfilecount, foldersCount, filesCount));
 
-              @Override
-              public void onSuccess(Spanned spanned) {
-                snackbar =
-                    Utils.showCutCopySnackBar(
-                        mainActivity,
-                        spanned,
-                        BaseTransientBottomBar.LENGTH_INDEFINITE,
-                        R.string.paste,
-                        () -> {
-                          final MainFragment mainFragment =
-                              Objects.requireNonNull(mainActivity.getCurrentMainFragment());
-                          String path = mainFragment.getCurrentPath();
-                          ArrayList<HybridFileParcelable> arrayList =
-                              new ArrayList<>(Arrays.asList(paths));
-                          boolean move = operation == PasteHelper.OPERATION_CUT;
-                          new PrepareCopyTask(
-                                  mainFragment,
-                                  path,
-                                  move,
-                                  mainActivity,
-                                  mainActivity.isRootExplorer())
-                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
-                          dismissSnackbar(true);
-                        },
-                        () -> dismissSnackbar(true));
-              }
-
-              @Override
-              public void onError(Throwable e) {
-                Log.e(
-                    getClass().getSimpleName(),
-                    "Failed to show paste snackbar due to " + e.getCause());
-                e.printStackTrace();
-              }
-            });
-  }
-
-  private Spanned getSnackbarContent() {
-    String operationText = "<b>%s</b>";
-    operationText =
-        String.format(
-            operationText,
-            operation == OPERATION_COPY
-                ? mainActivity.getString(R.string.copy)
-                : mainActivity.getString(R.string.move));
-    operationText = operationText.concat(": ");
-    int foldersCount = 0;
-    int filesCount = 0;
-    for (HybridFileParcelable fileParcelable : paths) {
-      if (fileParcelable.isDirectory(mainActivity.getApplicationContext())) {
-        foldersCount++;
-      } else {
-        filesCount++;
-      }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(operationText, Html.FROM_HTML_MODE_COMPACT);
+        } else {
+            return Html.fromHtml(operationText);
+        }
     }
-    operationText =
-        operationText.concat(
-            mainActivity.getString(R.string.folderfilecount, foldersCount, filesCount));
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      return Html.fromHtml(operationText, Html.FROM_HTML_MODE_COMPACT);
-    } else {
-      return Html.fromHtml(operationText);
+    private void showPaste() {
+        Toast.makeText(mainActivity.getBaseContext(), R.string.file_copied_alert, Toast.LENGTH_SHORT);
+        mainActivity.getPendingForPaste().set(true);
+        mainActivity.getPasteMenuItem().setVisible(true);
+        mainActivity.getAddToListMenuItem().setVisible(true);
     }
-  }
+
+    private void hidePaste() {
+        mainActivity.getPasteMenuItem().setVisible(false);
+        mainActivity.getAddToListMenuItem().setVisible(false);
+        mainActivity.setPaste(null);
+    }
 }
