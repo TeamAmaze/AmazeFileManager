@@ -958,7 +958,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                                 msg -> {
                                     viewHolder.genericIcon.setVisibility(View.VISIBLE);
                                     GlideApp.with(mainFrag)
-                                            .load(R.drawable.ic_broken_image_white_24dp)
+                                            .load(R.drawable.ic_apk_library_white_24dp)
                                             .into(viewHolder.genericIcon);
                                     return false;
                                 })
