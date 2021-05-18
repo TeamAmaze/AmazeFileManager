@@ -66,7 +66,6 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
-import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
@@ -170,7 +169,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   private HashMap<String, Bundle> scrolls = new HashMap<>();
   private View rootView;
   private View actionModeView;
-//  private FastScroller fastScroller;
+  //  private FastScroller fastScroller;
   private CustomFileObserver customFileObserver;
   private DataUtils dataUtils;
   private boolean isEncryptOpen =
@@ -225,8 +224,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     rootView = inflater.inflate(R.layout.main_frag, container, false);
     listView = rootView.findViewById(R.id.listView);
     mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
-//    fastScroller = rootView.findViewById(R.id.fastscroll);
-//    fastScroller.setPressedHandleColor(accentColor);
+    //    fastScroller = rootView.findViewById(R.id.fastscroll);
+    //    fastScroller.setPressedHandleColor(accentColor);
     listView.setOnTouchListener(
         (view, motionEvent) -> {
           if (adapter != null && stopAnims) {
@@ -1099,19 +1098,19 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       getMainActivity().getFAB().show();
       getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       listView.stopScroll();
-//      fastScroller.setRecyclerView(
-//          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
-//      mToolbarContainer.addOnOffsetChangedListener(
-//          (appBarLayout, verticalOffset) -> {
-//            fastScroller.updateHandlePosition(verticalOffset, 112);
-//          });
-//      fastScroller.registerOnTouchListener(
-//          () -> {
-//            if (stopAnims && adapter != null) {
-//              stopAnimation();
-//              stopAnims = false;
-//            }
-//          });
+      //      fastScroller.setRecyclerView(
+      //          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
+      //      mToolbarContainer.addOnOffsetChangedListener(
+      //          (appBarLayout, verticalOffset) -> {
+      //            fastScroller.updateHandlePosition(verticalOffset, 112);
+      //          });
+      //      fastScroller.registerOnTouchListener(
+      //          () -> {
+      //            if (stopAnims && adapter != null) {
+      //              stopAnimation();
+      //              stopAnims = false;
+      //            }
+      //          });
 
       startFileObserver();
     } else {
