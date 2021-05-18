@@ -494,8 +494,7 @@ public class MainActivity extends PermissionsActivity
 
         if (dataString.startsWith("shortcut")) {
           handleShortcuts(dataString);
-        }
-        else {
+        } else {
           // zip viewer intent
           Uri uri = intent.getData();
 
@@ -546,7 +545,7 @@ public class MainActivity extends PermissionsActivity
       floatingActionButton.open();
     }
 
-    //other shortcut type can be added here
+    // other shortcut type can be added here
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
