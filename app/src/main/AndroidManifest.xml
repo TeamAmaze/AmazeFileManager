@@ -26,6 +26,7 @@
     <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
 
+    <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -57,7 +58,8 @@
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
-            android:theme="@style/appCompatBlack">
+            android:theme="@style/appCompatBlack"
+            android:exported="true">
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -114,6 +116,8 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
