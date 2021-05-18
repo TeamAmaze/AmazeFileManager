@@ -490,24 +490,28 @@ public class MainActivity extends PermissionsActivity
         // TODO: Support screen rotation when picking file
         Utils.disableScreenRotation(this);
       } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
-        // zip viewer intent
-        Uri uri = intent.getData();
+        String dataString = intent.getDataString();
 
-        if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
-          // support for syncting or intents from external apps that
-          // need to start file manager from a specific path
+        if (dataString.startsWith("shortcut")) {
+          handleShortcuts(dataString);
+        }
+        else {
+          // zip viewer intent
+          Uri uri = intent.getData();
 
           if (uri != null) {
-
-            path = Utils.sanitizeInput(uri.getPath());
+            if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
+              // support for syncting or intents from external apps that
+              // need to start file manager from a specific path
+              path = Utils.sanitizeInput(uri.getPath());
+            } else {
+              // we don't have folder resource mime type set, supposed to be zip/rar
+              openzip = true;
+              zippath = Utils.sanitizeInput(uri.toString());
+            }
           } else {
-            // no data field, open home for the tab in later processing
             path = null;
           }
-        } else {
-          // we don't have folder resource mime type set, supposed to be zip/rar
-          openzip = true;
-          zippath = Utils.sanitizeInput(uri.toString());
         }
 
       } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -535,6 +539,14 @@ public class MainActivity extends PermissionsActivity
         Utils.disableScreenRotation(this);
       }
     }
+  }
+
+  private void handleShortcuts(String type) {
+    if (type.equals("shortcut/sample")) {
+      floatingActionButton.open();
+    }
+
+    //other shortcut type can be added here
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */

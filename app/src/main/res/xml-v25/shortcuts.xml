@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:targetApi="25">
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_add_pink_24dp"
+        android:shortcutId="sample_shortcut"
+        android:shortcutLongLabel="@string/shortcut_sample"
+        android:shortcutShortLabel="@string/shortcut_sample"
+        android:shortcutDisabledMessage="@string/shortcut_sample_disabled">
+        <intent
+            android:action="android.intent.action.VIEW"
+            android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
+            android:targetPackage="com.amaze.filemanager.debug"
+            android:data="shortcut/sample"/>
+        <!-- TODO: Change targetPackage to com.amaze.filemanager for release build      -->
+        <!-- If your shortcut is associated with multiple intents, include them
+             here. The last intent in the list determines what the user sees when
+             they launch this shortcut. -->
+        <categories android:name="android.shortcut.conversation" />
+    </shortcut>
+
+</shortcuts>

@@ -701,5 +701,8 @@
     <string name="error_permission_denied">Permission denied</string>
     <string name="error_archive_password_incorrect">Wrong archive password.</string>
     <string name="error_archive_cannot_extract">Cannot extract archive entry \"%s\" to \"%s\".</string>
+
+    <string name="shortcut_sample">New File/Folder</string>
+    <string name="shortcut_sample_disabled">New (disabled)</string>
 </resources>
 
