@@ -20,11 +20,7 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
-import android.Manifest;
-import android.content.pm.PackageManager;
-import android.content.res.Configuration;
-import android.location.Location;
-import android.location.LocationManager;
+import java.util.Calendar;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
@@ -32,10 +28,14 @@ import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.TwilightCalculator;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.location.Location;
+import android.location.LocationManager;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
-import java.util.Calendar;
 
 /** Created by rpiotaix on 17/10/16. */
 public class BasicActivity extends AppCompatActivity {
@@ -63,7 +63,8 @@ public class BasicActivity extends AppCompatActivity {
 
   private AppTheme getSystemTheme() {
     AppTheme appTheme = AppTheme.LIGHT;
-    int currentNightMode = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+    int currentNightMode =
+        getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     if (currentNightMode == Configuration.UI_MODE_NIGHT_YES) {
       appTheme = AppTheme.DARK;
     }
@@ -74,21 +75,27 @@ public class BasicActivity extends AppCompatActivity {
   private AppTheme getDaytimeTheme() {
     AppTheme appTheme = AppTheme.LIGHT;
 
-    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-      ActivityCompat.requestPermissions(this,
-              new String[]{Manifest.permission.ACCESS_FINE_LOCATION}
-              , REQUEST_PERMISSION_LOCATION_STATE);
-    } else if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED)) {
-      ActivityCompat.requestPermissions(this,
-              new String[]{Manifest.permission.ACCESS_COARSE_LOCATION}
-              , REQUEST_PERMISSION_LOCATION_STATE);
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED) {
+      ActivityCompat.requestPermissions(
+          this,
+          new String[] {Manifest.permission.ACCESS_FINE_LOCATION},
+          REQUEST_PERMISSION_LOCATION_STATE);
+    } else if ((ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+        != PackageManager.PERMISSION_GRANTED)) {
+      ActivityCompat.requestPermissions(
+          this,
+          new String[] {Manifest.permission.ACCESS_COARSE_LOCATION},
+          REQUEST_PERMISSION_LOCATION_STATE);
     } else {
       LocationManager locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
       Location location = locationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
 
       if (location != null) {
         long time = Calendar.getInstance().getTime().getTime();
-        int state = new TwilightCalculator().calculateTwilight(time, location.getLatitude(), location.getLongitude());
+        int state =
+            new TwilightCalculator()
+                .calculateTwilight(time, location.getLatitude(), location.getLongitude());
         if (state == TwilightCalculator.NIGHT) {
           appTheme = AppTheme.DARK;
         }
@@ -100,13 +107,10 @@ public class BasicActivity extends AppCompatActivity {
       }
     }
 
-
     return appTheme;
   }
 
   public UtilitiesProvider getUtilsProvider() {
     return getAppConfig().getUtilsProvider();
   }
-
-
 }
