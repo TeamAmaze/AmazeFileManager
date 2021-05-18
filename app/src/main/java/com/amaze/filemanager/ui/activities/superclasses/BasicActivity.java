@@ -20,12 +20,22 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
+import android.content.res.Configuration;
+import android.location.Location;
+import android.location.LocationManager;
+
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.TwilightCalculator;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
+import java.util.Calendar;
 
 /** Created by rpiotaix on 17/10/16. */
 public class BasicActivity extends AppCompatActivity {
@@ -40,7 +50,7 @@ public class BasicActivity extends AppCompatActivity {
     return getAppConfig().getUtilsProvider().getColorPreference();
   }
 
-  ublic AppTheme getAppTheme() {
+  public AppTheme getAppTheme() {
     AppTheme appTheme = getAppConfig().getUtilsProvider().getAppTheme();
 
     if (appTheme == AppTheme.SYSTEM) {
