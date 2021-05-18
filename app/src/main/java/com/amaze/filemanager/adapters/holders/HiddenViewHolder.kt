@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,37 +18,30 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.adapters.holders;
+package com.amaze.filemanager.adapters.holders
 
-import com.amaze.filemanager.R;
-
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-
-import androidx.recyclerview.widget.RecyclerView;
+import android.view.View
+import android.widget.ImageButton
+import android.widget.LinearLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.amaze.filemanager.R
 
 /**
  * This is the ViewHolder that formats the hidden files as defined in bookmarkrow.xml.
  *
- * @author Emmanuel on 20/11/2017, at 18:38.
- * @author Bowie Chen on 2019-10-26.
  * @see com.amaze.filemanager.adapters.HiddenAdapter
  */
-public class HiddenViewHolder extends RecyclerView.ViewHolder {
+class HiddenViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    @JvmField
+    val deleteButton: ImageButton = view.findViewById(R.id.delete_button)
 
-  public final ImageButton deleteButton;
-  public final TextView textTitle;
-  public final TextView textDescription;
-  public final LinearLayout row;
+    @JvmField
+    val textTitle: TextView = view.findViewById(R.id.filename)
 
-  public HiddenViewHolder(View view) {
-    super(view);
+    @JvmField
+    val textDescription: TextView = view.findViewById(R.id.file_path)
 
-    textTitle = view.findViewById(R.id.filename);
-    deleteButton = view.findViewById(R.id.delete_button);
-    textDescription = view.findViewById(R.id.file_path);
-    row = view.findViewById(R.id.bookmarkrow);
-  }
+    @JvmField
+    val row: LinearLayout = view.findViewById(R.id.bookmarkrow)
 }

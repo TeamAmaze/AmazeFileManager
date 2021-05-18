@@ -18,26 +18,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.adapters.holders;
+package com.amaze.filemanager.adapters.holders
 
-import com.amaze.filemanager.R;
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ImageView
+import android.widget.RelativeLayout
+import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
+import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.views.ThemedTextView
 
-import android.view.View;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
+    @JvmField
+    val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
 
-import androidx.recyclerview.widget.RecyclerView;
+    @JvmField
+    val txtTitle: ThemedTextView = view.findViewById(R.id.firstline)
 
-public class DonationViewHolder extends RecyclerView.ViewHolder {
+    @JvmField
+    val rl: RelativeLayout = view.findViewById(R.id.second)
 
-  public final LinearLayout ROOT_VIEW;
-  public final TextView TITLE, SUMMARY, PRICE;
+    @JvmField
+    val txtDesc: TextView = view.findViewById(R.id.date)
 
-  public DonationViewHolder(View itemView) {
-    super(itemView);
-    ROOT_VIEW = itemView.findViewById(R.id.adapter_donation_root);
-    TITLE = itemView.findViewById(R.id.adapter_donation_title);
-    SUMMARY = itemView.findViewById(R.id.adapter_donation_summary);
-    PRICE = itemView.findViewById(R.id.adapter_donation_price);
-  }
+    @JvmField
+    val about: ImageButton = view.findViewById(R.id.properties)
+
+    @JvmField
+    val summary: RelativeLayout = view.findViewById(R.id.summary)
+
+    init {
+        apkIcon.visibility = View.VISIBLE
+    }
 }
