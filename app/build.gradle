@@ -103,31 +103,6 @@ android {
     }
 }
 
-ext {
-    robolectricVersion = '4.3.1'
-    glideVersion = '4.11.0'
-    sshjVersion = '0.26.0'
-    jcifsVersion = '2.1.3'
-    fabSpeedDialVersion = '3.1.1'
-    roomVersion = '2.2.5'
-    bouncyCastleVersion = '1.66'
-    awaitilityVersion = "3.1.6"
-    androidMaterialVersion = "1.3.0"
-    androidXFragmentVersion = "1.3.0"
-    androidXAppCompatVersion = "1.2.0"
-    androidXTestVersion = "1.3.0"
-    androidXTestExtVersion = "1.1.2"
-    junitVersion = "4.13.2"
-    slf4jVersion = "1.7.25"
-    mockitoVersion = "3.4.4"
-    androidBillingVersion = "2.1.0"
-    junrarVersion = "7.4.0"
-    zip4jVersion = "2.6.4"
-    androidXAppCompatVersion = "1.1.0"
-    androidXPrefVersion = "1.1.1"
-    materialDialogsVersion = "0.9.6.0"
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
@@ -167,7 +142,7 @@ dependencies {
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
     androidTestImplementation "androidx.test:core:$androidXTestVersion"
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
