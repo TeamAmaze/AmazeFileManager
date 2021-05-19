@@ -39,6 +39,15 @@ import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FOLDER;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.RENAME;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.SAVE_FILE;
 import static com.amaze.filemanager.filesystem.OperationTypeKt.UNDEFINED;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_ADDRESS;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_DEFAULT_PATH;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_EDIT;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_HAS_PASSWORD;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_KEYPAIR_NAME;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_NAME;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PASSWORD;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PORT;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_USERNAME;
 import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
@@ -1757,22 +1766,24 @@ public class MainActivity extends PermissionsActivity
     Uri uri = Uri.parse(path);
     String userinfo = uri.getUserInfo();
     Bundle bundle = new Bundle();
-    bundle.putString("name", name);
-    bundle.putString("address", uri.getHost());
-    bundle.putInt("port", uri.getPort());
-    bundle.putString("path", path);
+    bundle.putString(ARG_NAME, name);
+    bundle.putString(ARG_ADDRESS, uri.getHost());
+    bundle.putInt(ARG_PORT, uri.getPort());
+    if (!TextUtils.isEmpty(uri.getPath())) {
+      bundle.putString(ARG_DEFAULT_PATH, uri.getPath());
+    }
     bundle.putString(
-        "username",
+        ARG_USERNAME,
         userinfo.indexOf(':') > 0 ? userinfo.substring(0, userinfo.indexOf(':')) : userinfo);
 
     if (userinfo.indexOf(':') < 0) {
-      bundle.putBoolean("hasPassword", false);
-      bundle.putString("keypairName", utilsHandler.getSshAuthPrivateKeyName(path));
+      bundle.putBoolean(ARG_HAS_PASSWORD, false);
+      bundle.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
     } else {
-      bundle.putBoolean("hasPassword", true);
-      bundle.putString("password", userinfo.substring(userinfo.indexOf(':') + 1));
+      bundle.putBoolean(ARG_HAS_PASSWORD, true);
+      bundle.putString(ARG_PASSWORD, userinfo.substring(userinfo.indexOf(':') + 1));
     }
-    bundle.putBoolean("edit", edit);
+    bundle.putBoolean(ARG_EDIT, edit);
     sftpConnectDialog.setArguments(bundle);
     sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
   }
