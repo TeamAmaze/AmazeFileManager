@@ -90,6 +90,7 @@ import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
+import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment.CloudConnectionCallbacks;
@@ -1461,7 +1462,11 @@ public class MainActivity extends PermissionsActivity
                 }
 
                 new MoveFiles(
-                        oparrayListList, mainFragment, mainFragment.getActivity(), OpenMode.FILE)
+                        oparrayListList,
+                        isRootExplorer(),
+                        mainFragment.getCurrentPath(),
+                        mainFragment.getActivity(),
+                        OpenMode.FILE)
                     .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
                 break;
               case NEW_FOLDER: // mkdir
@@ -2085,6 +2090,36 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void onLoaderReset(Loader<Cursor> loader) {
     // For passing code check
+  }
+
+  public void initCornersDragListener(boolean destroy, boolean shouldInvokeLeftAndRight) {
+    initBottomDragListener(destroy);
+    initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
+  }
+
+  private void initBottomDragListener(boolean destroy) {
+    View bottomPlaceholder = findViewById(R.id.placeholder_drag_bottom);
+    if (destroy) {
+      bottomPlaceholder.setOnDragListener(null);
+      bottomPlaceholder.setVisibility(View.GONE);
+    } else {
+      bottomPlaceholder.setVisibility(View.VISIBLE);
+      bottomPlaceholder.setOnDragListener(
+          new TabFragmentBottomDragListener(
+              () -> {
+                getCurrentMainFragment().smoothScrollListView(false);
+                return null;
+              },
+              () -> {
+                getCurrentMainFragment().stopSmoothScrollListView();
+                return null;
+              }));
+    }
+  }
+
+  private void initLeftRightAndTopDragListeners(boolean destroy, boolean shouldInvokeLeftAndRight) {
+    TabFragment tabFragment = getTabFragment();
+    tabFragment.initLeftRightAndTopDragListeners(destroy, shouldInvokeLeftAndRight);
   }
 
   private static final class FabActionListener implements SpeedDialView.OnActionSelectedListener {

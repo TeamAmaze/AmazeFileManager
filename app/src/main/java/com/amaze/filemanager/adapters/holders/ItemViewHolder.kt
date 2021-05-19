@@ -77,4 +77,7 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     @JvmField
     val iconLayout: RelativeLayout? = view.findViewById(R.id.icon_frame_grid)
+
+    @JvmField
+    val dummyView: View? = view.findViewById(R.id.dummy_view)
 }

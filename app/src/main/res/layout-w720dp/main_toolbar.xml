@@ -78,6 +78,14 @@
                 app:sdMainFabOpenedSrc="@drawable/ic_close_white_24dp"
                 app:sdOverlayLayout="@id/fabs_overlay_layout"
                 app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior" />
+        <View
+            android:id="@+id/placeholder_drag_bottom"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/material_generic_large"
+            android:background="@null"
+            android:layout_gravity="bottom"
+            android:visibility="gone"
+            />
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
     <View

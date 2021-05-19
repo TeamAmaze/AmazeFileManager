@@ -159,11 +159,11 @@ public final class PasteHelper implements Parcelable {
                               new ArrayList<>(Arrays.asList(paths));
                           boolean move = operation == PasteHelper.OPERATION_CUT;
                           new PrepareCopyTask(
-                                  mainFragment,
                                   path,
                                   move,
                                   mainActivity,
-                                  mainActivity.isRootExplorer())
+                                  mainActivity.isRootExplorer(),
+                                  mainFragment.openMode)
                               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                           dismissSnackbar(true);
                         },
