@@ -76,40 +76,35 @@ import android.widget.Toast;
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
 
+  private static final String KEY_MODIFIED_TEXT = "modified";
+  private static final String KEY_INDEX = "index";
+  private static final String KEY_ORIGINAL_TEXT = "original";
+  private static final String KEY_MONOFONT = "monofont";
   public EditText mInput, searchEditText;
+  /*
+   * List maintaining the searched text's start/end index as key/value pair
+   */
+  public ArrayList<MapEntry> nodes = new ArrayList<>();
+  /*
+   * variable to maintain line number of the searched phrase
+   * further used to calculate the scroll position
+   */
+  public int mLine = 0;
+  public ImageButton upButton, downButton, closeButton;
+  ScrollView scrollView;
   private EditableFileAbstraction mFile;
   private String mOriginal;
   private Timer mTimer;
   private boolean mModified;
   private Typeface mInputTypefaceDefault, mInputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
-  ScrollView scrollView;
-
-  /*
-   * List maintaining the searched text's start/end index as key/value pair
-   */
-  public ArrayList<MapEntry> nodes = new ArrayList<>();
-
   /*
    * variable to maintain the position of index
    * while pressing next/previous button in the searchBox
    */
   private int mCurrent = -1;
-
-  /*
-   * variable to maintain line number of the searched phrase
-   * further used to calculate the scroll position
-   */
-  public int mLine = 0;
-
   private SearchTextTask searchTextTask;
-  private static final String KEY_MODIFIED_TEXT = "modified";
-  private static final String KEY_INDEX = "index";
-  private static final String KEY_ORIGINAL_TEXT = "original";
-  private static final String KEY_MONOFONT = "monofont";
-
   private RelativeLayout searchViewLayout;
-  public ImageButton upButton, downButton, closeButton;
   private File cacheFile; // represents a file saved in cache
 
   @Override
@@ -317,6 +312,14 @@ public class TextEditorActivity extends ThemedActivity
                   break;
                 case ReadFileTask.EXCEPTION_IO:
                   Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
+                      .show();
+                  finish();
+                  break;
+                case ReadFileTask.EXCEPTION_OOM:
+                  Toast.makeText(
+                          getApplicationContext(),
+                          R.string.error_file_too_large,
+                          Toast.LENGTH_SHORT)
                       .show();
                   finish();
                   break;
