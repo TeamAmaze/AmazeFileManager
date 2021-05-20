@@ -320,6 +320,14 @@ public class TextEditorActivity extends ThemedActivity
                       .show();
                   finish();
                   break;
+                case ReadFileTask.EXCEPTION_OOM:
+                  Toast.makeText(
+                          getApplicationContext(),
+                          R.string.error_file_too_large,
+                          Toast.LENGTH_SHORT)
+                      .show();
+                  finish();
+                  break;
               }
             })
         .execute();

@@ -442,6 +442,7 @@
     <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
     <string name="error_file_not_found">Error: File Not Found</string>
     <string name="error_io">I/O Error</string>
+    <string name="error_file_too_large">Error: File too Large</string>
     <string name="medium_text">Medium Text</string>
     <string name="permission_read">Read</string>
     <string name="permission_write">Write</string>
@@ -540,12 +541,12 @@
     <string name="cloud_token_lost">Token lost, please sign-in again</string>
     <string name="monofont">Monospace Font</string>
     <string name="showHeaders">Show Headers</string>
-	
+
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
 	<string name="no_items">No items</string>
 	<string name="item">item</string>
 	<string name="items">items</string>
-	
+
 	<string name="byte_singular">byte</string>
 	<string name="bytes">bytes</string>
     <!-- end of plurals -->
@@ -594,7 +595,7 @@
     <string name="ssh_connect_failed_host_key_changed_message">IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!\n\nSomeone could be eavesdropping on you right now (man-in-the-middle attack)! It is also possible that the host key has just been changed. The fingerprint for the public key sent by the remote host does not match the one stored in Amaze.\n\nPlease contact your system administrator or setup a new connection to continue connecting to the server.</string>
     <string name="ssh_key_prompt_passphrase">Please enter key passphrase.</string>
     <string name="add_shortcut_not_supported_by_launcher">Shortcuts creation is not supported by your launcher.</string>
-    
+
     <string name="select_color_config">Select color config</string>
     <string name="customize">Customize</string>
     <string name="custom">Custom</string>
