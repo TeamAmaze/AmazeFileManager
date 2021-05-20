@@ -1694,6 +1694,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             .getAppbar()
             .getBottomBar()
             .setFullPathText(getString(R.string.search_results, query));
+
+        LIST_ELEMENTS.clear();
       }
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
