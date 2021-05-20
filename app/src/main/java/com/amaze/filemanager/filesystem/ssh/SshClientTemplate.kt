@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,55 +18,43 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh;
+package com.amaze.filemanager.filesystem.ssh
 
-import java.io.IOException;
-
-import androidx.annotation.NonNull;
-
-import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.SSHClient
+import java.io.IOException
 
 /**
- * Template class for executing actions with {@link SSHClient} while leave the complexities of
- * handling connection setup/teardown to {@link SshClientUtils}.
+ * Template class for executing actions with [SSHClient] while leave the complexities of
+ * handling connection setup/teardown to [SshClientUtils].
  */
-public abstract class SshClientTemplate {
-  public final String url;
+abstract class SshClientTemplate
+/**
+ * Constructor, with closeClientOnFinish set to true (that the connection must close after `
+ * execute`.
+ *
+ * @param url SSH connection URL, in the form of `
+ * ssh://<username>:<password>@<host>:<port>` or `
+ * ssh://<username>@<host>:<port>`
+ */
+@JvmOverloads
+constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolean = true) {
 
-  public final boolean closeClientOnFinish;
-
-  /**
-   * Constructor, with closeClientOnFinish set to true (that the connection must close after <code>
-   * execute</code>.
-   *
-   * @param url SSH connection URL, in the form of <code>
-   *     ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>
-   *     ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-   */
-  public SshClientTemplate(@NonNull String url) {
-    this(url, true);
-  }
-
-  /**
-   * Constructor.
-   *
-   * @param url SSH connection URL, in the form of <code>
-   *     ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>
-   *     ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-   * @param closeClientOnFinish if set to false, connection will be kept on after <code>execute
-   *     </code> finishes. This is useful for other calls to reuse the connection.
-   */
-  public SshClientTemplate(@NonNull String url, boolean closeClientOnFinish) {
-    this.url = url;
-    this.closeClientOnFinish = closeClientOnFinish;
-  }
-
-  /**
-   * Implement logic here.
-   *
-   * @param client {@link SSHClient} instance, with connection opened and authenticated
-   * @param <T> Requested return type
-   * @return Result of the execution of the type requested
-   */
-  public abstract <T> T execute(@NonNull SSHClient client) throws IOException;
+    /**
+     * Implement logic here.
+     *
+     * @param client [SSHClient] instance, with connection opened and authenticated
+     * @param <T> Requested return type
+     * @return Result of the execution of the type requested
+     </T> */
+    @Throws(IOException::class)
+    abstract fun <T> execute(client: SSHClient): T
+    /**
+     * Constructor.
+     *
+     * @param url SSH connection URL, in the form of `
+     * ssh://<username>:<password>@<host>:<port>` or `
+     * ssh://<username>@<host>:<port>`
+     * @param closeClientOnFinish if set to false, connection will be kept on after `execute
+     ` *  finishes. This is useful for other calls to reuse the connection.
+     */
 }
