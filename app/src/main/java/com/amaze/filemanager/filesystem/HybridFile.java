@@ -337,7 +337,11 @@ public class HybridFile {
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
-        name = path.substring(path.lastIndexOf('/') + 1);
+        String _path = path;
+        if (path.endsWith("/")) {
+          _path = path.substring(0, path.length() - 1);
+        }
+        name = _path.substring(_path.lastIndexOf('/') + 1);
     }
     return name;
   }
@@ -388,7 +392,8 @@ public class HybridFile {
       case SFTP:
         StringBuilder builder = new StringBuilder(path);
         StringBuilder parentPathBuilder =
-            new StringBuilder(builder.substring(0, builder.length() - (getName(context).length())));
+            new StringBuilder(
+                builder.substring(0, builder.length() - (getName(context).length()) - 1));
         return parentPathBuilder.toString();
       default:
         builder = new StringBuilder(path);

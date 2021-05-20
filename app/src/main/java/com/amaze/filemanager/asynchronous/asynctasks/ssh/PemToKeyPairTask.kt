@@ -169,7 +169,7 @@ class PemToKeyPairTask(
     }
 
     override fun onPostExecute(result: KeyPair?) {
-        callback?.onResult(result)
+        callback.onResult(result)
     }
 
     private fun toastOnParseError(result: IOException) {

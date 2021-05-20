@@ -122,6 +122,7 @@ object SshConnectionPool {
      * @param keyPair [KeyPair], required if using key-based authentication
      * @return [SSHClient] connection
      */
+    @Suppress("LongParameterList")
     fun getConnection(
         host: String,
         port: Int,
@@ -167,6 +168,7 @@ object SshConnectionPool {
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
+    @Suppress("TooGenericExceptionThrown")
     private fun create(url: String): SSHClient? {
         val connInfo = ConnectionInfo(url)
         val utilsHandler = AppConfig.getInstance().utilsHandler
@@ -184,7 +186,7 @@ object SshConnectionPool {
                     .execute()
                 latch.await()
             } catch (e: InterruptedException) {
-                throw RuntimeException(e)
+                throw RuntimeException("Error getting keypair from given PEM string", e)
             }
         }
         val hostKey = utilsHandler.getSshHostKey(url) ?: return null
@@ -198,6 +200,7 @@ object SshConnectionPool {
         )
     }
 
+    @Suppress("LongParameterList")
     private fun create(
         host: String,
         port: Int,
@@ -207,9 +210,14 @@ object SshConnectionPool {
         keyPair: KeyPair?
     ): SSHClient? {
         return try {
-            val taskResult = SshAuthenticationTask(host, port, hostKey, username, password, keyPair)
-                .execute()
-                .get()
+            val taskResult = SshAuthenticationTask(
+                hostname = host,
+                port = port,
+                hostKey = hostKey,
+                username = username,
+                password = password,
+                privateKey = keyPair
+            ).execute().get()
             taskResult.result
         } catch (e: InterruptedException) {
             // FIXME: proper handling
@@ -287,11 +295,13 @@ object SshConnectionPool {
     /**
      * Interface defining a factory class for creating [SSHClient] instances.
      *
-     *
      * In normal usage you won't need this; will be useful however when writing tests concerning
      * SSHClient, that mocked instances can be returned so tests can be run without a real SSH server.
      */
     interface SSHClientFactory {
+        /**
+         * Implement this to return [SSHClient] instances.
+         */
         fun create(config: Config?): SSHClient
     }
 
