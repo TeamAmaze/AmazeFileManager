@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,47 +18,33 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh;
+package com.amaze.filemanager.filesystem.ssh
 
-import java.io.IOException;
-
-import androidx.annotation.NonNull;
-
-import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.sftp.SFTPClient
+import java.io.IOException
 
 /**
- * Template class for executing actions with {@link SFTPClient} while leave the complexities of
- * handling connection and session setup/teardown to {@link SshClientUtils}.
+ * Template class for executing actions with [SFTPClient] while leave the complexities of
+ * handling connection and session setup/teardown to [SshClientUtils].
  */
-public abstract class SFtpClientTemplate {
-  public final String url;
+abstract class SFtpClientTemplate
+/**
+ * If closeClientOnFinish is set to true, calling code needs to handle closing of [ ] session.
+ *
+ * @param url SSH connection URL, in the form of `
+ * ssh://<username>:<password>@<host>:<port>` or `
+ * ssh://<username>@<host>:<port>`
+ */ @JvmOverloads
+constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolean = true) {
 
-  public final boolean closeClientOnFinish;
-
-  public SFtpClientTemplate(@NonNull String url) {
-    this(url, true);
-  }
-
-  /**
-   * If closeClientOnFinish is set to true, calling code needs to handle closing of {@link
-   * SFTPClient} session.
-   *
-   * @param url SSH connection URL, in the form of <code>
-   *     ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>
-   *     ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-   */
-  public SFtpClientTemplate(@NonNull String url, boolean closeClientOnFinish) {
-    this.url = url;
-    this.closeClientOnFinish = closeClientOnFinish;
-  }
-
-  /**
-   * Implement logic here.
-   *
-   * @param client {@link SFTPClient} instance, with connection opened and authenticated, and SSH
-   *     session had been set up.
-   * @param <T> Requested return type
-   * @return Result of the execution of the type requested
-   */
-  public abstract <T> T execute(@NonNull SFTPClient client) throws IOException;
+    /**
+     * Implement logic here.
+     *
+     * @param client [SFTPClient] instance, with connection opened and authenticated, and SSH
+     * session had been set up.
+     * @param <T> Requested return type
+     * @return Result of the execution of the type requested
+     */
+    @Throws(IOException::class)
+    abstract fun <T> execute(client: SFTPClient): T
 }

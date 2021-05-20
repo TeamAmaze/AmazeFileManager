@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,34 +18,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh;
+package com.amaze.filemanager.filesystem.ssh
 
-import java.io.IOException;
+import net.schmizz.sshj.connection.channel.direct.Session
+import java.io.IOException
 
-import androidx.annotation.NonNull;
+abstract class SshClientSessionTemplate
+/**
+ * Constructor.
+ *
+ * @param url SSH connection URL, in the form of `
+ * ssh://<username>:<password>@<host>:<port>` or `
+ * ssh://<username>@<host>:<port>`
+ */
+(@JvmField val url: String) {
 
-import net.schmizz.sshj.connection.channel.direct.Session;
-
-public abstract class SshClientSessionTemplate {
-  public final String url;
-
-  /**
-   * Constructor.
-   *
-   * @param url SSH connection URL, in the form of <code>
-   *     ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>
-   *     ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-   */
-  public SshClientSessionTemplate(@NonNull String url) {
-    this.url = url;
-  }
-
-  /**
-   * Implement logic here.
-   *
-   * @param sshClientSession {@link Session} instance, with connection opened and authenticated
-   * @param <T> Requested return type
-   * @return Result of the execution of the type requested
-   */
-  public abstract <T> T execute(@NonNull Session sshClientSession) throws IOException;
+    /**
+     * Implement logic here.
+     *
+     * @param sshClientSession [Session] instance, with connection opened and authenticated
+     * @param <T> Requested return type
+     * @return Result of the execution of the type requested
+     */
+    @Throws(IOException::class)
+    abstract fun <T> execute(sshClientSession: Session): T
 }

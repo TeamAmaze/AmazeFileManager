@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,335 +18,287 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh;
+package com.amaze.filemanager.filesystem.ssh
 
-import java.io.IOException;
-import java.security.KeyPair;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.atomic.AtomicReference;
-
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult;
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask;
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask;
-import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.ui.activities.MainActivity;
-
-import android.os.AsyncTask;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import net.schmizz.sshj.Config;
-import net.schmizz.sshj.SSHClient;
+import android.os.AsyncTask
+import android.util.Log
+import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
+import net.schmizz.sshj.Config
+import net.schmizz.sshj.SSHClient
+import java.security.KeyPair
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
+import java.util.concurrent.ExecutionException
+import java.util.concurrent.atomic.AtomicReference
 
 /**
  * Poor man's implementation of SSH connection pool.
  *
- * <p>It uses a {@link ConcurrentHashMap} to hold the opened SSH connections; all code that uses
- * {@link SSHClient} can ask for connection here with <code>getConnection(url)</code>.
+ *
+ * It uses a [ConcurrentHashMap] to hold the opened SSH connections; all code that uses
+ * [SSHClient] can ask for connection here with `getConnection(url)`.
  */
-public class SshConnectionPool {
+object SshConnectionPool {
 
-  public static final int SSH_DEFAULT_PORT = 22;
+    const val SSH_DEFAULT_PORT = 22
+    const val SSH_URI_PREFIX = "ssh://"
+    const val SSH_CONNECT_TIMEOUT = 30000
 
-  public static final String SSH_URI_PREFIX = "ssh://";
+    private val TAG = SshConnectionPool::class.java.simpleName
 
-  public static final int SSH_CONNECT_TIMEOUT = 30000;
+    private var connections: MutableMap<String, SSHClient> = ConcurrentHashMap()
 
-  private static final String TAG = SshConnectionPool.class.getSimpleName();
+    @JvmField
+    var sshClientFactory: SSHClientFactory = DefaultSSHClientFactory()
 
-  private static SSHClientFactory factory = new DefaultSSHClientFactory();
-
-  private final Map<String, SSHClient> connections;
-
-  private SshConnectionPool() {
-    connections = new ConcurrentHashMap<>();
-  }
-
-  private static final class SshConnectionPoolHolder {
-    private static final SshConnectionPool instance = new SshConnectionPool();
-  }
-
-  /**
-   * Use this to obtain SshConnectionPool instance singleton.
-   *
-   * @return {@link SshConnectionPool} instance
-   */
-  public static final SshConnectionPool getInstance() {
-    return SshConnectionPoolHolder.instance;
-  }
-
-  public static void setSSHClientFactory(@NonNull SSHClientFactory sshClientFactory) {
-    factory = sshClientFactory;
-  }
-
-  public static final @NonNull SSHClientFactory getSSHClientFactory() {
-    return factory;
-  }
-
-  /**
-   * Remove a SSH connection from connection pool. Disconnects from server before removing.
-   *
-   * <p>For updating SSH connection settings.
-   *
-   * <p>This method will silently end without feedback if the specified SSH connection URI does not
-   * exist in the connection pool.
-   *
-   * @param url SSH connection URI
-   */
-  public void removeConnection(@NonNull String url, @NonNull Runnable callback) {
-    new AsyncRemoveConnection(url, callback).execute();
-  }
-
-  /**
-   * Obtain a {@link SSHClient} connection from the underlying connection pool.
-   *
-   * <p>Beneath it will return the connection if it exists; otherwise it will create a new one and
-   * put it into the connection pool.
-   *
-   * @param url SSH connection URL, in the form of <code>
-   *     ssh://&lt;username&gt;:&lt;password&gt;@&lt;host&gt;:&lt;port&gt;</code> or <code>
-   *     ssh://&lt;username&gt;@&lt;host&gt;:&lt;port&gt;</code>
-   * @return {@link SSHClient} connection, already opened and authenticated
-   * @throws IOException IOExceptions that occur during connection setup
-   */
-  public SSHClient getConnection(@NonNull String url) {
-
-    SSHClient client = connections.get(url);
-    if (client == null) {
-      client = create(url);
-      if (client != null) connections.put(url, client);
-    } else {
-      if (!validate(client)) {
-        Log.d(TAG, "Connection no longer usable. Reconnecting...");
-        expire(client);
-        connections.remove(url);
-        client = create(url);
-        if (client != null) connections.put(url, client);
-      }
+    /**
+     * Remove a SSH connection from connection pool. Disconnects from server before removing.
+     *
+     *
+     * For updating SSH connection settings.
+     *
+     *
+     * This method will silently end without feedback if the specified SSH connection URI does not
+     * exist in the connection pool.
+     *
+     * @param url SSH connection URI
+     */
+    fun removeConnection(url: String, callback: Runnable) {
+        AsyncRemoveConnection(url, callback).execute()
     }
-    return client;
-  }
 
-  /**
-   * Obtain a {@link SSHClient} connection from the underlying connection pool.
-   *
-   * <p>Beneath it will return the connection if it exists; otherwise it will create a new one and
-   * put it into the connection pool.
-   *
-   * <p>Different from {@link #getConnection(String)} above, this accepts broken down parameters as
-   * convenience method during setting up SCP/SFTP connection.
-   *
-   * @param host host name/IP, required
-   * @param port SSH server port, required
-   * @param hostFingerprint expected host fingerprint, required
-   * @param username username, required
-   * @param password password, required if using password to authenticate
-   * @param keyPair {@link KeyPair}, required if using key-based authentication
-   * @return {@link SSHClient} connection
-   */
-  public SSHClient getConnection(
-      @NonNull String host,
-      int port,
-      @NonNull String hostFingerprint,
-      @NonNull String username,
-      @Nullable String password,
-      @Nullable KeyPair keyPair) {
-
-    String url = SshClientUtils.deriveSftpPathFrom(host, port, "", username, password, keyPair);
-
-    SSHClient client = connections.get(url);
-    if (client == null) {
-      client = create(host, port, hostFingerprint, username, password, keyPair);
-      if (client != null) connections.put(url, client);
-    } else {
-      if (!validate(client)) {
-        Log.d(TAG, "Connection no longer usable. Reconnecting...");
-        expire(client);
-        connections.remove(url);
-        client = create(host, port, hostFingerprint, username, password, keyPair);
-        if (client != null) connections.put(url, client);
-      }
-    }
-    return client;
-  }
-
-  /**
-   * Kill any connection that is still in place. Used by {@link
-   * com.amaze.filemanager.ui.activities.MainActivity}.
-   *
-   * @see MainActivity#onDestroy()
-   * @see MainActivity#exit()
-   */
-  public void shutdown() {
-    AppConfig.getInstance()
-        .runInBackground(
-            () -> {
-              if (!connections.isEmpty()) {
-                for (SSHClient connection : connections.values()) {
-                  SshClientUtils.tryDisconnect(connection);
+    /**
+     * Obtain a [SSHClient] connection from the underlying connection pool.
+     *
+     *
+     * Beneath it will return the connection if it exists; otherwise it will create a new one and
+     * put it into the connection pool.
+     *
+     * @param url SSH connection URL, in the form of `
+     * ssh://<username>:<password>@<host>:<port>` or `
+     * ssh://<username>@<host>:<port>`
+     * @return [SSHClient] connection, already opened and authenticated
+     * @throws IOException IOExceptions that occur during connection setup
+     */
+    fun getConnection(url: String): SSHClient? {
+        var client = connections[url]
+        if (client == null) {
+            client = create(url)
+            if (client != null) {
+                connections[url] = client
+            }
+        } else {
+            if (!validate(client)) {
+                Log.d(TAG, "Connection no longer usable. Reconnecting...")
+                expire(client)
+                connections.remove(url)
+                client = create(url)
+                if (client != null) {
+                    connections[url] = client
                 }
-                connections.clear();
-              }
-            });
-  }
-
-  // Logic for creating SSH connection. Depends on password existence in given Uri password or
-  // key-based authentication
-  private SSHClient create(@NonNull String url) {
-    ConnectionInfo connInfo = new ConnectionInfo(url);
-
-    UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
-    String pem = utilsHandler.getSshAuthPrivateKey(url);
-
-    AtomicReference<KeyPair> keyPair = new AtomicReference<>(null);
-    if (pem != null && !pem.isEmpty()) {
-      try {
-        CountDownLatch latch = new CountDownLatch(1);
-        new PemToKeyPairTask(
-                pem,
-                result -> {
-                  keyPair.set(result);
-                  latch.countDown();
-                })
-            .execute();
-        latch.await();
-      } catch (InterruptedException e) {
-        throw new RuntimeException(e);
-      }
+            }
+        }
+        return client
     }
 
-    String hostKey = utilsHandler.getSshHostKey(url);
-    if (hostKey == null) return null;
-
-    return create(
-        connInfo.host, connInfo.port, hostKey, connInfo.username, connInfo.password, keyPair.get());
-  }
-
-  private SSHClient create(
-      @NonNull String host,
-      int port,
-      @NonNull String hostKey,
-      @NonNull String username,
-      @Nullable String password,
-      @Nullable KeyPair keyPair) {
-
-    try {
-      AsyncTaskResult<SSHClient> taskResult =
-          new SshAuthenticationTask(host, port, hostKey, username, password, keyPair)
-              .execute()
-              .get();
-
-      SSHClient client = taskResult.result;
-      return client;
-    } catch (InterruptedException e) {
-      // FIXME: proper handling
-      throw new RuntimeException(e);
-    } catch (ExecutionException e) {
-      // FIXME: proper handling
-      throw new RuntimeException(e);
-    }
-  }
-
-  private boolean validate(@NonNull SSHClient client) {
-    return client.isConnected() && client.isAuthenticated();
-  }
-
-  private void expire(@NonNull SSHClient client) {
-    SshClientUtils.tryDisconnect(client);
-  }
-
-  /**
-   * Container object for SSH URI, encapsulating logic for splitting information from given URI.
-   * <code>Uri.parse()</code> only parse URI that is compliant to RFC2396, but we have to deal with
-   * URI that is not compliant, since usernames and/or strong passwords usually have special
-   * characters included, like <code>ssh://user@example.com:P@##w0rd@127.0.0.1:22</code>.
-   *
-   * <p>A design decision to keep database schema slim, by the way... -TranceLove
-   */
-  static final class ConnectionInfo {
-
-    protected final String host;
-    protected final int port;
-    protected final String username;
-    protected final String password;
-    protected final String defaultPath;
-
-    // FIXME: Crude assumption
-    ConnectionInfo(@NonNull String url) {
-      if (!url.startsWith(SSH_URI_PREFIX))
-        throw new IllegalArgumentException("Argument is not a SSH URI: " + url);
-
-      this.host = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf(':'));
-      String portAndPath = url.substring(url.lastIndexOf(':') + 1);
-      int port = SSH_DEFAULT_PORT;
-      if (portAndPath.contains("/")) {
-        port = Integer.parseInt(portAndPath.substring(0, portAndPath.indexOf('/')));
-        defaultPath = portAndPath.substring(portAndPath.indexOf('/'));
-      } else {
-        port = Integer.parseInt(portAndPath);
-        defaultPath = null;
-      }
-      // If the uri is fetched from the app's database storage, we assume it will never be empty
-      String authString = url.substring(SSH_URI_PREFIX.length(), url.lastIndexOf('@'));
-      String[] userInfo = authString.split(":");
-      this.username = userInfo[0];
-      this.password = userInfo.length > 1 ? userInfo[1] : null;
-
-      if (port < 0) port = SSH_DEFAULT_PORT;
-
-      this.port = port;
-    }
-  }
-
-  private final class AsyncRemoveConnection extends AsyncTask<Void, Void, Void> {
-
-    private String url;
-    private Runnable callback;
-
-    AsyncRemoveConnection(@NonNull String url, @Nullable Runnable callback) {
-      this.url = url;
-      this.callback = callback;
+    /**
+     * Obtain a [SSHClient] connection from the underlying connection pool.
+     *
+     *
+     * Beneath it will return the connection if it exists; otherwise it will create a new one and
+     * put it into the connection pool.
+     *
+     *
+     * Different from [.getConnection] above, this accepts broken down parameters as
+     * convenience method during setting up SCP/SFTP connection.
+     *
+     * @param host host name/IP, required
+     * @param port SSH server port, required
+     * @param hostFingerprint expected host fingerprint, required
+     * @param username username, required
+     * @param password password, required if using password to authenticate
+     * @param keyPair [KeyPair], required if using key-based authentication
+     * @return [SSHClient] connection
+     */
+    fun getConnection(
+        host: String,
+        port: Int,
+        hostFingerprint: String,
+        username: String,
+        password: String?,
+        keyPair: KeyPair?
+    ): SSHClient? {
+        val url = SshClientUtils.deriveSftpPathFrom(host, port, "", username, password, keyPair)
+        var client = connections[url]
+        if (client == null) {
+            client = create(host, port, hostFingerprint, username, password, keyPair)
+            if (client != null) connections[url] = client
+        } else {
+            if (!validate(client)) {
+                Log.d(TAG, "Connection no longer usable. Reconnecting...")
+                expire(client)
+                connections.remove(url)
+                client = create(host, port, hostFingerprint, username, password, keyPair)
+                if (client != null) connections[url] = client
+            }
+        }
+        return client
     }
 
-    @Override
-    protected Void doInBackground(Void... voids) {
-      url = SshClientUtils.extractBaseUriFrom(url);
-
-      if (connections.containsKey(url)) {
-        SshClientUtils.tryDisconnect(connections.remove(url));
-      }
-      return null;
+    /**
+     * Kill any connection that is still in place. Used by [ ].
+     *
+     * @see MainActivity.onDestroy
+     * @see MainActivity.exit
+     */
+    fun shutdown() {
+        AppConfig.getInstance()
+            .runInBackground {
+                if (!connections.isEmpty()) {
+                    for (connection in connections.values) {
+                        SshClientUtils.tryDisconnect(connection)
+                    }
+                    connections.clear()
+                }
+            }
     }
 
-    @Override
-    protected void onPostExecute(Void aVoid) {
-      if (callback != null) callback.run();
+    // Logic for creating SSH connection. Depends on password existence in given Uri password or
+    // key-based authentication
+    private fun create(url: String): SSHClient? {
+        val connInfo = ConnectionInfo(url)
+        val utilsHandler = AppConfig.getInstance().utilsHandler
+        val pem = utilsHandler.getSshAuthPrivateKey(url)
+        val keyPair = AtomicReference<KeyPair?>(null)
+        if (pem != null && !pem.isEmpty()) {
+            try {
+                val latch = CountDownLatch(1)
+                PemToKeyPairTask(
+                    pem
+                ) { result: KeyPair? ->
+                    keyPair.set(result)
+                    latch.countDown()
+                }
+                    .execute()
+                latch.await()
+            } catch (e: InterruptedException) {
+                throw RuntimeException(e)
+            }
+        }
+        val hostKey = utilsHandler.getSshHostKey(url) ?: return null
+        return create(
+            connInfo.host,
+            connInfo.port,
+            hostKey,
+            connInfo.username,
+            connInfo.password,
+            keyPair.get()
+        )
     }
-  }
 
-  /**
-   * Interface defining a factory class for creating {@link SSHClient} instances.
-   *
-   * <p>In normal usage you won't need this; will be useful however when writing tests concerning
-   * SSHClient, that mocked instances can be returned so tests can be run without a real SSH server.
-   */
-  public interface SSHClientFactory {
-    @NonNull
-    SSHClient create(Config config);
-  }
-
-  /** Default {@link SSHClientFactory} implementation. */
-  static class DefaultSSHClientFactory implements SSHClientFactory {
-    @NonNull
-    @Override
-    public SSHClient create(Config config) {
-      return new SSHClient(config);
+    private fun create(
+        host: String,
+        port: Int,
+        hostKey: String,
+        username: String,
+        password: String?,
+        keyPair: KeyPair?
+    ): SSHClient? {
+        return try {
+            val taskResult = SshAuthenticationTask(host, port, hostKey, username, password, keyPair)
+                .execute()
+                .get()
+            taskResult.result
+        } catch (e: InterruptedException) {
+            // FIXME: proper handling
+            throw RuntimeException(e)
+        } catch (e: ExecutionException) {
+            // FIXME: proper handling
+            throw RuntimeException(e)
+        }
     }
-  }
+
+    private fun validate(client: SSHClient): Boolean {
+        return client.isConnected && client.isAuthenticated
+    }
+
+    private fun expire(client: SSHClient) {
+        SshClientUtils.tryDisconnect(client)
+    }
+
+    /**
+     * Container object for SSH URI, encapsulating logic for splitting information from given URI.
+     * `Uri.parse()` only parse URI that is compliant to RFC2396, but we have to deal with
+     * URI that is not compliant, since usernames and/or strong passwords usually have special
+     * characters included, like `ssh://user@example.com:P@##w0rd@127.0.0.1:22`.
+     *
+     *
+     * A design decision to keep database schema slim, by the way... -TranceLove
+     */
+    internal class ConnectionInfo(url: String) {
+        val host: String
+        val port: Int
+        val username: String
+        val password: String?
+        protected var defaultPath: String? = null
+
+        // FIXME: Crude assumption
+        init {
+            require(url.startsWith(SSH_URI_PREFIX)) { "Argument is not a SSH URI: $url" }
+            host = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf(':'))
+            val portAndPath = url.substring(url.lastIndexOf(':') + 1)
+            var port = SSH_DEFAULT_PORT
+            if (portAndPath.contains("/")) {
+                port = portAndPath.substring(0, portAndPath.indexOf('/')).toInt()
+                defaultPath = portAndPath.substring(portAndPath.indexOf('/'))
+            } else {
+                port = portAndPath.toInt()
+                defaultPath = null
+            }
+            // If the uri is fetched from the app's database storage, we assume it will never be empty
+            val authString = url.substring(SSH_URI_PREFIX.length, url.lastIndexOf('@'))
+            val userInfo = authString.split(":").toTypedArray()
+            username = userInfo[0]
+            password = if (userInfo.size > 1) userInfo[1] else null
+            if (port < 0) port = SSH_DEFAULT_PORT
+            this.port = port
+        }
+    }
+
+    class AsyncRemoveConnection internal constructor(
+        private var url: String,
+        private val callback: Runnable?
+    ) : AsyncTask<Unit, Unit, Unit>() {
+
+        override fun doInBackground(vararg params: Unit) {
+            url = SshClientUtils.extractBaseUriFrom(url)
+            if (connections.containsKey(url)) {
+                SshClientUtils.tryDisconnect(connections.remove(url))
+            }
+        }
+
+        override fun onPostExecute(aVoid: Unit) {
+            callback?.run()
+        }
+    }
+
+    /**
+     * Interface defining a factory class for creating [SSHClient] instances.
+     *
+     *
+     * In normal usage you won't need this; will be useful however when writing tests concerning
+     * SSHClient, that mocked instances can be returned so tests can be run without a real SSH server.
+     */
+    interface SSHClientFactory {
+        fun create(config: Config?): SSHClient
+    }
+
+    /** Default [SSHClientFactory] implementation.  */
+    internal class DefaultSSHClientFactory : SSHClientFactory {
+        override fun create(config: Config?): SSHClient {
+            return SSHClient(config)
+        }
+    }
 }
