@@ -20,14 +20,20 @@
 
 package com.amaze.filemanager.filesystem.ssh.test;
 
+import java.io.IOException;
 import java.security.KeyPair;
 import java.security.KeyPairGenerator;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.security.SecureRandom;
 import java.util.Collections;
 
 import org.apache.sshd.common.keyprovider.KeyPairProvider;
 
-public class TestKeyProvider implements KeyPairProvider {
+import net.schmizz.sshj.common.KeyType;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+
+public class TestKeyProvider implements KeyPairProvider, KeyProvider {
 
   private KeyPair keyPair;
 
@@ -40,6 +46,21 @@ public class TestKeyProvider implements KeyPairProvider {
   @Override
   public Iterable<KeyPair> loadKeys() {
     return Collections.singleton(keyPair);
+  }
+
+  @Override
+  public PrivateKey getPrivate() throws IOException {
+    return getKeyPair().getPrivate();
+  }
+
+  @Override
+  public PublicKey getPublic() throws IOException {
+    return getKeyPair().getPublic();
+  }
+
+  @Override
+  public KeyType getType() throws IOException {
+    return KeyType.fromKey(getKeyPair().getPublic());
   }
 
   public KeyPair getKeyPair() {

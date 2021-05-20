@@ -33,7 +33,6 @@ import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_CONNECT_TIMEOUT
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.transport.verification.HostKeyVerifier
-import java.io.IOException
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.security.PublicKey
@@ -71,27 +70,26 @@ class GetSshHostFingerprintTask(
     override fun doInBackground(vararg params: Void): AsyncTaskResult<PublicKey> {
         val holder = AtomicReference<AsyncTaskResult<PublicKey>>()
         val latch = CountDownLatch(1)
-        val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig())
-        sshClient.connectTimeout = SSH_CONNECT_TIMEOUT
-        sshClient.addHostKeyVerifier { _, _, key: PublicKey ->
-            holder.set(AsyncTaskResult(key))
-            latch.countDown()
-            true
+        val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig()).also {
+            it.connectTimeout = SSH_CONNECT_TIMEOUT
+            it.addHostKeyVerifier { _, _, key: PublicKey ->
+                holder.set(AsyncTaskResult(key))
+                latch.countDown()
+                true
+            }
         }
-        try {
+        return runCatching {
             sshClient.connect(hostname, port)
             latch.await()
-        } catch (e: IOException) {
-            Log.e(TAG, "Unable to connect to [$hostname:$port]", e)
-            holder.set(AsyncTaskResult(e))
+            holder.get()
+        }.onFailure {
+            Log.e(TAG, "Unable to connect to [$hostname:$port]", it)
             latch.countDown()
-        } catch (e: InterruptedException) {
-            Log.e(TAG, "Unable to connect to [$hostname:$port]", e)
-            holder.set(AsyncTaskResult(e))
-            latch.countDown()
-        } finally {
+        }.getOrElse {
+            holder.set(AsyncTaskResult(it))
+            holder.get()
+        }.also {
             SshClientUtils.tryDisconnect(sshClient)
-            return holder.get()
         }
     }
 
@@ -121,8 +119,7 @@ class GetSshHostFingerprintTask(
                             result.exception.localizedMessage
                         ),
                     Toast.LENGTH_LONG
-                )
-                    .show()
+                ).show()
             }
         } else {
             callback.onResult(result)

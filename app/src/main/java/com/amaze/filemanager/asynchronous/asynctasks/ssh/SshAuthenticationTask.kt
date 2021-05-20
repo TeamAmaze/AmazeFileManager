@@ -33,9 +33,7 @@ import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.common.DisconnectReason
 import net.schmizz.sshj.common.KeyType
 import net.schmizz.sshj.transport.TransportException
-import net.schmizz.sshj.userauth.UserAuthException
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider
-import java.io.IOException
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.security.KeyPair
@@ -55,15 +53,7 @@ import java.security.PublicKey
  * @see com.amaze.filemanager.ui.dialogs.SftpConnectDialog.authenticateAndSaveSetup
  * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool.create
  */
-class SshAuthenticationTask : AsyncTask<Void, Void, AsyncTaskResult<SSHClient>> {
-    private val hostname: String
-    private val port: Int
-    private val hostKey: String
-    private val existingHostKey: String?
-    private val username: String
-    private val password: String?
-    private val privateKey: KeyPair?
-
+class SshAuthenticationTask(
     /**
      * Constructor.
      *
@@ -74,46 +64,20 @@ class SshAuthenticationTask : AsyncTask<Void, Void, AsyncTaskResult<SSHClient>> 
      * @param password login password, required if using password authentication
      * @param privateKey login [KeyPair], required if using key-based authentication
      */
-    constructor(
-        hostname: String,
-        port: Int,
-        hostKey: String,
-        username: String,
-        password: String?,
-        privateKey: KeyPair?
-    ) {
-        this.hostname = hostname
-        this.port = port
-        this.hostKey = hostKey
-        existingHostKey = null
-        this.username = username
-        this.password = password
-        this.privateKey = privateKey
-    }
-
-    constructor(
-        hostname: String,
-        port: Int,
-        hostKey: String,
-        existingHostKey: String,
-        username: String,
-        password: String?,
-        privateKey: KeyPair?
-    ) {
-        this.hostname = hostname
-        this.port = port
-        this.hostKey = hostKey
-        this.existingHostKey = existingHostKey
-        this.username = username
-        this.password = password
-        this.privateKey = privateKey
-    }
+    private val hostname: String,
+    private val port: Int,
+    private val hostKey: String,
+    private val username: String,
+    private val password: String? = null,
+    private val privateKey: KeyPair? = null
+) : AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>() {
 
     override fun doInBackground(vararg params: Void): AsyncTaskResult<SSHClient> {
-        val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig())
-        sshClient.addHostKeyVerifier(hostKey)
-        sshClient.connectTimeout = SSH_CONNECT_TIMEOUT
-        return try {
+        val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig()).also {
+            it.addHostKeyVerifier(hostKey)
+            it.connectTimeout = SSH_CONNECT_TIMEOUT
+        }
+        return runCatching {
             sshClient.connect(hostname, port)
             if (password != null && "" != password) {
                 sshClient.authPassword(username, password)
@@ -137,15 +101,9 @@ class SshAuthenticationTask : AsyncTask<Void, Void, AsyncTaskResult<SSHClient>> 
                 )
                 AsyncTaskResult(sshClient)
             }
-        } catch (e: UserAuthException) {
-            e.printStackTrace()
-            AsyncTaskResult(e)
-        } catch (e: TransportException) {
-            e.printStackTrace()
-            AsyncTaskResult(e)
-        } catch (e: IOException) {
-            e.printStackTrace()
-            AsyncTaskResult(e)
+        }.getOrElse {
+            it.printStackTrace()
+            AsyncTaskResult(it)
         }
     }
 
@@ -164,7 +122,7 @@ class SshAuthenticationTask : AsyncTask<Void, Void, AsyncTaskResult<SSHClient>> 
                             R.string.ssh_connect_failed,
                             hostname,
                             port,
-                            result.exception.localizedMessage
+                            result.exception.localizedMessage ?: result.exception.message
                         ),
                     Toast.LENGTH_LONG
                 )
