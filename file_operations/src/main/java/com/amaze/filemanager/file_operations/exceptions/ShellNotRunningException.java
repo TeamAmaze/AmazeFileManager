@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.exceptions;
+package com.amaze.filemanager.file_operations.exceptions;
 
 /** Created by vishal on 24/12/16. Exception thrown when root is */
 public class ShellNotRunningException extends Exception {
