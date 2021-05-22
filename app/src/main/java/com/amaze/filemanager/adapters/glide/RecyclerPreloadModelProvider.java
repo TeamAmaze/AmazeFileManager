@@ -46,7 +46,7 @@ public class RecyclerPreloadModelProvider
   public RecyclerPreloadModelProvider(
       @NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris) {
     urisToLoad = uris;
-    request = GlideApp.with(fragment).asDrawable().centerCrop();
+    request = GlideApp.with(fragment).asDrawable().circleCrop();
   }
 
   @Override

@@ -72,7 +72,6 @@ import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
 import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
-import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;

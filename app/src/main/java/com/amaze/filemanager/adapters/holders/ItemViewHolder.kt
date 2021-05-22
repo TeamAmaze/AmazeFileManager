@@ -27,7 +27,6 @@ import android.widget.RelativeLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
-import com.amaze.filemanager.ui.views.RoundedImageView
 import com.amaze.filemanager.ui.views.ThemedTextView
 
 /**
@@ -37,13 +36,13 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
     @JvmField
-    val pictureIcon: RoundedImageView = view.findViewById(R.id.picture_icon)
+    val pictureIcon: ImageView? = view.findViewById(R.id.picture_icon)
 
     @JvmField
     val genericIcon: ImageView = view.findViewById(R.id.generic_icon)
 
     @JvmField
-    val apkIcon: ImageView = view.findViewById(R.id.apk_icon)
+    val apkIcon: ImageView? = view.findViewById(R.id.apk_icon)
 
     @JvmField
     val imageView1: ImageView? = view.findViewById(R.id.icon_thumb)
@@ -64,13 +63,13 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val rl: View = view.findViewById(R.id.second)
 
     @JvmField
-    val genericText: TextView = view.findViewById(R.id.generictext)
+    val genericText: TextView? = view.findViewById(R.id.generictext)
 
     @JvmField
     val about: ImageButton = view.findViewById(R.id.properties)
 
     @JvmField
-    val checkImageView: ImageView = view.findViewById(R.id.check_icon)
+    val checkImageView: ImageView? = view.findViewById(R.id.check_icon)
 
     @JvmField
     val checkImageViewGrid: ImageView? = view.findViewById(R.id.check_icon_grid)
