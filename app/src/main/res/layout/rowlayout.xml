@@ -46,7 +46,7 @@
                 android:scaleType="centerCrop"
                 android:layout_gravity="center"
                 android:id="@+id/apk_icon"/>
-            <com.amaze.filemanager.ui.views.RoundedImageView
+            <ImageView
                 android:id="@+id/picture_icon"
                 android:layout_width="@dimen/minimal_icon_size"
                 android:layout_height="@dimen/minimal_icon_size"

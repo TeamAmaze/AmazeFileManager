@@ -25,13 +25,12 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.R
-import com.amaze.filemanager.ui.views.RoundedImageView
 import com.amaze.filemanager.ui.views.ThemedTextView
 
 class CompressedItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
     @JvmField
-    val pictureIcon: RoundedImageView = view.findViewById(R.id.picture_icon)
+    val pictureIcon: ImageView = view.findViewById(R.id.picture_icon)
 
     @JvmField
     val genericIcon: ImageView = view.findViewById(R.id.generic_icon)

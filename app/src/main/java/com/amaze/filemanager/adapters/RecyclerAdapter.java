@@ -55,7 +55,6 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
-import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.utils.AnimUtils;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
@@ -760,8 +759,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         holder.imageView1.setVisibility(View.INVISIBLE);
         holder.genericIcon.setVisibility(View.VISIBLE);
         holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
-
-        ((RoundedImageView) holder.genericIcon).setRelativeSize(1.25f, 1.25f);
 
         if (rowItem.filetype == Icons.IMAGE || rowItem.filetype == Icons.VIDEO) {
           if (getBoolean(PREFERENCE_SHOW_THUMB)) {

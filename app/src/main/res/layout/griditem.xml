@@ -21,7 +21,7 @@
             android:background="#fff"
             android:foregroundGravity="fill">
 
-            <com.amaze.filemanager.ui.views.RoundedImageView
+            <ImageView
                 android:id="@+id/generic_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
