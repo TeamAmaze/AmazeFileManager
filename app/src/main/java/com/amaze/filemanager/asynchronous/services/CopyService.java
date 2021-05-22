@@ -56,13 +56,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 public class CopyService extends AbstractProgressiveService {
 
@@ -114,7 +114,7 @@ public class CopyService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     b.putInt(TAG_COPY_START_ID, startId);

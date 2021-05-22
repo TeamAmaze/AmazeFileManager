@@ -45,7 +45,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -58,6 +57,7 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 /** Created by Arpit on 15-12-2014. */
@@ -169,9 +169,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     UserColorPreferences userColorPreferences = mainActivity.getCurrentColorPreference();
 
     // color of viewpager when current tab is 0
-    startColor = userColorPreferences.primaryFirstTab;
+    startColor = userColorPreferences.getPrimaryFirstTab();
     // color of viewpager when current tab is 1
-    endColor = userColorPreferences.primarySecondTab;
+    endColor = userColorPreferences.getPrimarySecondTab();
 
     // update the views as there is any change in {@link MainActivity#currentTab}
     // probably due to config change

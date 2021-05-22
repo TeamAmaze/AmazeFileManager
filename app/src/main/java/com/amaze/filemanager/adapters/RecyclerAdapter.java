@@ -161,7 +161,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     accentColor = m.getMainActivity().getAccent();
-    iconSkinColor = m.getMainActivity().getCurrentColorPreference().iconSkin;
+    iconSkinColor = m.getMainActivity().getCurrentColorPreference().getIconSkin();
     goBackColor = Utils.getColor(context, R.color.goback_item);
     videoColor = Utils.getColor(context, R.color.video_item);
     audioColor = Utils.getColor(context, R.color.audio_item);

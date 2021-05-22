@@ -22,33 +22,34 @@ package com.amaze.filemanager.ui.dialogs;
 
 import com.afollestad.materialdialogs.Theme;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircularColorsView;
-import com.amaze.filemanager.ui.views.preference.SelectedColorsPreference;
 import com.amaze.filemanager.utils.Utils;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
-import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
 import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.core.util.Pair;
+import androidx.preference.Preference.BaseSavedState;
+import androidx.preference.PreferenceDialogFragmentCompat;
+import androidx.preference.PreferenceManager;
 
 /**
  * This is only the dialog, that shows a list of color combinations and a customization and random
@@ -56,7 +57,7 @@ import androidx.core.util.Pair;
  *
  * @author Emmanuel on 11/10/2017, at 12:48.
  */
-public class ColorPickerDialog extends SelectedColorsPreference {
+public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
 
   public static final int DEFAULT = 0;
   public static final int NO_DATA = -1;
@@ -100,29 +101,23 @@ public class ColorPickerDialog extends SelectedColorsPreference {
             })
       };
 
+  private static final String ARG_COLOR_PREF = "colorPref";
+  private static final String ARG_APP_THEME = "appTheme";
+
   private SharedPreferences sharedPrefs;
-  private ColorPreferenceHelper colorPreferenceHelper;
-  private UserColorPreferences colorPref;
-  private AppTheme appTheme;
   private OnAcceptedConfig listener;
   private View selectedItem = null;
   private int selectedIndex = -1;
 
-  public ColorPickerDialog(Context context, AttributeSet attrs) {
-    super(context, attrs);
-
-    setDialogLayoutResource(R.layout.dialog_colorpicker);
-    setPositiveButtonText(android.R.string.ok);
-    setNegativeButtonText(android.R.string.cancel);
-
-    setDialogIcon(null);
-  }
-
-  public void setColorPreference(
-      ColorPreferenceHelper colorPreferenceHelper, UserColorPreferences color, AppTheme theme) {
-    this.colorPreferenceHelper = colorPreferenceHelper;
-    colorPref = color;
-    appTheme = theme;
+  public static ColorPickerDialog newInstance(
+      String key, UserColorPreferences color, AppTheme theme) {
+    ColorPickerDialog retval = new ColorPickerDialog();
+    final Bundle b = new Bundle(2);
+    b.putString(ARG_KEY, key);
+    b.putParcelable(ARG_COLOR_PREF, color);
+    b.putInt(ARG_APP_THEME, theme.ordinal());
+    retval.setArguments(b);
+    return retval;
   }
 
   public void setListener(OnAcceptedConfig l) {
@@ -130,19 +125,10 @@ public class ColorPickerDialog extends SelectedColorsPreference {
   }
 
   @Override
-  protected Object onGetDefaultValue(TypedArray a, int index) {
-    return a.getString(index);
-  }
-
-  @Override
-  public CharSequence getSummary() {
-    return ""; // Always empty
-  }
-
-  @Override
   public void onBindDialogView(View view) {
-    sharedPrefs = getSharedPreferences();
-    int accentColor = colorPref.accent;
+    sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireContext());
+    int accentColor =
+        ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();
     if (selectedIndex == NO_DATA) { // if instance was restored the value is already set
       boolean isUsingDefault =
           sharedPrefs.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, NO_DATA) == NO_DATA
@@ -183,6 +169,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
       ((TextView) child.findViewById(R.id.text)).setText(COLORS[i].first);
       CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
       colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
+      AppTheme appTheme = AppTheme.getTheme(requireArguments().getInt(ARG_APP_THEME));
       if (appTheme.getMaterialDialogTheme() == Theme.LIGHT) colorsView.setDividerColor(Color.WHITE);
       else colorsView.setDividerColor(Color.BLACK);
       container.addView(child);
@@ -211,7 +198,6 @@ public class ColorPickerDialog extends SelectedColorsPreference {
       child.findViewById(R.id.circularColorsView).setVisibility(View.INVISIBLE);
       container.addView(child);
     }
-    super.onBindDialogView(view);
   }
 
   private void select(View listChild, boolean checked) {
@@ -231,7 +217,7 @@ public class ColorPickerDialog extends SelectedColorsPreference {
         };
 
     LayoutInflater inflater =
-        (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        (LayoutInflater) requireContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     View child = inflater.inflate(R.layout.item_colorpicker, container, false);
     child.setOnClickListener(clickListener);
 
@@ -250,22 +236,26 @@ public class ColorPickerDialog extends SelectedColorsPreference {
     return child;
   }
 
+  @NonNull
   @Override
-  protected void showDialog(Bundle state) {
-    super.showDialog(state);
-    Resources res = getContext().getResources();
-    Window window = getDialog().getWindow();
-    int accentColor = colorPref.accent;
+  public Dialog onCreateDialog(Bundle savedInstanceState) {
+    Dialog dialog = super.onCreateDialog(savedInstanceState);
+    dialog.show();
+    Resources res = requireContext().getResources();
+    int accentColor =
+        ((UserColorPreferences) requireArguments().getParcelable(ARG_COLOR_PREF)).getAccent();
 
     // Button views
-    ((TextView) window.findViewById(res.getIdentifier("button1", "id", "android")))
+    ((TextView) dialog.findViewById(res.getIdentifier("button1", "id", "android")))
         .setTextColor(accentColor);
-    ((TextView) window.findViewById(res.getIdentifier("button2", "id", "android")))
+    ((TextView) dialog.findViewById(res.getIdentifier("button2", "id", "android")))
         .setTextColor(accentColor);
+
+    return dialog;
   }
 
   @Override
-  protected void onDialogClosed(boolean positiveResult) {
+  public void onDialogClosed(boolean positiveResult) {
     // When the user selects "OK", persist the new value
     if (positiveResult) {
       sharedPrefs
@@ -274,13 +264,16 @@ public class ColorPickerDialog extends SelectedColorsPreference {
           .apply();
 
       if (selectedIndex != CUSTOM_INDEX && selectedIndex != RANDOM_INDEX) {
-        colorPreferenceHelper.saveColorPreferences(
-            sharedPrefs,
-            new UserColorPreferences(
-                getColor(selectedIndex, 0),
-                getColor(selectedIndex, 1),
-                getColor(selectedIndex, 2),
-                getColor(selectedIndex, 3)));
+        AppConfig.getInstance()
+            .getUtilsProvider()
+            .getColorPreference()
+            .saveColorPreferences(
+                sharedPrefs,
+                new UserColorPreferences(
+                    getColor(selectedIndex, 0),
+                    getColor(selectedIndex, 1),
+                    getColor(selectedIndex, 2),
+                    getColor(selectedIndex, 3)));
       }
 
       listener.onAcceptedConfig();
@@ -311,29 +304,9 @@ public class ColorPickerDialog extends SelectedColorsPreference {
     void onAcceptedConfig();
   }
 
-  @Override
-  protected Parcelable onSaveInstanceState() {
-    final SavedState myState = new SavedState(super.onSaveInstanceState());
-    myState.selectedItem = selectedIndex;
-    return myState;
-  }
+  public static class SavedState extends BaseSavedState {
 
-  @Override
-  protected void onRestoreInstanceState(Parcelable state) {
-    if (state == null || !state.getClass().equals(SavedState.class)) {
-      // Didn't save state for us in onSaveInstanceState
-      super.onRestoreInstanceState(state);
-      return;
-    }
-
-    SavedState myState = (SavedState) state;
-    selectedIndex = myState.selectedItem;
-    super.onRestoreInstanceState(myState.getSuperState()); // onBindDialogView(View view)
-    select(selectedItem, true);
-  }
-
-  private static class SavedState extends BaseSavedState {
-    int selectedItem;
+    public int selectedItem;
 
     public SavedState(Parcel source) {
       super(source);

@@ -39,11 +39,11 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.Editable;
 import android.view.View;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.preference.PreferenceManager;
 
 /** Created by arpitkh996 on 21-01-2016. */
 public class RenameBookmark extends DialogFragment {

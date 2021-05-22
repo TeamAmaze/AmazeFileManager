@@ -37,13 +37,13 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.View;
 import android.widget.ListView;
 
 import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.preference.PreferenceManager;
 
 public class AppsListFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {

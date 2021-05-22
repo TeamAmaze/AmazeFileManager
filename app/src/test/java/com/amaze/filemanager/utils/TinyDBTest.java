@@ -32,8 +32,8 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 
+import androidx.preference.PreferenceManager;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 

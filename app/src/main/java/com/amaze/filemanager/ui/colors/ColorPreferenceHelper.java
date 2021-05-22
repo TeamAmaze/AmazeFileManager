@@ -81,7 +81,7 @@ public class ColorPreferenceHelper {
    * @return The ColorUsage for the given primary color.
    */
   public static @ColorInt int getPrimary(UserColorPreferences currentColors, int num) {
-    return num == 1 ? currentColors.primarySecondTab : currentColors.primaryFirstTab;
+    return num == 1 ? currentColors.getPrimarySecondTab() : currentColors.getPrimaryFirstTab();
   }
 
   private UserColorPreferences currentColors;
@@ -94,10 +94,10 @@ public class ColorPreferenceHelper {
 
   public void saveColorPreferences(SharedPreferences prefs, UserColorPreferences userPrefs) {
     SharedPreferences.Editor editor = prefs.edit();
-    editor.putInt(PreferencesConstants.PREFERENCE_SKIN, userPrefs.primaryFirstTab);
-    editor.putInt(PreferencesConstants.PREFERENCE_SKIN_TWO, userPrefs.primarySecondTab);
-    editor.putInt(PreferencesConstants.PREFERENCE_ACCENT, userPrefs.accent);
-    editor.putInt(PreferencesConstants.PREFERENCE_ICON_SKIN, userPrefs.iconSkin);
+    editor.putInt(PreferencesConstants.PREFERENCE_SKIN, userPrefs.getPrimaryFirstTab());
+    editor.putInt(PreferencesConstants.PREFERENCE_SKIN_TWO, userPrefs.getPrimarySecondTab());
+    editor.putInt(PreferencesConstants.PREFERENCE_ACCENT, userPrefs.getAccent());
+    editor.putInt(PreferencesConstants.PREFERENCE_ICON_SKIN, userPrefs.getIconSkin());
     editor.apply();
 
     currentColors = userPrefs;

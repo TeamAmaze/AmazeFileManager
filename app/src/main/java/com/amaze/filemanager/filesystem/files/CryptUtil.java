@@ -55,13 +55,13 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 /**
  * Created by vishal on 6/4/17.

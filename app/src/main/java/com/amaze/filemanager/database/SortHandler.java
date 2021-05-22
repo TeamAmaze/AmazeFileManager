@@ -30,11 +30,11 @@ import com.amaze.filemanager.database.models.explorer.Sort;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.preference.PreferenceManager;
 
 import io.reactivex.schedulers.Schedulers;
 

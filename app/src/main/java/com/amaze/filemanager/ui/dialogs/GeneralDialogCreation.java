@@ -92,7 +92,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -113,6 +112,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.preference.PreferenceManager;
 
 /**
  * Here are a lot of function that create material dialogs
