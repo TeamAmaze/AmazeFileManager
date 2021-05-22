@@ -29,5 +29,5 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable
  */
 interface OnFileFound {
     @Suppress("UndocumentedPublicFunction")
-    fun onFileFound(file: HybridFileParcelable?)
+    fun onFileFound(file: HybridFileParcelable)
 }
