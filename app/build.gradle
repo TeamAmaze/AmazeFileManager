@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.hiya.jacoco-android'
 apply plugin: 'com.akaita.android.easylauncher'
 
@@ -63,10 +63,6 @@ android {
         viewBinding true
     }
 
-    androidExtensions {
-        features = ["parcelize"]
-    }
-
     lintOptions {
         abortOnError false
     }
@@ -89,10 +85,6 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
     }
 
     testOptions {
