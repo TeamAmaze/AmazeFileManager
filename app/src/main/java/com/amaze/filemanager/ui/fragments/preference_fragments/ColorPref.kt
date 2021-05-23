@@ -213,6 +213,8 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
             selectedColors?.onPreferenceClickListener = this
         }
         checkCustomization()
+        (findPreference<Preference>("category") as InvalidablePreferenceCategory?)
+            ?.invalidate(activity.accent)
     }
 
     private fun openSelectColorDialog(pref: SelectedColorsPreference) {
