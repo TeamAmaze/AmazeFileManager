@@ -20,9 +20,10 @@
 
 package com.amaze.filemanager.utils
 
-import kotlinx.android.parcel.Parcelize
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class ComputerParcelable(val addr: String?, val name: String?) {
+data class ComputerParcelable(val addr: String?, val name: String?) : Parcelable {
     override fun toString(): String = String.format("%s [%s]", name, addr)
 }
