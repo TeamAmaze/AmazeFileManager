@@ -80,7 +80,7 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
 
     /** Deal with the "up" button going to last fragment, instead of section 0.  */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == com.amaze.filemanager.R.id.home && currentSection != SECTION_0) {
+        if (item.itemId == android.R.id.home && currentSection != SECTION_0) {
             switchSections()
             return true
         }
@@ -213,6 +213,8 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
             selectedColors?.onPreferenceClickListener = this
         }
         checkCustomization()
+        (findPreference<Preference>(KEY_CUSTOMIZE) as InvalidablePreferenceCategory?)
+            ?.invalidate(activity.accent)
     }
 
     private fun openSelectColorDialog(pref: SelectedColorsPreference) {
@@ -222,7 +224,7 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
             activity.appTheme
         )
         dialog.setListener(createColorPickerDialogListener())
-        (findPreference<Preference>("category") as InvalidablePreferenceCategory?)
+        (findPreference<Preference>(KEY_CUSTOMIZE) as InvalidablePreferenceCategory?)
             ?.invalidate(activity.accent)
         dialog.setTargetFragment(this, 0)
         dialog.show(parentFragmentManager, KEY_SELECT_COLOR_CONFIG)
@@ -284,7 +286,7 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                     selectedColors.invalidateColors()
                 }
             }
-            (findPreference<Preference>("category") as InvalidablePreferenceCategory?)
+            (findPreference<Preference>(KEY_CUSTOMIZE) as InvalidablePreferenceCategory?)
                 ?.invalidate(activity.accent)
         }
     }
@@ -348,5 +350,6 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
             PreferencesConstants.PREFERENCE_ICON_SKIN
         )
         private const val KEY_SECTION = "section"
+        private const val KEY_CUSTOMIZE = "category"
     }
 }
