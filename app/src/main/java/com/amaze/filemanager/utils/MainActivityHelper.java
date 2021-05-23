@@ -20,15 +20,15 @@
 
 package com.amaze.filemanager.utils;
 
-import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.COMPRESS;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.DELETE;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.EXTRACT;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FILE;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FOLDER;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.RENAME;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COMPRESS;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.DELETE;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.EXTRACT;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FILE;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FOLDER;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.RENAME;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,9 +41,9 @@ import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
+import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.FolderState;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;

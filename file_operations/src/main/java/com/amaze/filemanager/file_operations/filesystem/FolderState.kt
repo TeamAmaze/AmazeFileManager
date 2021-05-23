@@ -18,20 +18,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem
+package com.amaze.filemanager.file_operations.filesystem
 
 import androidx.annotation.IntDef
 
-const val UNDEFINED = -1
-const val DELETE = 0
-const val COPY = 1
-const val MOVE = 2
-const val NEW_FOLDER = 3
-const val RENAME = 4
-const val NEW_FILE = 5
-const val EXTRACT = 6
-const val COMPRESS = 7
-const val SAVE_FILE = 8
+const val DOESNT_EXIST = 0
+const val WRITABLE_OR_ON_SDCARD = 1
 
-@IntDef(UNDEFINED, DELETE, COPY, MOVE, NEW_FOLDER, RENAME, NEW_FILE, EXTRACT, COMPRESS, SAVE_FILE)
-annotation class OperationType
+// For Android 5
+const val CAN_CREATE_FILES = 2
+const val WRITABLE_ON_REMOTE = 3
+
+@IntDef(DOESNT_EXIST, WRITABLE_OR_ON_SDCARD, CAN_CREATE_FILES, WRITABLE_ON_REMOTE)
+annotation class FolderState
