@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.hiya.jacoco-android'
+apply plugin: 'com.akaita.android.easylauncher'
 
 android {
     compileSdkVersion 29
@@ -286,6 +287,10 @@ project.afterEvaluate {
 
 clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
+
+easylauncher {
+    foregroundIconNames "@mipmap/ic_launcher_foreground" // Foreground of adaptive launcher icon
+}
 
 jacoco {
     toolVersion = "0.8.4"
