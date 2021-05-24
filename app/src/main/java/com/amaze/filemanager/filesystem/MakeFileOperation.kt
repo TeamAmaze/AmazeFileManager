@@ -83,11 +83,7 @@ object MakeFileOperation {
             }
         }
         return if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-            try {
-                MediaStoreHack.mkfile(context, file)
-            } catch (e: Exception) {
-                false
-            }
+            MediaStoreHack.mkfile(context, file)
         } else false
     }
 
