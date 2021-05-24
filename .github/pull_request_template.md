@@ -1,30 +1,39 @@
-## PR Info
+<!-- 
+Read this first:
+To open a pull request read this file,
+uncomment the corresponding lines and 
+complete them.
+-->
+
+## Description
+
 #### Issue tracker   
-Fixes will automatically close the related issue
+<!-- Fixes will automatically close the related issue -->
+<!-- Fixes # -->
+<!-- Addresses won't automatically close the related issue -->
+<!-- Addresses # -->
 
-Fixes #
--or-   
-Addresses #
-
-#### Release  
-Addresses release/
+#### Automatic tests
+<!-- remember to do manual testing when making UI changes! -->
+- [ ] Added test cases
   
-#### Test cases
-- [ ] Covered
-  
-#### Manual testing
+#### Manual tests
 - [ ] Done  
   
-If yes,  
+<!-- If yes, -->
+<!-- 
 - Device:
 - OS:
+-->
 
 #### Build tasks success  
-Successfully running following tasks on local 
+<!-- run these! -->
+Successfully running following tasks on local:
 - [ ] `./gradlew assembledebug`
 - [ ] `./gradlew spotlessCheck`
 
+<!-- If there are related PRs please add them here -->
+<!--
 #### Related PR  
 Related to PR #
-
-#### Additional Info
+-->
