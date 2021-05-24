@@ -32,7 +32,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
@@ -50,8 +49,6 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -525,96 +522,6 @@ public abstract class FileUtil {
       }
     }
     return true;
-  }
-
-  /**
-   * Get a temp file.
-   *
-   * @param file The base file for which to create a temp file.
-   * @return The temp file.
-   */
-  public static File getTempFile(@NonNull final File file, Context context) {
-    File extDir = context.getExternalFilesDir(null);
-    return new File(extDir, file.getName());
-  }
-
-  public static boolean mkfile(final File file, Context context) {
-    if (file == null) return false;
-    if (file.exists()) {
-      // nothing to create.
-      return !file.isDirectory();
-    }
-
-    // Try the normal way
-    try {
-      if (file.createNewFile()) {
-        return true;
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(file, context)) {
-      DocumentFile document = getDocumentFile(file.getParentFile(), true, context);
-      // getDocumentFile implicitly creates the directory.
-      try {
-        return document.createFile(
-                MimeTypes.getMimeType(file.getPath(), file.isDirectory()), file.getName())
-            != null;
-      } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-      }
-    }
-
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      try {
-        return MediaStoreHack.mkfile(context, file);
-      } catch (Exception e) {
-        return false;
-      }
-    }
-    return false;
-  }
-
-  public static boolean mktextfile(String data, String path, String fileName) {
-
-    File f =
-        new File(
-            path,
-            fileName
-                .concat(AppConstants.NEW_FILE_DELIMITER)
-                .concat(AppConstants.NEW_FILE_EXTENSION_TXT));
-    FileOutputStream out = null;
-    OutputStreamWriter outputWriter = null;
-    try {
-      if (f.createNewFile()) {
-        out = new FileOutputStream(f, false);
-        outputWriter = new OutputStreamWriter(out);
-        outputWriter.write(data);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (IOException io) {
-      Log.e(FileUtil.LOG, "Error writing file contents", io);
-      return false;
-    } finally {
-      try {
-        if (outputWriter != null) {
-          outputWriter.flush();
-          outputWriter.close();
-        }
-        if (out != null) {
-          out.flush();
-          out.close();
-        }
-      } catch (IOException e) {
-        Log.e(FileUtil.LOG, "Error closing file output stream", e);
-      }
-    }
   }
 
   /**

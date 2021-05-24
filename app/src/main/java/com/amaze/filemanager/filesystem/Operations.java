@@ -349,7 +349,7 @@ public class Operations {
               errorCallBack.launchSAF(file);
               return null;
             }
-            if (mode == 1 || mode == 0) FileUtil.mkfile(file.getFile(), context);
+            if (mode == 1 || mode == 0) MakeFileOperation.mkfile(file.getFile(), context);
             if (!file.exists() && rootMode) {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);

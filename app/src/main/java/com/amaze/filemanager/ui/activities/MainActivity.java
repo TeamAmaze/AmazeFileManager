@@ -88,6 +88,7 @@ import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -608,7 +609,7 @@ public class MainActivity extends PermissionsActivity
           AppConfig.getInstance()
               .runInBackground(
                   () ->
-                      FileUtil.mktextfile(
+                      MakeFileOperation.mktextfile(
                           data.toString(), mainFragment.getCurrentPath(), fileName));
           return null;
         });
