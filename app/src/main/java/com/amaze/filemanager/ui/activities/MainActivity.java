@@ -288,8 +288,7 @@ public class MainActivity extends PermissionsActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
 
-    // FIXME: Had to do this hack to test this! It was crashing due to null intent -> Any other way
-    // to fix it? Is this done anywhere else?
+    // Had to do this hack to test this! It was crashing due to null intent
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
