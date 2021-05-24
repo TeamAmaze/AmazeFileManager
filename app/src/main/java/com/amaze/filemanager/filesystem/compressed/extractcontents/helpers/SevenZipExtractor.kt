@@ -26,6 +26,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
@@ -87,12 +88,12 @@ class SevenZipExtractor(
     ) {
         val name = entry.name
         if (entry.isDirectory) {
-            FileUtil.mkdir(File(outputDir, name), context)
+            MakeDirectoryOperation.mkdir(File(outputDir, name), context)
             return
         }
         val outputFile = File(outputDir, name)
         if (!outputFile.parentFile.exists()) {
-            FileUtil.mkdir(outputFile.parentFile, context)
+            MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }
         FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
             BufferedOutputStream(fileOutputStream).runCatching {

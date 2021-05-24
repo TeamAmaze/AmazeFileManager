@@ -81,7 +81,6 @@ import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /** Utility class for helping parsing file systems. */
@@ -500,7 +499,7 @@ public abstract class FileUtil {
     }
 
     // Try the manual way, moving files individually.
-    if (!mkdir(target, context)) {
+    if (!MakeDirectoryOperation.mkdir(target, context)) {
       return false;
     }
 
@@ -537,72 +536,6 @@ public abstract class FileUtil {
   public static File getTempFile(@NonNull final File file, Context context) {
     File extDir = context.getExternalFilesDir(null);
     return new File(extDir, file.getName());
-  }
-
-  /**
-   * Create a folder. The folder may even be on external SD card for Kitkat.
-   *
-   * @deprecated use {@link #mkdirs(Context, HybridFile)}
-   * @param file The folder to be created.
-   * @return True if creation was successful.
-   */
-  public static boolean mkdir(final File file, Context context) {
-    if (file == null) return false;
-    if (file.exists()) {
-      // nothing to create.
-      return file.isDirectory();
-    }
-
-    // Try the normal way
-    if (file.mkdirs()) {
-      return true;
-    }
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(file, context)) {
-      DocumentFile document = getDocumentFile(file, true, context);
-      // getDocumentFile implicitly creates the directory.
-      return document.exists();
-    }
-
-    // Try the Kitkat workaround.
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      try {
-        return MediaStoreHack.mkdir(context, file);
-      } catch (IOException e) {
-        return false;
-      }
-    }
-
-    return false;
-  }
-
-  public static boolean mkdirs(Context context, HybridFile file) {
-    boolean isSuccessful = true;
-    switch (file.mode) {
-      case SMB:
-        try {
-          SmbFile smbFile = file.getSmbFile();
-          smbFile.mkdirs();
-        } catch (SmbException e) {
-          e.printStackTrace();
-          isSuccessful = false;
-        }
-        break;
-      case OTG:
-        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true);
-        isSuccessful = documentFile != null;
-        break;
-      case FILE:
-        isSuccessful = mkdir(new File(file.getPath()), context);
-        break;
-      default:
-        isSuccessful = true;
-        break;
-    }
-
-    return isSuccessful;
   }
 
   public static boolean mkfile(final File file, Context context) {

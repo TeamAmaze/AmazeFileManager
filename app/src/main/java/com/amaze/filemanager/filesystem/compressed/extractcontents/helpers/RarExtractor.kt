@@ -25,6 +25,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
@@ -124,12 +125,12 @@ class RarExtractor(
             throw IOException("Incorrect RAR FileHeader path!")
         }
         if (entry.isDirectory) {
-            FileUtil.mkdir(outputFile, context)
+            MakeDirectoryOperation.mkdir(outputFile, context)
             outputFile.setLastModified(entry.mTime.time)
             return
         }
         if (!outputFile.parentFile.exists()) {
-            FileUtil.mkdir(outputFile.parentFile, context)
+            MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
             outputFile.parentFile.setLastModified(entry.mTime.time)
         }
         /* junrar doesn't throw exceptions if wrong archive password is supplied, until extracted file

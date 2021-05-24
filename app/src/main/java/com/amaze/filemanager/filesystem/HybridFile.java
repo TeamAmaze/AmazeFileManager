@@ -1207,7 +1207,7 @@ public class HybridFile {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else FileUtil.mkdir(getFile(), context);
+    } else MakeDirectoryOperation.mkdir(getFile(), context);
   }
 
   public boolean delete(Context context, boolean rootmode)
