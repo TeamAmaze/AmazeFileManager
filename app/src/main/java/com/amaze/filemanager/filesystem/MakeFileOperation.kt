@@ -77,7 +77,7 @@ object MakeFileOperation {
                     )
                         != null
                     )
-            } catch (e: Exception) {
+            } catch (e: UnsupportedOperationException) {
                 e.printStackTrace()
                 false
             }
