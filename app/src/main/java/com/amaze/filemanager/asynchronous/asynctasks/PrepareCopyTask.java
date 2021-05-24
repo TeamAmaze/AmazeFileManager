@@ -20,9 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
-import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.COPY;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.MOVE;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COPY;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.MOVE;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -37,8 +37,8 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.databinding.CopyDialogBinding;
+import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.FolderState;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
