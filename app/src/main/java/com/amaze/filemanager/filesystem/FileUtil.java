@@ -26,12 +26,10 @@ import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PRE
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,11 +37,9 @@ import java.util.regex.Pattern;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
-import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
@@ -89,88 +85,6 @@ public abstract class FileUtil {
    * @return the default camera folder.
    */
   // TODO the function?
-
-  /**
-   * Copy a file. The target file may even be on external SD card for Kitkat.
-   *
-   * @param source The source file
-   * @param target The target file
-   * @return true if the copying was successful.
-   */
-  @SuppressWarnings("null")
-  private static boolean copyFile(final File source, final File target, Context context) {
-    FileInputStream inStream = null;
-    OutputStream outStream = null;
-    FileChannel inChannel = null;
-    FileChannel outChannel = null;
-    try {
-      inStream = new FileInputStream(source);
-
-      // First try the normal way
-      if (isWritable(target)) {
-        // standard way
-        outStream = new FileOutputStream(target);
-        inChannel = inStream.getChannel();
-        outChannel = ((FileOutputStream) outStream).getChannel();
-        inChannel.transferTo(0, inChannel.size(), outChannel);
-      } else {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          // Storage Access Framework
-          DocumentFile targetDocument = getDocumentFile(target, false, context);
-          outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-          // Workaround for Kitkat ext SD card
-          Uri uri = MediaStoreHack.getUriFromFile(target.getAbsolutePath(), context);
-          outStream = context.getContentResolver().openOutputStream(uri);
-        } else {
-          return false;
-        }
-
-        if (outStream != null) {
-          // Both for SAF and for Kitkat, write to output stream.
-          byte[] buffer = new byte[16384]; // MAGIC_NUMBER
-          int bytesRead;
-          while ((bytesRead = inStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, bytesRead);
-          }
-        }
-      }
-    } catch (Exception e) {
-      Log.e(
-          LOG,
-          "Error when copying file from "
-              + source.getAbsolutePath()
-              + " to "
-              + target.getAbsolutePath(),
-          e);
-      return false;
-    } finally {
-      try {
-        inStream.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-
-      try {
-        outStream.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-
-      try {
-        inChannel.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-
-      try {
-        outChannel.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-    }
-    return true;
-  }
 
   @Nullable
   public static OutputStream getOutputStream(final File target, Context context)
@@ -447,75 +361,6 @@ public abstract class FileUtil {
     }
 
     return !file.exists();
-  }
-
-  private static boolean rename(File f, String name, boolean root) throws ShellNotRunningException {
-    String newPath = f.getParent() + "/" + name;
-    if (f.getParentFile().canWrite()) {
-      return f.renameTo(new File(newPath));
-    } else if (root) {
-      RenameFileCommand.INSTANCE.renameFile(f.getPath(), newPath);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Rename a folder. In case of extSdCard in Kitkat, the old folder stays in place, but files are
-   * moved.
-   *
-   * @param source The source folder.
-   * @param target The target folder.
-   * @return true if the renaming was successful.
-   */
-  static boolean renameFolder(
-      @NonNull final File source, @NonNull final File target, Context context)
-      throws ShellNotRunningException {
-    // First try the normal rename.
-    if (rename(source, target.getName(), false)) {
-      return true;
-    }
-    if (target.exists()) {
-      return false;
-    }
-
-    // Try the Storage Access Framework if it is just a rename within the same parent folder.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && source.getParent().equals(target.getParent())
-        && FileUtil.isOnExtSdCard(source, context)) {
-      DocumentFile document = getDocumentFile(source, true, context);
-      if (document.renameTo(target.getName())) {
-        return true;
-      }
-    }
-
-    // Try the manual way, moving files individually.
-    if (!MakeDirectoryOperation.mkdir(target, context)) {
-      return false;
-    }
-
-    File[] sourceFiles = source.listFiles();
-
-    if (sourceFiles == null) {
-      return true;
-    }
-
-    for (File sourceFile : sourceFiles) {
-      String fileName = sourceFile.getName();
-      File targetFile = new File(target, fileName);
-      if (!copyFile(sourceFile, targetFile, context)) {
-        // stop on first error
-        return false;
-      }
-    }
-    // Only after successfully copying all files, delete files on source folder.
-    for (File sourceFile : sourceFiles) {
-      if (!deleteFile(sourceFile, context)) {
-        // stop on first error
-        return false;
-      }
-    }
-    return true;
   }
 
   /**
