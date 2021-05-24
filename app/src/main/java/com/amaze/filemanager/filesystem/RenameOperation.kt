@@ -63,6 +63,7 @@ object RenameOperation {
                 } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
                     val uri = MediaStoreHack.getUriFromFile(target.absolutePath, context)
+                    uri ?: return false
                     context.contentResolver.openOutputStream(uri)
                 } else {
                     return false
@@ -174,7 +175,7 @@ object RenameOperation {
         }
         // Only after successfully copying all files, delete files on source folder.
         for (sourceFile in sourceFiles) {
-            if (!FileUtil.deleteFile(sourceFile, context)) {
+            if (!DeleteOperation.deleteFile(sourceFile, context)) {
                 // stop on first error
                 return false
             }

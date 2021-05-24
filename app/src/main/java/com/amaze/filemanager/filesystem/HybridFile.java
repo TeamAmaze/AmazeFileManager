@@ -1242,7 +1242,7 @@ public class HybridFile {
         setMode(OpenMode.ROOT);
         DeleteFileCommand.INSTANCE.deleteFile(getPath());
       } else {
-        FileUtil.deleteFile(getFile(), context);
+        DeleteOperation.deleteFile(getFile(), context);
       }
     }
     return !exists();

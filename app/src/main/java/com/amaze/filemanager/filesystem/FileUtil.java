@@ -49,11 +49,9 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -327,89 +325,6 @@ public abstract class FileUtil {
   }
 
   /**
-   * Delete a file. May be even on external SD card.
-   *
-   * @param file the file to be deleted.
-   * @return True if successfully deleted.
-   */
-  static boolean deleteFile(@NonNull final File file, Context context) {
-    // First try the normal deletion.
-    if (file == null) return true;
-    boolean fileDelete = rmdir(file, context);
-    if (file.delete() || fileDelete) return true;
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(file, context)) {
-
-      DocumentFile document = getDocumentFile(file, false, context);
-      return document.delete();
-    }
-
-    // Try the Kitkat workaround.
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      ContentResolver resolver = context.getContentResolver();
-
-      try {
-        Uri uri = MediaStoreHack.getUriFromFile(file.getAbsolutePath(), context);
-        resolver.delete(uri, null, null);
-        return !file.exists();
-      } catch (Exception e) {
-        Log.e(LOG, "Error when deleting file " + file.getAbsolutePath(), e);
-        return false;
-      }
-    }
-
-    return !file.exists();
-  }
-
-  /**
-   * Delete a folder.
-   *
-   * @param file The folder name.
-   * @return true if successful.
-   */
-  private static boolean rmdir(@NonNull final File file, Context context) {
-    if (!file.exists()) return true;
-
-    File[] files = file.listFiles();
-    if (files != null && files.length > 0) {
-      for (File child : files) {
-        rmdir(child, context);
-      }
-    }
-
-    // Try the normal way
-    if (file.delete()) {
-      return true;
-    }
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      DocumentFile document = getDocumentFile(file, true, context);
-      if (document != null && document.delete()) {
-        return true;
-      }
-    }
-
-    // Try the Kitkat workaround.
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      ContentResolver resolver = context.getContentResolver();
-      ContentValues values = new ContentValues();
-      values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-      resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-      // Delete the created entry, such that content provider will delete the file.
-      resolver.delete(
-          MediaStore.Files.getContentUri("external"),
-          MediaStore.MediaColumns.DATA + "=?",
-          new String[] {file.getAbsolutePath()});
-    }
-
-    return !file.exists();
-  }
-
-  /**
    * Check if a file is readable.
    *
    * @param file The file
@@ -502,7 +417,7 @@ public abstract class FileUtil {
     boolean result = document.canWrite() && file.exists();
 
     // Ensure that the dummy file is not remaining.
-    deleteFile(file, c);
+    DeleteOperation.deleteFile(file, c);
     return result;
   }
 
