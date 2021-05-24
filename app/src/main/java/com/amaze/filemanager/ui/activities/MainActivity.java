@@ -1281,11 +1281,13 @@ public class MainActivity extends PermissionsActivity
         @Override
         public void onReceive(Context context, Intent intent) {
           if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_ATTACHED)) {
-            SingletonUsbOtg.getInstance().resetUsbOtgRoot();
             List<UsbOtgRepresentation> connectedDevices =
                 OTGUtil.getMassStorageDevicesConnected(MainActivity.this);
-            SingletonUsbOtg.getInstance().setConnectedDevice(connectedDevices.get(0));
-            drawer.refreshDrawer();
+            if (!connectedDevices.isEmpty()) {
+              SingletonUsbOtg.getInstance().resetUsbOtgRoot();
+              SingletonUsbOtg.getInstance().setConnectedDevice(connectedDevices.get(0));
+              drawer.refreshDrawer();
+            }
           } else if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
             SingletonUsbOtg.getInstance().resetUsbOtgRoot();
             drawer.refreshDrawer();
