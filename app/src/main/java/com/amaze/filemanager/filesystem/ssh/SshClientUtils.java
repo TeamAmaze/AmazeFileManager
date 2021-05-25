@@ -76,10 +76,9 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   public static final <T> T execute(@NonNull SshClientTemplate template) {
-    SSHClient client =
-        SshConnectionPool.getInstance().getConnection(extractBaseUriFrom(template.url));
+    SSHClient client = SshConnectionPool.INSTANCE.getConnection(extractBaseUriFrom(template.url));
     if (client == null) {
-      client = SshConnectionPool.getInstance().getConnection(template.url);
+      client = SshConnectionPool.INSTANCE.getConnection(template.url);
     }
     T retval = null;
     if (client != null) {

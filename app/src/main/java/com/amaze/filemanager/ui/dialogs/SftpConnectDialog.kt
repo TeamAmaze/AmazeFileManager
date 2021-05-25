@@ -64,7 +64,7 @@ import java.io.BufferedReader
 import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.security.PublicKey
-import java.util.*
+import java.util.Collections
 
 /** SSH/SFTP connection setup dialog.  */
 class SftpConnectDialog : DialogFragment() {
@@ -276,23 +276,22 @@ class SftpConnectDialog : DialogFragment() {
                             selectedParsedKeyPair
                         )
                     )?.let { sshHostKey ->
-                        SshConnectionPool.getInstance()
-                            .removeConnection(
-                                SshClientUtils.deriveSftpPathFrom(
-                                    hostname,
-                                    port,
-                                    defaultPath,
-                                    username,
-                                    password,
-                                    selectedParsedKeyPair
-                                )
-                            ) {
-                                reconnectToServerToVerifyHostFingerprint(
-                                    this,
-                                    sshHostKey,
-                                    edit
-                                )
-                            }
+                        SshConnectionPool.removeConnection(
+                            SshClientUtils.deriveSftpPathFrom(
+                                hostname,
+                                port,
+                                defaultPath,
+                                username,
+                                password,
+                                selectedParsedKeyPair
+                            )
+                        ) {
+                            reconnectToServerToVerifyHostFingerprint(
+                                this,
+                                sshHostKey,
+                                edit
+                            )
+                        }
                     } ?: firstConnectToServer(this, edit)
                 }
             }
@@ -304,7 +303,7 @@ class SftpConnectDialog : DialogFragment() {
         GetSshHostFingerprintTask(
             hostname,
             port
-        ) { taskResult: AsyncTaskResult<PublicKey?> ->
+        ) { taskResult: AsyncTaskResult<PublicKey> ->
             taskResult.result?.run {
                 val hostKeyFingerprint = SecurityUtils.getFingerprint(this)
                 val hostAndPort = StringBuilder(hostname).also {
@@ -351,7 +350,7 @@ class SftpConnectDialog : DialogFragment() {
     ) {
         connectionSettings.run {
             GetSshHostFingerprintTask(hostname, port) {
-                taskResult: AsyncTaskResult<PublicKey?> ->
+                taskResult: AsyncTaskResult<PublicKey> ->
                 taskResult.result?.let { hostKey ->
                     val hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey)
                     if (hostKeyFingerprint == sshHostKey) {
@@ -453,7 +452,7 @@ class SftpConnectDialog : DialogFragment() {
     ): Boolean {
         connectionSettings.run {
             return runCatching {
-                SshConnectionPool.getInstance().getConnection(
+                SshConnectionPool.getConnection(
                     hostname,
                     port,
                     hostKeyFingerprint,

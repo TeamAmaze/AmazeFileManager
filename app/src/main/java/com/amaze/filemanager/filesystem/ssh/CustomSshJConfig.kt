@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,26 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ssh;
+package com.amaze.filemanager.filesystem.ssh
 
-import java.security.Security;
-
-import net.schmizz.sshj.DefaultConfig;
+import net.schmizz.sshj.DefaultConfig
+import org.bouncycastle.jce.provider.BouncyCastleProvider
+import java.security.Security
 
 /**
- * sshj {@link net.schmizz.sshj.Config} for our own use.
+ * sshj [net.schmizz.sshj.Config] for our own use.
  *
- * <p>Borrowed from original AndroidConfig, but also use vanilla BouncyCastle from the start
+ *
+ * Borrowed from original AndroidConfig, but also use vanilla BouncyCastle from the start
  * altogether.
  *
  * @see net.schmizz.sshj.Config
+ *
  * @see net.schmizz.sshj.AndroidConfig
  */
-public class CustomSshJConfig extends DefaultConfig {
-  // This is where we different from the original AndroidConfig. Found it only work if we remove
-  // BouncyCastle bundled with Android before registering our BouncyCastle provider
-  public static void init() {
-    Security.removeProvider("BC");
-    Security.insertProviderAt(new org.bouncycastle.jce.provider.BouncyCastleProvider(), 0);
-  }
+class CustomSshJConfig : DefaultConfig() {
+
+    companion object {
+        @JvmStatic
+        /**
+         * This is where we different from the original AndroidConfig. Found it only work if we remove
+         * BouncyCastle bundled with Android before registering our BouncyCastle provider
+         */
+        fun init() {
+            Security.removeProvider("BC")
+            Security.insertProviderAt(BouncyCastleProvider(), 0)
+        }
+    }
 }

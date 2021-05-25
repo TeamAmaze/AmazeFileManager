@@ -1278,9 +1278,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               loadlist(path.toString().replace("%3D", "="), true, openMode);
             } else loadlist(home, false, OpenMode.FILE);
           } else if (OpenMode.SFTP.equals(openMode)) {
-            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/"))
+            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/")) {
               loadlist(home, false, OpenMode.FILE);
-            else loadlist(currentFile.getParent(getContext()), true, openMode);
+            } else {
+              loadlist(currentFile.getParent(getContext()), true, openMode);
+            }
           } else if (CURRENT_PATH.equals("/")
               || CURRENT_PATH.equals(home)
               || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
