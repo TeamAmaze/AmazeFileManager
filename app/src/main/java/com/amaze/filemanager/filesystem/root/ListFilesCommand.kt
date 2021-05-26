@@ -54,7 +54,9 @@ object ListFilesCommand : IRootCommand() {
             // we're rooted and we're trying to load file with superuser
             // we're at the root directories, superuser is required!
             val result = executeRootCommand(path, showHidden)
-            result.first.forEach {
+            result.first.filter {
+                !it.endsWith(".") && !it.endsWith("..")
+            }.forEach {
                 if (!it.contains("Permission denied")) {
                     parseStringForHybridFile(
                         it, path,
