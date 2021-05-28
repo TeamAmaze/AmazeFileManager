@@ -35,7 +35,7 @@ import android.os.Build.VERSION_CODES.M
 import android.os.Environment
 import android.os.IBinder
 import android.os.SystemClock
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.files.CryptUtil
