@@ -49,6 +49,7 @@ import com.google.android.material.snackbar.Snackbar;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.ActivityManager;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Typeface;
@@ -60,6 +61,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -72,6 +74,8 @@ import android.widget.ImageButton;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
+
+import androidx.documentfile.provider.DocumentFile;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
@@ -171,7 +175,16 @@ public class TextEditorActivity extends ThemedActivity
       mInput.setScrollY(index);
       if (savedInstanceState.getBoolean(KEY_MONOFONT)) mInput.setTypeface(mInputTypefaceMono);
     } else {
-      load();
+
+      if (isMemoryAvailable(DocumentFile.fromSingleUri(this, mFile.uri).length())) {
+        load();
+        Log.e("vishnu", "onCreate:" + "Load");
+      } else {
+        Log.e("vishnu", "onCreate:" + "IsLowOnMemory");
+        Toast.makeText(this, R.string.error_file_too_large, Toast.LENGTH_SHORT).show();
+        finish();
+        return;
+      }
     }
     initStatusBarResources(findViewById(R.id.texteditor));
   }
@@ -317,14 +330,6 @@ public class TextEditorActivity extends ThemedActivity
                   break;
                 case ReadFileTask.EXCEPTION_IO:
                   Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
-                      .show();
-                  finish();
-                  break;
-                case ReadFileTask.EXCEPTION_OOM:
-                  Toast.makeText(
-                          getApplicationContext(),
-                          R.string.error_file_too_large,
-                          Toast.LENGTH_SHORT)
                       .show();
                   finish();
                   break;
@@ -640,5 +645,23 @@ public class TextEditorActivity extends ThemedActivity
     for (BackgroundColorSpan colorSpan : colorSpans) {
       mInput.getText().removeSpan(colorSpan);
     }
+  }
+
+  private boolean isMemoryAvailable(long size) {
+    ActivityManager activityManager = (ActivityManager) this.getSystemService(ACTIVITY_SERVICE);
+    ActivityManager.MemoryInfo memoryInfo = new ActivityManager.MemoryInfo();
+    activityManager.getMemoryInfo(memoryInfo);
+
+    Log.e(
+        "vishnu",
+        "isMemoryAvailable() called with: "
+            + "size = ["
+            + size
+            + "]\n"
+            + "availMem = ["
+            + memoryInfo.availMem
+            + "]");
+
+    return memoryInfo.availMem > size;
   }
 }

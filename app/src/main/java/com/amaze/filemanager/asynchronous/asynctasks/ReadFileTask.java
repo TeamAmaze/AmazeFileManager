@@ -51,7 +51,6 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
   public static final int NORMAL = 0;
   public static final int EXCEPTION_STREAM_NOT_FOUND = -1;
   public static final int EXCEPTION_IO = -2;
-  public static final int EXCEPTION_OOM = -3;
 
   private ContentResolver contentResolver;
   private EditableFileAbstraction fileAbstraction;
@@ -127,9 +126,6 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
     } catch (IOException e) {
       e.printStackTrace();
       return new ReturnedValues(EXCEPTION_IO);
-    } catch (OutOfMemoryError e) {
-      e.printStackTrace();
-      return new ReturnedValues(EXCEPTION_OOM);
     }
 
     return new ReturnedValues(stringBuilder.toString(), cachedFile);
