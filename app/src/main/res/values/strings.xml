@@ -442,6 +442,7 @@
     <string name="smb_launch_error">You will need to copy this file to storage to open it</string>
     <string name="error_file_not_found">Error: File Not Found</string>
     <string name="error_io">I/O Error</string>
+    <string name="error_file_too_large">Error: File Too Large</string>
     <string name="medium_text">Medium Text</string>
     <string name="permission_read">Read</string>
     <string name="permission_write">Write</string>
