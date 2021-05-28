@@ -1024,6 +1024,10 @@ public class MainActivity extends PermissionsActivity
     // ActionBarDrawerToggle will take care of this.
     if (drawer.onOptionsItemSelected(item)) return true;
 
+    if (getFragmentAtFrame() instanceof AppsListFragment && item.getItemId() == R.id.sort) {
+      GeneralDialogCreation.showSortDialog((AppsListFragment) getFragmentAtFrame(), getAppTheme());
+    }
+
     // Handle action buttons
     executeWithMainFragment(
         mainFragment -> {
@@ -1060,12 +1064,6 @@ public class MainActivity extends PermissionsActivity
               break;
             case R.id.exit:
               finish();
-              break;
-            case R.id.sort:
-              Fragment fragment = getFragmentAtFrame();
-              if (fragment instanceof AppsListFragment) {
-                GeneralDialogCreation.showSortDialog((AppsListFragment) fragment, getAppTheme());
-              }
               break;
             case R.id.sortby:
               GeneralDialogCreation.showSortDialog(mainFragment, getAppTheme(), getPrefs());
