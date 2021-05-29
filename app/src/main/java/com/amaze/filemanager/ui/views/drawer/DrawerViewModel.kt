@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,29 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.drawer;
+package com.amaze.filemanager.ui.views.drawer
 
-public final class MenuMetadata {
+import android.view.MenuItem
+import androidx.lifecycle.ViewModel
+import java.util.*
 
-  public static final int ITEM_ENTRY = 1, ITEM_INTENT = 2;
+class DrawerViewModel : ViewModel() {
+    private val menuMetadataMap = HashMap<HasherOfMenuItem, MenuMetadata>()
 
-  public final int type;
-  public final String path;
-  public final OnClickListener onClickListener;
+    fun getDrawerMetadata(item: MenuItem): MenuMetadata {
+        return requireNotNull(menuMetadataMap[item.toNonLeaking()])
+    }
 
-  public MenuMetadata(String path) {
-    this.type = ITEM_ENTRY;
-    this.path = path;
-    this.onClickListener = null;
-  }
-
-  public MenuMetadata(OnClickListener onClickListener) {
-    this.type = ITEM_INTENT;
-    this.onClickListener = onClickListener;
-    this.path = null;
-  }
-
-  public interface OnClickListener {
-    void onClick();
-  }
+    fun putDrawerMetadata(item: MenuItem, metadata: MenuMetadata) {
+        menuMetadataMap[item.toNonLeaking()] = metadata
+    }
 }

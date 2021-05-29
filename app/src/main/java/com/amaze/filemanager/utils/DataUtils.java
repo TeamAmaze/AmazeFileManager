@@ -22,15 +22,12 @@ package com.amaze.filemanager.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.ui.views.drawer.HasherOfMenuItem;
-import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -68,7 +65,6 @@ public class DataUtils {
 
   private InvertedRadixTree<Integer> tree =
       new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-  private HashMap<HasherOfMenuItem, MenuMetadata> menuMetadataMap = new HashMap<>();
 
   private ArrayList<String[]> servers = new ArrayList<>();
   private ArrayList<String[]> books = new ArrayList<>();
@@ -151,7 +147,6 @@ public class DataUtils {
     history.clear();
     storages = new ArrayList<>();
     tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-    menuMetadataMap.clear();
     servers = new ArrayList<>();
     books = new ArrayList<>();
     accounts = new ArrayList<>();
@@ -409,20 +404,17 @@ public class DataUtils {
     this.storages = storages;
   }
 
-  public MenuMetadata getDrawerMetadata(MenuItem item) {
-    return menuMetadataMap.get(HasherOfMenuItem.Companion.convert(item));
-  }
-
-  public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
-    menuMetadataMap.put(HasherOfMenuItem.Companion.convert(item), metadata);
-    if (!TextUtils.isEmpty(metadata.path)) {
+  public boolean putDrawerPath(MenuItem item, String path) {
+    if (!TextUtils.isEmpty(path)) {
       try {
-        tree.put(metadata.path, item.getItemId());
+        tree.put(path, item.getItemId());
+        return true;
       } catch (IllegalStateException e) {
         Log.w(TAG, e);
-        menuMetadataMap.remove(HasherOfMenuItem.Companion.convert(item));
+        return false;
       }
     }
+    return false;
   }
 
   /**
