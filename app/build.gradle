@@ -1,7 +1,7 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.hiya.jacoco-android'
 apply plugin: 'com.akaita.android.easylauncher'
 
@@ -61,10 +61,6 @@ android {
 
     buildFeatures {
         viewBinding true
-    }
-
-    androidExtensions {
-        features = ["parcelize"]
     }
 
     lintOptions {
@@ -268,7 +264,7 @@ easylauncher {
 }
 
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "${jacocoVersion}"
 }
 
 tasks.withType(Test) {
