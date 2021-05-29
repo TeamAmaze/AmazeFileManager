@@ -33,7 +33,6 @@ import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
 import android.os.Bundle
 import android.os.Environment
-import android.preference.PreferenceManager
 import android.provider.Settings
 import android.text.InputType
 import android.text.Spanned
@@ -43,6 +42,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
