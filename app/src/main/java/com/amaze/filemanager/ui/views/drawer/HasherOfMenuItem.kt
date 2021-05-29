@@ -30,15 +30,7 @@ data class HasherOfMenuItem(
     val itemId: Int,
     val title: CharSequence,
     val ordering: Int
-) {
-    companion object {
-        @Deprecated(
-            "This is for use from Java until MenuItem.toNonLeaking() can be used",
-            ReplaceWith("item.toNonLeaking()")
-        )
-        fun convert(item: MenuItem) = item.toNonLeaking()
-    }
-}
+)
 
 fun MenuItem.toNonLeaking(): HasherOfMenuItem {
     return HasherOfMenuItem(groupId, itemId, title, order)
