@@ -29,6 +29,7 @@ import java.util.List;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.ui.views.drawer.HasherOfMenuItem;
 import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
@@ -67,8 +68,7 @@ public class DataUtils {
 
   private InvertedRadixTree<Integer> tree =
       new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-  private HashMap<MenuItem, MenuMetadata> menuMetadataMap =
-      new HashMap<>(); // Faster HashMap<Integer, V>
+  private HashMap<HasherOfMenuItem, MenuMetadata> menuMetadataMap = new HashMap<>();
 
   private ArrayList<String[]> servers = new ArrayList<>();
   private ArrayList<String[]> books = new ArrayList<>();
@@ -410,17 +410,17 @@ public class DataUtils {
   }
 
   public MenuMetadata getDrawerMetadata(MenuItem item) {
-    return menuMetadataMap.get(item);
+    return menuMetadataMap.get(HasherOfMenuItem.Companion.convert(item));
   }
 
   public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
-    menuMetadataMap.put(item, metadata);
+    menuMetadataMap.put(HasherOfMenuItem.Companion.convert(item), metadata);
     if (!TextUtils.isEmpty(metadata.path)) {
       try {
         tree.put(metadata.path, item.getItemId());
       } catch (IllegalStateException e) {
         Log.w(TAG, e);
-        menuMetadataMap.remove(item);
+        menuMetadataMap.remove(HasherOfMenuItem.Companion.convert(item));
       }
     }
   }
