@@ -69,6 +69,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.TagsHelper;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
@@ -116,7 +117,6 @@ import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.DataUtils.DataChangeListener;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -187,7 +187,6 @@ import io.reactivex.schedulers.Schedulers;
 
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
-        DataChangeListener,
         BookmarkCallback,
         SearchWorkerFragment.HelperCallbacks,
         CloudConnectionCallbacks,
@@ -314,7 +313,7 @@ public class MainActivity extends PermissionsActivity
     initialisePreferences();
     initializeInteractiveShell();
 
-    dataUtils.registerOnDataChangedListener(this);
+    dataUtils.registerOnDataChangedListener(new SaveOnDataUtilsChange(drawer));
 
     AppConfig.getInstance().setMainActivityContext(this);
 
@@ -1866,33 +1865,6 @@ public class MainActivity extends PermissionsActivity
       // grid.removePath(name, path, DataUtils.SMB);
       drawer.refreshDrawer();
     }
-  }
-
-  @Override
-  public void onHiddenFileAdded(String path) {
-    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
-  }
-
-  @Override
-  public void onHiddenFileRemoved(String path) {
-    utilsHandler.removeFromDatabase(new OperationData(UtilsHandler.Operation.HIDDEN, path));
-  }
-
-  @Override
-  public void onHistoryAdded(String path) {
-    utilsHandler.saveToDatabase(new OperationData(UtilsHandler.Operation.HISTORY, path));
-  }
-
-  @Override
-  public void onBookAdded(String[] path, boolean refreshdrawer) {
-    utilsHandler.saveToDatabase(
-        new OperationData(UtilsHandler.Operation.BOOKMARKS, path[0], path[1]));
-    if (refreshdrawer) drawer.refreshDrawer();
-  }
-
-  @Override
-  public void onHistoryCleared() {
-    utilsHandler.clearTable(UtilsHandler.Operation.HISTORY);
   }
 
   @Override
