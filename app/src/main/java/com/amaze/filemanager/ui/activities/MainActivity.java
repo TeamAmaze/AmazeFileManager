@@ -137,6 +137,7 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -326,7 +327,6 @@ public class MainActivity extends PermissionsActivity
     }
 
     checkForExternalIntent(intent);
-    setShortcutClickListener(intent);
 
     drawer.setDrawerIndicatorEnabled();
 
@@ -370,29 +370,6 @@ public class MainActivity extends PermissionsActivity
     initStatusBarResources(findViewById(R.id.drawer_layout));
   }
 
-  /** Handles the clicks from App Shortcuts */
-  private void setShortcutClickListener(Intent intent) {
-    // TODO:06/04/2021 -> Implement this!
-    if (null != intent && null != intent.getAction()) {
-      if ("com.amaze.filemanager.openQuickAccess".equals(intent.getAction())) {
-
-        Toast.makeText(mainActivity, "Opening Quick Access...", Toast.LENGTH_SHORT).show();
-
-      } else if ("com.amaze.filemanager.openRecent".equals(intent.getAction())) {
-
-        Toast.makeText(mainActivity, "Opening Recents...", Toast.LENGTH_SHORT).show();
-
-      } else if ("com.amaze.filemanager.openAppManager".equals(intent.getAction())) {
-
-        Toast.makeText(mainActivity, "Opening App Manager...", Toast.LENGTH_SHORT).show();
-
-      } else if ("com.amaze.filemanager.openFTPServer".equals(intent.getAction())) {
-
-        Toast.makeText(mainActivity, "Opening FTP Server...", Toast.LENGTH_SHORT).show();
-      }
-    }
-  }
-
   private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
     if (savedInstanceState == null) {
       if (openProcesses) {
@@ -428,7 +405,11 @@ public class MainActivity extends PermissionsActivity
             goToMain(null);
             FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
           }
-        } else {
+        } else if (null != intent
+            && null != intent.getAction()
+            && intent.getAction().startsWith("com.amaze.filemanager.open"))
+          setShortcutClickListener(intent);
+        else {
           goToMain(null);
         }
       }
@@ -550,8 +531,39 @@ public class MainActivity extends PermissionsActivity
         // disable screen rotation just for convenience purpose
         // TODO: Support screen rotation when saving a file
         Utils.disableScreenRotation(this);
-      }
+      } /*else if (intent.getAction().startsWith("com.amaze.filemanager.open"))
+        setShortcutClickListener(intent);*/
     }
+  }
+
+  /** Handles the clicks from App Shortcuts */
+  private void setShortcutClickListener(Intent intent) {
+
+    Log.d(
+        TAG, "setShortcutClickListener() called with:" + " action = [" + intent.getAction() + "]");
+
+    if ("com.amaze.filemanager.openQuickAccess".equals(intent.getAction())) {
+
+      // FIXME: This is always null
+      if (getCurrentMainFragment() != null)
+        getCurrentMainFragment().loadlist("5", false, OpenMode.CUSTOM);
+
+    } else if ("com.amaze.filemanager.openRecent".equals(intent.getAction())) {
+
+      // FIXME: This is always null
+      if (getCurrentMainFragment() != null)
+        getCurrentMainFragment().loadlist("6", false, OpenMode.CUSTOM);
+
+    } else if ("com.amaze.filemanager.openAppManager".equals(intent.getAction()))
+      getSupportFragmentManager()
+          .beginTransaction()
+          .add(R.id.content_frame, new AppsListFragment())
+          .commit();
+    else if ("com.amaze.filemanager.openFTPServer".equals(intent.getAction()))
+      getSupportFragmentManager()
+          .beginTransaction()
+          .add(R.id.content_frame, new FtpServerFragment())
+          .commit();
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
