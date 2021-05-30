@@ -26,6 +26,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
@@ -100,12 +101,12 @@ class ZipExtractor(
         }
         if (entry.isDirectory) {
             // zip entry is a directory, return after creating new directory
-            FileUtil.mkdir(outputFile, context)
+            MakeDirectoryOperation.mkdir(outputFile, context)
             return
         }
         if (!outputFile.parentFile.exists()) {
             // creating directory if not already exists
-            FileUtil.mkdir(outputFile.parentFile, context)
+            MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }
         val inputStream = BufferedInputStream(zipFile.getInputStream(entry))
         FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->

@@ -46,9 +46,9 @@ import javax.security.auth.x500.X500Principal;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PrefFrag;
 import com.amaze.filemanager.utils.ProgressHandler;
 
@@ -185,7 +185,7 @@ public class CryptUtil {
               targetDirectory.getPath(),
               sourceFile.getName(context).replace(CRYPT_EXTENSION, ""),
               sourceFile.isDirectory());
-      FileUtil.mkdirs(context, hFile);
+      MakeDirectoryOperation.mkdirs(context, hFile);
 
       sourceFile.forEachChildrenFile(
           context,
@@ -252,7 +252,7 @@ public class CryptUtil {
               targetDirectory.getPath(),
               targetFilename,
               sourceFile.isDirectory());
-      FileUtil.mkdirs(context, hFile);
+      MakeDirectoryOperation.mkdirs(context, hFile);
 
       sourceFile.forEachChildrenFile(
           context,

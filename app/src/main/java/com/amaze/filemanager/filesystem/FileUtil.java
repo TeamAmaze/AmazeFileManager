@@ -30,11 +30,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -50,8 +46,6 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -61,11 +55,8 @@ import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
-import android.os.ParcelFileDescriptor;
-import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
@@ -81,7 +72,6 @@ import io.reactivex.MaybeOnSubscribe;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
-import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /** Utility class for helping parsing file systems. */
@@ -500,7 +490,7 @@ public abstract class FileUtil {
     }
 
     // Try the manual way, moving files individually.
-    if (!mkdir(target, context)) {
+    if (!MakeDirectoryOperation.mkdir(target, context)) {
       return false;
     }
 
@@ -526,162 +516,6 @@ public abstract class FileUtil {
       }
     }
     return true;
-  }
-
-  /**
-   * Get a temp file.
-   *
-   * @param file The base file for which to create a temp file.
-   * @return The temp file.
-   */
-  public static File getTempFile(@NonNull final File file, Context context) {
-    File extDir = context.getExternalFilesDir(null);
-    return new File(extDir, file.getName());
-  }
-
-  /**
-   * Create a folder. The folder may even be on external SD card for Kitkat.
-   *
-   * @deprecated use {@link #mkdirs(Context, HybridFile)}
-   * @param file The folder to be created.
-   * @return True if creation was successful.
-   */
-  public static boolean mkdir(final File file, Context context) {
-    if (file == null) return false;
-    if (file.exists()) {
-      // nothing to create.
-      return file.isDirectory();
-    }
-
-    // Try the normal way
-    if (file.mkdirs()) {
-      return true;
-    }
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(file, context)) {
-      DocumentFile document = getDocumentFile(file, true, context);
-      // getDocumentFile implicitly creates the directory.
-      return document.exists();
-    }
-
-    // Try the Kitkat workaround.
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      try {
-        return MediaStoreHack.mkdir(context, file);
-      } catch (IOException e) {
-        return false;
-      }
-    }
-
-    return false;
-  }
-
-  public static boolean mkdirs(Context context, HybridFile file) {
-    boolean isSuccessful = true;
-    switch (file.mode) {
-      case SMB:
-        try {
-          SmbFile smbFile = file.getSmbFile();
-          smbFile.mkdirs();
-        } catch (SmbException e) {
-          e.printStackTrace();
-          isSuccessful = false;
-        }
-        break;
-      case OTG:
-        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true);
-        isSuccessful = documentFile != null;
-        break;
-      case FILE:
-        isSuccessful = mkdir(new File(file.getPath()), context);
-        break;
-      default:
-        isSuccessful = true;
-        break;
-    }
-
-    return isSuccessful;
-  }
-
-  public static boolean mkfile(final File file, Context context) {
-    if (file == null) return false;
-    if (file.exists()) {
-      // nothing to create.
-      return !file.isDirectory();
-    }
-
-    // Try the normal way
-    try {
-      if (file.createNewFile()) {
-        return true;
-      }
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(file, context)) {
-      DocumentFile document = getDocumentFile(file.getParentFile(), true, context);
-      // getDocumentFile implicitly creates the directory.
-      try {
-        return document.createFile(
-                MimeTypes.getMimeType(file.getPath(), file.isDirectory()), file.getName())
-            != null;
-      } catch (Exception e) {
-        e.printStackTrace();
-        return false;
-      }
-    }
-
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      try {
-        return MediaStoreHack.mkfile(context, file);
-      } catch (Exception e) {
-        return false;
-      }
-    }
-    return false;
-  }
-
-  public static boolean mktextfile(String data, String path, String fileName) {
-
-    File f =
-        new File(
-            path,
-            fileName
-                .concat(AppConstants.NEW_FILE_DELIMITER)
-                .concat(AppConstants.NEW_FILE_EXTENSION_TXT));
-    FileOutputStream out = null;
-    OutputStreamWriter outputWriter = null;
-    try {
-      if (f.createNewFile()) {
-        out = new FileOutputStream(f, false);
-        outputWriter = new OutputStreamWriter(out);
-        outputWriter.write(data);
-        return true;
-      } else {
-        return false;
-      }
-    } catch (IOException io) {
-      Log.e(FileUtil.LOG, "Error writing file contents", io);
-      return false;
-    } finally {
-      try {
-        if (outputWriter != null) {
-          outputWriter.flush();
-          outputWriter.close();
-        }
-        if (out != null) {
-          out.flush();
-          out.close();
-        }
-      } catch (IOException e) {
-        Log.e(FileUtil.LOG, "Error closing file output stream", e);
-      }
-    }
   }
 
   /**
@@ -974,55 +808,6 @@ public abstract class FileUtil {
   // Utility methods for Kitkat
 
   /**
-   * Copy a resource file into a private target directory, if the target does not yet exist.
-   * Required for the Kitkat workaround.
-   *
-   * @param resource The resource file.
-   * @param folderName The folder below app folder where the file is copied to.
-   * @param targetName The name of the target file.
-   * @return the dummy file.
-   */
-  private static File copyDummyFile(
-      final int resource, final String folderName, final String targetName, Context context)
-      throws IOException {
-    File externalFilesDir = context.getExternalFilesDir(folderName);
-    if (externalFilesDir == null) {
-      return null;
-    }
-    File targetFile = new File(externalFilesDir, targetName);
-
-    if (!targetFile.exists()) {
-      InputStream in = null;
-      OutputStream out = null;
-      try {
-        in = context.getResources().openRawResource(resource);
-        out = new FileOutputStream(targetFile);
-        byte[] buffer = new byte[4096]; // MAGIC_NUMBER
-        int bytesRead;
-        while ((bytesRead = in.read(buffer)) != -1) {
-          out.write(buffer, 0, bytesRead);
-        }
-      } finally {
-        if (in != null) {
-          try {
-            in.close();
-          } catch (IOException ex) {
-            // do nothing
-          }
-        }
-        if (out != null) {
-          try {
-            out.close();
-          } catch (IOException ex) {
-            // do nothing
-          }
-        }
-      }
-    }
-    return targetFile;
-  }
-
-  /**
    * Checks whether the target path exists or is writable
    *
    * @param f the target path
@@ -1058,281 +843,6 @@ public abstract class FileUtil {
       return 0;
     }
     return 0;
-  }
-
-  /**
-   * Copy the dummy image and dummy mp3 into the private folder, if not yet there. Required for the
-   * Kitkat workaround.
-   *
-   * @return the dummy mp3.
-   */
-  private static File copyDummyFiles(Context c) {
-    try {
-      copyDummyFile(R.mipmap.ic_launcher, "mkdirFiles", "albumart.jpg", c);
-      return copyDummyFile(R.raw.temptrack, "mkdirFiles", "temptrack.mp3", c);
-
-    } catch (IOException e) {
-      Log.e(LOG, "Could not copy dummy files.", e);
-      return null;
-    }
-  }
-
-  static class MediaFile {
-    private static final String NO_MEDIA = ".nomedia";
-    private static final String ALBUM_ART_URI = "content://media/external/audio/albumart";
-    private static final String[] ALBUM_PROJECTION = {
-      BaseColumns._ID, MediaStore.Audio.AlbumColumns.ALBUM_ID, "media_type"
-    };
-
-    private static File getExternalFilesDir(Context context) {
-
-      try {
-        Method method = Context.class.getMethod("getExternalFilesDir", String.class);
-        return (File) method.invoke(context, (String) null);
-      } catch (SecurityException ex) {
-        //   Log.d(Maui.LOG_TAG, "Unexpected reflection error.", ex);
-        return null;
-      } catch (NoSuchMethodException ex) {
-        //     Log.d(Maui.LOG_TAG, "Unexpected reflection error.", ex);
-        return null;
-      } catch (IllegalArgumentException ex) {
-        // Log.d(Maui.LOG_TAG, "Unexpected reflection error.", ex);
-        return null;
-      } catch (IllegalAccessException ex) {
-        // Log.d(Maui.LOG_TAG, "Unexpected reflection error.", ex);
-        return null;
-      } catch (InvocationTargetException ex) {
-        // Log.d(Maui.LOG_TAG, "Unexpected reflection error.", ex);
-        return null;
-      }
-    }
-
-    private final File file;
-    private final Context context;
-    private final ContentResolver contentResolver;
-    Uri filesUri;
-
-    MediaFile(Context context, File file) {
-      this.file = file;
-      this.context = context;
-      contentResolver = context.getContentResolver();
-      filesUri = MediaStore.Files.getContentUri("external");
-    }
-
-    /**
-     * Deletes the file. Returns true if the file has been successfully deleted or otherwise does
-     * not exist. This operation is not recursive.
-     */
-    public boolean delete() {
-
-      if (!file.exists()) {
-        return true;
-      }
-
-      boolean directory = file.isDirectory();
-      if (directory) {
-        // Verify directory does not contain any files/directories within it.
-        String[] files = file.list();
-        if (files != null && files.length > 0) {
-          return false;
-        }
-      }
-
-      String where = MediaStore.MediaColumns.DATA + "=?";
-      String[] selectionArgs = new String[] {file.getAbsolutePath()};
-
-      // Delete the entry from the media database. This will actually delete media files (images,
-      // audio, and video).
-      contentResolver.delete(filesUri, where, selectionArgs);
-
-      if (file.exists()) {
-        // If the file is not a media file, create a new entry suggesting that this location is an
-        // image, even
-        // though it is not.
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-        contentResolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-        // Delete the created entry, such that content provider will delete the file.
-        contentResolver.delete(filesUri, where, selectionArgs);
-      }
-
-      return !file.exists();
-    }
-
-    public File getFile() {
-      return file;
-    }
-
-    private int getTemporaryAlbumId() {
-      final File temporaryTrack;
-      try {
-        temporaryTrack = installTemporaryTrack();
-      } catch (IOException ex) {
-        return 0;
-      }
-
-      final String[] selectionArgs = {temporaryTrack.getAbsolutePath()};
-      Cursor cursor =
-          contentResolver.query(
-              filesUri, ALBUM_PROJECTION, MediaStore.MediaColumns.DATA + "=?", selectionArgs, null);
-      if (cursor == null || !cursor.moveToFirst()) {
-        if (cursor != null) {
-          cursor.close();
-          cursor = null;
-        }
-        ContentValues values = new ContentValues();
-        values.put(MediaStore.MediaColumns.DATA, temporaryTrack.getAbsolutePath());
-        values.put(MediaStore.MediaColumns.TITLE, "{MediaWrite Workaround}");
-        values.put(MediaStore.MediaColumns.SIZE, temporaryTrack.length());
-        values.put(MediaStore.MediaColumns.MIME_TYPE, "audio/mpeg");
-        values.put(MediaStore.Audio.AudioColumns.IS_MUSIC, true);
-        contentResolver.insert(filesUri, values);
-      }
-      cursor =
-          contentResolver.query(
-              filesUri, ALBUM_PROJECTION, MediaStore.MediaColumns.DATA + "=?", selectionArgs, null);
-      if (cursor == null) {
-        return 0;
-      }
-      if (!cursor.moveToFirst()) {
-        cursor.close();
-        return 0;
-      }
-      int id = cursor.getInt(0);
-      int albumId = cursor.getInt(1);
-      int mediaType = cursor.getInt(2);
-      cursor.close();
-
-      ContentValues values = new ContentValues();
-      boolean updateRequired = false;
-      if (albumId == 0) {
-        values.put(MediaStore.Audio.AlbumColumns.ALBUM_ID, 13371337);
-        updateRequired = true;
-      }
-      if (mediaType != 2) {
-        values.put("media_type", 2);
-        updateRequired = true;
-      }
-      if (updateRequired) {
-        contentResolver.update(filesUri, values, BaseColumns._ID + "=" + id, null);
-      }
-      cursor =
-          contentResolver.query(
-              filesUri, ALBUM_PROJECTION, MediaStore.MediaColumns.DATA + "=?", selectionArgs, null);
-      if (cursor == null) {
-        return 0;
-      }
-
-      try {
-        if (!cursor.moveToFirst()) {
-          return 0;
-        }
-        return cursor.getInt(1);
-      } finally {
-        cursor.close();
-      }
-    }
-
-    private File installTemporaryTrack() throws IOException {
-      File externalFilesDir = context.getExternalFilesDir(null);
-      if (externalFilesDir == null) {
-        return null;
-      }
-      File temporaryTrack = new File(externalFilesDir, "temptrack.mp3");
-      if (!temporaryTrack.exists()) {
-        InputStream in = null;
-        OutputStream out = null;
-        try {
-          in = context.getResources().openRawResource(R.raw.temptrack);
-          out = new FileOutputStream(temporaryTrack);
-          byte[] buffer = new byte[4096];
-          int bytesRead;
-          while ((bytesRead = in.read(buffer)) != -1) {
-            out.write(buffer, 0, bytesRead);
-          }
-        } finally {
-          if (in != null) {
-            try {
-              in.close();
-            } catch (IOException ex) {
-              return null;
-            }
-          }
-          if (out != null) {
-            try {
-              out.close();
-            } catch (IOException ex) {
-              return null;
-            }
-          }
-        }
-      }
-      return temporaryTrack;
-    }
-
-    public boolean mkdir() throws IOException {
-      if (file.exists()) {
-        return file.isDirectory();
-      }
-
-      File tmpFile = new File(file, ".MediaWriteTemp");
-      int albumId = getTemporaryAlbumId();
-
-      if (albumId == 0) {
-        throw new IOException("Fail");
-      }
-
-      Uri albumUri = Uri.parse(ALBUM_ART_URI + '/' + albumId);
-      ContentValues values = new ContentValues();
-      values.put(MediaStore.MediaColumns.DATA, tmpFile.getAbsolutePath());
-
-      if (contentResolver.update(albumUri, values, null, null) == 0) {
-        values.put(MediaStore.Audio.AlbumColumns.ALBUM_ID, albumId);
-        contentResolver.insert(Uri.parse(ALBUM_ART_URI), values);
-      }
-
-      try {
-        ParcelFileDescriptor fd = contentResolver.openFileDescriptor(albumUri, "r");
-        fd.close();
-      } finally {
-        MediaFile tmpMediaFile = new MediaFile(context, tmpFile);
-        tmpMediaFile.delete();
-      }
-
-      return file.exists();
-    }
-
-    /** Returns an OutputStream to write to the file. The file will be truncated immediately. */
-    public OutputStream write(long size) throws IOException {
-
-      if (NO_MEDIA.equals(file.getName().trim())) {
-        throw new IOException("Unable to create .nomedia file via media content provider API.");
-      }
-
-      if (file.exists() && file.isDirectory()) {
-        throw new IOException("File exists and is a directory.");
-      }
-
-      // Delete any existing entry from the media database.
-      // This may also delete the file (for media types), but that is irrelevant as it will be
-      // truncated momentarily in any case.
-      String where = MediaStore.MediaColumns.DATA + "=?";
-      String[] selectionArgs = new String[] {file.getAbsolutePath()};
-      contentResolver.delete(filesUri, where, selectionArgs);
-
-      ContentValues values = new ContentValues();
-      values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-      values.put(MediaStore.MediaColumns.SIZE, size);
-      Uri uri = contentResolver.insert(filesUri, values);
-
-      if (uri == null) {
-        // Should not occur.
-        throw new IOException("Internal error.");
-      }
-
-      return contentResolver.openOutputStream(uri);
-    }
   }
 
   /**

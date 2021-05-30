@@ -56,6 +56,7 @@ import android.util.Log;
  * @author Jared Rummler <jared.rummler@gmail.com>
  */
 public class MediaStoreHack {
+  private static final String TAG = "MediaStoreHack";
 
   private static final String ALBUM_ART_URI = "content://media/external/audio/albumart";
 
@@ -161,7 +162,7 @@ public class MediaStoreHack {
     try {
       temporaryTrack = installTemporaryTrack(context);
     } catch (final IOException ex) {
-      Log.w("MediaFile", "Error installing temporary track.", ex);
+      Log.w(MediaStoreHack.TAG, "Error installing temporary track.", ex);
       return 0;
     }
     final Uri filesUri = MediaStore.Files.getContentUri("external");

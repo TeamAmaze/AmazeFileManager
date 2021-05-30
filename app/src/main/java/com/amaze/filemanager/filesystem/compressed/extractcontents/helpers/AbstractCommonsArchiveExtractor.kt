@@ -25,6 +25,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import org.apache.commons.compress.archivers.ArchiveEntry
@@ -86,12 +87,12 @@ abstract class AbstractCommonsArchiveExtractor(
         outputDir: String
     ) {
         if (entry.isDirectory) {
-            FileUtil.mkdir(File(outputDir, entry.name), context)
+            MakeDirectoryOperation.mkdir(File(outputDir, entry.name), context)
             return
         }
         val outputFile = File(outputDir, entry.name)
         if (!outputFile.parentFile.exists()) {
-            FileUtil.mkdir(outputFile.parentFile, context)
+            MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }
         FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
             BufferedOutputStream(fileOutputStream).run {
