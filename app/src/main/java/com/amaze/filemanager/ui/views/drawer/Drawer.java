@@ -73,6 +73,7 @@ import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
+import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -90,8 +91,8 @@ import androidx.annotation.StringRes;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.legacy.app.ActionBarDrawerToggle;
+import androidx.lifecycle.ViewModelProvider;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 26/12/2017, at 23:08. */
 public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public static final int image_selector_request_code = 31;
@@ -577,21 +578,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
-    if (BuildConfig.DEBUG && menu.findItem(order) != null)
-      throw new IllegalStateException("Item already id exists: " + order);
-
-    MenuItem item = menu.add(group, order, order, text).setIcon(icon);
-    dataUtils.putDrawerMetadata(item, meta);
-    if (actionViewIcon != null) {
-      item.setActionView(R.layout.layout_draweractionview);
-
-      ImageView imageView = item.getActionView().findViewById(R.id.imageButton);
-      imageView.setImageResource(actionViewIcon);
-      if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
-        imageView.setColorFilter(Color.WHITE);
-      }
-      item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
-    }
+    addNewItem(menu, group, order, mainActivity.getString(text), meta, icon, actionViewIcon);
   }
 
   private void addNewItem(
@@ -605,7 +592,16 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     if (BuildConfig.DEBUG && menu.findItem(order) != null)
       throw new IllegalStateException("Item already id exists: " + order);
     MenuItem item = menu.add(group, order, order, text).setIcon(icon);
-    dataUtils.putDrawerMetadata(item, meta);
+    if (TextUtils.isEmpty(meta.path)) {
+      DrawerViewModel model = new ViewModelProvider(mainActivity).get(DrawerViewModel.class);
+      model.putDrawerMetadata(item, meta);
+    } else {
+      boolean success = dataUtils.putDrawerPath(item, meta.path);
+      if (success) {
+        DrawerViewModel model = new ViewModelProvider(mainActivity).get(DrawerViewModel.class);
+        model.putDrawerMetadata(item, meta);
+      }
+    }
 
     if (actionViewIcon != null) {
       item.setActionView(R.layout.layout_draweractionview);
@@ -694,8 +690,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     actionViewStateManager.deselectCurrentActionView();
     actionViewStateManager.selectActionView(item);
 
+    DrawerViewModel model = new ViewModelProvider(mainActivity).get(DrawerViewModel.class);
     String title = item.getTitle().toString();
-    MenuMetadata meta = dataUtils.getDrawerMetadata(item);
+    MenuMetadata meta = model.getDrawerMetadata(item);
 
     switch (meta.type) {
       case MenuMetadata.ITEM_ENTRY:
@@ -744,8 +741,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   }
 
   public void onNavigationItemActionClick(MenuItem item) {
+    DrawerViewModel model = new ViewModelProvider(mainActivity).get(DrawerViewModel.class);
     String title = item.getTitle().toString();
-    MenuMetadata meta = dataUtils.getDrawerMetadata(item);
+    MenuMetadata meta = model.getDrawerMetadata(item);
     String path = meta.path;
 
     switch (item.getGroupId()) {

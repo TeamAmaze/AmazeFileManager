@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,29 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui.views.drawer;
+package com.amaze.filemanager.ui.views.drawer
 
-public final class MenuMetadata {
+import android.view.MenuItem
 
-  public static final int ITEM_ENTRY = 1, ITEM_INTENT = 2;
+/**
+ * This is a sort of wrapper, only used to provide a hash for MenuItems
+ */
+data class HasherOfMenuItem(
+    val groupId: Int,
+    val itemId: Int,
+    val title: CharSequence,
+    val ordering: Int
+)
 
-  public final int type;
-  public final String path;
-  public final OnClickListener onClickListener;
-
-  public MenuMetadata(String path) {
-    this.type = ITEM_ENTRY;
-    this.path = path;
-    this.onClickListener = null;
-  }
-
-  public MenuMetadata(OnClickListener onClickListener) {
-    this.type = ITEM_INTENT;
-    this.onClickListener = onClickListener;
-    this.path = null;
-  }
-
-  public interface OnClickListener {
-    void onClick();
-  }
+fun MenuItem.toNonLeaking(): HasherOfMenuItem {
+    return HasherOfMenuItem(groupId, itemId, title, order)
 }
