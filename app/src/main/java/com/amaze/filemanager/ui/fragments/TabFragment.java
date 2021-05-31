@@ -184,6 +184,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
   @Override
   public void onDestroyView() {
+    indicator = null; // Free the strong reference
     sharedPrefs
         .edit()
         .putInt(PreferencesConstants.PREFERENCE_CURRENT_TAB, MainActivity.currentTab)
