@@ -91,8 +91,8 @@ public class AppsListFragment extends ListFragment
 
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     isAscending =
-        sharedPreferences.getBoolean(PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING, true);
-    sortby = sharedPreferences.getInt(PreferencesConstants.PREFERENCE_APPLIST_SORTBY, 0);
+        sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
+    sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
 
     getListView().setDivider(null);
     if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
