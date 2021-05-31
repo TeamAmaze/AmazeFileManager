@@ -99,7 +99,7 @@ public final class AppDataParcelable implements Parcelable {
     private final int sort;
 
     public AppDataSorter(int sort, boolean isAscending) {
-      this.asc = isAscending? 1:-1;
+      this.asc = isAscending ? 1 : -1;
       this.sort = sort;
     }
 

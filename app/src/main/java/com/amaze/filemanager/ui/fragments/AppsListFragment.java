@@ -20,6 +20,12 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_SORTBY;
+
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
@@ -46,12 +52,6 @@ import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.preference.PreferenceManager;
-
-import java.lang.ref.WeakReference;
-import java.util.Objects;
-
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_SORTBY;
 
 public class AppsListFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
@@ -90,20 +90,21 @@ public class AppsListFragment extends ListFragment
     mainActivity.supportInvalidateOptionsMenu();
 
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    isAscending = sharedPreferences.getBoolean(PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING, true);
+    isAscending =
+        sharedPreferences.getBoolean(PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING, true);
     sortby = sharedPreferences.getInt(PreferencesConstants.PREFERENCE_APPLIST_SORTBY, 0);
 
     getListView().setDivider(null);
     if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
       getActivity()
-              .getWindow()
-              .getDecorView()
-              .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+          .getWindow()
+          .getDecorView()
+          .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
     } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
       getActivity()
-              .getWindow()
-              .getDecorView()
-              .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+          .getWindow()
+          .getDecorView()
+          .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
     }
 
     modelProvider = new AppsAdapterPreloadModel(this, false);
@@ -123,7 +124,7 @@ public class AppsListFragment extends ListFragment
             modelProvider,
             sizeProvider,
             R.layout.rowlayout,
-                sharedPreferences,
+            sharedPreferences,
             false);
 
     getListView().setOnScrollListener(preloader);
@@ -146,7 +147,7 @@ public class AppsListFragment extends ListFragment
 
   public void showSortDialog(AppTheme appTheme) {
     final MainActivity mainActivity = (MainActivity) getActivity();
-    if(mainActivity == null) {
+    if (mainActivity == null) {
       return;
     }
 
@@ -154,32 +155,37 @@ public class AppsListFragment extends ListFragment
 
     int accentColor = mainActivity.getAccent();
     String[] sort = getResources().getStringArray(R.array.sortbyApps);
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-    builder.theme(appTheme.getMaterialDialogTheme());
-    builder.items(sort).itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true);
-    builder.negativeText(R.string.ascending).positiveColor(accentColor);
-    builder.positiveText(R.string.descending).negativeColor(accentColor);
-    builder.onNegative((dialog, which) -> {
-      final AppsListFragment $this = appsListFragment.get();
-      if ($this == null) {
-        return;
-      }
+    MaterialDialog.Builder builder =
+        new MaterialDialog.Builder(mainActivity)
+            .theme(appTheme.getMaterialDialogTheme())
+            .items(sort)
+            .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
+            .negativeText(R.string.ascending)
+            .positiveColor(accentColor)
+            .positiveText(R.string.descending)
+            .negativeColor(accentColor)
+            .onNegative(
+                (dialog, which) -> {
+                  final AppsListFragment $this = appsListFragment.get();
+                  if ($this == null) {
+                    return;
+                  }
 
-      $this.saveAndReload(dialog.getSelectedIndex(), true);
-      dialog.dismiss();
-    });
+                  $this.saveAndReload(dialog.getSelectedIndex(), true);
+                  dialog.dismiss();
+                })
+            .onPositive(
+                (dialog, which) -> {
+                  final AppsListFragment $this = appsListFragment.get();
+                  if ($this == null) {
+                    return;
+                  }
 
-    builder.onPositive((dialog, which) -> {
-      final AppsListFragment $this = appsListFragment.get();
-      if ($this == null) {
-        return;
-      }
+                  $this.saveAndReload(dialog.getSelectedIndex(), false);
+                  dialog.dismiss();
+                })
+            .title(R.string.sort_by);
 
-      $this.saveAndReload(dialog.getSelectedIndex(), false);
-      dialog.dismiss();
-    });
-
-    builder.title(R.string.sort_by);
     builder.build().show();
   }
 
@@ -187,11 +193,11 @@ public class AppsListFragment extends ListFragment
     sortby = newSortby;
     isAscending = newIsAscending;
 
-
-    sharedPreferences.edit()
-            .putBoolean(PREFERENCE_APPLIST_ISASCENDING, newIsAscending)
-            .putInt(PREFERENCE_APPLIST_SORTBY, newSortby)
-            .apply();
+    sharedPreferences
+        .edit()
+        .putBoolean(PREFERENCE_APPLIST_ISASCENDING, newIsAscending)
+        .putInt(PREFERENCE_APPLIST_SORTBY, newSortby)
+        .apply();
 
     LoaderManager.getInstance(this).restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, this);
   }
@@ -204,7 +210,7 @@ public class AppsListFragment extends ListFragment
 
   @Override
   public void onLoadFinished(
-          @NonNull Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
+      @NonNull Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
     // set new data to adapter
     adapter.setData(data.first);
     modelProvider.setItemList(data.second);

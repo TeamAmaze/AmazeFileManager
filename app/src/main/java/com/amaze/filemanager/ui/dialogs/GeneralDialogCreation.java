@@ -22,8 +22,6 @@ package com.amaze.filemanager.ui.dialogs;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.filesystem.files.FileUtils.toHybridFileArrayList;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_SORTBY;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
 import java.io.File;
@@ -65,7 +63,6 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -114,7 +111,6 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
-import androidx.loader.app.LoaderManager;
 import androidx.preference.PreferenceManager;
 
 /**
