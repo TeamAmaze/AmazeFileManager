@@ -73,6 +73,12 @@ public class AppsListFragment extends ListFragment
   }
 
   @Override
+  public void onDestroyView() {
+    super.onDestroyView();
+    vl = null;
+  }
+
+  @Override
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     setRetainInstance(true);
