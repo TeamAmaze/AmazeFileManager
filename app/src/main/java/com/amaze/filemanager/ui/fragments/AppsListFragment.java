@@ -49,14 +49,14 @@ import androidx.preference.PreferenceManager;
 public class AppsListFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
 
-  UtilitiesProvider utilsProvider;
-  AppsListFragment app = this;
-  AppsAdapter adapter;
+  private UtilitiesProvider utilsProvider;
+  private AppsListFragment app = this;
+  private AppsAdapter adapter;
 
   public SharedPreferences Sp;
-  ListView vl;
-  int asc, sortby;
-  int index = 0, top = 0;
+  private ListView vl;
+  private int asc, sortby;
+  private int index = 0, top = 0;
 
   public static final int ID_LOADER_APP_LIST = 0;
 
