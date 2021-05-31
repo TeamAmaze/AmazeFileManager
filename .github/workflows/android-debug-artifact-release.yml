@@ -16,7 +16,7 @@ jobs:
           java-version: 11
       - name: Build with Gradle
         run: |
-          bash ./gradlew assembleDebug --stacktrace --build-cache | grep -vE 'Transform|Build cache is disabled|history is available.'
+          bash ./gradlew assembleDebug --stacktrace --build-cache | grep -vE 'Transform|history is available.'
         env:
           TZ: UTC
       - name: Upload fdroid artifact
