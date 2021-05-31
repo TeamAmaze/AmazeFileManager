@@ -34,7 +34,6 @@ import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.GlideConstants;
@@ -90,8 +89,7 @@ public class AppsListFragment extends ListFragment
     mainActivity.supportInvalidateOptionsMenu();
 
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    isAscending =
-        sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
+    isAscending = sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
     sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
 
     getListView().setDivider(null);
