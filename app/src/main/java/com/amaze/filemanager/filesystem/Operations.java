@@ -526,7 +526,7 @@ public class Operations {
                 errorCallBack.launchSAF(oldFile, newFile);
               } else if (mode == 1 || mode == 0) {
                 try {
-                  FileUtil.renameFolder(file, file1, context);
+                  RenameOperation.renameFolder(file, file1, context);
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();
                 }

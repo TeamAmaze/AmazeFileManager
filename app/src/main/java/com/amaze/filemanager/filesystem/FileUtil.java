@@ -26,12 +26,10 @@ import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PRE
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -39,11 +37,9 @@ import java.util.regex.Pattern;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
-import com.amaze.filemanager.filesystem.root.RenameFileCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
@@ -53,11 +49,9 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -89,88 +83,6 @@ public abstract class FileUtil {
    * @return the default camera folder.
    */
   // TODO the function?
-
-  /**
-   * Copy a file. The target file may even be on external SD card for Kitkat.
-   *
-   * @param source The source file
-   * @param target The target file
-   * @return true if the copying was successful.
-   */
-  @SuppressWarnings("null")
-  private static boolean copyFile(final File source, final File target, Context context) {
-    FileInputStream inStream = null;
-    OutputStream outStream = null;
-    FileChannel inChannel = null;
-    FileChannel outChannel = null;
-    try {
-      inStream = new FileInputStream(source);
-
-      // First try the normal way
-      if (isWritable(target)) {
-        // standard way
-        outStream = new FileOutputStream(target);
-        inChannel = inStream.getChannel();
-        outChannel = ((FileOutputStream) outStream).getChannel();
-        inChannel.transferTo(0, inChannel.size(), outChannel);
-      } else {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-          // Storage Access Framework
-          DocumentFile targetDocument = getDocumentFile(target, false, context);
-          outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
-        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-          // Workaround for Kitkat ext SD card
-          Uri uri = MediaStoreHack.getUriFromFile(target.getAbsolutePath(), context);
-          outStream = context.getContentResolver().openOutputStream(uri);
-        } else {
-          return false;
-        }
-
-        if (outStream != null) {
-          // Both for SAF and for Kitkat, write to output stream.
-          byte[] buffer = new byte[16384]; // MAGIC_NUMBER
-          int bytesRead;
-          while ((bytesRead = inStream.read(buffer)) != -1) {
-            outStream.write(buffer, 0, bytesRead);
-          }
-        }
-      }
-    } catch (Exception e) {
-      Log.e(
-          LOG,
-          "Error when copying file from "
-              + source.getAbsolutePath()
-              + " to "
-              + target.getAbsolutePath(),
-          e);
-      return false;
-    } finally {
-      try {
-        inStream.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-
-      try {
-        outStream.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-
-      try {
-        inChannel.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-
-      try {
-        outChannel.close();
-      } catch (Exception e) {
-        // ignore exception
-      }
-    }
-    return true;
-  }
 
   @Nullable
   public static OutputStream getOutputStream(final File target, Context context)
@@ -413,158 +325,6 @@ public abstract class FileUtil {
   }
 
   /**
-   * Delete a file. May be even on external SD card.
-   *
-   * @param file the file to be deleted.
-   * @return True if successfully deleted.
-   */
-  static boolean deleteFile(@NonNull final File file, Context context) {
-    // First try the normal deletion.
-    if (file == null) return true;
-    boolean fileDelete = rmdir(file, context);
-    if (file.delete() || fileDelete) return true;
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(file, context)) {
-
-      DocumentFile document = getDocumentFile(file, false, context);
-      return document.delete();
-    }
-
-    // Try the Kitkat workaround.
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      ContentResolver resolver = context.getContentResolver();
-
-      try {
-        Uri uri = MediaStoreHack.getUriFromFile(file.getAbsolutePath(), context);
-        resolver.delete(uri, null, null);
-        return !file.exists();
-      } catch (Exception e) {
-        Log.e(LOG, "Error when deleting file " + file.getAbsolutePath(), e);
-        return false;
-      }
-    }
-
-    return !file.exists();
-  }
-
-  private static boolean rename(File f, String name, boolean root) throws ShellNotRunningException {
-    String newPath = f.getParent() + "/" + name;
-    if (f.getParentFile().canWrite()) {
-      return f.renameTo(new File(newPath));
-    } else if (root) {
-      RenameFileCommand.INSTANCE.renameFile(f.getPath(), newPath);
-      return true;
-    }
-    return false;
-  }
-
-  /**
-   * Rename a folder. In case of extSdCard in Kitkat, the old folder stays in place, but files are
-   * moved.
-   *
-   * @param source The source folder.
-   * @param target The target folder.
-   * @return true if the renaming was successful.
-   */
-  static boolean renameFolder(
-      @NonNull final File source, @NonNull final File target, Context context)
-      throws ShellNotRunningException {
-    // First try the normal rename.
-    if (rename(source, target.getName(), false)) {
-      return true;
-    }
-    if (target.exists()) {
-      return false;
-    }
-
-    // Try the Storage Access Framework if it is just a rename within the same parent folder.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && source.getParent().equals(target.getParent())
-        && FileUtil.isOnExtSdCard(source, context)) {
-      DocumentFile document = getDocumentFile(source, true, context);
-      if (document.renameTo(target.getName())) {
-        return true;
-      }
-    }
-
-    // Try the manual way, moving files individually.
-    if (!MakeDirectoryOperation.mkdir(target, context)) {
-      return false;
-    }
-
-    File[] sourceFiles = source.listFiles();
-
-    if (sourceFiles == null) {
-      return true;
-    }
-
-    for (File sourceFile : sourceFiles) {
-      String fileName = sourceFile.getName();
-      File targetFile = new File(target, fileName);
-      if (!copyFile(sourceFile, targetFile, context)) {
-        // stop on first error
-        return false;
-      }
-    }
-    // Only after successfully copying all files, delete files on source folder.
-    for (File sourceFile : sourceFiles) {
-      if (!deleteFile(sourceFile, context)) {
-        // stop on first error
-        return false;
-      }
-    }
-    return true;
-  }
-
-  /**
-   * Delete a folder.
-   *
-   * @param file The folder name.
-   * @return true if successful.
-   */
-  private static boolean rmdir(@NonNull final File file, Context context) {
-    if (!file.exists()) return true;
-
-    File[] files = file.listFiles();
-    if (files != null && files.length > 0) {
-      for (File child : files) {
-        rmdir(child, context);
-      }
-    }
-
-    // Try the normal way
-    if (file.delete()) {
-      return true;
-    }
-
-    // Try with Storage Access Framework.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      DocumentFile document = getDocumentFile(file, true, context);
-      if (document != null && document.delete()) {
-        return true;
-      }
-    }
-
-    // Try the Kitkat workaround.
-    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
-      ContentResolver resolver = context.getContentResolver();
-      ContentValues values = new ContentValues();
-      values.put(MediaStore.MediaColumns.DATA, file.getAbsolutePath());
-      resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
-
-      // Delete the created entry, such that content provider will delete the file.
-      resolver.delete(
-          MediaStore.Files.getContentUri("external"),
-          MediaStore.MediaColumns.DATA + "=?",
-          new String[] {file.getAbsolutePath()});
-    }
-
-    return !file.exists();
-  }
-
-  /**
    * Check if a file is readable.
    *
    * @param file The file
@@ -657,7 +417,7 @@ public abstract class FileUtil {
     boolean result = document.canWrite() && file.exists();
 
     // Ensure that the dummy file is not remaining.
-    deleteFile(file, c);
+    DeleteOperation.deleteFile(file, c);
     return result;
   }
 

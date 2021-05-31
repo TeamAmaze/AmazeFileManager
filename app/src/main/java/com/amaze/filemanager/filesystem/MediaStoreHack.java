@@ -40,6 +40,8 @@ import android.provider.BaseColumns;
 import android.provider.MediaStore;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 /**
  * Wrapper for manipulating files via the Android Media Content Provider. As of Android 4.4 KitKat,
  * applications can no longer write to the "secondary storage" of a device. Write operations using
@@ -125,9 +127,9 @@ public class MediaStoreHack {
    *
    * @param path file path
    * @param context context
-   * @return uri of file
+   * @return uri of file or null if resolver.query fails
    */
-  public static Uri getUriFromFile(final String path, Context context) {
+  public static @Nullable Uri getUriFromFile(final String path, Context context) {
     ContentResolver resolver = context.getContentResolver();
 
     Cursor filecursor =
@@ -137,6 +139,12 @@ public class MediaStoreHack {
             MediaStore.MediaColumns.DATA + " = ?",
             new String[] {path},
             MediaStore.MediaColumns.DATE_ADDED + " desc");
+
+    if (filecursor == null) {
+      Log.e(TAG, "Error when deleting file " + path);
+      return null;
+    }
+
     filecursor.moveToFirst();
 
     if (filecursor.isAfterLast()) {
