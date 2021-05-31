@@ -95,11 +95,11 @@ public final class AppDataParcelable implements Parcelable {
   public static final class AppDataSorter implements Comparator<AppDataParcelable> {
     public static final int SORT_NAME = 0, SORT_MODIF = 1, SORT_SIZE = 2;
 
-    private int asc = 1;
-    private int sort = 0;
+    private final int asc;
+    private final int sort;
 
-    public AppDataSorter(int sort, int asc) {
-      this.asc = asc;
+    public AppDataSorter(int sort, boolean isAscending) {
+      this.asc = isAscending? 1:-1;
       this.sort = sort;
     }
 

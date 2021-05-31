@@ -22,6 +22,8 @@ package com.amaze.filemanager.ui.dialogs;
 
 import static android.os.Build.VERSION_CODES.M;
 import static com.amaze.filemanager.filesystem.files.FileUtils.toHybridFileArrayList;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_SORTBY;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
 import java.io.File;
@@ -112,6 +114,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.loader.app.LoaderManager;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -1240,37 +1243,6 @@ public class GeneralDialogCreation {
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
     m.updateList();
     dialog.dismiss();
-  }
-
-  public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
-    int accentColor = ((ThemedActivity) m.getActivity()).getAccent();
-    String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
-    int current = Integer.parseInt(m.sharedPreferences.getString("sortbyApps", "0"));
-    MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme());
-    a.items(sort)
-        .itemsCallbackSingleChoice(
-            current > 2 ? current - 3 : current, (dialog, view, which, text) -> true);
-    a.negativeText(R.string.ascending).positiveColor(accentColor);
-    a.positiveText(R.string.descending).negativeColor(accentColor);
-    a.onNegative(
-        (dialog, which) -> {
-          m.sharedPreferences.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
-          m.getSortModes();
-          m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
-          dialog.dismiss();
-        });
-
-    a.onPositive(
-        (dialog, which) -> {
-          m.sharedPreferences.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
-          m.getSortModes();
-          m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
-          dialog.dismiss();
-        });
-
-    a.title(R.string.sort_by);
-    a.build().show();
   }
 
   public static void showHistoryDialog(

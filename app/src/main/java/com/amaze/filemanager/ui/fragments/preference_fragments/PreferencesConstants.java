@@ -100,6 +100,8 @@ public class PreferencesConstants {
 
   // START sort preferences
   public static final String PREFERENCE_SORTBY_ONLY_THIS = "sortby_only_this";
+  public static final String PREFERENCE_APPLIST_SORTBY = "AppsListFragment.sortBy";
+  public static final String PREFERENCE_APPLIST_ISASCENDING = "AppsListFragment.isAscending";
   // END sort preferences
 
   // drag and drop preferences
