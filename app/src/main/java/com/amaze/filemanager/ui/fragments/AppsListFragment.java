@@ -26,7 +26,6 @@ import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -49,13 +48,12 @@ import androidx.preference.PreferenceManager;
 public class AppsListFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
 
-  private UtilitiesProvider utilsProvider;
   private AppsListFragment app = this;
   private AppsAdapter adapter;
 
-  public SharedPreferences Sp;
-  private ListView vl;
-  private int asc, sortby;
+  public SharedPreferences sharedPreferences;
+  private ListView listView;
+  private int isAscending, sortby;
   private int index = 0, top = 0;
 
   public static final int ID_LOADER_APP_LIST = 0;
@@ -68,7 +66,6 @@ public class AppsListFragment extends ListFragment
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
     setHasOptionsMenu(false);
   }
@@ -77,25 +74,29 @@ public class AppsListFragment extends ListFragment
   public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
     super.onViewCreated(view, savedInstanceState);
     MainActivity mainActivity = (MainActivity) getActivity();
+    UtilitiesProvider utilsProvider = mainActivity.getUtilsProvider();
+
     mainActivity.getAppbar().setTitle(R.string.apps);
     mainActivity.getFAB().hide();
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
-    vl = getListView();
-    Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+
+    listView = getListView();
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     getSortModes();
     ListView vl = getListView();
     vl.setDivider(null);
-    if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
+    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
       getActivity()
-          .getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK))
+              .getWindow()
+              .getDecorView()
+              .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
       getActivity()
-          .getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+              .getWindow()
+              .getDecorView()
+              .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+    }
 
     modelProvider = new AppsAdapterPreloadModel(app, false);
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
@@ -114,7 +115,7 @@ public class AppsListFragment extends ListFragment
             modelProvider,
             sizeProvider,
             R.layout.rowlayout,
-            Sp,
+                sharedPreferences,
             false);
 
     getListView().setOnScrollListener(preloader);
@@ -133,9 +134,9 @@ public class AppsListFragment extends ListFragment
   public void onSaveInstanceState(Bundle b) {
     super.onSaveInstanceState(b);
 
-    if (vl != null) {
-      int index = vl.getFirstVisiblePosition();
-      View vi = vl.getChildAt(0);
+    if (listView != null) {
+      int index = listView.getFirstVisiblePosition();
+      View vi = listView.getChildAt(0);
       int top = (vi == null) ? 0 : vi.getTop();
       b.putInt(KEY_INDEX, index);
       b.putInt(KEY_TOP, top);
@@ -150,24 +151,25 @@ public class AppsListFragment extends ListFragment
    * <p>Final value of {@link #sortby} varies from 0 to 2
    */
   public void getSortModes() {
-    int t = Integer.parseInt(Sp.getString("sortbyApps", "0"));
+    int t = Integer.parseInt(sharedPreferences.getString("sortbyApps", "0"));
     if (t <= 2) {
       sortby = t;
-      asc = 1;
+      isAscending = 1;
     } else if (t > 2) {
-      asc = -1;
+      isAscending = -1;
       sortby = t - 3;
     }
   }
 
+  @NonNull
   @Override
   public Loader<AppListLoader.AppsDataPair> onCreateLoader(int id, Bundle args) {
-    return new AppListLoader(getContext(), sortby, asc);
+    return new AppListLoader(getContext(), sortby, isAscending);
   }
 
   @Override
   public void onLoadFinished(
-      Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
+          @NonNull Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
     // set new data to adapter
     adapter.setData(data.first);
     modelProvider.setItemList(data.second);
@@ -178,11 +180,11 @@ public class AppsListFragment extends ListFragment
       setListShownNoAnimation(true);
     }
 
-    if (vl != null) vl.setSelectionFromTop(index, top);
+    if (listView != null) listView.setSelectionFromTop(index, top);
   }
 
   @Override
-  public void onLoaderReset(Loader<AppListLoader.AppsDataPair> loader) {
+  public void onLoaderReset(@NonNull Loader<AppListLoader.AppsDataPair> loader) {
     adapter.setData(null);
   }
 }

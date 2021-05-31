@@ -1245,7 +1245,7 @@ public class GeneralDialogCreation {
   public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
     int accentColor = ((ThemedActivity) m.getActivity()).getAccent();
     String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
-    int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
+    int current = Integer.parseInt(m.sharedPreferences.getString("sortbyApps", "0"));
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
     a.theme(appTheme.getMaterialDialogTheme());
     a.items(sort)
@@ -1255,7 +1255,7 @@ public class GeneralDialogCreation {
     a.positiveText(R.string.descending).negativeColor(accentColor);
     a.onNegative(
         (dialog, which) -> {
-          m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
+          m.sharedPreferences.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
           m.getSortModes();
           m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
           dialog.dismiss();
@@ -1263,7 +1263,7 @@ public class GeneralDialogCreation {
 
     a.onPositive(
         (dialog, which) -> {
-          m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
+          m.sharedPreferences.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
           m.getSortModes();
           m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
           dialog.dismiss();
