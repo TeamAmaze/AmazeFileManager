@@ -38,7 +38,7 @@ jobs:
       - name: Build with Gradle
         run: |
           echo Run on-demand by ${GITHUB_ACTOR}
-          bash ./gradlew assembleDebug --stacktrace
+          bash ./gradlew assembleDebug --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
         env:
           TZ: UTC
       - name: Upload fdroid artifact

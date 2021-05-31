@@ -17,14 +17,14 @@ jobs:
           distribution: "adopt"
           java-version: 11
       - name: Check formatting using spotless
-        run: ./gradlew spotlessCheck --stacktrace
+        run: ./gradlew spotlessCheck --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
       - name: Build with Gradle
         run: |
-          ./gradlew assembledebug --stacktrace
+          ./gradlew assembledebug --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
         env:
           TZ: UTC
       - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace
+        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
         env:
           TZ: UTC
       - name: Publish test cases
