@@ -36,8 +36,8 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
-import android.widget.ListView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
@@ -48,18 +48,15 @@ import androidx.preference.PreferenceManager;
 public class AppsListFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
 
-  private AppsListFragment app = this;
+  public static final int ID_LOADER_APP_LIST = 0;
+
+  private static final String KEY_LIST_STATE = "listState";
+
   private AppsAdapter adapter;
 
   public SharedPreferences sharedPreferences;
-  private ListView listView;
+  private Parcelable listViewState;
   private int isAscending, sortby;
-  private int index = 0, top = 0;
-
-  public static final int ID_LOADER_APP_LIST = 0;
-
-  private static final String KEY_INDEX = "index";
-  private static final String KEY_TOP = "top";
 
   private AppsAdapterPreloadModel modelProvider;
 
@@ -81,11 +78,9 @@ public class AppsListFragment extends ListFragment
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
-    listView = getListView();
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     getSortModes();
-    ListView vl = getListView();
-    vl.setDivider(null);
+    getListView().setDivider(null);
     if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
       getActivity()
               .getWindow()
@@ -98,11 +93,11 @@ public class AppsListFragment extends ListFragment
               .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
     }
 
-    modelProvider = new AppsAdapterPreloadModel(app, false);
+    modelProvider = new AppsAdapterPreloadModel(this, false);
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     ListPreloader<String> preloader =
         new ListPreloader<>(
-            GlideApp.with(app),
+            GlideApp.with(this),
             modelProvider,
             sizeProvider,
             GlideConstants.MAX_PRELOAD_APPSADAPTER);
@@ -122,25 +117,18 @@ public class AppsListFragment extends ListFragment
     setListAdapter(adapter);
     setListShown(false);
     setEmptyText(getString(R.string.no_applications));
-    getLoaderManager().initLoader(ID_LOADER_APP_LIST, null, this);
+    LoaderManager.getInstance(this).initLoader(ID_LOADER_APP_LIST, null, this);
 
     if (savedInstanceState != null) {
-      index = savedInstanceState.getInt(KEY_INDEX);
-      top = savedInstanceState.getInt(KEY_TOP);
+      listViewState = savedInstanceState.getParcelable(KEY_LIST_STATE);
     }
   }
 
   @Override
-  public void onSaveInstanceState(Bundle b) {
+  public void onSaveInstanceState(@NonNull Bundle b) {
     super.onSaveInstanceState(b);
 
-    if (listView != null) {
-      int index = listView.getFirstVisiblePosition();
-      View vi = listView.getChildAt(0);
-      int top = (vi == null) ? 0 : vi.getTop();
-      b.putInt(KEY_INDEX, index);
-      b.putInt(KEY_TOP, top);
-    }
+    b.putParcelable(KEY_LIST_STATE, getListView().onSaveInstanceState());
   }
 
   /**
@@ -180,7 +168,9 @@ public class AppsListFragment extends ListFragment
       setListShownNoAnimation(true);
     }
 
-    if (listView != null) listView.setSelectionFromTop(index, top);
+    if (listViewState != null) {
+      getListView().onRestoreInstanceState(listViewState);
+    }
   }
 
   @Override
