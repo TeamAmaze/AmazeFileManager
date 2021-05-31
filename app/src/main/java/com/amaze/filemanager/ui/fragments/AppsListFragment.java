@@ -40,6 +40,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
@@ -73,9 +74,8 @@ public class AppsListFragment extends ListFragment
   }
 
   @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    setRetainInstance(true);
+  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
     MainActivity mainActivity = (MainActivity) getActivity();
     mainActivity.getAppbar().setTitle(R.string.apps);
     mainActivity.getFAB().hide();
@@ -143,7 +143,7 @@ public class AppsListFragment extends ListFragment
   }
 
   /**
-   * Assigns sort modes A value from 0 to 2 defines sort mode as name/last modified/size in
+   * Assigns sort modes A value from 0 to 2 defines sort mode as name||/last modified/size in
    * ascending order Values from 3 to 5 defines sort mode as name/last modified/size in descending
    * order
    *
