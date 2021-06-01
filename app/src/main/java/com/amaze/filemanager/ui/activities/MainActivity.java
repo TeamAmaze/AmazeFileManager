@@ -478,72 +478,74 @@ public class MainActivity extends PermissionsActivity
 
   /** Checks for the action to take when Amaze receives an intent from external source */
   private void checkForExternalIntent(Intent intent) {
-    String actionIntent = intent.getAction();
-    String type = intent.getType();
+    final String actionIntent = intent.getAction();
+    if (actionIntent == null) {
+      return;
+    }
 
-    if (actionIntent != null) {
-      if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
-        // file picker intent
-        mReturnIntent = true;
-        Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+    final String type = intent.getType();
 
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when picking file
-        Utils.disableScreenRotation(this);
-      } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
-        // ringtone picker intent
-        mReturnIntent = true;
-        mRingtonePickerIntent = true;
-        Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
+    if (actionIntent.equals(Intent.ACTION_GET_CONTENT)) {
+      // file picker intent
+      mReturnIntent = true;
+      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
 
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when picking file
-        Utils.disableScreenRotation(this);
-      } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
-        // zip viewer intent
-        Uri uri = intent.getData();
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when picking file
+      Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(RingtoneManager.ACTION_RINGTONE_PICKER)) {
+      // ringtone picker intent
+      mReturnIntent = true;
+      mRingtonePickerIntent = true;
+      Toast.makeText(this, getString(R.string.pick_a_file), Toast.LENGTH_LONG).show();
 
-        if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
-          // support for syncting or intents from external apps that
-          // need to start file manager from a specific path
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when picking file
+      Utils.disableScreenRotation(this);
+    } else if (actionIntent.equals(Intent.ACTION_VIEW)) {
+      // zip viewer intent
+      Uri uri = intent.getData();
 
-          if (uri != null) {
+      if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
+        // support for syncting or intents from external apps that
+        // need to start file manager from a specific path
 
-            path = Utils.sanitizeInput(uri.getPath());
-          } else {
-            // no data field, open home for the tab in later processing
-            path = null;
-          }
+        if (uri != null) {
+
+          path = Utils.sanitizeInput(uri.getPath());
         } else {
-          // we don't have folder resource mime type set, supposed to be zip/rar
-          openzip = true;
-          zippath = Utils.sanitizeInput(uri.toString());
+          // no data field, open home for the tab in later processing
+          path = null;
         }
-
-      } else if (actionIntent.equals(Intent.ACTION_SEND)) {
-        if ("text/plain".equals(type)) {
-          initFabToSave(null);
-        } else {
-          // save a single file to filesystem
-          Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
-          ArrayList<Uri> uris = new ArrayList<>();
-          uris.add(uri);
-          initFabToSave(uris);
-        }
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when saving a file
-        Utils.disableScreenRotation(this);
-
-      } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
-        // save multiple files to filesystem
-
-        ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
-        initFabToSave(arrayList);
-
-        // disable screen rotation just for convenience purpose
-        // TODO: Support screen rotation when saving a file
-        Utils.disableScreenRotation(this);
+      } else {
+        // we don't have folder resource mime type set, supposed to be zip/rar
+        openzip = true;
+        zippath = Utils.sanitizeInput(uri.toString());
       }
+
+    } else if (actionIntent.equals(Intent.ACTION_SEND)) {
+      if ("text/plain".equals(type)) {
+        initFabToSave(null);
+      } else {
+        // save a single file to filesystem
+        Uri uri = intent.getParcelableExtra(Intent.EXTRA_STREAM);
+        ArrayList<Uri> uris = new ArrayList<>();
+        uris.add(uri);
+        initFabToSave(uris);
+      }
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when saving a file
+      Utils.disableScreenRotation(this);
+
+    } else if (actionIntent.equals(Intent.ACTION_SEND_MULTIPLE) && type != null) {
+      // save multiple files to filesystem
+
+      ArrayList<Uri> arrayList = intent.getParcelableArrayListExtra(Intent.EXTRA_STREAM);
+      initFabToSave(arrayList);
+
+      // disable screen rotation just for convenience purpose
+      // TODO: Support screen rotation when saving a file
+      Utils.disableScreenRotation(this);
     }
   }
 
