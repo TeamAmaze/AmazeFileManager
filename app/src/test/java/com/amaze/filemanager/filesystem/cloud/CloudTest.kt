@@ -29,6 +29,9 @@ import org.junit.Test
 import kotlin.random.Random
 
 class CloudTest {
+    /**
+     * Tests [CloudUtil.stripPath]
+     */
     @Test
     fun stripPathTest() {
         val assertForTest = { mode: OpenMode, path: String, completePath: String ->
