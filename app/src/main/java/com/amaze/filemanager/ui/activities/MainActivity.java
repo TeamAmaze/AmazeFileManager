@@ -1023,10 +1023,9 @@ public class MainActivity extends PermissionsActivity
     // The action bar home/up action should open or close the drawer.
     // ActionBarDrawerToggle will take care of this.
     if (drawer.onOptionsItemSelected(item)) return true;
-
-    if (getFragmentAtFrame() instanceof AppsListFragment && item.getItemId() == R.id.sort) {
-      ((AppsListFragment) getFragmentAtFrame()).showSortDialog(getAppTheme());
-    }
+    // Same thing goes to other Fragments loaded.
+    // If they have handled the options, we don't need to.
+    if (getFragmentAtFrame().onOptionsItemSelected(item)) return true;
 
     // Handle action buttons
     executeWithMainFragment(
