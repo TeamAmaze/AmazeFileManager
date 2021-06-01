@@ -30,6 +30,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.file.FileAlreadyExistsException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
@@ -37,6 +38,8 @@ import java.util.regex.Pattern;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.exceptions.NotAllowedException;
+import com.amaze.filemanager.exceptions.OperationWouldOverwriteException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
@@ -67,6 +70,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbFile;
+import kotlin.NotImplementedError;
 
 /** Utility class for helping parsing file systems. */
 public abstract class FileUtil {
@@ -125,7 +129,7 @@ public abstract class FileUtil {
                       bufferedInputStream =
                           new BufferedInputStream(contentResolver.openInputStream(uri));
                     } catch (FileNotFoundException e) {
-                      e.printStackTrace();
+                      emitter.onError(e);
                       return;
                     }
 
@@ -155,28 +159,25 @@ public abstract class FileUtil {
                           File targetFile = new File(finalFilePath);
                           if (!FileProperties.isWritableNormalOrSaf(
                               targetFile.getParentFile(), mainActivity.getApplicationContext())) {
-                            AppConfig.toast(
-                                mainActivity,
-                                mainActivity.getResources().getString(R.string.not_allowed));
+                            emitter.onError(new NotAllowedException());
                             return;
                           }
 
                           DocumentFile targetDocumentFile =
-                              getDocumentFile(
-                                  targetFile, false, mainActivity.getApplicationContext());
+                              getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
 
                           // Fallback, in case getDocumentFile() didn't properly return a
                           // DocumentFile
                           // instance
-                          if (targetDocumentFile == null)
+                          if (targetDocumentFile == null) {
                             targetDocumentFile = DocumentFile.fromFile(targetFile);
+                          }
 
                           // Lazy check... and in fact, different apps may pass in URI in different
                           // formats, so we could only check filename matches
                           // FIXME?: Prompt overwrite instead of simply blocking
                           if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
-                            AppConfig.toast(
-                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                            emitter.onError(new OperationWouldOverwriteException());
                             return;
                           }
 
@@ -188,9 +189,8 @@ public abstract class FileUtil {
                         case SMB:
                           SmbFile targetSmbFile = SmbUtil.create(finalFilePath);
                           if (targetSmbFile.exists()) {
-                            AppConfig.toast(
-                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                            emitter.onError(new Exception());
+                            emitter.onError(new OperationWouldOverwriteException());
+                            return;
                           } else {
                             OutputStream outputStream = targetSmbFile.getOutputStream();
                             bufferedOutputStream = new BufferedOutputStream(outputStream);
@@ -200,9 +200,9 @@ public abstract class FileUtil {
                           break;
                         case SFTP:
                           // FIXME: implement support
-                          AppConfig.toast(
-                              mainActivity, mainActivity.getString(R.string.not_allowed));
-                          emitter.onError(new Exception());
+                          AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
+                          emitter.onError(new NotImplementedError());
+                          return;
                         case DROPBOX:
                         case BOX:
                         case ONEDRIVE:
@@ -219,8 +219,7 @@ public abstract class FileUtil {
                               OTGUtil.getDocumentFile(finalFilePath, mainActivity, true);
 
                           if (documentTargetFile.exists()) {
-                            AppConfig.toast(
-                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                            emitter.onError(new OperationWouldOverwriteException());
                             return;
                           }
 
@@ -248,7 +247,7 @@ public abstract class FileUtil {
                       bufferedOutputStream.flush();
 
                     } catch (IOException e) {
-                      e.printStackTrace();
+                      emitter.onError(e);
                       return;
                     } finally {
                       try {
@@ -259,10 +258,11 @@ public abstract class FileUtil {
                           bufferedOutputStream.close();
                         }
                       } catch (IOException e) {
-                        e.printStackTrace();
+                        emitter.onError(e);
                       }
                     }
                   }
+
                   if (retval.size() > 0) {
                     emitter.onSuccess(retval);
                   } else {
@@ -295,6 +295,16 @@ public abstract class FileUtil {
 
               @Override
               public void onError(@NonNull Throwable e) {
+                if(e instanceof OperationWouldOverwriteException) {
+                  AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                  return;
+                }
+                if(e instanceof NotAllowedException) {
+                  AppConfig.toast(
+                          mainActivity,
+                          mainActivity.getResources().getString(R.string.not_allowed));
+                }
+
                 Log.e(
                     getClass().getSimpleName(),
                     "Failed to write uri to storage due to " + e.getCause());
