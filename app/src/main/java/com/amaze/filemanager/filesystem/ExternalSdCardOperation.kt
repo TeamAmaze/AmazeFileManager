@@ -65,10 +65,8 @@ object ExternalSdCardOperation {
             }
         } catch (e: IOException) {
             return null
-        } catch (f: Exception) {
-            originalDirectory = true
-            // continue
         }
+
         val preferenceUri = PreferenceManager.getDefaultSharedPreferences(context)
             .getString(PreferencesConstants.PREFERENCE_URI, null)
         var treeUri: Uri? = null
