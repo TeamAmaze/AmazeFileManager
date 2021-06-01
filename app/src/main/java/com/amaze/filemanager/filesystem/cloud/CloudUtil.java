@@ -43,6 +43,10 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
+import com.cloudrail.si.exceptions.AuthenticationException;
+import com.cloudrail.si.exceptions.HttpException;
+import com.cloudrail.si.exceptions.NotFoundException;
+import com.cloudrail.si.exceptions.ServiceUnavailableException;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 
@@ -61,6 +65,8 @@ import androidx.documentfile.provider.DocumentFile;
 
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.SFTPClient;
+
+import shark.HprofIndex;
 
 /**
  * Created by vishal on 19/4/17.
@@ -104,48 +110,32 @@ public class CloudUtil {
 
   /** Strips down the cloud path to remove any prefix */
   public static String stripPath(OpenMode openMode, String path) {
-    String strippedPath = path;
+    final String prefix;
+
     switch (openMode) {
       case DROPBOX:
-        if (path.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")) {
-          // we're at root, just replace the prefix
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_DROPBOX, "");
-        } else {
-          // we're not at root, replace prefix + /
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_DROPBOX + "/", "");
-        }
+        prefix = CloudHandler.CLOUD_PREFIX_DROPBOX;
         break;
       case BOX:
-        if (path.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")) {
-          // we're at root, just replace the prefix
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_BOX, "");
-        } else {
-          // we're not at root, replace prefix + /
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_BOX + "/", "");
-        }
+        prefix = CloudHandler.CLOUD_PREFIX_BOX;
         break;
       case ONEDRIVE:
-        if (path.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")) {
-          // we're at root, just replace the prefix
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_ONE_DRIVE, "");
-        } else {
-          // we're not at root, replace prefix + /
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/", "");
-        }
+        prefix = CloudHandler.CLOUD_PREFIX_ONE_DRIVE;
         break;
       case GDRIVE:
-        if (path.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")) {
-          // we're at root, just replace the prefix
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE, "");
-        } else {
-          // we're not at root, replace prefix + /
-          strippedPath = path.replace(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/", "");
-        }
+        prefix = CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE;
         break;
       default:
-        break;
+        return path;
     }
-    return strippedPath;
+
+    if (path.equals(prefix + "/")) {
+      // we're at root, just replace the prefix
+      return path.replace(prefix, "");
+    } else {
+      // we're not at root, replace prefix + /
+      return path.replace(prefix + "/", "");
+    }
   }
 
   public static void launchCloud(
@@ -203,64 +193,42 @@ public class CloudUtil {
   public static void checkToken(String path, final MainActivity mainActivity) {
 
     new AsyncTask<String, Void, Boolean>() {
-
       OpenMode serviceType;
-      private DataUtils dataUtils = DataUtils.getInstance();
 
       @Override
       protected Boolean doInBackground(String... params) {
+        final DataUtils dataUtils = DataUtils.getInstance();
         boolean isTokenValid = true;
         String path = params[0];
+        final CloudStorage cloudStorage;
 
         if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
           // dropbox account
           serviceType = OpenMode.DROPBOX;
-          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-
-          try {
-            cloudStorageDropbox.getUserLogin();
-          } catch (Exception e) {
-            e.printStackTrace();
-
-            isTokenValid = false;
-          }
+          cloudStorage = dataUtils.getAccount(OpenMode.DROPBOX);
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
           serviceType = OpenMode.ONEDRIVE;
-          CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-
-          try {
-            cloudStorageOneDrive.getUserLogin();
-          } catch (Exception e) {
-            e.printStackTrace();
-
-            isTokenValid = false;
-          }
+          cloudStorage = dataUtils.getAccount(OpenMode.ONEDRIVE);
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
           serviceType = OpenMode.BOX;
-          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-
-          try {
-            cloudStorageBox.getUserLogin();
-          } catch (Exception e) {
-            e.printStackTrace();
-
-            isTokenValid = false;
-          }
+          cloudStorage = dataUtils.getAccount(OpenMode.BOX);
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
-
           serviceType = OpenMode.GDRIVE;
-          CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-
-          try {
-            cloudStorageGDrive.getUserLogin();
-          } catch (Exception e) {
-            e.printStackTrace();
-
-            isTokenValid = false;
-          }
+          cloudStorage = dataUtils.getAccount(OpenMode.GDRIVE);
+        } else {
+          throw new IllegalStateException();
         }
+
+        try {
+          cloudStorage.getUserLogin();
+        } catch (RuntimeException e) {
+          e.printStackTrace();
+
+          isTokenValid = false;
+        }
+
         return isTokenValid;
       }
 
@@ -284,10 +252,6 @@ public class CloudUtil {
 
   /**
    * Get an input stream for thumbnail for a given {@link IconDataParcelable}
-   *
-   * @param context
-   * @param path
-   * @return
    */
   public static InputStream getThumbnailInputStreamForCloud(Context context, String path) {
     InputStream inputStream;
@@ -338,27 +302,14 @@ public class CloudUtil {
         }
         break;
       case DROPBOX:
-        CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-        inputStream =
-            cloudStorageDropbox.getThumbnail(
-                CloudUtil.stripPath(OpenMode.DROPBOX, hybridFile.getPath()));
-        break;
       case BOX:
-        CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-        inputStream =
-            cloudStorageBox.getThumbnail(CloudUtil.stripPath(OpenMode.BOX, hybridFile.getPath()));
-        break;
       case GDRIVE:
-        CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-        inputStream =
-            cloudStorageGDrive.getThumbnail(
-                CloudUtil.stripPath(OpenMode.GDRIVE, hybridFile.getPath()));
-        break;
       case ONEDRIVE:
-        CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-        inputStream =
-            cloudStorageOneDrive.getThumbnail(
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, hybridFile.getPath()));
+        OpenMode mode = hybridFile.getMode();
+
+        CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
+        String stripped = CloudUtil.stripPath(mode, hybridFile.getPath());
+        inputStream = cloudStorageDropbox.getThumbnail(stripped);
         break;
       default:
         try {
@@ -369,6 +320,7 @@ public class CloudUtil {
         }
         break;
     }
+
     return inputStream;
   }
 }
