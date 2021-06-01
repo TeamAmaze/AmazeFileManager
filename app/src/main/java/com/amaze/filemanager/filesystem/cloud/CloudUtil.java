@@ -43,10 +43,6 @@ import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.cloudrail.si.exceptions.AuthenticationException;
-import com.cloudrail.si.exceptions.HttpException;
-import com.cloudrail.si.exceptions.NotFoundException;
-import com.cloudrail.si.exceptions.ServiceUnavailableException;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 
@@ -65,8 +61,6 @@ import androidx.documentfile.provider.DocumentFile;
 
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.SFTPClient;
-
-import shark.HprofIndex;
 
 /**
  * Created by vishal on 19/4/17.
@@ -250,9 +244,7 @@ public class CloudUtil {
     }.execute(path);
   }
 
-  /**
-   * Get an input stream for thumbnail for a given {@link IconDataParcelable}
-   */
+  /** Get an input stream for thumbnail for a given {@link IconDataParcelable} */
   public static InputStream getThumbnailInputStreamForCloud(Context context, String path) {
     InputStream inputStream;
     HybridFile hybridFile = new HybridFile(OpenMode.UNKNOWN, path);
