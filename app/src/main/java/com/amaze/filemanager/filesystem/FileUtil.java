@@ -32,7 +32,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -70,9 +69,6 @@ import kotlin.NotImplementedError;
 
 /** Utility class for helping parsing file systems. */
 public abstract class FileUtil {
-
-  private static final Pattern FILENAME_REGEX =
-      Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
 
   /**
    * Determine the camera folder. There seems to be no Android API to work for real devices, so this
@@ -351,18 +347,5 @@ public abstract class FileUtil {
       return 0;
     }
     return 0;
-  }
-
-  /**
-   * Validate given text is a valid filename.
-   *
-   * @param text
-   * @return true if given text is a valid filename
-   */
-  public static boolean isValidFilename(String text) {
-    // It's not easy to use regex to detect single/double dot while leaving valid values
-    // (filename.zip) behind...
-    // So we simply use equality to check them
-    return (!FILENAME_REGEX.matcher(text).find()) && !".".equals(text) && !"..".equals(text);
   }
 }

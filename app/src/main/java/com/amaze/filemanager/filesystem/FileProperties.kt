@@ -26,6 +26,7 @@ import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.regex.Pattern
 
 // TODO check if these can be done with just File methods
 // TODO make all of these methods File extensions
@@ -119,5 +120,21 @@ object FileProperties {
         // Ensure that the dummy file is not remaining.
         deleteFile(file, c)
         return result
+    }
+
+    /**
+     * Validate given text is a valid filename.
+     *
+     * @param text
+     * @return true if given text is a valid filename
+     */
+    fun isValidFilename(text: String): Boolean {
+        val filenameRegex =
+            Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE)
+
+        // It's not easy to use regex to detect single/double dot while leaving valid values
+        // (filename.zip) behind...
+        // So we simply use equality to check them
+        return !filenameRegex.matcher(text).find() && "." != text && ".." != text
     }
 }
