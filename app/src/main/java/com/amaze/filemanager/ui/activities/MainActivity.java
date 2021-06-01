@@ -1025,7 +1025,7 @@ public class MainActivity extends PermissionsActivity
     if (drawer.onOptionsItemSelected(item)) return true;
 
     if (getFragmentAtFrame() instanceof AppsListFragment && item.getItemId() == R.id.sort) {
-      GeneralDialogCreation.showSortDialog((AppsListFragment) getFragmentAtFrame(), getAppTheme());
+      ((AppsListFragment) getFragmentAtFrame()).showSortDialog(getAppTheme());
     }
 
     // Handle action buttons

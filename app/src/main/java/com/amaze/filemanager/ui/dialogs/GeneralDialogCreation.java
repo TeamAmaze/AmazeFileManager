@@ -63,7 +63,6 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -1240,37 +1239,6 @@ public class GeneralDialogCreation {
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
     m.updateList();
     dialog.dismiss();
-  }
-
-  public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
-    int accentColor = ((ThemedActivity) m.getActivity()).getAccent();
-    String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
-    int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
-    MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme());
-    a.items(sort)
-        .itemsCallbackSingleChoice(
-            current > 2 ? current - 3 : current, (dialog, view, which, text) -> true);
-    a.negativeText(R.string.ascending).positiveColor(accentColor);
-    a.positiveText(R.string.descending).negativeColor(accentColor);
-    a.onNegative(
-        (dialog, which) -> {
-          m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
-          m.getSortModes();
-          m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
-          dialog.dismiss();
-        });
-
-    a.onPositive(
-        (dialog, which) -> {
-          m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
-          m.getSortModes();
-          m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
-          dialog.dismiss();
-        });
-
-    a.title(R.string.sort_by);
-    a.build().show();
   }
 
   public static void showHistoryDialog(
