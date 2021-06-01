@@ -575,7 +575,7 @@ public class Operations {
     boolean lol = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     if (lol) {
 
-      boolean ext = FileUtil.isOnExtSdCard(folder, context);
+      boolean ext = ExternalSdCardOperation.isOnExtSdCard(folder, context);
       if (ext) {
 
         if (!folder.exists() || !folder.isDirectory()) {
@@ -590,7 +590,7 @@ public class Operations {
       }
     } else if (Build.VERSION.SDK_INT == 19) {
       // Assume that Kitkat workaround works
-      if (FileUtil.isOnExtSdCard(folder, context)) return 1;
+      if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) return 1;
     }
 
     // file not on external sd card

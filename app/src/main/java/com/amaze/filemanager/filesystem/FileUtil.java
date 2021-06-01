@@ -43,13 +43,11 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
-import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
@@ -60,7 +58,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
 
 import io.reactivex.Maybe;
 import io.reactivex.MaybeObserver;
@@ -73,8 +70,6 @@ import kotlin.NotImplementedError;
 
 /** Utility class for helping parsing file systems. */
 public abstract class FileUtil {
-
-  private static final String LOG = "AmazeFileUtils";
 
   private static final Pattern FILENAME_REGEX =
       Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE);
@@ -98,7 +93,8 @@ public abstract class FileUtil {
     } else {
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
         // Storage Access Framework
-        DocumentFile targetDocument = getDocumentFile(target, false, context);
+        DocumentFile targetDocument =
+            ExternalSdCardOperation.getDocumentFile(target, false, context);
         if (targetDocument == null) return null;
         outStream = context.getContentResolver().openOutputStream(targetDocument.getUri());
       } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
@@ -163,7 +159,8 @@ public abstract class FileUtil {
                       }
 
                       DocumentFile targetDocumentFile =
-                          getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
+                          ExternalSdCardOperation.getDocumentFile(
+                              targetFile, false, mainActivity.getApplicationContext());
 
                       // Fallback, in case getDocumentFile() didn't properly return a
                       // DocumentFile
@@ -315,150 +312,6 @@ public abstract class FileUtil {
             });
   }
 
-  /**
-   * Get a list of external SD card paths. (Kitkat or higher.)
-   *
-   * @return A list of external SD card paths.
-   */
-  @TargetApi(Build.VERSION_CODES.KITKAT)
-  private static String[] getExtSdCardPaths(Context context) {
-    List<String> paths = new ArrayList<>();
-    for (File file : context.getExternalFilesDirs("external")) {
-      if (file != null && !file.equals(context.getExternalFilesDir("external"))) {
-        int index = file.getAbsolutePath().lastIndexOf("/Android/data");
-        if (index < 0) {
-          Log.w(LOG, "Unexpected external file dir: " + file.getAbsolutePath());
-        } else {
-          String path = file.getAbsolutePath().substring(0, index);
-          try {
-            path = new File(path).getCanonicalPath();
-          } catch (IOException e) {
-            // Keep non-canonical path.
-          }
-          paths.add(path);
-        }
-      }
-    }
-    if (paths.isEmpty()) paths.add("/storage/sdcard1");
-    return paths.toArray(new String[0]);
-  }
-
-  @TargetApi(Build.VERSION_CODES.KITKAT)
-  public static String[] getExtSdCardPathsForActivity(Context context) {
-    List<String> paths = new ArrayList<>();
-    for (File file : context.getExternalFilesDirs("external")) {
-      if (file != null) {
-        int index = file.getAbsolutePath().lastIndexOf("/Android/data");
-        if (index < 0) {
-          Log.w(LOG, "Unexpected external file dir: " + file.getAbsolutePath());
-        } else {
-          String path = file.getAbsolutePath().substring(0, index);
-          try {
-            path = new File(path).getCanonicalPath();
-          } catch (IOException e) {
-            // Keep non-canonical path.
-          }
-          paths.add(path);
-        }
-      }
-    }
-    if (paths.isEmpty()) paths.add("/storage/sdcard1");
-    return paths.toArray(new String[0]);
-  }
-
-  /**
-   * Determine the main folder of the external SD card containing the given file.
-   *
-   * @param file the file.
-   * @return The main folder of the external SD card containing this file, if the file is on an SD
-   *     card. Otherwise, null is returned.
-   */
-  @TargetApi(Build.VERSION_CODES.KITKAT)
-  private static String getExtSdCardFolder(final File file, Context context) {
-    String[] extSdPaths = getExtSdCardPaths(context);
-    try {
-      for (int i = 0; i < extSdPaths.length; i++) {
-        if (file.getCanonicalPath().startsWith(extSdPaths[i])) {
-          return extSdPaths[i];
-        }
-      }
-    } catch (IOException e) {
-      return null;
-    }
-    return null;
-  }
-
-  /**
-   * Determine if a file is on external sd card. (Kitkat or higher.)
-   *
-   * @param file The file.
-   * @return true if on external sd card.
-   */
-  @TargetApi(Build.VERSION_CODES.KITKAT)
-  public static boolean isOnExtSdCard(final File file, Context c) {
-    return getExtSdCardFolder(file, c) != null;
-  }
-
-  /**
-   * Get a DocumentFile corresponding to the given file (for writing on ExtSdCard on Android 5). If
-   * the file is not existing, it is created.
-   *
-   * @param file The file.
-   * @param isDirectory flag indicating if the file should be a directory.
-   * @return The DocumentFile
-   */
-  public static DocumentFile getDocumentFile(
-      final File file, final boolean isDirectory, Context context) {
-
-    if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return DocumentFile.fromFile(file);
-
-    String baseFolder = getExtSdCardFolder(file, context);
-    boolean originalDirectory = false;
-    if (baseFolder == null) {
-      return null;
-    }
-
-    String relativePath = null;
-    try {
-      String fullPath = file.getCanonicalPath();
-      if (!baseFolder.equals(fullPath)) relativePath = fullPath.substring(baseFolder.length() + 1);
-      else originalDirectory = true;
-    } catch (IOException e) {
-      return null;
-    } catch (Exception f) {
-      originalDirectory = true;
-      // continue
-    }
-    String as =
-        PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PreferencesConstants.PREFERENCE_URI, null);
-
-    Uri treeUri = null;
-    if (as != null) treeUri = Uri.parse(as);
-    if (treeUri == null) {
-      return null;
-    }
-
-    // start with root of SD card and then parse through document tree.
-    DocumentFile document = DocumentFile.fromTreeUri(context, treeUri);
-    if (originalDirectory) return document;
-    String[] parts = relativePath.split("\\/");
-    for (int i = 0; i < parts.length; i++) {
-      DocumentFile nextDocument = document.findFile(parts[i]);
-
-      if (nextDocument == null) {
-        if ((i < parts.length - 1) || isDirectory) {
-          nextDocument = document.createDirectory(parts[i]);
-        } else {
-          nextDocument = document.createFile("image", parts[i]);
-        }
-      }
-      document = nextDocument;
-    }
-
-    return document;
-  }
-
   // Utility methods for Kitkat
 
   /**
@@ -479,7 +332,7 @@ public abstract class FileUtil {
 
     File folder = new File(f);
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && FileUtil.isOnExtSdCard(folder, context)) {
+        && ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
       if (!folder.exists() || !folder.isDirectory()) {
         return 0;
       }
@@ -488,7 +341,8 @@ public abstract class FileUtil {
       if (FileProperties.isWritableNormalOrSaf(folder, context)) {
         return 1;
       }
-    } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
+    } else if (Build.VERSION.SDK_INT == 19
+        && ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
       // Assume that Kitkat workaround works
       return 1;
     } else if (folder.canWrite()) {

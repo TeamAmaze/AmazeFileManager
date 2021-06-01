@@ -43,6 +43,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -436,7 +437,7 @@ public class MainActivityHelper {
     } else {
       File folder = new File(path);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        if (FileUtil.isOnExtSdCard(folder, context)) {
+        if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
           if (!folder.exists() || !folder.isDirectory()) {
             return DOESNT_EXIST;
           }
@@ -452,7 +453,7 @@ public class MainActivityHelper {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
       } else if (Build.VERSION.SDK_INT == 19) {
-        if (FileUtil.isOnExtSdCard(folder, context)) {
+        if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
           // Assume that Kitkat workaround works
           return WRITABLE_OR_ON_SDCARD;
         } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {

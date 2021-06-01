@@ -110,7 +110,7 @@ object FileProperties {
         }
 
         // Next check SAF writability.
-        val document = FileUtil.getDocumentFile(file, false, c)
+        val document = ExternalSdCardOperation.getDocumentFile(file, false, c)
         document ?: return false
 
         // This should have created the file - otherwise something is wrong with access URL.

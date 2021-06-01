@@ -66,13 +66,13 @@ object MakeFileOperation {
 
         // Try with Storage Access Framework.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-            FileUtil.isOnExtSdCard(file, context)
+            ExternalSdCardOperation.isOnExtSdCard(file, context)
         ) {
-            val document = FileUtil.getDocumentFile(file.parentFile, true, context)
+            val document = ExternalSdCardOperation.getDocumentFile(file.parentFile, true, context)
             // getDocumentFile implicitly creates the directory.
             return try {
                 (
-                    document.createFile(
+                    document?.createFile(
                         MimeTypes.getMimeType(file.path, file.isDirectory), file.name
                     )
                         != null

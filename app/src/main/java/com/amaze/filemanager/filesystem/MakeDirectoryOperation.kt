@@ -39,7 +39,7 @@ object MakeDirectoryOperation {
      */
     @JvmStatic
     @Deprecated("use {@link #mkdirs(Context, HybridFile)}")
-    fun mkdir(file: File?, context: Context?): Boolean {
+    fun mkdir(file: File?, context: Context): Boolean {
         if (file == null) return false
         if (file.exists()) {
             // nothing to create.
@@ -53,9 +53,10 @@ object MakeDirectoryOperation {
 
         // Try with Storage Access Framework.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-            FileUtil.isOnExtSdCard(file, context)
+            ExternalSdCardOperation.isOnExtSdCard(file, context)
         ) {
-            val document = FileUtil.getDocumentFile(file, true, context)
+            val document = ExternalSdCardOperation.getDocumentFile(file, true, context)
+            document ?: return false
             // getDocumentFile implicitly creates the directory.
             return document.exists()
         }

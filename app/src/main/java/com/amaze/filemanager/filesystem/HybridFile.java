@@ -141,7 +141,7 @@ public class HybridFile {
           mode = OpenMode.ROOT;
         }
       } else {
-        if (FileUtil.isOnExtSdCard(getFile(), context)) {
+        if (ExternalSdCardOperation.isOnExtSdCard(getFile(), context)) {
           mode = OpenMode.FILE;
         } else if (rootmode && !getFile().canRead()) {
           mode = OpenMode.ROOT;

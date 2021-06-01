@@ -86,6 +86,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -754,7 +755,7 @@ public class MainActivity extends PermissionsActivity
     }
     if (SDK_INT >= M && checkStoragePermission()) rv.clear();
     if (SDK_INT >= KITKAT) {
-      String strings[] = FileUtil.getExtSdCardPathsForActivity(this);
+      String strings[] = ExternalSdCardOperation.getExtSdCardPathsForActivity(this);
       for (String s : strings) {
         File f = new File(s);
         if (!rv.contains(s) && FileUtils.canListFiles(f)) rv.add(s);
