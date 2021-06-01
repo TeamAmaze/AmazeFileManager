@@ -74,6 +74,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -98,7 +99,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * by Jens Klingenberg <mail@jensklingenberg.de>
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-    implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
+    implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback, KeyEvent.Callback {
 
   public static final int TYPE_ITEM = 0,
       TYPE_HEADER_FOLDERS = 1,
@@ -1160,6 +1161,51 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     return preferenceActivity.getBoolean(key);
   }
 
+  @Override
+  public boolean onKeyDown(int keyCode, KeyEvent event) {
+    Log.d(getClass().getSimpleName(), "Handle key down event on adapter");
+    if (mainFrag.getMainActivity().mDrawerLayout.hasFocus() ||
+            keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
+
+
+      ItemViewHolder nextItemViewHolder = null;
+      for (int i=0; i<itemsDigested.size(); i++) {
+        if (itemsDigested.get(i).specialType == TYPE_ITEM) {
+
+          if (itemsDigested.get(i).getItemViewHolder().rl.hasFocus()) {
+
+            // find the current focus item and highlight the next one
+            nextItemViewHolder = itemsDigested.get(i == itemsDigested.size()-1 ? i : i+1).getItemViewHolder();
+          }
+        }
+      }
+      // the drawer was having focus, let's shift focus to main fragment
+      if (nextItemViewHolder != null) {
+
+        nextItemViewHolder.rl.setFocusable(true);
+        nextItemViewHolder.rl.requestFocus();
+        Log.d(getClass().getSimpleName(), "Requesting focus with root layout");
+      }
+
+      return true;
+    } else return false;
+  }
+
+  @Override
+  public boolean onKeyLongPress(int keyCode, KeyEvent event) {
+    return false;
+  }
+
+  @Override
+  public boolean onKeyUp(int keyCode, KeyEvent event) {
+    return false;
+  }
+
+  @Override
+  public boolean onKeyMultiple(int keyCode, int count, KeyEvent event) {
+    return false;
+  }
+
   @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})
   public @interface ListElemType {}
 
@@ -1171,6 +1217,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean checked;
     private boolean animate;
     private boolean shouldToggleDragChecked = true;
+    private ItemViewHolder itemViewHolder;
 
     ListItem(LayoutElementParcelable elem) {
       this(false, elem);
@@ -1217,6 +1264,19 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     public boolean getAnimating() {
       return animate;
+    }
+
+    /**
+     * Sets an {@link ItemViewHolder} associated with this list item, if any
+     * @param itemViewHolder layout holder
+     */
+    public void setItemViewHolder(ItemViewHolder itemViewHolder) {
+
+      this.itemViewHolder = itemViewHolder;
+    }
+
+    public ItemViewHolder getItemViewHolder() {
+      return itemViewHolder;
     }
   }
 
