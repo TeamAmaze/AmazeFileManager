@@ -26,6 +26,9 @@ object RandomPathGenerator {
     val CHARS_FOR_PATH = ('A'..'Z').toList() + ('a'..'z').toList()
     val SEPARATOR = '/'
 
+    /**
+     * Generates a valid random path
+     */
     fun generateRandomPath(random: Random, length: Int): String {
         val randomString = (1..length)
             .map { i -> random.nextInt(0, CHARS_FOR_PATH.count()) }

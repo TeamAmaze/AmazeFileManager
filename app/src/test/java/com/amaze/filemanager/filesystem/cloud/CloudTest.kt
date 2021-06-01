@@ -41,8 +41,9 @@ class CloudTest {
                 BOX -> CloudHandler.CLOUD_PREFIX_BOX
                 GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
                 ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
-                else -> throw RuntimeException()
+                else -> null
             }
+            requireNotNull(prefix)
             prefix + RandomPathGenerator.SEPARATOR + path
         }
 
