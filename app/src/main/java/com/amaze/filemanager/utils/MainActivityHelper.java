@@ -43,6 +43,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -441,23 +442,23 @@ public class MainActivityHelper {
           }
 
           // On Android 5, trigger storage access framework.
-          if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+          if (!FileProperties.isWritableNormalOrSaf(folder, context)) {
             guideDialogForLEXA(folder.getPath());
             return CAN_CREATE_FILES;
           }
 
           return WRITABLE_OR_ON_SDCARD;
-        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+        } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
       } else if (Build.VERSION.SDK_INT == 19) {
         if (FileUtil.isOnExtSdCard(folder, context)) {
           // Assume that Kitkat workaround works
           return WRITABLE_OR_ON_SDCARD;
-        } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+        } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
-      } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+      } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
         return WRITABLE_OR_ON_SDCARD;
       } else {
         return DOESNT_EXIST;

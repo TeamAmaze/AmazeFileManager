@@ -37,6 +37,8 @@ import java.util.regex.Pattern;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.exceptions.NotAllowedException;
+import com.amaze.filemanager.exceptions.OperationWouldOverwriteException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
@@ -67,6 +69,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbFile;
+import kotlin.NotImplementedError;
 
 /** Utility class for helping parsing file systems. */
 public abstract class FileUtil {
@@ -89,7 +92,7 @@ public abstract class FileUtil {
       throws FileNotFoundException {
     OutputStream outStream = null;
     // First try the normal way
-    if (isWritable(target)) {
+    if (FileProperties.isWritable(target)) {
       // standard way
       outStream = new FileOutputStream(target);
     } else {
@@ -113,189 +116,168 @@ public abstract class FileUtil {
       @NonNull final ContentResolver contentResolver,
       @NonNull final String currentPath) {
 
-    Maybe.create(
-            (MaybeOnSubscribe<List<String>>)
-                emitter -> {
-                  List<String> retval = new ArrayList<>();
+    MaybeOnSubscribe<List<String>> writeUri =
+        (MaybeOnSubscribe<List<String>>)
+            emitter -> {
+              List<String> retval = new ArrayList<>();
 
-                  for (Uri uri : uris) {
+              for (Uri uri : uris) {
 
-                    BufferedInputStream bufferedInputStream = null;
-                    try {
-                      bufferedInputStream =
-                          new BufferedInputStream(contentResolver.openInputStream(uri));
-                    } catch (FileNotFoundException e) {
-                      e.printStackTrace();
+                BufferedInputStream bufferedInputStream = null;
+                try {
+                  bufferedInputStream =
+                      new BufferedInputStream(contentResolver.openInputStream(uri));
+                } catch (FileNotFoundException e) {
+                  emitter.onError(e);
+                  return;
+                }
+
+                BufferedOutputStream bufferedOutputStream = null;
+
+                try {
+                  DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
+                  String filename = documentFile.getName();
+                  if (filename == null) {
+                    filename = uri.getLastPathSegment();
+
+                    // For cleaning up slashes. Back in #1217 there is a case of
+                    // Uri.getLastPathSegment() end up with a full file path
+                    if (filename.contains("/"))
+                      filename = filename.substring(filename.lastIndexOf('/') + 1);
+                  }
+
+                  String finalFilePath = currentPath + "/" + filename;
+                  DataUtils dataUtils = DataUtils.getInstance();
+
+                  HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
+                  hFile.generateMode(mainActivity);
+
+                  switch (hFile.getMode()) {
+                    case FILE:
+                    case ROOT:
+                      File targetFile = new File(finalFilePath);
+                      if (!FileProperties.isWritableNormalOrSaf(
+                          targetFile.getParentFile(), mainActivity.getApplicationContext())) {
+                        emitter.onError(new NotAllowedException());
+                        return;
+                      }
+
+                      DocumentFile targetDocumentFile =
+                          getDocumentFile(targetFile, false, mainActivity.getApplicationContext());
+
+                      // Fallback, in case getDocumentFile() didn't properly return a
+                      // DocumentFile
+                      // instance
+                      if (targetDocumentFile == null) {
+                        targetDocumentFile = DocumentFile.fromFile(targetFile);
+                      }
+
+                      // Lazy check... and in fact, different apps may pass in URI in different
+                      // formats, so we could only check filename matches
+                      // FIXME?: Prompt overwrite instead of simply blocking
+                      if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
+                        emitter.onError(new OperationWouldOverwriteException());
+                        return;
+                      }
+
+                      bufferedOutputStream =
+                          new BufferedOutputStream(
+                              contentResolver.openOutputStream(targetDocumentFile.getUri()));
+                      retval.add(targetFile.getPath());
+                      break;
+                    case SMB:
+                      SmbFile targetSmbFile = SmbUtil.create(finalFilePath);
+                      if (targetSmbFile.exists()) {
+                        emitter.onError(new OperationWouldOverwriteException());
+                        return;
+                      } else {
+                        OutputStream outputStream = targetSmbFile.getOutputStream();
+                        bufferedOutputStream = new BufferedOutputStream(outputStream);
+                        retval.add(HybridFile.parseAndFormatUriForDisplay(targetSmbFile.getPath()));
+                      }
+                      break;
+                    case SFTP:
+                      // FIXME: implement support
+                      AppConfig.toast(mainActivity, mainActivity.getString(R.string.not_allowed));
+                      emitter.onError(new NotImplementedError());
                       return;
-                    }
+                    case DROPBOX:
+                    case BOX:
+                    case ONEDRIVE:
+                    case GDRIVE:
+                      OpenMode mode = hFile.getMode();
 
-                    BufferedOutputStream bufferedOutputStream = null;
+                      CloudStorage cloudStorage = dataUtils.getAccount(mode);
+                      String path = CloudUtil.stripPath(mode, finalFilePath);
+                      cloudStorage.upload(path, bufferedInputStream, documentFile.length(), true);
+                      retval.add(path);
+                      break;
+                    case OTG:
+                      DocumentFile documentTargetFile =
+                          OTGUtil.getDocumentFile(finalFilePath, mainActivity, true);
 
-                    try {
-                      DocumentFile documentFile = DocumentFile.fromSingleUri(mainActivity, uri);
-                      String filename = documentFile.getName();
-                      if (filename == null) {
-                        filename = uri.getLastPathSegment();
-
-                        // For cleaning up slashes. Back in #1217 there is a case of
-                        // Uri.getLastPathSegment() end up with a full file path
-                        if (filename.contains("/"))
-                          filename = filename.substring(filename.lastIndexOf('/') + 1);
+                      if (documentTargetFile.exists()) {
+                        emitter.onError(new OperationWouldOverwriteException());
+                        return;
                       }
 
-                      String finalFilePath = currentPath + "/" + filename;
-                      DataUtils dataUtils = DataUtils.getInstance();
+                      bufferedOutputStream =
+                          new BufferedOutputStream(
+                              contentResolver.openOutputStream(documentTargetFile.getUri()),
+                              GenericCopyUtil.DEFAULT_BUFFER_SIZE);
 
-                      HybridFile hFile = new HybridFile(OpenMode.UNKNOWN, currentPath);
-                      hFile.generateMode(mainActivity);
-
-                      switch (hFile.getMode()) {
-                        case FILE:
-                        case ROOT:
-                          File targetFile = new File(finalFilePath);
-                          if (!FileUtil.isWritableNormalOrSaf(
-                              targetFile.getParentFile(), mainActivity.getApplicationContext())) {
-                            AppConfig.toast(
-                                mainActivity,
-                                mainActivity.getResources().getString(R.string.not_allowed));
-                            return;
-                          }
-
-                          DocumentFile targetDocumentFile =
-                              getDocumentFile(
-                                  targetFile, false, mainActivity.getApplicationContext());
-
-                          // Fallback, in case getDocumentFile() didn't properly return a
-                          // DocumentFile
-                          // instance
-                          if (targetDocumentFile == null)
-                            targetDocumentFile = DocumentFile.fromFile(targetFile);
-
-                          // Lazy check... and in fact, different apps may pass in URI in different
-                          // formats, so we could only check filename matches
-                          // FIXME?: Prompt overwrite instead of simply blocking
-                          if (targetDocumentFile.exists() && targetDocumentFile.length() > 0) {
-                            AppConfig.toast(
-                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                            return;
-                          }
-
-                          bufferedOutputStream =
-                              new BufferedOutputStream(
-                                  contentResolver.openOutputStream(targetDocumentFile.getUri()));
-                          retval.add(targetFile.getPath());
-                          break;
-                        case SMB:
-                          SmbFile targetSmbFile = SmbUtil.create(finalFilePath);
-                          if (targetSmbFile.exists()) {
-                            AppConfig.toast(
-                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                            emitter.onError(new Exception());
-                          } else {
-                            OutputStream outputStream = targetSmbFile.getOutputStream();
-                            bufferedOutputStream = new BufferedOutputStream(outputStream);
-                            retval.add(
-                                HybridFile.parseAndFormatUriForDisplay(targetSmbFile.getPath()));
-                          }
-                          break;
-                        case SFTP:
-                          // FIXME: implement support
-                          AppConfig.toast(
-                              mainActivity, mainActivity.getString(R.string.not_allowed));
-                          emitter.onError(new Exception());
-                        case DROPBOX:
-                          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-                          String path = CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath);
-                          cloudStorageDropbox.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
-                        case BOX:
-                          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-                          path = CloudUtil.stripPath(OpenMode.BOX, finalFilePath);
-                          cloudStorageBox.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
-                        case ONEDRIVE:
-                          CloudStorage cloudStorageOneDrive =
-                              dataUtils.getAccount(OpenMode.ONEDRIVE);
-                          path = CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath);
-                          cloudStorageOneDrive.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
-                        case GDRIVE:
-                          CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-                          path = CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath);
-                          cloudStorageGDrive.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
-                        case OTG:
-                          DocumentFile documentTargetFile =
-                              OTGUtil.getDocumentFile(finalFilePath, mainActivity, true);
-
-                          if (documentTargetFile.exists()) {
-                            AppConfig.toast(
-                                mainActivity, mainActivity.getString(R.string.cannot_overwrite));
-                            return;
-                          }
-
-                          bufferedOutputStream =
-                              new BufferedOutputStream(
-                                  contentResolver.openOutputStream(documentTargetFile.getUri()),
-                                  GenericCopyUtil.DEFAULT_BUFFER_SIZE);
-
-                          retval.add(documentTargetFile.getUri().getPath());
-                          break;
-                        default:
-                          return;
-                      }
-
-                      int count = 0;
-                      byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-
-                      while (count != -1) {
-                        count = bufferedInputStream.read(buffer);
-                        if (count != -1) {
-
-                          bufferedOutputStream.write(buffer, 0, count);
-                        }
-                      }
-                      bufferedOutputStream.flush();
-
-                    } catch (IOException e) {
-                      e.printStackTrace();
+                      retval.add(documentTargetFile.getUri().getPath());
+                      break;
+                    default:
                       return;
-                    } finally {
-                      try {
-                        if (bufferedInputStream != null) {
-                          bufferedInputStream.close();
-                        }
-                        if (bufferedOutputStream != null) {
-                          bufferedOutputStream.close();
-                        }
-                      } catch (IOException e) {
-                        e.printStackTrace();
-                      }
+                  }
+
+                  int count = 0;
+                  byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+
+                  while (count != -1) {
+                    count = bufferedInputStream.read(buffer);
+                    if (count != -1) {
+
+                      bufferedOutputStream.write(buffer, 0, count);
                     }
                   }
-                  if (retval.size() > 0) {
-                    emitter.onSuccess(retval);
-                  } else {
-                    emitter.onError(new Exception());
+                  bufferedOutputStream.flush();
+
+                } catch (IOException e) {
+                  emitter.onError(e);
+                  return;
+                } finally {
+                  try {
+                    if (bufferedInputStream != null) {
+                      bufferedInputStream.close();
+                    }
+                    if (bufferedOutputStream != null) {
+                      bufferedOutputStream.close();
+                    }
+                  } catch (IOException e) {
+                    emitter.onError(e);
                   }
-                })
+                }
+              }
+
+              if (retval.size() > 0) {
+                emitter.onSuccess(retval);
+              } else {
+                emitter.onError(new Exception());
+              }
+            };
+
+    Maybe.create(writeUri)
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
             new MaybeObserver<List<String>>() {
               @Override
-              public void onSubscribe(Disposable d) {}
+              public void onSubscribe(@NonNull Disposable d) {}
 
               @Override
-              public void onSuccess(List<String> paths) {
+              public void onSuccess(@NonNull List<String> paths) {
                 if (paths.size() == 1) {
                   Toast.makeText(
                           mainActivity,
@@ -312,7 +294,16 @@ public abstract class FileUtil {
               }
 
               @Override
-              public void onError(Throwable e) {
+              public void onError(@NonNull Throwable e) {
+                if (e instanceof OperationWouldOverwriteException) {
+                  AppConfig.toast(mainActivity, mainActivity.getString(R.string.cannot_overwrite));
+                  return;
+                }
+                if (e instanceof NotAllowedException) {
+                  AppConfig.toast(
+                      mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
+                }
+
                 Log.e(
                     getClass().getSimpleName(),
                     "Failed to write uri to storage due to " + e.getCause());
@@ -322,103 +313,6 @@ public abstract class FileUtil {
               @Override
               public void onComplete() {}
             });
-  }
-
-  /**
-   * Check if a file is readable.
-   *
-   * @param file The file
-   * @return true if the file is reabable.
-   */
-  public static boolean isReadable(final File file) {
-    if (file == null) return false;
-    if (!file.exists()) return false;
-
-    boolean result;
-    try {
-      result = file.canRead();
-    } catch (SecurityException e) {
-      return false;
-    }
-
-    return result;
-  }
-
-  /**
-   * Check if a file is writable. Detects write issues on external SD card.
-   *
-   * @param file The file
-   * @return true if the file is writable.
-   */
-  public static boolean isWritable(final File file) {
-    if (file == null) return false;
-    boolean isExisting = file.exists();
-
-    try {
-      FileOutputStream output = new FileOutputStream(file, true);
-      try {
-        output.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-        // do nothing.
-      }
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      return false;
-    }
-    boolean result = file.canWrite();
-
-    // Ensure that file is not created during this process.
-    if (!isExisting) {
-      file.delete();
-    }
-
-    return result;
-  }
-
-  // Utility methods for Android 5
-
-  /**
-   * Check for a directory if it is possible to create files within this directory, either via
-   * normal writing or via Storage Access Framework.
-   *
-   * @param folder The directory
-   * @return true if it is possible to write in this directory.
-   */
-  public static boolean isWritableNormalOrSaf(final File folder, Context c) {
-
-    // Verify that this is a directory.
-    if (folder == null) return false;
-    if (!folder.exists() || !folder.isDirectory()) {
-      return false;
-    }
-
-    // Find a non-existing file in this directory.
-    int i = 0;
-    File file;
-    do {
-      String fileName = "AugendiagnoseDummyFile" + (++i);
-      file = new File(folder, fileName);
-    } while (file.exists());
-
-    // First check regular writability
-    if (isWritable(file)) {
-      return true;
-    }
-
-    // Next check SAF writability.
-    DocumentFile document = getDocumentFile(file, false, c);
-
-    if (document == null) {
-      return false;
-    }
-
-    // This should have created the file - otherwise something is wrong with access URL.
-    boolean result = document.canWrite() && file.exists();
-
-    // Ensure that the dummy file is not remaining.
-    DeleteOperation.deleteFile(file, c);
-    return result;
   }
 
   /**
@@ -591,7 +485,7 @@ public abstract class FileUtil {
       }
 
       // On Android 5, trigger storage access framework.
-      if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+      if (FileProperties.isWritableNormalOrSaf(folder, context)) {
         return 1;
       }
     } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {

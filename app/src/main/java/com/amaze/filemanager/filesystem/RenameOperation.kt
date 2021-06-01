@@ -49,7 +49,7 @@ object RenameOperation {
             inStream = FileInputStream(source)
 
             // First try the normal way
-            if (FileUtil.isWritable(target)) {
+            if (FileProperties.isWritable(target)) {
                 // standard way
                 outStream = FileOutputStream(target)
                 inChannel = inStream.channel
