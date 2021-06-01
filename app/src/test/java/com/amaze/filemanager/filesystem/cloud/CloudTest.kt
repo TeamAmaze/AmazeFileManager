@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.filesystem.cloud
 
 import com.amaze.filemanager.database.CloudHandler
@@ -19,8 +39,8 @@ class CloudTest {
             val prefix = when (mode) {
                 DROPBOX -> CloudHandler.CLOUD_PREFIX_DROPBOX
                 BOX -> CloudHandler.CLOUD_PREFIX_BOX
-                GDRIVE  -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
-                ONEDRIVE  -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
+                GDRIVE -> CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE
+                ONEDRIVE -> CloudHandler.CLOUD_PREFIX_ONE_DRIVE
                 else -> throw RuntimeException()
             }
             prefix + RandomPathGenerator.SEPARATOR + path
@@ -31,10 +51,14 @@ class CloudTest {
         for (i in 0..50) {
             val path = RandomPathGenerator.generateRandomPath(r, 50)
 
-            assertForTest(DROPBOX, path, CloudUtil.stripPath(DROPBOX, generatePathForMode(DROPBOX, path)))
-            assertForTest(BOX, path, CloudUtil.stripPath(BOX, generatePathForMode(BOX, path)))
-            assertForTest(GDRIVE, path, CloudUtil.stripPath(GDRIVE, generatePathForMode(GDRIVE, path)))
-            assertForTest(ONEDRIVE, path, CloudUtil.stripPath(ONEDRIVE, generatePathForMode(ONEDRIVE, path)))
+            val genAndStrip = { mode: OpenMode ->
+                CloudUtil.stripPath(mode, generatePathForMode(mode, path))
+            }
+
+            assertForTest(DROPBOX, path, genAndStrip(DROPBOX))
+            assertForTest(BOX, path, genAndStrip(BOX))
+            assertForTest(GDRIVE, path, genAndStrip(GDRIVE))
+            assertForTest(ONEDRIVE, path, genAndStrip(ONEDRIVE))
         }
     }
 }
