@@ -583,7 +583,7 @@ public class Operations {
         }
 
         // On Android 5, trigger storage access framework.
-        if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+        if (!FileProperties.isWritableNormalOrSaf(folder, context)) {
           return 2;
         }
         return 1;
@@ -594,7 +594,7 @@ public class Operations {
     }
 
     // file not on external sd card
-    if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+    if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
       return 1;
     } else {
       return 0;

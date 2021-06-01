@@ -39,6 +39,7 @@ import java.util.Objects;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.utils.OnLowMemory;
 import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -129,7 +130,7 @@ public class GenericCopyUtil {
 
         // source file is neither smb nor otg; getting a channel from direct file instead of stream
         File file = new File(mSourceFile.getPath());
-        if (FileUtil.isReadable(file)) {
+        if (FileProperties.isReadable(file)) {
 
           if (mTargetFile.isOneDriveFile()
               || mTargetFile.isDropBoxFile()
@@ -183,7 +184,7 @@ public class GenericCopyUtil {
       } else {
         // copying normal file, target not in OTG
         File file = new File(mTargetFile.getPath());
-        if (FileUtil.isWritable(file)) {
+        if (FileProperties.isWritable(file)) {
 
           if (lowOnMemory) {
             bufferedOutputStream = new BufferedOutputStream(new FileOutputStream(file));

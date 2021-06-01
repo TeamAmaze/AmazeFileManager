@@ -89,7 +89,7 @@ public abstract class FileUtil {
       throws FileNotFoundException {
     OutputStream outStream = null;
     // First try the normal way
-    if (isWritable(target)) {
+    if (FileProperties.isWritable(target)) {
       // standard way
       outStream = new FileOutputStream(target);
     } else {
@@ -153,7 +153,7 @@ public abstract class FileUtil {
                         case FILE:
                         case ROOT:
                           File targetFile = new File(finalFilePath);
-                          if (!FileUtil.isWritableNormalOrSaf(
+                          if (!FileProperties.isWritableNormalOrSaf(
                               targetFile.getParentFile(), mainActivity.getApplicationContext())) {
                             AppConfig.toast(
                                 mainActivity,
@@ -322,103 +322,6 @@ public abstract class FileUtil {
               @Override
               public void onComplete() {}
             });
-  }
-
-  /**
-   * Check if a file is readable.
-   *
-   * @param file The file
-   * @return true if the file is reabable.
-   */
-  public static boolean isReadable(final File file) {
-    if (file == null) return false;
-    if (!file.exists()) return false;
-
-    boolean result;
-    try {
-      result = file.canRead();
-    } catch (SecurityException e) {
-      return false;
-    }
-
-    return result;
-  }
-
-  /**
-   * Check if a file is writable. Detects write issues on external SD card.
-   *
-   * @param file The file
-   * @return true if the file is writable.
-   */
-  public static boolean isWritable(final File file) {
-    if (file == null) return false;
-    boolean isExisting = file.exists();
-
-    try {
-      FileOutputStream output = new FileOutputStream(file, true);
-      try {
-        output.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-        // do nothing.
-      }
-    } catch (FileNotFoundException e) {
-      e.printStackTrace();
-      return false;
-    }
-    boolean result = file.canWrite();
-
-    // Ensure that file is not created during this process.
-    if (!isExisting) {
-      file.delete();
-    }
-
-    return result;
-  }
-
-  // Utility methods for Android 5
-
-  /**
-   * Check for a directory if it is possible to create files within this directory, either via
-   * normal writing or via Storage Access Framework.
-   *
-   * @param folder The directory
-   * @return true if it is possible to write in this directory.
-   */
-  public static boolean isWritableNormalOrSaf(final File folder, Context c) {
-
-    // Verify that this is a directory.
-    if (folder == null) return false;
-    if (!folder.exists() || !folder.isDirectory()) {
-      return false;
-    }
-
-    // Find a non-existing file in this directory.
-    int i = 0;
-    File file;
-    do {
-      String fileName = "AugendiagnoseDummyFile" + (++i);
-      file = new File(folder, fileName);
-    } while (file.exists());
-
-    // First check regular writability
-    if (isWritable(file)) {
-      return true;
-    }
-
-    // Next check SAF writability.
-    DocumentFile document = getDocumentFile(file, false, c);
-
-    if (document == null) {
-      return false;
-    }
-
-    // This should have created the file - otherwise something is wrong with access URL.
-    boolean result = document.canWrite() && file.exists();
-
-    // Ensure that the dummy file is not remaining.
-    DeleteOperation.deleteFile(file, c);
-    return result;
   }
 
   /**
@@ -591,7 +494,7 @@ public abstract class FileUtil {
       }
 
       // On Android 5, trigger storage access framework.
-      if (FileUtil.isWritableNormalOrSaf(folder, context)) {
+      if (FileProperties.isWritableNormalOrSaf(folder, context)) {
         return 1;
       }
     } else if (Build.VERSION.SDK_INT == 19 && FileUtil.isOnExtSdCard(folder, context)) {
