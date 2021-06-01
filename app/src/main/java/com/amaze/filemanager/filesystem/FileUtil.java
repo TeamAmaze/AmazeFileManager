@@ -204,32 +204,14 @@ public abstract class FileUtil {
                               mainActivity, mainActivity.getString(R.string.not_allowed));
                           emitter.onError(new Exception());
                         case DROPBOX:
-                          CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-                          String path = CloudUtil.stripPath(OpenMode.DROPBOX, finalFilePath);
-                          cloudStorageDropbox.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
                         case BOX:
-                          CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-                          path = CloudUtil.stripPath(OpenMode.BOX, finalFilePath);
-                          cloudStorageBox.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
                         case ONEDRIVE:
-                          CloudStorage cloudStorageOneDrive =
-                              dataUtils.getAccount(OpenMode.ONEDRIVE);
-                          path = CloudUtil.stripPath(OpenMode.ONEDRIVE, finalFilePath);
-                          cloudStorageOneDrive.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
-                          retval.add(path);
-                          break;
                         case GDRIVE:
-                          CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-                          path = CloudUtil.stripPath(OpenMode.GDRIVE, finalFilePath);
-                          cloudStorageGDrive.upload(
-                              path, bufferedInputStream, documentFile.length(), true);
+                          OpenMode mode = hFile.getMode();
+
+                          CloudStorage cloudStorage = dataUtils.getAccount(mode);
+                          String path = CloudUtil.stripPath(mode, finalFilePath);
+                          cloudStorage.upload(path, bufferedInputStream, documentFile.length(), true);
                           retval.add(path);
                           break;
                         case OTG:
@@ -292,10 +274,10 @@ public abstract class FileUtil {
         .subscribe(
             new MaybeObserver<List<String>>() {
               @Override
-              public void onSubscribe(Disposable d) {}
+              public void onSubscribe(@NonNull Disposable d) {}
 
               @Override
-              public void onSuccess(List<String> paths) {
+              public void onSuccess(@NonNull List<String> paths) {
                 if (paths.size() == 1) {
                   Toast.makeText(
                           mainActivity,
@@ -312,7 +294,7 @@ public abstract class FileUtil {
               }
 
               @Override
-              public void onError(Throwable e) {
+              public void onError(@NonNull Throwable e) {
                 Log.e(
                     getClass().getSimpleName(),
                     "Failed to write uri to storage due to " + e.getCause());
