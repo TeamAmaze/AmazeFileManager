@@ -31,7 +31,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -366,7 +366,7 @@ public class CopyService extends AbstractProgressiveService {
         // initial start of copy, initiate the watcher
         watcherUtil.watch(CopyService.this);
 
-        if (FileUtil.checkFolder((targetPath), c) == 1) {
+        if (FileProperties.checkFolder((targetPath), c) == 1) {
           for (int i = 0; i < sourceFiles.size(); i++) {
             sourceProgress = i;
             HybridFileParcelable f1 = (sourceFiles.get(i));

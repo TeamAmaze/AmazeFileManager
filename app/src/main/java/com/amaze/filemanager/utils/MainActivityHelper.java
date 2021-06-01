@@ -45,7 +45,6 @@ import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -168,7 +167,7 @@ public class MainActivityHelper {
           dialog.dismiss();
         },
         (text) -> {
-          boolean isValidFilename = FileUtil.isValidFilename(text);
+          boolean isValidFilename = FileProperties.isValidFilename(text);
 
           if (!isValidFilename) {
             return new WarnableTextInputValidator.ReturnState(
@@ -206,7 +205,7 @@ public class MainActivityHelper {
           dialog.dismiss();
         },
         (text) -> {
-          boolean isValidFilename = FileUtil.isValidFilename(text);
+          boolean isValidFilename = FileProperties.isValidFilename(text);
 
           // The redundant equalsIgnoreCase() is needed since ".txt" itself does not end with .txt
           // (i.e. recommended as ".txt.txt"

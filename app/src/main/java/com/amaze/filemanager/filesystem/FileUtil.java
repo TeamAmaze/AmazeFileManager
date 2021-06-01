@@ -20,9 +20,6 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
-import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -35,7 +32,6 @@ import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.exceptions.NotAllowedException;
 import com.amaze.filemanager.exceptions.OperationWouldOverwriteException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -306,46 +302,5 @@ public abstract class FileUtil {
               @Override
               public void onComplete() {}
             });
-  }
-
-  // Utility methods for Kitkat
-
-  /**
-   * Checks whether the target path exists or is writable
-   *
-   * @param f the target path
-   * @return 1 if exists or writable, 0 if not writable
-   */
-  public static int checkFolder(final String f, Context context) {
-    if (f == null) return 0;
-    if (f.startsWith(SMB_URI_PREFIX)
-        || f.startsWith(SSH_URI_PREFIX)
-        || f.startsWith(OTGUtil.PREFIX_OTG)
-        || f.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
-        || f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)
-        || f.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)
-        || f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) return 1;
-
-    File folder = new File(f);
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
-        && ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
-      if (!folder.exists() || !folder.isDirectory()) {
-        return 0;
-      }
-
-      // On Android 5, trigger storage access framework.
-      if (FileProperties.isWritableNormalOrSaf(folder, context)) {
-        return 1;
-      }
-    } else if (Build.VERSION.SDK_INT == 19
-        && ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
-      // Assume that Kitkat workaround works
-      return 1;
-    } else if (folder.canWrite()) {
-      return 1;
-    } else {
-      return 0;
-    }
-    return 0;
   }
 }
