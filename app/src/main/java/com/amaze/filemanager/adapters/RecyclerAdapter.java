@@ -1217,6 +1217,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public boolean getAnimating() {
       return animate;
     }
+  }
 
   public interface OnImageProcessed {
     void onImageProcessed(boolean isImageBroken);
