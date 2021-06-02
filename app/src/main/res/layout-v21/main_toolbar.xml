@@ -27,8 +27,12 @@
     android:fitsSystemWindows="true"
     tools:viewBindingIgnore="true">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:id="@+id/main_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:focusable="true"
+        android:nextFocusDown="@id/fabs_menu"
+        android:nextFocusUp="@id/lin"
         >
 
         <FrameLayout
@@ -36,10 +40,15 @@
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:clipToPadding="false"
-            android:layout_height="match_parent" >
+            android:layout_height="match_parent"
+            android:focusable="true"
+            android:nextFocusUp="@id/lin" >
         </FrameLayout>
 
-        <include layout="@layout/layout_appbar"/>
+        <include
+            android:id="@+id/lin"
+            layout="@layout/layout_appbar"
+            android:focusable="true"/>
         <include layout="@layout/layout_search"/>
 
         <LinearLayout
@@ -69,6 +78,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_margin="2dp"
+                android:focusable="true"
                 app:sdMainFabClosedSrc="@drawable/ic_add_white_24dp"
                 app:sdMainFabOpenedSrc="@drawable/ic_close_white_24dp"
                 app:sdOverlayLayout="@id/fabs_overlay_layout"

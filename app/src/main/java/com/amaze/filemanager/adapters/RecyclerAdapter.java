@@ -99,7 +99,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * by Jens Klingenberg <mail@jensklingenberg.de>
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-    implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback, KeyEvent.Callback {
+        implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
   public static final int TYPE_ITEM = 0,
       TYPE_HEADER_FOLDERS = 1,
@@ -341,7 +341,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (enableMarqueeFilename && holder instanceof ItemViewHolder) {
       AnimUtils.marqueeAfterDelay(2000, ((ItemViewHolder) holder).txtTitle);
     }
-    super.onViewAttachedToWindow(holder);
   }
 
   @Override
@@ -491,7 +490,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewType == TYPE_HEADER_FOLDERS
                 ? SpecialViewHolder.HEADER_FOLDERS
                 : SpecialViewHolder.HEADER_FILES;
-
         return new SpecialViewHolder(context, view, utilsProvider, type);
       case TYPE_ITEM:
       case TYPE_BACK:
@@ -513,6 +511,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             marginFab = (int) context.getResources().getDimension(R.dimen.fab_margin);
         view = new View(context);
         view.setMinimumHeight(totalFabHeight + marginFab);
+        view.setFocusable(true);
         return new EmptyViewHolder(view);
       default:
         throw new IllegalArgumentException("Illegal: " + viewType);
@@ -525,7 +524,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       final ItemViewHolder holder = (ItemViewHolder) vholder;
       holder.txtTitle.setEllipsize(
           enableMarquee ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.MIDDLE);
-
       final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;
       if (isBackButton) {
         holder.about.setVisibility(View.GONE);
@@ -1159,51 +1157,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   private boolean getBoolean(String key) {
     return preferenceActivity.getBoolean(key);
-  }
-
-  @Override
-  public boolean onKeyDown(int keyCode, KeyEvent event) {
-    Log.d(getClass().getSimpleName(), "Handle key down event on adapter");
-    if (mainFrag.getMainActivity().mDrawerLayout.hasFocus() ||
-            keyCode == KeyEvent.KEYCODE_DPAD_DOWN) {
-
-
-      ItemViewHolder nextItemViewHolder = null;
-      for (int i=0; i<itemsDigested.size(); i++) {
-        if (itemsDigested.get(i).specialType == TYPE_ITEM) {
-
-          if (itemsDigested.get(i).getItemViewHolder().rl.hasFocus()) {
-
-            // find the current focus item and highlight the next one
-            nextItemViewHolder = itemsDigested.get(i == itemsDigested.size()-1 ? i : i+1).getItemViewHolder();
-          }
-        }
-      }
-      // the drawer was having focus, let's shift focus to main fragment
-      if (nextItemViewHolder != null) {
-
-        nextItemViewHolder.rl.setFocusable(true);
-        nextItemViewHolder.rl.requestFocus();
-        Log.d(getClass().getSimpleName(), "Requesting focus with root layout");
-      }
-
-      return true;
-    } else return false;
-  }
-
-  @Override
-  public boolean onKeyLongPress(int keyCode, KeyEvent event) {
-    return false;
-  }
-
-  @Override
-  public boolean onKeyUp(int keyCode, KeyEvent event) {
-    return false;
-  }
-
-  @Override
-  public boolean onKeyMultiple(int keyCode, int count, KeyEvent event) {
-    return false;
   }
 
   @IntDef({TYPE_ITEM, TYPE_HEADER_FOLDERS, TYPE_HEADER_FILES, EMPTY_LAST_ITEM, TYPE_BACK})

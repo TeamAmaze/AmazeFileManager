@@ -3,7 +3,10 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/lin"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:focusable="true"
+    android:nextFocusRight="@id/buttonbarframe"
+    >
 
     <androidx.appcompat.widget.Toolbar
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -27,7 +30,10 @@
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:minHeight="72dp"
-        android:background="?android:attr/selectableItemBackground">
+        android:background="?android:attr/selectableItemBackground"
+        android:focusable="true"
+        android:nextFocusDown="@id/lin"
+        >
 
         <HorizontalScrollView
             android:paddingRight="16dp"
@@ -42,7 +48,9 @@
                 android:visibility="gone"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:orientation="horizontal"
+                android:descendantFocusability="afterDescendants"
+                >
             </LinearLayout>
         </HorizontalScrollView>
         <LinearLayout
