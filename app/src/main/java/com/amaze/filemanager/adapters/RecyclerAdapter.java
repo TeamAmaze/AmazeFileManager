@@ -340,6 +340,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (enableMarqueeFilename && holder instanceof ItemViewHolder) {
       AnimUtils.marqueeAfterDelay(2000, ((ItemViewHolder) holder).txtTitle);
     }
+    super.onViewAttachedToWindow(holder);
   }
 
   @Override
@@ -1169,7 +1170,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     private boolean checked;
     private boolean animate;
     private boolean shouldToggleDragChecked = true;
-    private ItemViewHolder itemViewHolder;
 
     ListItem(LayoutElementParcelable elem) {
       this(false, elem);
@@ -1217,21 +1217,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     public boolean getAnimating() {
       return animate;
     }
-
-    /**
-     * Sets an {@link ItemViewHolder} associated with this list item, if any
-     *
-     * @param itemViewHolder layout holder
-     */
-    public void setItemViewHolder(ItemViewHolder itemViewHolder) {
-
-      this.itemViewHolder = itemViewHolder;
-    }
-
-    public ItemViewHolder getItemViewHolder() {
-      return itemViewHolder;
-    }
-  }
 
   public interface OnImageProcessed {
     void onImageProcessed(boolean isImageBroken);
