@@ -152,7 +152,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val statusDividerView = binding.dividerFtpStatus
         accentColor = mainActivity.accent
         mainActivity.findViewById<CoordinatorLayout>(R.id.main_parent)
-            .nextFocusDownId= R.id.startStopButton
+            .nextFocusDownId = R.id.startStopButton
         updateSpans()
         updateStatus()
         when (mainActivity.appTheme.simpleTheme) {

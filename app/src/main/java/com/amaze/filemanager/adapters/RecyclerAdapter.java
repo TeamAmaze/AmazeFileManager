@@ -74,7 +74,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -99,7 +98,7 @@ import androidx.recyclerview.widget.RecyclerView;
  * by Jens Klingenberg <mail@jensklingenberg.de>
  */
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-        implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
+    implements RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback {
 
   public static final int TYPE_ITEM = 0,
       TYPE_HEADER_FOLDERS = 1,
@@ -1221,6 +1220,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     /**
      * Sets an {@link ItemViewHolder} associated with this list item, if any
+     *
      * @param itemViewHolder layout holder
      */
     public void setItemViewHolder(ItemViewHolder itemViewHolder) {
