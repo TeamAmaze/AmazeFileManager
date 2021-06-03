@@ -79,7 +79,6 @@ class FtpService : Service(), Runnable {
     private var username: String? = null
     private var password: String? = null
     private var isPasswordProtected = false
-    private var server: FtpServer? = null
     private var isStartedByTile = false
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
@@ -254,13 +253,16 @@ class FtpService : Service(), Runnable {
         const val TAG_STARTED_BY_TILE = "started_by_tile"
         // attribute of action_started, used by notification
 
-        var serverThread: Thread? = null
+        private var serverThread: Thread? = null
+        private var server: FtpServer? = null
 
         /**
          * Indicator whether FTP service is running
          */
         @JvmStatic
-        fun isRunning(): Boolean = serverThread != null
+        fun isRunning(): Boolean = server?.let {
+            !it.isStopped
+        } ?: false
 
         /**
          * Is the device connected to local network, either Ethernet or Wifi?
