@@ -302,6 +302,9 @@ public class MainActivity extends PermissionsActivity
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
+  private static final String INTENT_ACTION_OPEN_QUICK_ACCESS =
+      "com.amaze.filemanager.openQuickAccess";
+  private static final String INTENT_ACTION_OPEN_RECENT = "com.amaze.filemanager.openRecent";
 
   /** Called when the activity is first created. */
   @Override
@@ -402,7 +405,8 @@ public class MainActivity extends PermissionsActivity
         transaction.commit();
         supportInvalidateOptionsMenu();
       } else if (intent.getAction() != null
-          && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+          && (intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)
+              || "com.amaze.filemanager.openFTPServer".equals(intent.getAction()))) {
         // tile preferences, open ftp fragment
 
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -415,6 +419,18 @@ public class MainActivity extends PermissionsActivity
 
         drawer.deselectEverything();
         transaction2.commit();
+      } else if (intent.getAction() != null
+          && "com.amaze.filemanager.openAppManager".equals(intent.getAction())) {
+        FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
+        transaction3.replace(R.id.content_frame, new AppsListFragment());
+        appBarLayout
+            .animate()
+            .translationY(0)
+            .setInterpolator(new DecelerateInterpolator(2))
+            .start();
+
+        drawer.deselectEverything();
+        transaction3.commit();
       } else {
         if (path != null && path.length() > 0) {
           HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
@@ -424,11 +440,7 @@ public class MainActivity extends PermissionsActivity
             goToMain(null);
             FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
           }
-        } else if (null != intent
-            && null != intent.getAction()
-            && intent.getAction().startsWith("com.amaze.filemanager.open"))
-          setShortcutClickListener(intent);
-        else {
+        } else {
           goToMain(null);
         }
       }
@@ -553,39 +565,7 @@ public class MainActivity extends PermissionsActivity
       // disable screen rotation just for convenience purpose
       // TODO: Support screen rotation when saving a file
       Utils.disableScreenRotation(this);
-    } else if (intent.getAction().startsWith("com.amaze.filemanager.open")) {
-      setShortcutClickListener(intent);
     }
-  }
-
-  /** Handles the clicks from App Shortcuts */
-  private void setShortcutClickListener(Intent intent) {
-
-    Log.d(
-        TAG, "setShortcutClickListener() called with:" + " action = [" + intent.getAction() + "]");
-
-    if ("com.amaze.filemanager.openQuickAccess".equals(intent.getAction())) {
-
-      // FIXME: This is always null
-      if (getCurrentMainFragment() != null)
-        getCurrentMainFragment().loadlist("5", false, OpenMode.CUSTOM);
-
-    } else if ("com.amaze.filemanager.openRecent".equals(intent.getAction())) {
-
-      // FIXME: This is always null
-      if (getCurrentMainFragment() != null)
-        getCurrentMainFragment().loadlist("6", false, OpenMode.CUSTOM);
-
-    } else if ("com.amaze.filemanager.openAppManager".equals(intent.getAction()))
-      getSupportFragmentManager()
-          .beginTransaction()
-          .add(R.id.content_frame, new AppsListFragment())
-          .commit();
-    else if ("com.amaze.filemanager.openFTPServer".equals(intent.getAction()))
-      getSupportFragmentManager()
-          .beginTransaction()
-          .add(R.id.content_frame, new FtpServerFragment())
-          .commit();
   }
 
   /** Initializes the floating action button to act as to save data from an external intent */
@@ -928,6 +908,13 @@ public class MainActivity extends PermissionsActivity
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
     TabFragment tabFragment = new TabFragment();
+    if (intent != null && intent.getAction() != null) {
+      if (INTENT_ACTION_OPEN_QUICK_ACCESS.equals(intent.getAction())) {
+        path = "5";
+      } else if (INTENT_ACTION_OPEN_RECENT.equals(intent.getAction())) {
+        path = "6";
+      }
+    }
     if (path != null && path.length() > 0) {
       Bundle b = new Bundle();
       b.putString("path", path);

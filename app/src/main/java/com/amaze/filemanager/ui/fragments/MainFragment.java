@@ -402,7 +402,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   private void loadViews() {
     if (CURRENT_PATH != null) {
       if ((LIST_ELEMENTS == null || LIST_ELEMENTS.size() == 0) && !results) {
-        loadlist(CURRENT_PATH, true, OpenMode.FILE);
+        loadlist(CURRENT_PATH, true, openMode);
       } else {
         reloadListElements(true, results, !IS_LIST);
       }
@@ -412,7 +412,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         }
       }
     } else {
-      loadlist(home, true, OpenMode.FILE);
+      loadlist(home, true, openMode);
     }
   }
 
