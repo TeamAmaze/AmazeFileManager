@@ -42,6 +42,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import androidx.annotation.Nullable;
@@ -137,6 +138,13 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         (appBarLayout, verticalOffset) -> {
           mTitleTextView.setAlpha(
               Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange()));
+        });
+    RelativeLayout aboutLayout = findViewById(R.id.relative_layout_version);
+    aboutLayout.setOnFocusChangeListener(
+        (v, hasFocus) -> {
+          if (hasFocus) {
+            mAppBarLayout.setExpanded(false, true);
+          }
         });
   }
 
