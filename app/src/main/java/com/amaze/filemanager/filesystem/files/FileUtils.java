@@ -35,7 +35,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -242,7 +242,7 @@ public class FileUtils {
       Uri uri = null;
       if (Build.VERSION.SDK_INT >= 19) {
         DocumentFile documentFile =
-            FileUtil.getDocumentFile(
+            ExternalSdCardOperation.getDocumentFile(
                 hybridFile.getFile(), hybridFile.isDirectory(context), context);
         // If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
         if (documentFile == null) documentFile = DocumentFile.fromFile(hybridFile.getFile());

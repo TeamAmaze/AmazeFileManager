@@ -39,8 +39,8 @@ import java.util.Objects;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.utils.OnLowMemory;
 import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
-import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
@@ -147,7 +147,7 @@ public class GenericCopyUtil {
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ContentResolver contentResolver = mContext.getContentResolver();
             DocumentFile documentSourceFile =
-                FileUtil.getDocumentFile(file, mSourceFile.isDirectory(), mContext);
+                ExternalSdCardOperation.getDocumentFile(file, mSourceFile.isDirectory(), mContext);
 
             bufferedInputStream =
                 new BufferedInputStream(
@@ -196,7 +196,8 @@ public class GenericCopyUtil {
           if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             ContentResolver contentResolver = mContext.getContentResolver();
             DocumentFile documentTargetFile =
-                FileUtil.getDocumentFile(file, mTargetFile.isDirectory(mContext), mContext);
+                ExternalSdCardOperation.getDocumentFile(
+                    file, mTargetFile.isDirectory(mContext), mContext);
 
             bufferedOutputStream =
                 new BufferedOutputStream(

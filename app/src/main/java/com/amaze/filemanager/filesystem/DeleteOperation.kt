@@ -53,7 +53,7 @@ object DeleteOperation {
 
         // Try with Storage Access Framework.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            val document = FileUtil.getDocumentFile(file, true, context)
+            val document = ExternalSdCardOperation.getDocumentFile(file, true, context)
             if (document != null && document.delete()) {
                 return true
             }
@@ -89,9 +89,10 @@ object DeleteOperation {
 
         // Try with Storage Access Framework.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-            FileUtil.isOnExtSdCard(file, context)
+            ExternalSdCardOperation.isOnExtSdCard(file, context)
         ) {
-            val document = FileUtil.getDocumentFile(file, false, context)
+            val document = ExternalSdCardOperation.getDocumentFile(file, false, context)
+            document ?: return true
             return document.delete()
         }
 

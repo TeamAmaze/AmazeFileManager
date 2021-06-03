@@ -49,7 +49,7 @@ import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
@@ -1220,7 +1220,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                       getMainActivity().isRootExplorer());
             },
             (text) -> {
-              boolean isValidFilename = FileUtil.isValidFilename(text);
+              boolean isValidFilename = FileProperties.isValidFilename(text);
 
               if (!isValidFilename) {
                 return new WarnableTextInputValidator.ReturnState(

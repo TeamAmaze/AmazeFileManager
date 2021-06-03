@@ -58,7 +58,9 @@ object RenameOperation {
             } else {
                 outStream = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     // Storage Access Framework
-                    val targetDocument = FileUtil.getDocumentFile(target, false, context)
+                    val targetDocument =
+                        ExternalSdCardOperation.getDocumentFile(target, false, context)
+                    targetDocument ?: throw IOException("Couldn't get DocumentFile")
                     context.contentResolver.openOutputStream(targetDocument.uri)
                 } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
@@ -151,9 +153,10 @@ object RenameOperation {
         // Try the Storage Access Framework if it is just a rename within the same parent folder.
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
             source.parent == target.parent &&
-            FileUtil.isOnExtSdCard(source, context)
+            ExternalSdCardOperation.isOnExtSdCard(source, context)
         ) {
-            val document = FileUtil.getDocumentFile(source, true, context)
+            val document = ExternalSdCardOperation.getDocumentFile(source, true, context)
+            document ?: return false
             if (document.renameTo(target.name)) {
                 return true
             }

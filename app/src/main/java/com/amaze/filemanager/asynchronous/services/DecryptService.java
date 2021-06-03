@@ -26,7 +26,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
@@ -169,7 +169,7 @@ public class DecryptService extends AbstractProgressiveService {
       addFirstDatapoint(
           baseFile.getName(context), 1, totalSize, false); // we're using encrypt as move flag false
 
-      if (FileUtil.checkFolder(baseFileFolder, context) == 1) {
+      if (FileProperties.checkFolder(baseFileFolder, context) == 1) {
         serviceWatcherUtil.watch(DecryptService.this);
 
         // we're here to decrypt, we'll decrypt at a custom path.

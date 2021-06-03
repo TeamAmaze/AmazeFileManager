@@ -21,11 +21,18 @@
 package com.amaze.filemanager.filesystem
 
 import android.content.Context
+import android.os.Build
+import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.filesystem.DeleteOperation.deleteFile
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation.isOnExtSdCard
+import com.amaze.filemanager.filesystem.smb.CifsContexts
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
+import com.amaze.filemanager.utils.OTGUtil
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
 import java.io.IOException
+import java.util.regex.Pattern
 
 // TODO check if these can be done with just File methods
 // TODO make all of these methods File extensions
@@ -110,7 +117,7 @@ object FileProperties {
         }
 
         // Next check SAF writability.
-        val document = FileUtil.getDocumentFile(file, false, c)
+        val document = ExternalSdCardOperation.getDocumentFile(file, false, c)
         document ?: return false
 
         // This should have created the file - otherwise something is wrong with access URL.
@@ -119,5 +126,65 @@ object FileProperties {
         // Ensure that the dummy file is not remaining.
         deleteFile(file, c)
         return result
+    }
+
+    // Utility methods for Kitkat
+    /**
+     * Checks whether the target path exists or is writable
+     *
+     * @param f the target path
+     * @return 1 if exists or writable, 0 if not writable
+     */
+    @JvmStatic
+    fun checkFolder(f: String?, context: Context): Int {
+        if (f == null) return 0
+        if (f.startsWith(CifsContexts.SMB_URI_PREFIX) ||
+            f.startsWith(SshConnectionPool.SSH_URI_PREFIX) ||
+            f.startsWith(OTGUtil.PREFIX_OTG) ||
+            f.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
+            f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE) ||
+            f.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
+            f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)
+        ) return 1
+        val folder = File(f)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            isOnExtSdCard(folder, context)
+        ) {
+            if (!folder.exists() || !folder.isDirectory) {
+                return 0
+            }
+
+            // On Android 5, trigger storage access framework.
+            if (isWritableNormalOrSaf(folder, context)) {
+                return 1
+            }
+        } else return if (Build.VERSION.SDK_INT == 19 &&
+            isOnExtSdCard(folder, context)
+        ) {
+            // Assume that Kitkat workaround works
+            1
+        } else if (folder.canWrite()) {
+            1
+        } else {
+            0
+        }
+        return 0
+    }
+
+    /**
+     * Validate given text is a valid filename.
+     *
+     * @param text
+     * @return true if given text is a valid filename
+     */
+    @JvmStatic
+    fun isValidFilename(text: String): Boolean {
+        val filenameRegex =
+            Pattern.compile("[\\\\\\/:\\*\\?\"<>\\|\\x01-\\x1F\\x7F]", Pattern.CASE_INSENSITIVE)
+
+        // It's not easy to use regex to detect single/double dot while leaving valid values
+        // (filename.zip) behind...
+        // So we simply use equality to check them
+        return !filenameRegex.matcher(text).find() && "." != text && ".." != text
     }
 }
