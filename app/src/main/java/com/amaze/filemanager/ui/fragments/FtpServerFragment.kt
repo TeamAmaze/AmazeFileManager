@@ -39,6 +39,7 @@ import android.text.Spanned
 import android.view.*
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.fragment.app.Fragment
@@ -150,6 +151,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val startDividerView = binding.dividerFtpStart
         val statusDividerView = binding.dividerFtpStatus
         accentColor = mainActivity.accent
+        mainActivity.findViewById<CoordinatorLayout>(R.id.main_parent)
+            .nextFocusDownId = R.id.startStopButton
         updateSpans()
         updateStatus()
         when (mainActivity.appTheme.simpleTheme) {

@@ -491,7 +491,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewType == TYPE_HEADER_FOLDERS
                 ? SpecialViewHolder.HEADER_FOLDERS
                 : SpecialViewHolder.HEADER_FILES;
-
         return new SpecialViewHolder(context, view, utilsProvider, type);
       case TYPE_ITEM:
       case TYPE_BACK:
@@ -513,6 +512,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             marginFab = (int) context.getResources().getDimension(R.dimen.fab_margin);
         view = new View(context);
         view.setMinimumHeight(totalFabHeight + marginFab);
+        view.setFocusable(true);
         return new EmptyViewHolder(view);
       default:
         throw new IllegalArgumentException("Illegal: " + viewType);
@@ -525,7 +525,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       final ItemViewHolder holder = (ItemViewHolder) vholder;
       holder.txtTitle.setEllipsize(
           enableMarquee ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.MIDDLE);
-
       final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;
       if (isBackButton) {
         holder.about.setVisibility(View.GONE);

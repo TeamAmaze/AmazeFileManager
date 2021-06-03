@@ -138,6 +138,10 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
           mTitleTextView.setAlpha(
               Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange()));
         });
+    mAppBarLayout.setOnFocusChangeListener(
+        (v, hasFocus) -> {
+          mAppBarLayout.setExpanded(hasFocus, true);
+        });
   }
 
   /**

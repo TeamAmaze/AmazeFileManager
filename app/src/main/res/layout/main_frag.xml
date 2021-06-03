@@ -22,7 +22,8 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    >
 
     <!--
      As the main content view, the view below consumes the entire
@@ -31,14 +32,18 @@
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/activity_main_swipe_refresh_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:focusable="false"
+        >
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:divider="@null"
-            android:scrollbars="none"/>
+            android:scrollbars="none"
+            android:descendantFocusability="afterDescendants"
+            />
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

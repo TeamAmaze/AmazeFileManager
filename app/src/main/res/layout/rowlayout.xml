@@ -23,10 +23,12 @@
     android:layout_height="wrap_content"
     android:minHeight="@dimen/minimal_row_size"
     android:clickable="true"
+    android:focusable="true"
     android:paddingLeft="@dimen/minimal_material_padding"
     android:paddingStart="@dimen/minimal_material_padding"
     android:paddingRight="@dimen/minimal_material_padding"
     android:paddingEnd="@dimen/minimal_material_padding"
+    android:nextFocusRight="@id/properties"
     >
     <RelativeLayout
         android:id="@+id/icon_frame_grid"
@@ -100,7 +102,10 @@
         android:layout_marginStart="16dp"
         android:padding="8dp"
         android:clickable="true"
-        android:src="@drawable/ic_more_vert_black_48dp"/>
+        android:src="@drawable/ic_more_vert_black_48dp"
+        android:nextFocusLeft="@id/second"
+        android:focusable="true"
+        />
 
     <RelativeLayout
         android:layout_toRightOf="@id/icon_frame_grid"

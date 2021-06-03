@@ -44,6 +44,7 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
 
 import androidx.annotation.NonNull;
@@ -133,6 +134,20 @@ public class AppsListFragment extends ListFragment
 
     if (savedInstanceState != null) {
       listViewState = savedInstanceState.getParcelable(KEY_LIST_STATE);
+    }
+  }
+
+  @Override
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.sort:
+        showSortDialog(((MainActivity) requireActivity()).getAppTheme());
+        return true;
+      case R.id.exit:
+        ((MainActivity) requireActivity()).goToMain(null);
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
     }
   }
 

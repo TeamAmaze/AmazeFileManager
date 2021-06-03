@@ -780,7 +780,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
    * @param isBackButton is it the back button aka '..'
    * @param position the position
    * @param layoutElementParcelable the list item
-   * @param imageView the check {@link RoundedImageView} that is to be animated
+   * @param imageView the check icon that is to be animated
    */
   public void onListItemClicked(
       boolean isBackButton,
