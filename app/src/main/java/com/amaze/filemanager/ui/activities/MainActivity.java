@@ -305,6 +305,9 @@ public class MainActivity extends PermissionsActivity
   private static final String INTENT_ACTION_OPEN_QUICK_ACCESS =
       "com.amaze.filemanager.openQuickAccess";
   private static final String INTENT_ACTION_OPEN_RECENT = "com.amaze.filemanager.openRecent";
+  private static final String INTENT_ACTION_OPEN_FTP_SERVER = "com.amaze.filemanager.openFTPServer";
+  private static final String INTENT_ACTION_OPEN_APP_MANAGER =
+      "com.amaze.filemanager.openAppManager";
 
   /** Called when the activity is first created. */
   @Override
@@ -312,7 +315,6 @@ public class MainActivity extends PermissionsActivity
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
 
-    // Had to do this hack to test this! It was crashing due to null intent
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
@@ -338,7 +340,6 @@ public class MainActivity extends PermissionsActivity
 
     path = intent.getStringExtra("path");
     openProcesses = intent.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
-    intent = intent;
 
     if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
       ArrayList<HybridFileParcelable> failedOps =
@@ -406,7 +407,7 @@ public class MainActivity extends PermissionsActivity
         supportInvalidateOptionsMenu();
       } else if (intent.getAction() != null
           && (intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)
-              || "com.amaze.filemanager.openFTPServer".equals(intent.getAction()))) {
+              || INTENT_ACTION_OPEN_FTP_SERVER.equals(intent.getAction()))) {
         // tile preferences, open ftp fragment
 
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -420,7 +421,7 @@ public class MainActivity extends PermissionsActivity
         drawer.deselectEverything();
         transaction2.commit();
       } else if (intent.getAction() != null
-          && "com.amaze.filemanager.openAppManager".equals(intent.getAction())) {
+          && INTENT_ACTION_OPEN_APP_MANAGER.equals(intent.getAction())) {
         FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
         transaction3.replace(R.id.content_frame, new AppsListFragment());
         appBarLayout

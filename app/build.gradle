@@ -147,7 +147,7 @@ dependencies {
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     //Detect memory leaks
-//    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6' //FIXME: Uncomment this!
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6' //FIXME: Uncomment this!
 
     implementation 'org.apache.commons:commons-compress:1.18'
 
