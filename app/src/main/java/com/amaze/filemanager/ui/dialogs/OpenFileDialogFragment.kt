@@ -335,7 +335,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                     }
                 }
 
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {}
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    // do nothing
+                }
             })
         }
         return dialog
