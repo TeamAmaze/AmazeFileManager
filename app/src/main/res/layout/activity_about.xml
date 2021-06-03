@@ -10,6 +10,7 @@
         android:id="@+id/appBarLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:focusable="true"
         >
 
         <com.google.android.material.appbar.CollapsingToolbarLayout
@@ -56,6 +57,7 @@
         android:layout_height="match_parent"
         android:overScrollMode="never"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        android:descendantFocusability="afterDescendants"
         >
 
         <LinearLayout
@@ -87,6 +89,7 @@
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
                         android:onClick="onClick"
+                        android:nextFocusUp="@id/appBarLayout"
                         >
                         <ImageView
                             android:id="@+id/image_version"

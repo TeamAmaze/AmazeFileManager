@@ -37,6 +37,9 @@
             <item android:state_pressed="true">
                 <color android:color="#FFFFFF"/>
             </item>
+            <item android:state_focused="true">
+                <color android:color="#EEEEEE" />
+            </item>
         </selector>
     </item>
 </ripple>

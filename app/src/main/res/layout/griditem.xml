@@ -4,7 +4,9 @@
     android:layout_height="170dp"
     android:layout_margin="2dp"
     android:background="@drawable/item_doc_grid"
-    android:foreground="@drawable/item_backgrund">
+    android:foreground="@drawable/item_backgrund"
+    android:focusable="true"
+    android:nextFocusDown="@id/properties">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -80,9 +82,10 @@
                 android:layout_centerVertical="true"
                 android:background="@drawable/ripple"
                 android:clickable="true"
-                android:focusable="true"
                 android:padding="1dp"
-                android:src="@drawable/ic_more_vert_black_48dp" />
+                android:src="@drawable/ic_more_vert_black_48dp"
+                android:nextFocusUp="@id/second"
+                android:focusable="true" />
 
             <LinearLayout
                 android:id="@+id/line1"

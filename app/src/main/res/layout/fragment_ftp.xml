@@ -5,13 +5,17 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="@dimen/material_generic"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:focusable="true"
+    android:nextFocusDown="@id/startStopButton"
+    >
 
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="@dimen/material_generic"
         app:cardUseCompatPadding="true"
+        android:focusable="true"
         app:cardElevation="@dimen/material_generic_card_elevation">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -137,6 +141,7 @@
                 android:background="?android:attr/selectableItemBackground"
                 android:text="@string/start_ftp"
                 android:padding="@dimen/padding_normal"
+                android:focusable="true"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/divider_ftp_start"/>
