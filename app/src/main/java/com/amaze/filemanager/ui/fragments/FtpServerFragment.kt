@@ -223,7 +223,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                             }
                         }
                     }
-                    .positiveText(getString(R.string.change).toUpperCase())
+                    .positiveText(getString(R.string.change).uppercase())
                     .negativeText(R.string.cancel)
                     .build()
                     .show()
@@ -265,7 +265,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     }
                 val dialog = loginDialogBuilder.customView(loginDialogView.root, true)
                     .title(getString(R.string.ftp_login))
-                    .positiveText(getString(R.string.set).toUpperCase())
+                    .positiveText(getString(R.string.set).uppercase())
                     .negativeText(getString(R.string.cancel))
                     .build()
 
@@ -322,7 +322,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     }
                 }
                 timeoutBuilder
-                    .positiveText(resources.getString(R.string.set).toUpperCase())
+                    .positiveText(resources.getString(R.string.set).uppercase())
                     .negativeText(resources.getString(R.string.cancel))
                     .build()
                     .show()
@@ -349,7 +349,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 stopServer()
                 statusText.text = spannedStatusNoConnection
                 ftpBtn.isEnabled = false
-                ftpBtn.text = resources.getString(R.string.start_ftp).toUpperCase()
+                ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
                 promptUserToEnableWireless()
             }
         }
@@ -370,7 +370,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 else spannedStatusConnected
 
                 url.text = spannedStatusUrl
-                ftpBtn.text = resources.getString(R.string.stop_ftp).toUpperCase()
+                ftpBtn.text = resources.getString(R.string.stop_ftp).uppercase()
                 FtpNotification.updateNotification(
                     context,
                     FtpReceiverActions.STARTED_FROM_TILE == signal
@@ -379,15 +379,16 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             FtpReceiverActions.FAILED_TO_START -> {
                 statusText.text = spannedStatusNotRunning
                 Toast.makeText(context, R.string.unknown_error, Toast.LENGTH_LONG).show()
-                ftpBtn.text = resources.getString(R.string.start_ftp).toUpperCase()
+                ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
                 url.text = "URL: "
             }
             FtpReceiverActions.STOPPED -> {
                 statusText.text = spannedStatusNotRunning
                 url.text = "URL: "
-                ftpBtn.text = resources.getString(R.string.start_ftp).toUpperCase()
+                ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
             }
         }
+        updateStatus()
     }
 
     /** Sends a broadcast to start ftp server  */
@@ -412,6 +413,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         wifiFilter.addAction(ConnectivityManager.CONNECTIVITY_ACTION)
         requireContext().registerReceiver(mWifiReceiver, wifiFilter)
         EventBus.getDefault().register(this)
+        updateStatus()
     }
 
     override fun onPause() {
@@ -435,13 +437,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 ftpBtn.isEnabled = true
             }
             url.text = "URL: "
-            ftpBtn.text = resources.getString(R.string.start_ftp).toUpperCase()
+            ftpBtn.text = resources.getString(R.string.start_ftp).uppercase()
         } else {
             accentColor = mainActivity.accent
             url.text = spannedStatusUrl
             statusText.text = spannedStatusConnected
             ftpBtn.isEnabled = true
-            ftpBtn.text = resources.getString(R.string.stop_ftp).toUpperCase()
+            ftpBtn.text = resources.getString(R.string.stop_ftp).uppercase()
         }
         val passwordDecrypted = passwordFromPreferences
         val passwordBulleted: CharSequence = OneCharacterCharSequence(
