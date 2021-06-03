@@ -22,13 +22,12 @@ package com.amaze.filemanager.utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.ui.views.drawer.MenuMetadata;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -66,13 +65,13 @@ public class DataUtils {
 
   private InvertedRadixTree<Integer> tree =
       new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-  private HashMap<MenuItem, MenuMetadata> menuMetadataMap =
-      new HashMap<>(); // Faster HashMap<Integer, V>
 
   private ArrayList<String[]> servers = new ArrayList<>();
   private ArrayList<String[]> books = new ArrayList<>();
 
   private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
+
+  private ArrayList<LayoutElementParcelable> checkedItemsList;
 
   private DataChangeListener dataChangeListener;
 
@@ -148,7 +147,6 @@ public class DataUtils {
     history.clear();
     storages = new ArrayList<>();
     tree = new ConcurrentInvertedRadixTree<>(new DefaultCharArrayNodeFactory());
-    menuMetadataMap.clear();
     servers = new ArrayList<>();
     books = new ArrayList<>();
     accounts = new ArrayList<>();
@@ -406,20 +404,17 @@ public class DataUtils {
     this.storages = storages;
   }
 
-  public MenuMetadata getDrawerMetadata(MenuItem item) {
-    return menuMetadataMap.get(item);
-  }
-
-  public void putDrawerMetadata(MenuItem item, MenuMetadata metadata) {
-    menuMetadataMap.put(item, metadata);
-    if (!TextUtils.isEmpty(metadata.path)) {
+  public boolean putDrawerPath(MenuItem item, String path) {
+    if (!TextUtils.isEmpty(path)) {
       try {
-        tree.put(metadata.path, item.getItemId());
+        tree.put(path, item.getItemId());
+        return true;
       } catch (IllegalStateException e) {
         Log.w(TAG, e);
-        menuMetadataMap.remove(item);
+        return false;
       }
     }
+    return false;
   }
 
   /**
@@ -428,6 +423,14 @@ public class DataUtils {
    */
   public @Nullable Integer findLongestContainingDrawerItem(CharSequence path) {
     return tree.getValueForLongestKeyPrefixing(path);
+  }
+
+  public ArrayList<LayoutElementParcelable> getCheckedItemsList() {
+    return this.checkedItemsList;
+  }
+
+  public void setCheckedItemsList(ArrayList<LayoutElementParcelable> layoutElementParcelables) {
+    this.checkedItemsList = layoutElementParcelables;
   }
 
   /**

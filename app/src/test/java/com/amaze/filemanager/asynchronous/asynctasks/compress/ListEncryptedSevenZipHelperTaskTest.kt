@@ -21,7 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Environment
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import java.io.File
 
 class ListEncryptedSevenZipHelperTaskTest : AbstractCompressedHelperTaskTest() {

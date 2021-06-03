@@ -20,15 +20,15 @@
 
 package com.amaze.filemanager.utils;
 
-import static com.amaze.filemanager.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.COMPRESS;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.DELETE;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.EXTRACT;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FILE;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.NEW_FOLDER;
-import static com.amaze.filemanager.filesystem.OperationTypeKt.RENAME;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COMPRESS;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.DELETE;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.EXTRACT;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FILE;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FOLDER;
+import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.RENAME;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -41,7 +41,9 @@ import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
+import com.amaze.filemanager.file_operations.filesystem.FolderState;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -49,6 +51,7 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -67,7 +70,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -78,6 +80,7 @@ import android.widget.Toast;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 
 /** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
@@ -239,7 +242,8 @@ public class MainActivityHelper {
       String prefill,
       final MaterialDialog.SingleButtonCallback onPositiveAction,
       final WarnableTextInputValidator.OnTextValidate validator) {
-    GeneralDialogCreation.showNameDialog(
+    MaterialDialog dialog =
+        GeneralDialogCreation.showNameDialog(
             mainActivity,
             mainActivity.getResources().getString(R.string.entername),
             prefill,
@@ -248,8 +252,15 @@ public class MainActivityHelper {
             mainActivity.getResources().getString(R.string.cancel),
             null,
             onPositiveAction,
-            validator)
-        .show();
+            validator);
+    dialog.show();
+
+    // place cursor at the beginning
+    EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+    textfield.post(
+        () -> {
+          textfield.setSelection(0);
+        });
   }
 
   public String getIntegralNames(String path) {
@@ -281,6 +292,10 @@ public class MainActivityHelper {
   }
 
   public void guideDialogForLEXA(String path) {
+    guideDialogForLEXA(path, 3);
+  }
+
+  public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
     x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
     x.title(R.string.needs_access);
@@ -299,7 +314,7 @@ public class MainActivityHelper {
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)
         .negativeColor(accentColor)
-        .onPositive((dialog, which) -> triggerStorageAccessFramework())
+        .onPositive((dialog, which) -> triggerStorageAccessFramework(requestCode))
         .onNegative(
             (dialog, which) ->
                 Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show());
@@ -307,9 +322,9 @@ public class MainActivityHelper {
     y.show();
   }
 
-  private void triggerStorageAccessFramework() {
+  private void triggerStorageAccessFramework(int requestCode) {
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-    mainActivity.startActivityForResult(intent, 3);
+    mainActivity.startActivityForResult(intent, requestCode);
   }
 
   public void rename(
@@ -409,34 +424,45 @@ public class MainActivityHelper {
         });
   }
 
-  public int checkFolder(final File folder, Context context) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      if (FileUtil.isOnExtSdCard(folder, context)) {
-        if (!folder.exists() || !folder.isDirectory()) {
-          return DOESNT_EXIST;
-        }
+  public @FolderState int checkFolder(final File folder, Context context) {
+    return checkFolder(folder.getAbsolutePath(), OpenMode.FILE, context);
+  }
 
-        // On Android 5, trigger storage access framework.
-        if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
-          guideDialogForLEXA(folder.getPath());
-          return CAN_CREATE_FILES;
-        }
-
-        return WRITABLE_OR_ON_SDCARD;
-      } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-        return WRITABLE_OR_ON_SDCARD;
-      } else return DOESNT_EXIST;
-    } else if (Build.VERSION.SDK_INT == 19) {
-      if (FileUtil.isOnExtSdCard(folder, context)) {
-        // Assume that Kitkat workaround works
-        return WRITABLE_OR_ON_SDCARD;
-      } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-        return WRITABLE_OR_ON_SDCARD;
-      } else return DOESNT_EXIST;
-    } else if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
-      return WRITABLE_OR_ON_SDCARD;
+  public @FolderState int checkFolder(final String path, OpenMode openMode, Context context) {
+    if (OpenMode.SMB.equals(openMode)) {
+      return SmbUtil.checkFolder(path);
+    } else if (OpenMode.SFTP.equals(openMode)) {
+      return SshClientUtils.checkFolder(path);
     } else {
-      return DOESNT_EXIST;
+      File folder = new File(path);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (FileUtil.isOnExtSdCard(folder, context)) {
+          if (!folder.exists() || !folder.isDirectory()) {
+            return DOESNT_EXIST;
+          }
+
+          // On Android 5, trigger storage access framework.
+          if (!FileProperties.isWritableNormalOrSaf(folder, context)) {
+            guideDialogForLEXA(folder.getPath());
+            return CAN_CREATE_FILES;
+          }
+
+          return WRITABLE_OR_ON_SDCARD;
+        } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+          return WRITABLE_OR_ON_SDCARD;
+        } else return DOESNT_EXIST;
+      } else if (Build.VERSION.SDK_INT == 19) {
+        if (FileUtil.isOnExtSdCard(folder, context)) {
+          // Assume that Kitkat workaround works
+          return WRITABLE_OR_ON_SDCARD;
+        } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+          return WRITABLE_OR_ON_SDCARD;
+        } else return DOESNT_EXIST;
+      } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+        return WRITABLE_OR_ON_SDCARD;
+      } else {
+        return DOESNT_EXIST;
+      }
     }
   }
 
@@ -627,11 +653,14 @@ public class MainActivityHelper {
       new DeleteTask(mainActivity).execute((files));
       return;
     }
-    int mode = checkFolder(new File(files.get(0).getPath()).getParentFile(), mainActivity);
-    if (mode == 2) {
+    @FolderState
+    int mode =
+        checkFolder(files.get(0).getParent(mainActivity), files.get(0).getMode(), mainActivity);
+    if (mode == CAN_CREATE_FILES) {
       mainActivity.oparrayList = (files);
       mainActivity.operation = DELETE;
-    } else if (mode == 1 || mode == 0) new DeleteTask(mainActivity).execute((files));
+    } else if (mode == WRITABLE_OR_ON_SDCARD || mode == DOESNT_EXIST)
+      new DeleteTask(mainActivity).execute((files));
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 

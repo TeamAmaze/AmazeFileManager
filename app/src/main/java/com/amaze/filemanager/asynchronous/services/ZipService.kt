@@ -27,10 +27,10 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Build
 import android.os.IBinder
-import android.preference.PreferenceManager
 import android.widget.RemoteViews
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
@@ -206,7 +206,7 @@ class ZipService : AbstractProgressiveService() {
          * Main logic for zipping specified files.
          */
         fun execute(context: Context, baseFiles: ArrayList<File>, zipPath: String?) {
-            val out: OutputStream
+            val out: OutputStream?
             val zipDirectory = File(zipPath)
             watcherUtil = ServiceWatcherUtil(progressHandler)
             watcherUtil!!.watch(this@ZipService)

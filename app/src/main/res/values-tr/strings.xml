@@ -204,11 +204,8 @@
 Devam etmek istiyor musunuz?\"</string>
     <string name="warning">Uyarı</string>
     <string name="donate">Bağış</string>
-    <string name="archive_preferences">Arşiv tercihleri</string>
     <string name="archive_extract_folder">Arşiv ayıklama klasörü</string>
-    <string name="zip_create_folder">Sıkıştırma klasörü</string>
     <string name="archive_summary">Arşiv dosyaları bu klasöre çıkartılacaktır</string>
-    <string name="zip_summary">Yeni sıkıştırılmış dosyalar bu klasörde olacak</string>
     <string name="open_as">Farklı aç</string>
     <string name="text">Metin</string>
     <string name="audio">Ses</string>

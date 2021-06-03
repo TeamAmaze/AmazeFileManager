@@ -62,12 +62,16 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
+import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
+import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
-import com.amaze.filemanager.ui.views.RoundedImageView;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
@@ -93,7 +97,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -118,6 +121,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -194,6 +198,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   /** For caching the back button */
   private LayoutElementParcelable back = null;
 
+  private int dragAndDropPreference;
+
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
@@ -203,6 +209,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     dataUtils = DataUtils.getInstance();
     utilsProvider = getMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    dragAndDropPreference =
+        sharedPref.getInt(
+            PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+            PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
     res = getResources();
 
     no = getArguments().getInt("no", 1);
@@ -215,8 +225,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
 
     accentColor = getMainActivity().getAccent();
-    primaryColor = getMainActivity().getCurrentColorPreference().primaryFirstTab;
-    primaryTwoColor = getMainActivity().getCurrentColorPreference().primarySecondTab;
+    primaryColor = getMainActivity().getCurrentColorPreference().getPrimaryFirstTab();
+    primaryTwoColor = getMainActivity().getCurrentColorPreference().getPrimarySecondTab();
   }
 
   @Override
@@ -235,6 +245,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           }
           return false;
         });
+    //    listView.setOnDragListener(new MainFragmentDragListener());
     mToolbarContainer.setOnTouchListener(
         (view, motionEvent) -> {
           if (adapter != null && stopAnims) {
@@ -277,12 +288,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     listView.setHasFixedSize(true);
     columns = Integer.parseInt(sharedPref.getString(PREFERENCE_GRID_COLUMNS, "-1"));
     if (IS_LIST) {
-      mLayoutManager = new LinearLayoutManager(getContext());
+      mLayoutManager = new CustomScrollLinearLayoutManager(getContext());
       listView.setLayoutManager(mLayoutManager);
     } else {
       if (columns == -1 || columns == 0)
-        mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
-      else mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+        mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
+      else mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), columns);
       setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
       listView.setLayoutManager(mLayoutManagerGrid);
     }
@@ -334,7 +345,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   void setGridLayoutSpanSizeLookup(GridLayoutManager mLayoutManagerGrid) {
 
     mLayoutManagerGrid.setSpanSizeLookup(
-        new GridLayoutManager.SpanSizeLookup() {
+        new CustomScrollGridLayoutManager.SpanSizeLookup() {
 
           @Override
           public int getSpanSize(int position) {
@@ -360,8 +371,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
     if (mLayoutManagerGrid == null)
       if (columns == -1 || columns == 0)
-        mLayoutManagerGrid = new GridLayoutManager(getActivity(), 3);
-      else mLayoutManagerGrid = new GridLayoutManager(getActivity(), columns);
+        mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
+      else mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), columns);
     setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
     listView.setLayoutManager(mLayoutManagerGrid);
     listView.clearOnScrollListeners();
@@ -376,7 +387,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       listView.setBackgroundDrawable(null);
     }
 
-    if (mLayoutManager == null) mLayoutManager = new LinearLayoutManager(getActivity());
+    if (mLayoutManager == null) mLayoutManager = new CustomScrollLinearLayoutManager(getActivity());
     listView.setLayoutManager(mLayoutManager);
     listView.clearOnScrollListeners();
     adapter = null;
@@ -681,9 +692,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                     item.getItemId() == R.id.cpy
                         ? PasteHelper.OPERATION_COPY
                         : PasteHelper.OPERATION_CUT;
-
-                PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
-                getMainActivity().setPaste(pasteHelper);
+                // Making sure we don't cause an IllegalArgumentException
+                // when passing copies to PasteHelper
+                if (copies.length > 0) {
+                  PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
+                  getMainActivity().setPaste(pasteHelper);
+                }
                 mode.finish();
                 return true;
               }
@@ -766,7 +780,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
    * @param isBackButton is it the back button aka '..'
    * @param position the position
    * @param layoutElementParcelable the list item
-   * @param imageView the check {@link RoundedImageView} that is to be animated
+   * @param imageView the check icon that is to be animated
    */
   public void onListItemClicked(
       boolean isBackButton,
@@ -1264,9 +1278,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               loadlist(path.toString().replace("%3D", "="), true, openMode);
             } else loadlist(home, false, OpenMode.FILE);
           } else if (OpenMode.SFTP.equals(openMode)) {
-            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/"))
+            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/")) {
               loadlist(home, false, OpenMode.FILE);
-            else loadlist(currentFile.getParent(getContext()), true, openMode);
+            } else {
+              loadlist(currentFile.getParent(getContext()), true, openMode);
+            }
           } else if (CURRENT_PATH.equals("/")
               || CURRENT_PATH.equals(home)
               || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
@@ -1742,6 +1758,54 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   public ArrayList<LayoutElementParcelable> getElementsList() {
     return LIST_ELEMENTS;
+  }
+
+  public void initTopAndEmptyAreaDragListeners(boolean destroy) {
+    if (destroy) {
+      mToolbarContainer.setOnDragListener(null);
+      listView.stopScroll();
+      listView.setOnDragListener(null);
+      nofilesview.setOnDragListener(null);
+    } else {
+      mToolbarContainer.setOnDragListener(
+          new TabFragmentBottomDragListener(
+              () -> {
+                smoothScrollListView(true);
+                return null;
+              },
+              () -> {
+                stopSmoothScrollListView();
+                return null;
+              }));
+      listView.setOnDragListener(
+          new RecyclerAdapterDragListener(adapter, null, dragAndDropPreference, this));
+      nofilesview.setOnDragListener(
+          new RecyclerAdapterDragListener(adapter, null, dragAndDropPreference, this));
+    }
+  }
+
+  public void disableActionMode() {
+    this.selection = false;
+    if (this.mActionMode != null) {
+      this.mActionMode.finish();
+    }
+    this.mActionMode = null;
+  }
+
+  public void smoothScrollListView(boolean upDirection) {
+    if (listView != null) {
+      if (upDirection) {
+        listView.smoothScrollToPosition(0);
+      } else {
+        listView.smoothScrollToPosition(adapter.getItemsDigested().size());
+      }
+    }
+  }
+
+  public void stopSmoothScrollListView() {
+    if (listView != null) {
+      listView.stopScroll();
+    }
   }
 
   @Override

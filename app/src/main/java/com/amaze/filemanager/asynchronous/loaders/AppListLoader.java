@@ -48,13 +48,14 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
   private PackageManager packageManager;
   private PackageReceiver packageReceiver;
   private AppsDataPair mApps;
-  private int sortBy, asc;
+  private final int sortBy;
+  private final boolean isAscending;
 
-  public AppListLoader(Context context, int sortBy, int asc) {
+  public AppListLoader(Context context, int sortBy, boolean isAscending) {
     super(context);
 
     this.sortBy = sortBy;
-    this.asc = asc;
+    this.isAscending = isAscending;
 
     /*
      * using global context because of the fact that loaders are supposed to be used
@@ -103,7 +104,7 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
 
       mApps.first.add(elem);
 
-      Collections.sort(mApps.first, new AppDataParcelable.AppDataSorter(sortBy, asc));
+      Collections.sort(mApps.first, new AppDataParcelable.AppDataSorter(sortBy, isAscending));
 
       for (AppDataParcelable p : mApps.first) {
         mApps.second.add(p.path);

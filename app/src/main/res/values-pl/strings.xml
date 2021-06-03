@@ -199,11 +199,8 @@
     <string name="unin_system_apk">To jest aplikacja systemowa, usunięcie jej może spowodować niestabilność systemu.\nKontynuować?</string>
     <string name="warning">Ostrzeżenie</string>
     <string name="donate">Dotacja</string>
-    <string name="archive_preferences">Ustawienia archiwów</string>
     <string name="archive_extract_folder">Katalog wypakowywania</string>
-    <string name="zip_create_folder">Katalog tworzenia archiwum</string>
     <string name="archive_summary">Wskazuje ścieżkę wypakowania plików z archiwum. Domyślnie: aktualny katalog archiwum.</string>
-    <string name="zip_summary">Wskazuje ścieżkę tworzenia archiwum. Domyślnie: aktualny katalog kompresowanych plików.</string>
     <string name="open_as">Otwórz jako</string>
     <string name="text">Tekst</string>
     <string name="audio">Muzyka</string>

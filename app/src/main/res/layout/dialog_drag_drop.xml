@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <Button
+        android:id="@+id/button_move"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/move"
+        android:drawableLeft="@drawable/ic_content_cut_white_36dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:background="?selectableItemBackground"
+        />
+    <Button
+        android:id="@+id/button_copy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/copy"
+        android:drawableLeft="@drawable/ic_content_copy_white_24dp"
+        app:layout_constraintLeft_toRightOf="@id/button_move"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginLeft="@dimen/material_generic_medium"
+        android:background="?selectableItemBackground"
+        />
+    <CheckBox
+        android:id="@+id/remember_drag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/remember"
+        app:layout_constraintTop_toBottomOf="@+id/button_move"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="@dimen/material_generic"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

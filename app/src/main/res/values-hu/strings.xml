@@ -207,11 +207,8 @@
     <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\nFolytatja?</string>
     <string name="warning">Figyelmeztetés</string>
     <string name="donate">Adomány</string>
-    <string name="archive_preferences">Archívum beállításai</string>
     <string name="archive_extract_folder">Archívumok kibontási mappája</string>
-    <string name="zip_create_folder">Zip mappa létrehozása</string>
     <string name="archive_summary">Az archivált fájlok ebbe a mappába lesznek kicsomagolva. Az lesz az alapértelmezett könyvtár, amelyben az archívum jelen van</string>
-    <string name="zip_summary">Az új zip fájlokat ebbe a mappába hozza létre. Ez alapértelmezettként az a könyvtár, amelyben a fájlok vannak</string>
     <string name="open_as">Megnyitás mint</string>
     <string name="text">Szöveg</string>
     <string name="audio">Zene</string>

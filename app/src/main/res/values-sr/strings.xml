@@ -199,11 +199,8 @@
     <string name="unin_system_apk">Ово је системска апликација, уклањање може да доведе до нестабилности система.\nДа наставим?</string>
     <string name="warning">Упозорење</string>
     <string name="donate">Донирај</string>
-    <string name="archive_preferences">Поставке архивисања</string>
     <string name="archive_extract_folder">Фасцикла распакивања архиве</string>
-    <string name="zip_create_folder">Фасцикла архиве</string>
     <string name="archive_summary">Фајлови архиве ће бити распаковани у ову фасциклу. Подразумевана вредност је фасцикла у којој је фајл архиве</string>
-    <string name="zip_summary">Нови зип фајлови ће бити направљени у овој фасцикли. Подразумевана вредност је фасцикла у којој су фајлови</string>
     <string name="open_as">Отвори као</string>
     <string name="text">Текст</string>
     <string name="audio">Звук</string>

@@ -199,11 +199,8 @@
     <string name="unin_system_apk">Dit is een systeemapp. Het verwijderen kan leiden tot instabiliteit van het systeem.\nDoorgaan?</string>
     <string name="warning">Waarschuwing</string>
     <string name="donate">Doneren</string>
-    <string name="archive_preferences">Archiefvoorkeuren</string>
     <string name="archive_extract_folder">Uitpakmap voor archief</string>
-    <string name="zip_create_folder">Zip-archief aanmaken</string>
     <string name="archive_summary">Archiefbestanden worden uitgepakt naar deze map. Standaardmap is de map waarin het archiefbestand staat opgeslagen</string>
-    <string name="zip_summary">Nieuwe zip-bestanden worden gemaakt in deze map. Standaardmap is de map waarin de bestanden staan opgeslagen</string>
     <string name="open_as">Open als</string>
     <string name="text">Tekstbestand</string>
     <string name="audio">Geluidsbestand</string>

@@ -197,12 +197,9 @@
   <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
   <string name="warning">Avertissement</string>
   <string name="donate">Faire une donation</string>
-  <string name="archive_preferences">Préférences d\'archivage</string>
-  <string name="archive_extract_folder">Dossier d\'extraction de l\'archive</string>
-  <string name="zip_create_folder">Créer un dossier ZIP</string>
+    <string name="archive_extract_folder">Dossier d\'extraction de l\'archive</string>
   <string name="archive_summary">Les fichiers d\'archive seront extraits dans ce dossier. La valeur par défaut est le répertoire dans lequel l\'archive est présente</string>
-  <string name="zip_summary">Les nouveaux fichiers zip seront créés dans ce dossier. La valeur par défaut est le répertoire dans lequel les fichiers sont présents</string>
-  <string name="open_as">Ouvrir en tant que</string>
+    <string name="open_as">Ouvrir en tant que</string>
   <string name="text">Texte</string>
   <string name="audio">Audio</string>
   <string name="video">Vidéo</string>

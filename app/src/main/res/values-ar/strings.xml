@@ -196,11 +196,8 @@
     <string name="unin_system_apk"> هذا تطبيق نظام ، حذفه قد يؤدي إلى عدم إستقرار النظام . هل تريد المتابعة ؟</string>
     <string name="warning">تحذير</string>
     <string name="donate">تبرع</string>
-    <string name="archive_preferences">تفضيلات الإرشيف</string>
     <string name="archive_extract_folder">مجلد للإرشيف المستخرج</string>
-    <string name="zip_create_folder">إنشاء مجلد للملفات المضغوطة</string>
     <string name="archive_summary">ملفات الإرشيف ستوضع في هذا المجلد . الوضع الإفتراضي هو حفظ الملف المستخرج في نفس مجلد الإرشيف</string>
-    <string name="zip_summary">سيتم إنشاء الملفات المضغوطة الجديدة في هذا المجلد ، الوجهة الإفتراضية للملفات المضغوطة هي نفس المجلد الذي توجد به</string>
     <string name="open_as">فتح كـ</string>
     <string name="text">نص</string>
     <string name="audio">الصوت</string>

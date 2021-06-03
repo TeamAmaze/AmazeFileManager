@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import android.os.Environment
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import org.junit.Assert
 import org.junit.Test
 import java.io.File

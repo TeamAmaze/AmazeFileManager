@@ -1,8 +1,9 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.hiya.jacoco-android'
+apply plugin: 'com.akaita.android.easylauncher'
 
 android {
     compileSdkVersion 29
@@ -46,6 +47,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             testProguardFile 'tests-proguard.cfg'
+            buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
         }
 
         release {
@@ -53,15 +55,12 @@ android {
 
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
+            buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
         }
     }
 
     buildFeatures {
         viewBinding true
-    }
-
-    androidExtensions {
-        features = ["parcelize"]
     }
 
     lintOptions {
@@ -100,34 +99,16 @@ android {
     }
 }
 
-ext {
-    robolectricVersion = '4.3.1'
-    glideVersion = '4.11.0'
-    sshjVersion = '0.26.0'
-    jcifsVersion = '2.1.3'
-    fabSpeedDialVersion = '3.1.1'
-    roomVersion = '2.2.5'
-    bouncyCastleVersion = '1.66'
-    awaitilityVersion = "3.1.6"
-    androidXTestVersion = "1.3.0"
-    androidXTestExtVersion = "1.1.2"
-    junitVersion = "4.13"
-    slf4jVersion = "1.7.25"
-    mockitoVersion = "3.4.4"
-    androidBillingVersion = "2.1.0"
-    junrarVersion = "7.4.0"
-    zip4jVersion = "2.6.4"
-}
-
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
-    implementation 'com.google.android.material:material:1.1.0'
-    implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.palette:palette:1.0.0'
+    implementation "com.google.android.material:material:$androidMaterialVersion"
+    implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
+    implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
+    implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "com.android.billingclient:billing:$androidBillingVersion"
@@ -135,6 +116,9 @@ dependencies {
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
     kapt 'androidx.annotation:annotation:1.1.0'
+
+    implementation "androidx.preference:preference:$androidXPrefVersion"
+    implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
 
     //For tests
     testImplementation "junit:junit:$junitVersion"//tests the app logic
@@ -150,10 +134,11 @@ dependencies {
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation 'org.jsoup:jsoup:1.11.2'
-    testAnnotationProcessor "com.google.auto.service:auto-service:1.0-rc4"
+    testImplementation 'commons-net:commons-net:3.6'
+    kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
     androidTestImplementation "androidx.test:core:$androidXTestVersion"
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
@@ -168,8 +153,8 @@ dependencies {
 
     implementation "com.github.junrar:junrar:$junrarVersion"
 
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
-    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
+    implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
 
@@ -274,8 +259,12 @@ project.afterEvaluate {
 clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
 
+easylauncher {
+    foregroundIconNames "@mipmap/ic_launcher_foreground" // Foreground of adaptive launcher icon
+}
+
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "${jacocoVersion}"
 }
 
 tasks.withType(Test) {

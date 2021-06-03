@@ -20,13 +20,19 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_APPLIST_SORTBY;
+
+import java.lang.ref.WeakReference;
+import java.util.Objects;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -37,71 +43,74 @@ import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
+import android.os.Parcelable;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
+import androidx.preference.PreferenceManager;
 
 public class AppsListFragment extends ListFragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
 
-  UtilitiesProvider utilsProvider;
-  AppsListFragment app = this;
-  AppsAdapter adapter;
-
-  public SharedPreferences Sp;
-  ListView vl;
-  int asc, sortby;
-  int index = 0, top = 0;
-
   public static final int ID_LOADER_APP_LIST = 0;
 
-  private static final String KEY_INDEX = "index";
-  private static final String KEY_TOP = "top";
+  private static final String KEY_LIST_STATE = "listState";
+
+  private AppsAdapter adapter;
+
+  private SharedPreferences sharedPreferences;
+  private Parcelable listViewState;
+  private boolean isAscending;
+  private int sortby;
 
   private AppsAdapterPreloadModel modelProvider;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
     setHasOptionsMenu(false);
   }
 
   @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    setRetainInstance(true);
-    MainActivity mainActivity = (MainActivity) getActivity();
+  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    final MainActivity mainActivity = (MainActivity) getActivity();
+    Objects.requireNonNull(mainActivity);
+
+    UtilitiesProvider utilsProvider = mainActivity.getUtilsProvider();
+
     mainActivity.getAppbar().setTitle(R.string.apps);
     mainActivity.getFAB().hide();
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
-    vl = getListView();
-    Sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    getSortModes();
-    ListView vl = getListView();
-    vl.setDivider(null);
-    if (utilsProvider.getAppTheme().equals(AppTheme.DARK))
+
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    isAscending = sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
+    sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
+
+    getListView().setDivider(null);
+    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
       getActivity()
           .getWindow()
           .getDecorView()
           .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK))
+    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
       getActivity()
           .getWindow()
           .getDecorView()
           .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+    }
 
-    modelProvider = new AppsAdapterPreloadModel(app, false);
+    modelProvider = new AppsAdapterPreloadModel(this, false);
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
     ListPreloader<String> preloader =
         new ListPreloader<>(
-            GlideApp.with(app),
+            GlideApp.with(this),
             modelProvider,
             sizeProvider,
             GlideConstants.MAX_PRELOAD_APPSADAPTER);
@@ -114,60 +123,107 @@ public class AppsListFragment extends ListFragment
             modelProvider,
             sizeProvider,
             R.layout.rowlayout,
-            Sp,
+            sharedPreferences,
             false);
 
     getListView().setOnScrollListener(preloader);
     setListAdapter(adapter);
     setListShown(false);
     setEmptyText(getString(R.string.no_applications));
-    getLoaderManager().initLoader(ID_LOADER_APP_LIST, null, this);
+    LoaderManager.getInstance(this).initLoader(ID_LOADER_APP_LIST, null, this);
 
     if (savedInstanceState != null) {
-      index = savedInstanceState.getInt(KEY_INDEX);
-      top = savedInstanceState.getInt(KEY_TOP);
+      listViewState = savedInstanceState.getParcelable(KEY_LIST_STATE);
     }
   }
 
   @Override
-  public void onSaveInstanceState(Bundle b) {
+  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+    switch (item.getItemId()) {
+      case R.id.sort:
+        showSortDialog(((MainActivity) requireActivity()).getAppTheme());
+        return true;
+      case R.id.exit:
+        ((MainActivity) requireActivity()).goToMain(null);
+        return true;
+      default:
+        return super.onOptionsItemSelected(item);
+    }
+  }
+
+  @Override
+  public void onSaveInstanceState(@NonNull Bundle b) {
     super.onSaveInstanceState(b);
 
-    if (vl != null) {
-      int index = vl.getFirstVisiblePosition();
-      View vi = vl.getChildAt(0);
-      int top = (vi == null) ? 0 : vi.getTop();
-      b.putInt(KEY_INDEX, index);
-      b.putInt(KEY_TOP, top);
-    }
+    b.putParcelable(KEY_LIST_STATE, getListView().onSaveInstanceState());
   }
 
-  /**
-   * Assigns sort modes A value from 0 to 2 defines sort mode as name/last modified/size in
-   * ascending order Values from 3 to 5 defines sort mode as name/last modified/size in descending
-   * order
-   *
-   * <p>Final value of {@link #sortby} varies from 0 to 2
-   */
-  public void getSortModes() {
-    int t = Integer.parseInt(Sp.getString("sortbyApps", "0"));
-    if (t <= 2) {
-      sortby = t;
-      asc = 1;
-    } else if (t > 2) {
-      asc = -1;
-      sortby = t - 3;
+  public void showSortDialog(AppTheme appTheme) {
+    final MainActivity mainActivity = (MainActivity) getActivity();
+    if (mainActivity == null) {
+      return;
     }
+
+    WeakReference<AppsListFragment> appsListFragment = new WeakReference<>(this);
+
+    int accentColor = mainActivity.getAccent();
+    String[] sort = getResources().getStringArray(R.array.sortbyApps);
+    MaterialDialog.Builder builder =
+        new MaterialDialog.Builder(mainActivity)
+            .theme(appTheme.getMaterialDialogTheme())
+            .items(sort)
+            .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
+            .negativeText(R.string.ascending)
+            .positiveColor(accentColor)
+            .positiveText(R.string.descending)
+            .negativeColor(accentColor)
+            .onNegative(
+                (dialog, which) -> {
+                  final AppsListFragment $this = appsListFragment.get();
+                  if ($this == null) {
+                    return;
+                  }
+
+                  $this.saveAndReload(dialog.getSelectedIndex(), true);
+                  dialog.dismiss();
+                })
+            .onPositive(
+                (dialog, which) -> {
+                  final AppsListFragment $this = appsListFragment.get();
+                  if ($this == null) {
+                    return;
+                  }
+
+                  $this.saveAndReload(dialog.getSelectedIndex(), false);
+                  dialog.dismiss();
+                })
+            .title(R.string.sort_by);
+
+    builder.build().show();
   }
 
+  private void saveAndReload(int newSortby, boolean newIsAscending) {
+    sortby = newSortby;
+    isAscending = newIsAscending;
+
+    sharedPreferences
+        .edit()
+        .putBoolean(PREFERENCE_APPLIST_ISASCENDING, newIsAscending)
+        .putInt(PREFERENCE_APPLIST_SORTBY, newSortby)
+        .apply();
+
+    LoaderManager.getInstance(this).restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, this);
+  }
+
+  @NonNull
   @Override
   public Loader<AppListLoader.AppsDataPair> onCreateLoader(int id, Bundle args) {
-    return new AppListLoader(getContext(), sortby, asc);
+    return new AppListLoader(getContext(), sortby, isAscending);
   }
 
   @Override
   public void onLoadFinished(
-      Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
+      @NonNull Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
     // set new data to adapter
     adapter.setData(data.first);
     modelProvider.setItemList(data.second);
@@ -178,11 +234,13 @@ public class AppsListFragment extends ListFragment
       setListShownNoAnimation(true);
     }
 
-    if (vl != null) vl.setSelectionFromTop(index, top);
+    if (listViewState != null) {
+      getListView().onRestoreInstanceState(listViewState);
+    }
   }
 
   @Override
-  public void onLoaderReset(Loader<AppListLoader.AppsDataPair> loader) {
+  public void onLoaderReset(@NonNull Loader<AppListLoader.AppsDataPair> loader) {
     adapter.setData(null);
   }
 }

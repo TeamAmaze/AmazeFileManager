@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -199,7 +199,7 @@ public class Operations {
               errorCallBack.launchSAF(file);
               return null;
             }
-            if (mode == 1 || mode == 0) FileUtil.mkdir(file.getFile(), context);
+            if (mode == 1 || mode == 0) MakeDirectoryOperation.mkdir(file.getFile(), context);
             if (!file.exists() && rootMode) {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
@@ -349,7 +349,7 @@ public class Operations {
               errorCallBack.launchSAF(file);
               return null;
             }
-            if (mode == 1 || mode == 0) FileUtil.mkfile(file.getFile(), context);
+            if (mode == 1 || mode == 0) MakeFileOperation.mkfile(file.getFile(), context);
             if (!file.exists() && rootMode) {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
@@ -526,7 +526,7 @@ public class Operations {
                 errorCallBack.launchSAF(oldFile, newFile);
               } else if (mode == 1 || mode == 0) {
                 try {
-                  FileUtil.renameFolder(file, file1, context);
+                  RenameOperation.renameFolder(file, file1, context);
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();
                 }
@@ -583,7 +583,7 @@ public class Operations {
         }
 
         // On Android 5, trigger storage access framework.
-        if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+        if (!FileProperties.isWritableNormalOrSaf(folder, context)) {
           return 2;
         }
         return 1;
@@ -594,7 +594,7 @@ public class Operations {
     }
 
     // file not on external sd card
-    if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+    if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
       return 1;
     } else {
       return 0;

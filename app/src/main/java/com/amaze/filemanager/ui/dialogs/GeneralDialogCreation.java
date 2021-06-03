@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -49,7 +50,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Sort;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -62,7 +63,6 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -91,7 +91,6 @@ import android.hardware.fingerprint.FingerprintManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -112,6 +111,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.preference.PreferenceManager;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -161,6 +161,16 @@ public class GeneralDialogCreation {
 
     WarnableTextInputLayout tilTextfield =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
+
+    tilTextfield.requestFocus();
+
+    textfield.postDelayed(
+        () -> {
+          InputMethodManager inputMethodManager =
+              (InputMethodManager) m.getSystemService(Context.INPUT_METHOD_SERVICE);
+          inputMethodManager.showSoftInput(textfield, InputMethodManager.SHOW_IMPLICIT);
+        },
+        100);
 
     builder
         .customView(dialogView, false)
@@ -591,7 +601,9 @@ public class GeneralDialogCreation {
     }
 
     if (!forStorage && showPermissions) {
-      final MainFragment main = ((MainActivity) base).getCurrentMainFragment();
+      final MainActivity mainActivity = (MainActivity) base;
+      final MainFragment mainFragment =
+          Objects.requireNonNull(mainActivity.getCurrentMainFragment());
       AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
       appCompatButton.setAllCaps(true);
 
@@ -604,7 +616,8 @@ public class GeneralDialogCreation {
               if (permissionsTable.getVisibility() == View.GONE) {
                 permissionsTable.setVisibility(View.VISIBLE);
                 button.setVisibility(View.VISIBLE);
-                setPermissionsDialog(permissionsTable, button, baseFile, permissions, c, main);
+                setPermissionsDialog(
+                    permissionsTable, button, baseFile, permissions, c, mainFragment);
               } else {
                 button.setVisibility(View.GONE);
                 permissionsTable.setVisibility(View.GONE);
@@ -1228,37 +1241,6 @@ public class GeneralDialogCreation {
     dialog.dismiss();
   }
 
-  public static void showSortDialog(final AppsListFragment m, AppTheme appTheme) {
-    int accentColor = ((ThemedActivity) m.getActivity()).getAccent();
-    String[] sort = m.getResources().getStringArray(R.array.sortbyApps);
-    int current = Integer.parseInt(m.Sp.getString("sortbyApps", "0"));
-    MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme());
-    a.items(sort)
-        .itemsCallbackSingleChoice(
-            current > 2 ? current - 3 : current, (dialog, view, which, text) -> true);
-    a.negativeText(R.string.ascending).positiveColor(accentColor);
-    a.positiveText(R.string.descending).negativeColor(accentColor);
-    a.onNegative(
-        (dialog, which) -> {
-          m.Sp.edit().putString("sortbyApps", "" + dialog.getSelectedIndex()).commit();
-          m.getSortModes();
-          m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
-          dialog.dismiss();
-        });
-
-    a.onPositive(
-        (dialog, which) -> {
-          m.Sp.edit().putString("sortbyApps", "" + (dialog.getSelectedIndex() + 3)).commit();
-          m.getSortModes();
-          m.getLoaderManager().restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, m);
-          dialog.dismiss();
-        });
-
-    a.title(R.string.sort_by);
-    a.build().show();
-  }
-
   public static void showHistoryDialog(
       final DataUtils dataUtils,
       SharedPreferences sharedPrefs,
@@ -1290,13 +1272,16 @@ public class GeneralDialogCreation {
   }
 
   public static void showHiddenDialog(
-      DataUtils dataUtils, SharedPreferences sharedPrefs, final MainFragment m, AppTheme appTheme) {
-    if (m == null || m.getActivity() == null) {
+      DataUtils dataUtils,
+      SharedPreferences sharedPrefs,
+      final MainFragment mainFragment,
+      AppTheme appTheme) {
+    if (mainFragment == null || mainFragment.getActivity() == null) {
       return;
     }
 
-    int accentColor = m.getMainActivity().getAccent();
-    final MaterialDialog.Builder builder = new MaterialDialog.Builder(m.getActivity());
+    int accentColor = mainFragment.getMainActivity().getAccent();
+    final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainFragment.getActivity());
     builder.positiveText(R.string.close);
     builder.positiveColor(accentColor);
     builder.title(R.string.hiddenfiles);
@@ -1304,8 +1289,8 @@ public class GeneralDialogCreation {
     builder.autoDismiss(true);
     HiddenAdapter adapter =
         new HiddenAdapter(
-            m.getActivity(),
-            m,
+            mainFragment.getActivity(),
+            mainFragment,
             sharedPrefs,
             FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()),
             null,
@@ -1316,9 +1301,7 @@ public class GeneralDialogCreation {
     adapter.updateDialog(materialDialog);
     materialDialog.setOnDismissListener(
         dialogInterface ->
-            m.getMainActivity()
-                .getCurrentMainFragment()
-                .loadlist(m.getCurrentPath(), false, OpenMode.UNKNOWN));
+            mainFragment.loadlist(mainFragment.getCurrentPath(), false, OpenMode.UNKNOWN));
     materialDialog.show();
   }
 
@@ -1400,10 +1383,12 @@ public class GeneralDialogCreation {
 
   public static void showChangePathsDialog(
       final MainActivity mainActivity, final SharedPreferences prefs) {
+    final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+    Objects.requireNonNull(mainActivity);
     final MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
     a.input(
         null,
-        mainActivity.getCurrentMainFragment().getCurrentPath(),
+        mainFragment.getCurrentPath(),
         false,
         (dialog, charSequence) -> {
           boolean isAccessible = FileUtils.isPathAccessible(charSequence.toString(), prefs);
@@ -1427,9 +1412,8 @@ public class GeneralDialogCreation {
 
     a.onPositive(
         (dialog, which) -> {
-          mainActivity
-              .getCurrentMainFragment()
-              .loadlist(dialog.getInputEditText().getText().toString(), false, OpenMode.UNKNOWN);
+          mainFragment.loadlist(
+              dialog.getInputEditText().getText().toString(), false, OpenMode.UNKNOWN);
         });
 
     a.show();

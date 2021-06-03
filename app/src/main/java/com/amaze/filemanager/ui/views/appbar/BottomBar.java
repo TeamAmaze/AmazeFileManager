@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.views.appbar;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -156,12 +157,13 @@ public class BottomBar implements View.OnTouchListener {
               public boolean onSingleTapConfirmed(MotionEvent e) {
                 Fragment fragmentAtFrame = mainActivity.getFragmentAtFrame();
                 if (fragmentAtFrame instanceof TabFragment) {
-                  MainFragment m = mainActivity.getCurrentMainFragment();
-                  if (OpenMode.CUSTOM != m.openMode) {
+                  final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+                  Objects.requireNonNull(mainFragment);
+                  if (OpenMode.CUSTOM != mainFragment.openMode) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
-                    showButtons(m);
+                    showButtons(mainFragment);
                   }
                 } else if (fragmentAtFrame instanceof CompressedExplorerFragment) {
                   FileUtils.crossfade(buttons, pathLayout);
@@ -174,9 +176,10 @@ public class BottomBar implements View.OnTouchListener {
 
               @Override
               public void onLongPress(MotionEvent e) {
+                final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+                Objects.requireNonNull(mainFragment);
                 if (mainActivity.getBoolean(PREFERENCE_CHANGEPATHS)
-                    && (!mainActivity.getCurrentMainFragment().results
-                        || buttons.getVisibility() == View.VISIBLE)) {
+                    && (!mainFragment.results || buttons.getVisibility() == View.VISIBLE)) {
                   GeneralDialogCreation.showChangePathsDialog(
                       mainActivity, mainActivity.getPrefs());
                 }

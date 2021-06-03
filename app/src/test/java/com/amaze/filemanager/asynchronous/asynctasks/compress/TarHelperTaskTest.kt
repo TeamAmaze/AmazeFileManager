@@ -21,10 +21,12 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
 class TarHelperTaskTest : AbstractCompressedHelperTaskTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = TarHelperTask(
+        ApplicationProvider.getApplicationContext(),
         File(Environment.getExternalStorageDirectory(), "test-archive.tar").absolutePath,
         relativePath,
         false,

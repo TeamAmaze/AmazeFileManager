@@ -55,9 +55,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
-import android.preference.Preference;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,8 +63,12 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityCompat;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceManager;
 
-public class PrefFrag extends PreferenceFragment implements Preference.OnPreferenceClickListener {
+public class PrefFrag extends PreferenceFragmentCompat
+    implements Preference.OnPreferenceClickListener {
 
   private static final String[] PREFERENCE_KEYS = {
     PreferencesConstants.PREFERENCE_GRID_COLUMNS,
@@ -80,9 +81,9 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     PreferencesConstants.FRAGMENT_FOLDERS,
     PreferencesConstants.FRAGMENT_QUICKACCESSES,
     PreferencesConstants.FRAGMENT_ADVANCED_SEARCH,
-    PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
     PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
-    PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE
+    PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE,
+    PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE
   };
 
   private UtilitiesProvider utilsProvider;
@@ -91,8 +92,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
   private ListView listView;
 
   @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
+  public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
     utilsProvider = ((BasicActivity) getActivity()).getUtilsProvider();
 
     // Load the preferences from an XML resource
@@ -118,22 +118,23 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
     CheckBox checkBoxFingerprint =
         (CheckBox) findPreference(PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT);
 
-    try {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
 
       // finger print sensor
-      final FingerprintManager fingerprintManager =
-          (FingerprintManager) getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+      FingerprintManager fingerprintManager = null;
 
       final KeyguardManager keyguardManager =
           (KeyguardManager) getActivity().getSystemService(Context.KEYGUARD_SERVICE);
 
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-          && fingerprintManager != null
-          && fingerprintManager.isHardwareDetected()) {
-
-        checkBoxFingerprint.setEnabled(true);
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        fingerprintManager =
+            (FingerprintManager) getActivity().getSystemService(Context.FINGERPRINT_SERVICE);
+        if (fingerprintManager != null && fingerprintManager.isHardwareDetected()) {
+          checkBoxFingerprint.setEnabled(true);
+        }
       }
 
+      FingerprintManager finalFingerprintManager = fingerprintManager;
       checkBoxFingerprint.setOnPreferenceChangeListener(
           (preference, newValue) -> {
             if (ActivityCompat.checkSelfPermission(
@@ -146,8 +147,8 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                   .show();
               return false;
             } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
-                && fingerprintManager != null
-                && !fingerprintManager.hasEnrolledFingerprints()) {
+                && finalFingerprintManager != null
+                && !finalFingerprintManager.hasEnrolledFingerprints()) {
               Toast.makeText(
                       getActivity(),
                       getResources().getString(R.string.crypt_fingerprint_not_enrolled),
@@ -168,8 +169,7 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             masterPasswordPreference.setEnabled(false);
             return true;
           });
-    } catch (NoClassDefFoundError | ClassCastException error) {
-      error.printStackTrace();
+    } else {
 
       // fingerprint manager class not defined in the framework
       checkBoxFingerprint.setEnabled(false);
@@ -179,7 +179,9 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
   @Override
   public boolean onPreferenceClick(Preference preference) {
     final String[] sort;
+    final String[] dragToMoveArray;
     MaterialDialog.Builder builder;
+    MaterialDialog.Builder dragDialogBuilder;
 
     switch (preference.getKey()) {
       case PreferencesConstants.PREFERENCE_CLEAR_OPEN_FILE:
@@ -206,11 +208,38 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
                       .putString(
                           PreferencesConstants.PREFERENCE_GRID_COLUMNS,
                           "" + (which != 0 ? sort[which] : "" + -1))
-                      .commit();
+                      .apply();
                   dialog.dismiss();
                   return true;
                 });
         builder.build().show();
+        return true;
+      case PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE:
+        dragToMoveArray = getResources().getStringArray(R.array.dragAndDropPreference);
+        dragDialogBuilder = new MaterialDialog.Builder(getActivity());
+        dragDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+        dragDialogBuilder.title(R.string.drag_and_drop_preference);
+        int currentDragPreference =
+            sharedPref.getInt(
+                PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+                PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+        dragDialogBuilder
+            .items(dragToMoveArray)
+            .itemsCallbackSingleChoice(
+                currentDragPreference,
+                (dialog, view, which, text) -> {
+                  sharedPref
+                      .edit()
+                      .putInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which)
+                      .apply();
+                  sharedPref
+                      .edit()
+                      .putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null)
+                      .apply();
+                  dialog.dismiss();
+                  return true;
+                });
+        dragDialogBuilder.build().show();
         return true;
       case PreferencesConstants.FRAGMENT_THEME:
         sort = getResources().getStringArray(R.array.theme);
@@ -348,19 +377,6 @@ public class PrefFrag extends PreferenceFragment implements Preference.OnPrefere
             .initialPath(
                 sharedPref.getString(
                     PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
-                    Environment.getExternalStorageDirectory().getPath()))
-            .build()
-            .show((PreferencesActivity) getActivity());
-        return true;
-      case PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH:
-        new FolderChooserDialog.Builder(getActivity())
-            .tag(PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH)
-            .goUpLabel(getString(R.string.folder_go_up_one_level))
-            .chooseButton(R.string.choose_folder)
-            .cancelButton(R.string.cancel)
-            .initialPath(
-                sharedPref.getString(
-                    PreferencesConstants.PREFERENCE_ZIP_CREATE_PATH,
                     Environment.getExternalStorageDirectory().getPath()))
             .build()
             .show((PreferencesActivity) getActivity());

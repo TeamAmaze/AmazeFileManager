@@ -24,7 +24,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
@@ -128,7 +128,7 @@ public class RootHelper {
       for (String currentLine : resultLines) {
         if (contains(currentLine.split(" "), name)) {
           try {
-            HybridFileParcelable parsedFile = FileUtils.parseName(currentLine);
+            HybridFileParcelable parsedFile = FileUtils.parseName(currentLine, true);
             if (parsedFile.getPermission().trim().startsWith("d")) return true;
             else if (parsedFile.getPermission().trim().startsWith("l")) {
               if (count > 5) return file.isDirectory();

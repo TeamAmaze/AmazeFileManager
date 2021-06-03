@@ -20,19 +20,22 @@
     -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-        <item android:state_selected="true">
-            <color android:color="#EEEEEE" />
-        </item>
-        <item android:state_pressed="true">
-            <color android:color="#EEEEEE" />
-        </item>
+    <item android:state_selected="true">
+        <color android:color="#EEEEEE" />
+    </item>
+    <item android:state_pressed="true">
+        <color android:color="#EEEEEE" />
+    </item>
 
-        <item android:state_activated="true">
-            <color android:color="#EEEEEE" />
-        </item>
+    <item android:state_activated="true">
+        <color android:color="#EEEEEE" />
+    </item>
+    <item android:state_focused="true">
+        <color android:color="#EEEEEE" />
+    </item>
 
-        <!--<item>
-            <color android:color="#FFFFFF" />
-        </item>-->
+    <!--<item>
+        <color android:color="#FFFFFF" />
+    </item>-->
 
 </selector>

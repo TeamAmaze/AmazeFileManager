@@ -39,7 +39,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -49,6 +48,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.palette.graphics.Palette;
+import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 27/7/16. */
 public class AboutActivity extends BasicActivity implements View.OnClickListener {
@@ -137,6 +137,10 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         (appBarLayout, verticalOffset) -> {
           mTitleTextView.setAlpha(
               Math.abs(verticalOffset / (float) appBarLayout.getTotalScrollRange()));
+        });
+    mAppBarLayout.setOnFocusChangeListener(
+        (v, hasFocus) -> {
+          mAppBarLayout.setExpanded(hasFocus, true);
         });
   }
 

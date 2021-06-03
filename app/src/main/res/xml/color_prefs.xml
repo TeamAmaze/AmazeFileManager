@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory
-        android:title="@string/color_title">
+        app:title="@string/color_title">
         <Preference
-            android:key="selectcolorconfig"
-            android:title="@string/select_color_config"/>
+            app:key="selectcolorconfig"
+            app:title="@string/select_color_config" />
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:key="coloriseIcons"
-            android:defaultValue="true"
-            android:title="@string/colorize"
-            android:summary="@string/colorize_summary" />
+            app:key="coloriseIcons"
+            app:defaultValue="true"
+            app:title="@string/colorize"
+            app:summary="@string/colorize_summary" />
         <com.amaze.filemanager.ui.views.preference.CheckBox
-            android:key="colorednavigation"
-            android:defaultValue="false"
-            android:title="@string/colored_navigation"
-            android:summary="@string/colored_navigvation_sum"
-            android:enabled="false" />
+            app:key="colorednavigation"
+            app:defaultValue="false"
+            app:title="@string/colored_navigation"
+            app:summary="@string/colored_navigvation_sum"
+            app:enabled="false" />
     </PreferenceCategory>
 </PreferenceScreen>

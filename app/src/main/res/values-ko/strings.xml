@@ -199,11 +199,8 @@
     <string name="unin_system_apk">시스템 파일을 삭제하면 시스템이 불안정해질 수도 있습니다. / 삭제 하시겠습니까?</string>
     <string name="warning">경고</string>
     <string name="donate">기부</string>
-    <string name="archive_preferences">압축 파일</string>
     <string name="archive_extract_folder">압축 해제 경로</string>
-    <string name="zip_create_folder">압축 경로</string>
     <string name="archive_summary">선택한 폴더에 압축을 해제합니다. 기본 경로는 압축 파일의 경로와 같습니다.</string>
-    <string name="zip_summary">선택한 폴더에 압축합니다. 기본 경로는 압축할 파일의 경로와 같습니다.</string>
     <string name="open_as">다음으로 열기</string>
     <string name="text">텍스트</string>
     <string name="audio">소리</string>

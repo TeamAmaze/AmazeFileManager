@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.ssh.test
 
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
+import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.sftp.FileAttributes
 import net.schmizz.sshj.sftp.FileMode
@@ -87,13 +88,15 @@ object MockSshConnectionPools {
         SshConnectionPool::class.java.getDeclaredField("connections").run {
             this.isAccessible = true
             this.set(
-                SshConnectionPool.getInstance(),
+                SshConnectionPool,
                 mutableMapOf(
                     Pair<String, SSHClient>("ssh://user:password@127.0.0.1:22222", sshClient)
                 )
             )
         }
 
-        SshConnectionPool.setSSHClientFactory { sshClient }
+        SshConnectionPool.sshClientFactory = object : SshConnectionPool.SSHClientFactory {
+            override fun create(config: Config?): SSHClient = sshClient
+        }
     }
 }

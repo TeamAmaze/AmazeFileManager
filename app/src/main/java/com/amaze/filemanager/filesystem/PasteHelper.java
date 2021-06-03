@@ -22,10 +22,12 @@ package com.amaze.filemanager.filesystem;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Objects;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
@@ -150,16 +152,18 @@ public final class PasteHelper implements Parcelable {
                         BaseTransientBottomBar.LENGTH_INDEFINITE,
                         R.string.paste,
                         () -> {
-                          String path = mainActivity.getCurrentMainFragment().getCurrentPath();
+                          final MainFragment mainFragment =
+                              Objects.requireNonNull(mainActivity.getCurrentMainFragment());
+                          String path = mainFragment.getCurrentPath();
                           ArrayList<HybridFileParcelable> arrayList =
                               new ArrayList<>(Arrays.asList(paths));
                           boolean move = operation == PasteHelper.OPERATION_CUT;
                           new PrepareCopyTask(
-                                  mainActivity.getCurrentMainFragment(),
                                   path,
                                   move,
                                   mainActivity,
-                                  mainActivity.isRootExplorer())
+                                  mainActivity.isRootExplorer(),
+                                  mainFragment.openMode)
                               .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
                           dismissSnackbar(true);
                         },

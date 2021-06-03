@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils;
 
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
@@ -30,11 +34,15 @@ import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.NtlmPasswordAuthenticator;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /**
@@ -44,7 +52,13 @@ import jcifs.smb.SmbFile;
  */
 public class SmbUtil {
 
+  private static final String TAG = SmbUtil.class.getSimpleName();
+
   public static final String PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck";
+
+  private SmbUtil() {
+    // empty constructor to prevent instantiation
+  }
 
   /** Parse path to decrypt smb password */
   public static String getSmbDecryptedPath(Context context, String path)
@@ -133,5 +147,29 @@ public class SmbUtil {
     } else {
       return new NtlmPasswordAuthenticator();
     }
+  }
+
+  /**
+   * SMB version of {@link MainActivityHelper#checkFolder(File, Context)}.
+   *
+   * @param path SMB path
+   * @return {@link com.amaze.filemanager.filesystem.FolderStateKt#DOESNT_EXIST} if specified SMB
+   *     path doesn't exist on server, else {@link
+   *     com.amaze.filemanager.filesystem.FolderStateKt#WRITABLE_ON_REMOTE}
+   */
+  public static int checkFolder(@NonNull String path) {
+    return Single.fromCallable(
+            () -> {
+              try {
+                SmbFile smbFile = create(path);
+                if (!smbFile.exists() || !smbFile.isDirectory()) return DOESNT_EXIST;
+              } catch (SmbException | MalformedURLException e) {
+                Log.w(TAG, "Error checking folder existence, assuming not exist", e);
+                return DOESNT_EXIST;
+              }
+              return WRITABLE_ON_REMOTE;
+            })
+        .subscribeOn(Schedulers.io())
+        .blockingGet();
   }
 }

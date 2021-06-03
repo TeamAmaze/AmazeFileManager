@@ -20,7 +20,8 @@
 
 package com.amaze.filemanager.utils
 
-import kotlinx.android.parcel.Parcelize
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
 
 /**
  * Class stores the [AbstractProgressiveService] progress variables. This class also acts
@@ -45,7 +46,7 @@ data class DatapointParcelable(
     val speedRaw: Long,
     val move: Boolean,
     val completed: Boolean
-) {
+) : Parcelable {
 
     companion object {
         /**

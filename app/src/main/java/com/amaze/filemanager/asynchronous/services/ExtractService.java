@@ -31,7 +31,7 @@ import org.tukaani.xz.CorruptedInputException;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -51,7 +51,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RemoteViews;
@@ -59,6 +58,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import net.lingala.zip4j.exception.ZipException;
 
@@ -105,7 +105,7 @@ public class ExtractService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -308,7 +308,8 @@ public class ExtractService extends AbstractProgressiveService {
                   public boolean isCancelled() {
                     return progressHandler.getCancelled();
                   }
-                });
+                },
+                ServiceWatcherUtil.UPDATE_POSITION);
 
         try {
           if (entriesToExtract != null) {

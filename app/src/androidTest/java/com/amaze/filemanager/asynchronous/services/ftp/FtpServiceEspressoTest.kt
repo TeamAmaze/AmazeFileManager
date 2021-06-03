@@ -22,8 +22,8 @@ package com.amaze.filemanager.asynchronous.services.ftp
 
 import android.content.Intent
 import android.os.Environment
-import android.preference.PreferenceManager
 import android.util.Base64
+import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ServiceTestRule

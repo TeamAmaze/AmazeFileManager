@@ -20,12 +20,12 @@
 
 package com.amaze.filemanager.filesystem.root
 
-import android.preference.PreferenceManager
 import android.util.Log
+import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
-import com.amaze.filemanager.exceptions.ShellNotRunningException
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
@@ -99,7 +99,7 @@ object ListFilesCommand : IRootCommand() {
                 else -> sanitizedPath.plus("/")
             }
 
-            val command = "stat -c '%A %h %G %U %B %y %N' " +
+            val command = "stat -c '%A %h %G %U %B %Y %N' " +
                 "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
             return if (!retryWithLs &&
                 !PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
@@ -202,7 +202,8 @@ object ListFilesCommand : IRootCommand() {
             if (isStat) rawFile.replace(
                 "('|`)".toRegex(),
                 ""
-            ) else rawFile
+            ) else rawFile,
+            isStat
         )?.apply {
             this.mode = OpenMode.ROOT
             this.name = this.path

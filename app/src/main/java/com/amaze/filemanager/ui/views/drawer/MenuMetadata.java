@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.views.drawer;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/12/2017, at 18:01. */
 public final class MenuMetadata {
 
   public static final int ITEM_ENTRY = 1, ITEM_INTENT = 2;

@@ -29,7 +29,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -56,13 +56,13 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 public class CopyService extends AbstractProgressiveService {
 
@@ -114,7 +114,7 @@ public class CopyService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
     b.putInt(TAG_COPY_START_ID, startId);
@@ -509,7 +509,14 @@ public class CopyService extends AbstractProgressiveService {
           GenericCopyUtil copyUtil = new GenericCopyUtil(c, progressHandler);
 
           progressHandler.setFileName(sourceFile.getName(c));
-          copyUtil.copy(sourceFile, targetFile);
+          copyUtil.copy(
+              sourceFile,
+              targetFile,
+              () -> {
+                // we ran out of memory to map the whole channel, let's switch to streams
+                AppConfig.toast(c, c.getString(R.string.copy_low_memory));
+              },
+              ServiceWatcherUtil.UPDATE_POSITION);
         }
       }
     }

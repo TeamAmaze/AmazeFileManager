@@ -26,6 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.amaze.filemanager.BuildConfig;
+
 import android.content.Context;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -39,6 +41,11 @@ public class CryptUtilTest {
   @Before
   public void setUp() {
     context = InstrumentationRegistry.getInstrumentation().getTargetContext();
+  }
+
+  @Test
+  public void testIvValueIsCorrect() {
+    assertEquals("LxbHiJhhUXcj", BuildConfig.CRYPTO_IV);
   }
 
   @Test

@@ -199,11 +199,8 @@
     <string name="unin_system_apk">Αυτή είναι μια εφαρμογή συστήματος. Η διαγραφή της μπορεί να οδηγήσει σε αστάθεια του συστήματος!\nΣυνέχεια;</string>
     <string name="warning">Προειδοποίηση</string>
     <string name="donate">Δωρεά</string>
-    <string name="archive_preferences">Προτιμήσεις αρχείων συμπίεσης</string>
     <string name="archive_extract_folder">Φάκελος εξαγωγής</string>
-    <string name="zip_create_folder">Φάκελος δημιουργίας Zip</string>
     <string name="archive_summary">Τα συμπιεσμένα αρχεία θα αποσυμπιέζονται σε αυτόν το φάκελο. Η αρχική επιλογή είναι ο φάκελος στον οποίο βρίσκεται το αρχείο συμπίεσης.</string>
-    <string name="zip_summary">Τα νέα αρχεία Zip θα δημιουργούνται σε αυτόν το φάκελο. Η αρχική επιλογή είναι ο φάκελος στον οποίο βρίσκονται τα αρχεία προς συμπίεση.</string>
     <string name="open_as">Άνοιγμα ως</string>
     <string name="text">Κείμενο</string>
     <string name="audio">Ήχο</string>

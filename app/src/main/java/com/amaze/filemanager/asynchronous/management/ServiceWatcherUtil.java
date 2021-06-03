@@ -35,6 +35,7 @@ import java.util.concurrent.*;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.AbstractRepeatingRunnable;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.ProgressHandler;
 
@@ -46,6 +47,9 @@ import android.text.format.Formatter;
 import androidx.core.app.NotificationCompat;
 
 public class ServiceWatcherUtil {
+
+  public static final UpdatePosition UPDATE_POSITION =
+      (toAdd -> ServiceWatcherUtil.position += toAdd);
 
   public static int state = STATE_UNSET;
 

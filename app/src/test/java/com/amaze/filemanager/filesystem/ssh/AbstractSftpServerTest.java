@@ -78,7 +78,7 @@ public abstract class AbstractSftpServerTest {
 
   @After
   public void tearDown() throws IOException {
-    SshConnectionPool.getInstance().shutdown();
+    SshConnectionPool.INSTANCE.shutdown();
     if (server != null && server.isOpen()) {
       server.stop(true);
     }
@@ -86,8 +86,8 @@ public abstract class AbstractSftpServerTest {
 
   protected final void prepareSshConnection() {
     String hostFingerprint = KeyUtils.getFingerPrint(hostKeyProvider.getKeyPair().getPublic());
-    SshConnectionPool.getInstance()
-        .getConnection("127.0.0.1", serverPort, hostFingerprint, "testuser", "testpassword", null);
+    SshConnectionPool.INSTANCE.getConnection(
+        "127.0.0.1", serverPort, hostFingerprint, "testuser", "testpassword", null);
   }
 
   protected final int createSshServer(FileSystemFactory fileSystemFactory, int startPort)

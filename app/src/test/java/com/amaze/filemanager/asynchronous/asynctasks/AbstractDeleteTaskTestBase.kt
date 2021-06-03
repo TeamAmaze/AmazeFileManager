@@ -128,7 +128,7 @@ abstract class AbstractDeleteTaskTestBase {
                     )
                         .run {
                             assertTrue(size > 0)
-                            assertEquals(file.path, this[0].path)
+                            assertEquals(file.path, this!![0].path)
                         }
                 }
             }
