@@ -159,7 +159,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
             .title(R.string.edit_shortcut)
             .theme(mainActivity.appTheme.materialDialogTheme)
             .positiveColor(fab_skin)
-            .positiveText(getString(R.string.edit).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase()
+            .positiveText(getString(R.string.edit).uppercase())
             .negativeColor(fab_skin)
             .negativeText(android.R.string.cancel)
             .customView(v, false)
@@ -201,7 +201,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
             .title(R.string.question_delete_shortcut)
             .theme(mainActivity.appTheme.materialDialogTheme)
             .positiveColor(fab_skin)
-            .positiveText(getString(R.string.delete).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
+            .positiveText(getString(R.string.delete).uppercase())
             .negativeColor(fab_skin)
             .negativeText(android.R.string.cancel)
             .build()
