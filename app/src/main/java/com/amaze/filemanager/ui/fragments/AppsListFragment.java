@@ -42,6 +42,7 @@ import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import android.content.SharedPreferences;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.view.MenuItem;
@@ -83,28 +84,11 @@ public class AppsListFragment extends ListFragment
     Objects.requireNonNull(mainActivity);
 
     UtilitiesProvider utilsProvider = mainActivity.getUtilsProvider();
-
-    mainActivity.getAppbar().setTitle(R.string.apps);
-    mainActivity.getFAB().hide();
-    mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
-    mainActivity.supportInvalidateOptionsMenu();
+    updateViews(mainActivity, utilsProvider);
 
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     isAscending = sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
     sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
-
-    getListView().setDivider(null);
-    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
-      getActivity()
-          .getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
-      getActivity()
-          .getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-    }
 
     modelProvider = new AppsAdapterPreloadModel(this, false);
     ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
@@ -156,6 +140,30 @@ public class AppsListFragment extends ListFragment
     super.onSaveInstanceState(b);
 
     b.putParcelable(KEY_LIST_STATE, getListView().onSaveInstanceState());
+  }
+
+  private void updateViews(MainActivity mainActivity, UtilitiesProvider utilsProvider) {
+    mainActivity.getAppbar().setTitle(R.string.apps);
+    mainActivity.getFAB().hide();
+    mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
+    mainActivity.supportInvalidateOptionsMenu();
+
+    getListView().setDivider(null);
+    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
+      getActivity()
+          .getWindow()
+          .getDecorView()
+          .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+      getActivity()
+          .getWindow()
+          .getDecorView()
+          .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+    }
+    int skin_color = mainActivity.getCurrentColorPreference().getPrimaryFirstTab();
+    int skinTwoColor = mainActivity.getCurrentColorPreference().getPrimarySecondTab();
+    mainActivity.updateViews(
+        new ColorDrawable(MainActivity.currentTab == 1 ? skinTwoColor : skin_color));
   }
 
   public void showSortDialog(AppTheme appTheme) {

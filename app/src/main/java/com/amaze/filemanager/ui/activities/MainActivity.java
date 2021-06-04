@@ -303,12 +303,20 @@ public class MainActivity extends PermissionsActivity
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
+  private static final String INTENT_ACTION_OPEN_QUICK_ACCESS =
+      "com.amaze.filemanager.openQuickAccess";
+  private static final String INTENT_ACTION_OPEN_RECENT = "com.amaze.filemanager.openRecent";
+  private static final String INTENT_ACTION_OPEN_FTP_SERVER = "com.amaze.filemanager.openFTPServer";
+  private static final String INTENT_ACTION_OPEN_APP_MANAGER =
+      "com.amaze.filemanager.openAppManager";
 
   /** Called when the activity is first created. */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
+
+    intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
 
@@ -331,9 +339,8 @@ public class MainActivity extends PermissionsActivity
       LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
     }
 
-    path = getIntent().getStringExtra("path");
-    openProcesses = getIntent().getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
-    intent = getIntent();
+    path = intent.getStringExtra("path");
+    openProcesses = intent.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false);
 
     if (intent.getStringArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS) != null) {
       ArrayList<HybridFileParcelable> failedOps =
@@ -400,7 +407,8 @@ public class MainActivity extends PermissionsActivity
         transaction.commit();
         supportInvalidateOptionsMenu();
       } else if (intent.getAction() != null
-          && intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)) {
+          && (intent.getAction().equals(TileService.ACTION_QS_TILE_PREFERENCES)
+              || INTENT_ACTION_OPEN_FTP_SERVER.equals(intent.getAction()))) {
         // tile preferences, open ftp fragment
 
         FragmentTransaction transaction2 = getSupportFragmentManager().beginTransaction();
@@ -413,6 +421,18 @@ public class MainActivity extends PermissionsActivity
 
         drawer.deselectEverything();
         transaction2.commit();
+      } else if (intent.getAction() != null
+          && INTENT_ACTION_OPEN_APP_MANAGER.equals(intent.getAction())) {
+        FragmentTransaction transaction3 = getSupportFragmentManager().beginTransaction();
+        transaction3.replace(R.id.content_frame, new AppsListFragment());
+        appBarLayout
+            .animate()
+            .translationY(0)
+            .setInterpolator(new DecelerateInterpolator(2))
+            .start();
+
+        drawer.deselectEverything();
+        transaction3.commit();
       } else {
         if (path != null && path.length() > 0) {
           HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
@@ -890,6 +910,13 @@ public class MainActivity extends PermissionsActivity
     FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
     // title.setText(R.string.app_name);
     TabFragment tabFragment = new TabFragment();
+    if (intent != null && intent.getAction() != null) {
+      if (INTENT_ACTION_OPEN_QUICK_ACCESS.equals(intent.getAction())) {
+        path = "5";
+      } else if (INTENT_ACTION_OPEN_RECENT.equals(intent.getAction())) {
+        path = "6";
+      }
+    }
     if (path != null && path.length() > 0) {
       Bundle b = new Bundle();
       b.putString("path", path);
