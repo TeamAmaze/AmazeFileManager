@@ -1,18 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <!--TODO:06/04/2021 -> Support light theme (Since icons are white, they just works on dark theme for now :D)
-
-        We have three options:
-         -> Make shortcuts available only for 26+ and use android:iconTint (it requires API 26)
-         -> Add new image assets with fillColor set to a color say, BGColor and override that in values-night too
-         -> Do the second option with existing icons & set tints to those icons when using it elsewhere
-
-       Which one do you choose?
-    -->
-
-    <!--And, are these items okay?-->
-
     <shortcut
         android:enabled="true"
         android:icon="@drawable/ic_star_white_24dp"
