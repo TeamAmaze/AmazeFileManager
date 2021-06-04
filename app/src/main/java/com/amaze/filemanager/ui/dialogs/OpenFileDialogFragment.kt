@@ -324,21 +324,23 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
         dialog.setOnShowListener {
             val bottomSheet = (it as BottomSheetDialog)
-                .findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+                .findViewById(com.google.android.material.R.id.design_bottom_sheet)
                 as FrameLayout?
-            val behavior = BottomSheetBehavior.from(bottomSheet!!)
+            bottomSheet?.run {
+                val behavior = BottomSheetBehavior.from(this)
 
-            behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                override fun onStateChanged(bottomSheet: View, newState: Int) {
-                    if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                        behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
                     }
-                }
 
-                override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                    // do nothing
-                }
-            })
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        // do nothing
+                    }
+                })
+            }
         }
         return dialog
     }
