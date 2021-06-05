@@ -83,7 +83,7 @@ object ExternalSdCardOperation {
             return document
         }
 
-        val parts = relativePath.split("\\/").toTypedArray()
+        val parts = relativePath.split("/").toTypedArray()
         for (i in parts.indices) {
             if (document == null) {
                 return null
