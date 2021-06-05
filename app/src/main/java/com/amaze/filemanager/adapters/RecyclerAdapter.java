@@ -963,7 +963,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private int getDragIconReference(String rememberMovePreference) {
-    int iconRef = R.drawable.ic_add_white_24dp;
+    int iconRef = R.drawable._ic_content_cut_white_36dp;
     if (rememberMovePreference.equalsIgnoreCase(
         PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE)) {
       iconRef = R.drawable.ic_content_cut_white_36dp;
