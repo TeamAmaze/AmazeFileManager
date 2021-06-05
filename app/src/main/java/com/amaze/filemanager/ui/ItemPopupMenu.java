@@ -257,7 +257,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             context,
             mainActivity,
             mainFragment,
-            mainFragment.openMode,
+            mainFragment.getMainFragmentViewModel().getOpenMode(),
             rowItem.generateBaseFile(),
             rowItem.generateBaseFile().getParent(context),
             utilitiesProvider,

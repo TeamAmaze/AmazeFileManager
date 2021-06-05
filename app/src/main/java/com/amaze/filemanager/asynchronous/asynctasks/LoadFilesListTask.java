@@ -111,14 +111,14 @@ public class LoadFilesListTask
       openmode = hFile.getMode();
 
       if (hFile.isSmb()) {
-        mainFragment.smbPath = path;
+        mainFragment.getMainFragmentViewModel().setSmbPath(path);
       }
     }
 
     if (isCancelled()) return null;
 
-    mainFragment.folder_count = 0;
-    mainFragment.file_count = 0;
+    mainFragment.getMainFragmentViewModel().setFolderCount(0);
+    mainFragment.getMainFragmentViewModel().setFileCount(0);
     final ArrayList<LayoutElementParcelable> list;
 
     switch (openmode) {
@@ -258,7 +258,9 @@ public class LoadFilesListTask
         asc = -1;
         sortby = t - 4;
       }
-      Collections.sort(list, new FileListSorter(mainFragment.dsort, sortby, asc));
+      Collections.sort(
+          list,
+          new FileListSorter(mainFragment.getMainFragmentViewModel().getDsort(), sortby, asc));
     }
 
     return new Pair<>(openmode, list);
@@ -291,7 +293,9 @@ public class LoadFilesListTask
     long longSize = 0;
 
     if (baseFile.isDirectory()) {
-      mainFragment.folder_count++;
+      mainFragment
+          .getMainFragmentViewModel()
+          .setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
     } else {
       if (baseFile.getSize() != -1) {
         try {
@@ -301,8 +305,9 @@ public class LoadFilesListTask
           e.printStackTrace();
         }
       }
-
-      mainFragment.file_count++;
+      mainFragment
+          .getMainFragmentViewModel()
+          .setFileCount(mainFragment.getMainFragmentViewModel().getFileCount() + 1);
     }
 
     LayoutElementParcelable layoutElement =

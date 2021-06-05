@@ -77,8 +77,11 @@ class RecyclerAdapterDragListener(
                                 listItem.toggleShouldToggleDragChecked()
                                 adapter.toggleChecked(
                                     holder.adapterPosition,
-                                    if (mainFragment.IS_LIST) holder.checkImageView
-                                    else holder.checkImageViewGrid
+                                    if (mainFragment.mainFragmentViewModel.isList) {
+                                        holder.checkImageView
+                                    } else {
+                                        holder.checkImageViewGrid
+                                    }
                                 )
                             }
                         } else {

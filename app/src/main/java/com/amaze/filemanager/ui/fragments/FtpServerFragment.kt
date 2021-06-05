@@ -109,7 +109,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             val directoryUri = it.data?.data ?: return@registerForActivityResult
             requireContext().contentResolver.takePersistableUriPermission(
                 directoryUri,
-                Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
+                Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    or Intent.FLAG_GRANT_WRITE_URI_PERMISSION
             )
             changeFTPServerPath(directoryUri.toString())
             updatePathText()
@@ -120,21 +121,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
         retainInstance = true
-        mainActivity.appbar.setTitle(R.string.ftp)
-        mainActivity.fab.hide()
-        mainActivity.appbar.bottomBar.setVisibility(View.GONE)
-        mainActivity.invalidateOptionsMenu()
-        val skin_color = mainActivity.currentColorPreference.primaryFirstTab
-        val skinTwoColor = mainActivity.currentColorPreference.primarySecondTab
-        mainActivity.updateViews(
-            ColorDrawable(
-                if (MainActivity.currentTab == 1) {
-                    skinTwoColor
-                } else {
-                    skin_color
-                }
-            )
-        )
     }
 
     override fun onDestroyView() {
@@ -148,14 +134,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentFtpBinding.inflate(inflater)
-        val startDividerView = binding.dividerFtpStart
-        val statusDividerView = binding.dividerFtpStatus
         accentColor = mainActivity.accent
         mainActivity.findViewById<CoordinatorLayout>(R.id.main_parent)
             .nextFocusDownId = R.id.startStopButton
         updateSpans()
         updateStatus()
-        when (mainActivity.appTheme.simpleTheme) {
+        updateViews(mainActivity, binding)
+        /*when (mainActivity.appTheme.simpleTheme) {
             AppTheme.LIGHT -> {
                 startDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
                 statusDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
@@ -169,7 +154,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 )
             }
             else -> {}
-        }
+        }*/
         ftpBtn.setOnClickListener {
             if (!isRunning()) {
                 if (isConnectedToWifi(requireContext()) ||
@@ -552,6 +537,38 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
     }
 
+    private fun updateViews(mainActivity: MainActivity, binding: FragmentFtpBinding) {
+        mainActivity.appbar.setTitle(R.string.ftp)
+        mainActivity.fab.hide()
+        mainActivity.appbar.bottomBar.setVisibility(View.GONE)
+        mainActivity.invalidateOptionsMenu()
+
+        val startDividerView = binding.dividerFtpStart
+        val statusDividerView = binding.dividerFtpStatus
+
+        when (mainActivity.appTheme.simpleTheme) {
+            AppTheme.LIGHT -> {
+                startDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
+                statusDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
+            }
+            AppTheme.DARK, AppTheme.BLACK -> {
+                startDividerView.setBackgroundColor(
+                    Utils.getColor(context, R.color.divider_dark_card)
+                )
+                statusDividerView.setBackgroundColor(
+                    Utils.getColor(context, R.color.divider_dark_card)
+                )
+            }
+            else -> {
+            }
+        }
+        val skin_color = mainActivity.currentColorPreference.primaryFirstTab
+        val skinTwoColor = mainActivity.currentColorPreference.primarySecondTab
+        mainActivity.updateViews(
+            ColorDrawable(if (MainActivity.currentTab == 1) skinTwoColor else skin_color)
+        )
+    }
+
     // return address the FTP server is running
     private val ftpAddressString: String?
         get() {
@@ -656,7 +673,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 .prefs
                 .edit()
                 .putString(
-                    FtpService.KEY_PREFERENCE_PASSWORD, CryptUtil.encryptPassword(context, password)
+                    FtpService.KEY_PREFERENCE_PASSWORD,
+                    CryptUtil.encryptPassword(context, password)
                 )
                 .apply()
         } catch (e: GeneralSecurityException) {

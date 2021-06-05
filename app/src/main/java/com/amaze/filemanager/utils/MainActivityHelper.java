@@ -739,7 +739,7 @@ public class MainActivityHelper {
         new SearchWorkerFragment(),
         fpath,
         query,
-        ma.openMode,
+        ma.getMainFragmentViewModel().getOpenMode(),
         mainActivity.isRootExplorer(),
         sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
         sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));

@@ -127,9 +127,6 @@ public class AppsListFragment extends ListFragment
       case R.id.sort:
         showSortDialog(((MainActivity) requireActivity()).getAppTheme());
         return true;
-      case R.id.exit:
-        ((MainActivity) requireActivity()).goToMain(null);
-        return true;
       default:
         return super.onOptionsItemSelected(item);
     }

@@ -22,8 +22,6 @@ package com.amaze.filemanager.ui.fragments;
 
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -35,6 +33,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
+import org.jetbrains.annotations.NotNull;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
@@ -43,7 +43,6 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
-import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -64,7 +63,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -74,7 +73,6 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
-import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -104,6 +102,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -113,6 +112,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -121,6 +121,7 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -131,42 +132,22 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
-public class MainFragment extends Fragment implements BottomBarButtonPath {
+public class MainFragment extends Fragment
+    implements BottomBarButtonPath, ViewTreeObserver.OnGlobalLayoutListener, View.OnTouchListener {
 
   public ActionMode mActionMode;
-  // TODO refactor
-  public int sortby;
-  public int dsort;
-  public int asc;
-  public String home;
-  public boolean selection, results = false;
-  public OpenMode openMode = OpenMode.FILE;
-
-  /** boolean to identify if the view is a list or grid */
-  public boolean IS_LIST = true;
 
   public SwipeRefreshLayout mSwipeRefreshLayout;
-  public int file_count, folder_count, columns;
-  public String smbPath;
-  public ArrayList<HybridFileParcelable> searchHelper = new ArrayList<>();
-  public int no;
-
-  private String CURRENT_PATH = "";
-  /** This is not an exact copy of the elements in the adapter */
-  private ArrayList<LayoutElementParcelable> LIST_ELEMENTS;
 
   public RecyclerAdapter adapter;
   private SharedPreferences sharedPref;
   private Resources res;
 
   // ATTRIBUTES FOR APPEARANCE AND COLORS
-  private int accentColor, primaryColor, primaryTwoColor;
   private LinearLayoutManager mLayoutManager;
   private GridLayoutManager mLayoutManagerGrid;
-  private boolean addheader = false;
   private DividerItemDecoration dividerItemDecoration;
   private AppBarLayout mToolbarContainer;
-  private boolean stopAnims = true;
   private SwipeRefreshLayout nofilesview;
 
   private RecyclerView listView;
@@ -176,124 +157,92 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   private View actionModeView;
   private FastScroller fastScroller;
   private CustomFileObserver customFileObserver;
-  private DataUtils dataUtils;
-  private boolean isEncryptOpen =
-      false; // do we have to open a file when service is begin destroyed
-  private HybridFileParcelable
-      encryptBaseFile; // the cached base file which we're to open, delete it later
-  private int ordinalValue;
-
-  /** a list of encrypted base files which are supposed to be deleted */
-  private ArrayList<HybridFileParcelable> encryptBaseFiles = new ArrayList<>();
 
   // defines the current visible tab, default either 0 or 1
   // private int mCurrentTab;
 
-  /*
-   * boolean identifying if the search task should be re-run on back press after pressing on
-   * any of the search result
-   */
-  private boolean mRetainSearchTask = false;
-
-  /** For caching the back button */
-  private LayoutElementParcelable back = null;
-
-  private int dragAndDropPreference;
+  private MainFragmentViewModel mainFragmentViewModel;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+    mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
 
-    setRetainInstance(true);
-
-    dataUtils = DataUtils.getInstance();
     utilsProvider = getMainActivity().getUtilsProvider();
-    sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    dragAndDropPreference =
-        sharedPref.getInt(
-            PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-            PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+    sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
     res = getResources();
-
-    no = getArguments().getInt("no", 1);
-    home = getArguments().getString("home");
-    CURRENT_PATH = getArguments().getString("lastpath");
-    ordinalValue = getArguments().getInt("openmode", -1);
-
-    if (ordinalValue != -1) openMode = OpenMode.getOpenMode(ordinalValue);
-
-    IS_LIST = dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.LIST;
-
-    accentColor = getMainActivity().getAccent();
-    primaryColor = getMainActivity().getCurrentColorPreference().getPrimaryFirstTab();
-    primaryTwoColor = getMainActivity().getCurrentColorPreference().getPrimarySecondTab();
+    mainFragmentViewModel.initBundleArguments(getArguments());
+    mainFragmentViewModel.initIsList();
+    mainFragmentViewModel.initColumns(sharedPref);
+    mainFragmentViewModel.initSortModes(
+        SortHandler.getSortType(getContext(), getCurrentPath()), sharedPref);
+    mainFragmentViewModel.setAccentColor(getMainActivity().getAccent());
+    mainFragmentViewModel.setPrimaryColor(
+        getMainActivity().getCurrentColorPreference().getPrimaryFirstTab());
+    mainFragmentViewModel.setPrimaryTwoColor(
+        getMainActivity().getCurrentColorPreference().getPrimarySecondTab());
   }
 
   @Override
   public View onCreateView(
       LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
     rootView = inflater.inflate(R.layout.main_frag, container, false);
-    listView = rootView.findViewById(R.id.listView);
-    mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
-    fastScroller = rootView.findViewById(R.id.fastscroll);
-    fastScroller.setPressedHandleColor(accentColor);
-    listView.setOnTouchListener(
-        (view, motionEvent) -> {
-          if (adapter != null && stopAnims) {
-            stopAnimation();
-            stopAnims = false;
-          }
-          return false;
-        });
-    //    listView.setOnDragListener(new MainFragmentDragListener());
-    mToolbarContainer.setOnTouchListener(
-        (view, motionEvent) -> {
-          if (adapter != null && stopAnims) {
-            stopAnimation();
-            stopAnims = false;
-          }
-          return false;
-        });
-
-    mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
-
-    mSwipeRefreshLayout.setOnRefreshListener(() -> loadlist((CURRENT_PATH), false, openMode));
-
-    // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
-    mToolbarContainer.setBackgroundColor(
-        MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor);
-
-    //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(),
-    // listView.getPaddingBottom());
     return rootView;
   }
 
   @Override
-  public void onActivityCreated(final Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
+  public void onViewCreated(
+      @NonNull @NotNull View view,
+      @Nullable @org.jetbrains.annotations.Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
+    mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+    listView = rootView.findViewById(R.id.listView);
+    mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
+    fastScroller = rootView.findViewById(R.id.fastscroll);
+    fastScroller.setPressedHandleColor(mainFragmentViewModel.getAccentColor());
+    listView.setOnTouchListener(this);
+    //    listView.setOnDragListener(new MainFragmentDragListener());
+    mToolbarContainer.setOnTouchListener(this);
+
+    mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
+
+    mSwipeRefreshLayout.setOnRefreshListener(
+        () ->
+            loadlist(
+                (mainFragmentViewModel.getCurrentPath()),
+                false,
+                mainFragmentViewModel.getOpenMode()));
+
+    // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
+    mToolbarContainer.setBackgroundColor(
+        MainActivity.currentTab == 1
+            ? mainFragmentViewModel.getPrimaryTwoColor()
+            : mainFragmentViewModel.getPrimaryColor());
+
+    //   listView.setPadding(listView.getPaddingLeft(), paddingTop, listView.getPaddingRight(),
+    // listView.getPaddingBottom());
 
     setHasOptionsMenu(false);
     initNoFileLayout();
-    getSortModes();
-    HybridFile f = new HybridFile(OpenMode.UNKNOWN, CURRENT_PATH);
+    HybridFile f = new HybridFile(OpenMode.UNKNOWN, mainFragmentViewModel.getCurrentPath());
     f.generateMode(getActivity());
     getMainActivity().getAppbar().getBottomBar().setClickListener();
 
-    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !IS_LIST) {
+    if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !mainFragmentViewModel.isList()) {
       listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
     } else {
       listView.setBackgroundDrawable(null);
     }
-
     listView.setHasFixedSize(true);
-    columns = Integer.parseInt(sharedPref.getString(PREFERENCE_GRID_COLUMNS, "-1"));
-    if (IS_LIST) {
+    if (mainFragmentViewModel.isList()) {
       mLayoutManager = new CustomScrollLinearLayoutManager(getContext());
       listView.setLayoutManager(mLayoutManager);
     } else {
-      if (columns == -1 || columns == 0)
+      if (mainFragmentViewModel.getColumns() == -1 || mainFragmentViewModel.getColumns() == 0)
         mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
-      else mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), columns);
+      else
+        mLayoutManagerGrid =
+            new CustomScrollGridLayoutManager(getActivity(), mainFragmentViewModel.getColumns());
       setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
       listView.setLayoutManager(mLayoutManagerGrid);
     }
@@ -303,32 +252,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     dividerItemDecoration =
         new DividerItemDecoration(getActivity(), false, getBoolean(PREFERENCE_SHOW_DIVIDERS));
     listView.addItemDecoration(dividerItemDecoration);
-    mSwipeRefreshLayout.setColorSchemeColors(accentColor);
+    mSwipeRefreshLayout.setColorSchemeColors(mainFragmentViewModel.getAccentColor());
     DefaultItemAnimator animator = new DefaultItemAnimator();
     listView.setItemAnimator(animator);
-    mToolbarContainer
-        .getViewTreeObserver()
-        .addOnGlobalLayoutListener(
-            new ViewTreeObserver.OnGlobalLayoutListener() {
-              @Override
-              public void onGlobalLayout() {
-                if ((columns == 0 || columns == -1)) {
-                  int screen_width = listView.getWidth();
-                  int dptopx = Utils.dpToPx(getContext(), 115);
-                  columns = screen_width / dptopx;
-                  if (columns == 0 || columns == -1) columns = 3;
-                  if (!IS_LIST) mLayoutManagerGrid.setSpanCount(columns);
-                }
-                if (!IS_LIST) {
-                  loadViews();
-                }
-                if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
-                  mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                  mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-                }
-              }
-            });
+    mToolbarContainer.getViewTreeObserver().addOnGlobalLayoutListener(this);
     loadViews();
   }
 
@@ -352,7 +279,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             switch (adapter.getItemViewType(position)) {
               case RecyclerAdapter.TYPE_HEADER_FILES:
               case RecyclerAdapter.TYPE_HEADER_FOLDERS:
-                return (columns == 0 || columns == -1) ? 3 : columns;
+                return (mainFragmentViewModel.getColumns() == 0
+                        || mainFragmentViewModel.getColumns() == -1)
+                    ? 3
+                    : mainFragmentViewModel.getColumns();
               default:
                 return 1;
             }
@@ -361,7 +291,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   void switchToGrid() {
-    IS_LIST = false;
+    mainFragmentViewModel.setList(false);
 
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
@@ -370,9 +300,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     }
 
     if (mLayoutManagerGrid == null)
-      if (columns == -1 || columns == 0)
+      if (mainFragmentViewModel.getColumns() == -1 || mainFragmentViewModel.getColumns() == 0)
         mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
-      else mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), columns);
+      else
+        mLayoutManagerGrid =
+            new CustomScrollGridLayoutManager(getActivity(), mainFragmentViewModel.getColumns());
     setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
     listView.setLayoutManager(mLayoutManagerGrid);
     listView.clearOnScrollListeners();
@@ -380,7 +312,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   void switchToList() {
-    IS_LIST = true;
+    mainFragmentViewModel.setList(true);
 
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
@@ -394,25 +326,26 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public void switchView() {
-    boolean isPathLayoutGrid =
-        dataUtils.getListOrGridForPath(CURRENT_PATH, DataUtils.LIST) == DataUtils.GRID;
-    reloadListElements(false, results, isPathLayoutGrid);
+    reloadListElements(false, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
   }
 
   private void loadViews() {
-    if (CURRENT_PATH != null) {
-      if ((LIST_ELEMENTS == null || LIST_ELEMENTS.size() == 0) && !results) {
-        loadlist(CURRENT_PATH, true, openMode);
+    if (mainFragmentViewModel.getCurrentPath() != null) {
+      if ((mainFragmentViewModel.getListElements() == null
+              || mainFragmentViewModel.getListElements().size() == 0)
+          && !mainFragmentViewModel.getResults()) {
+        loadlist(mainFragmentViewModel.getCurrentPath(), true, mainFragmentViewModel.getOpenMode());
       } else {
-        reloadListElements(true, results, !IS_LIST);
+        reloadListElements(
+            true, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
       }
-      if (selection) {
+      if (mainFragmentViewModel.getSelection()) {
         for (Integer index : adapter.getCheckedItemsIndex()) {
           adapter.toggleChecked(index, null);
         }
       }
     } else {
-      loadlist(home, true, openMode);
+      loadlist(mainFragmentViewModel.getHome(), true, mainFragmentViewModel.getOpenMode());
     }
   }
 
@@ -483,11 +416,13 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           hideOption(R.id.openmulti, menu);
           menu.findItem(R.id.all)
               .setTitle(
-                  positions.size() == folder_count + file_count
+                  positions.size()
+                          == mainFragmentViewModel.getFolderCount()
+                              + mainFragmentViewModel.getFileCount()
                       ? R.string.deselect_all
                       : R.string.select_all);
 
-          if (openMode != OpenMode.FILE) {
+          if (mainFragmentViewModel.getOpenMode() != OpenMode.FILE) {
             hideOption(R.id.addshortcut, menu);
             hideOption(R.id.compress, menu);
             return true;
@@ -497,7 +432,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             showOption(R.id.openmulti, menu);
           }
           // tv.setText(positions.size());
-          if (!results) {
+          if (!mainFragmentViewModel.getResults()) {
             hideOption(R.id.openparent, menu);
             if (positions.size() == 1) {
               showOption(R.id.addshortcut, menu);
@@ -617,7 +552,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             case R.id.delete:
               GeneralDialogCreation.deleteFilesDialog(
                   getContext(),
-                  LIST_ELEMENTS,
+                  mainFragmentViewModel.getListElements(),
                   getMainActivity(),
                   checkedItems,
                   utilsProvider.getAppTheme());
@@ -635,17 +570,22 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                     .show();
               else {
 
-                switch (LIST_ELEMENTS.get(0).getMode()) {
+                switch (mainFragmentViewModel.getListElements().get(0).getMode()) {
                   case DROPBOX:
                   case BOX:
                   case GDRIVE:
                   case ONEDRIVE:
                     FileUtils.shareCloudFile(
-                        LIST_ELEMENTS.get(0).desc, LIST_ELEMENTS.get(0).getMode(), getContext());
+                        mainFragmentViewModel.getListElements().get(0).desc,
+                        mainFragmentViewModel.getListElements().get(0).getMode(),
+                        getContext());
                     break;
                   default:
                     FileUtils.shareFiles(
-                        arrayList, getActivity(), utilsProvider.getAppTheme(), accentColor);
+                        arrayList,
+                        getActivity(),
+                        utilsProvider.getAppTheme(),
+                        mainFragmentViewModel.getAccentColor());
                     break;
                 }
               }
@@ -654,11 +594,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               loadlist(new File(checkedItems.get(0).desc).getParent(), false, OpenMode.FILE);
               return true;
             case R.id.all:
-              if (adapter.areAllChecked(CURRENT_PATH)) {
-                adapter.toggleChecked(false, CURRENT_PATH);
+              if (adapter.areAllChecked(mainFragmentViewModel.getCurrentPath())) {
+                adapter.toggleChecked(false, mainFragmentViewModel.getCurrentPath());
                 item.setTitle(R.string.select_all);
               } else {
-                adapter.toggleChecked(true, CURRENT_PATH);
+                adapter.toggleChecked(true, mainFragmentViewModel.getCurrentPath());
                 item.setTitle(R.string.deselect_all);
               }
               mode.invalidate();
@@ -707,7 +647,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 copies1.add(checkedItems.get(i4).generateBaseFile());
               }
               GeneralDialogCreation.showCompressDialog(
-                  (MainActivity) getActivity(), copies1, CURRENT_PATH);
+                  (MainActivity) getActivity(), copies1, mainFragmentViewModel.getCurrentPath());
               mode.finish();
               return true;
             case R.id.openwith:
@@ -725,19 +665,23 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         // called when the user exits the action mode
         public void onDestroyActionMode(ActionMode mode) {
           mActionMode = null;
-          selection = false;
+          mainFragmentViewModel.setSelection(false);
 
           // translates the drawer content up
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
           getMainActivity().getFAB().show();
-          if (!results) adapter.toggleChecked(false, CURRENT_PATH);
+          if (!mainFragmentViewModel.getResults())
+            adapter.toggleChecked(false, mainFragmentViewModel.getCurrentPath());
           else adapter.toggleChecked(false);
           getMainActivity().setPagingEnabled(true);
 
           getMainActivity()
               .updateViews(
-                  new ColorDrawable(MainActivity.currentTab == 1 ? primaryTwoColor : primaryColor));
+                  new ColorDrawable(
+                      MainActivity.currentTab == 1
+                          ? mainFragmentViewModel.getPrimaryTwoColor()
+                          : mainFragmentViewModel.getPrimaryColor()));
 
           if (getMainActivity().getDrawer().isLocked()) {
             getMainActivity().getDrawer().unlockIfNotOnTablet();
@@ -763,15 +707,19 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         @Override
         public void onReceive(Context context, Intent intent) {
 
-          if (isEncryptOpen && encryptBaseFile != null) {
-            FileUtils.openFile(encryptBaseFile.getFile(), getMainActivity(), sharedPref);
-            isEncryptOpen = false;
+          if (mainFragmentViewModel.isEncryptOpen()
+              && mainFragmentViewModel.getEncryptBaseFile() != null) {
+            FileUtils.openFile(
+                mainFragmentViewModel.getEncryptBaseFile().getFile(),
+                getMainActivity(),
+                sharedPref);
+            mainFragmentViewModel.setEncryptOpen(false);
           }
         }
       };
 
   public void home() {
-    loadlist((home), false, OpenMode.FILE);
+    loadlist((mainFragmentViewModel.getHome()), false, OpenMode.FILE);
   }
 
   /**
@@ -787,7 +735,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       int position,
       LayoutElementParcelable layoutElementParcelable,
       ImageView imageView) {
-    if (results) {
+    if (mainFragmentViewModel.getResults()) {
       // check to initialize search results
       // if search task is been running, cancel it
       FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
@@ -800,16 +748,16 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
       }
 
-      mRetainSearchTask = true;
-      results = false;
+      mainFragmentViewModel.setRetainSearchTask(true);
+      mainFragmentViewModel.setResults(false);
     } else {
-      mRetainSearchTask = false;
+      mainFragmentViewModel.setRetainSearchTask(false);
       MainActivityHelper.SEARCH_TEXT = null;
     }
 
-    if (selection) {
+    if (mainFragmentViewModel.getSelection()) {
       if (isBackButton) {
-        selection = false;
+        mainFragmentViewModel.setSelection(false);
         if (mActionMode != null) mActionMode.finish();
         mActionMode = null;
       } else {
@@ -832,26 +780,23 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
         if (layoutElementParcelable.isDirectory) {
           computeScroll();
-          loadlist(path, false, openMode);
+          loadlist(path, false, mainFragmentViewModel.getOpenMode());
         } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)) {
           // decrypt the file
-          isEncryptOpen = true;
-
-          encryptBaseFile =
-              new HybridFileParcelable(
-                  getActivity().getExternalCacheDir().getPath()
-                      + "/"
-                      + layoutElementParcelable
-                          .generateBaseFile()
-                          .getName(getMainActivity())
-                          .replace(CryptUtil.CRYPT_EXTENSION, ""));
-          encryptBaseFiles.add(encryptBaseFile);
+          mainFragmentViewModel.setEncryptOpen(true);
+          mainFragmentViewModel.initEncryptBaseFile(
+              getActivity().getExternalCacheDir().getPath()
+                  + "/"
+                  + layoutElementParcelable
+                      .generateBaseFile()
+                      .getName(getMainActivity())
+                      .replace(CryptUtil.CRYPT_EXTENSION, ""));
 
           EncryptDecryptUtils.decryptFile(
               getContext(),
               getMainActivity(),
               this,
-              openMode,
+              mainFragmentViewModel.getOpenMode(),
               layoutElementParcelable.generateBaseFile(),
               getActivity().getExternalCacheDir().getPath(),
               utilsProvider,
@@ -890,14 +835,15 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                         Toast.LENGTH_LONG)
                     .show();
                 CloudUtil.launchCloud(
-                    layoutElementParcelable.generateBaseFile(), openMode, getMainActivity());
+                    layoutElementParcelable.generateBaseFile(),
+                    mainFragmentViewModel.getOpenMode(),
+                    getMainActivity());
                 break;
               default:
                 FileUtils.openFile(new File(path), (MainActivity) getActivity(), sharedPref);
                 break;
             }
-
-            dataUtils.addHistoryFile(layoutElementParcelable.desc);
+            mainFragmentViewModel.getDataUtils().addHistoryFile(layoutElementParcelable.desc);
           }
         }
       }
@@ -905,9 +851,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public void updateTabWithDb(Tab tab) {
-    CURRENT_PATH = tab.path;
-    home = tab.home;
-    loadlist(CURRENT_PATH, false, OpenMode.UNKNOWN);
+    mainFragmentViewModel.setCurrentPath(tab.path);
+    mainFragmentViewModel.setHome(tab.home);
+    loadlist(mainFragmentViewModel.getCurrentPath(), false, OpenMode.UNKNOWN);
   }
 
   /**
@@ -969,9 +915,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             (data) -> {
               mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
-                boolean isPathLayoutGrid =
-                    dataUtils.getListOrGridForPath(path, DataUtils.LIST) == DataUtils.GRID;
-                setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+                setListElements(
+                    data.second, back, path, data.first, false, !mainFragmentViewModel.isList());
               } else {
                 AppConfig.toast(requireContext(), getString(R.string.unknown_error));
               }
@@ -981,10 +926,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   void initNoFileLayout() {
     nofilesview = rootView.findViewById(R.id.nofilelayout);
-    nofilesview.setColorSchemeColors(accentColor);
+    nofilesview.setColorSchemeColors(mainFragmentViewModel.getAccentColor());
     nofilesview.setOnRefreshListener(
         () -> {
-          loadlist((CURRENT_PATH), false, openMode);
+          loadlist(
+              (mainFragmentViewModel.getCurrentPath()), false, mainFragmentViewModel.getOpenMode());
           nofilesview.setRefreshing(false);
         });
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
@@ -1017,39 +963,42 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       boolean results,
       boolean grid) {
     if (bitmap != null) {
-      LIST_ELEMENTS = bitmap;
-      CURRENT_PATH = path;
-      this.openMode = openMode;
+      mainFragmentViewModel.setListElements(bitmap);
+      mainFragmentViewModel.setCurrentPath(path);
+      mainFragmentViewModel.setOpenMode(openMode);
       reloadListElements(back, results, grid);
     } else {
       // list loading cancelled
       // TODO: Add support for cancelling list loading
-      loadlist(home, true, OpenMode.FILE);
+      loadlist(mainFragmentViewModel.getHome(), true, OpenMode.FILE);
     }
   }
 
   public void reloadListElements(boolean back, boolean results, boolean grid) {
     if (isAdded()) {
-      this.results = results;
-      boolean isOtg = CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/"),
-          isOnTheCloud =
-              CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-                  || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")
-                  || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-                  || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/");
+      mainFragmentViewModel.setResults(results);
+      boolean isOtg = (OTGUtil.PREFIX_OTG + "/").equals(mainFragmentViewModel.getCurrentPath());
 
       if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
-          && !CURRENT_PATH.equals("/")
-          && (openMode == OpenMode.FILE || openMode == OpenMode.ROOT)
+          && !"/".equals(mainFragmentViewModel.getCurrentPath())
+          && (mainFragmentViewModel.getOpenMode() == OpenMode.FILE
+              || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT)
           && !isOtg
-          && !isOnTheCloud
-          && (LIST_ELEMENTS.size() == 0
-              || !LIST_ELEMENTS.get(0).size.equals(getString(R.string.goback)))
+          && !mainFragmentViewModel.getIsOnCloud()
+          && (mainFragmentViewModel.getListElements() != null
+              && (mainFragmentViewModel.getListElements().size() == 0
+                  || !mainFragmentViewModel
+                      .getListElements()
+                      .get(0)
+                      .size
+                      .equals(getString(R.string.goback))))
           && !results) {
-        LIST_ELEMENTS.add(0, getBackElement());
+        mainFragmentViewModel.getListElements().add(0, getBackElement());
       }
 
-      if (LIST_ELEMENTS.size() == 0 && !results) {
+      if (mainFragmentViewModel.getListElements() != null
+          && mainFragmentViewModel.getListElements().size() == 0
+          && !results) {
         nofilesview.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setEnabled(false);
@@ -1059,8 +1008,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
         listView.setVisibility(View.VISIBLE);
       }
 
-      if (grid && IS_LIST) switchToGrid();
-      else if (!grid && !IS_LIST) switchToList();
+      if (grid && mainFragmentViewModel.isList()) {
+        switchToGrid();
+      } else if (!grid && !mainFragmentViewModel.isList()) {
+        switchToList();
+      }
 
       if (adapter == null) {
         adapter =
@@ -1070,57 +1022,67 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 utilsProvider,
                 sharedPref,
                 listView,
-                LIST_ELEMENTS,
+                mainFragmentViewModel.getListElements(),
                 getActivity());
       } else {
-        adapter.setItems(listView, new ArrayList<>(LIST_ELEMENTS));
+        adapter.setItems(listView, new ArrayList<>(mainFragmentViewModel.getListElements()));
       }
 
-      stopAnims = true;
+      mainFragmentViewModel.setStopAnims(true);
 
-      if (openMode != OpenMode.CUSTOM) {
-        dataUtils.addHistoryFile(CURRENT_PATH);
+      if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM) {
+        if (mainFragmentViewModel.getCurrentPath() != null) {
+          mainFragmentViewModel
+              .getDataUtils()
+              .addHistoryFile(mainFragmentViewModel.getCurrentPath());
+        }
       }
 
       listView.setAdapter(adapter);
 
-      if (!addheader) {
+      if (!mainFragmentViewModel.getAddHeader()) {
         listView.removeItemDecoration(dividerItemDecoration);
-        addheader = true;
+        mainFragmentViewModel.setAddHeader(true);
       }
 
-      if (addheader && IS_LIST) {
+      if (mainFragmentViewModel.getAddHeader() && mainFragmentViewModel.isList()) {
         dividerItemDecoration =
             new DividerItemDecoration(getActivity(), true, getBoolean(PREFERENCE_SHOW_DIVIDERS));
         listView.addItemDecoration(dividerItemDecoration);
-        addheader = false;
+        mainFragmentViewModel.setAddHeader(false);
       }
 
-      if (back && scrolls.containsKey(CURRENT_PATH)) {
-        Bundle b = scrolls.get(CURRENT_PATH);
+      if (back && scrolls.containsKey(mainFragmentViewModel.getCurrentPath())) {
+        Bundle b = scrolls.get(mainFragmentViewModel.getCurrentPath());
         int index = b.getInt("index"), top = b.getInt("top");
-        if (IS_LIST) {
+        if (mainFragmentViewModel.isList()) {
           mLayoutManager.scrollToPositionWithOffset(index, top);
         } else {
           mLayoutManagerGrid.scrollToPositionWithOffset(index, top);
         }
       }
 
-      getMainActivity().updatePaths(no);
+      getMainActivity().updatePaths(mainFragmentViewModel.getNo());
       getMainActivity().getFAB().show();
       getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       listView.stopScroll();
       fastScroller.setRecyclerView(
-          listView, IS_LIST ? 1 : (columns == 0 || columns == -1) ? 3 : columns);
+          listView,
+          mainFragmentViewModel.isList()
+              ? 1
+              : (mainFragmentViewModel.getColumns() == 0
+                      || mainFragmentViewModel.getColumns() == -1)
+                  ? 3
+                  : mainFragmentViewModel.getColumns());
       mToolbarContainer.addOnOffsetChangedListener(
           (appBarLayout, verticalOffset) -> {
             fastScroller.updateHandlePosition(verticalOffset, 112);
           });
       fastScroller.registerOnTouchListener(
           () -> {
-            if (stopAnims && adapter != null) {
+            if (mainFragmentViewModel.getStopAnims() && adapter != null) {
               stopAnimation();
-              stopAnims = false;
+              mainFragmentViewModel.setStopAnims(false);
             }
           });
 
@@ -1132,13 +1094,15 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   private LayoutElementParcelable getBackElement() {
-    if (back == null) {
-      back =
+    if (mainFragmentViewModel.getBack() == null) {
+      mainFragmentViewModel.setBack(
           new LayoutElementParcelable(
-              getContext(), true, getString(R.string.goback), getBoolean(PREFERENCE_SHOW_THUMB));
+              requireContext(),
+              true,
+              getString(R.string.goback),
+              getBoolean(PREFERENCE_SHOW_THUMB)));
     }
-
-    return back;
+    return mainFragmentViewModel.getBack();
   }
 
   /**
@@ -1150,16 +1114,17 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       (getActivity())
           .registerReceiver(
               decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
-      if (!isEncryptOpen && !Utils.isNullOrEmpty(encryptBaseFiles)) {
+      if (!mainFragmentViewModel.isEncryptOpen()
+          && !Utils.isNullOrEmpty(mainFragmentViewModel.getEncryptBaseFiles())) {
         // we've opened the file and are ready to delete it
-        new DeleteTask(getActivity()).execute(encryptBaseFiles);
-        encryptBaseFiles = new ArrayList<>();
+        new DeleteTask(getActivity()).execute(mainFragmentViewModel.getEncryptBaseFiles());
+        mainFragmentViewModel.setEncryptBaseFiles(new ArrayList<>());
       }
     }
   }
 
   private void startFileObserver() {
-    switch (openMode) {
+    switch (mainFragmentViewModel.getOpenMode()) {
       case ROOT:
       case FILE:
         if (customFileObserver != null
@@ -1168,9 +1133,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           return;
         }
 
-        File file = new File(CURRENT_PATH);
-
-        if (file.isDirectory() && file.canRead()) {
+        File file = null;
+        if (mainFragmentViewModel.getCurrentPath() != null) {
+          file = new File(mainFragmentViewModel.getCurrentPath());
+        }
+        if (file != null && file.isDirectory() && file.canRead()) {
           if (customFileObserver != null) {
             // already a watcher instantiated, first it should be stopped
             customFileObserver.stopWatching();
@@ -1178,7 +1145,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
           customFileObserver =
               new CustomFileObserver(
-                  CURRENT_PATH, new FileHandler(this, listView, getBoolean(PREFERENCE_SHOW_THUMB)));
+                  mainFragmentViewModel.getCurrentPath(),
+                  new FileHandler(this, listView, getBoolean(PREFERENCE_SHOW_THUMB)));
           customFileObserver.startWatching();
         }
         break;
@@ -1209,9 +1177,9 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
               getMainActivity()
                   .mainActivityHelper
                   .rename(
-                      openMode,
+                      mainFragmentViewModel.getOpenMode(),
                       f.getPath(),
-                      Uri.parse(CURRENT_PATH)
+                      Uri.parse(mainFragmentViewModel.getCurrentPath())
                           .buildUpon()
                           .appendEncodedPath(name1)
                           .build()
@@ -1249,50 +1217,60 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     View vi = listView.getChildAt(0);
     int top = (vi == null) ? 0 : vi.getTop();
     int index;
-    if (IS_LIST) index = mLayoutManager.findFirstVisibleItemPosition();
+    if (mainFragmentViewModel.isList()) index = mLayoutManager.findFirstVisibleItemPosition();
     else index = mLayoutManagerGrid.findFirstVisibleItemPosition();
     Bundle b = new Bundle();
     b.putInt("index", index);
     b.putInt("top", top);
-    scrolls.put(CURRENT_PATH, b);
+    scrolls.put(mainFragmentViewModel.getCurrentPath(), b);
   }
 
   public void goBack() {
-    if (openMode == OpenMode.CUSTOM) {
-      loadlist(home, false, OpenMode.FILE);
+    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
+      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
       return;
     }
 
-    HybridFile currentFile = new HybridFile(openMode, CURRENT_PATH);
-    if (!results) {
-      if (!mRetainSearchTask) {
+    HybridFile currentFile =
+        new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
+    if (!mainFragmentViewModel.getResults()) {
+      if (!mainFragmentViewModel.getRetainSearchTask()) {
         // normal case
-        if (selection) {
+        if (mainFragmentViewModel.getSelection()) {
           adapter.toggleChecked(false);
         } else {
-          if (OpenMode.SMB.equals(openMode)) {
-            if (!smbPath.equals(CURRENT_PATH)) {
+          if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
+            if (mainFragmentViewModel.getSmbPath() != null
+                && !mainFragmentViewModel
+                    .getSmbPath()
+                    .equals(mainFragmentViewModel.getCurrentPath())) {
               StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-              if (CURRENT_PATH.indexOf('?') > 0)
-                path.append(CURRENT_PATH.substring(CURRENT_PATH.indexOf('?')));
-              loadlist(path.toString().replace("%3D", "="), true, openMode);
-            } else loadlist(home, false, OpenMode.FILE);
-          } else if (OpenMode.SFTP.equals(openMode)) {
-            if (!CURRENT_PATH.substring(SSH_URI_PREFIX.length()).contains("/")) {
-              loadlist(home, false, OpenMode.FILE);
+              if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
+                path.append(
+                    mainFragmentViewModel
+                        .getCurrentPath()
+                        .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
+              loadlist(
+                  path.toString().replace("%3D", "="), true, mainFragmentViewModel.getOpenMode());
+            } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+          } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
+            if (mainFragmentViewModel.getCurrentPath() != null
+                && !mainFragmentViewModel
+                    .getCurrentPath()
+                    .substring(SSH_URI_PREFIX.length())
+                    .contains("/")) {
+              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
             } else {
-              loadlist(currentFile.getParent(getContext()), true, openMode);
+              loadlist(
+                  currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
             }
-          } else if (CURRENT_PATH.equals("/")
-              || CURRENT_PATH.equals(home)
-              || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG + "/")
-              || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-              || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
-              || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-              || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/"))
-            getMainActivity().exit();
+          } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
+              || (mainFragmentViewModel.getHome() != null
+                  && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
+              || mainFragmentViewModel.getIsOnCloud()) getMainActivity().exit();
           else if (FileUtils.canGoBack(getContext(), currentFile)) {
-            loadlist(currentFile.getParent(getContext()), true, openMode);
+            loadlist(
+                currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
           } else getMainActivity().exit();
         }
       } else {
@@ -1305,23 +1283,27 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           FragmentManager fm = getMainActivity().getSupportFragmentManager();
 
           // getting parent path to resume search from there
-          String parentPath = new HybridFile(openMode, CURRENT_PATH).getParent(getActivity());
+          String parentPath =
+              new HybridFile(
+                      mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath())
+                  .getParent(getActivity());
           // don't fuckin' remove this line, we need to change
           // the path back to parent on back press
-          CURRENT_PATH = parentPath;
+          mainFragmentViewModel.setCurrentPath(parentPath);
 
           MainActivityHelper.addSearchFragment(
               fm,
               new SearchWorkerFragment(),
               parentPath,
               MainActivityHelper.SEARCH_TEXT,
-              openMode,
+              mainFragmentViewModel.getOpenMode(),
               getMainActivity().isRootExplorer(),
               sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
               sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
-        } else loadlist(CURRENT_PATH, true, OpenMode.UNKNOWN);
-
-        mRetainSearchTask = false;
+        } else {
+          loadlist(mainFragmentViewModel.getCurrentPath(), true, OpenMode.UNKNOWN);
+        }
+        mainFragmentViewModel.setRetainSearchTask(false);
       }
     } else {
       // to go back after search list have been popped
@@ -1333,22 +1315,32 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           fragment.searchAsyncTask.cancel(true);
         }
       }
-      loadlist(new File(CURRENT_PATH).getPath(), true, OpenMode.UNKNOWN);
-      results = false;
+      if (mainFragmentViewModel.getCurrentPath() != null) {
+        loadlist(
+            new File(mainFragmentViewModel.getCurrentPath()).getPath(), true, OpenMode.UNKNOWN);
+      }
+      mainFragmentViewModel.setResults(false);
     }
   }
 
   public void reauthenticateSmb() {
-    if (smbPath != null) {
+    if (mainFragmentViewModel.getSmbPath() != null) {
       try {
         getMainActivity()
             .runOnUiThread(
                 () -> {
                   int i;
                   AppConfig.toast(requireContext(), getString(R.string.unknown_error));
-                  if ((i = dataUtils.containsServer(smbPath)) != -1) {
+                  if ((i =
+                          mainFragmentViewModel
+                              .getDataUtils()
+                              .containsServer(mainFragmentViewModel.getSmbPath()))
+                      != -1) {
                     getMainActivity()
-                        .showSMBDialog(dataUtils.getServers().get(i)[0], smbPath, true);
+                        .showSMBDialog(
+                            mainFragmentViewModel.getDataUtils().getServers().get(i)[0],
+                            mainFragmentViewModel.getSmbPath(),
+                            true);
                   }
                 });
       } catch (Exception e) {
@@ -1358,61 +1350,44 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public void goBackItemClick() {
-    if (openMode == OpenMode.CUSTOM) {
-      loadlist(home, false, OpenMode.FILE);
+    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
+      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
       return;
     }
-    HybridFile currentFile = new HybridFile(openMode, CURRENT_PATH);
-    if (!results) {
-      if (selection) {
+    HybridFile currentFile =
+        new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
+    if (!mainFragmentViewModel.getResults()) {
+      if (mainFragmentViewModel.getSelection()) {
         adapter.toggleChecked(false);
       } else {
-        if (openMode == OpenMode.SMB) {
-          if (!CURRENT_PATH.equals(smbPath)) {
+        if (mainFragmentViewModel.getOpenMode() == OpenMode.SMB) {
+          if (mainFragmentViewModel.getCurrentPath() != null
+              && !mainFragmentViewModel
+                  .getCurrentPath()
+                  .equals(mainFragmentViewModel.getSmbPath())) {
             StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-            if (CURRENT_PATH.indexOf('?') > 0)
-              path.append(CURRENT_PATH.substring(CURRENT_PATH.indexOf('?')));
+            if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
+              path.append(
+                  mainFragmentViewModel
+                      .getCurrentPath()
+                      .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
             loadlist(path.toString(), true, OpenMode.SMB);
-          } else loadlist(home, false, OpenMode.FILE);
-        } else if (CURRENT_PATH.equals("/")
-            || CURRENT_PATH.equals(OTGUtil.PREFIX_OTG)
-            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_BOX + "/")
-            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_DROPBOX + "/")
-            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/")
-            || CURRENT_PATH.equals(CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/")) {
+          } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+        } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
+            || mainFragmentViewModel.getIsOnCloud()) {
           getMainActivity().exit();
         } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-          loadlist(currentFile.getParent(getContext()), true, openMode);
+          loadlist(currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
         } else getMainActivity().exit();
       }
     } else {
-      loadlist(currentFile.getPath(), true, openMode);
+      loadlist(currentFile.getPath(), true, mainFragmentViewModel.getOpenMode());
     }
   }
 
   public void updateList() {
     computeScroll();
-    loadlist((CURRENT_PATH), true, openMode);
-  }
-
-  /**
-   * Assigns sort modes A value from 0 to 3 defines sort mode as name/last modified/size/type in
-   * ascending order Values from 4 to 7 defines sort mode as name/last modified/size/type in
-   * descending order
-   *
-   * <p>Final value of {@link #sortby} varies from 0 to 3
-   */
-  public void getSortModes() {
-    int t = SortHandler.getSortType(getContext(), getCurrentPath());
-    if (t <= 3) {
-      sortby = t;
-      asc = 1;
-    } else {
-      asc = -1;
-      sortby = t - 4;
-    }
-
-    dsort = Integer.parseInt(sharedPref.getString(PREFERENCE_DIRECTORY_SORT_MODE, "0"));
+    loadlist(mainFragmentViewModel.getCurrentPath(), true, mainFragmentViewModel.getOpenMode());
   }
 
   @Override
@@ -1443,9 +1418,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     ArrayList<LayoutElementParcelable> smbFileList = new ArrayList<>();
     String extraParams = Uri.parse(path).getQuery();
 
-    if (searchHelper.size() > 500) searchHelper.clear();
+    if (mainFragmentViewModel.getSearchHelper().size() > 500) {
+      mainFragmentViewModel.getSearchHelper().clear();
+    }
     for (SmbFile aMFile : mFile) {
-      if ((dataUtils.isFileHidden(aMFile.getPath()) || aMFile.isHidden()) && !showHiddenFiles) {
+      if ((mainFragmentViewModel.getDataUtils().isFileHidden(aMFile.getPath()) || aMFile.isHidden())
+          && !showHiddenFiles) {
         continue;
       }
       String name = aMFile.getName();
@@ -1453,11 +1431,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
           (aMFile.isDirectory() && name.endsWith("/"))
               ? name.substring(0, name.length() - 1)
               : name;
-      if (path.equals(smbPath)) {
+      if (path.equals(mainFragmentViewModel.getSmbPath())) {
         if (name.endsWith("$")) continue;
       }
       if (aMFile.isDirectory()) {
-        folder_count++;
+        mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
 
         Uri.Builder aMFilePathBuilder = Uri.parse(aMFile.getPath()).buildUpon();
         if (!TextUtils.isEmpty(extraParams)) aMFilePathBuilder.query(extraParams);
@@ -1477,11 +1455,11 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 getBoolean(PREFERENCE_SHOW_THUMB),
                 OpenMode.SMB);
 
-        searchHelper.add(layoutElement.generateBaseFile());
+        mainFragmentViewModel.getSearchHelper().add(layoutElement.generateBaseFile());
         smbFileList.add(layoutElement);
 
       } else {
-        file_count++;
+        mainFragmentViewModel.setFileCount(mainFragmentViewModel.getFileCount() + 1);
         LayoutElementParcelable layoutElement =
             new LayoutElementParcelable(
                 getContext(),
@@ -1497,7 +1475,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 getBoolean(PREFERENCE_SHOW_THUMB),
                 OpenMode.SMB);
         layoutElement.setMode(OpenMode.SMB);
-        searchHelper.add(layoutElement.generateBaseFile());
+        mainFragmentViewModel.getSearchHelper().add(layoutElement.generateBaseFile());
         smbFileList.add(layoutElement);
       }
     }
@@ -1508,7 +1486,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   private LayoutElementParcelable addTo(HybridFileParcelable mFile) {
     File f = new File(mFile.getPath());
     String size = "";
-    if (!dataUtils.isFileHidden(mFile.getPath())) {
+    if (!mainFragmentViewModel.getDataUtils().isFileHidden(mFile.getPath())) {
       if (mFile.isDirectory()) {
         size = "";
         LayoutElementParcelable layoutElement =
@@ -1525,8 +1503,10 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 getBoolean(PREFERENCE_SHOW_THUMB),
                 mFile.getMode());
 
-        LIST_ELEMENTS.add(layoutElement);
-        folder_count++;
+        if (mainFragmentViewModel.getListElements() != null) {
+          mainFragmentViewModel.getListElements().add(layoutElement);
+        }
+        mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
         return layoutElement;
       } else {
         long longSize = 0;
@@ -1555,8 +1535,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                   false,
                   getBoolean(PREFERENCE_SHOW_THUMB),
                   mFile.getMode());
-          LIST_ELEMENTS.add(layoutElement);
-          file_count++;
+          mainFragmentViewModel.getListElements().add(layoutElement);
+          mainFragmentViewModel.setFileCount(mainFragmentViewModel.getFileCount() + 1);
           return layoutElement;
         } catch (Exception e) {
           e.printStackTrace();
@@ -1576,8 +1556,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public void hide(String path) {
-
-    dataUtils.addHiddenFile(path);
+    mainFragmentViewModel.getDataUtils().addHistoryFile(path);
     File file = new File(path);
     if (file.isDirectory()) {
       File f1 = new File(path + "/" + ".nomedia");
@@ -1592,10 +1571,6 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
       }
       FileUtils.scanFile(getActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});
     }
-  }
-
-  public String getCurrentPath() {
-    return CURRENT_PATH;
   }
 
   private void addShortcut(LayoutElementParcelable path) {
@@ -1645,10 +1620,12 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     if (listView != null) {
 
       // initially clearing the array for new result set
-      if (!results) {
-        LIST_ELEMENTS.clear();
-        file_count = 0;
-        folder_count = 0;
+      if (!mainFragmentViewModel.getResults()) {
+        if (mainFragmentViewModel.getListElements() != null) {
+          mainFragmentViewModel.getListElements().clear();
+        }
+        mainFragmentViewModel.setFileCount(0);
+        mainFragmentViewModel.setFolderCount(0);
       }
 
       // adding new value to LIST_ELEMENTS
@@ -1663,8 +1640,8 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
             .getBottomBar()
             .setFullPathText(getString(R.string.searching, query));
       }
-      if (!results) {
-        reloadListElements(false, true, !IS_LIST);
+      if (!mainFragmentViewModel.getResults()) {
+        reloadListElements(false, true, !mainFragmentViewModel.isList());
         getMainActivity().getAppbar().getBottomBar().setPathText("");
       } else {
         adapter.addItem(layoutElementAdded);
@@ -1674,21 +1651,29 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public void onSearchCompleted(final String query) {
-    if (!results) {
+    if (!mainFragmentViewModel.getResults() && mainFragmentViewModel.getListElements() != null) {
       // no results were found
-      LIST_ELEMENTS.clear();
+      mainFragmentViewModel.getListElements().clear();
     }
     new AsyncTask<Void, Void, Void>() {
       @Override
       protected Void doInBackground(Void... params) {
-        Collections.sort(LIST_ELEMENTS, new FileListSorter(dsort, sortby, asc));
+        Collections.sort(
+            mainFragmentViewModel.getListElements(),
+            new FileListSorter(
+                mainFragmentViewModel.getDsort(),
+                mainFragmentViewModel.getSortby(),
+                mainFragmentViewModel.getAsc()));
         return null;
       }
 
       @Override
       public void onPostExecute(Void c) {
         reloadListElements(
-            true, true, !IS_LIST); // TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's
+            true,
+            true,
+            !mainFragmentViewModel
+                .isList()); // TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's
         // createHeaders()
         getMainActivity().getAppbar().getBottomBar().setPathText("");
         getMainActivity()
@@ -1757,7 +1742,7 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
   }
 
   public ArrayList<LayoutElementParcelable> getElementsList() {
-    return LIST_ELEMENTS;
+    return mainFragmentViewModel.getListElements();
   }
 
   public void initTopAndEmptyAreaDragListeners(boolean destroy) {
@@ -1778,14 +1763,16 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
                 return null;
               }));
       listView.setOnDragListener(
-          new RecyclerAdapterDragListener(adapter, null, dragAndDropPreference, this));
+          new RecyclerAdapterDragListener(
+              adapter, null, mainFragmentViewModel.getDragAndDropPreference(), this));
       nofilesview.setOnDragListener(
-          new RecyclerAdapterDragListener(adapter, null, dragAndDropPreference, this));
+          new RecyclerAdapterDragListener(
+              adapter, null, mainFragmentViewModel.getDragAndDropPreference(), this));
     }
   }
 
   public void disableActionMode() {
-    this.selection = false;
+    mainFragmentViewModel.setSelection(false);
     if (this.mActionMode != null) {
       this.mActionMode.finish();
     }
@@ -1808,9 +1795,13 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
     }
   }
 
+  public String getCurrentPath() {
+    return mainFragmentViewModel.getCurrentPath();
+  }
+
   @Override
   public void changePath(String path) {
-    loadlist(path, false, openMode);
+    loadlist(path, false, mainFragmentViewModel.getOpenMode());
   }
 
   @Override
@@ -1825,5 +1816,46 @@ public class MainFragment extends Fragment implements BottomBarButtonPath {
 
   private boolean getBoolean(String key) {
     return getMainActivity().getBoolean(key);
+  }
+
+  @Override
+  public void onGlobalLayout() {
+    if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
+      int screen_width = listView.getWidth();
+      int dptopx = Utils.dpToPx(getContext(), 115);
+      mainFragmentViewModel.setColumns(screen_width / dptopx);
+      if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
+        mainFragmentViewModel.setColumns(3);
+      }
+      if (!mainFragmentViewModel.isList()) {
+        mLayoutManagerGrid.setSpanCount(mainFragmentViewModel.getColumns());
+      }
+    }
+    if (!mainFragmentViewModel.isList()) {
+      loadViews();
+    }
+    if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
+      mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
+    } else {
+      mToolbarContainer.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+    }
+  }
+
+  @Override
+  public boolean onTouch(View v, MotionEvent event) {
+    switch (v.getId()) {
+      case R.id.listView:
+      case R.id.lin:
+        if (adapter != null && mainFragmentViewModel.getStopAnims()) {
+          stopAnimation();
+          mainFragmentViewModel.setStopAnims(false);
+        }
+        return false;
+    }
+    return true;
+  }
+
+  public MainFragmentViewModel getMainFragmentViewModel() {
+    return this.mainFragmentViewModel;
   }
 }

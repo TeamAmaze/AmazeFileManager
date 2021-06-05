@@ -77,6 +77,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
@@ -452,8 +453,8 @@ public class MainActivity extends PermissionsActivity
       oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
       oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
       operation = savedInstanceState.getInt(KEY_OPERATION);
-      int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
-      getDrawer().selectCorrectDrawerItem(selectedStorage);
+      //      int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
+      //      getDrawer().selectCorrectDrawerItem(selectedStorage);
     }
   }
 
@@ -979,17 +980,17 @@ public class MainActivity extends PermissionsActivity
       try {
         executeWithMainFragment(
             mainFragment -> {
-              if (mainFragment.IS_LIST) s.setTitle(R.string.gridview);
+              if (mainFragment.getMainFragmentViewModel().isList()) s.setTitle(R.string.gridview);
               else s.setTitle(R.string.listview);
               appbar
                   .getBottomBar()
                   .updatePath(
                       mainFragment.getCurrentPath(),
-                      mainFragment.results,
+                      mainFragment.getMainFragmentViewModel().getResults(),
                       MainActivityHelper.SEARCH_TEXT,
-                      mainFragment.openMode,
-                      mainFragment.folder_count,
-                      mainFragment.file_count,
+                      mainFragment.getMainFragmentViewModel().getOpenMode(),
+                      mainFragment.getMainFragmentViewModel().getFolderCount(),
+                      mainFragment.getMainFragmentViewModel().getFileCount(),
                       mainFragment);
               return null;
             });
@@ -1021,7 +1022,10 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.home).setVisible(false);
       menu.findItem(R.id.history).setVisible(false);
       menu.findItem(R.id.extract).setVisible(false);
+      menu.findItem(R.id.exit).setVisible(false);
       if (fragment instanceof ProcessViewerFragment) {
+        menu.findItem(R.id.sort).setVisible(false);
+      } else if (fragment instanceof FtpServerFragment) {
         menu.findItem(R.id.sort).setVisible(false);
       } else {
         menu.findItem(R.id.dsort).setVisible(false);
@@ -1069,8 +1073,8 @@ public class MainActivity extends PermissionsActivity
                   dataUtils, getPrefs(), mainFragment, getAppTheme());
               break;
             case R.id.sethome:
-              if (mainFragment.openMode != OpenMode.FILE
-                  && mainFragment.openMode != OpenMode.ROOT) {
+              if (mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.FILE
+                  && mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.ROOT) {
                 Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
                 break;
               }
@@ -1085,8 +1089,10 @@ public class MainActivity extends PermissionsActivity
                   .getActionButton(DialogAction.POSITIVE)
                   .setOnClickListener(
                       (v) -> {
-                        mainFragment.home = mainFragment.getCurrentPath();
-                        updatePaths(mainFragment.no);
+                        mainFragment
+                            .getMainFragmentViewModel()
+                            .setHome(mainFragment.getCurrentPath());
+                        updatePaths(mainFragment.getMainFragmentViewModel().getNo());
                         dialog.dismiss();
                       });
               dialog.show();
@@ -1117,7 +1123,12 @@ public class MainActivity extends PermissionsActivity
                             .putString(
                                 PreferencesConstants.PREFERENCE_DIRECTORY_SORT_MODE, "" + which)
                             .commit();
-                        mainFragment.getSortModes();
+                        mainFragment
+                            .getMainFragmentViewModel()
+                            .initSortModes(
+                                SortHandler.getSortType(
+                                    this, mainFragment.getMainFragmentViewModel().getCurrentPath()),
+                                getPrefs());
                         mainFragment.updateList();
                         dialog1.dismiss();
                         return true;
@@ -1131,7 +1142,7 @@ public class MainActivity extends PermissionsActivity
             case R.id.view:
               int pathLayout =
                   dataUtils.getListOrGridForPath(mainFragment.getCurrentPath(), DataUtils.LIST);
-              if (mainFragment.IS_LIST) {
+              if (mainFragment.getMainFragmentViewModel().isList()) {
                 if (pathLayout == DataUtils.LIST) {
                   AppConfig.getInstance()
                       .runInBackground(
@@ -1513,7 +1524,11 @@ public class MainActivity extends PermissionsActivity
                 break;
               case RENAME:
                 mainActivityHelper.rename(
-                    mainFragment.openMode, (oppathe), (oppathe1), mainActivity, isRootExplorer());
+                    mainFragment.getMainFragmentViewModel().getOpenMode(),
+                    (oppathe),
+                    (oppathe1),
+                    mainActivity,
+                    isRootExplorer());
                 mainFragment.updateList();
                 break;
               case NEW_FILE:
@@ -1950,7 +1965,8 @@ public class MainActivity extends PermissionsActivity
       return;
     }
 
-    mainFragment.reloadListElements(false, false, !mainFragment.IS_LIST);
+    mainFragment.reloadListElements(
+        false, false, !mainFragment.getMainFragmentViewModel().isList());
     mainFragment.mSwipeRefreshLayout.setRefreshing(false);
   }
 
@@ -2156,10 +2172,12 @@ public class MainActivity extends PermissionsActivity
 
       switch (actionItem.getId()) {
         case R.id.menu_new_folder:
-          mainActivity.mainActivityHelper.mkdir(ma.openMode, path, ma);
+          mainActivity.mainActivityHelper.mkdir(
+              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
           break;
         case R.id.menu_new_file:
-          mainActivity.mainActivityHelper.mkfile(ma.openMode, path, ma);
+          mainActivity.mainActivityHelper.mkfile(
+              ma.getMainFragmentViewModel().getOpenMode(), path, ma);
           break;
         case R.id.menu_new_cloud:
           BottomSheetDialogFragment fragment = new CloudSheetFragment();

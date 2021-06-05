@@ -221,10 +221,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       } else {
         // TODO: we don't have the check icon object probably because of config change
       }
-      if (mainFrag.mActionMode == null || !mainFrag.selection) {
+      if (mainFrag.mActionMode == null || !mainFrag.getMainFragmentViewModel().getSelection()) {
         // start actionmode if not already started
         // null condition if there is config change
-        mainFrag.selection = true;
+        mainFrag.getMainFragmentViewModel().setSelection(true);
         mainFrag.mActionMode =
             mainFrag.getMainActivity().startSupportActionMode(mainFrag.mActionModeCallback);
       }
@@ -235,7 +235,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   public void invalidateActionMode() {
-    if (mainFrag.mActionMode != null && mainFrag.selection) {
+    if (mainFrag.mActionMode != null && mainFrag.getMainFragmentViewModel().getSelection()) {
       // we have the actionmode visible, invalidate it's views
       mainFrag.mActionMode.invalidate();
     }
@@ -363,9 +363,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
    * adapter, after you are finished you must call createHeaders
    */
   public void addItem(LayoutElementParcelable e) {
-    if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
+    if (mainFrag.getMainFragmentViewModel().isList() && itemsDigested.size() > 0) {
       itemsDigested.add(itemsDigested.size() - 1, new ListItem(e));
-    } else if (mainFrag.IS_LIST) {
+    } else if (mainFrag.getMainFragmentViewModel().isList()) {
       itemsDigested.add(new ListItem(e));
       itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
     } else {
@@ -397,7 +397,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       uris.add(e != null ? e.iconData : null);
     }
 
-    if (mainFrag.IS_LIST && itemsDigested.size() > 0) {
+    if (mainFrag.getMainFragmentViewModel().isList() && itemsDigested.size() > 0) {
       itemsDigested.add(new ListItem(EMPTY_LAST_ITEM));
       uris.add(null);
     }
@@ -478,7 +478,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     switch (viewType) {
       case TYPE_HEADER_FOLDERS:
       case TYPE_HEADER_FILES:
-        if (mainFrag.IS_LIST) {
+        if (mainFrag.getMainFragmentViewModel().isList()) {
 
           view = mInflater.inflate(R.layout.list_header, parent, false);
         } else {
@@ -493,7 +493,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         return new SpecialViewHolder(context, view, utilsProvider, type);
       case TYPE_ITEM:
       case TYPE_BACK:
-        if (mainFrag.IS_LIST) {
+        if (mainFrag.getMainFragmentViewModel().isList()) {
           view = mInflater.inflate(R.layout.rowlayout, parent, false);
           sizeProvider.addView(VIEW_GENERIC, view.findViewById(R.id.generic_icon));
           sizeProvider.addView(VIEW_PICTURE, view.findViewById(R.id.picture_icon));
@@ -528,7 +528,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       if (isBackButton) {
         holder.about.setVisibility(View.GONE);
       }
-      if (mainFrag.IS_LIST) {
+      if (mainFrag.getMainFragmentViewModel().isList()) {
         if (p == getItemCount() - 1) {
           holder.rl.setMinimumHeight((int) minRowHeight);
           if (itemsDigested.size() == (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 1 : 0))
@@ -558,13 +558,15 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                           != ListItem.CHECKED)) {
                 toggleChecked(
                     vholder.getAdapterPosition(),
-                    mainFrag.IS_LIST ? holder.checkImageView : holder.checkImageViewGrid);
+                    mainFrag.getMainFragmentViewModel().isList()
+                        ? holder.checkImageView
+                        : holder.checkImageViewGrid);
               }
               initDragListener(p, p1, holder);
             }
             return true;
           });
-      if (mainFrag.IS_LIST) {
+      if (mainFrag.getMainFragmentViewModel().isList()) {
         // clear previously cached icon
         GlideApp.with(mainFrag).clear(holder.genericIcon);
         GlideApp.with(mainFrag).clear(holder.pictureIcon);
@@ -881,7 +883,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   @Override
   public int getCorrectView(IconDataParcelable item, int adapterPosition) {
-    if (mainFrag.IS_LIST) {
+    if (mainFrag.getMainFragmentViewModel().isList()) {
       if (getBoolean(PREFERENCE_SHOW_THUMB)) {
         int filetype = itemsDigested.get(adapterPosition).elem.filetype;
 
