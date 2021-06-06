@@ -158,7 +158,7 @@
     <string name="miscellaneous">Egyéb</string>
     <string name="root_pref_summary">Fájl és mappa engedélyek megjelenítése</string>
     <string name="root_pref">Engedélyek megjelenítése</string>
-    <string name="about_amaze_file_manager_label">Amaze File Manager névjegy</string>
+    <string name="about_amaze_file_manager_label">Az Amaze File Manager névjegye</string>
     <string name="version">Verzió</string>
     <string name="rate">Alkalmazás értékelése</string>
     <string name="feedback">Visszajelzés küldése</string>
@@ -199,16 +199,19 @@
     <string name="greek_translation_title">Görög</string>
     <string name="dutch_translation_title">Holland</string>
     <string name="romanian_translation_title">Román</string>
-    <string name="vietnamese_translation_title">Vietnami</string>
+    <string name="vietnamese_translation_title">Vietnámi</string>
     <string name="japanese_translation_title">Japán</string>
     <string name="tamil_translation_title">Tamil</string>
 
-    <string name="zip_viewer">Zip megjelenítő</string>
+    <string name="zip_viewer">Zip-megjelenítő</string>
     <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\nFolytatja?</string>
     <string name="warning">Figyelmeztetés</string>
-    <string name="donate">Adomány</string>
+    <string name="donate">Adományozás</string>
+    <string name="archive_preferences">Archívum beállításai</string>
     <string name="archive_extract_folder">Archívumok kibontási mappája</string>
+    <string name="zip_create_folder">Zip mappa létrehozása</string>
     <string name="archive_summary">Az archivált fájlok ebbe a mappába lesznek kicsomagolva. Az lesz az alapértelmezett könyvtár, amelyben az archívum jelen van</string>
+    <string name="zip_summary">Az új zip fájlokat ebbe a mappába hozza létre. Ez alapértelmezettként az a könyvtár, amelyben a fájlok vannak</string>
     <string name="open_as">Megnyitás mint</string>
     <string name="text">Szöveg</string>
     <string name="audio">Zene</string>
@@ -308,6 +311,8 @@
     <string name="primary_two_summary">Állítsa be a jobb lapon lévő nagy kezelőfelületi elemek a színét</string>
     <string name="support_development">Fejlesztés támogatása</string>
     <string name="report_bugs_title">Hibák jelentése</string>
+    <string name="source_title">Forráskód</string>
+    <string name="source_summary">Forráskód megtekintése a GitHubon</string>
     <string name="report_bugs_summary">Hibák jelentése vagy új funkciók igénylése</string>
     <string name="translate_title">Fordítás</string>
     <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
@@ -482,7 +487,7 @@
     <string name="contributors_1_summary">Fordítás</string>
     <string name="contributors_2_summary">Ikon és bannerek</string>
     <string name="contributors_3_summary">Téma motor</string>
-    <string name="contributors_4_summary">FAB háttér munkatárs</string>
+    <string name="contributors_4_summary">Árnyalás a FAB mögött</string>
     <string name="contributors_5_summary">Színátmenet a lapok váltásakor</string>
     <string name="contributors_6_summary">FTP-kiszolgáló</string>
     <string name="contributors_7_summary">Interaktív héj feltöltése</string>
@@ -510,7 +515,7 @@
     <string name="warning_confirm">Értem!</string>
     <string name="crypt_encryption_fail">Nem sikerült titkosítani</string>
     <string name="crypt_decryption_fail">Nem sikerült visszafejteni</string>
-    <string name="crypt_decryption_fail_password">Rossz jelszó!</string>
+    <string name="crypt_decryption_fail_password">Hibás jelszó!</string>
     <string name="crypt_fingerprint_authenticate">Érintse meg a szenzort a folytatáshoz</string>
     <string name="authenticate_password">Adja meg a jelszót</string>
 
