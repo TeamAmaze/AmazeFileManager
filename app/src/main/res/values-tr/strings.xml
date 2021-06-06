@@ -45,6 +45,7 @@
     <string name="loading">Yükleniyor&#8230;</string>
     <string name="file_empty">Dosya boş</string>
     <string name="error">Hata</string>
+    <string name="search_results">%s için arama sonuçları</string>
     <string name="rename">Yeniden adlandır</string>
     <string name="save">Kaydet</string>
     <string name="bookmarks_added">Yer imleri eklendi</string>
@@ -80,6 +81,7 @@
     <string name="question_set_path_as_home">Mevcut konumu bu sekme için ana konum olarak seçmek istiyor musunuz?</string>
     <string name="directorysort">Dizin sıralama modu</string>
     <string name="sort_by">Sırala</string>
+    <string name="sort_only_this">Sadece bu klasör</string>
     <string name="theme">Tema</string>
     <string name="random">Rastgele arayüz</string>
     <string name="random_summary">Başlangıçta rastgele tema ayarlar</string>
@@ -104,6 +106,7 @@
     <string name="light">Açık</string>
     <string name="dark">Koyu</string>
     <string name="daytime">Gündüz</string>
+    <string name="black">Siyah (OLED paneller için)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Üst klasörler</string>
@@ -122,6 +125,7 @@
     <string name="skip">Geç</string>
     <string name="overwrite">Üzerine yaz</string>
     <string name="not_allowed">İzin yok</string>
+    <string name="searching">Aranıyor%s</string>
     <string name="done">Bitti</string>
     <string name="set">Ayarla</string>
     <string name="enablerootmde">Root modunu etkinleştir</string>
@@ -159,7 +163,7 @@
     <string name="rate">Değerlendir</string>
     <string name="feedback">Geri bildirim</string>
     <string name="hiddenfiles">Gizli dosyalar</string>
-    <string name="type">Tip</string>
+    <string name="type">Tür</string>
     <string name="root_directory">Root</string>
     <string name="add_shortcut">Kısayol ekle</string>
     <string name="unsaved_changes">Kaydedilmemiş değişiklikler</string>
@@ -175,8 +179,8 @@
     <string name="xda_summary">Q&amp;A, Yardım &amp; Sorun giderme</string>
     <string name="circular_images">Görüntüler ve videolar için dairesel simgeleri kullan</string>
     <string name="circular_icons">Dairesel simgeleri kullan</string>
-    <string name="back_title">Geri navigasyonu</string>
-    <string name="back_summary">Listenin en üstünde geri navigasyonunu sağlar</string>
+    <string name="back_title">\'Geri git\' tuşu</string>
+    <string name="back_summary">Listenin en üstünde \'Geri git\' tuşu görünür</string>
     <string name="details">Detaylar</string>
     <string name="translators">Çevirmenler</string>
     <string name="german_translation_title">Almanca</string>
@@ -204,8 +208,11 @@
 Devam etmek istiyor musunuz?\"</string>
     <string name="warning">Uyarı</string>
     <string name="donate">Bağış</string>
+    <string name="archive_preferences">Arşiv tercihleri</string>
     <string name="archive_extract_folder">Arşiv ayıklama klasörü</string>
+    <string name="zip_create_folder">Sıkıştırma klasörü</string>
     <string name="archive_summary">Arşiv dosyaları bu klasöre çıkartılacaktır</string>
+    <string name="zip_summary">Yeni sıkıştırılmış dosyalar bu klasörde olacak</string>
     <string name="open_as">Farklı aç</string>
     <string name="text">Metin</string>
     <string name="audio">Ses</string>
@@ -243,6 +250,7 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="anonymous">Anonim</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="folders">Klasörler</string>
+    <string name="folderfilecount">%1$dklasör ve %2$ddosya</string>
     <string name="videos">Videolar</string>
     <string name="apks">Apk\'ler</string>
     <string name="documents">Dokümanlar</string>
@@ -304,6 +312,8 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="primary_two_summary">Sağ arayüz sekmesinin rengini belirle</string>
     <string name="support_development">Geliştirmeye Destek</string>
     <string name="report_bugs_title">Hata Bildirimi</string>
+    <string name="source_title">Kaynak kodu</string>
+    <string name="source_summary">Kaynak kodunu GitHub üzerinde görüntüle</string>
     <string name="report_bugs_summary">Hata bildirimi veya yeni özellik isteği yapın</string>
     <string name="translate_title">Çeviri</string>
     <string name="translate_summary">Amaze uygulamasını kendi dilinize çevirin</string>
@@ -504,6 +514,7 @@ Kaldırmak için boş bırakın.</string>
     <string name="crypt_fingerprint_authenticate">Devam etmek için parmak izi sensörüne dokunun</string>
     <string name="authenticate_password">Şifreyi girin</string>
 
+    <string name="sidebar_preferences">Kenar çubuğu</string>
     <string name="sidebar_folders_title">Kenar çubuğu kısayolları</string>
     <string name="sidebar_quick_access_title">Kenar çubuğu hızlı erişim</string>
     <string name="show_folders_pref_title">Kısayolları göster</string>
@@ -537,26 +548,133 @@ Kaldırmak için boş bırakın.</string>
 
     <string name="no_name">Dosyanın bir adı olmalı</string>
     <string name="add_item">Öğe Ekle</string>
+    <string name="failed_smb_decrypt_path">SMB bağlantısını yükleme başarısız oldu</string>
+    <string name="failed_cloud_new_connection">Yeni bulut bağlantısını ekleme başarısız oldu</string>
+    <string name="local_inet_addr_error">Yerel \'\'inet address\'\' alınırken hata oluştu</string>
+    <string name="intent_save_as">Dosyayı &#8230; olarak kaydet.</string>
+    <string name="go">Git</string>
+    <string name="advanced">Gelişmiş</string>
+    <string name="typeable_paths_title">Özel yollar</string>
+    <string name="typeable_paths_summary">Özel bir yol yazmak için yol çubuğuna uzun basın</string>
+    <string name="send_email_to">Şuna e-posta gönder</string>
+
+    <string name="text_editor">Text editor ayarları</string>
+    <string name="preference_newstack_title">Dosyaları yeni görev olarak aç</string>
+    <string name="preference_newstack_summary">Dosyaları ayrı görevler olarak açmanızı sağlar. Onlara son uygulamalarınız gibi erişebilirsiniz.</string>
+    <string name="developers">Geliştiriciler</string>
+    <string name="no_bitcoin_app">Lütfen bir Bitcoin cüzdan uygulaması yükleyin</string>
+    <string name="channel_name_normal">Amaze Bildirimler</string>
+    <string name="channel_description_normal">Amaze Dosya Yöneticisinin bildirimleri</string>
+    <string name="channel_name_ftp">Amaze FTP Sunucu</string>
+    <string name="channel_description_ftp">Amaze FTP Sunucunun bildirimleri</string>
+
+    <string name="processing">&#8230;İşleniyor</string>
+    <string name="failed_no_connection">Dosya yüklemesi başarısız oldu. Lütfen bağlantınızı kontrol edin.</string>
+
+    <string name="update">Güncelle</string>
+	<string name="scp_connection">SCP/FTP Bağlantısı</string>
     <string name="scp_port">Port</string>
+    <string name="ssh_host_key_verification_prompt">Ana bilgisayar \'%1$s\' doğruluğu belirlenemiyor.\n\n%2$s anahtar parmak izi %3$s.\n\nKimliği onaylamak için lütfen \"Evet\"e dokunun; aksi takdirde lütfen \"Hayır\"a dokunun.</string>
     <string name="ssh_host_key_verification_prompt_title">Ana Bilgisayarı Doğrula</string>
+    <string name="ssh_select_pem_button">Özel SSH Anahtarı</string>
+    <string name="password_unchanged">(değiştirilmedi)</string>
+    <string name="ssh_authentication_failure_password">Oturum açma başarısız oldu. Girilen kullanıcı adı ve şifre uyuşmuyor.</string>
+    <string name="ssh_authentication_failure_key">Oturum açma başarısız oldu. Girilen kullanıcı adı ve anahtar uyuşmuyor.</string>
+    <string name="ssh_connect_failed">%1$s%2$d%3$s\'ê bağlanma başarısız oldu.</string>
+    <string name="ssh_connect_failed_host_key_changed_title">UYARI: UZAK ANA BİLGİSAYAR KİMLİĞİ DEĞİŞTİRİLDİ!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">BİRİNİN KÖTÜ BİR ŞEY YAPMASI MÜMKÜN!
+
+Şu anda biri sizi gizlice dinliyor olabilir (ortadaki adam saldırısı)! Ayrıca, ana bilgisayar anahtarının yeni değiştirilmiş olması da mümkündür. Uzak ana bilgisayar tarafından gönderilen genel anahtarın parmak izi, Amaze\'de saklananla eşleşmiyor.
+
+Sunucuya bağlanmaya devam etmek için lütfen sistem yöneticinize başvurun veya yeni bir bağlantı kurun.</string>
+    <string name="add_shortcut_not_supported_by_launcher">Kısayol oluşturma başlatıcınız tarafından desteklenmiyor.</string>
+    
     <string name="select_color_config">Renk yapılandırmasını seçin</string>
     <string name="customize">Özelleştir</string>
+    <string name="custom">Özel</string>
     <string name="preselected_configs_title">Önceden seçilmiş yapılandırmalar</string>
     <string name="orange">Turuncu</string>
     <string name="blue">Mavi</string>
     <string name="green">Yeşil</string>
+    <string name="password_no_match">Şifre uyuşmuyor.</string>
     <string name="deselect_all">Hiçbirini seçme</string>
     <string name="filename">Dosya adı</string>
+    <string name="compress_file_suggest_zip_extension">Dosya uzantısı olarak \'\'.zip\'\' kullanmanız önerilir.</string>
+    <string name="about_amaze">Android için materyal tasarımlı dosya yöneticisi.</string>
+    <string name="license">Lisans</string>
+    <string name="libraries">Kütüphaneler</string>
+    <string name="password_repeat">Şifre tekrar</string>
+    <string name="create_file_suggest_txt_extension">Dosya uzantısı olarak \'\'txt\'\' kullanmanız önerilir.</string>
+    <string name="ssh_select_pem">Doğrulama için anahtarınızı seçin.</string>
+    <string name="extracted">Çıkartıldı</string>
+    <string name="compressed">Sıkıştırıldı</string>
+    <string name="processed">İşlendi</string>
+    <string name="no_obtainable_info">Bu dosya hakkında bilgi yok.</string>
+    <string name="no_file_error">Bir şeyler yanlış gitti, açılacak bir şey yok.</string>
+    <string name="file_read_only">Bu dosya salt okunur.</string>
     <string name="got_it">Anladım!</string>
+    <string name="encrypt_file_save_as">Şifrelenmiş dosyayı &#8230; olarak kaydet.</string>
+    <string name="encrypt_folder_save_as">Şifrelenmiş klasörü &#8230; olarak kaydet.</string>
+    <string name="encrypt_file_must_end_with_aze">Şİfrelenmiş dosyalar \'\'.aze\'\' uzantısını kullanmak zorundadır.</string>
+    <string name="cannot_overwrite">Dosya üzerine yazılamıyor.</string>
+    <string name="saved_single_file">Dosya %s olarak kaydedildi.</string>
+    <string name="saved_multi_files">%d dosya kaydedildi.</string>
     <string name="create_hidden_file_warn">Oluşturulan dosya dosya listesinde gizlenecek.</string>
     <string name="grant_apkinstall_permission">Uygulamanın uygulamaları yüklemeye devam etmesi için izin gerekir.</string>
     <string name="time_remaining">Kalan süre</string>
     <string name="transfer_rate">Aktarım hızı</string>
     <string name="unknown">bilinmeyen</string>
+    <string name="multiple_invalid_archive_entries">Arşiv içerisindeki bazı dosyalar çıkarılamadı; arşiv zarar görmüş ya da zararlı bir kaynaktan gelmiş olabilir.</string>
+    <string name="saf_otg_explanation">Güvenlik önlemleri sebebiyle Android\'in dosya sistemine yönlendirileceksiniz. Lütfen soldaki menüden USB aygıtınızı seçin.</string>
+    <string name="donation_thanks">Bağışınız için teşekkürler, bu bizi motive ediyor! (:</string>
+    <string name="enable_marquee_filename">Dosya adları için seçim çerçevesi efektini etkinleştirin</string>
+    <string name="archive_password_prompt">Lütfen arşiv şifresini girin</string>
+    <string name="cannot_extract_archive">\"%s\": %s arşivi çıkarılamıyor.</string>
+    <string name="archive_unsupported_or_corrupt">\"%s\" arşivi açılamıyor. Arşiv zarar görmüş ya da biz açamıyoruz.</string>
     <string name="close">Kapat</string>
     <string name="bookmark_exists">Yer imi var</string>
     <string name="hide_media">Medya tarayıcılarından gizle</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">BİRİNİN KÖTÜ BİR ŞEY YAPMASI MÜMKÜN!
+
+Şu anda biri sizi gizlice dinliyor olabilir (ortadaki adam saldırısı)! Ayrıca, ana bilgisayar anahtarının yeni değiştirilmiş olması da mümkündür. Uzak ana bilgisayar tarafından gönderilen genel anahtarın parmak izi, Amaze\'de saklananla eşleşmiyor.
+
+Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı ayarlarını güncellemeyi iptal edebilirsiniz.</string>
+    <string name="update_host_key">Sahip Anahtarını Güncelleyin</string>
+    <string name="cancel_recommended">İptal Et (Önerilir)</string>
     <string name="failed_install_apk">Yükleme başarısız</string>
 
-    </resources>
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Dahili Depolama</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD kart</string>
+    <string name="choose_folder">Bu Klasörü Seç</string>
+    <string name="ftp_server_open_settings">Ayarları aç</string>
+    <string name="move">Taşı</string>
+    <string name="select_save_location">Kaydedilecek yeri seçin</string>
+    <string name="scp_default_path">Öntanımlı yol (isteğe bağlı)</string>
+
+    <string name="copy_for_github">Biçimlendirilmiş raporu kopyala</string>
+    <string name="error_snackbar_action">Rapor</string>
+    <string name="what_device_headline">Bilgi:</string>
+    <string name="what_happened_headline">Ne oldu:</string>
+    <string name="info_labels">Ne:\\nİstek:\\nGMT Saat:\\Paket:\\Sürüm:\\nOS sürümü:\\nCihaz:\\Model:\\nÜrün:</string>
+    <string name="your_comment">Yorumunuz (İngilizce):</string>
+    <string name="error_details_headline">Ayrıntılar:</string>
+    <string name="app_ui_crash">Uygulama/Kullanıcı arayüzü çöktü</string>
+    <string name="error_report_title">Hata raporu</string>
+    <string name="crash_report_copied">Çökme raporu panoya kopyalandı</string>
+
+    <string name="disableIpcSignature">IPC imzalama kontrolünü devre dışı bırakın (Eski SMBv1 sunucuları için - GÜVENLİ DEĞİL!)</string>
+    <string name="cannot_delete_file">Dosya silinemiyor </string>
+    <string name="cannot_delete_file_with_reason">Dosya silinemiyor - %s</string>
+    <string name="just_once">Sadece Bir Kere</string>
+    <string name="always">Her zaman</string>
+    <string name="choose_different_app">Farklı uygulama seçin</string>
+    <string name="clear_open_file">Önbelleği temizle</string>
+    <string name="clear_open_file_summary">Seçili varsayılan dosya açma uygulamalarını temizler</string>
+    <string name="legacy_listing_title">Root için eski listeyi kullan</string>
+    <string name="legacy_listing_summary">Etkinleştirilirse, listeleme için stat kullanır, aksi takdirde ls kullanır</string>
+    <string name="error_permission_denied">İzin reddedildi</string>
+</resources>
 
