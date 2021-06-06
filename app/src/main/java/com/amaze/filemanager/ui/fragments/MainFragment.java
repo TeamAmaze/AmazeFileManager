@@ -1868,11 +1868,10 @@ public class MainFragment extends Fragment
   }
 
   public @Nullable MainFragmentViewModel getMainFragmentViewModel() {
-    try {
+    if (isAdded()) {
       return new ViewModelProvider(this).get(MainFragmentViewModel.class);
-    } catch (Exception e) {
-      Log.e(getClass().getSimpleName(), "Failed to create viewmodel", e);
-      AppConfig.toast(requireContext(), getString(R.string.unknown_error));
+    } else {
+      Log.e(getClass().getSimpleName(), "Failed to get viewmodel, fragment not yet added");
       return null;
     }
   }
