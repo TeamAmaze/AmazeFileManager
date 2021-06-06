@@ -1026,7 +1026,6 @@ public class MainActivity extends PermissionsActivity
       menu.findItem(R.id.home).setVisible(false);
       menu.findItem(R.id.history).setVisible(false);
       menu.findItem(R.id.extract).setVisible(false);
-      menu.findItem(R.id.exit).setVisible(false);
       if (fragment instanceof ProcessViewerFragment) {
         menu.findItem(R.id.sort).setVisible(false);
       } else if (fragment instanceof FtpServerFragment) {

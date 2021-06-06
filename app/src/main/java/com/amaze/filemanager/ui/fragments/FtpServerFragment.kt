@@ -297,6 +297,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     .show()
                 return true
             }
+            R.id.exit -> {
+                requireActivity().finish()
+                return true
+            }
         }
         return false
     }
