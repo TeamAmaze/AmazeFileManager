@@ -207,8 +207,11 @@
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Doação</string>
+    <string name="archive_preferences">Preferências de pacotes</string>
     <string name="archive_extract_folder">Pasta de extração de arquivos</string>
+    <string name="zip_create_folder">Pasta de criação de arquivos Zip</string>
     <string name="archive_summary">Os arquivos do pacote serão extraídos nesta pasta. A pasta padrão é a de localização do arquivo.</string>
+    <string name="zip_summary">Novos arquivos zip serão criados nesta pasta. A pasta padrão é a de localização do arquivo.</string>
     <string name="open_as">Abrir como</string>
     <string name="text">Texto</string>
     <string name="audio">Áudio</string>
@@ -626,7 +629,7 @@
     <string name="cannot_extract_archive">Não foi possível extrair o arquivo \"1%s\": \'%s</string>
     <string name="archive_unsupported_or_corrupt">Não foi possível abrir arquivo \"1%s\". Ou não podemos abrir o arquivo ou o arquivo está danificado</string>
     <string name="close">Fechar</string>
-    <string name="bookmark_exists">Marcador existe</string>
+    <string name="bookmark_exists">Favorito existe</string>
     <string name="hide_media">Ocultar de mídia</string>
     <string name="ssh_connect_failed_host_key_changed_prompt">É POSSÌVEL QUE ALGUÉM ESTEJA FAZENDO ALGO ERRADO!\n\nAlguém poderia estar escutando você agora mesmo (ataque de homem-no-meio)! É talbém possível que a chave de host tenha epenas mudado. O fingerprint para a chave pública enviada ao host remoto não bate com a armazenada no Amaze\n\nVocê pode proceder com a atualização do fingerprint de host ou cancelar a atualização das configurações de SSH</string>
     <string name="update_host_key">Atualizar Chave de Host</string>
@@ -645,5 +648,33 @@
     <string name="move">Mover</string>
     <string name="select_save_location">Selecione local para salvar</string>
     <string name="scp_default_path">Caminho padrão (Opcional)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Desculpe, isso não deveria ter acontecido</string>
+    <string name="error_report_button_text">Reportar o erro por email</string>
+    <string name="error_report_button_telegram">Reportar o erro pelo Telegram</string>
+    <string name="copy_for_github">Copiar relátorio formatado</string>
+    <string name="error_report_open_issue_button_text">Reportar no GitHub</string>
+    <string name="error_report_open_github_notice">Por favor, verifique se já existe uma \"issue\" aberta para discutir o seu problema.</string>
+    <string name="error_snackbar_message">Desculpa, algo deu errado.</string>
+    <string name="error_snackbar_action">Relatório</string>
+    <string name="what_device_headline">Info:</string>
+    <string name="what_happened_headline">O que aconteceu: </string>
+    <string name="info_labels">Descrição:\\nRequisições:\\nGMT Hora:\\nPacote:\\nVersão:\\nVersão do sistema operacional:\\nAparelho:\\nModelo:\\nProduto:</string>
+    <string name="your_comment">Seu comentário (em inglês):</string>
+    <string name="error_details_headline">Detalhes:</string>
+    <string name="app_ui_crash">Erro na App/UI</string>
+    <string name="error_report_title">Erro no report</string>
+    <string name="crash_report_copied">Report de erro copiado para a área de transferência</string>
+
+    <string name="cannot_delete_file">Não foi possível deletar o arquivo</string>
+    <string name="cannot_delete_file_with_reason">Não foi possível deletar o arquivo%s</string>
+    <string name="cannot_rename_file">Não foi possível renomear o arquivo%s%s</string>
+    <string name="cannot_read_directory">Não foi possível acessar o diretório%s%s</string>
+    <string name="just_once">Apenas uma vez</string>
+    <string name="always">Sempre</string>
+    <string name="choose_different_app">Escolha uma aplicação diferente</string>
+    <string name="clear_open_file">Limpar cache</string>
+    <string name="error_permission_denied">Permissão negada</string>
 </resources>
 
