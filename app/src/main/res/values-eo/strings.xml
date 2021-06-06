@@ -205,8 +205,11 @@
     <string name="unin_system_apk">Ĉi tio estas a sistema aplikaĵo, forigante ĝin povus lasi vian sistemon malstabilita.\nFari?</string>
     <string name="warning">Avertu</string>
     <string name="donate">Doni</string>
+    <string name="archive_preferences">Agordoj de arkivo</string>
     <string name="archive_extract_folder">Dosierujo de arkiva malkompreso</string>
+    <string name="zip_create_folder">Krei Zip-an dosierujojn</string>
     <string name="archive_summary">Arkivaj dosieroj estos malkompresita en ĉi tion dosuerujon. Defaŭlta valuo estas dosierujo en kiu la arkivaĵo estas.</string>
+    <string name="zip_summary">Nova Zip-a dosierojn estos kreita en ĉi tion dosuerujon. Defaŭlta valuo estas dosierujo en kiu la dosiero estas.</string>
     <string name="open_as">Malfermi kiel</string>
     <string name="text">Teksto</string>
     <string name="audio">Sono</string>
@@ -564,6 +567,7 @@
     <string name="developers">Programistoj</string>
     <string name="no_bitcoin_app">Bonvolu, instali bitcoin-monujo</string>
     <string name="scp_port">Pordo</string>
+    <string name="deselect_all">Elekti neniun</string>
     <string name="got_it">Ĉu vi!</string>
     </resources>
 
