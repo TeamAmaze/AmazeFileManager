@@ -209,8 +209,11 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.\\nProcedere?</string>
     <string name="warning">Attenzione</string>
     <string name="donate">Fai una donazione</string>
+    <string name="archive_preferences">Preferenze archivio</string>
     <string name="archive_extract_folder">Cartella estrazione archivio</string>
+    <string name="zip_create_folder">Cartella creazione file ZIP</string>
     <string name="archive_summary">Gli archivi verranno estratti in questa cartella. Il valore predefinito è la cartella in cui l\'archivio è presente.</string>
+    <string name="zip_summary">I nuovi file ZIP verranno creati in questa cartella. Il valore predefinito è la cartella in cui i file sono presenti.</string>
     <string name="open_as">Apri come</string>
     <string name="text">Testo</string>
     <string name="audio">Audio</string>
@@ -312,6 +315,8 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="primary_two_summary">Imposta il colore degli elementi grandi dell\'interfaccia utente per la scheda di destra</string>
     <string name="support_development">Sostieni lo sviluppo</string>
     <string name="report_bugs_title">Segnala bug</string>
+    <string name="source_title">Codice sorgente</string>
+    <string name="source_summary">Vedi il nostro codice sorgente su GitHub</string>
     <string name="report_bugs_summary">Segnala bug o richiedi nuove funzionalità</string>
     <string name="translate_title">Traduci</string>
     <string name="translate_summary">Traduci Amaze nella tua lingua</string>
@@ -502,11 +507,36 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="add_item">Aggiungi elemento</string>
     <string name="failed_smb_decrypt_path">Impossibile caricare la connessione SMB</string>
     <string name="failed_cloud_new_connection">Impossibile aggiungere una nuova connessione cloud</string>
+    <string name="failed_cloud_api_key">Autenticazione al plug-in Cloud fallita</string>
+
+    <string name="local_inet_addr_error">Errore nell\'ottenere l\'indirizzo inet locale</string>
+    <string name="intent_save_as">Salva come&#8230;</string>
+    <string name="typeable_paths_title">Percorso personalizzato</string>
+    <string name="typeable_paths_summary">Tieni premuta la barra per inserire un path personalizzato</string>
     <string name="send_email_to">Invia un messaggio di posta elettronica a</string>
 
     <string name="text_editor">Impostazioni editor di testo</string>
     <string name="preference_newstack_title">Apri file come nuova attività</string>
+    <string name="preference_newstack_summary">Ti permette di aprire file in attività separate. Accedi ad esse dalle schermate di sistema recenti</string>
+    <string name="developers">Sviluppatori</string>
+    <string name="channel_name_normal">Notifiche di Amaze</string>
+    <string name="channel_description_normal">Notifiche del file manager Amaze</string>
+    <string name="channel_name_ftp">Server FTP di Amaze</string>
+    <string name="channel_description_ftp">Notifiche del server FTP del file manager Amaze</string>
+
+    <string name="failed_no_connection">Errore nel caricamento file. Per favore controlla la tua connessione.</string>
+
+    <string name="update">AGGIORNAMENTO</string>
+	<string name="scp_connection">Connessione SCP/SFTP</string>
     <string name="scp_port">Porta</string>
+    <string name="ssh_host_key_verification_prompt_title">Verificare l\'host</string>
+    <string name="ssh_select_pem_button">Chiave SSH privata</string>
+    <string name="ssh_pem_key_parse_error">Impossibile leggere la PEM selezionata: %s</string>
+    <string name="password_unchanged">(invariato)</string>
+    <string name="ssh_authentication_failure_password">Accesso fallito: impossibile autenticarsi con username e password forniti</string>
+    <string name="ssh_authentication_failure_key">Accesso fallito: impossibile autenticarsi con username e chiave privata forniti</string>
+    <string name="ssh_connect_failed">Impossibile connettersi a %1$s:%2$d:%3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">ATTENZIONE: L\'IDENTIFICATORE DELL\'HOST REMOTO È CAMBIATO!</string>
     <string name="orange">Arancione</string>
     <string name="blue">Blu</string>
     <string name="green">Verde</string>
