@@ -1702,6 +1702,7 @@ public class MainFragment extends Fragment
             .getAppbar()
             .getBottomBar()
             .setFullPathText(getString(R.string.search_results, query));
+        mainFragmentViewModel.setResults(false);
       }
     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
   }
