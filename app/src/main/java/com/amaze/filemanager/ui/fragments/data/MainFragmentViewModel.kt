@@ -60,7 +60,6 @@ class MainFragmentViewModel : ViewModel() {
 
     var dragAndDropPreference = 0
 
-    val dataUtils: DataUtils = DataUtils.getInstance()
     var isEncryptOpen = false // do we have to open a file when service is begin destroyed
 
     // the cached base file which we're to open, delete it later
@@ -128,7 +127,7 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize isList from dataUtils
      */
     fun initIsList() {
-        isList = dataUtils.getListOrGridForPath(
+        isList = DataUtils.getInstance().getListOrGridForPath(
             currentPath,
             DataUtils.LIST
         ) == DataUtils.LIST

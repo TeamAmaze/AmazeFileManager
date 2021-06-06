@@ -341,8 +341,7 @@ public class MainFragment extends Fragment
 
   public void switchView() {
     boolean isPathLayoutGrid =
-        mainFragmentViewModel
-                .getDataUtils()
+        DataUtils.getInstance()
                 .getListOrGridForPath(mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
             == DataUtils.GRID;
     reloadListElements(false, mainFragmentViewModel.getResults(), isPathLayoutGrid);
@@ -862,7 +861,7 @@ public class MainFragment extends Fragment
                 FileUtils.openFile(new File(path), (MainActivity) getActivity(), sharedPref);
                 break;
             }
-            mainFragmentViewModel.getDataUtils().addHistoryFile(layoutElementParcelable.desc);
+            DataUtils.getInstance().addHistoryFile(layoutElementParcelable.desc);
           }
         }
       }
@@ -941,7 +940,7 @@ public class MainFragment extends Fragment
               mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
                 boolean isPathLayoutGrid =
-                    mainFragmentViewModel.getDataUtils().getListOrGridForPath(path, DataUtils.LIST)
+                    DataUtils.getInstance().getListOrGridForPath(path, DataUtils.LIST)
                         == DataUtils.GRID;
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
                 setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
@@ -1059,7 +1058,7 @@ public class MainFragment extends Fragment
       mainFragmentViewModel.setStopAnims(true);
 
       if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM) {
-        mainFragmentViewModel.getDataUtils().addHistoryFile(mainFragmentViewModel.getCurrentPath());
+        DataUtils.getInstance().addHistoryFile(mainFragmentViewModel.getCurrentPath());
       }
 
       listView.setAdapter(adapter);
@@ -1356,13 +1355,12 @@ public class MainFragment extends Fragment
                   int i;
                   AppConfig.toast(requireContext(), getString(R.string.unknown_error));
                   if ((i =
-                          mainFragmentViewModel
-                              .getDataUtils()
+                          DataUtils.getInstance()
                               .containsServer(mainFragmentViewModel.getSmbPath()))
                       != -1) {
                     getMainActivity()
                         .showSMBDialog(
-                            mainFragmentViewModel.getDataUtils().getServers().get(i)[0],
+                            DataUtils.getInstance().getServers().get(i)[0],
                             mainFragmentViewModel.getSmbPath(),
                             true);
                   }
@@ -1446,7 +1444,7 @@ public class MainFragment extends Fragment
       mainFragmentViewModel.getSearchHelper().clear();
     }
     for (SmbFile aMFile : mFile) {
-      if ((mainFragmentViewModel.getDataUtils().isFileHidden(aMFile.getPath()) || aMFile.isHidden())
+      if ((DataUtils.getInstance().isFileHidden(aMFile.getPath()) || aMFile.isHidden())
           && !showHiddenFiles) {
         continue;
       }
@@ -1510,7 +1508,7 @@ public class MainFragment extends Fragment
   private LayoutElementParcelable addTo(HybridFileParcelable mFile) {
     File f = new File(mFile.getPath());
     String size = "";
-    if (!mainFragmentViewModel.getDataUtils().isFileHidden(mFile.getPath())) {
+    if (!DataUtils.getInstance().isFileHidden(mFile.getPath())) {
       if (mFile.isDirectory()) {
         size = "";
         LayoutElementParcelable layoutElement =
@@ -1580,7 +1578,7 @@ public class MainFragment extends Fragment
   }
 
   public void hide(String path) {
-    mainFragmentViewModel.getDataUtils().addHistoryFile(path);
+    DataUtils.getInstance().addHistoryFile(path);
     File file = new File(path);
     if (file.isDirectory()) {
       File f1 = new File(path + "/" + ".nomedia");
