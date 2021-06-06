@@ -324,8 +324,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
         dialog.setOnShowListener {
             val bottomSheet = (it as BottomSheetDialog)
-                .findViewById(com.google.android.material.R.id.design_bottom_sheet)
-                as FrameLayout?
+                .findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
             bottomSheet?.run {
                 val behavior = BottomSheetBehavior.from(this)
 
