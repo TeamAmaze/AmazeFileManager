@@ -73,6 +73,7 @@ import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
+import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -102,7 +103,6 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -133,7 +133,7 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment
-    implements BottomBarButtonPath, ViewTreeObserver.OnGlobalLayoutListener, View.OnTouchListener {
+    implements BottomBarButtonPath, ViewTreeObserver.OnGlobalLayoutListener {
 
   public ActionMode mActionMode;
 
@@ -200,9 +200,23 @@ public class MainFragment extends Fragment
     mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
     fastScroller = rootView.findViewById(R.id.fastscroll);
     fastScroller.setPressedHandleColor(mainFragmentViewModel.getAccentColor());
-    listView.setOnTouchListener(this);
+    listView.setOnTouchListener(
+        (view1, motionEvent) -> {
+          if (adapter != null && mainFragmentViewModel.getStopAnims()) {
+            stopAnimation();
+            mainFragmentViewModel.setStopAnims(false);
+          }
+          return false;
+        });
     //    listView.setOnDragListener(new MainFragmentDragListener());
-    mToolbarContainer.setOnTouchListener(this);
+    mToolbarContainer.setOnTouchListener(
+        (view1, motionEvent) -> {
+          if (adapter != null && mainFragmentViewModel.getStopAnims()) {
+            stopAnimation();
+            mainFragmentViewModel.setStopAnims(false);
+          }
+          return false;
+        });
 
     mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
@@ -326,7 +340,12 @@ public class MainFragment extends Fragment
   }
 
   public void switchView() {
-    reloadListElements(false, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
+    boolean isPathLayoutGrid =
+        mainFragmentViewModel
+                .getDataUtils()
+                .getListOrGridForPath(mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
+            == DataUtils.GRID;
+    reloadListElements(false, mainFragmentViewModel.getResults(), isPathLayoutGrid);
   }
 
   private void loadViews() {
@@ -896,11 +915,17 @@ public class MainFragment extends Fragment
    * @param openMode the mode in which the directory should be opened
    */
   public void loadlist(final String path, final boolean back, final OpenMode openMode) {
+    if (mainFragmentViewModel == null) {
+      Log.w(getClass().getSimpleName(), "Viewmodel not available to load the data");
+      return;
+    }
+
     if (mActionMode != null) mActionMode.finish();
 
     mSwipeRefreshLayout.setRefreshing(true);
 
     if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING) {
+      Log.w(getClass().getSimpleName(), "Existing load list task running, cancel current");
       loadFilesListTask.cancel(true);
     }
 
@@ -915,10 +940,13 @@ public class MainFragment extends Fragment
             (data) -> {
               mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
-                setListElements(
-                    data.second, back, path, data.first, false, !mainFragmentViewModel.isList());
+                boolean isPathLayoutGrid =
+                    mainFragmentViewModel.getDataUtils().getListOrGridForPath(path, DataUtils.LIST)
+                        == DataUtils.GRID;
+                setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
+                setListElements(data.second, back, path, data.first, false, isPathLayoutGrid);
               } else {
-                AppConfig.toast(requireContext(), getString(R.string.unknown_error));
+                Log.w(getClass().getSimpleName(), "Load list operation cancelled");
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -1792,6 +1820,10 @@ public class MainFragment extends Fragment
   }
 
   public String getCurrentPath() {
+    if (mainFragmentViewModel == null) {
+      Log.w(getClass().getSimpleName(), "Viewmodel not available to get current path");
+      return null;
+    }
     return mainFragmentViewModel.getCurrentPath();
   }
 
@@ -1837,22 +1869,13 @@ public class MainFragment extends Fragment
     }
   }
 
-  @Override
-  public boolean onTouch(View v, MotionEvent event) {
-    switch (v.getId()) {
-      case R.id.listView:
-      case R.id.lin:
-        if (adapter != null && mainFragmentViewModel.getStopAnims()) {
-          stopAnimation();
-          mainFragmentViewModel.setStopAnims(false);
-        }
-        return false;
-      default:
-        return true;
+  public @Nullable MainFragmentViewModel getMainFragmentViewModel() {
+    try {
+      return new ViewModelProvider(this).get(MainFragmentViewModel.class);
+    } catch (Exception e) {
+      Log.e(getClass().getSimpleName(), "Failed to create viewmodel", e);
+      AppConfig.toast(requireContext(), getString(R.string.unknown_error));
+      return null;
     }
-  }
-
-  public MainFragmentViewModel getMainFragmentViewModel() {
-    return new ViewModelProvider(this).get(MainFragmentViewModel.class);
   }
 }

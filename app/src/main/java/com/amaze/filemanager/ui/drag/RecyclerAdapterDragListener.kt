@@ -77,7 +77,7 @@ class RecyclerAdapterDragListener(
                                 listItem.toggleShouldToggleDragChecked()
                                 adapter.toggleChecked(
                                     holder.adapterPosition,
-                                    if (mainFragment.mainFragmentViewModel.isList) {
+                                    if (mainFragment.mainFragmentViewModel?.isList == true) {
                                         holder.checkImageView
                                     } else {
                                         holder.checkImageViewGrid
@@ -207,6 +207,11 @@ class RecyclerAdapterDragListener(
                                         "location, not allowed ${it.desc}"
                                     )
                             )
+                            holder?.rl?.run {
+                                isFocusable = false
+                                isFocusableInTouchMode = false
+                                clearFocus()
+                            }
                             return false
                         }
                         arrayList.add(it.generateBaseFile())

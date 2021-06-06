@@ -53,7 +53,7 @@ public class FileHandler extends Handler {
     super.handleMessage(msg);
     final MainFragment main = mainFragment.get();
 
-    if (main == null || main.getActivity() == null) {
+    if (main == null || main.getActivity() == null || main.getMainFragmentViewModel() == null) {
       return;
     }
 

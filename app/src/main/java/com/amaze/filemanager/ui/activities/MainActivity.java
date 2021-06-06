@@ -980,8 +980,11 @@ public class MainActivity extends PermissionsActivity
       try {
         executeWithMainFragment(
             mainFragment -> {
-              if (mainFragment.getMainFragmentViewModel().isList()) s.setTitle(R.string.gridview);
-              else s.setTitle(R.string.listview);
+              if (mainFragment.getMainFragmentViewModel().isList()) {
+                s.setTitle(R.string.gridview);
+              } else {
+                s.setTitle(R.string.listview);
+              }
               appbar
                   .getBottomBar()
                   .updatePath(
@@ -995,6 +998,7 @@ public class MainActivity extends PermissionsActivity
               return null;
             });
       } catch (Exception e) {
+        e.printStackTrace();
       }
 
       appbar.getBottomBar().setClickListener();
@@ -2246,7 +2250,7 @@ public class MainActivity extends PermissionsActivity
   private void executeWithMainFragment(
       @NonNull Function<MainFragment, Void> lambda, boolean showToastIfMainFragmentIsNull) {
     final MainFragment mainFragment = getCurrentMainFragment();
-    if (mainFragment != null) {
+    if (mainFragment != null && mainFragment.getMainFragmentViewModel() != null) {
       lambda.apply(mainFragment);
     } else {
       Log.w(TAG, "MainFragment is null");

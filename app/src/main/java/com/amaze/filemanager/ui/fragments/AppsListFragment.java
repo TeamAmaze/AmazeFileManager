@@ -136,7 +136,9 @@ public class AppsListFragment extends ListFragment
   public void onSaveInstanceState(@NonNull Bundle b) {
     super.onSaveInstanceState(b);
 
-    b.putParcelable(KEY_LIST_STATE, getListView().onSaveInstanceState());
+    if (this.isAdded()) {
+      b.putParcelable(KEY_LIST_STATE, getListView().onSaveInstanceState());
+    }
   }
 
   private void updateViews(MainActivity mainActivity, UtilitiesProvider utilsProvider) {

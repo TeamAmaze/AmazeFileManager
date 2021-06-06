@@ -45,6 +45,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -200,7 +201,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     for (Fragment fragment : fragments) {
       if (fragment instanceof MainFragment) {
         MainFragment mainFragment = (MainFragment) fragment;
-        if (i - 1 == MainActivity.currentTab && i == pos) {
+        if (mainFragment.getMainFragmentViewModel() != null
+            && i - 1 == MainActivity.currentTab
+            && i == pos) {
           updateBottomBar(mainFragment);
           mainActivity.getDrawer().selectCorrectDrawerItemForPath(mainFragment.getCurrentPath());
           if (mainFragment.getMainFragmentViewModel().getOpenMode() == OpenMode.FILE) {
@@ -247,7 +250,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   @Override
   public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
-    if (mainFragment == null || mainFragment.getMainFragmentViewModel().getSelection()) {
+    if (mainFragment == null
+        || mainFragment.getMainFragmentViewModel() == null
+        || mainFragment.getMainFragmentViewModel().getSelection()) {
       return; // we do not want to update toolbar colors when ActionMode is activated
     }
 
@@ -422,6 +427,10 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   }
 
   public void updateBottomBar(MainFragment mainFragment) {
+    if (mainFragment == null || mainFragment.getMainFragmentViewModel() == null) {
+      Log.w(getClass().getSimpleName(), "Failed to update bottom bar: main fragment not available");
+      return;
+    }
     mainActivity
         .getAppbar()
         .getBottomBar()

@@ -120,7 +120,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        retainInstance = true
     }
 
     override fun onDestroyView() {

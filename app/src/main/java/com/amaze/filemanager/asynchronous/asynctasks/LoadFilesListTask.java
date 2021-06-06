@@ -69,7 +69,7 @@ public class LoadFilesListTask
     extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
   private String path;
-  private WeakReference<MainFragment> mainFragment;
+  private WeakReference<MainFragment> mainFragmentReference;
   private WeakReference<Context> context;
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
@@ -85,7 +85,7 @@ public class LoadFilesListTask
       boolean showHiddenFiles,
       OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
     this.path = path;
-    this.mainFragment = new WeakReference<>(mainFragment);
+    this.mainFragmentReference = new WeakReference<>(mainFragment);
     this.openmode = openmode;
     this.context = new WeakReference<>(context);
     this.showThumbs = showThumbs;
@@ -95,10 +95,12 @@ public class LoadFilesListTask
 
   @Override
   protected @Nullable Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
-    final MainFragment mainFragment = this.mainFragment.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
     final Context context = this.context.get();
 
-    if (mainFragment == null || context == null) {
+    if (mainFragment == null
+        || context == null
+        || mainFragment.getMainFragmentViewModel() == null) {
       cancel(true);
       return null;
     }
@@ -281,7 +283,7 @@ public class LoadFilesListTask
       return null;
     }
 
-    final MainFragment mainFragment = this.mainFragment.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
     final Context context = this.context.get();
 
     if (mainFragment == null || context == null) {
@@ -463,7 +465,7 @@ public class LoadFilesListTask
   }
 
   private @Nullable ArrayList<LayoutElementParcelable> listRecent() {
-    final MainFragment mainFragment = this.mainFragment.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
     if (mainFragment == null) {
       cancel(true);
       return null;
