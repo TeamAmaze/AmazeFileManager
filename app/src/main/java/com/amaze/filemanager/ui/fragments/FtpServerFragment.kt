@@ -140,21 +140,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         updateSpans()
         updateStatus()
         updateViews(mainActivity, binding)
-        /*when (mainActivity.appTheme.simpleTheme) {
-            AppTheme.LIGHT -> {
-                startDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
-                statusDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
-            }
-            AppTheme.DARK, AppTheme.BLACK -> {
-                startDividerView.setBackgroundColor(
-                    Utils.getColor(context, R.color.divider_dark_card)
-                )
-                statusDividerView.setBackgroundColor(
-                    Utils.getColor(context, R.color.divider_dark_card)
-                )
-            }
-            else -> {}
-        }*/
         ftpBtn.setOnClickListener {
             if (!isRunning()) {
                 if (isConnectedToWifi(requireContext()) ||

@@ -1031,11 +1031,7 @@ public class MainFragment extends Fragment
       mainFragmentViewModel.setStopAnims(true);
 
       if (mainFragmentViewModel.getOpenMode() != OpenMode.CUSTOM) {
-        if (mainFragmentViewModel.getCurrentPath() != null) {
-          mainFragmentViewModel
-              .getDataUtils()
-              .addHistoryFile(mainFragmentViewModel.getCurrentPath());
-        }
+        mainFragmentViewModel.getDataUtils().addHistoryFile(mainFragmentViewModel.getCurrentPath());
       }
 
       listView.setAdapter(adapter);
@@ -1851,11 +1847,12 @@ public class MainFragment extends Fragment
           mainFragmentViewModel.setStopAnims(false);
         }
         return false;
+      default:
+        return true;
     }
-    return true;
   }
 
   public MainFragmentViewModel getMainFragmentViewModel() {
-    return this.mainFragmentViewModel;
+    return new ViewModelProvider(this).get(MainFragmentViewModel.class);
   }
 }

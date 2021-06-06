@@ -453,8 +453,8 @@ public class MainActivity extends PermissionsActivity
       oppathe1 = savedInstanceState.getString(KEY_OPERATED_ON_PATH);
       oparrayList = savedInstanceState.getParcelableArrayList(KEY_OPERATIONS_PATH_LIST);
       operation = savedInstanceState.getInt(KEY_OPERATION);
-      //      int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
-      //      getDrawer().selectCorrectDrawerItem(selectedStorage);
+      int selectedStorage = savedInstanceState.getInt(KEY_DRAWER_SELECTED, 0);
+      getDrawer().selectCorrectDrawerItem(selectedStorage);
     }
   }
 

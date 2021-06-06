@@ -33,7 +33,7 @@ import java.util.*
 
 class MainFragmentViewModel : ViewModel() {
 
-    var currentPath: String = ""
+    var currentPath: String? = null
 
     /** This is not an exact copy of the elements in the adapter  */
     var listElements: ArrayList<LayoutElementParcelable>? = null
@@ -84,6 +84,9 @@ class MainFragmentViewModel : ViewModel() {
     var primaryTwoColor = 0
     var stopAnims = true
 
+    /**
+     * Initialize arguemnts from bundle in MainFragment
+     */
     fun initBundleArguments(bundle: Bundle?) {
         bundle?.run {
             if (no == 0) {
@@ -111,6 +114,9 @@ class MainFragmentViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Initialize drag drop preference
+     */
     fun initDragAndDropPreference(sharedPreferences: SharedPreferences) {
         dragAndDropPreference = sharedPreferences.getInt(
             PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
@@ -118,6 +124,9 @@ class MainFragmentViewModel : ViewModel() {
         )
     }
 
+    /**
+     * Initialize isList from dataUtils
+     */
     fun initIsList() {
         isList = dataUtils.getListOrGridForPath(
             currentPath,
@@ -125,6 +134,9 @@ class MainFragmentViewModel : ViewModel() {
         ) == DataUtils.LIST
     }
 
+    /**
+     * Initialize column number from preference
+     */
     fun initColumns(sharedPreferences: SharedPreferences) {
         if (columns == 0) {
             sharedPreferences.getString(
@@ -161,6 +173,9 @@ class MainFragmentViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Initialize encrypted file
+     */
     fun initEncryptBaseFile(path: String) {
         encryptBaseFile = HybridFileParcelable(path)
         encryptBaseFile?.run {
@@ -168,6 +183,9 @@ class MainFragmentViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Check if current path is cloud path
+     */
     fun getIsOnCloud(): Boolean {
         return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/" == currentPath ||
