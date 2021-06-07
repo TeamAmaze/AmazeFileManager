@@ -70,6 +70,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
@@ -715,8 +716,15 @@ public class MainActivityHelper {
    */
   public void search(SharedPreferences sharedPrefs, String query) {
     TabFragment tabFragment = mainActivity.getTabFragment();
-    if (tabFragment == null) return;
+    if (tabFragment == null) {
+      Log.w(getClass().getSimpleName(), "Failed to search: tab fragment not available");
+      return;
+    }
     final MainFragment ma = (MainFragment) tabFragment.getCurrentTabFragment();
+    if (ma == null || ma.getMainFragmentViewModel() == null) {
+      Log.w(getClass().getSimpleName(), "Failed to search: main fragment not available");
+      return;
+    }
     final String fpath = ma.getCurrentPath();
 
     /*SearchTask task = new SearchTask(ma.searchHelper, ma, query);
@@ -739,7 +747,7 @@ public class MainActivityHelper {
         new SearchWorkerFragment(),
         fpath,
         query,
-        ma.openMode,
+        ma.getMainFragmentViewModel().getOpenMode(),
         mainActivity.isRootExplorer(),
         sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
         sharedPrefs.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));

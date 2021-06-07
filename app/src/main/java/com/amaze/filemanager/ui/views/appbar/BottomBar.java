@@ -159,7 +159,8 @@ public class BottomBar implements View.OnTouchListener {
                 if (fragmentAtFrame instanceof TabFragment) {
                   final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
                   Objects.requireNonNull(mainFragment);
-                  if (OpenMode.CUSTOM != mainFragment.openMode) {
+                  if (mainFragment.getMainFragmentViewModel() != null
+                      && OpenMode.CUSTOM != mainFragment.getMainFragmentViewModel().getOpenMode()) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
@@ -179,7 +180,9 @@ public class BottomBar implements View.OnTouchListener {
                 final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
                 Objects.requireNonNull(mainFragment);
                 if (mainActivity.getBoolean(PREFERENCE_CHANGEPATHS)
-                    && (!mainFragment.results || buttons.getVisibility() == View.VISIBLE)) {
+                    && ((mainFragment.getMainFragmentViewModel() != null
+                            && !mainFragment.getMainFragmentViewModel().getResults())
+                        || buttons.getVisibility() == View.VISIBLE)) {
                   GeneralDialogCreation.showChangePathsDialog(
                       mainActivity, mainActivity.getPrefs());
                 }

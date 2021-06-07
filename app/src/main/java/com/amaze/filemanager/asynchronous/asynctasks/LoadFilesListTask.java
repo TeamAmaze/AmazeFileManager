@@ -69,7 +69,7 @@ public class LoadFilesListTask
     extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
   private String path;
-  private WeakReference<MainFragment> mainFragment;
+  private WeakReference<MainFragment> mainFragmentReference;
   private WeakReference<Context> context;
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
@@ -85,7 +85,7 @@ public class LoadFilesListTask
       boolean showHiddenFiles,
       OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
     this.path = path;
-    this.mainFragment = new WeakReference<>(mainFragment);
+    this.mainFragmentReference = new WeakReference<>(mainFragment);
     this.openmode = openmode;
     this.context = new WeakReference<>(context);
     this.showThumbs = showThumbs;
@@ -95,10 +95,12 @@ public class LoadFilesListTask
 
   @Override
   protected @Nullable Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
-    final MainFragment mainFragment = this.mainFragment.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
     final Context context = this.context.get();
 
-    if (mainFragment == null || context == null) {
+    if (mainFragment == null
+        || context == null
+        || mainFragment.getMainFragmentViewModel() == null) {
       cancel(true);
       return null;
     }
@@ -111,14 +113,14 @@ public class LoadFilesListTask
       openmode = hFile.getMode();
 
       if (hFile.isSmb()) {
-        mainFragment.smbPath = path;
+        mainFragment.getMainFragmentViewModel().setSmbPath(path);
       }
     }
 
     if (isCancelled()) return null;
 
-    mainFragment.folder_count = 0;
-    mainFragment.file_count = 0;
+    mainFragment.getMainFragmentViewModel().setFolderCount(0);
+    mainFragment.getMainFragmentViewModel().setFileCount(0);
     final ArrayList<LayoutElementParcelable> list;
 
     switch (openmode) {
@@ -258,7 +260,9 @@ public class LoadFilesListTask
         asc = -1;
         sortby = t - 4;
       }
-      Collections.sort(list, new FileListSorter(mainFragment.dsort, sortby, asc));
+      Collections.sort(
+          list,
+          new FileListSorter(mainFragment.getMainFragmentViewModel().getDsort(), sortby, asc));
     }
 
     return new Pair<>(openmode, list);
@@ -279,7 +283,7 @@ public class LoadFilesListTask
       return null;
     }
 
-    final MainFragment mainFragment = this.mainFragment.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
     final Context context = this.context.get();
 
     if (mainFragment == null || context == null) {
@@ -291,7 +295,9 @@ public class LoadFilesListTask
     long longSize = 0;
 
     if (baseFile.isDirectory()) {
-      mainFragment.folder_count++;
+      mainFragment
+          .getMainFragmentViewModel()
+          .setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
     } else {
       if (baseFile.getSize() != -1) {
         try {
@@ -301,8 +307,9 @@ public class LoadFilesListTask
           e.printStackTrace();
         }
       }
-
-      mainFragment.file_count++;
+      mainFragment
+          .getMainFragmentViewModel()
+          .setFileCount(mainFragment.getMainFragmentViewModel().getFileCount() + 1);
     }
 
     LayoutElementParcelable layoutElement =
@@ -458,7 +465,7 @@ public class LoadFilesListTask
   }
 
   private @Nullable ArrayList<LayoutElementParcelable> listRecent() {
-    final MainFragment mainFragment = this.mainFragment.get();
+    final MainFragment mainFragment = this.mainFragmentReference.get();
     if (mainFragment == null) {
       cancel(true);
       return null;

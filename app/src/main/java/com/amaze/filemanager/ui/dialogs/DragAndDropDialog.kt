@@ -109,7 +109,7 @@ class DragAndDropDialog : DialogFragment() {
                 move,
                 mainActivity,
                 mainActivity.isRootExplorer,
-                mainActivity.currentMainFragment?.openMode
+                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
             )
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, files)
         }

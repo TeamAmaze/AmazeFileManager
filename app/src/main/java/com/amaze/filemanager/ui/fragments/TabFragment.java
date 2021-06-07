@@ -45,6 +45,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -140,7 +141,6 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       } catch (Exception e) {
         e.printStackTrace();
       }
-
     } else {
       fragments.clear();
       try {
@@ -200,14 +200,24 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     int i = 1;
     for (Fragment fragment : fragments) {
       if (fragment instanceof MainFragment) {
-        MainFragment m = (MainFragment) fragment;
-        if (i - 1 == MainActivity.currentTab && i == pos) {
-          updateBottomBar(m);
-          mainActivity.getDrawer().selectCorrectDrawerItemForPath(m.getCurrentPath());
-          if (m.openMode == OpenMode.FILE) {
-            tabHandler.update(new Tab(i, m.getCurrentPath(), m.home));
+        MainFragment mainFragment = (MainFragment) fragment;
+        if (mainFragment.getMainFragmentViewModel() != null
+            && i - 1 == MainActivity.currentTab
+            && i == pos) {
+          updateBottomBar(mainFragment);
+          mainActivity.getDrawer().selectCorrectDrawerItemForPath(mainFragment.getCurrentPath());
+          if (mainFragment.getMainFragmentViewModel().getOpenMode() == OpenMode.FILE) {
+            tabHandler.update(
+                new Tab(
+                    i,
+                    mainFragment.getCurrentPath(),
+                    mainFragment.getMainFragmentViewModel().getHome()));
           } else {
-            tabHandler.update(new Tab(i, m.home, m.home));
+            tabHandler.update(
+                new Tab(
+                    i,
+                    mainFragment.getMainFragmentViewModel().getHome(),
+                    mainFragment.getMainFragmentViewModel().getHome()));
           }
         }
         i++;
@@ -240,7 +250,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   @Override
   public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
     final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
-    if (mainFragment == null || mainFragment.selection) {
+    if (mainFragment == null
+        || mainFragment.getMainFragmentViewModel() == null
+        || mainFragment.getMainFragmentViewModel().getSelection()) {
       return; // we do not want to update toolbar colors when ActionMode is activated
     }
 
@@ -386,7 +398,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     mSectionsPagerAdapter.notifyDataSetChanged();
     mViewPager.setOffscreenPageLimit(4);
     if (currentTab) {
-      updateBottomBar(main);
+      //      updateBottomBar(main);
     }
   }
 
@@ -406,30 +418,29 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
     int accentColor = mainActivity.getAccent();
 
-    if (index == 0) {
-      circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
-      circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
-    } else {
-      circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
-      circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
-    }
+    circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
+    circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
   }
 
   public ConstraintLayout getDragPlaceholder() {
     return this.dragPlaceholder;
   }
 
-  private void updateBottomBar(MainFragment mainFragment) {
+  public void updateBottomBar(MainFragment mainFragment) {
+    if (mainFragment == null || mainFragment.getMainFragmentViewModel() == null) {
+      Log.w(getClass().getSimpleName(), "Failed to update bottom bar: main fragment not available");
+      return;
+    }
     mainActivity
         .getAppbar()
         .getBottomBar()
         .updatePath(
             mainFragment.getCurrentPath(),
-            mainFragment.results,
+            mainFragment.getMainFragmentViewModel().getResults(),
             MainActivityHelper.SEARCH_TEXT,
-            mainFragment.openMode,
-            mainFragment.folder_count,
-            mainFragment.file_count,
+            mainFragment.getMainFragmentViewModel().getOpenMode(),
+            mainFragment.getMainFragmentViewModel().getFolderCount(),
+            mainFragment.getMainFragmentViewModel().getFileCount(),
             mainFragment);
   }
 

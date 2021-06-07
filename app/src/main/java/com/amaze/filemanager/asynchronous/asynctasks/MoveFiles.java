@@ -137,6 +137,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                     CloudUtil.stripPath(mode, baseFile.getPath()),
                     CloudUtil.stripPath(mode, destPath));
               } catch (Exception e) {
+                e.printStackTrace();
                 return false;
               }
             } else {

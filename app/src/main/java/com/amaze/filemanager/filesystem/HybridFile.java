@@ -260,6 +260,7 @@ public class HybridFile {
           try {
             s = smbFile.length();
           } catch (SmbException e) {
+            e.printStackTrace();
           }
         return s;
       case FILE:
@@ -1089,6 +1090,7 @@ public class HybridFile {
         SmbFile smbFile = getSmbFile(2000);
         exists = smbFile != null && smbFile.exists();
       } catch (SmbException e) {
+        e.printStackTrace();
         exists = false;
       }
     } else if (isDropBoxFile()) {
@@ -1149,6 +1151,7 @@ public class HybridFile {
           return false;
         }
       } catch (SmbException e) {
+        e.printStackTrace();
         return false;
       }
     }
