@@ -24,6 +24,7 @@ package com.amaze.filemanager.ui.fragments.preference_fragments;
 public class PreferencesConstants {
   // START fragments
   public static final String FRAGMENT_THEME = "theme";
+  public static final String FRAGMENT_THEME_SUMMARY = "theme_summary";
   public static final String FRAGMENT_COLORS = "colors";
   public static final String FRAGMENT_FOLDERS = "sidebar_folders";
   public static final String FRAGMENT_QUICKACCESSES = "sidebar_quickaccess";
@@ -44,6 +45,7 @@ public class PreferencesConstants {
   public static final String PREFERENCE_ENABLE_MARQUEE_FILENAME = "enableMarqueeFilename";
   public static final String PREFERENCE_ROOT_LEGACY_LISTING = "legacyListing";
   public static final String PREFERENCE_DRAG_AND_DROP_PREFERENCE = "dragAndDropPreference";
+  public static final String PREFERENCE_DRAG_AND_DROP_SUMMARY = "dragAndDropSummary";
   public static final String PREFERENCE_DRAG_AND_DROP_REMEMBERED = "dragOperationRemembered";
 
   public static final String PREFERENCE_CLEAR_OPEN_FILE = "clear_open_file";

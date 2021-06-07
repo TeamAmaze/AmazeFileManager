@@ -99,6 +99,15 @@ public class PrefFrag extends PreferenceFragmentCompat
     addPreferencesFromResource(R.xml.preferences);
 
     sharedPref = PreferenceManager.getDefaultSharedPreferences(getActivity());
+    String themeTitle = sharedPref.getString(PreferencesConstants.FRAGMENT_THEME_SUMMARY,getString(R.string.light));
+    String numberOfColumns = sharedPref.getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS,getString(R.string.default_string));
+    if (numberOfColumns.equals("-1")) {
+      numberOfColumns = getString(R.string.default_string);
+    }
+    String dragDropPreference = sharedPref.getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_SUMMARY,getString(R.string.drag_to_select));
+    findPreference(PreferencesConstants.FRAGMENT_THEME).setSummary(themeTitle);
+    findPreference(PreferencesConstants.PREFERENCE_GRID_COLUMNS).setSummary(numberOfColumns);
+    findPreference(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE).setSummary(dragDropPreference);
 
     for (String PREFERENCE_KEY : PREFERENCE_KEYS) {
       findPreference(PREFERENCE_KEY).setOnPreferenceClickListener(this);
@@ -210,6 +219,7 @@ public class PrefFrag extends PreferenceFragmentCompat
                           "" + (which != 0 ? sort[which] : "" + -1))
                       .apply();
                   dialog.dismiss();
+                  restartPC(getActivity());
                   return true;
                 });
         builder.build().show();
@@ -231,12 +241,14 @@ public class PrefFrag extends PreferenceFragmentCompat
                   sharedPref
                       .edit()
                       .putInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which)
+                      .putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_SUMMARY, getDragDropSummary(which))
                       .apply();
                   sharedPref
                       .edit()
                       .putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null)
                       .apply();
                   dialog.dismiss();
+                  restartPC(getActivity());
                   return true;
                 });
         dragDialogBuilder.build().show();
@@ -252,6 +264,10 @@ public class PrefFrag extends PreferenceFragmentCompat
                 current,
                 (dialog, view, which, text) -> {
                   utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
+                  sharedPref
+                      .edit()
+                      .putString(PreferencesConstants.FRAGMENT_THEME_SUMMARY, getThemeTitle(which))
+                      .apply();
                   dialog.dismiss();
                   restartPC(getActivity());
                   return true;
@@ -384,6 +400,41 @@ public class PrefFrag extends PreferenceFragmentCompat
     }
 
     return false;
+  }
+
+  private String getDragDropSummary(int dragDropID) {
+    String dragDropSummary;
+    switch (dragDropID) {
+      case PreferencesConstants.PREFERENCE_DRAG_DEFAULT:
+        dragDropSummary = getString(R.string.disable);
+        break;
+      case PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY:
+        dragDropSummary = getString(R.string.drag_to_move_copy);
+        break;
+      default:
+        dragDropSummary = getString(R.string.drag_to_select);
+        break;
+    }
+    return dragDropSummary;
+  }
+
+  private String getThemeTitle(int themeID) {
+    String themeTitle;
+    switch (themeID) {
+      case AppTheme.DARK_INDEX:
+        themeTitle = getString(R.string.dark);
+        break;
+      case AppTheme.TIME_INDEX:
+        themeTitle = getString(R.string.daytime);
+        break;
+      case AppTheme.BLACK_INDEX:
+        themeTitle = getString(R.string.black);
+        break;
+      default:
+        themeTitle = getString(R.string.light);
+        break;
+    }
+    return themeTitle;
   }
 
   public static void restartPC(final Activity activity) {
