@@ -1,11 +1,11 @@
 name: Android Feature CI
 
 on:
-  pull_request:
+  push:
     branches:
-      - 'master'
-      - 'release/*'
-      - 'hotfix/*'
+      - '*'
+      - '!master'
+      - '!release/*'
 
 jobs:
   build:
@@ -24,12 +24,3 @@ jobs:
           ./gradlew assembledebug --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
         env:
           TZ: UTC
-      - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info | grep -vE 'Transform|Build cache is disabled|history is available.'
-        env:
-          TZ: UTC
-      - name: Publish test cases
-        run: |
-          export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
-          bash <(curl -Ls https://coverage.codacy.com/get.sh)
-        continue-on-error: true
