@@ -199,7 +199,7 @@ public class MainActivityHelper {
                   openMode,
                   Uri.parse(path)
                       .buildUpon()
-                      .appendEncodedPath(textfield.getText().toString())
+                      .appendEncodedPath(textfield.getText().toString().trim())
                       .build()
                       .toString()),
               ma);
@@ -210,30 +210,30 @@ public class MainActivityHelper {
 
           // The redundant equalsIgnoreCase() is needed since ".txt" itself does not end with .txt
           // (i.e. recommended as ".txt.txt"
-          if (isValidFilename && text.length() > 0) {
-            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
-            if (text.startsWith(".")
-                && !prefs.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false)) {
-              return new WarnableTextInputValidator.ReturnState(
-                  WarnableTextInputValidator.ReturnState.STATE_WARNING,
-                  R.string.create_hidden_file_warn);
-            } else if (!text.toLowerCase()
-                .endsWith(
-                    AppConstants.NEW_FILE_DELIMITER.concat(AppConstants.NEW_FILE_EXTENSION_TXT))) {
-              return new WarnableTextInputValidator.ReturnState(
-                  WarnableTextInputValidator.ReturnState.STATE_WARNING,
-                  R.string.create_file_suggest_txt_extension);
-            }
-          } else {
-            if (!isValidFilename) {
+          if (text.length() > 0) {
+            if (!isValidFilename || text.startsWith(" ")) {
               return new WarnableTextInputValidator.ReturnState(
                   WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
-            } else if (text.length() < 1) {
-              return new WarnableTextInputValidator.ReturnState(
-                  WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
+            } else {
+              SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(mainActivity);
+              if (text.startsWith(".")
+                  && !prefs.getBoolean(PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES, false)) {
+                return new WarnableTextInputValidator.ReturnState(
+                    WarnableTextInputValidator.ReturnState.STATE_WARNING,
+                    R.string.create_hidden_file_warn);
+              } else if (!text.toLowerCase()
+                  .endsWith(
+                      AppConstants.NEW_FILE_DELIMITER.concat(
+                          AppConstants.NEW_FILE_EXTENSION_TXT))) {
+                return new WarnableTextInputValidator.ReturnState(
+                    WarnableTextInputValidator.ReturnState.STATE_WARNING,
+                    R.string.create_file_suggest_txt_extension);
+              }
             }
+          } else {
+            return new WarnableTextInputValidator.ReturnState(
+                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
           }
-
           return new WarnableTextInputValidator.ReturnState();
         });
   }
