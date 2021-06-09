@@ -161,7 +161,7 @@ public class MainActivityHelper {
                   openMode,
                   Uri.parse(path)
                       .buildUpon()
-                      .appendEncodedPath(textfield.getText().toString())
+                      .appendEncodedPath(textfield.getText().toString().trim())
                       .build()
                       .toString()),
               ma);
@@ -170,7 +170,7 @@ public class MainActivityHelper {
         (text) -> {
           boolean isValidFilename = FileProperties.isValidFilename(text);
 
-          if (!isValidFilename) {
+          if (!isValidFilename || text.startsWith(" ")) {
             return new WarnableTextInputValidator.ReturnState(
                 WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
           } else if (text.length() < 1) {
