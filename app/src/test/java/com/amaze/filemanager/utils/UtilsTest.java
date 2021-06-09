@@ -156,7 +156,7 @@ public class UtilsTest {
   }
 
   @Test
-  @Config(sdk = {P})// min sdk is N
+  @Config(sdk = {P}) // min sdk is N
   public void testGetVolumeDirectory() throws Exception {
     StorageVolume mock = mock(StorageVolume.class);
     Field f = StorageVolume.class.getDeclaredField("mPath");
