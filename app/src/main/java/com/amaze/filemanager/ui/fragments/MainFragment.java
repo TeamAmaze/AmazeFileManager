@@ -1195,7 +1195,7 @@ public class MainFragment extends Fragment
             getResources().getString(R.string.cancel),
             (dialog, which) -> {
               EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
-              String name1 = textfield.getText().toString();
+              String name1 = textfield.getText().toString().trim();
 
               getMainActivity()
                   .mainActivityHelper
@@ -1213,7 +1213,7 @@ public class MainFragment extends Fragment
             (text) -> {
               boolean isValidFilename = FileProperties.isValidFilename(text);
 
-              if (!isValidFilename) {
+              if (!isValidFilename || text.startsWith(" ")) {
                 return new WarnableTextInputValidator.ReturnState(
                     WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.invalid_name);
               } else if (text.length() < 1) {
