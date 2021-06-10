@@ -35,6 +35,7 @@ import android.os.Build.VERSION_CODES.M
 import android.os.Environment
 import android.os.IBinder
 import android.os.SystemClock
+import android.provider.DocumentsContract
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -242,7 +243,10 @@ class FtpService : Service(), Runnable {
         val DEFAULT_PATH: String = if (Build.VERSION.SDK_INT < M) {
             Environment.getExternalStorageDirectory().absolutePath
         } else {
-            "content://com.android.externalstorage.documents/tree/primary%3A"
+            DocumentsContract.buildTreeDocumentUri(
+                "com.android.externalstorage.documents",
+                "primary:"
+            ).toString()
         }
 
         // RequestStartStopReceiver listens for these actions to start/stop this server
