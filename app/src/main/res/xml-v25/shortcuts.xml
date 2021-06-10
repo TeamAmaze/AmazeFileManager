@@ -3,8 +3,8 @@
 
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_star_white_24dp"
-        android:shortcutId="shortcut_quick_access   "
+        android:icon="@drawable/ic_shortcut_star"
+        android:shortcutId="shortcut_quick_access"
         android:shortcutLongLabel="@string/quick"
         android:shortcutShortLabel="@string/quick">
         <intent
@@ -15,7 +15,7 @@
 
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_history_white_24dp"
+        android:icon="@drawable/ic_shortcut_history"
         android:shortcutId="shortcut_recent"
         android:shortcutLongLabel="@string/recent"
         android:shortcutShortLabel="@string/recent">
@@ -27,7 +27,7 @@
 
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_android_white_24dp"
+        android:icon="@drawable/ic_shortcut_android"
         android:shortcutId="shortcut_apps"
         android:shortcutLongLabel="@string/apps"
         android:shortcutShortLabel="@string/apps">
@@ -39,7 +39,7 @@
 
     <shortcut
         android:enabled="true"
-        android:icon="@drawable/ic_ftp_white_24dp"
+        android:icon="@drawable/ic_shortcut_ftp"
         android:shortcutId="shortcut_ftp"
         android:shortcutLongLabel="@string/ftp"
         android:shortcutShortLabel="@string/ftp">
