@@ -1050,7 +1050,8 @@ public class MainFragment extends Fragment
                 sharedPref,
                 listView,
                 mainFragmentViewModel.getListElements(),
-                getActivity());
+                getActivity(),
+                grid);
       } else {
         adapter.setItems(listView, new ArrayList<>(mainFragmentViewModel.getListElements()));
       }
