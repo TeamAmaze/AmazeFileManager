@@ -1051,7 +1051,7 @@ public class MainFragment extends Fragment
                 listView,
                 mainFragmentViewModel.getListElements(),
                 getActivity(),
-                    grid);
+                grid);
       } else {
         adapter.setItems(listView, new ArrayList<>(mainFragmentViewModel.getListElements()));
       }
