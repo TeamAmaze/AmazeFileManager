@@ -135,6 +135,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   private int offset = 0;
   private boolean enableMarquee;
   private int dragAndDropPreference;
+  private boolean isGrid;
 
   public RecyclerAdapter(
       PreferenceActivity preferenceActivity,
@@ -143,7 +144,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       SharedPreferences sharedPrefs,
       RecyclerView recyclerView,
       ArrayList<LayoutElementParcelable> itemsRaw,
-      Context context) {
+      Context context,
+      boolean isGrid) {
     setHasStableIds(true);
 
     this.preferenceActivity = preferenceActivity;
@@ -157,6 +159,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         sharedPrefs.getInt(
             PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
             PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+    this.isGrid = isGrid;
 
     mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
     accentColor = m.getMainActivity().getAccent();
@@ -422,8 +425,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       createHeaders(invalidate, uris);
     }
 
+    boolean isItemCircular = !isGrid;
+
     sizeProvider = new RecyclerPreloadSizeProvider(this);
-    modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris);
+    modelProvider = new RecyclerPreloadModelProvider(mainFrag, uris, isItemCircular);
 
     preloader =
         new RecyclerViewPreloader<>(

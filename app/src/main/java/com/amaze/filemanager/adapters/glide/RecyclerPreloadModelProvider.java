@@ -40,13 +40,19 @@ import androidx.fragment.app.Fragment;
 public class RecyclerPreloadModelProvider
     implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 
-  private List<IconDataParcelable> urisToLoad;
-  private GlideRequest<Drawable> request;
+  private final List<IconDataParcelable> urisToLoad;
+  private final GlideRequest<Drawable> request;
 
   public RecyclerPreloadModelProvider(
-      @NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris) {
+      @NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris, boolean isCircled) {
     urisToLoad = uris;
-    request = GlideApp.with(fragment).asDrawable().circleCrop();
+    GlideRequest<Drawable> incompleteRequest = GlideApp.with(fragment).asDrawable();
+
+    if (isCircled) {
+      request = incompleteRequest.circleCrop();
+    } else {
+      request = incompleteRequest.centerCrop();
+    }
   }
 
   @Override
