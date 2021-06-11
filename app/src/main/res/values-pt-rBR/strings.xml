@@ -667,6 +667,7 @@
     <string name="error_report_title">Erro no report</string>
     <string name="crash_report_copied">Report de erro copiado para a área de transferência</string>
 
+    <string name="disableIpcSignature">Desative a verificação de assinatura IPC (Para servidores SMBv1 legados - INSEGURO!)</string>
     <string name="cannot_delete_file">Não foi possível deletar o arquivo</string>
     <string name="cannot_delete_file_with_reason">Não foi possível deletar o arquivo%s</string>
     <string name="cannot_rename_file">Não foi possível renomear o arquivo%s%s</string>
@@ -675,6 +676,9 @@
     <string name="always">Sempre</string>
     <string name="choose_different_app">Escolha uma aplicação diferente</string>
     <string name="clear_open_file">Limpar cache</string>
+    <string name="clear_open_file_summary">Limpa os apps de abertura padrão selecionados</string>
+    <string name="legacy_listing_title">Usar listagem legada para root</string>
+    <string name="legacy_listing_summary">Se habilitado, usa stat para listagem, senão usa ls</string>
     <string name="error_permission_denied">Permissão negada</string>
 </resources>
 
