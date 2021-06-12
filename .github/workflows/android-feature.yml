@@ -7,6 +7,10 @@ on:
       - 'release/*'
       - 'hotfix/*'
 
+concurrency:
+  group: build-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   build:
     runs-on: ubuntu-20.04
