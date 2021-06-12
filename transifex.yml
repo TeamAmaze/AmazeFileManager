@@ -1,0 +1,20 @@
+filters:
+  - filter_type: file
+    # all supported i18n types: https://docs.transifex.com/formats
+    file_format: Android
+    source_language: en_US
+    source_file: app/src/main/res/values/strings.xml
+    # path expression to translation files, must contain <lang> placeholder
+    translation_files_expression: app/src/main/res/values-<lang>/strings.xml
+settings:
+  language_mapping:
+    sv_SE: sv
+    pt_PT: pt-rPT
+    ko_KR: ko-rKR
+    hi_IN: hi-rIN
+    fa_IR: fa-rIR
+    ast_ES: ast-rES
+    zh_CN: zh-rCN
+    zh_TW: zh-rTW
+    zh_HK: zh-rHK
+    pt_BR: pt-rBR
