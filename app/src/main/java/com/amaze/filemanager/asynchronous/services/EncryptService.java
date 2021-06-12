@@ -25,7 +25,8 @@ import java.util.ArrayList;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
@@ -33,7 +34,6 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 
 import android.app.NotificationManager;
@@ -45,11 +45,11 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.widget.RemoteViews;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
 public class EncryptService extends AbstractProgressiveService {
@@ -97,7 +97,7 @@ public class EncryptService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     OpenMode openMode =
         OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
@@ -216,7 +216,7 @@ public class EncryptService extends AbstractProgressiveService {
       addFirstDatapoint(
           baseFile.getName(context), 1, totalSize, true); // we're using encrypt as move flag false
 
-      if (FileUtil.checkFolder(baseFile.getPath(), context) == 1) {
+      if (FileProperties.checkFolder(baseFile.getPath(), context) == 1) {
         serviceWatcherUtil.watch(EncryptService.this);
 
         // we're here to encrypt

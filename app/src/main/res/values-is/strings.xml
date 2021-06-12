@@ -20,7 +20,8 @@
     -->
 
 <resources xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze skráastjóri</string>
     <string name="drawer_open">Opna leiðsagnarsleða</string>
     <string name="drawer_close">Loka leiðsagnarsleða</string>
@@ -642,5 +643,13 @@
     <string name="ssh_connect_failed_host_key_changed_prompt">ÞAÐ ER HUGSANLEGT AÐ EINHVER SÉ AÐ GERA EITTHVAÐ Í LEYNI!\n\nEinhver gæti verið að njósna um þig akkúrat núna (maður-á-milli árás)! Það er líka mögulegt að dulritunarlykli á hýsilvélinni hafi verið breytt. Fingrafar dreifilykilsins sem fjartengda vélin sendi samsvarar ekki því sem Amaze geymir.\n\nÞú getur haldið áfram að uppfæra fingrafar hýsilvélar eða hætt við að uppfæra stillingar SSH-tengingarinnar.    </string>
     <string name="update_host_key">Uppfæra lykil hýsilvélar</string>
     <string name="cancel_recommended">Hætta við (mælt með þessu)</string>
-</resources>
+    <string name="failed_install_apk">Mistókst að setja upp</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Innbyggð gagnageymsla</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD-minniskort</string>
+    <string name="choose_folder">Velja þessa möppu</string>
+    </resources>
 

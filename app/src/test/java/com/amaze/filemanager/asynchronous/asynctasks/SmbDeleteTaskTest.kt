@@ -20,16 +20,11 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks
 
-import android.os.Build.VERSION_CODES.*
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.shadows.ShadowMultiDex
-import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
 import com.amaze.filemanager.utils.SmbUtil
 import org.junit.Test
-import org.robolectric.annotation.Config
 
-@Config(shadows = [ShadowMultiDex::class, ShadowSmbUtil::class], sdk = [JELLY_BEAN, KITKAT, P])
 class SmbDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
     /**

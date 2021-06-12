@@ -39,10 +39,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.AbstractSftpServerTest;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.utils.OpenMode;
 
 import android.os.Environment;
 
@@ -84,7 +84,11 @@ public class MoveFilesTest extends AbstractSftpServerTest {
     filesToCopyPerFolder.add(filesToCopy);
     MoveFiles task =
         new MoveFiles(
-            filesToCopyPerFolder, null, ApplicationProvider.getApplicationContext(), OpenMode.FILE);
+            filesToCopyPerFolder,
+            false,
+            null,
+            ApplicationProvider.getApplicationContext(),
+            OpenMode.FILE);
 
     ArrayList<String> paths = new ArrayList<>();
     paths.add(Environment.getExternalStorageDirectory().getAbsolutePath());

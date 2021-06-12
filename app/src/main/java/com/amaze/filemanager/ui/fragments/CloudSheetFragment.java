@@ -22,11 +22,11 @@ package com.amaze.filemanager.ui.fragments;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudContract;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
@@ -137,7 +137,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         Bundle args = new Bundle();
         args.putBoolean("edit", false);
         sftpConnectDialog.setArguments(args);
-        sftpConnectDialog.show(getActivity().getFragmentManager(), "tab");
+        sftpConnectDialog.show(getFragmentManager(), "tab");
         return;
       case R.id.linear_layout_box:
         ((MainActivity) getActivity()).addConnection(OpenMode.BOX);

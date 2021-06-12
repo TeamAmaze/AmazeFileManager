@@ -43,24 +43,25 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PrefFrag;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.ProgressHandler;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.security.KeyPairGeneratorSpec;
 import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
 
 /**
  * Created by vishal on 6/4/17.
@@ -96,7 +97,8 @@ public class CryptUtil {
   private static final String PREFERENCE_KEY = "aes_key";
   // TODO: Generate a random IV every time, and keep track of it (in database against encrypted
   // files)
-  private static final String IV = "LxbHiJhhUXcj"; // 12 byte long IV supported by android for GCM
+  private static final String IV =
+      BuildConfig.CRYPTO_IV; // 12 byte long IV supported by android for GCM
 
   public static final String CRYPT_EXTENSION = ".aze";
 
@@ -183,7 +185,7 @@ public class CryptUtil {
               targetDirectory.getPath(),
               sourceFile.getName(context).replace(CRYPT_EXTENSION, ""),
               sourceFile.isDirectory());
-      FileUtil.mkdirs(context, hFile);
+      MakeDirectoryOperation.mkdirs(context, hFile);
 
       sourceFile.forEachChildrenFile(
           context,
@@ -250,7 +252,7 @@ public class CryptUtil {
               targetDirectory.getPath(),
               targetFilename,
               sourceFile.isDirectory());
-      FileUtil.mkdirs(context, hFile);
+      MakeDirectoryOperation.mkdirs(context, hFile);
 
       sourceFile.forEachChildrenFile(
           context,

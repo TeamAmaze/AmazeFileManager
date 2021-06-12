@@ -26,7 +26,8 @@ import com.amaze.filemanager.ui.theme.AppThemeManager;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
+
+import androidx.preference.PreferenceManager;
 
 /** Created by piotaixr on 16/01/17. */
 public class UtilitiesProvider {

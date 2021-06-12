@@ -20,17 +20,21 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.utils.OpenMode;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import androidx.preference.PreferenceManager;
 
 public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void>
     implements StatefulAsyncTask<SearchWorkerFragment.HelperCallbacks> {
@@ -123,7 +127,11 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
           activity.get(),
           rootMode,
           file -> {
-            if (!isCancelled()) {
+            boolean showHiddenFiles =
+                PreferenceManager.getDefaultSharedPreferences(activity.get())
+                    .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
+
+            if ((!isCancelled() && (showHiddenFiles || !file.isHidden()))) {
               if (filter.searchFilter(file.getName(activity.get()))) {
                 publishProgress(file);
               }

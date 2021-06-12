@@ -1,31 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="fastaccess"
-        android:title="@string/quick"/>
+        app:defaultValue="true"
+        app:key="fastaccess"
+        app:title="@string/quick"/>
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="recent"
-        android:title="@string/recent"/>
+        app:defaultValue="true"
+        app:key="recent"
+        app:title="@string/recent"/>
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="image"
-        android:title="@string/images"/>
+        app:defaultValue="true"
+        app:key="image"
+        app:title="@string/images"/>
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="video"
-        android:title="@string/videos"/>
+        app:defaultValue="true"
+        app:key="video"
+        app:title="@string/videos"/>
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="audio"
-        android:title="@string/audio"/>
+        app:defaultValue="true"
+        app:key="audio"
+        app:title="@string/audio"/>
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="documents"
-        android:title="@string/documents"/>
+        app:defaultValue="true"
+        app:key="documents"
+        app:title="@string/documents"/>
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="apks"
-        android:title="@string/apks"/>
+        app:defaultValue="true"
+        app:key="apks"
+        app:title="@string/apks"/>
 </PreferenceScreen>

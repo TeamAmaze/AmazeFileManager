@@ -152,8 +152,8 @@ public class ProcessViewerFragment extends Fragment {
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
-    int skin_color = mainActivity.getCurrentColorPreference().primaryFirstTab;
-    int skinTwoColor = mainActivity.getCurrentColorPreference().primarySecondTab;
+    int skin_color = mainActivity.getCurrentColorPreference().getPrimaryFirstTab();
+    int skinTwoColor = mainActivity.getCurrentColorPreference().getPrimarySecondTab();
     accentColor = mainActivity.getAccent();
 
     mainActivity.updateViews(
@@ -192,10 +192,10 @@ public class ProcessViewerFragment extends Fragment {
 
   public void processResults(final DatapointParcelable dataPackage, int serviceType) {
     if (dataPackage != null) {
-      String name = dataPackage.name;
-      long total = dataPackage.totalSize;
-      long doneBytes = dataPackage.byteProgress;
-      boolean move = dataPackage.move;
+      String name = dataPackage.getName();
+      long total = dataPackage.getTotalSize();
+      long doneBytes = dataPackage.getByteProgress();
+      boolean move = dataPackage.getMove();
 
       if (!isInitialized) {
 
@@ -209,7 +209,7 @@ public class ProcessViewerFragment extends Fragment {
 
       addEntry(
           FileUtils.readableFileSizeFloat(doneBytes),
-          FileUtils.readableFileSizeFloat(dataPackage.speedRaw));
+          FileUtils.readableFileSizeFloat(dataPackage.getSpeedRaw()));
 
       mProgressFileNameText.setText(name);
 
@@ -233,11 +233,11 @@ public class ProcessViewerFragment extends Fragment {
                   + " <font color='"
                   + accentColor
                   + "'><i>"
-                  + (dataPackage.sourceProgress)
+                  + dataPackage.getSourceProgress()
                   + " </font></i>"
                   + getResources().getString(R.string.of)
                   + " <i>"
-                  + dataPackage.sourceFiles
+                  + dataPackage.getAmountOfSourceFiles()
                   + "</i>");
       mProgressFileText.setText(fileProcessedSpan);
 
@@ -247,7 +247,7 @@ public class ProcessViewerFragment extends Fragment {
                   + ": <font color='"
                   + accentColor
                   + "'><i>"
-                  + Formatter.formatFileSize(getContext(), dataPackage.speedRaw)
+                  + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
                   + "/s</font></i>");
       mProgressSpeedText.setText(speedSpan);
 
@@ -262,7 +262,7 @@ public class ProcessViewerFragment extends Fragment {
 
       mProgressTimer.setText(timerSpan);
 
-      if (dataPackage.completed) mCancelButton.setVisibility(View.GONE);
+      if (dataPackage.getCompleted()) mCancelButton.setVisibility(View.GONE);
     }
   }
 

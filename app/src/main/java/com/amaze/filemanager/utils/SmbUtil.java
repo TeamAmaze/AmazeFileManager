@@ -20,6 +20,10 @@
 
 package com.amaze.filemanager.utils;
 
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+
+import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
@@ -30,9 +34,15 @@ import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import android.content.Context;
 import android.net.Uri;
 import android.text.TextUtils;
+import android.util.Log;
 
-import jcifs.context.SingletonContext;
-import jcifs.smb.NtlmPasswordAuthentication;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
+import jcifs.smb.NtlmPasswordAuthenticator;
+import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /**
@@ -42,7 +52,13 @@ import jcifs.smb.SmbFile;
  */
 public class SmbUtil {
 
+  private static final String TAG = SmbUtil.class.getSimpleName();
+
   public static final String PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck";
+
+  private SmbUtil() {
+    // empty constructor to prevent instantiation
+  }
 
   /** Parse path to decrypt smb password */
   public static String getSmbDecryptedPath(Context context, String path)
@@ -91,10 +107,69 @@ public class SmbUtil {
     Uri uri = Uri.parse(path);
     boolean disableIpcSigningCheck =
         Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
+    String userInfo = uri.getUserInfo();
     return new SmbFile(
         path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
         CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-            .withCredentials(
-                new NtlmPasswordAuthentication(SingletonContext.getInstance(), uri.getUserInfo())));
+            .withCredentials(createFrom(userInfo)));
+  }
+
+  /**
+   * Create {@link NtlmPasswordAuthenticator} from given userInfo parameter.
+   *
+   * <p>Logic borrowed directly from jcifs-ng's own code. They should make that protected
+   * constructor public...
+   *
+   * @param userInfo authentication string, must be already URL decoded. {@link Uri} shall do this
+   *     for you already
+   * @return {@link NtlmPasswordAuthenticator} instance
+   */
+  protected static @NonNull NtlmPasswordAuthenticator createFrom(@Nullable String userInfo) {
+    if (!TextUtils.isEmpty(userInfo)) {
+      String dom = null;
+      String user = null;
+      String pass = null;
+      int i;
+      int u;
+      int end = userInfo.length();
+      for (i = 0, u = 0; i < end; i++) {
+        char c = userInfo.charAt(i);
+        if (c == ';') {
+          dom = userInfo.substring(0, i);
+          u = i + 1;
+        } else if (c == ':') {
+          pass = userInfo.substring(i + 1);
+          break;
+        }
+      }
+      user = userInfo.substring(u, i);
+      return new NtlmPasswordAuthenticator(dom, user, pass);
+    } else {
+      return new NtlmPasswordAuthenticator();
+    }
+  }
+
+  /**
+   * SMB version of {@link MainActivityHelper#checkFolder(File, Context)}.
+   *
+   * @param path SMB path
+   * @return {@link com.amaze.filemanager.filesystem.FolderStateKt#DOESNT_EXIST} if specified SMB
+   *     path doesn't exist on server, else {@link
+   *     com.amaze.filemanager.filesystem.FolderStateKt#WRITABLE_ON_REMOTE}
+   */
+  public static int checkFolder(@NonNull String path) {
+    return Single.fromCallable(
+            () -> {
+              try {
+                SmbFile smbFile = create(path);
+                if (!smbFile.exists() || !smbFile.isDirectory()) return DOESNT_EXIST;
+              } catch (SmbException | MalformedURLException e) {
+                Log.w(TAG, "Error checking folder existence, assuming not exist", e);
+                return DOESNT_EXIST;
+              }
+              return WRITABLE_ON_REMOTE;
+            })
+        .subscribeOn(Schedulers.io())
+        .blockingGet();
   }
 }

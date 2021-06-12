@@ -114,10 +114,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
+
+            <meta-data android:name="android.app.shortcuts"
+                android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
+            android:configChanges="orientation|screenSize"
             android:label="@string/setting"
             android:name=".ui.activities.PreferencesActivity"
             android:theme="@style/appCompatBlack">

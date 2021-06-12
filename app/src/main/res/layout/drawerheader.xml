@@ -40,6 +40,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentBottom="true"
             android:padding="@dimen/md_content_padding_top"
+            android:background="@drawable/ripple"
             />
         <ImageView
             android:id="@+id/telegram"
@@ -50,6 +51,7 @@
             android:layout_alignParentBottom="true"
             android:padding="@dimen/md_content_padding_top"
             android:layout_toStartOf="@+id/donate"
+            android:background="@drawable/ripple"
             />
     </RelativeLayout>
 </FrameLayout>

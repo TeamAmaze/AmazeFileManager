@@ -60,7 +60,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
       SmbEntry.class,
       SftpEntry.class
     },
-    version = 4,
+    version = 5,
     exportSchema = false)
 public abstract class UtilitiesDatabase extends RoomDatabase {
 
@@ -328,6 +328,42 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
         }
       };
 
+  private static final Migration MIGRATION_4_5 =
+      new Migration(4, 5) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+          String backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS;
+          database.execSQL(
+              queryBookmarks
+                  .replace(TABLE_BOOKMARKS, backupTable)
+                  .replace("PRIMARY KEY,", "PRIMARY KEY NOT NULL,"));
+          database.execSQL(
+              "INSERT INTO "
+                  + backupTable
+                  + "("
+                  + COLUMN_NAME
+                  + ","
+                  + COLUMN_PATH
+                  + ") SELECT DISTINCT("
+                  + COLUMN_NAME
+                  + "), "
+                  + COLUMN_PATH
+                  + " FROM "
+                  + TABLE_BOOKMARKS);
+          database.execSQL("DROP TABLE " + TABLE_BOOKMARKS + ";");
+          database.execSQL("ALTER TABLE " + backupTable + " RENAME TO " + TABLE_BOOKMARKS + ";");
+
+          database.execSQL(
+              "CREATE UNIQUE INDEX 'bookmarks_idx' ON "
+                  + TABLE_BOOKMARKS
+                  + "("
+                  + COLUMN_NAME
+                  + ", "
+                  + COLUMN_PATH
+                  + ");");
+        }
+      };
+
   protected abstract HiddenEntryDao hiddenEntryDao();
 
   protected abstract GridEntryDao gridEntryDao();
@@ -345,7 +381,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
   public static final UtilitiesDatabase initialize(@NonNull Context context) {
     return Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
         .allowMainThreadQueries()
-        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4)
+        .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
         .build();
   }
 }

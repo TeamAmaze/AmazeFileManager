@@ -36,7 +36,7 @@
     <string name="uninstall">Desinstalar</string>
     <string name="play">Play Store</string>
     <string name="properties">Propiedades</string>
-    <string name="copyingapk">Copiando apk a </string>
+    <string name="copyingapk">Copiando APK a </string>
     <string name="delbook">Borrar marcador</string>
     <string name="add_to_bookmarks">Añadir a Favoritos</string>
     <string name="enterpath">Escribe la ruta</string>
@@ -298,7 +298,7 @@
     <string name="ftp_status_not_running">No funcionando</string>
     <string name="ftp_no_wifi">Asegúrese de que está conectado a Wi-Fi</string>
     <string name="domain">Dominio</string>
-    <string name="invalid">%s inválido</string>
+    <string name="invalid">Inválido%s</string>
     <string name="ftp_notif_starting">Se está iniciando el servidor FTP</string>
     <string name="ftp_notif_starting_title">Servidor FTP</string>
     <string name="ftp_notif_title">Servidor FTP de Amaze funcionando</string>
@@ -311,6 +311,8 @@
     <string name="primary_two_summary">Establecer el color para los elementos de la interfaz de usuario de la pestaña derecha</string>
     <string name="support_development">Apoyar el desarrollo</string>
     <string name="report_bugs_title">Reportar de errores</string>
+    <string name="source_title">Código fuente</string>
+    <string name="source_summary">Ver código fuente en Github</string>
     <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
     <string name="translate_title">Traducir</string>
     <string name="translate_summary">Traducir Amaze a tu idioma</string>
@@ -651,5 +653,43 @@
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">Tarjeta SD</string>
     <string name="choose_folder">Elige Esta Carpeta</string>
-    </resources>
+    <string name="some_files_failed_invalid_operation">Algunos archivos fallaron debido a una operación inválida</string>
+    <string name="ftp_server_prompt_connect_to_network">Conéctese a una red o habilite un punto de acceso inalámbrico</string>
+    <string name="ftp_server_open_settings">Abrir ajustes</string>
+    <string name="move">Mover</string>
+    <string name="select_save_location">Seleccilnar localización para guardar</string>
+    <string name="scp_default_path">Ruta predeterminada (opcional) </string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Perdón., algo debe de haber ocurrido. </string>
+    <string name="error_report_button_text">Reportar este error vía e-mail</string>
+    <string name="error_report_button_telegram">Reportar este error vía Telegram</string>
+    <string name="copy_for_github">Copiar informe formateado</string>
+    <string name="error_report_open_issue_button_text">Reportar en Github</string>
+    <string name="error_report_open_github_notice">Verifique si ya existe un problema relacionado con su fallo. </string>
+    <string name="error_snackbar_message">Perdón, algo ha ido mal. </string>
+    <string name="error_snackbar_action">Reportar</string>
+    <string name="what_device_headline">Info:</string>
+    <string name="what_happened_headline">Qué ocurrió:</string>
+    <string name="info_labels">What:\\nSolicitud:\\nGMT Fecha:\\nPaquete:\\nVersión:\\nOS versión:\\nDispositivo:\\nModelo:\\nProducto:</string>
+    <string name="your_comment">Tu comentario (en inglés):</string>
+    <string name="error_details_headline">Detalles:</string>
+    <string name="app_ui_crash">App/IU falló</string>
+    <string name="error_report_title">Reportar error</string>
+    <string name="crash_report_copied">Informe de fallos copiado al portapapeles</string>
+
+    <string name="disableIpcSignature">Desactive la verificación de firma de IPC (para servidores SMBv1 heredados - ¡INSEGURO!) </string>
+    <string name="cannot_delete_file">No se puede eliminar el archivo</string>
+    <string name="cannot_delete_file_with_reason">No se puede eliminar el archivo - %s</string>
+    <string name="cannot_rename_file">No se puede renombrar el archivo %s - %s</string>
+    <string name="cannot_read_directory">No se puede leer el  directorio %s - %s</string>
+    <string name="just_once">Sólo una vez</string>
+    <string name="always">Siempre</string>
+    <string name="choose_different_app">Elige una aplicación diferente</string>
+    <string name="clear_open_file">Borrar caché </string>
+    <string name="clear_open_file_summary">Borra las aplicaciones predeterminadas seleccionadas de apertura de archivos. </string>
+    <string name="legacy_listing_title">Usar listado heredado para root</string>
+    <string name="legacy_listing_summary">Si está habilitado, usa estadísticas para listar, de lo contrario usa ls</string>
+    <string name="error_permission_denied">Permiso denegado</string>
+</resources>
 

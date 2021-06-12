@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks
 
 import android.content.Context
 import android.os.Build
+import android.os.Build.VERSION_CODES.*
 import android.os.Looper
 import android.os.storage.StorageManager
 import androidx.lifecycle.Lifecycle
@@ -30,6 +31,10 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.shadows.ShadowSmbUtil
+import com.amaze.filemanager.test.ShadowCryptUtil
+import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import io.reactivex.android.plugins.RxAndroidPlugins
@@ -40,12 +45,22 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.runner.RunWith
 import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
 import org.robolectric.shadows.ShadowSQLiteConnection
 import org.robolectric.shadows.ShadowToast
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
+@Config(
+    shadows = [
+        ShadowMultiDex::class,
+        ShadowSmbUtil::class,
+        ShadowTabHandler::class,
+        ShadowCryptUtil::class
+    ],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 abstract class AbstractDeleteTaskTestBase {
 
     private var ctx: Context? = null
@@ -113,7 +128,7 @@ abstract class AbstractDeleteTaskTestBase {
                     )
                         .run {
                             assertTrue(size > 0)
-                            assertEquals(file.path, this[0].path)
+                            assertEquals(file.path, this!![0].path)
                         }
                 }
             }

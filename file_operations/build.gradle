@@ -1,0 +1,88 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 14
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.apache.commons:commons-compress:1.18'
+
+    implementation "com.github.junrar:junrar:$junrarVersion"
+
+    //zip4j: support password-protected zips
+    implementation "net.lingala.zip4j:zip4j:$zip4jVersion"
+
+    implementation project(':commons_compress_7z')
+
+    //SFTP
+    implementation "com.hierynomus:sshj:$sshjVersion"
+
+    //smb
+    implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
+
+    implementation 'androidx.multidex:multidex:2.0.1'//Multiple dex files
+
+    //TODO some libs are not needed
+
+    //For tests
+    testImplementation "junit:junit:$junitVersion"//tests the app logic
+    testImplementation "org.robolectric:robolectric:$robolectricVersion"//tests android interaction
+    testImplementation "org.robolectric:shadows-httpclient:$robolectricVersion"//tests android interaction
+    testImplementation "androidx.test:core:$androidXTestVersion"
+    testImplementation "androidx.test:runner:$androidXTestVersion"
+    testImplementation "androidx.test:rules:$androidXTestVersion"
+    testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
+    //testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    testImplementation "org.mockito:mockito-core:$mockitoVersion"
+    testImplementation "org.apache.sshd:sshd-core:1.7.0"
+    testImplementation "org.awaitility:awaitility:$awaitilityVersion"
+    testImplementation 'org.jsoup:jsoup:1.11.2'
+    testAnnotationProcessor "com.google.auto.service:auto-service:1.0-rc4"
+
+    androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    androidTestImplementation "androidx.test:core:$androidXTestVersion"
+    androidTestImplementation "androidx.test:runner:$androidXTestVersion"
+    androidTestImplementation "androidx.test:rules:$androidXTestVersion"
+    androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
+    androidTestImplementation 'commons-net:commons-net:3.6'
+    androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
+
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    testImplementation "junit:junit:$junitVersion"
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+
+}

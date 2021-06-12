@@ -20,22 +20,24 @@
 
 package com.amaze.filemanager.utils;
 
-import static com.amaze.filemanager.utils.OpenMode.BOX;
-import static com.amaze.filemanager.utils.OpenMode.CUSTOM;
-import static com.amaze.filemanager.utils.OpenMode.DROPBOX;
-import static com.amaze.filemanager.utils.OpenMode.FILE;
-import static com.amaze.filemanager.utils.OpenMode.GDRIVE;
-import static com.amaze.filemanager.utils.OpenMode.ONEDRIVE;
-import static com.amaze.filemanager.utils.OpenMode.OTG;
-import static com.amaze.filemanager.utils.OpenMode.ROOT;
-import static com.amaze.filemanager.utils.OpenMode.SFTP;
-import static com.amaze.filemanager.utils.OpenMode.SMB;
-import static com.amaze.filemanager.utils.OpenMode.UNKNOWN;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.BOX;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.CUSTOM;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DROPBOX;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.FILE;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.GDRIVE;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.ONEDRIVE;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.OTG;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.ROOT;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.SFTP;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.SMB;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.UNKNOWN;
 import static java.lang.Integer.MAX_VALUE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThrows;
 
 import org.junit.Test;
+
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 
 public class OpenModeTest {
 

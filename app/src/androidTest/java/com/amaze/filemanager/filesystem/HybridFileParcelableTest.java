@@ -25,7 +25,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.amaze.filemanager.utils.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 
 import android.os.Parcel;
 

@@ -53,7 +53,7 @@ public class FileHandler extends Handler {
     super.handleMessage(msg);
     final MainFragment main = mainFragment.get();
 
-    if (main == null || main.getActivity() == null) {
+    if (main == null || main.getActivity() == null || main.getMainFragmentViewModel() == null) {
       return;
     }
 
@@ -64,7 +64,9 @@ public class FileHandler extends Handler {
         main.goBack();
         break;
       case CustomFileObserver.NEW_ITEM:
-        HybridFile fileCreated = new HybridFile(main.openMode, main.getCurrentPath() + "/" + path);
+        HybridFile fileCreated =
+            new HybridFile(
+                main.getMainFragmentViewModel().getOpenMode(), main.getCurrentPath() + "/" + path);
         main.getElementsList().add(fileCreated.generateLayoutElement(main.getContext(), useThumbs));
         break;
       case CustomFileObserver.DELETED_ITEM:
@@ -85,14 +87,17 @@ public class FileHandler extends Handler {
     if (listView.getVisibility() == View.VISIBLE) {
       if (main.getElementsList().size() == 0) {
         // no item left in list, recreate views
-        main.reloadListElements(true, main.results, !main.IS_LIST);
+        main.reloadListElements(
+            true,
+            main.getMainFragmentViewModel().getResults(),
+            !main.getMainFragmentViewModel().isList());
       } else {
         // we already have some elements in list view, invalidate the adapter
         ((RecyclerAdapter) listView.getAdapter()).setItems(listView, main.getElementsList());
       }
     } else {
       // there was no list view, means the directory was empty
-      main.loadlist(main.getCurrentPath(), true, main.openMode);
+      main.loadlist(main.getCurrentPath(), true, main.getMainFragmentViewModel().getOpenMode());
     }
 
     main.computeScroll();

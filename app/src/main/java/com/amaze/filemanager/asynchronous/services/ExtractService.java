@@ -31,7 +31,7 @@ import org.tukaani.xz.CorruptedInputException;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -40,6 +40,7 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -50,7 +51,6 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.RemoteViews;
@@ -58,6 +58,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import net.lingala.zip4j.exception.ZipException;
 
@@ -104,7 +105,7 @@ public class ExtractService extends AbstractProgressiveService {
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
-            .accent;
+            .getAccent();
 
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
@@ -211,6 +212,7 @@ public class ExtractService extends AbstractProgressiveService {
 
   @Override
   public void onDestroy() {
+    super.onDestroy();
     unregisterReceiver(receiver1);
   }
 
@@ -306,7 +308,8 @@ public class ExtractService extends AbstractProgressiveService {
                   public boolean isCancelled() {
                     return progressHandler.getCancelled();
                   }
-                });
+                },
+                ServiceWatcherUtil.UPDATE_POSITION);
 
         try {
           if (entriesToExtract != null) {
@@ -323,9 +326,22 @@ public class ExtractService extends AbstractProgressiveService {
               || e.getCause() != null
                   && ZipException.class.isAssignableFrom(e.getCause().getClass())) {
             Log.d(TAG, "Archive is password protected.", e);
+            if (ArchivePasswordCache.getInstance().containsKey(compressedPath)) {
+              ArchivePasswordCache.getInstance().remove(compressedPath);
+              AppConfig.toast(
+                  extractService,
+                  extractService.getString(R.string.error_archive_password_incorrect));
+            }
             passwordProtected = true;
             paused = true;
             publishProgress(e);
+          } else if (e.getCause() != null
+              && UnsupportedRarV5Exception.class.isAssignableFrom(e.getCause().getClass())) {
+            Log.e(TAG, "RAR " + compressedPath + " is unsupported V5 archive", e);
+            AppConfig.toast(
+                extractService,
+                extractService.getString(R.string.error_unsupported_v5_rar, compressedPath));
+            return false;
           } else {
             Log.e(TAG, "Error while extracting file " + compressedPath, e);
             AppConfig.toast(extractService, extractService.getString(R.string.error));
@@ -369,6 +385,7 @@ public class ExtractService extends AbstractProgressiveService {
 
     @Override
     public void onPostExecute(Boolean hasInvalidEntries) {
+      ArchivePasswordCache.getInstance().remove(compressedPath);
       final ExtractService extractService = this.extractService.get();
       if (extractService == null) return;
 
@@ -382,6 +399,12 @@ public class ExtractService extends AbstractProgressiveService {
 
       if (!hasInvalidEntries)
         AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
+    }
+
+    @Override
+    protected void onCancelled() {
+      super.onCancelled();
+      ArchivePasswordCache.getInstance().remove(compressedPath);
     }
 
     private void toastOnParseError(IOException result) {

@@ -15,8 +15,10 @@
     <dimen name="icon_width">72dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_height">56dp</dimen>
+    <dimen name="sixty_four">64dp</dimen>
     <dimen name="minimal_row_height">100dp</dimen>
     <dimen name="minimal_row_size">72dp</dimen>
+    <dimen name="drag_icon_size">144dp</dimen>
     <dimen name="minimal_icon_size">40dp</dimen>
     <dimen name="minimal_icon_parent_width">56dp</dimen>
     <dimen name="tick_icon_size">20dp</dimen>

@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.database;
 
+import static com.amaze.filemanager.BuildConfig.DEBUG;
+
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -326,7 +328,9 @@ public class UtilsHandler {
             .blockingGet();
       } catch (Exception e) {
         // catch error to handle Single#onError for blockingGet
-        Log.e(getClass().getSimpleName(), e.getMessage());
+        if (DEBUG) {
+          Log.e(getClass().getSimpleName(), "Error getting public key for URI [" + uri + "]", e);
+        }
         return null;
       }
     } else {
@@ -357,7 +361,10 @@ public class UtilsHandler {
           .blockingGet();
     } catch (Exception e) {
       // catch error to handle Single#onError for blockingGet
-      Log.e(getClass().getSimpleName(), e.getMessage());
+      if (DEBUG) {
+        Log.e(
+            getClass().getSimpleName(), "Error getting auth private key for URI [" + uri + "]", e);
+      }
       return null;
     }
   }

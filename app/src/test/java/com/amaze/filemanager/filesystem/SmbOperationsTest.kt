@@ -20,18 +20,10 @@
 
 package com.amaze.filemanager.filesystem
 
-import android.os.Build.VERSION_CODES.*
-import com.amaze.filemanager.shadows.ShadowMultiDex
-import com.amaze.filemanager.shadows.ShadowSmbUtil
+import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_RENAME_OLDFILE
-import com.amaze.filemanager.utils.OpenMode.SMB
 import org.junit.Test
-import org.robolectric.annotation.Config
 
-@Config(
-    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
-)
 class SmbOperationsTest : AbstractOperationsTestBase() {
 
     /**
@@ -42,7 +34,7 @@ class SmbOperationsTest : AbstractOperationsTestBase() {
     @Test
     fun testRenameFileAccessDenied() {
         super.testRenameFileAccessDenied(
-            SMB,
+            OpenMode.SMB,
             PATH_CANNOT_RENAME_OLDFILE,
             "smb://user:password@1.2.3.4/cannot/rename.file.new"
         )

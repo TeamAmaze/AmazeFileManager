@@ -33,7 +33,8 @@ import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
@@ -43,7 +44,6 @@ import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
@@ -199,7 +199,7 @@ public class Operations {
               errorCallBack.launchSAF(file);
               return null;
             }
-            if (mode == 1 || mode == 0) FileUtil.mkdir(file.getFile(), context);
+            if (mode == 1 || mode == 0) MakeDirectoryOperation.mkdir(file.getFile(), context);
             if (!file.exists() && rootMode) {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
@@ -349,7 +349,7 @@ public class Operations {
               errorCallBack.launchSAF(file);
               return null;
             }
-            if (mode == 1 || mode == 0) FileUtil.mkfile(file.getFile(), context);
+            if (mode == 1 || mode == 0) MakeFileOperation.mkfile(file.getFile(), context);
             if (!file.exists() && rootMode) {
               file.setMode(OpenMode.ROOT);
               if (file.exists()) errorCallBack.exists(file);
@@ -526,7 +526,7 @@ public class Operations {
                 errorCallBack.launchSAF(oldFile, newFile);
               } else if (mode == 1 || mode == 0) {
                 try {
-                  FileUtil.renameFolder(file, file1, context);
+                  RenameOperation.renameFolder(file, file1, context);
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();
                 }
@@ -575,7 +575,7 @@ public class Operations {
     boolean lol = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     if (lol) {
 
-      boolean ext = FileUtil.isOnExtSdCard(folder, context);
+      boolean ext = ExternalSdCardOperation.isOnExtSdCard(folder, context);
       if (ext) {
 
         if (!folder.exists() || !folder.isDirectory()) {
@@ -583,18 +583,18 @@ public class Operations {
         }
 
         // On Android 5, trigger storage access framework.
-        if (!FileUtil.isWritableNormalOrSaf(folder, context)) {
+        if (!FileProperties.isWritableNormalOrSaf(folder, context)) {
           return 2;
         }
         return 1;
       }
     } else if (Build.VERSION.SDK_INT == 19) {
       // Assume that Kitkat workaround works
-      if (FileUtil.isOnExtSdCard(folder, context)) return 1;
+      if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) return 1;
     }
 
     // file not on external sd card
-    if (FileUtil.isWritable(new File(folder, "DummyFile"))) {
+    if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
       return 1;
     } else {
       return 0;

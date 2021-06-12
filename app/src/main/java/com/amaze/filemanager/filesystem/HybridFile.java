@@ -37,8 +37,9 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.exceptions.CloudPluginException;
-import com.amaze.filemanager.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
@@ -51,7 +52,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
@@ -60,12 +60,12 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
-import android.preference.PreferenceManager;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
 import io.reactivex.Single;
 import io.reactivex.schedulers.Schedulers;
@@ -141,13 +141,15 @@ public class HybridFile {
           mode = OpenMode.ROOT;
         }
       } else {
-        if (FileUtil.isOnExtSdCard(getFile(), context)) {
+        if (ExternalSdCardOperation.isOnExtSdCard(getFile(), context)) {
           mode = OpenMode.FILE;
         } else if (rootmode && !getFile().canRead()) {
           mode = OpenMode.ROOT;
         }
 
-        if (mode == OpenMode.UNKNOWN) {
+        // In some cases, non-numeric path is passed into HybridFile while mode is still
+        // CUSTOM here. We are forcing OpenMode.FILE in such case too. See #2225
+        if (OpenMode.UNKNOWN.equals(mode) || OpenMode.CUSTOM.equals(mode)) {
           mode = OpenMode.FILE;
         }
       }
@@ -258,6 +260,7 @@ public class HybridFile {
           try {
             s = smbFile.length();
           } catch (SmbException e) {
+            e.printStackTrace();
           }
         return s;
       case FILE:
@@ -335,7 +338,11 @@ public class HybridFile {
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
-        name = path.substring(path.lastIndexOf('/') + 1);
+        String _path = path;
+        if (path.endsWith("/")) {
+          _path = path.substring(0, path.length() - 1);
+        }
+        name = _path.substring(_path.lastIndexOf('/') + 1);
     }
     return name;
   }
@@ -346,6 +353,7 @@ public class HybridFile {
       smbFile.setConnectTimeout(timeout);
       return smbFile;
     } catch (MalformedURLException e) {
+      e.printStackTrace();
       return null;
     }
   }
@@ -354,6 +362,7 @@ public class HybridFile {
     try {
       return SmbUtil.create(path);
     } catch (MalformedURLException e) {
+      e.printStackTrace();
       return null;
     }
   }
@@ -384,7 +393,8 @@ public class HybridFile {
       case SFTP:
         StringBuilder builder = new StringBuilder(path);
         StringBuilder parentPathBuilder =
-            new StringBuilder(builder.substring(0, builder.length() - (getName(context).length())));
+            new StringBuilder(
+                builder.substring(0, builder.length() - (getName(context).length()) - 1));
         return parentPathBuilder.toString();
       default:
         builder = new StringBuilder(path);
@@ -1080,6 +1090,7 @@ public class HybridFile {
         SmbFile smbFile = getSmbFile(2000);
         exists = smbFile != null && smbFile.exists();
       } catch (SmbException e) {
+        e.printStackTrace();
         exists = false;
       }
     } else if (isDropBoxFile()) {
@@ -1140,6 +1151,7 @@ public class HybridFile {
           return false;
         }
       } catch (SmbException e) {
+        e.printStackTrace();
         return false;
       }
     }
@@ -1158,6 +1170,7 @@ public class HybridFile {
               } catch (IOException e) {
                 e.printStackTrace();
               }
+              // FIXME: anything better than throwing a null to make Rx happy?
               return null;
             }
           });
@@ -1202,7 +1215,7 @@ public class HybridFile {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else FileUtil.mkdir(getFile(), context);
+    } else MakeDirectoryOperation.mkdir(getFile(), context);
   }
 
   public boolean delete(Context context, boolean rootmode)
@@ -1232,7 +1245,7 @@ public class HybridFile {
         setMode(OpenMode.ROOT);
         DeleteFileCommand.INSTANCE.deleteFile(getPath());
       } else {
-        FileUtil.deleteFile(getFile(), context);
+        DeleteOperation.deleteFile(getFile(), context);
       }
     }
     return !exists();

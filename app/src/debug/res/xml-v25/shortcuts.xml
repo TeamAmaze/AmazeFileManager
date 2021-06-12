@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_star"
+        android:shortcutId="shortcut_quick_access"
+        android:shortcutLongLabel="@string/quick"
+        android:shortcutShortLabel="@string/quick">
+        <intent
+            android:action="com.amaze.filemanager.openQuickAccess"
+            android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
+            android:targetPackage="com.amaze.filemanager.debug" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_history"
+        android:shortcutId="shortcut_recent"
+        android:shortcutLongLabel="@string/recent"
+        android:shortcutShortLabel="@string/recent">
+        <intent
+            android:action="com.amaze.filemanager.openRecent"
+            android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
+            android:targetPackage="com.amaze.filemanager.debug" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_android"
+        android:shortcutId="shortcut_apps"
+        android:shortcutLongLabel="@string/apps"
+        android:shortcutShortLabel="@string/apps">
+        <intent
+            android:action="com.amaze.filemanager.openAppManager"
+            android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
+            android:targetPackage="com.amaze.filemanager.debug" />
+    </shortcut>
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_ftp"
+        android:shortcutId="shortcut_ftp"
+        android:shortcutLongLabel="@string/ftp"
+        android:shortcutShortLabel="@string/ftp">
+        <intent
+            android:action="com.amaze.filemanager.openFTPServer"
+            android:targetClass="com.amaze.filemanager.ui.activities.MainActivity"
+            android:targetPackage="com.amaze.filemanager.debug" />
+    </shortcut>
+
+</shortcuts>

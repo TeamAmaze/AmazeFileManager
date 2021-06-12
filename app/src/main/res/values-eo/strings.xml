@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -19,9 +19,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Dosieresplorilo Amaze</string>
     <string name="drawer_open">Malfermi navigacipanelon</string>
     <string name="drawer_close">Fermi navigacipanelon</string>
@@ -233,7 +233,7 @@
     <string name="icon_color_title">Piktograma piktogramo</string>
     <string name="icon_color_summary">Agordi koloron por piktogramoj</string>
     <string name="choose_color">Elekti koloron</string>
-  <string name="files">Dosieroj</string>
+    <string name="files">Dosieroj</string>
     <string name="textreader">Teksta legilo</string>
     <string name="databasereader">Datumbaza legilo</string>
     <string name="show_dividers">Montri dividilojn</string>
@@ -298,6 +298,7 @@
     <string name="domain">Domajno</string>
     <string name="invalid">Malvalida %s</string>
     <string name="ftp_notif_starting">FTP-a servilo estas aktivanta</string>
+    <string name="ftp_notif_starting_title">FTP-servilo</string>
     <string name="ftp_notif_title">Amaze FTP-a Servilo estas aktiva</string>
     <string name="ftp_notif_text">en %s</string>
     <string name="ftp_notif_stop_server">HALTI</string>
@@ -306,12 +307,12 @@
     <string name="ftp_port_change_error_invalid">Malvalida porda nombro elektita</string>
     <string name="primary_two_title">Ĉefa koloro (deksstra langeto)</string>
     <string name="primary_two_summary">Agordi koloron al largaj UI-a eroj por la dekstra langeto</string>
-  <string name="support_development">Subteni programaron</string>
+    <string name="support_development">Subteni programaron</string>
     <string name="report_bugs_title">Raporti cimon</string>
     <string name="report_bugs_summary">Raporti cimojn aŭ peti novan funkcion</string>
     <string name="translate_title">Traduki</string>
     <string name="translate_summary">Traduki Amaze en via lingvo</string>
-  <string name="easter_egg_title">Studio Mode</string>
+    <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">PayPal ID kopiita al poŝo</string>
     <string name="searching_devices">Serĉanta aparatojn</string>
     <string name="use_custom_ip">Uzi propan IP-adreson</string>
@@ -551,6 +552,7 @@
     <string name="failed_smb_decrypt_path">Ŝargo de la SMB-konekto malsukcesis</string>
     <string name="failed_cloud_new_connection">Aldono de la novo nubo-konekto malsukcesis</string>
     <string name="failed_cloud_api_key">Aŭtentokontrolo de la nuba aldonaĵo malsukcesis</string>
+
     <string name="local_inet_addr_error">Eraro dum haviganta loka inet-adreso</string>
     <string name="intent_save_as">Savi kiel&#8230;</string>
     <string name="go">Iri</string>
@@ -564,4 +566,8 @@
     <string name="preference_newstack_summary">Ĝi ebligi vin malfermi dosierojn en malkuna taskoj. Atingi ilin el sistema freŝa ekrano.</string>
     <string name="developers">Programistoj</string>
     <string name="no_bitcoin_app">Bonvolu, instali bitcoin-monujo</string>
-</resources>
+    <string name="scp_port">Pordo</string>
+    <string name="deselect_all">Elekti neniun</string>
+    <string name="got_it">Ĉu vi!</string>
+    </resources>
+

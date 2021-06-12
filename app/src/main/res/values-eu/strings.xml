@@ -19,9 +19,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<resources
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:ignore="MissingTranslation">
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze fitxategi-kudeatzailea</string>
     <string name="drawer_open">Ireki nabigazio tiradera</string>
     <string name="drawer_close">Itxi nabigazio tiradera</string>
@@ -235,7 +235,7 @@
     <string name="icon_color_title">Ikonoen kolorea</string>
     <string name="icon_color_summary">Ezarri ikonoen kolorea</string>
     <string name="choose_color">Aukeratu kolorea</string>
-  <string name="files">Fitxategiak</string>
+    <string name="files">Fitxategiak</string>
     <string name="textreader">Testu irakurlea</string>
     <string name="databasereader">Datu-base irakurlea</string>
     <string name="show_dividers">Erakutsi banatzaileak</string>
@@ -300,6 +300,7 @@
     <string name="domain">Domeinua</string>
     <string name="invalid">%s baliogabea</string>
     <string name="ftp_notif_starting">FTP zerbitzaria hasten ari da</string>
+    <string name="ftp_notif_starting_title">FTP Zerbitzaria</string>
     <string name="ftp_notif_title">Amaze FTP zerbitzaria exekutatzen</string>
     <string name="ftp_notif_text">%s(e)n</string>
     <string name="ftp_notif_stop_server">GELDITU</string>
@@ -308,12 +309,12 @@
     <string name="ftp_port_change_error_invalid">Ataka zenbaki baliogabea hautatu da</string>
     <string name="primary_two_title">Kolore nagusia (eskuineko fitxa)</string>
     <string name="primary_two_summary">Ezarri eskuineko fitxako UI elementu handien kolorea</string>
-  <string name="support_development">Sostengatu garapena</string>
+    <string name="support_development">Sostengatu garapena</string>
     <string name="report_bugs_title">Eman erroreen berri</string>
     <string name="report_bugs_summary">Eman erroreen berri edo eskatu ezaugarri berri bat</string>
     <string name="translate_title">Itzuli</string>
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
-  <string name="easter_egg_title">Studio modua</string>
+    <string name="easter_egg_title">Studio modua</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
     <string name="searching_devices">Gailuak bilatzen</string>
     <string name="use_custom_ip">Erabili IP pertsonalizatua</string>
@@ -553,7 +554,7 @@
     <string name="failed_smb_decrypt_path">Huts egin du SMB konexioa kargatzean</string>
     <string name="failed_cloud_new_connection">Huts egin du Cloud konexio berria gehitzean</string>
     <string name="failed_cloud_api_key">Huts egin du Cloud plugina autentifikatzean</string>
-    
+
     <string name="local_inet_addr_error">Errorea inet helbide lokala eskuratzean</string>
     <string name="intent_save_as">Gorde honela&#8230;</string>
     <string name="go">Joan</string>
@@ -565,7 +566,6 @@
     <string name="text_editor">Testu-editorearen ezarpenak</string>
     <string name="preference_newstack_title">Ireki fitxategiak ataza berri bezala</string>
     <string name="preference_newstack_summary">Fixategiak ataza bereizi bezala irekitzea baimentzen du. Sistemaren azkenak pantailatik atzi ditzakezu.</string>
-    <string name="github" translatable="false">GitHub</string>
     <string name="developers">Garatzaileak</string>
     <string name="no_bitcoin_app">Instalatu bitcoin diru-zorro bat</string>
     <string name="channel_name_normal">Amaze jakinarazpenak</string>
@@ -573,7 +573,6 @@
     <string name="channel_name_ftp">Amaze FTP zerbitzaria</string>
     <string name="channel_description_ftp">Amaze fitxategi-kudeatzailearen FTP zerbitzariaren jakinarazpenak</string>
 
-    <string name="appbar_name" translatable="false">Amaze</string>
     <string name="processing">Prozesatzen&#8230;</string>
     <string name="failed_no_connection">Huts egin du fitxategiak kargatzean. Egiaztatu zure konexioa.</string>
 
@@ -637,4 +636,6 @@
     <string name="unknown">ezezaguna</string>
     <string name="multiple_invalid_archive_entries">Artxiboko zenbait fitxategi ezin dira erauzi; artxiboa hondatua egon daiteke edo jatorri maltzurrekoa izan daiteke.</string>
     <string name="saf_otg_explanation">Androiden fitxategi-sistemara joango zara orain segurtasun arrazoiengatik. Hautatu USB gailua ezkerreko zerrendatik.</string>
-</resources>
+    <string name="close">Itxi</string>
+    </resources>
+

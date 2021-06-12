@@ -372,15 +372,9 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="donate">Donate</string>
 
-    <string name="archive_preferences">Archive Preferences</string>
-
     <string name="archive_extract_folder">Archive Extract Folder</string>
 
-    <string name="zip_create_folder">Zip Create Folder</string>
-
     <string name="archive_summary">Archive files will be extracted to this folder. Default value is the directory in which archive is present</string>
-
-    <string name="zip_summary">New zip files will be created in this folder. Default value is the directory in which files are present</string>
 
     <string name="open_as">Open As</string>
 

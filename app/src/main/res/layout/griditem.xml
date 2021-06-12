@@ -1,42 +1,43 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             android:layout_width="match_parent"
-             android:layout_height="170dp"
-             android:id="@+id/second"
-             android:background="@drawable/item_doc_grid"
-             android:foreground="@drawable/item_backgrund"
-             android:layout_margin="2dp">
+    android:id="@+id/second"
+    android:layout_width="match_parent"
+    android:layout_height="170dp"
+    android:layout_margin="2dp"
+    android:background="@drawable/item_doc_grid"
+    android:foreground="@drawable/item_backgrund"
+    android:focusable="true"
+    android:nextFocusDown="@id/properties">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:paddingBottom="6dp"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:paddingBottom="6dp">
 
         <RelativeLayout
+            android:id="@+id/icon_frame_grid"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="1"
-            android:id="@+id/icon_frame_grid"
             android:layout_marginBottom="6dp"
+            android:layout_weight="1"
             android:background="#fff"
-            android:foregroundGravity="fill"
-            >
+            android:foregroundGravity="fill">
 
-            <com.amaze.filemanager.ui.views.RoundedImageView
+            <ImageView
                 android:id="@+id/generic_icon"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:contentDescription="@string/icon"
-                android:scaleType="centerInside"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"/>
+                android:layout_centerVertical="true"
+                android:contentDescription="@string/icon"
+                android:scaleType="centerInside" />
 
             <ImageView
                 android:id="@+id/icon_thumb"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:scaleType="centerCrop"
-                android:contentDescription="@null" />
+                android:contentDescription="@null"
+                android:scaleType="centerCrop" />
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -47,118 +48,128 @@
                     android:id="@+id/check_icon_grid"
                     android:layout_width="@dimen/check_icon_size_grid"
                     android:layout_height="@dimen/check_icon_size_grid"
-                    android:src="@drawable/ic_grid_selection_check"
                     android:alpha="0.7"
+                    android:src="@drawable/ic_grid_selection_check"
                     android:visibility="invisible" />
             </RelativeLayout>
 
             <TextView
                 android:id="@+id/permis"
+                style="@android:style/TextAppearance.Small"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="end|top|end"
-                android:layout_marginRight="5dp"
                 android:layout_marginEnd="5dp"
-                android:singleLine="true"
-                android:textColor="#80000000"
+                android:layout_marginRight="5dp"
                 android:ellipsize="end"
-                android:textSize="12sp"
+                android:singleLine="true"
                 android:textAlignment="viewEnd"
-                style="@android:style/TextAppearance.Small" />
+                android:textColor="#80000000"
+                android:textSize="12sp" />
 
         </RelativeLayout>
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <ImageButton
+                android:id="@+id/properties"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/properties"
-                android:background="@drawable/ripple"
-                android:layout_alignParentRight="true"
                 android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:padding="1dp"
+                android:background="@drawable/ripple"
                 android:clickable="true"
-                android:focusable="true"
-                android:src="@drawable/ic_more_vert_black_48dp"/>
+                android:padding="1dp"
+                android:src="@drawable/ic_more_vert_black_48dp"
+                android:nextFocusUp="@id/second"
+                android:focusable="true" />
 
             <LinearLayout
                 android:id="@+id/line1"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_toLeftOf="@id/properties"
                 android:layout_toStartOf="@+id/properties"
+                android:layout_toLeftOf="@id/properties"
+                android:baselineAligned="false"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:orientation="horizontal">
 
 
                 <com.amaze.filemanager.ui.views.ThemedTextView
                     android:id="@+id/firstline"
+                    style="@android:style/TextAppearance.Medium"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingLeft="5dp"
-                    android:paddingStart="5dp"
-                    android:paddingEnd="5dp"
-                    android:textSize="14sp"
-                    android:textColor="@android:color/black"
                     android:layout_gravity="start|center_vertical"
-                    android:textAlignment="viewStart"
-                    android:singleLine="true"
+                    android:clickable="false"
                     android:ellipsize="middle"
                     android:fadingEdge="horizontal"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:scrollHorizontally="true"
                     android:longClickable="false"
-                    android:clickable="false"
-                    style="@android:style/TextAppearance.Medium" />
+                    android:marqueeRepeatLimit="marquee_forever"
+                    android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
+                    android:paddingEnd="5dp"
+                    android:scrollHorizontally="true"
+                    android:singleLine="true"
+                    android:textAlignment="viewStart"
+                    android:textColor="@android:color/black"
+                    android:textSize="14sp" />
 
             </LinearLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_toLeftOf="@id/properties"
-                android:layout_toStartOf="@+id/properties"
                 android:layout_below="@id/line1"
+                android:layout_toStartOf="@+id/properties"
+                android:layout_toLeftOf="@id/properties"
+                android:baselineAligned="false"
                 android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:baselineAligned="false">
+                android:orientation="horizontal">
 
 
                 <TextView
                     android:id="@+id/secondLine"
-                    android:layout_height="wrap_content"
+                    style="@android:style/TextAppearance.Small"
                     android:layout_width="wrap_content"
-                    android:layout_alignParentRight="true"
+                    android:layout_height="wrap_content"
                     android:layout_alignParentEnd="true"
-                    android:singleLine="true"
+                    android:layout_alignParentRight="true"
                     android:ellipsize="end"
-                    android:textSize="12sp"
                     android:paddingLeft="5dp"
                     android:paddingRight="5dp"
-                    style="@android:style/TextAppearance.Small" />
+                    android:singleLine="true"
+                    android:textSize="12sp" />
+
                 <TextView
                     android:id="@+id/date"
+                    style="@android:style/TextAppearance.Small"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:singleLine="true"
-                    android:ellipsize="end"
-                    android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_toLeftOf="@id/secondLine"
-                    android:layout_toStartOf="@+id/secondLine"
+                    android:layout_alignParentLeft="true"
                     android:layout_gravity="start"
-                    android:textSize="12sp"
-                    android:paddingLeft="5dp"
+                    android:layout_toStartOf="@+id/secondLine"
+                    android:layout_toLeftOf="@id/secondLine"
+                    android:ellipsize="end"
                     android:paddingStart="5dp"
+                    android:paddingLeft="5dp"
                     android:paddingEnd="5dp"
+                    android:singleLine="true"
                     android:textAlignment="viewStart"
-                    style="@android:style/TextAppearance.Small" />
+                    android:textSize="12sp" />
 
             </RelativeLayout>
         </RelativeLayout>
     </LinearLayout>
+
+    <View
+        android:id="@+id/dummy_view"
+        android:layout_width="1dp"
+        android:layout_height="1dp"
+        android:background="@null"
+        android:visibility="invisible" />
 </FrameLayout>

@@ -23,6 +23,7 @@ package com.amaze.filemanager.database;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -35,6 +36,7 @@ import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
 import android.content.Context;
+import android.os.Environment;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -53,6 +55,7 @@ public class UtilsHandlerTest {
     utilitiesDatabase = UtilitiesDatabase.initialize(ctx);
     utilsHandler = new UtilsHandler(ctx, utilitiesDatabase);
     utilitiesDatabase.getOpenHelper().getWritableDatabase().execSQL("DELETE FROM sftp;");
+    utilitiesDatabase.getOpenHelper().getWritableDatabase().execSQL("DELETE FROM bookmarks;");
   }
 
   @After
@@ -62,25 +65,54 @@ public class UtilsHandlerTest {
 
   @Test
   public void testEncodeEncryptUri1() {
-    performTest("ssh://test:testP@ssw0rd@127.0.0.1:5460");
+    performEncryptUriTest("ssh://test:testP@ssw0rd@127.0.0.1:5460");
   }
 
   @Test
   public void testEncodeEncryptUri2() {
-    performTest("ssh://test:testP@##word@127.0.0.1:22");
+    performEncryptUriTest("ssh://test:testP@##word@127.0.0.1:22");
   }
 
   @Test
   public void testEncodeEncryptUri3() {
-    performTest("ssh://test@example.com:testP@ssw0rd@127.0.0.1:22");
+    performEncryptUriTest("ssh://test@example.com:testP@ssw0rd@127.0.0.1:22");
   }
 
   @Test
   public void testEncodeEncryptUri4() {
-    performTest("ssh://test@example.com:testP@ssw0##$@127.0.0.1:22");
+    performEncryptUriTest("ssh://test@example.com:testP@ssw0##$@127.0.0.1:22");
   }
 
-  private void performTest(@NonNull final String origPath) {
+  @Test
+  public void testRepeatedSaveBookmarkShouldNeverThrowException() {
+    OperationData operationData =
+        new OperationData(
+            UtilsHandler.Operation.BOOKMARKS,
+            "My Documents",
+            new File(Environment.getExternalStorageDirectory(), "My Documents").getAbsolutePath());
+    utilsHandler.addCommonBookmarks();
+    await()
+        .atMost(10, TimeUnit.SECONDS)
+        .until(
+            () -> {
+              List<String[]> verify = utilsHandler.getBookmarksList();
+              assertEquals(5, verify.size());
+              return true;
+            });
+    for (int i = 0; i < 5; i++) {
+      utilsHandler.saveToDatabase(operationData);
+      await()
+          .atMost(10, TimeUnit.SECONDS)
+          .until(
+              () -> {
+                List<String[]> verify = utilsHandler.getBookmarksList();
+                assertEquals(6, verify.size());
+                return true;
+              });
+    }
+  }
+
+  private void performEncryptUriTest(@NonNull final String origPath) {
     String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
 
     utilsHandler.saveToDatabase(

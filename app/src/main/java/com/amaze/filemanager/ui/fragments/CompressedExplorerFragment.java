@@ -33,6 +33,7 @@ import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
@@ -46,9 +47,8 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
-import com.github.junrar.Archive;
+import com.github.junrar.exception.UnsupportedRarV5Exception;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.ComponentName;
@@ -60,7 +60,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.preference.PreferenceManager;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -74,7 +73,9 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
+import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
@@ -105,13 +106,13 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   public CompressedExplorerAdapter compressedExplorerAdapter;
   public ActionMode mActionMode;
   public boolean coloriseIcons, showSize, showLastModified, gobackitem;
-  public Archive archive;
   public ArrayList<CompressedObjectParcelable> elements = new ArrayList<>();
   public MainActivity mainActivity;
   public RecyclerView listView;
   public SwipeRefreshLayout swipeRefreshLayout;
   public boolean isOpen = false; // flag states whether to open file after service extracts it
 
+  private FastScroller fastScroller = null;
   private UtilitiesProvider utilsProvider;
   private Decompressor decompressor;
   private View rootView;
@@ -122,6 +123,13 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   private View mToolbarContainer;
   private boolean stopAnims = true;
   private int file = 0, folder = 0;
+  private final AppBarLayout.OnOffsetChangedListener offsetListenerForToolbar =
+      (appBarLayout, verticalOffset) -> {
+        if (fastScroller == null) {
+          return;
+        }
+        fastScroller.updateHandlePosition(verticalOffset, 112);
+      };
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -137,14 +145,16 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     listView = rootView.findViewById(R.id.listView);
     listView.setOnTouchListener(
         (view, motionEvent) -> {
-          if (compressedExplorerAdapter != null) {
-            if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
-              stopAnim();
-            }
-            compressedExplorerAdapter.stoppedAnimation = true;
-
-            stopAnims = false;
+          if (compressedExplorerAdapter == null) {
+            return false;
           }
+
+          if (stopAnims && !compressedExplorerAdapter.stoppedAnimation) {
+            stopAnim();
+          }
+          compressedExplorerAdapter.stoppedAnimation = true;
+
+          stopAnims = false;
           return false;
         });
     swipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
@@ -200,7 +210,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
 
     accentColor = mainActivity.getAccent();
-    iconskin = mainActivity.getCurrentColorPreference().iconSkin;
+    iconskin = mainActivity.getCurrentColorPreference().getIconSkin();
 
     // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
 
@@ -360,6 +370,12 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   @Override
   public void onDestroyView() {
     super.onDestroyView();
+
+    // Clearing the touch listeners allows the fragment to
+    // be cleaned after it is destroyed, preventing leaks
+    mToolbarContainer.setOnTouchListener(null);
+    ((AppBarLayout) mToolbarContainer).removeOnOffsetChangedListener(offsetListenerForToolbar);
+
     mainActivity.supportInvalidateOptionsMenu();
 
     // needed to remove any extracted file from cache, when onResume was not called
@@ -426,14 +442,14 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
                   swipeRefreshLayout.setRefreshing(false);
                   updateBottomBar();
                 } else {
-                  archiveCorruptOrUnsupportedToast();
+                  archiveCorruptOrUnsupportedToast(result.exception);
                 }
               })
           .execute();
       swipeRefreshLayout.setRefreshing(true);
       updateBottomBar();
     } else {
-      archiveCorruptOrUnsupportedToast();
+      archiveCorruptOrUnsupportedToast(null);
     }
   }
 
@@ -499,14 +515,10 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
       // listView.addItemDecoration(headersDecor);
       addheader = false;
     }
-    final FastScroller fastScroller = rootView.findViewById(R.id.fastscroll);
+    fastScroller = rootView.findViewById(R.id.fastscroll);
     fastScroller.setRecyclerView(listView, 1);
     fastScroller.setPressedHandleColor(mainActivity.getAccent());
-    ((AppBarLayout) mToolbarContainer)
-        .addOnOffsetChangedListener(
-            (appBarLayout, verticalOffset) -> {
-              fastScroller.updateHandlePosition(verticalOffset, 112);
-            });
+    ((AppBarLayout) mToolbarContainer).addOnOffsetChangedListener(offsetListenerForToolbar);
     listView.stopScroll();
     relativeDirectory = dir;
     updateBottomBar();
@@ -529,12 +541,17 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     return folder == null || folder.isEmpty();
   }
 
-  private void archiveCorruptOrUnsupportedToast() {
+  private void archiveCorruptOrUnsupportedToast(@Nullable Throwable e) {
+    @StringRes
+    int msg =
+        (e != null
+                && e.getCause() != null
+                && UnsupportedRarV5Exception.class.isAssignableFrom(e.getCause().getClass()))
+            ? R.string.error_unsupported_v5_rar
+            : R.string.archive_unsupported_or_corrupt;
     Toast.makeText(
             getActivity(),
-            getActivity()
-                .getString(
-                    R.string.archive_unsupported_or_corrupt, compressedFile.getAbsolutePath()),
+            getActivity().getString(msg, compressedFile.getAbsolutePath()),
             Toast.LENGTH_LONG)
         .show();
     getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();

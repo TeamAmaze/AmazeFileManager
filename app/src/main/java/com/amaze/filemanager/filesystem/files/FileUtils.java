@@ -34,7 +34,8 @@ import java.util.concurrent.atomic.AtomicLong;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -55,7 +56,6 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
-import com.amaze.filemanager.utils.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
@@ -76,14 +76,16 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -240,7 +242,7 @@ public class FileUtils {
       Uri uri = null;
       if (Build.VERSION.SDK_INT >= 19) {
         DocumentFile documentFile =
-            FileUtil.getDocumentFile(
+            ExternalSdCardOperation.getDocumentFile(
                 hybridFile.getFile(), hybridFile.isDirectory(context), context);
         // If FileUtil.getDocumentFile() returns null, fall back to DocumentFile.fromFile()
         if (documentFile == null) documentFile = DocumentFile.fromFile(hybridFile.getFile());
@@ -573,23 +575,85 @@ public class FileUtils {
 
   public static String[] getFolderNamesInPath(String path) {
     if (!path.endsWith("/")) path += "/";
+    @Nullable Pair<String, String> splitUri = splitUri(path);
+    if (splitUri != null) {
+      path = splitUri.second;
+    }
     return ("root" + path).split("/");
   }
 
+  /**
+   * Parse a given path to a string array of the &quot;steps&quot; to target.
+   *
+   * <p>For local paths, output will be like <code>
+   * ["/", "/storage", "/storage/emulated", "/storage/emulated/0", "/storage/emulated/0/Download", "/storage/emulated/0/Download/file.zip"]
+   * </code> For URI paths, output will be like <code>
+   * ["smb://user;workgroup:passw0rd@12.3.4", "smb://user;workgroup:passw0rd@12.3.4/user", "smb://user;workgroup:passw0rd@12.3.4/user/Documents", "smb://user;workgroup:passw0rd@12.3.4/user/Documents/flare.doc"]
+   * </code>
+   *
+   * @param path
+   * @return string array of incremental path segments
+   */
   public static String[] getPathsInPath(String path) {
-    if (path.endsWith("/")) path = path.substring(0, path.length() - 1);
+    if (path.endsWith("/")) {
+      path = path.substring(0, path.length() - 1);
+    }
+    path = path.trim();
 
     ArrayList<String> paths = new ArrayList<>();
-
-    while (path.length() > 0) {
-      paths.add(path);
-      path = path.substring(0, path.lastIndexOf("/"));
+    @Nullable String urlPrefix = null;
+    @Nullable Pair<String, String> splitUri = splitUri(path);
+    if (splitUri != null) {
+      urlPrefix = splitUri.first;
+      path = splitUri.second;
     }
 
-    paths.add("/");
+    if (!path.startsWith("/")) {
+      path = "/" + path;
+    }
+
+    while (path.length() > 0) {
+      if (urlPrefix != null) {
+        paths.add(urlPrefix + path);
+      } else {
+        paths.add(path);
+      }
+      if (path.contains("/")) {
+        path = path.substring(0, path.lastIndexOf('/'));
+      } else {
+        break;
+      }
+    }
+
+    if (urlPrefix != null) {
+      paths.add(urlPrefix);
+    } else {
+      paths.add("/");
+    }
     Collections.reverse(paths);
 
-    return paths.toArray(new String[paths.size()]);
+    return paths.toArray(new String[0]);
+  }
+
+  /**
+   * Splits a given path to URI prefix (if exists) and path.
+   *
+   * @param path
+   * @return {@link Pair} tuple if given path is URI (scheme is not null). Tuple contains:
+   *     <ul>
+   *       <li>First: URI section of the given path, if given path is an URI
+   *       <li>Second: Path section of the given path. Never null
+   *     </ul>
+   */
+  public static @Nullable Pair<String, String> splitUri(@NonNull final String path) {
+    Uri uri = Uri.parse(path);
+    if (uri.getScheme() != null) {
+      String urlPrefix = uri.getScheme() + "://" + uri.getEncodedAuthority();
+      String retPath = path.substring(urlPrefix.length());
+      return new Pair<>(urlPrefix, retPath);
+    } else {
+      return null;
+    }
   }
 
   public static boolean canListFiles(File f) {
@@ -719,7 +783,7 @@ public class FileUtils {
    *
    * @param line must be the line returned from 'ls' or 'stat' command
    */
-  public static HybridFileParcelable parseName(String line) {
+  public static HybridFileParcelable parseName(String line, boolean isStat) {
     boolean linked = false;
     StringBuilder name = new StringBuilder();
     StringBuilder link = new StringBuilder();
@@ -730,12 +794,17 @@ public class FileUtils {
     for (String anArray : array) {
       if (anArray.contains("->") && array[0].startsWith("l")) {
         linked = true;
+        break;
       }
     }
     int p = getColonPosition(array);
     if (p != -1) {
       date = array[p - 1] + " | " + array[p];
       size = array[p - 2];
+    } else if (isStat) {
+      date = array[5];
+      size = array[4];
+      p = 5;
     }
     if (!linked) {
       for (int i = p + 1; i < array.length; i++) {
@@ -754,7 +823,7 @@ public class FileUtils {
       link = new StringBuilder(link.toString().trim());
     }
     long Size = (size == null || size.trim().length() == 0) ? -1 : Long.parseLong(size);
-    if (date.trim().length() > 0) {
+    if (date.trim().length() > 0 && !isStat) {
       ParsePosition pos = new ParsePosition(0);
       SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
       Date stringDate = simpledateformat.parse(date, pos);
@@ -764,6 +833,12 @@ public class FileUtils {
       HybridFileParcelable baseFile =
           new HybridFileParcelable(
               name.toString(), array[0], stringDate != null ? stringDate.getTime() : 0, Size, true);
+      baseFile.setLink(link.toString());
+      return baseFile;
+    } else if (isStat) {
+      HybridFileParcelable baseFile =
+          new HybridFileParcelable(
+              name.toString(), array[0], Long.parseLong(date) * 1000, Size, true);
       baseFile.setLink(link.toString());
       return baseFile;
     } else {

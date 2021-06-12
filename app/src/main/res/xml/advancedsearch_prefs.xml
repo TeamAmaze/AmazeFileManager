@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.amaze.filemanager.ui.views.preference.CheckBox
-        android:key="regex"
-        android:summary="@string/regular_expression_summary"
-        android:title="@string/regular_expression"
+        app:key="regex"
+        app:summary="@string/regular_expression_summary"
+        app:title="@string/regular_expression"
         />
     <com.amaze.filemanager.ui.views.preference.CheckBox
-        android:key="matches"
-        android:summary="@string/match_content_summary"
-        android:title="@string/match_content"
+        app:key="matches"
+        app:summary="@string/match_content_summary"
+        app:title="@string/match_content"
         />
 </PreferenceScreen>

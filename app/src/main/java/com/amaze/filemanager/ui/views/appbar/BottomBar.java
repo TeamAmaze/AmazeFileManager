@@ -23,8 +23,10 @@ package com.amaze.filemanager.ui.views.appbar;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -34,7 +36,6 @@ import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.MainActivityHelper;
-import com.amaze.filemanager.utils.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
 import android.animation.Animator;
@@ -156,12 +157,14 @@ public class BottomBar implements View.OnTouchListener {
               public boolean onSingleTapConfirmed(MotionEvent e) {
                 Fragment fragmentAtFrame = mainActivity.getFragmentAtFrame();
                 if (fragmentAtFrame instanceof TabFragment) {
-                  MainFragment m = mainActivity.getCurrentMainFragment();
-                  if (m.openMode == OpenMode.FILE) {
+                  final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+                  Objects.requireNonNull(mainFragment);
+                  if (mainFragment.getMainFragmentViewModel() != null
+                      && OpenMode.CUSTOM != mainFragment.getMainFragmentViewModel().getOpenMode()) {
                     FileUtils.crossfade(buttons, pathLayout);
                     timer.cancel();
                     timer.start();
-                    showButtons(m);
+                    showButtons(mainFragment);
                   }
                 } else if (fragmentAtFrame instanceof CompressedExplorerFragment) {
                   FileUtils.crossfade(buttons, pathLayout);
@@ -174,8 +177,11 @@ public class BottomBar implements View.OnTouchListener {
 
               @Override
               public void onLongPress(MotionEvent e) {
+                final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+                Objects.requireNonNull(mainFragment);
                 if (mainActivity.getBoolean(PREFERENCE_CHANGEPATHS)
-                    && (!mainActivity.getCurrentMainFragment().results
+                    && ((mainFragment.getMainFragmentViewModel() != null
+                            && !mainFragment.getMainFragmentViewModel().getResults())
                         || buttons.getVisibility() == View.VISIBLE)) {
                   GeneralDialogCreation.showChangePathsDialog(
                       mainActivity, mainActivity.getPrefs());
@@ -227,16 +233,9 @@ public class BottomBar implements View.OnTouchListener {
 
       buttonRoot.setImageDrawable(
           mainActivity.getResources().getDrawable(buttonPathInterface.getRootDrawable()));
-      buttonRoot.setOnClickListener(
-          p1 -> {
-            buttonPathInterface.changePath("/");
-            timer.cancel();
-            timer.start();
-          });
 
       String[] names = FileUtils.getFolderNamesInPath(path);
       final String[] paths = FileUtils.getPathsInPath(path);
-
       View view = new View(mainActivity);
       LinearLayout.LayoutParams params1 =
           new LinearLayout.LayoutParams(
@@ -246,7 +245,15 @@ public class BottomBar implements View.OnTouchListener {
 
       for (int i = 0; i < names.length; i++) {
         final int k = i;
-        if (paths[i].equals("/")) {
+        if (i == 0) {
+          buttonRoot.setOnClickListener(
+              p1 -> {
+                if (paths.length != 0) {
+                  buttonPathInterface.changePath(paths[k]);
+                  timer.cancel();
+                  timer.start();
+                }
+              });
           buttons.addView(buttonRoot);
         } else if (FileUtils.isStorage(paths[i])) {
           buttonStorage.setOnClickListener(

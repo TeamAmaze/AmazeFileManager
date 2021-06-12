@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 import java.io.File;
@@ -31,8 +33,9 @@ import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.file_operations.filesystem.FolderState;
+import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -73,12 +76,16 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   public static final <T> T execute(@NonNull SshClientTemplate template) {
-    SSHClient client = SshConnectionPool.getInstance().getConnection(template.url);
+    SSHClient client = SshConnectionPool.INSTANCE.getConnection(extractBaseUriFrom(template.url));
+    if (client == null) {
+      client = SshConnectionPool.INSTANCE.getConnection(template.url);
+    }
     T retval = null;
     if (client != null) {
+      final SSHClient _client = client;
       try {
         retval =
-            Single.fromCallable((Callable<T>) () -> template.execute(client))
+            Single.fromCallable((Callable<T>) () -> template.execute(_client))
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
       } catch (Exception e) {
@@ -316,5 +323,22 @@ public abstract class SshClientUtils {
       }
     }
     return isDirectory;
+  }
+
+  public static @FolderState int checkFolder(@NonNull String path) {
+    return Single.<Integer>fromCallable(
+            () ->
+                execute(
+                    new SFtpClientTemplate(extractBaseUriFrom(path)) {
+                      @Override
+                      public @FolderState Integer execute(@NonNull SFTPClient client)
+                          throws IOException {
+                        return (client.statExistence(extractRemotePathFrom(path)) == null)
+                            ? WRITABLE_ON_REMOTE
+                            : DOESNT_EXIST;
+                      }
+                    }))
+        .subscribeOn(Schedulers.io())
+        .blockingGet();
   }
 }
