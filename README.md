@@ -3,7 +3,8 @@
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)  
 [![Chat on Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/AmazeFileManager)
-[![XDA Developers](https://img.shields.io/badge/XDA-Developers%20-%23AC6E2F.svg?&style=for-the-badge&logo=XDA-Developers&logoColor=white)](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)
+[![XDA Developers](https://img.shields.io/badge/XDA-Developers%20-%23AC6E2F.svg?&style=for-the-badge&logo=XDA-Developers&logoColor=white)](http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314)  
+[![Liberapay](https://img.shields.io/liberapay/receives/Team-Amaze.svg?logo=liberapay)](https://liberapay.com/Team-Amaze/donate)  
 
 # <a href="https://teamamaze.xyz">Amaze File Manager</a>
 
@@ -44,7 +45,8 @@ Downloads
 Support
 ---
 <a href="https://opencollective.com/TeamAmaze"><img width="20%" alt="OpenCollective" src="opencollective.svg" ></a>
-<a href="https://www.paypal.me/vishalnehra"><img width="20%" src="paypal.svg" alt="PayPal"></a>  
+<a href="https://www.paypal.me/vishalnehra"><img width="20%" src="paypal.svg" alt="PayPal"></a>
+<a href="https://liberapay.com/Team-Amaze/donate"><img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Liberapay_logo_v2_white-on-yellow.svg" alt="Liberapay" width="80px" ></a>  
 Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive, Dropbox, OneDrive and Box accounts.  
 
 Warning
