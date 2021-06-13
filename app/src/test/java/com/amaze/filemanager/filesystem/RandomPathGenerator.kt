@@ -23,13 +23,12 @@ package com.amaze.filemanager.filesystem
 import kotlin.random.Random
 
 object RandomPathGenerator {
-    /**
-     * From POSIX 3.282 Portable Filename Character Set
-     */
-    val CHARS_FOR_PATH = ('A'..'Z').toList() + ('a'..'z').toList() + ('0'..'9').toList() + listOf('.', '_', '-')
-    val SEPARATOR = '/'
+    const val separator = '/'
 
-    val RESERVED_FILE_NAMES = setOf("", ".", "..")
+    private val letters = ('A'..'Z').toSet() + ('a'..'z').toSet()
+    private val numbers = ('0'..'9').toSet()
+    private val other = setOf('.', '_', '-')
+    private val reservedFileNames = setOf("", ".", "..")
 
     /**
      * Generates a valid random path
@@ -57,7 +56,7 @@ object RandomPathGenerator {
         for (filenameLength in filenameLengths) {
             val filename = generateRandomFilename(random, filenameLength)
             pathBuilder.append(filename)
-            pathBuilder.append(SEPARATOR)
+            pathBuilder.append(separator)
         }
 
         return pathBuilder.toString()
@@ -68,12 +67,38 @@ object RandomPathGenerator {
 
         var name = ""
 
-        while (RESERVED_FILE_NAMES.contains(name)) {
-            name = List(length) { random.nextInt(0, CHARS_FOR_PATH.count()) }
-                .map(CHARS_FOR_PATH::get)
+        while (reservedFileNames.contains(name)) {
+            name = List(length) { generateRandomCharacter(random) }
                 .joinToString("")
         }
 
         return name
+    }
+
+    /**
+     * Characters from POSIX 3.282 Portable Filename Character Set.
+     *
+     * Not all characters should be tested equally,
+     * this ensures that paths not only contain letters.
+     */
+    private fun generateRandomCharacter(random: Random): Char {
+        val randomNumber = random.nextDouble(0.0, 1.0)
+
+        if(randomNumber < 0.4) {
+            //40% characters
+            return letters.random()
+        }
+
+        if(randomNumber < 0.8) {
+            //40% numbers
+            return numbers.random()
+        }
+
+        if(randomNumber < 1.0) {
+            //20% other
+            return other.random()
+        }
+
+        throw IllegalStateException()
     }
 }
