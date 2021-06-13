@@ -60,7 +60,25 @@ object RandomPathGenerator {
             pathBuilder.add(filename)
         }
 
-        return pathBuilder.joinToString(separator = separator.toString())
+        var path = pathBuilder.joinToString(separator = separator.toString())
+
+        val randomNumber = random.nextDouble(0.0, 1.0)
+
+        if (randomNumber < 0.2) {
+            // 20% end slash
+            path = path.dropLast(1)
+            path += separator
+            return path
+        }
+
+        if (randomNumber < 0.6) {
+            // 40% end extension
+            path = path.dropLast(4)
+            path += "." + List(3) { letters.random(random) }
+            return path
+        }
+
+        return path
     }
 
     private fun generateRandomFilename(random: Random, length: Int): String {
