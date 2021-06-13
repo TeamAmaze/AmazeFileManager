@@ -73,8 +73,10 @@ object RandomPathGenerator {
 
         if (randomNumber < 0.6) {
             // 40% end extension
+            val extension = List(3) { letters.random(random) }.joinToString(separator = "")
+
             path = path.dropLast(4)
-            path += "." + List(3) { letters.random(random) }
+            path += ".$extension"
             return path
         }
 
