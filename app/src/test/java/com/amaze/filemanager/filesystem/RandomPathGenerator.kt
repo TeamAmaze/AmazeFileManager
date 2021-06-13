@@ -29,22 +29,51 @@ object RandomPathGenerator {
     val CHARS_FOR_PATH = ('A'..'Z').toList() + ('a'..'z').toList() + ('0'..'9').toList() + listOf('.', '_', '-')
     val SEPARATOR = '/'
 
+    val RESERVED_FILE_NAMES = setOf("", ".", "..")
+
     /**
      * Generates a valid random path
      */
     fun generateRandomPath(random: Random, length: Int): String {
-        val randomString = (1..length)
-            .map { i -> random.nextInt(0, CHARS_FOR_PATH.count()) }
-            .map(CHARS_FOR_PATH::get)
+        assert(length > 0)
 
-        val path = randomString.mapIndexed { i, e ->
-            if (random.nextInt(10) < 1 && i > 0 && randomString[i - 1] != SEPARATOR) {
-                SEPARATOR
-            } else {
-                e
-            }
+        val slashesInPath = random.nextInt(length/4)
+
+        return generateRandomPath(random, length, slashesInPath)
+    }
+
+    /**
+     * Generates a valid random path, with a specific amount of directories
+     */
+    fun generateRandomPath(random: Random, length: Int, slashesInPath: Int): String {
+        val namesInPath = slashesInPath + 1
+
+        val filenameLengths = List(namesInPath) {
+            (length - slashesInPath) / namesInPath
         }
 
-        return path.joinToString("")
+        val pathBuilder = StringBuilder()
+
+        for (filenameLength in filenameLengths) {
+            val filename = generateRandomFilename(random, filenameLength)
+            pathBuilder.append(filename)
+            pathBuilder.append(SEPARATOR)
+        }
+
+        return pathBuilder.toString()
+    }
+
+    private fun generateRandomFilename(random: Random, length: Int): String {
+        assert(length > 0)
+
+        var name = ""
+
+        while (RESERVED_FILE_NAMES.contains(name)) {
+            name = List(length) { random.nextInt(0, CHARS_FOR_PATH.count()) }
+                .map(CHARS_FOR_PATH::get)
+                .joinToString("")
+        }
+
+        return name
     }
 }
