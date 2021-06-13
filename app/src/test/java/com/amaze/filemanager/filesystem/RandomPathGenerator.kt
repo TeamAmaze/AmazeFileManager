@@ -23,7 +23,10 @@ package com.amaze.filemanager.filesystem
 import kotlin.random.Random
 
 object RandomPathGenerator {
-    val CHARS_FOR_PATH = ('A'..'Z').toList() + ('a'..'z').toList()
+    /**
+     * From POSIX 3.282 Portable Filename Character Set
+     */
+    val CHARS_FOR_PATH = ('A'..'Z').toList() + ('a'..'z').toList() + ('0'..'9').toList() + listOf('.', '_', '-')
     val SEPARATOR = '/'
 
     /**
