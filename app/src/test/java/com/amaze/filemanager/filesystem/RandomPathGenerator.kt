@@ -36,7 +36,7 @@ object RandomPathGenerator {
     fun generateRandomPath(random: Random, length: Int): String {
         assert(length > 0)
 
-        val slashesInPath = random.nextInt(length/4)
+        val slashesInPath = random.nextInt(length / 4)
 
         return generateRandomPath(random, length, slashesInPath)
     }
@@ -45,7 +45,7 @@ object RandomPathGenerator {
      * Generates a valid random path, with a specific amount of directories
      */
     fun generateRandomPath(random: Random, length: Int, slashesInPath: Int): String {
-        assert(length > slashesInPath*2)
+        assert(length > slashesInPath * 2)
 
         val namesInPath = slashesInPath + 1
 
@@ -85,18 +85,18 @@ object RandomPathGenerator {
     private fun generateRandomCharacter(random: Random): Char {
         val randomNumber = random.nextDouble(0.0, 1.0)
 
-        if(randomNumber < 0.4) {
-            //40% characters
+        if (randomNumber < 0.4) {
+            // 40% characters
             return letters.random()
         }
 
-        if(randomNumber < 0.8) {
-            //40% numbers
+        if (randomNumber < 0.8) {
+            // 40% numbers
             return numbers.random()
         }
 
-        if(randomNumber < 1.0) {
-            //20% other
+        if (randomNumber < 1.0) {
+            // 20% other
             return other.random()
         }
 
