@@ -105,17 +105,17 @@ object RandomPathGenerator {
 
         if (randomNumber < 0.4) {
             // 40% characters
-            return letters.random()
+            return letters.random(random)
         }
 
         if (randomNumber < 0.8) {
             // 40% numbers
-            return numbers.random()
+            return numbers.random(random)
         }
 
         if (randomNumber < 1.0) {
             // 20% other
-            return other.random()
+            return other.random(random)
         }
 
         throw IllegalStateException()
