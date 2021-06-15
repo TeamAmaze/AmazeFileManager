@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.ZipService;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
@@ -79,6 +81,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
@@ -434,6 +437,13 @@ public class MainActivityHelper {
       return SmbUtil.checkFolder(path);
     } else if (OpenMode.SFTP.equals(openMode)) {
       return SshClientUtils.checkFolder(path);
+    } else if (OpenMode.DOCUMENT_FILE.equals(openMode)) {
+      DocumentFile d =
+          DocumentFile.fromTreeUri(AppConfig.getInstance(), SafRootHolder.getUriRoot());
+      if (d == null) return DOESNT_EXIST;
+      else {
+        return WRITABLE_OR_ON_SDCARD;
+      }
     } else {
       File folder = new File(path);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {

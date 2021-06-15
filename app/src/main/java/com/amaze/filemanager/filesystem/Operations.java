@@ -54,6 +54,8 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
+import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
 import jcifs.smb.SmbException;
@@ -116,6 +118,22 @@ public class Operations {
 
       private DataUtils dataUtils = DataUtils.getInstance();
 
+      private Function<Pair<DocumentFile, DocumentFile>, Void> safCreateDirectory =
+          input -> {
+            DocumentFile directoryToCreate = input.first;
+            DocumentFile parentDirectory = input.second;
+
+            // first check whether new directory already exists
+            if (directoryToCreate != null) {
+              errorCallBack.exists(file);
+            }
+            if (parentDirectory != null && parentDirectory.isDirectory()) {
+              parentDirectory.createDirectory(file.getName(context));
+              errorCallBack.done(file, true);
+            } else errorCallBack.done(file, false);
+            return null;
+          };
+
       @Override
       protected Void doInBackground(Void... params) {
         // checking whether filename is valid or a recursive call possible
@@ -143,17 +161,20 @@ public class Operations {
           errorCallBack.done(file, file.exists());
           return null;
         } else if (file.isOtgFile()) {
-
-          // first check whether new directory already exists
-          DocumentFile directoryToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
-          if (directoryToCreate != null) errorCallBack.exists(file);
-
-          DocumentFile parentDirectory =
-              OTGUtil.getDocumentFile(file.getParent(context), context, false);
-          if (parentDirectory.isDirectory()) {
-            parentDirectory.createDirectory(file.getName(context));
-            errorCallBack.done(file, true);
-          } else errorCallBack.done(file, false);
+          safCreateDirectory.apply(
+              new Pair<>(
+                  OTGUtil.getDocumentFile(file.getPath(), context, false),
+                  OTGUtil.getDocumentFile(file.getParent(context), context, false)));
+          return null;
+        } else if (file.isDocumentFile()) {
+          DocumentFile toCreate =
+              OTGUtil.getDocumentFile(file.getPath(), SafRootHolder.getUriRoot(), context, false);
+          DocumentFile parent =
+              (file.path.equals(SafRootHolder.getUriRoot().toString()))
+                  ? DocumentFile.fromTreeUri(context, SafRootHolder.getUriRoot())
+                  : OTGUtil.getDocumentFile(
+                      file.getParent(context), SafRootHolder.getUriRoot(), context, false);
+          safCreateDirectory.apply(new Pair<>(toCreate, parent));
           return null;
         } else if (file.isDropBoxFile()) {
           CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -232,6 +253,22 @@ public class Operations {
     new AsyncTask<Void, Void, Void>() {
 
       private DataUtils dataUtils = DataUtils.getInstance();
+
+      private Function<Pair<DocumentFile, DocumentFile>, Void> safCreateFile =
+          input -> {
+            // first check whether new file already exists
+            DocumentFile fileToCreate = input.first;
+            DocumentFile parentDirectory = input.second;
+            if (fileToCreate != null) errorCallBack.exists(file);
+
+            if (parentDirectory != null && parentDirectory.isDirectory()) {
+              parentDirectory.createFile(
+                  file.getName(context).substring(file.getName(context).lastIndexOf(".")),
+                  file.getName(context));
+              errorCallBack.done(file, true);
+            } else errorCallBack.done(file, false);
+            return null;
+          };
 
       @Override
       protected Void doInBackground(Void... params) {
@@ -328,19 +365,18 @@ public class Operations {
             errorCallBack.done(file, false);
           }
         } else if (file.isOtgFile()) {
-
-          // first check whether new file already exists
-          DocumentFile fileToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
-          if (fileToCreate != null) errorCallBack.exists(file);
-
-          DocumentFile parentDirectory =
-              OTGUtil.getDocumentFile(file.getParent(context), context, false);
-          if (parentDirectory.isDirectory()) {
-            parentDirectory.createFile(
-                file.getName(context).substring(file.getName(context).lastIndexOf(".")),
-                file.getName(context));
-            errorCallBack.done(file, true);
-          } else errorCallBack.done(file, false);
+          safCreateFile.apply(
+              new Pair<>(
+                  OTGUtil.getDocumentFile(file.getPath(), context, false),
+                  OTGUtil.getDocumentFile(file.getParent(context), context, false)));
+          return null;
+        } else if (file.isDocumentFile()) {
+          safCreateFile.apply(
+              new Pair<>(
+                  OTGUtil.getDocumentFile(
+                      file.getPath(), SafRootHolder.getUriRoot(), context, false),
+                  OTGUtil.getDocumentFile(
+                      file.getParent(context), SafRootHolder.getUriRoot(), context, false)));
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
@@ -380,7 +416,19 @@ public class Operations {
 
     new AsyncTask<Void, Void, Void>() {
 
-      private DataUtils dataUtils = DataUtils.getInstance();
+      private final DataUtils dataUtils = DataUtils.getInstance();
+
+      private Function<Pair<DocumentFile, DocumentFile>, Void> safRenameFile =
+          input -> {
+            DocumentFile oldDocumentFile = input.first;
+            DocumentFile newDocumentFile = input.second;
+            if (newDocumentFile != null) {
+              errorCallBack.exists(newFile);
+              return null;
+            }
+            errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
+            return null;
+          };
 
       @Override
       protected Void doInBackground(Void... params) {
@@ -507,16 +555,20 @@ public class Operations {
             errorCallBack.done(newFile, false);
           }
         } else if (oldFile.isOtgFile()) {
-          DocumentFile oldDocumentFile = OTGUtil.getDocumentFile(oldFile.getPath(), context, false);
-          DocumentFile newDocumentFile = OTGUtil.getDocumentFile(newFile.getPath(), context, false);
-          if (newDocumentFile != null) {
-            errorCallBack.exists(newFile);
-            return null;
-          }
-          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
+          safRenameFile.apply(
+              new Pair<>(
+                  OTGUtil.getDocumentFile(oldFile.getPath(), context, false),
+                  OTGUtil.getDocumentFile(newFile.getPath(), context, false)));
+          return null;
+        } else if (oldFile.isDocumentFile()) {
+          safRenameFile.apply(
+              new Pair<>(
+                  OTGUtil.getDocumentFile(
+                      oldFile.getPath(), SafRootHolder.getUriRoot(), context, false),
+                  OTGUtil.getDocumentFile(
+                      newFile.getPath(), SafRootHolder.getUriRoot(), context, false)));
           return null;
         } else {
-
           File file = new File(oldFile.getPath());
           File file1 = new File(newFile.getPath());
           switch (oldFile.getMode()) {
