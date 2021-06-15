@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,37 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.file_operations.filesystem;
+package com.amaze.filemanager.filesystem
 
-/**
- * Created by vishal on 10/11/16.
- *
- * <p>Class denotes the type of file being handled
- */
-public enum OpenMode {
-  UNKNOWN,
-  FILE,
-  SMB,
-  SFTP,
+import android.net.Uri
 
-  /** Custom file types like apk/images/downloads (which don't have a defined path) */
-  CUSTOM,
-
-  ROOT,
-  OTG,
-  DOCUMENT_FILE,
-  GDRIVE,
-  DROPBOX,
-  BOX,
-  ONEDRIVE;
-
-  /**
-   * Get open mode based on the id assigned. Generally used to retrieve this type after config
-   * change or to send enum as argument
-   *
-   * @param ordinal the position of enum starting from 0 for first element
-   */
-  public static OpenMode getOpenMode(int ordinal) {
-    return OpenMode.values()[ordinal];
-  }
+object SafRootHolder {
+    var uriRoot: Uri? = null
+        @JvmStatic set
+        @JvmStatic get
+    var volumeLabel: String? = null
+        @JvmStatic set
+        @JvmStatic get
 }

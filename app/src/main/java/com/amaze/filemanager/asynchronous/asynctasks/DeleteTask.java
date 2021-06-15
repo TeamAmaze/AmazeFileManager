@@ -31,6 +31,7 @@ import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -67,14 +68,14 @@ public class DeleteTask
   private final DataUtils dataUtils = DataUtils.getInstance();
 
   public DeleteTask(@NonNull Context cd) {
-    this.cd = cd;
+    this.cd = cd.getApplicationContext();
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(cd)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
   }
 
   public DeleteTask(@NonNull Context cd, CompressedExplorerFragment compressedExplorerFragment) {
-    this.cd = cd;
+    this.cd = cd.getApplicationContext();
     rootMode =
         PreferenceManager.getDefaultSharedPreferences(cd)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
@@ -154,6 +155,10 @@ public class DeleteTask
     switch (file.getMode()) {
       case OTG:
         DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
+        return documentFile.delete();
+      case DOCUMENT_FILE:
+        documentFile =
+            OTGUtil.getDocumentFile(file.getPath(), SafRootHolder.getUriRoot(), cd, false);
         return documentFile.delete();
       case DROPBOX:
       case BOX:

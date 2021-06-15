@@ -82,10 +82,13 @@ import net.schmizz.sshj.sftp.SFTPException;
 /** Hybrid file for handeling all types of files */
 public class HybridFile {
 
-  private static final String TAG = HybridFile.class.getSimpleName();
+  protected static final String TAG = HybridFile.class.getSimpleName();
 
-  private String path;
-  private OpenMode mode;
+  public static final String DOCUMENT_FILE_PREFIX =
+      "content://com.android.externalstorage.documents";
+
+  protected String path;
+  protected OpenMode mode;
 
   private final DataUtils dataUtils = DataUtils.getInstance();
 
@@ -117,6 +120,8 @@ public class HybridFile {
       mode = OpenMode.SFTP;
     } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
       mode = OpenMode.OTG;
+    } else if (path.startsWith(DOCUMENT_FILE_PREFIX)) {
+      mode = OpenMode.DOCUMENT_FILE;
     } else if (isCustomPath()) {
       mode = OpenMode.CUSTOM;
     } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
@@ -186,6 +191,10 @@ public class HybridFile {
     return mode == OpenMode.OTG;
   }
 
+  public boolean isDocumentFile() {
+    return mode == OpenMode.DOCUMENT_FILE;
+  }
+
   public boolean isBoxFile() {
     return mode == OpenMode.BOX;
   }
@@ -205,6 +214,12 @@ public class HybridFile {
   @Nullable
   public File getFile() {
     return new File(path);
+  }
+
+  @Nullable
+  public DocumentFile getDocumentFile() {
+    return OTGUtil.getDocumentFile(
+        path, SafRootHolder.getUriRoot(), AppConfig.getInstance(), false);
   }
 
   HybridFileParcelable generateBaseFileFromParent() {
@@ -239,6 +254,8 @@ public class HybridFile {
         break;
       case FILE:
         return getFile().lastModified();
+      case DOCUMENT_FILE:
+        return getDocumentFile().lastModified();
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getDate();
@@ -248,7 +265,7 @@ public class HybridFile {
 
   /** Helper method to find length */
   public long length(Context context) {
-    long s = 0l;
+    long s = 0L;
     switch (mode) {
       case SFTP:
         return ((HybridFileParcelable) this).getSize();
@@ -267,6 +284,9 @@ public class HybridFile {
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getSize();
+        break;
+      case DOCUMENT_FILE:
+        s = getDocumentFile().length();
         break;
       case OTG:
         s = OTGUtil.getDocumentFile(path, context, false).length();
@@ -445,6 +465,8 @@ public class HybridFile {
           isDirectory = false;
         }
         break;
+      case DOCUMENT_FILE:
+        return getDocumentFile().isDirectory();
       case OTG:
         // TODO: support for this method in OTG on-the-fly
         // you need to manually call {@link RootHelper#getDocumentFile() method
@@ -502,6 +524,7 @@ public class HybridFile {
           isDirectory = false;
         }
         break;
+      case DOCUMENT_FILE:
       case OTG:
         isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
         break;
@@ -656,6 +679,10 @@ public class HybridFile {
                     }
                   }
                 });
+        break;
+      case DOCUMENT_FILE:
+        size =
+            FileProperties.getDeviceStorageRemainingSpace(SafRootHolder.INSTANCE.getVolumeLabel());
         break;
       case OTG:
         // TODO: Get free space from OTG when {@link DocumentFile} API adds support
@@ -971,9 +998,19 @@ public class HybridFile {
           e.printStackTrace();
         }
         break;
-      case OTG:
+      case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
-        DocumentFile documentSourceFile = OTGUtil.getDocumentFile(path, context, false);
+        DocumentFile documentSourceFile = getDocumentFile();
+        try {
+          inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+          inputStream = null;
+        }
+        break;
+      case OTG:
+        contentResolver = context.getContentResolver();
+        documentSourceFile = OTGUtil.getDocumentFile(path, context, false);
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
@@ -1050,9 +1087,19 @@ public class HybridFile {
           e.printStackTrace();
         }
         break;
-      case OTG:
+      case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
-        DocumentFile documentSourceFile = OTGUtil.getDocumentFile(path, context, true);
+        DocumentFile documentSourceFile = getDocumentFile();
+        try {
+          outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
+        } catch (FileNotFoundException e) {
+          e.printStackTrace();
+          outputStream = null;
+        }
+        break;
+      case OTG:
+        contentResolver = context.getContentResolver();
+        documentSourceFile = OTGUtil.getDocumentFile(path, context, true);
         try {
           outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
@@ -1120,6 +1167,10 @@ public class HybridFile {
     if (isOtgFile()) {
       DocumentFile fileToCheck = OTGUtil.getDocumentFile(path, context, false);
       return fileToCheck != null;
+    } else if (isDocumentFile()) {
+      DocumentFile fileToCheck =
+          OTGUtil.getDocumentFile(path, SafRootHolder.getUriRoot(), context, false);
+      return fileToCheck != null;
     } else return (exists());
   }
 
@@ -1131,6 +1182,7 @@ public class HybridFile {
   public boolean isSimpleFile() {
     return !isSmb()
         && !isOtgFile()
+        && !isDocumentFile()
         && !isCustomPath()
         && !android.util.Patterns.EMAIL_ADDRESS.matcher(path).matches()
         && (getFile() != null && !getFile().isDirectory())
@@ -1184,6 +1236,14 @@ public class HybridFile {
     } else if (isOtgFile()) {
       if (!exists(context)) {
         DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, false);
+        if (parentDirectory.isDirectory()) {
+          parentDirectory.createDirectory(getName(context));
+        }
+      }
+    } else if (isDocumentFile()) {
+      if (!exists(context)) {
+        DocumentFile parentDirectory =
+            OTGUtil.getDocumentFile(getParent(context), SafRootHolder.getUriRoot(), context, false);
         if (parentDirectory.isDirectory()) {
           parentDirectory.createDirectory(getName(context));
         }

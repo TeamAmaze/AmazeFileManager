@@ -20,12 +20,19 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DOCUMENT_FILE;
+
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import androidx.annotation.NonNull;
 
@@ -41,6 +48,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
   private String permission;
   private String name;
   private String link = "";
+  private Uri fullUri = null;
 
   public HybridFileParcelable(String path) {
     super(OpenMode.FILE, path);
@@ -132,6 +140,22 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   public void setPermission(String permission) {
     this.permission = permission;
+  }
+
+  @Nullable
+  public Uri getFullUri() {
+    return DOCUMENT_FILE.equals(mode) ? fullUri : null;
+  }
+
+  public void setFullUri(Uri fullUri) {
+    if (!ContentResolver.SCHEME_CONTENT.equals(fullUri.getScheme())) {
+      // TODO: throw IllegalArgumentException is not a good idea here?
+      // FIXME: OpenMode is mutable (which is a bad idea) hence check for OpenMode.DOCUMENT_FILE
+      //        will not make sense either.
+      Log.d(TAG, "Provided URI is not content URI, skipping. Given URI: " + fullUri.toString());
+    } else {
+      this.fullUri = fullUri;
+    }
   }
 
   protected HybridFileParcelable(Parcel in) {
