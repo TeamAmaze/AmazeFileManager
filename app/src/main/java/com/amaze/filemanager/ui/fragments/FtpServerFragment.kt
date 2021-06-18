@@ -498,14 +498,14 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val passwordDecrypted = passwordFromPreferences
         val passwordBulleted: CharSequence = OneCharacterCharSequence(
             '\u25CF',
-            passwordDecrypted!!.length
+            passwordDecrypted?.length ?: 0
         )
         username.text = "${resources.getString(R.string.username)}: $usernameFromPreferences"
         password.text = "${resources.getString(R.string.password)}: $passwordBulleted"
         ftpPasswordVisibleButton.setImageDrawable(
             resources.getDrawable(R.drawable.ic_eye_grey600_24dp)
         )
-        ftpPasswordVisibleButton.visibility = if (passwordDecrypted.isEmpty()) {
+        ftpPasswordVisibleButton.visibility = if (passwordDecrypted?.isEmpty() == true) {
             View.GONE
         } else {
             View.VISIBLE
