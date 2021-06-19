@@ -115,6 +115,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private val activityResultHandlerOnFtpServerPathGrantedSafAccess =
         createOpenDocumentTreeIntentCallback {
+            directoryUri ->
+            changeFTPServerPath(directoryUri.toString())
+            updatePathText()
             doStartServer()
         }
 
@@ -386,7 +389,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     /** Check URI access if  */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {
         if (Build.VERSION.SDK_INT >= M) {
-            val directoryUri = mainActivity.prefs.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH)
+            val directoryUri: String = mainActivity.prefs.getString(
+                KEY_PREFERENCE_PATH, DEFAULT_PATH
+            )!!
             Uri.parse(directoryUri).run {
                 if (requireContext().checkUriPermission(
                         this, Process.myPid(), Process.myUid(),
@@ -407,13 +412,14 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                                 activityResultHandlerOnFtpServerPathGrantedSafAccess.launch(
                                     Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).also {
                                         if (Build.VERSION.SDK_INT >= O &&
-                                            directoryUri.equals(DEFAULT_PATH)
+                                            directoryUri.startsWith(DEFAULT_PATH)
                                         ) {
                                             it.putExtra(
                                                 EXTRA_INITIAL_URI,
                                                 DocumentsContract.buildDocumentUri(
                                                     "com.android.externalstorage.documents",
-                                                    "primary"
+                                                    "primary:" +
+                                                        directoryUri.substringAfter(DEFAULT_PATH)
                                                 )
                                             )
                                         }
