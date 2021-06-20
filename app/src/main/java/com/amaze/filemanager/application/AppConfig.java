@@ -109,7 +109,9 @@ public class AppConfig extends GlideApplication {
   @Override
   protected void attachBaseContext(Context base) {
     super.attachBaseContext(base);
-    initACRA();
+    if (base.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
+      initACRA();
+    }
   }
 
   @Override

@@ -126,11 +126,13 @@ public class ErrorActivity extends ThemedActivity {
 
   private static void startErrorActivity(
       final Context context, final ErrorInfo errorInfo, final List<Throwable> el) {
-    final Intent intent = new Intent(context, ErrorActivity.class);
-    intent.putExtra(ERROR_INFO, errorInfo);
-    intent.putExtra(ERROR_LIST, elToSl(el));
-    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    context.startActivity(intent);
+    if (context.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
+      final Intent intent = new Intent(context, ErrorActivity.class);
+      intent.putExtra(ERROR_INFO, errorInfo);
+      intent.putExtra(ERROR_LIST, elToSl(el));
+      intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+      context.startActivity(intent);
+    }
   }
 
   public static void reportError(
@@ -149,6 +151,7 @@ public class ErrorActivity extends ThemedActivity {
     final String[] el = new String[] {report.getString(ReportField.STACK_TRACE)};
 
     final Intent intent = new Intent(context, ErrorActivity.class);
+    intent.setPackage("context.getPackageName()");
     intent.putExtra(ERROR_INFO, errorInfo);
     intent.putExtra(ERROR_LIST, el);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -174,74 +177,77 @@ public class ErrorActivity extends ThemedActivity {
   @Override
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(R.layout.activity_error);
-    final Toolbar toolbar = findViewById(R.id.toolbar);
-    setSupportActionBar(toolbar);
-
     final Intent intent = getIntent();
-
-    final ActionBar actionBar = getSupportActionBar();
-    if (actionBar != null) {
-      actionBar.setDisplayHomeAsUpEnabled(true);
-      actionBar.setTitle(R.string.error_report_title);
-      actionBar.setDisplayShowTitleEnabled(true);
-    }
-
-    final Button reportEmailButton = findViewById(R.id.errorReportEmailButton);
-    final Button reportTelegramButton = findViewById(R.id.errorReportTelegramButton);
-    final Button copyButton = findViewById(R.id.errorReportCopyButton);
-    final Button reportGithubButton = findViewById(R.id.errorReportGitHubButton);
-
-    userCommentBox = findViewById(R.id.errorCommentBox);
-    final TextView errorView = findViewById(R.id.errorView);
-    final TextView errorMessageView = findViewById(R.id.errorMessageView);
-
-    returnActivity = MainActivity.class;
-    errorInfo = intent.getParcelableExtra(ERROR_INFO);
-    errorList = intent.getStringArrayExtra(ERROR_LIST);
-
-    // important add guru meditation
-    addGuruMeditation();
-    currentTimeStamp = getCurrentTimeStamp();
-
-    reportEmailButton.setOnClickListener((View v) -> sendReportEmail());
-
-    reportTelegramButton.setOnClickListener(
-        (View v) -> {
-          FileUtils.copyToClipboard(this, buildMarkdown());
-          Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
-          Utils.openTelegramURL(this);
-        });
-
-    copyButton.setOnClickListener(
-        (View v) -> {
-          FileUtils.copyToClipboard(this, buildMarkdown());
-          Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
-        });
-
-    reportGithubButton.setOnClickListener(
-        (View v) -> {
-          FileUtils.copyToClipboard(this, buildMarkdown());
-          Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
-          Utils.openURL(ERROR_GITHUB_ISSUE_URL, this);
-        });
-
-    // normal bugreport
-    buildInfo(errorInfo);
-    if (errorInfo.message != 0) {
-      errorMessageView.setText(errorInfo.message);
+    if (ErrorInfo.comparePackageInfo(intent.getPackage()) != 0) {
+      finish();
     } else {
-      errorMessageView.setVisibility(View.GONE);
-      findViewById(R.id.messageWhatHappenedView).setVisibility(View.GONE);
-    }
+      setContentView(R.layout.activity_error);
+      final Toolbar toolbar = findViewById(R.id.toolbar);
+      setSupportActionBar(toolbar);
 
-    errorView.setText(formErrorText(errorList));
+      final ActionBar actionBar = getSupportActionBar();
+      if (actionBar != null) {
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setTitle(R.string.error_report_title);
+        actionBar.setDisplayShowTitleEnabled(true);
+      }
 
-    // print stack trace once again for debugging:
-    for (final String e : errorList) {
-      Log.e(TAG, e);
+      final Button reportEmailButton = findViewById(R.id.errorReportEmailButton);
+      final Button reportTelegramButton = findViewById(R.id.errorReportTelegramButton);
+      final Button copyButton = findViewById(R.id.errorReportCopyButton);
+      final Button reportGithubButton = findViewById(R.id.errorReportGitHubButton);
+
+      userCommentBox = findViewById(R.id.errorCommentBox);
+      final TextView errorView = findViewById(R.id.errorView);
+      final TextView errorMessageView = findViewById(R.id.errorMessageView);
+
+      returnActivity = MainActivity.class;
+      errorInfo = intent.getParcelableExtra(ERROR_INFO);
+      errorList = intent.getStringArrayExtra(ERROR_LIST);
+
+      // important add guru meditation
+      addGuruMeditation();
+      currentTimeStamp = getCurrentTimeStamp();
+
+      reportEmailButton.setOnClickListener((View v) -> sendReportEmail());
+
+      reportTelegramButton.setOnClickListener(
+          (View v) -> {
+            FileUtils.copyToClipboard(this, buildMarkdown());
+            Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
+            Utils.openTelegramURL(this);
+          });
+
+      copyButton.setOnClickListener(
+          (View v) -> {
+            FileUtils.copyToClipboard(this, buildMarkdown());
+            Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
+          });
+
+      reportGithubButton.setOnClickListener(
+          (View v) -> {
+            FileUtils.copyToClipboard(this, buildMarkdown());
+            Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
+            Utils.openURL(ERROR_GITHUB_ISSUE_URL, this);
+          });
+
+      // normal bugreport
+      buildInfo(errorInfo);
+      if (errorInfo.message != 0) {
+        errorMessageView.setText(errorInfo.message);
+      } else {
+        errorMessageView.setVisibility(View.GONE);
+        findViewById(R.id.messageWhatHappenedView).setVisibility(View.GONE);
+      }
+
+      errorView.setText(formErrorText(errorList));
+
+      // print stack trace once again for debugging:
+      for (final String e : errorList) {
+        Log.e(TAG, e);
+      }
+      initStatusBarResources(findViewById(R.id.parent_view));
     }
-    initStatusBarResources(findViewById(R.id.parent_view));
   }
 
   @Override
@@ -495,6 +501,10 @@ public class ErrorActivity extends ThemedActivity {
       dest.writeString(this.userAction);
       dest.writeString(this.request);
       dest.writeInt(this.message);
+    }
+
+    public static int comparePackageInfo(String packageName) {
+      return packageName.indexOf("com.amaze.filemanager");
     }
   }
 }
