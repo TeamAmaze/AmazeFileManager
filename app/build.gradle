@@ -100,6 +100,16 @@ android {
 }
 
 dependencies {
+
+    modules {
+        module("org.bouncycastle:bcprov-jdk15to18") {
+            replacedBy("org.bouncycastle:bcprov-jdk15on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15to18") {
+            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+        }
+    }
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
