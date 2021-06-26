@@ -28,6 +28,7 @@ import com.amaze.filemanager.filesystem.FileUtil
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
+import com.amaze.filemanager.filesystem.compressed.isPasswordProtectedCompat
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import com.github.junrar.Archive
 import com.github.junrar.exception.CorruptHeaderException
@@ -68,7 +69,7 @@ class RarExtractor(
                 }
             }.getOrNull()!!
 
-            if (rarFile.isPasswordProtected || rarFile.isEncrypted) {
+            if (rarFile.isPasswordProtectedCompat() || rarFile.isEncrypted) {
                 if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
                     runCatching {
                         tryExtractSmallestFileInArchive(context, rarFile)
