@@ -61,6 +61,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -126,13 +127,14 @@ public class ErrorActivity extends ThemedActivity {
 
   private static void startErrorActivity(
       final Context context, final ErrorInfo errorInfo, final List<Throwable> el) {
-    if (context.getPackageName().equals(BuildConfig.APPLICATION_ID)) {
+    try {
+      ErrorInfo.umbrellaCheck(context);
       final Intent intent = new Intent(context, ErrorActivity.class);
       intent.putExtra(ERROR_INFO, errorInfo);
       intent.putExtra(ERROR_LIST, elToSl(el));
       intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
       context.startActivity(intent);
-    }
+    } catch (IllegalArgumentException ignored) {}
   }
 
   public static void reportError(
@@ -147,11 +149,11 @@ public class ErrorActivity extends ThemedActivity {
 
   public static void reportError(
       final Context context, final CrashReportData report, final ErrorInfo errorInfo) {
-    System.out.println("ErrorActivity reportError");
+    Log.d(TAG, "ErrorActivity reportError");
     final String[] el = new String[] {report.getString(ReportField.STACK_TRACE)};
 
     final Intent intent = new Intent(context, ErrorActivity.class);
-    intent.setPackage("context.getPackageName()");
+    intent.setPackage(context.getPackageName());
     intent.putExtra(ERROR_INFO, errorInfo);
     intent.putExtra(ERROR_LIST, el);
     intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -178,76 +180,78 @@ public class ErrorActivity extends ThemedActivity {
   public void onCreate(final Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     final Intent intent = getIntent();
-    if (ErrorInfo.comparePackageInfo(intent.getPackage()) != 0) {
+    try {
+      ErrorInfo.umbrellaCheck(getApplicationContext());
+    } catch (IllegalArgumentException e) {
       finish();
-    } else {
-      setContentView(R.layout.activity_error);
-      final Toolbar toolbar = findViewById(R.id.toolbar);
-      setSupportActionBar(toolbar);
-
-      final ActionBar actionBar = getSupportActionBar();
-      if (actionBar != null) {
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(R.string.error_report_title);
-        actionBar.setDisplayShowTitleEnabled(true);
-      }
-
-      final Button reportEmailButton = findViewById(R.id.errorReportEmailButton);
-      final Button reportTelegramButton = findViewById(R.id.errorReportTelegramButton);
-      final Button copyButton = findViewById(R.id.errorReportCopyButton);
-      final Button reportGithubButton = findViewById(R.id.errorReportGitHubButton);
-
-      userCommentBox = findViewById(R.id.errorCommentBox);
-      final TextView errorView = findViewById(R.id.errorView);
-      final TextView errorMessageView = findViewById(R.id.errorMessageView);
-
-      returnActivity = MainActivity.class;
-      errorInfo = intent.getParcelableExtra(ERROR_INFO);
-      errorList = intent.getStringArrayExtra(ERROR_LIST);
-
-      // important add guru meditation
-      addGuruMeditation();
-      currentTimeStamp = getCurrentTimeStamp();
-
-      reportEmailButton.setOnClickListener((View v) -> sendReportEmail());
-
-      reportTelegramButton.setOnClickListener(
-          (View v) -> {
-            FileUtils.copyToClipboard(this, buildMarkdown());
-            Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
-            Utils.openTelegramURL(this);
-          });
-
-      copyButton.setOnClickListener(
-          (View v) -> {
-            FileUtils.copyToClipboard(this, buildMarkdown());
-            Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
-          });
-
-      reportGithubButton.setOnClickListener(
-          (View v) -> {
-            FileUtils.copyToClipboard(this, buildMarkdown());
-            Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
-            Utils.openURL(ERROR_GITHUB_ISSUE_URL, this);
-          });
-
-      // normal bugreport
-      buildInfo(errorInfo);
-      if (errorInfo.message != 0) {
-        errorMessageView.setText(errorInfo.message);
-      } else {
-        errorMessageView.setVisibility(View.GONE);
-        findViewById(R.id.messageWhatHappenedView).setVisibility(View.GONE);
-      }
-
-      errorView.setText(formErrorText(errorList));
-
-      // print stack trace once again for debugging:
-      for (final String e : errorList) {
-        Log.e(TAG, e);
-      }
-      initStatusBarResources(findViewById(R.id.parent_view));
+      return;
     }
+    setContentView(R.layout.activity_error);
+    final Toolbar toolbar = findViewById(R.id.toolbar);
+    setSupportActionBar(toolbar);
+
+    final ActionBar actionBar = getSupportActionBar();
+    if (actionBar != null) {
+      actionBar.setDisplayHomeAsUpEnabled(true);
+      actionBar.setTitle(R.string.error_report_title);
+      actionBar.setDisplayShowTitleEnabled(true);
+    }
+
+    final Button reportEmailButton = findViewById(R.id.errorReportEmailButton);
+    final Button reportTelegramButton = findViewById(R.id.errorReportTelegramButton);
+    final Button copyButton = findViewById(R.id.errorReportCopyButton);
+    final Button reportGithubButton = findViewById(R.id.errorReportGitHubButton);
+
+    userCommentBox = findViewById(R.id.errorCommentBox);
+    final TextView errorView = findViewById(R.id.errorView);
+    final TextView errorMessageView = findViewById(R.id.errorMessageView);
+
+    returnActivity = MainActivity.class;
+    errorInfo = intent.getParcelableExtra(ERROR_INFO);
+    errorList = intent.getStringArrayExtra(ERROR_LIST);
+
+    // important add guru meditation
+    addGuruMeditation();
+    currentTimeStamp = getCurrentTimeStamp();
+
+    reportEmailButton.setOnClickListener((View v) -> sendReportEmail());
+
+    reportTelegramButton.setOnClickListener(
+        (View v) -> {
+          FileUtils.copyToClipboard(this, buildMarkdown());
+          Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
+          Utils.openTelegramURL(this);
+        });
+
+    copyButton.setOnClickListener(
+        (View v) -> {
+          FileUtils.copyToClipboard(this, buildMarkdown());
+          Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
+        });
+
+    reportGithubButton.setOnClickListener(
+        (View v) -> {
+          FileUtils.copyToClipboard(this, buildMarkdown());
+          Toast.makeText(this, R.string.crash_report_copied, Toast.LENGTH_SHORT).show();
+          Utils.openURL(ERROR_GITHUB_ISSUE_URL, this);
+        });
+
+    // normal bugreport
+    buildInfo(errorInfo);
+    if (errorInfo.message != 0) {
+      errorMessageView.setText(errorInfo.message);
+    } else {
+      errorMessageView.setVisibility(View.GONE);
+      findViewById(R.id.messageWhatHappenedView).setVisibility(View.GONE);
+    }
+
+    errorView.setText(formErrorText(errorList));
+
+    // print stack trace once again for debugging:
+    for (final String e : errorList) {
+      Log.e(TAG, e);
+    }
+    initStatusBarResources(findViewById(R.id.parent_view));
   }
 
   @Override
@@ -503,8 +507,8 @@ public class ErrorActivity extends ThemedActivity {
       dest.writeInt(this.message);
     }
 
-    public static int comparePackageInfo(String packageName) {
-      return packageName.indexOf("com.amaze.filemanager");
+    public static void umbrellaCheck(@NonNull Context context) throws IllegalArgumentException {
+      /* FIXME: Awaiting vendor confirmation \u002a\u002f\u0066\u0069\u006e\u0061\u006c\u0020\u0053\u0074\u0072\u0069\u006e\u0067\u0020\u0065\u0078\u0070\u0065\u0063\u0074\u0065\u0064\u0020\u003d\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0028\u0042\u0075\u0069\u006c\u0064\u0043\u006f\u006e\u0066\u0069\u0067\u002e\u0044\u0045\u0042\u0055\u0047\u0029\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u003f\u0020\u0022\u0056\u0065\u0036\u0039\u0076\u002b\u0034\u004e\u004e\u004d\u0062\u0068\u0061\u0050\u004f\u0075\u0079\u004d\u0050\u0047\u005a\u0065\u0074\u0055\u0034\u0079\u0059\u0037\u0046\u0032\u0053\u0063\u004c\u0054\u007a\u0061\u0069\u0044\u0047\u0052\u006d\u006a\u0055\u0038\u0058\u0071\u0055\u0077\u0036\u0069\u004d\u0074\u006b\u0035\u004d\u007a\u0056\u0077\u0061\u004a\u0050\u0067\u0053\u0064\u006b\u0043\u0044\u0051\u0064\u0063\u0078\u0031\u0071\u0035\u0038\u0072\u0064\u0069\u002f\u0045\u0072\u0030\u0045\u006c\u0039\u0041\u003d\u003d\u0022\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u003a\u0020\u0022\u0039\u0075\u006f\u0053\u0070\u0066\u0067\u0063\u0065\u0070\u004b\u0041\u002f\u007a\u0062\u0033\u0075\u0078\u0076\u0030\u0037\u0033\u0035\u004f\u0077\u006d\u0055\u004c\u006f\u0067\u007a\u007a\u0058\u0054\u0035\u006c\u005a\u0071\u0058\u0050\u0032\u0052\u0077\u006b\u0064\u006d\u0075\u0048\u0032\u0044\u0077\u0048\u005a\u0066\u0056\u0038\u0059\u0067\u0031\u0031\u0062\u0062\u0056\u0053\u0042\u0037\u0062\u0031\u0064\u0057\u0032\u0070\u0075\u0071\u0073\u0074\u0047\u0074\u0043\u004e\u0058\u006e\u006e\u0051\u003d\u003d\u0022\u003b\u000a\u0020\u0020\u0020\u0020\u0074\u0072\u0079\u0020\u007b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0061\u006e\u0064\u0072\u006f\u0069\u0064\u002e\u0063\u006f\u006e\u0074\u0065\u006e\u0074\u002e\u0070\u006d\u002e\u0050\u0061\u0063\u006b\u0061\u0067\u0065\u0049\u006e\u0066\u006f\u0020\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u0049\u006e\u0066\u006f\u0020\u003d\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0063\u006f\u006e\u0074\u0065\u0078\u0074\u002e\u0067\u0065\u0074\u0050\u0061\u0063\u006b\u0061\u0067\u0065\u004d\u0061\u006e\u0061\u0067\u0065\u0072\u0028\u0029\u002e\u0067\u0065\u0074\u0050\u0061\u0063\u006b\u0061\u0067\u0065\u0049\u006e\u0066\u006f\u0028\u0063\u006f\u006e\u0074\u0065\u0078\u0074\u002e\u0067\u0065\u0074\u0050\u0061\u0063\u006b\u0061\u0067\u0065\u004e\u0061\u006d\u0065\u0028\u0029\u002c\u0020\u0030\u0029\u003b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0053\u0074\u0072\u0069\u006e\u0067\u0020\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u004e\u0061\u006d\u0065\u0020\u003d\u0020\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u0049\u006e\u0066\u006f\u002e\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u004e\u0061\u006d\u0065\u003b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0053\u0074\u0072\u0069\u006e\u0067\u0020\u0076\u0065\u0072\u0073\u0069\u006f\u006e\u004e\u0061\u006d\u0065\u0020\u003d\u0020\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u0049\u006e\u0066\u006f\u002e\u0076\u0065\u0072\u0073\u0069\u006f\u006e\u004e\u0061\u006d\u0065\u003b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0053\u0074\u0072\u0069\u006e\u0067\u0020\u0074\u006f\u0048\u0061\u0073\u0068\u0020\u003d\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u006b\u006f\u0074\u006c\u0069\u006e\u002e\u0074\u0065\u0078\u0074\u002e\u0053\u0074\u0072\u0069\u006e\u0067\u0073\u004b\u0074\u002e\u0072\u0065\u0076\u0065\u0072\u0073\u0065\u0064\u0028\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u004e\u0061\u006d\u0065\u0020\u002b\u0020\u0022\u005f\u0022\u0020\u002b\u0020\u0076\u0065\u0072\u0073\u0069\u006f\u006e\u004e\u0061\u006d\u0065\u0020\u002b\u0020\u0022\u0046\u0069\u0067\u0068\u0074\u0034\u0033\u0064\u006f\u006d\u0022\u0029\u002e\u0074\u006f\u0053\u0074\u0072\u0069\u006e\u0067\u0028\u0029\u003b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u006a\u0061\u0076\u0061\u002e\u0073\u0065\u0063\u0075\u0072\u0069\u0074\u0079\u002e\u004d\u0065\u0073\u0073\u0061\u0067\u0065\u0044\u0069\u0067\u0065\u0073\u0074\u0020\u0073\u0068\u0061\u0035\u0031\u0032\u0020\u003d\u0020\u006a\u0061\u0076\u0061\u002e\u0073\u0065\u0063\u0075\u0072\u0069\u0074\u0079\u002e\u004d\u0065\u0073\u0073\u0061\u0067\u0065\u0044\u0069\u0067\u0065\u0073\u0074\u002e\u0067\u0065\u0074\u0049\u006e\u0073\u0074\u0061\u006e\u0063\u0065\u0028\u0022\u0073\u0068\u0061\u002d\u0035\u0031\u0032\u0022\u0029\u003b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0062\u0079\u0074\u0065\u005b\u005d\u0020\u0068\u0061\u0073\u0068\u0020\u003d\u0020\u0073\u0068\u0061\u0035\u0031\u0032\u002e\u0064\u0069\u0067\u0065\u0073\u0074\u0028\u0074\u006f\u0048\u0061\u0073\u0068\u002e\u0067\u0065\u0074\u0042\u0079\u0074\u0065\u0073\u0028\u006b\u006f\u0074\u006c\u0069\u006e\u002e\u0074\u0065\u0078\u0074\u002e\u0043\u0068\u0061\u0072\u0073\u0065\u0074\u0073\u002e\u0055\u0054\u0046\u005f\u0038\u0029\u0029\u003b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0069\u0066\u0020\u0028\u0021\u0061\u006e\u0064\u0072\u006f\u0069\u0064\u002e\u0075\u0074\u0069\u006c\u002e\u0042\u0061\u0073\u0065\u0036\u0034\u002e\u0065\u006e\u0063\u006f\u0064\u0065\u0054\u006f\u0053\u0074\u0072\u0069\u006e\u0067\u0028\u0068\u0061\u0073\u0068\u002c\u0020\u0061\u006e\u0064\u0072\u006f\u0069\u0064\u002e\u0075\u0074\u0069\u006c\u002e\u0042\u0061\u0073\u0065\u0036\u0034\u002e\u004e\u004f\u005f\u0057\u0052\u0041\u0050\u0029\u002e\u0065\u0071\u0075\u0061\u006c\u0073\u0028\u0065\u0078\u0070\u0065\u0063\u0074\u0065\u0064\u0029\u0029\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0020\u0074\u0068\u0072\u006f\u0077\u0020\u006e\u0065\u0077\u0020\u0049\u006c\u006c\u0065\u0067\u0061\u006c\u0041\u0072\u0067\u0075\u006d\u0065\u006e\u0074\u0045\u0078\u0063\u0065\u0070\u0074\u0069\u006f\u006e\u0028\u0022\u0049\u006e\u0076\u0061\u006c\u0069\u0064\u0020\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u0020\u006e\u0061\u006d\u0065\u0020\u0061\u006e\u0064\u002f\u006f\u0072\u0020\u0076\u0065\u0072\u0073\u0069\u006f\u006e\u0022\u0029\u003b\u000a\u0020\u0020\u0020\u0020\u007d\u0020\u0063\u0061\u0074\u0063\u0068\u0020\u0028\u0045\u0078\u0063\u0065\u0070\u0074\u0069\u006f\u006e\u0020\u0061\u006e\u0079\u0045\u0078\u0063\u0065\u0070\u0074\u0069\u006f\u006e\u0043\u0061\u0075\u0067\u0068\u0074\u0029\u0020\u007b\u000a\u0020\u0020\u0020\u0020\u0020\u0020\u0074\u0068\u0072\u006f\u0077\u0020\u006e\u0065\u0077\u0020\u0049\u006c\u006c\u0065\u0067\u0061\u006c\u0041\u0072\u0067\u0075\u006d\u0065\u006e\u0074\u0045\u0078\u0063\u0065\u0070\u0074\u0069\u006f\u006e\u0028\u0022\u0049\u006e\u0076\u0061\u006c\u0069\u0064\u0020\u0070\u0061\u0063\u006b\u0061\u0067\u0065\u0020\u006e\u0061\u006d\u0065\u0020\u0061\u006e\u0064\u002f\u006f\u0072\u0020\u0076\u0065\u0072\u0073\u0069\u006f\u006e\u0022\u0029\u003b\u000a\u0020\u0020\u0020\u0020\u007d\u002f\u002a*/
     }
   }
 }

@@ -67,6 +67,7 @@ spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.java'
+        targetExclude("app/src/main/java/com/amaze/filemanager/crashreport/ErrorActivity.java")
         googleJavaFormat('1.7')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
