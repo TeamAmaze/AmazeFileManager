@@ -636,7 +636,7 @@ public class TextEditorActivity extends ThemedActivity
     // scrolling to the highlighted element
     scrollView.scrollTo(
             0,
-            (Integer) keyValueNew.lineNumber
+            (Integer) keyValueNew.getLineNumber()
                     + mInput.getLineHeight()
                     + Math.round(mInput.getLineSpacingExtra())
                     - getSupportActionBar().getHeight());
@@ -657,8 +657,8 @@ public class TextEditorActivity extends ThemedActivity
     mInput
             .getText()
             .setSpan(new BackgroundColorSpan(color),
-                    (Integer) resultIndex.startCharNumber,
-                    (Integer) resultIndex.endCharNumber,
+                    (Integer) resultIndex.getStartCharNumber(),
+                    (Integer) resultIndex.getEndCharNumber(),
                     Spanned.SPAN_INCLUSIVE_INCLUSIVE);
   }
 

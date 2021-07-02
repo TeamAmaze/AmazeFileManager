@@ -17,18 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.activities.texteditor
 
-package com.amaze.filemanager.ui.activities.texteditor;
-
-public class SearchResultIndex {
-
-  public final int startCharNumber;
-  public final int endCharNumber;
-  public final int lineNumber;
-
-  public SearchResultIndex(int startNumber, int endNumber, Integer lineNumber) {
-    this.startCharNumber = startNumber;
-    this.endCharNumber = endNumber;
-    this.lineNumber = lineNumber;
-  }
-}
+class SearchResultIndex(val startCharNumber: Int, val endCharNumber: Int, val lineNumber: Int)
