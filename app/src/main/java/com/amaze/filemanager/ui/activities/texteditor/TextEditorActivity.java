@@ -25,6 +25,7 @@ import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FI
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.Timer;
@@ -41,6 +42,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.MapEntry;
 import com.amaze.filemanager.utils.Utils;
@@ -73,34 +75,15 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import androidx.lifecycle.ViewModelProvider;
+
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
 
   public EditText mInput, searchEditText;
-  private EditableFileAbstraction mFile;
-  private String mOriginal;
-  private Timer mTimer;
-  private boolean mModified;
   private Typeface mInputTypefaceDefault, mInputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
   ScrollView scrollView;
-
-  /*
-   * List maintaining the searched text's start/end index as key/value pair
-   */
-  public ArrayList<MapEntry> nodes = new ArrayList<>();
-
-  /*
-   * variable to maintain the position of index
-   * while pressing next/previous button in the searchBox
-   */
-  private int mCurrent = -1;
-
-  /*
-   * variable to maintain line number of the searched phrase
-   * further used to calculate the scroll position
-   */
-  public int mLine = 0;
 
   private SearchTextTask searchTextTask;
   private static final String KEY_MODIFIED_TEXT = "modified";
@@ -110,7 +93,6 @@ public class TextEditorActivity extends ThemedActivity
 
   private RelativeLayout searchViewLayout;
   public ImageButton upButton, downButton, closeButton;
-  private File cacheFile; // represents a file saved in cache
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -118,6 +100,8 @@ public class TextEditorActivity extends ThemedActivity
     setContentView(R.layout.search);
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
+
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     searchViewLayout = findViewById(R.id.searchview);
     searchViewLayout.setBackgroundColor(getPrimary());
@@ -144,14 +128,14 @@ public class TextEditorActivity extends ThemedActivity
 
     final Uri uri = getIntent().getData();
     if (uri != null) {
-      mFile = new EditableFileAbstraction(this, uri);
+      viewModel.setFile(new EditableFileAbstraction(this, uri));
     } else {
       Toast.makeText(this, R.string.no_file_error, Toast.LENGTH_LONG).show();
       finish();
       return;
     }
 
-    getSupportActionBar().setTitle(mFile.name);
+    getSupportActionBar().setTitle(viewModel.getFile().name);
 
     mInput.addTextChangedListener(this);
     if (getAppTheme().equals(AppTheme.DARK))
@@ -165,7 +149,7 @@ public class TextEditorActivity extends ThemedActivity
     mInputTypefaceMono = Typeface.MONOSPACE;
 
     if (savedInstanceState != null) {
-      mOriginal = savedInstanceState.getString(KEY_ORIGINAL_TEXT);
+      viewModel.setOriginal(savedInstanceState.getString(KEY_ORIGINAL_TEXT));
       int index = savedInstanceState.getInt(KEY_INDEX);
       mInput.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
       mInput.setScrollY(index);
@@ -179,14 +163,18 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
     outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
     outState.putInt(KEY_INDEX, mInput.getScrollY());
-    outState.putString(KEY_ORIGINAL_TEXT, mOriginal);
+    outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
     outState.putBoolean(KEY_MONOFONT, mInputTypefaceMono.equals(mInput.getTypeface()));
   }
 
   private void checkUnsavedChanges() {
-    if (mOriginal != null && mInput.isShown() && !mOriginal.equals(mInput.getText().toString())) {
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
+    if (viewModel.getOriginal() != null && mInput.isShown() && !viewModel.getOriginal().equals(mInput.getText().toString())) {
       new MaterialDialog.Builder(this)
           .title(R.string.unsaved_changes)
           .content(R.string.unsaved_changes_description)
@@ -215,19 +203,20 @@ public class TextEditorActivity extends ThemedActivity
    */
   private void saveFile(final String editTextString) {
     Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     new WriteFileAbstraction(
             this,
             getContentResolver(),
-            mFile,
+            viewModel.getFile(),
             editTextString,
-            cacheFile,
+            viewModel.getCacheFile(),
             isRootExplorer(),
             (errorCode) -> {
               switch (errorCode) {
                 case WriteFileAbstraction.NORMAL:
-                  mOriginal = editTextString;
-                  mModified = false;
+                  viewModel.setOriginal(editTextString);
+                  viewModel.setModified(false);
                   invalidateOptionsMenu();
                   Toast.makeText(
                           getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT)
@@ -258,28 +247,29 @@ public class TextEditorActivity extends ThemedActivity
    */
   private void load() {
     Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     new ReadFileTask(
             getContentResolver(),
-            mFile,
+            viewModel.getFile(),
             getExternalCacheDir(),
             isRootExplorer(),
             (data) -> {
               switch (data.error) {
                 case ReadFileTask.NORMAL:
-                  cacheFile = data.cachedFile;
-                  mOriginal = data.fileContents;
+                  viewModel.setCacheFile(data.cachedFile);
+                  viewModel.setOriginal(data.fileContents);
 
                   try {
                     mInput.setText(data.fileContents);
 
-                    if (mFile.scheme.equals(FILE)
+                    if (viewModel.getFile().scheme.equals(FILE)
                         && getExternalCacheDir() != null
-                        && mFile
+                        && viewModel.getFile()
                             .hybridFileParcelable
                             .getPath()
                             .contains(getExternalCacheDir().getPath())
-                        && cacheFile == null) {
+                        && viewModel.getCacheFile() == null) {
                       // file in cache, and not a root temporary file
                       mInput.setInputType(EditorInfo.TYPE_NULL);
                       mInput.setSingleLine(false);
@@ -346,13 +336,18 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
-    menu.findItem(R.id.save).setVisible(mModified);
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
+    menu.findItem(R.id.save).setVisible(viewModel.getModified());
     menu.findItem(R.id.monofont).setChecked(mInputTypefaceMono.equals(mInput.getTypeface()));
     return super.onPrepareOptionsMenu(menu);
   }
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final EditableFileAbstraction editableFileAbstraction = viewModel.getFile();
+
     switch (item.getItemId()) {
       case android.R.id.home:
         checkUnsavedChanges();
@@ -362,12 +357,12 @@ public class TextEditorActivity extends ThemedActivity
         saveFile(mInput.getText().toString());
         break;
       case R.id.details:
-        if (mFile.scheme.equals(FILE) && mFile.hybridFileParcelable.getFile().exists()) {
+        if (editableFileAbstraction.scheme.equals(FILE) && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
           GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
-              mFile.hybridFileParcelable, this, getAppTheme());
-        } else if (mFile.scheme.equals(CONTENT)) {
-          if (getApplicationContext().getPackageName().equals(mFile.uri.getAuthority())) {
-            File file = FileUtils.fromContentUri(mFile.uri);
+              editableFileAbstraction.hybridFileParcelable, this, getAppTheme());
+        } else if (editableFileAbstraction.scheme.equals(CONTENT)) {
+          if (getApplicationContext().getPackageName().equals(editableFileAbstraction.uri.getAuthority())) {
+            File file = FileUtils.fromContentUri(editableFileAbstraction.uri);
             HybridFileParcelable p = new HybridFileParcelable(file.getAbsolutePath());
             if (isRootExplorer()) p.setMode(OpenMode.ROOT);
             GeneralDialogCreation.showPropertiesDialogWithoutPermissions(p, this, getAppTheme());
@@ -377,8 +372,8 @@ public class TextEditorActivity extends ThemedActivity
         }
         break;
       case R.id.openwith:
-        if (mFile.scheme.equals(FILE)) {
-          File currentFile = mFile.hybridFileParcelable.getFile();
+        if (editableFileAbstraction.scheme.equals(FILE)) {
+          File currentFile = editableFileAbstraction.hybridFileParcelable.getFile();
           if (currentFile.exists()) {
             boolean useNewStack = getBoolean(PREFERENCE_TEXTEDITOR_NEWSTACK);
             FileUtils.openWith(currentFile, this, useNewStack);
@@ -406,8 +401,12 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   protected void onDestroy() {
     super.onDestroy();
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final File cacheFile = viewModel.getCacheFile();
 
-    if (cacheFile != null && cacheFile.exists()) cacheFile.delete();
+    if (cacheFile != null && cacheFile.exists()) {
+      cacheFile.delete();
+    }
   }
 
   @Override
@@ -425,34 +424,51 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
     if (charSequence.hashCode() == mInput.getText().hashCode()) {
-      if (mTimer != null) {
-        mTimer.cancel();
-        mTimer.purge();
-        mTimer = null;
+      final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+      final Timer oldTimer = viewModel.getTimer();
+      viewModel.setTimer(null);
+
+      if (oldTimer != null) {
+        oldTimer.cancel();
+        oldTimer.purge();
       }
-      mTimer = new Timer();
-      mTimer.schedule(
+
+      final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
+
+      Timer newTimer = new Timer();
+      newTimer.schedule(
           new TimerTask() {
             boolean modified;
 
             @Override
             public void run() {
-              modified = !mInput.getText().toString().equals(mOriginal);
-              if (mModified != modified) {
-                mModified = modified;
+              final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+              if(textEditorActivity == null) {
+                return;
+              }
+
+              final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
+
+              modified = !mInput.getText().toString().equals(viewModel.getOriginal());
+              if (viewModel.getModified() != modified) {
+                viewModel.setModified(modified);
                 invalidateOptionsMenu();
               }
             }
           },
           250);
+
+      viewModel.setTimer(newTimer);
     }
   }
 
   @Override
   public void afterTextChanged(Editable editable) {
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
     // searchBox callback block
     if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
-      searchTextTask = new SearchTextTask(this);
+      searchTextTask = new SearchTextTask(this, viewModel.getNodes());
       searchTextTask.execute(editable);
     }
   }
@@ -532,13 +548,15 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void onClick(View v) {
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
     switch (v.getId()) {
       case R.id.prev:
         // upButton
-        if (mCurrent > 0) {
+        if (viewModel.getCurrent() > 0) {
 
           // setting older span back before setting new one
-          Map.Entry keyValueOld = nodes.get(mCurrent).getKey();
+          Map.Entry keyValueOld = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
           if (getAppTheme().equals(AppTheme.LIGHT)) {
             mInput
                 .getText()
@@ -557,7 +575,8 @@ public class TextEditorActivity extends ThemedActivity
                     Spanned.SPAN_INCLUSIVE_INCLUSIVE);
           }
           // highlighting previous element in list
-          Map.Entry keyValueNew = nodes.get(--mCurrent).getKey();
+          viewModel.setCurrent(viewModel.getCurrent()-1);
+          Map.Entry keyValueNew = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
           mInput
               .getText()
               .setSpan(
@@ -577,12 +596,12 @@ public class TextEditorActivity extends ThemedActivity
         break;
       case R.id.next:
         // downButton
-        if (mCurrent < nodes.size() - 1) {
+        if (viewModel.getCurrent() < viewModel.getNodes().size() - 1) {
 
           // setting older span back before setting new one
-          if (mCurrent != -1) {
+          if (viewModel.getCurrent() != -1) {
 
-            Map.Entry keyValueOld = nodes.get(mCurrent).getKey();
+            Map.Entry keyValueOld = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
             if (getAppTheme().equals(AppTheme.LIGHT)) {
               mInput
                   .getText()
@@ -602,7 +621,8 @@ public class TextEditorActivity extends ThemedActivity
             }
           }
 
-          Map.Entry keyValueNew = nodes.get(++mCurrent).getKey();
+          viewModel.setCurrent(viewModel.getCurrent()+1);
+          Map.Entry keyValueNew = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
           mInput
               .getText()
               .setSpan(
@@ -629,10 +649,12 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   private void cleanSpans() {
+    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+
     // resetting current highlight and line number
-    nodes.clear();
-    mCurrent = -1;
-    mLine = 0;
+    viewModel.getNodes().clear();
+    viewModel.setCurrent(-1);
+    viewModel.setLine(0);
 
     // clearing textView spans
     BackgroundColorSpan[] colorSpans =

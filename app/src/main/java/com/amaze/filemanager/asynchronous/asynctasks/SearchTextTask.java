@@ -52,16 +52,10 @@ public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry
   private StringReader stringReader;
   private LineNumberReader lineNumberReader;
 
-  public SearchTextTask(TextEditorActivity textEditorActivity) {
+  public SearchTextTask(TextEditorActivity textEditorActivity, ArrayList<MapEntry> nodes) {
     this.textEditorActivity = textEditorActivity;
-  }
-
-  @Override
-  protected void onPreExecute() {
-    super.onPreExecute();
-
     this.searchEditText = textEditorActivity.searchEditText;
-    this.nodes = textEditorActivity.nodes;
+    this.nodes = nodes;
     this.upButton = textEditorActivity.upButton;
     this.downButton = textEditorActivity.downButton;
     this.mInput = textEditorActivity.mInput;
