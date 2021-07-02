@@ -250,78 +250,76 @@ public class TextEditorActivity extends ThemedActivity
     Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
     final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    new ReadFileTask(
-            getContentResolver(),
-            viewModel.getFile(),
-            getExternalCacheDir(),
-            isRootExplorer(),
-            (data) -> {
-              switch (data.error) {
-                case ReadFileTask.NORMAL:
-                  viewModel.setCacheFile(data.cachedFile);
-                  viewModel.setOriginal(data.fileContents);
+    final OnAsyncTaskFinished<ReturnedValueOnReadFile> onAsyncTaskFinished = (data) -> {
+      switch (data.error) {
+        case ReturnedValueOnReadFile.NORMAL:
+          viewModel.setCacheFile(data.cachedFile);
+          viewModel.setOriginal(data.fileContents);
 
-                  try {
-                    mInput.setText(data.fileContents);
+          try {
+            mInput.setText(data.fileContents);
 
-                    if (viewModel.getFile().scheme.equals(FILE)
-                        && getExternalCacheDir() != null
-                        && viewModel.getFile()
-                            .hybridFileParcelable
-                            .getPath()
-                            .contains(getExternalCacheDir().getPath())
-                        && viewModel.getCacheFile() == null) {
-                      // file in cache, and not a root temporary file
-                      mInput.setInputType(EditorInfo.TYPE_NULL);
-                      mInput.setSingleLine(false);
-                      mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+            if (viewModel.getFile().scheme.equals(FILE)
+                    && getExternalCacheDir() != null
+                    && viewModel.getFile()
+                    .hybridFileParcelable
+                    .getPath()
+                    .contains(getExternalCacheDir().getPath())
+                    && viewModel.getCacheFile() == null) {
+              // file in cache, and not a root temporary file
+              mInput.setInputType(EditorInfo.TYPE_NULL);
+              mInput.setSingleLine(false);
+              mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
-                      Snackbar snackbar =
-                          Snackbar.make(
+              Snackbar snackbar =
+                      Snackbar.make(
                               mInput,
                               getResources().getString(R.string.file_read_only),
                               Snackbar.LENGTH_INDEFINITE);
-                      snackbar.setAction(
-                          getResources().getString(R.string.got_it).toUpperCase(),
-                          v -> snackbar.dismiss());
-                      snackbar.show();
-                    }
+              snackbar.setAction(
+                      getResources().getString(R.string.got_it).toUpperCase(),
+                      v -> snackbar.dismiss());
+              snackbar.show();
+            }
 
-                    if (data.fileContents.isEmpty()) {
-                      mInput.setHint(R.string.file_empty);
-                    } else {
-                      mInput.setHint(null);
-                    }
-                  } catch (OutOfMemoryError e) {
-                    Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT)
-                        .show();
-                    finish();
-                  }
-                  break;
-                case ReadFileTask.EXCEPTION_STREAM_NOT_FOUND:
-                  Toast.makeText(
-                          getApplicationContext(),
-                          R.string.error_file_not_found,
-                          Toast.LENGTH_SHORT)
-                      .show();
-                  finish();
-                  break;
-                case ReadFileTask.EXCEPTION_IO:
-                  Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
-                      .show();
-                  finish();
-                  break;
-                case ReadFileTask.EXCEPTION_OOM:
-                  Toast.makeText(
-                          getApplicationContext(),
-                          R.string.error_file_too_large,
-                          Toast.LENGTH_SHORT)
-                      .show();
-                  finish();
-                  break;
-              }
-            })
-        .execute();
+            if (data.fileContents.isEmpty()) {
+              mInput.setHint(R.string.file_empty);
+            } else {
+              mInput.setHint(null);
+            }
+          } catch (OutOfMemoryError e) {
+            Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT)
+                    .show();
+            finish();
+          }
+          break;
+        case ReturnedValueOnReadFile.EXCEPTION_STREAM_NOT_FOUND:
+          Toast.makeText(
+                  getApplicationContext(),
+                  R.string.error_file_not_found,
+                  Toast.LENGTH_SHORT)
+                  .show();
+          finish();
+          break;
+        case ReturnedValueOnReadFile.EXCEPTION_IO:
+          Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
+                  .show();
+          finish();
+          break;
+        case ReturnedValueOnReadFile.EXCEPTION_OOM:
+          Toast.makeText(
+                  getApplicationContext(),
+                  R.string.error_file_too_large,
+                  Toast.LENGTH_SHORT)
+                  .show();
+          finish();
+          break;
+      }
+    };
+
+    final ReadFileTask task = new ReadFileTask(getContentResolver(), viewModel.getFile(),
+            getExternalCacheDir(), isRootExplorer(), onAsyncTaskFinished);
+    task.execute();
   }
 
   @Override

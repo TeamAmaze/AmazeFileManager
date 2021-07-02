@@ -35,6 +35,7 @@ import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
+import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import android.content.ContentResolver;
@@ -43,21 +44,19 @@ import android.util.Log;
 
 import androidx.documentfile.provider.DocumentFile;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 18:05. */
-public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedValues> {
+import static com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile.EXCEPTION_IO;
+import static com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile.EXCEPTION_OOM;
+import static com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile.EXCEPTION_STREAM_NOT_FOUND;
+
+public class ReadFileTask extends AsyncTask<Void, Void, ReturnedValueOnReadFile> {
 
   private static final String TAG = ReadFileTask.class.getSimpleName();
 
-  public static final int NORMAL = 0;
-  public static final int EXCEPTION_STREAM_NOT_FOUND = -1;
-  public static final int EXCEPTION_IO = -2;
-  public static final int EXCEPTION_OOM = -3;
-
-  private ContentResolver contentResolver;
-  private EditableFileAbstraction fileAbstraction;
-  private File externalCacheDir;
-  private boolean isRootExplorer;
-  private OnAsyncTaskFinished<ReturnedValues> onAsyncTaskFinished;
+  private final ContentResolver contentResolver;
+  private final EditableFileAbstraction fileAbstraction;
+  private final File externalCacheDir;
+  private final boolean isRootExplorer;
+  private final OnAsyncTaskFinished<ReturnedValueOnReadFile> onAsyncTaskFinished;
 
   private File cachedFile = null;
 
@@ -66,7 +65,7 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
       EditableFileAbstraction file,
       File cacheDir,
       boolean isRootExplorer,
-      OnAsyncTaskFinished<ReturnedValues> onAsyncTaskFinished) {
+      OnAsyncTaskFinished<ReturnedValueOnReadFile> onAsyncTaskFinished) {
     this.contentResolver = contentResolver;
     this.fileAbstraction = file;
     this.externalCacheDir = cacheDir;
@@ -75,7 +74,7 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
   }
 
   @Override
-  protected ReturnedValues doInBackground(Void... params) {
+  protected ReturnedValueOnReadFile doInBackground(Void... params) {
     StringBuilder stringBuilder = new StringBuilder();
 
     try {
@@ -123,22 +122,20 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
       bufferedReader.close();
     } catch (StreamNotFoundException e) {
       e.printStackTrace();
-      return new ReturnedValues(EXCEPTION_STREAM_NOT_FOUND);
+      return new ReturnedValueOnReadFile(EXCEPTION_STREAM_NOT_FOUND);
     } catch (IOException e) {
       e.printStackTrace();
-      return new ReturnedValues(EXCEPTION_IO);
+      return new ReturnedValueOnReadFile(EXCEPTION_IO);
     } catch (OutOfMemoryError e) {
       e.printStackTrace();
-      return new ReturnedValues(EXCEPTION_OOM);
+      return new ReturnedValueOnReadFile(EXCEPTION_OOM);
     }
 
-    return new ReturnedValues(stringBuilder.toString(), cachedFile);
+    return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile);
   }
 
   @Override
-  protected void onPostExecute(ReturnedValues s) {
-    super.onPostExecute(s);
-
+  protected void onPostExecute(ReturnedValueOnReadFile s) {
     onAsyncTaskFinished.onAsyncTaskFinished(s);
   }
 
@@ -172,23 +169,4 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReadFileTask.ReturnedVal
     return inputStream;
   }
 
-  public static class ReturnedValues {
-    public final String fileContents;
-    public final int error;
-    public final File cachedFile;
-
-    private ReturnedValues(String fileContents, File cachedFile) {
-      this.fileContents = fileContents;
-      this.cachedFile = cachedFile;
-
-      this.error = NORMAL;
-    }
-
-    private ReturnedValues(int error) {
-      this.error = error;
-
-      this.fileContents = null;
-      this.cachedFile = null;
-    }
-  }
 }
