@@ -39,6 +39,8 @@ import androidx.test.filters.SmallTest;
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
+import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
+
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class TextEditorActivityEspressoTest {
