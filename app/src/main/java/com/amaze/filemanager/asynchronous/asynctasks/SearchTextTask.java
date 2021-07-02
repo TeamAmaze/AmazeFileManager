@@ -24,108 +24,71 @@ import java.io.IOException;
 import java.io.LineNumberReader;
 import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collections;
+import java.util.List;
 
-import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
-import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.ImmutableEntry;
-import com.amaze.filemanager.utils.MapEntry;
+import com.amaze.filemanager.utils.SearchResultIndex;
+import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import android.graphics.Color;
 import android.os.AsyncTask;
-import android.text.Editable;
-import android.text.Spanned;
-import android.text.style.BackgroundColorSpan;
-import android.widget.EditText;
-import android.widget.ImageButton;
+import android.text.TextUtils;
 
-/** Created by Vishal on 2/1/16. */
-public class SearchTextTask extends AsyncTask<Editable, Void, ArrayList<MapEntry>> {
+import androidx.annotation.NonNull;
 
-  private EditText searchEditText, mInput;
-  private ArrayList<MapEntry> nodes;
-  private int searchTextLength;
-  private ImageButton upButton, downButton;
-  private TextEditorActivity textEditorActivity;
-  private Editable editText;
-  private String searchSubString;
-  private StringReader stringReader;
-  private LineNumberReader lineNumberReader;
+public class SearchTextTask extends AsyncTask<Void, Void, List<SearchResultIndex>> {
 
-  public SearchTextTask(TextEditorActivity textEditorActivity, ArrayList<MapEntry> nodes) {
-    this.textEditorActivity = textEditorActivity;
-    this.searchEditText = textEditorActivity.searchEditText;
-    this.nodes = nodes;
-    this.upButton = textEditorActivity.upButton;
-    this.downButton = textEditorActivity.downButton;
-    this.mInput = textEditorActivity.mInput;
-    searchTextLength = searchEditText.length();
-    editText = mInput.getText();
-    stringReader = new StringReader(editText.toString());
+  private final String searchedText;
+  private final String textToSearch;
+  private final OnAsyncTaskFinished<List<SearchResultIndex>> listener;
+
+  private final LineNumberReader lineNumberReader;
+
+  public SearchTextTask(String textToSearch, String searchedText,
+                        @NonNull OnAsyncTaskFinished<List<SearchResultIndex>> listener) {
+    this.searchedText = searchedText;
+    this.textToSearch = textToSearch;
+    this.listener = listener;
+
+    StringReader stringReader = new StringReader(textToSearch);
     lineNumberReader = new LineNumberReader(stringReader);
   }
 
   @Override
-  protected ArrayList<MapEntry> doInBackground(Editable... params) {
-    for (int i = 0; i < (editText.length() - params[0].length()); i++) {
-      if (searchTextLength == 0 || isCancelled()) break;
+  protected List<SearchResultIndex> doInBackground(Void... params) {
+    if (TextUtils.isEmpty(searchedText)) {
+      return Collections.emptyList();
+    }
 
-      searchSubString = editText.subSequence(i, i + params[0].length()).toString();
+    final ArrayList<SearchResultIndex> searchResultIndices = new ArrayList<>();
 
-      // comparing and adding searched phrase to a list
-      if (searchSubString.equalsIgnoreCase(params[0].toString())) {
+    for (int charIndex = 0; charIndex < (textToSearch.length() - searchedText.length()); charIndex++) {
+      if (isCancelled()) break;
 
-        nodes.add(
-            new MapEntry(
-                new ImmutableEntry<>(i, i + params[0].length()), lineNumberReader.getLineNumber()));
+      final int nextPosition = textToSearch.indexOf(searchedText, charIndex + 1);
+
+      if(nextPosition == -1) {
+        break;
       }
 
-      // comparing and incrementing line number
-      // ended up using LineNumberReader api instead
       try {
-        lineNumberReader.skip(params[0].length());
+        lineNumberReader.skip(nextPosition - charIndex);
       } catch (IOException e) {
         e.printStackTrace();
       }
+
+      charIndex = nextPosition;
+
+      searchResultIndices.add(new SearchResultIndex(charIndex, charIndex + searchedText.length(), lineNumberReader.getLineNumber()));
     }
-    return nodes;
+
+    return searchResultIndices;
   }
 
   @Override
-  protected void onPostExecute(final ArrayList<MapEntry> mapEntries) {
-    super.onPostExecute(mapEntries);
+  protected void onPostExecute(final List<SearchResultIndex> searchResultIndices) {
+    super.onPostExecute(searchResultIndices);
 
-    for (Map.Entry mapEntry : mapEntries) {
-
-      Map.Entry keyMapEntry = (Map.Entry) mapEntry.getKey();
-      if (textEditorActivity.getAppTheme().equals(AppTheme.LIGHT)) {
-        mInput
-            .getText()
-            .setSpan(
-                new BackgroundColorSpan(Color.YELLOW),
-                (Integer) keyMapEntry.getKey(),
-                (Integer) keyMapEntry.getValue(),
-                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-      } else {
-        mInput
-            .getText()
-            .setSpan(
-                new BackgroundColorSpan(Color.LTGRAY),
-                (Integer) keyMapEntry.getKey(),
-                (Integer) keyMapEntry.getValue(),
-                Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-      }
-    }
-
-    if (mapEntries.size() != 0) {
-      upButton.setEnabled(true);
-      downButton.setEnabled(true);
-
-      // downButton
-      textEditorActivity.onClick(downButton);
-    } else {
-      upButton.setEnabled(false);
-      downButton.setEnabled(false);
-    }
+    listener.onAsyncTaskFinished(searchResultIndices);
   }
 }

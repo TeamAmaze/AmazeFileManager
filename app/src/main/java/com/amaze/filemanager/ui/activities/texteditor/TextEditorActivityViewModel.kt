@@ -2,7 +2,7 @@ package com.amaze.filemanager.ui.activities.texteditor
 
 import androidx.lifecycle.ViewModel
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
-import com.amaze.filemanager.utils.MapEntry
+import com.amaze.filemanager.utils.SearchResultIndex
 import java.io.File
 import java.util.*
 
@@ -33,7 +33,7 @@ class TextEditorActivityViewModel : ViewModel() {
     /**
      * List maintaining the searched text's start/end index as key/value pair
      */
-    var nodes = ArrayList<MapEntry>()
+    var searchResultIndices = listOf<SearchResultIndex>()
 
     var timer: Timer? = null
 

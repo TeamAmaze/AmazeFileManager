@@ -26,8 +26,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 
 import java.io.File;
 import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Map;
+import java.util.Collections;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,9 +41,8 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.utils.MapEntry;
+import com.amaze.filemanager.utils.SearchResultIndex;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -75,6 +73,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Toast;
 
+import androidx.annotation.ColorInt;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
@@ -413,11 +412,15 @@ public class TextEditorActivity extends ThemedActivity
   public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
     // condition to check if callback is called in search editText
     if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
+      final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
       // clearing before adding new values
-      if (searchTextTask != null) searchTextTask.cancel(true);
+      if (searchTextTask != null) {
+        searchTextTask.cancel(true);
+        searchTextTask = null; // dereference the task for GC
+      }
 
-      cleanSpans();
+      cleanSpans(viewModel);
     }
   }
 
@@ -464,12 +467,38 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void afterTextChanged(Editable editable) {
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
 
     // searchBox callback block
     if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
-      searchTextTask = new SearchTextTask(this, viewModel.getNodes());
-      searchTextTask.execute(editable);
+      searchTextTask = new SearchTextTask(mInput.getText().toString(), editable.toString(), data -> {
+                final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+
+
+                if(textEditorActivity == null) {
+                  return;
+                }
+
+                final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
+                viewModel.setSearchResultIndices(data);
+
+                for (SearchResultIndex searchResultIndex : data) {
+                  unhighlightSearchResult(searchResultIndex);
+                }
+
+                if (data.size() != 0) {
+                  textEditorActivity.upButton.setEnabled(true);
+                  textEditorActivity.downButton.setEnabled(true);
+
+                  // downButton
+                  textEditorActivity.onClick(textEditorActivity.downButton);
+                } else {
+                  textEditorActivity.upButton.setEnabled(false);
+                  textEditorActivity.downButton.setEnabled(false);
+                }
+              });
+      searchTextTask.execute();
+
     }
   }
 
@@ -554,105 +583,77 @@ public class TextEditorActivity extends ThemedActivity
       case R.id.prev:
         // upButton
         if (viewModel.getCurrent() > 0) {
+          unhighlightCurrentSearchResult(viewModel);
 
-          // setting older span back before setting new one
-          Map.Entry keyValueOld = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
-          if (getAppTheme().equals(AppTheme.LIGHT)) {
-            mInput
-                .getText()
-                .setSpan(
-                    new BackgroundColorSpan(Color.YELLOW),
-                    (Integer) keyValueOld.getKey(),
-                    (Integer) keyValueOld.getValue(),
-                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-          } else {
-            mInput
-                .getText()
-                .setSpan(
-                    new BackgroundColorSpan(Color.LTGRAY),
-                    (Integer) keyValueOld.getKey(),
-                    (Integer) keyValueOld.getValue(),
-                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-          }
           // highlighting previous element in list
           viewModel.setCurrent(viewModel.getCurrent()-1);
-          Map.Entry keyValueNew = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
-          mInput
-              .getText()
-              .setSpan(
-                  new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
-                  (Integer) keyValueNew.getKey(),
-                  (Integer) keyValueNew.getValue(),
-                  Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-          // scrolling to the highlighted element
-          scrollView.scrollTo(
-              0,
-              (Integer) keyValueNew.getValue()
-                  + mInput.getLineHeight()
-                  + Math.round(mInput.getLineSpacingExtra())
-                  - getSupportActionBar().getHeight());
+          highlightCurrentSearchResult(viewModel);
         }
         break;
       case R.id.next:
         // downButton
-        if (viewModel.getCurrent() < viewModel.getNodes().size() - 1) {
-
-          // setting older span back before setting new one
-          if (viewModel.getCurrent() != -1) {
-
-            Map.Entry keyValueOld = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
-            if (getAppTheme().equals(AppTheme.LIGHT)) {
-              mInput
-                  .getText()
-                  .setSpan(
-                      new BackgroundColorSpan(Color.YELLOW),
-                      (Integer) keyValueOld.getKey(),
-                      (Integer) keyValueOld.getValue(),
-                      Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            } else {
-              mInput
-                  .getText()
-                  .setSpan(
-                      new BackgroundColorSpan(Color.LTGRAY),
-                      (Integer) keyValueOld.getKey(),
-                      (Integer) keyValueOld.getValue(),
-                      Spanned.SPAN_INCLUSIVE_INCLUSIVE);
-            }
-          }
+        if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
+          unhighlightCurrentSearchResult(viewModel);
 
           viewModel.setCurrent(viewModel.getCurrent()+1);
-          Map.Entry keyValueNew = viewModel.getNodes().get(viewModel.getCurrent()).getKey();
-          mInput
-              .getText()
-              .setSpan(
-                  new BackgroundColorSpan(Utils.getColor(this, R.color.search_text_highlight)),
-                  (Integer) keyValueNew.getKey(),
-                  (Integer) keyValueNew.getValue(),
-                  Spanned.SPAN_INCLUSIVE_INCLUSIVE);
 
-          // scrolling to the highlighted element
-          scrollView.scrollTo(
-              0,
-              (Integer) keyValueNew.getValue()
-                  + mInput.getLineHeight()
-                  + Math.round(mInput.getLineSpacingExtra())
-                  - getSupportActionBar().getHeight());
+          highlightCurrentSearchResult(viewModel);
         }
         break;
       case R.id.close:
         // closeButton
         findViewById(R.id.searchview).setVisibility(View.GONE);
-        cleanSpans();
+        cleanSpans(viewModel);
         break;
     }
   }
 
-  private void cleanSpans() {
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+  private void unhighlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
+    if(viewModel.getCurrent() == -1) {
+      return;
+    }
 
+    SearchResultIndex resultIndex = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
+    unhighlightSearchResult(resultIndex);
+  }
+
+  private void highlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
+    SearchResultIndex keyValueNew = viewModel.getSearchResultIndices().get(viewModel.getCurrent());
+    colorSearchResult(keyValueNew, Utils.getColor(this, R.color.search_text_highlight));
+
+    // scrolling to the highlighted element
+    scrollView.scrollTo(
+            0,
+            (Integer) keyValueNew.lineNumber
+                    + mInput.getLineHeight()
+                    + Math.round(mInput.getLineSpacingExtra())
+                    - getSupportActionBar().getHeight());
+  }
+
+  private void unhighlightSearchResult(SearchResultIndex resultIndex) {
+    @ColorInt int color;
+    if (getAppTheme().equals(AppTheme.LIGHT)) {
+      color = Color.YELLOW;
+    } else {
+      color = Color.LTGRAY;
+    }
+
+    colorSearchResult(resultIndex, color);
+  }
+
+  private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
+    mInput
+            .getText()
+            .setSpan(new BackgroundColorSpan(color),
+                    (Integer) resultIndex.startCharNumber,
+                    (Integer) resultIndex.endCharNumber,
+                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+  }
+
+  private void cleanSpans(TextEditorActivityViewModel viewModel) {
     // resetting current highlight and line number
-    viewModel.getNodes().clear();
+    viewModel.setSearchResultIndices(Collections.emptyList());
     viewModel.setCurrent(-1);
     viewModel.setLine(0);
 
