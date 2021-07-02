@@ -27,8 +27,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.amaze.filemanager.utils.ImmutableEntry;
-import com.amaze.filemanager.utils.SearchResultIndex;
+import com.amaze.filemanager.utils.OnProgressUpdate;
+import com.amaze.filemanager.ui.activities.texteditor.SearchResultIndex;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import android.os.AsyncTask;
@@ -36,18 +36,21 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-public class SearchTextTask extends AsyncTask<Void, Void, List<SearchResultIndex>> {
+public class SearchTextTask extends AsyncTask<Void, SearchResultIndex, List<SearchResultIndex>> {
 
   private final String searchedText;
   private final String textToSearch;
+  private final OnProgressUpdate<SearchResultIndex> updateListener;
   private final OnAsyncTaskFinished<List<SearchResultIndex>> listener;
 
   private final LineNumberReader lineNumberReader;
 
-  public SearchTextTask(String textToSearch, String searchedText,
+  public SearchTextTask(@NonNull String textToSearch, @NonNull String searchedText,
+                        @NonNull OnProgressUpdate<SearchResultIndex> updateListener,
                         @NonNull OnAsyncTaskFinished<List<SearchResultIndex>> listener) {
     this.searchedText = searchedText;
     this.textToSearch = textToSearch;
+    this.updateListener = updateListener;
     this.listener = listener;
 
     StringReader stringReader = new StringReader(textToSearch);
@@ -79,10 +82,21 @@ public class SearchTextTask extends AsyncTask<Void, Void, List<SearchResultIndex
 
       charIndex = nextPosition;
 
-      searchResultIndices.add(new SearchResultIndex(charIndex, charIndex + searchedText.length(), lineNumberReader.getLineNumber()));
+      final SearchResultIndex index = new SearchResultIndex(charIndex, charIndex + searchedText.length(), lineNumberReader.getLineNumber());
+
+      searchResultIndices.add(index);
+
+      publishProgress(index);
     }
 
     return searchResultIndices;
+  }
+
+  @Override
+  protected void onProgressUpdate(SearchResultIndex... values) {
+    super.onProgressUpdate(values);
+
+    updateListener.onUpdate(values[0]);
   }
 
   @Override

@@ -27,6 +27,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -42,7 +43,8 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.utils.SearchResultIndex;
+import com.amaze.filemanager.utils.OnAsyncTaskFinished;
+import com.amaze.filemanager.utils.OnProgressUpdate;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
@@ -467,36 +469,45 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void afterTextChanged(Editable editable) {
-    final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
-
     // searchBox callback block
     if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
-      searchTextTask = new SearchTextTask(mInput.getText().toString(), editable.toString(), data -> {
-                final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+      final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
 
+      final OnProgressUpdate<SearchResultIndex> onProgressUpdate = index -> {
+        final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+        if(textEditorActivity == null) {
+          return;
+        }
+        textEditorActivity.unhighlightSearchResult(index);
+      };
 
-                if(textEditorActivity == null) {
-                  return;
-                }
+      final OnAsyncTaskFinished<List<SearchResultIndex>> onAsyncTaskFinished = data -> {
+        final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
 
-                final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
-                viewModel.setSearchResultIndices(data);
+        if(textEditorActivity == null) {
+          return;
+        }
 
-                for (SearchResultIndex searchResultIndex : data) {
-                  unhighlightSearchResult(searchResultIndex);
-                }
+        final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
+        viewModel.setSearchResultIndices(data);
 
-                if (data.size() != 0) {
-                  textEditorActivity.upButton.setEnabled(true);
-                  textEditorActivity.downButton.setEnabled(true);
+        for (SearchResultIndex searchResultIndex : data) {
+          textEditorActivity.unhighlightSearchResult(searchResultIndex);
+        }
 
-                  // downButton
-                  textEditorActivity.onClick(textEditorActivity.downButton);
-                } else {
-                  textEditorActivity.upButton.setEnabled(false);
-                  textEditorActivity.downButton.setEnabled(false);
-                }
-              });
+        if (data.size() != 0) {
+          textEditorActivity.upButton.setEnabled(true);
+          textEditorActivity.downButton.setEnabled(true);
+
+          // downButton
+          textEditorActivity.onClick(textEditorActivity.downButton);
+        } else {
+          textEditorActivity.upButton.setEnabled(false);
+          textEditorActivity.downButton.setEnabled(false);
+        }
+      };
+
+      searchTextTask = new SearchTextTask(mInput.getText().toString(), editable.toString(), onProgressUpdate, onAsyncTaskFinished);
       searchTextTask.execute();
 
     }

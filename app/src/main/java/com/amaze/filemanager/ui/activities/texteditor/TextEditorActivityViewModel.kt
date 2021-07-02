@@ -2,7 +2,6 @@ package com.amaze.filemanager.ui.activities.texteditor
 
 import androidx.lifecycle.ViewModel
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
-import com.amaze.filemanager.utils.SearchResultIndex
 import java.io.File
 import java.util.*
 
