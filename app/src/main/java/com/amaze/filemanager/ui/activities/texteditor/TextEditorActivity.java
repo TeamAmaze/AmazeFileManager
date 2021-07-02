@@ -454,7 +454,7 @@ public class TextEditorActivity extends ThemedActivity
 
               final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
 
-              modified = !mInput.getText().toString().equals(viewModel.getOriginal());
+              modified = !textEditorActivity.mInput.getText().toString().equals(viewModel.getOriginal());
               if (viewModel.getModified() != modified) {
                 viewModel.setModified(modified);
                 invalidateOptionsMenu();
