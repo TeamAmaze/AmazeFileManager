@@ -25,6 +25,7 @@ import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FI
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
@@ -36,6 +37,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
+import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -77,6 +79,10 @@ import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.lifecycle.ViewModelProvider;
+
+import io.reactivex.Flowable;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
@@ -250,76 +256,79 @@ public class TextEditorActivity extends ThemedActivity
     Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
     final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    final OnAsyncTaskFinished<ReturnedValueOnReadFile> onAsyncTaskFinished = (data) -> {
-      switch (data.error) {
-        case ReturnedValueOnReadFile.NORMAL:
-          viewModel.setCacheFile(data.cachedFile);
-          viewModel.setOriginal(data.fileContents);
+    final ReadFileTask task = new ReadFileTask(getContentResolver(), viewModel.getFile(),
+            getExternalCacheDir(), isRootExplorer());
 
-          try {
-            mInput.setText(data.fileContents);
+    final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished = (data) -> {
+      viewModel.setCacheFile(data.cachedFile);
+      viewModel.setOriginal(data.fileContents);
 
-            if (viewModel.getFile().scheme.equals(FILE)
-                    && getExternalCacheDir() != null
-                    && viewModel.getFile()
-                    .hybridFileParcelable
-                    .getPath()
-                    .contains(getExternalCacheDir().getPath())
-                    && viewModel.getCacheFile() == null) {
-              // file in cache, and not a root temporary file
-              mInput.setInputType(EditorInfo.TYPE_NULL);
-              mInput.setSingleLine(false);
-              mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+      try {
+        mInput.setText(data.fileContents);
 
-              Snackbar snackbar =
-                      Snackbar.make(
-                              mInput,
-                              getResources().getString(R.string.file_read_only),
-                              Snackbar.LENGTH_INDEFINITE);
-              snackbar.setAction(
-                      getResources().getString(R.string.got_it).toUpperCase(),
-                      v -> snackbar.dismiss());
-              snackbar.show();
-            }
+        if (viewModel.getFile().scheme.equals(FILE)
+                && getExternalCacheDir() != null
+                && viewModel.getFile()
+                .hybridFileParcelable
+                .getPath()
+                .contains(getExternalCacheDir().getPath())
+                && viewModel.getCacheFile() == null) {
+          // file in cache, and not a root temporary file
+          mInput.setInputType(EditorInfo.TYPE_NULL);
+          mInput.setSingleLine(false);
+          mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
-            if (data.fileContents.isEmpty()) {
-              mInput.setHint(R.string.file_empty);
-            } else {
-              mInput.setHint(null);
-            }
-          } catch (OutOfMemoryError e) {
-            Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT)
-                    .show();
-            finish();
-          }
-          break;
-        case ReturnedValueOnReadFile.EXCEPTION_STREAM_NOT_FOUND:
-          Toast.makeText(
-                  getApplicationContext(),
-                  R.string.error_file_not_found,
-                  Toast.LENGTH_SHORT)
-                  .show();
-          finish();
-          break;
-        case ReturnedValueOnReadFile.EXCEPTION_IO:
-          Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
-                  .show();
-          finish();
-          break;
-        case ReturnedValueOnReadFile.EXCEPTION_OOM:
-          Toast.makeText(
-                  getApplicationContext(),
-                  R.string.error_file_too_large,
-                  Toast.LENGTH_SHORT)
-                  .show();
-          finish();
-          break;
+          Snackbar snackbar =
+                  Snackbar.make(
+                          mInput,
+                          getResources().getString(R.string.file_read_only),
+                          Snackbar.LENGTH_INDEFINITE);
+          snackbar.setAction(
+                  getResources().getString(R.string.got_it).toUpperCase(),
+                  v -> snackbar.dismiss());
+          snackbar.show();
+        }
+
+        if (data.fileContents.isEmpty()) {
+          mInput.setHint(R.string.file_empty);
+        } else {
+          mInput.setHint(null);
+        }
+      } catch (OutOfMemoryError e) {
+        Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT)
+                .show();
+        finish();
       }
     };
 
-    final ReadFileTask task = new ReadFileTask(getContentResolver(), viewModel.getFile(),
-            getExternalCacheDir(), isRootExplorer(), onAsyncTaskFinished);
-    task.execute();
+    final Consumer<? super Throwable> onError = error -> {
+      error.printStackTrace();
+
+      if(error instanceof StreamNotFoundException) {
+        Toast.makeText(
+                getApplicationContext(),
+                R.string.error_file_not_found,
+                Toast.LENGTH_SHORT)
+                .show();
+        finish();
+      } else if(error instanceof IOException) {
+        Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
+                .show();
+        finish();
+      } else if(error instanceof OutOfMemoryError) {
+        Toast.makeText(
+                getApplicationContext(),
+                R.string.error_file_too_large,
+                Toast.LENGTH_SHORT)
+                .show();
+        finish();
+      }
+    };
+
+    Flowable.fromCallable(task)
+      .subscribeOn(Schedulers.io())
+      .observeOn(Schedulers.single())
+      .subscribe(onAsyncTaskFinished, onError);
   }
 
   @Override

@@ -20,13 +20,10 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import android.content.ContentResolver;
+import android.util.Log;
+
+import androidx.documentfile.provider.DocumentFile;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
@@ -36,19 +33,17 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
-import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
-import android.content.ContentResolver;
-import android.os.AsyncTask;
-import android.util.Log;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.Callable;
 
-import androidx.documentfile.provider.DocumentFile;
-
-import static com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile.EXCEPTION_IO;
-import static com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile.EXCEPTION_OOM;
-import static com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile.EXCEPTION_STREAM_NOT_FOUND;
-
-public class ReadFileTask extends AsyncTask<Void, Void, ReturnedValueOnReadFile> {
+public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
 
   private static final String TAG = ReadFileTask.class.getSimpleName();
 
@@ -56,7 +51,6 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReturnedValueOnReadFile>
   private final EditableFileAbstraction fileAbstraction;
   private final File externalCacheDir;
   private final boolean isRootExplorer;
-  private final OnAsyncTaskFinished<ReturnedValueOnReadFile> onAsyncTaskFinished;
 
   private File cachedFile = null;
 
@@ -64,79 +58,61 @@ public class ReadFileTask extends AsyncTask<Void, Void, ReturnedValueOnReadFile>
       ContentResolver contentResolver,
       EditableFileAbstraction file,
       File cacheDir,
-      boolean isRootExplorer,
-      OnAsyncTaskFinished<ReturnedValueOnReadFile> onAsyncTaskFinished) {
+      boolean isRootExplorer) {
     this.contentResolver = contentResolver;
     this.fileAbstraction = file;
     this.externalCacheDir = cacheDir;
     this.isRootExplorer = isRootExplorer;
-    this.onAsyncTaskFinished = onAsyncTaskFinished;
   }
 
   @Override
-  protected ReturnedValueOnReadFile doInBackground(Void... params) {
+  public ReturnedValueOnReadFile call() throws StreamNotFoundException, IOException, OutOfMemoryError {
     StringBuilder stringBuilder = new StringBuilder();
 
-    try {
-      InputStream inputStream = null;
+    InputStream inputStream = null;
 
-      switch (fileAbstraction.scheme) {
-        case CONTENT:
-          if (fileAbstraction.uri == null)
-            throw new NullPointerException("Something went really wrong!");
+    switch (fileAbstraction.scheme) {
+      case CONTENT:
+        if (fileAbstraction.uri == null)
+          throw new NullPointerException("Something went really wrong!");
 
-          if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
-            DocumentFile documentFile =
-                DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
-            if (documentFile != null && documentFile.exists() && documentFile.canWrite())
-              inputStream = contentResolver.openInputStream(documentFile.getUri());
-            else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
-          } else {
-            inputStream = contentResolver.openInputStream(fileAbstraction.uri);
-          }
-          break;
-        case FILE:
-          final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
-          if (hybridFileParcelable == null)
-            throw new NullPointerException("Something went really wrong!");
+        if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
+          DocumentFile documentFile =
+              DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+          if (documentFile != null && documentFile.exists() && documentFile.canWrite())
+            inputStream = contentResolver.openInputStream(documentFile.getUri());
+          else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+        } else {
+          inputStream = contentResolver.openInputStream(fileAbstraction.uri);
+        }
+        break;
+      case FILE:
+        final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
+        if (hybridFileParcelable == null)
+          throw new NullPointerException("Something went really wrong!");
 
-          File file = hybridFileParcelable.getFile();
-          inputStream = loadFile(file);
+        File file = hybridFileParcelable.getFile();
+        inputStream = loadFile(file);
 
-          break;
-        default:
-          throw new IllegalArgumentException(
-              "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
-      }
-
-      if (inputStream == null) throw new StreamNotFoundException();
-
-      BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-      String buffer;
-      while ((buffer = bufferedReader.readLine()) != null) {
-        stringBuilder.append(buffer).append("\n");
-      }
-
-      inputStream.close();
-      bufferedReader.close();
-    } catch (StreamNotFoundException e) {
-      e.printStackTrace();
-      return new ReturnedValueOnReadFile(EXCEPTION_STREAM_NOT_FOUND);
-    } catch (IOException e) {
-      e.printStackTrace();
-      return new ReturnedValueOnReadFile(EXCEPTION_IO);
-    } catch (OutOfMemoryError e) {
-      e.printStackTrace();
-      return new ReturnedValueOnReadFile(EXCEPTION_OOM);
+        break;
+      default:
+        throw new IllegalArgumentException(
+            "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
     }
 
-    return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile);
-  }
+    if (inputStream == null) throw new StreamNotFoundException();
 
-  @Override
-  protected void onPostExecute(ReturnedValueOnReadFile s) {
-    onAsyncTaskFinished.onAsyncTaskFinished(s);
+    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+    String buffer;
+    while ((buffer = bufferedReader.readLine()) != null) {
+      stringBuilder.append(buffer).append("\n");
+    }
+
+    inputStream.close();
+    bufferedReader.close();
+
+    return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile);
   }
 
   private InputStream loadFile(File file) {
