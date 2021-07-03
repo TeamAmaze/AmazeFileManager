@@ -253,13 +253,16 @@ public class TextEditorActivity extends ThemedActivity
    * Initiates loading of file/uri by getting an input stream associated with it on a worker thread
    */
   private void load() {
-    Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT).show();
+    final Snackbar snack = Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
+    snack.show();
     final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     final ReadFileTask task = new ReadFileTask(getContentResolver(), viewModel.getFile(),
             getExternalCacheDir(), isRootExplorer());
 
     final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished = (data) -> {
+      snack.dismiss();
+
       viewModel.setCacheFile(data.cachedFile);
       viewModel.setOriginal(data.fileContents);
 
@@ -302,6 +305,8 @@ public class TextEditorActivity extends ThemedActivity
     };
 
     final Consumer<? super Throwable> onError = error -> {
+      snack.dismiss();
+
       error.printStackTrace();
 
       if(error instanceof StreamNotFoundException) {
