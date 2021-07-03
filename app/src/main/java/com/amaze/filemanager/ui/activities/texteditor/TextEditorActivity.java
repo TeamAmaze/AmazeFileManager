@@ -31,12 +31,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.Callable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
@@ -212,41 +214,38 @@ public class TextEditorActivity extends ThemedActivity
     Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
     final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    new WriteFileAbstraction(
-            this,
-            getContentResolver(),
-            viewModel.getFile(),
-            editTextString,
-            viewModel.getCacheFile(),
-            isRootExplorer(),
-            (errorCode) -> {
-              switch (errorCode) {
-                case WriteFileAbstraction.NORMAL:
-                  viewModel.setOriginal(editTextString);
-                  viewModel.setModified(false);
-                  invalidateOptionsMenu();
-                  Toast.makeText(
-                          getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT)
-                      .show();
-                  break;
-                case WriteFileAbstraction.EXCEPTION_STREAM_NOT_FOUND:
-                  Toast.makeText(
-                          getApplicationContext(),
-                          R.string.error_file_not_found,
-                          Toast.LENGTH_SHORT)
-                      .show();
-                  break;
-                case WriteFileAbstraction.EXCEPTION_IO:
-                  Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
-                      .show();
-                  break;
-                case WriteFileAbstraction.EXCEPTION_SHELL_NOT_RUNNING:
-                  Toast.makeText(getApplicationContext(), R.string.root_failure, Toast.LENGTH_SHORT)
-                      .show();
-                  break;
-              }
-            })
-        .execute();
+    final WriteFileAbstraction task = new WriteFileAbstraction(this, getContentResolver(),
+            viewModel.getFile(), editTextString, viewModel.getCacheFile(), isRootExplorer());
+
+    final Consumer<Void> onFinished = (r) -> {
+      viewModel.setOriginal(editTextString);
+      viewModel.setModified(false);
+      invalidateOptionsMenu();
+      Toast.makeText(
+              getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT)
+              .show();
+    };
+
+    final Consumer<? super Throwable> onError = error -> {
+      if(error instanceof StreamNotFoundException) {
+          Toast.makeText(
+                  getApplicationContext(),
+                  R.string.error_file_not_found,
+                  Toast.LENGTH_SHORT)
+                  .show();
+      } else if(error instanceof IOException) {
+        Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
+                .show();
+      } else if(error instanceof ShellNotRunningException) {
+        Toast.makeText(getApplicationContext(), R.string.root_failure, Toast.LENGTH_SHORT)
+                .show();
+      }
+    };
+
+    Flowable.fromCallable(task)
+            .subscribeOn(Schedulers.io())
+            .observeOn(Schedulers.single())
+            .subscribe(onFinished, onError);
   }
 
   /**

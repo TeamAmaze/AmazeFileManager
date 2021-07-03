@@ -45,9 +45,11 @@ public class EditableFileAbstraction {
     FILE
   }
 
+  @NonNull
   public final Uri uri;
   public final String name;
   public final Scheme scheme;
+  @NonNull
   public final HybridFileParcelable hybridFileParcelable;
 
   public EditableFileAbstraction(@NonNull Context context, @NonNull Uri uri) {

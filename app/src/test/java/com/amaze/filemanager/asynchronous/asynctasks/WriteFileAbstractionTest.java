@@ -23,10 +23,8 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
-import static com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction.EXCEPTION_SHELL_NOT_RUNNING;
-import static com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction.EXCEPTION_STREAM_NOT_FOUND;
-import static com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction.NORMAL;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.robolectric.Shadows.shadowOf;
 
 import java.io.ByteArrayOutputStream;
@@ -48,6 +46,7 @@ import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
@@ -70,7 +69,7 @@ public class WriteFileAbstractionTest {
   private static final String contents = "This is modified data";
 
   @Test
-  public void testWriteContentUri() {
+  public void testWriteContentUri() throws ShellNotRunningException, IOException, StreamNotFoundException {
     Uri uri = Uri.parse("content://com.amaze.filemanager.test/foobar.txt");
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
@@ -79,30 +78,30 @@ public class WriteFileAbstractionTest {
 
     WriteFileAbstraction task =
         new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false, null);
-    int result = task.doInBackground();
-    assertEquals(NORMAL, result);
+            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
+    task.call();
+    assertTrue(true);
     assertEquals(contents, new String(bout.toByteArray(), StandardCharsets.UTF_8));
   }
 
   @Test
-  public void testWriteFileNonRoot() throws IOException {
+  public void testWriteFileNonRoot() throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
     WriteFileAbstraction task =
         new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false, null);
-    int result = task.doInBackground();
-    assertEquals(NORMAL, result);
+            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
+    task.call();
+    assertTrue(true);
 
     String verify = IoUtils.readFully(new FileInputStream(file));
     assertEquals(contents, verify);
   }
 
   @Test
-  public void testWriteFileOverwriting() throws IOException {
+  public void testWriteFileOverwriting() throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     IoUtils.copy(new StringReader("Dummy test content"), new FileWriter(file), 1024);
     Uri uri = Uri.fromFile(file);
@@ -110,9 +109,9 @@ public class WriteFileAbstractionTest {
     ContentResolver cr = ctx.getContentResolver();
     WriteFileAbstraction task =
         new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false, null);
-    int result = task.doInBackground();
-    assertEquals(NORMAL, result);
+            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
+    task.call();
+    assertTrue(true);
 
     String verify = IoUtils.readFully(new FileInputStream(file));
     assertEquals(contents, verify);
@@ -120,7 +119,7 @@ public class WriteFileAbstractionTest {
 
   @Test
   @Config(shadows = {BlockAllOutputStreamsFileUtil.class, BypassMountPartitionRootUtils.class})
-  public void testWriteFileRoot() throws IOException {
+  public void testWriteFileRoot() throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     File cacheFile = File.createTempFile("test.txt", "cache");
     cacheFile.deleteOnExit();
@@ -129,9 +128,9 @@ public class WriteFileAbstractionTest {
     ContentResolver cr = ctx.getContentResolver();
     WriteFileAbstraction task =
         new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true, null);
-    int result = task.doInBackground();
-    assertEquals(NORMAL, result);
+            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
+    task.call();
+    assertTrue(true);
 
     String verify = IoUtils.readFully(new FileInputStream(file));
     assertEquals(contents, verify);
@@ -139,37 +138,43 @@ public class WriteFileAbstractionTest {
 
   @Test
   @Config(shadows = {BlockAllOutputStreamsFileUtil.class})
-  public void testWriteFileRootNoCacheFile() {
+  public void testWriteFileRootNoCacheFile() throws ShellNotRunningException, IOException, StreamNotFoundException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true, null);
-    int result = task.doInBackground();
-    assertEquals(EXCEPTION_STREAM_NOT_FOUND, result);
+    try {
+      WriteFileAbstraction task =
+              new WriteFileAbstraction(
+                      ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true);
+      task.call();
+    } catch (StreamNotFoundException e) {
+      assertTrue(true);
+    }
   }
 
   @Test
   @Config(shadows = {BlockAllOutputStreamsFileUtil.class})
-  public void testWriteFileRootCacheFileNotFound() {
+  public void testWriteFileRootCacheFileNotFound() throws ShellNotRunningException, IOException, StreamNotFoundException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     File cacheFile = new File(Environment.getExternalStorageDirectory(), "test.txt.cache");
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
 
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true, null);
-    int result = task.doInBackground();
-    assertEquals(EXCEPTION_STREAM_NOT_FOUND, result);
+    try {
+      WriteFileAbstraction task =
+              new WriteFileAbstraction(
+                      ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
+      task.call();
+    } catch (StreamNotFoundException e) {
+      assertTrue(true);
+    }
   }
 
   @Test
   @Config(shadows = {ShellNotRunningRootUtils.class})
-  public void testWriteFileRootShellNotRunning() throws IOException {
+  public void testWriteFileRootShellNotRunning() throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     File cacheFile = File.createTempFile("test.txt", "cache");
@@ -177,15 +182,18 @@ public class WriteFileAbstractionTest {
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
 
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true, null);
-    int result = task.doInBackground();
-    assertEquals(EXCEPTION_SHELL_NOT_RUNNING, result);
+    try {
+      WriteFileAbstraction task =
+              new WriteFileAbstraction(
+                      ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
+      task.call();
+    } catch (ShellNotRunningException e) {
+      assertTrue(true);
+    }
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testWriteBogeyUri() {
+  public void testWriteBogeyUri() throws ShellNotRunningException, IOException, StreamNotFoundException {
     Uri uri = Uri.parse("ftp://bogey.ftp/test.txt");
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
@@ -194,9 +202,10 @@ public class WriteFileAbstractionTest {
 
     WriteFileAbstraction task =
         new WriteFileAbstraction(
-            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false, null);
+            ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
 
-    task.doInBackground();
+    task.call();
+    assertTrue(true);
   }
 
   @Implements(FileUtil.class)
