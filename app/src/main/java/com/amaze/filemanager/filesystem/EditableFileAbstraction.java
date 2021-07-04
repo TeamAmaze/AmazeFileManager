@@ -35,8 +35,6 @@ import androidx.annotation.NonNull;
 /**
  * This is a special representation of a file that is to be used so that uris can be loaded as
  * editable files.
- *
- * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 17:06.
  */
 public class EditableFileAbstraction {
 
@@ -45,10 +43,10 @@ public class EditableFileAbstraction {
     FILE
   }
 
-  @NonNull public final Uri uri;
+  public final Uri uri;
   public final String name;
   public final Scheme scheme;
-  @NonNull public final HybridFileParcelable hybridFileParcelable;
+  public final HybridFileParcelable hybridFileParcelable;
 
   public EditableFileAbstraction(@NonNull Context context, @NonNull Uri uri) {
     switch (uri.getScheme()) {

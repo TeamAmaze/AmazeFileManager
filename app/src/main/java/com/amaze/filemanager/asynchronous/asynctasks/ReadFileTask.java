@@ -27,6 +27,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.application.AppConfig;
@@ -70,12 +71,11 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
       throws StreamNotFoundException, IOException, OutOfMemoryError {
     StringBuilder stringBuilder = new StringBuilder();
 
-    InputStream inputStream = null;
+    InputStream inputStream;
 
     switch (fileAbstraction.scheme) {
       case CONTENT:
-        if (fileAbstraction.uri == null)
-          throw new NullPointerException("Something went really wrong!");
+        Objects.requireNonNull(fileAbstraction.uri);
 
         if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
           DocumentFile documentFile =
@@ -89,8 +89,7 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
         break;
       case FILE:
         final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
-        if (hybridFileParcelable == null)
-          throw new NullPointerException("Something went really wrong!");
+        Objects.requireNonNull(hybridFileParcelable);
 
         File file = hybridFileParcelable.getFile();
         inputStream = loadFile(file);

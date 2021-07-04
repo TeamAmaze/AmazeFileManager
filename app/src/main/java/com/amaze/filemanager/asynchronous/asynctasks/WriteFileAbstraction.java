@@ -26,6 +26,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.application.AppConfig;
@@ -75,6 +76,7 @@ public class WriteFileAbstraction implements Callable<Void> {
 
     switch (fileAbstraction.scheme) {
       case CONTENT:
+        Objects.requireNonNull(fileAbstraction.uri);
         try {
           if (fileAbstraction.uri.getAuthority().equals(context.get().getPackageName())) {
             DocumentFile documentFile =
@@ -94,6 +96,7 @@ public class WriteFileAbstraction implements Callable<Void> {
         break;
       case FILE:
         final HybridFileParcelable hybridFileParcelable = fileAbstraction.hybridFileParcelable;
+        Objects.requireNonNull(hybridFileParcelable);
 
         Context context = this.context.get();
         if (context == null) {
