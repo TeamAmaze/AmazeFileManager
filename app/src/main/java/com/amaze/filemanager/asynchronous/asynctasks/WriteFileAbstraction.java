@@ -42,6 +42,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
 public class WriteFileAbstraction implements Callable<Void> {
@@ -67,6 +68,7 @@ public class WriteFileAbstraction implements Callable<Void> {
     this.isRootExplorer = isRootExplorer;
   }
 
+  @WorkerThread
   @Override
   public Void call()
       throws IOException, StreamNotFoundException, ShellNotRunningException,

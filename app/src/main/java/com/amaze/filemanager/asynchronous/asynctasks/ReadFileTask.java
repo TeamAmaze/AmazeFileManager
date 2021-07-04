@@ -42,6 +42,7 @@ import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 import android.content.ContentResolver;
 import android.util.Log;
 
+import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
 public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
@@ -66,6 +67,7 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
     this.isRootExplorer = isRootExplorer;
   }
 
+  @WorkerThread
   @Override
   public ReturnedValueOnReadFile call()
       throws StreamNotFoundException, IOException, OutOfMemoryError {
