@@ -36,14 +36,11 @@ import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
-import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 
 import android.content.ContentResolver;
 import android.content.Context;
-import android.os.AsyncTask;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 public class WriteFileAbstraction implements Callable<Void> {
@@ -54,9 +51,13 @@ public class WriteFileAbstraction implements Callable<Void> {
   private final boolean isRootExplorer;
   private final String dataToSave;
 
-  public WriteFileAbstraction(Context context, ContentResolver contentResolver,
-                              EditableFileAbstraction file, String dataToSave, File cachedFile,
-                              boolean isRootExplorer) {
+  public WriteFileAbstraction(
+      Context context,
+      ContentResolver contentResolver,
+      EditableFileAbstraction file,
+      String dataToSave,
+      File cachedFile,
+      boolean isRootExplorer) {
     this.context = new WeakReference<>(context);
     this.contentResolver = contentResolver;
     this.fileAbstraction = file;
@@ -67,7 +68,8 @@ public class WriteFileAbstraction implements Callable<Void> {
 
   @Override
   public Void call()
-          throws IOException, StreamNotFoundException, ShellNotRunningException, IllegalArgumentException {
+      throws IOException, StreamNotFoundException, ShellNotRunningException,
+          IllegalArgumentException {
     OutputStream outputStream;
     File destFile = null;
 
@@ -76,7 +78,7 @@ public class WriteFileAbstraction implements Callable<Void> {
         try {
           if (fileAbstraction.uri.getAuthority().equals(context.get().getPackageName())) {
             DocumentFile documentFile =
-                    DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+                DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
             if (documentFile != null && documentFile.exists() && documentFile.canWrite())
               outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
             else {
@@ -102,7 +104,7 @@ public class WriteFileAbstraction implements Callable<Void> {
         break;
       default:
         throw new IllegalArgumentException(
-                "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
+            "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
     }
 
     if (outputStream == null) throw new StreamNotFoundException();
@@ -119,7 +121,7 @@ public class WriteFileAbstraction implements Callable<Void> {
   }
 
   private OutputStream openFile(@NonNull File file, @NonNull Context context)
-          throws FileNotFoundException {
+      throws FileNotFoundException {
     OutputStream outputStream = FileUtil.getOutputStream(file, context);
 
     if (isRootExplorer && outputStream == null) {

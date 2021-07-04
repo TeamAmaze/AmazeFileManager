@@ -69,7 +69,8 @@ public class WriteFileAbstractionTest {
   private static final String contents = "This is modified data";
 
   @Test
-  public void testWriteContentUri() throws ShellNotRunningException, IOException, StreamNotFoundException {
+  public void testWriteContentUri()
+      throws ShellNotRunningException, IOException, StreamNotFoundException {
     Uri uri = Uri.parse("content://com.amaze.filemanager.test/foobar.txt");
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
@@ -85,7 +86,8 @@ public class WriteFileAbstractionTest {
   }
 
   @Test
-  public void testWriteFileNonRoot() throws IOException, StreamNotFoundException, ShellNotRunningException {
+  public void testWriteFileNonRoot()
+      throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
@@ -101,7 +103,8 @@ public class WriteFileAbstractionTest {
   }
 
   @Test
-  public void testWriteFileOverwriting() throws IOException, StreamNotFoundException, ShellNotRunningException {
+  public void testWriteFileOverwriting()
+      throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     IoUtils.copy(new StringReader("Dummy test content"), new FileWriter(file), 1024);
     Uri uri = Uri.fromFile(file);
@@ -119,7 +122,8 @@ public class WriteFileAbstractionTest {
 
   @Test
   @Config(shadows = {BlockAllOutputStreamsFileUtil.class, BypassMountPartitionRootUtils.class})
-  public void testWriteFileRoot() throws IOException, StreamNotFoundException, ShellNotRunningException {
+  public void testWriteFileRoot()
+      throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     File cacheFile = File.createTempFile("test.txt", "cache");
     cacheFile.deleteOnExit();
@@ -138,15 +142,16 @@ public class WriteFileAbstractionTest {
 
   @Test
   @Config(shadows = {BlockAllOutputStreamsFileUtil.class})
-  public void testWriteFileRootNoCacheFile() throws ShellNotRunningException, IOException, StreamNotFoundException {
+  public void testWriteFileRootNoCacheFile()
+      throws ShellNotRunningException, IOException, StreamNotFoundException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
     try {
       WriteFileAbstraction task =
-              new WriteFileAbstraction(
-                      ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true);
+          new WriteFileAbstraction(
+              ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true);
       task.call();
     } catch (StreamNotFoundException e) {
       assertTrue(true);
@@ -155,7 +160,8 @@ public class WriteFileAbstractionTest {
 
   @Test
   @Config(shadows = {BlockAllOutputStreamsFileUtil.class})
-  public void testWriteFileRootCacheFileNotFound() throws ShellNotRunningException, IOException, StreamNotFoundException {
+  public void testWriteFileRootCacheFileNotFound()
+      throws ShellNotRunningException, IOException, StreamNotFoundException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     File cacheFile = new File(Environment.getExternalStorageDirectory(), "test.txt.cache");
@@ -164,8 +170,8 @@ public class WriteFileAbstractionTest {
 
     try {
       WriteFileAbstraction task =
-              new WriteFileAbstraction(
-                      ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
+          new WriteFileAbstraction(
+              ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (StreamNotFoundException e) {
       assertTrue(true);
@@ -174,7 +180,8 @@ public class WriteFileAbstractionTest {
 
   @Test
   @Config(shadows = {ShellNotRunningRootUtils.class})
-  public void testWriteFileRootShellNotRunning() throws IOException, StreamNotFoundException, ShellNotRunningException {
+  public void testWriteFileRootShellNotRunning()
+      throws IOException, StreamNotFoundException, ShellNotRunningException {
     File file = new File(Environment.getExternalStorageDirectory(), "test.txt");
     Uri uri = Uri.fromFile(file);
     File cacheFile = File.createTempFile("test.txt", "cache");
@@ -184,8 +191,8 @@ public class WriteFileAbstractionTest {
 
     try {
       WriteFileAbstraction task =
-              new WriteFileAbstraction(
-                      ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
+          new WriteFileAbstraction(
+              ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (ShellNotRunningException e) {
       assertTrue(true);
@@ -193,7 +200,8 @@ public class WriteFileAbstractionTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testWriteBogeyUri() throws ShellNotRunningException, IOException, StreamNotFoundException {
+  public void testWriteBogeyUri()
+      throws ShellNotRunningException, IOException, StreamNotFoundException {
     Uri uri = Uri.parse("ftp://bogey.ftp/test.txt");
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();

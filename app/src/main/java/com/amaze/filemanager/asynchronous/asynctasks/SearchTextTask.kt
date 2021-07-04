@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -17,20 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.asynchronous.asynctasks
 
 import android.os.AsyncTask
 import android.text.TextUtils
-import com.amaze.filemanager.utils.OnProgressUpdate
 import com.amaze.filemanager.ui.activities.texteditor.SearchResultIndex
 import com.amaze.filemanager.utils.OnAsyncTaskFinished
+import com.amaze.filemanager.utils.OnProgressUpdate
 import java.io.IOException
 import java.io.LineNumberReader
 import java.io.StringReader
 import java.util.ArrayList
 
 class SearchTextTask(
-    private val textToSearch: String, private val searchedText: String,
+    private val textToSearch: String,
+    private val searchedText: String,
     private val updateListener: OnProgressUpdate<SearchResultIndex>,
     private val listener: OnAsyncTaskFinished<List<SearchResultIndex>>
 ) : AsyncTask<Unit, SearchResultIndex, List<SearchResultIndex>>() {

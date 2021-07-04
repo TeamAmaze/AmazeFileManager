@@ -20,10 +20,14 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
-import android.content.ContentResolver;
-import android.util.Log;
-
-import androidx.documentfile.provider.DocumentFile;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
@@ -34,14 +38,10 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.concurrent.Callable;
+import android.content.ContentResolver;
+import android.util.Log;
+
+import androidx.documentfile.provider.DocumentFile;
 
 public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
 
@@ -66,7 +66,8 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
   }
 
   @Override
-  public ReturnedValueOnReadFile call() throws StreamNotFoundException, IOException, OutOfMemoryError {
+  public ReturnedValueOnReadFile call()
+      throws StreamNotFoundException, IOException, OutOfMemoryError {
     StringBuilder stringBuilder = new StringBuilder();
 
     InputStream inputStream = null;
@@ -144,5 +145,4 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
 
     return inputStream;
   }
-
 }

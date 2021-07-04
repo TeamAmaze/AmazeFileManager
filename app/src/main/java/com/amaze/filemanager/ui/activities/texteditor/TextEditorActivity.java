@@ -31,7 +31,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -110,7 +109,8 @@ public class TextEditorActivity extends ThemedActivity
     toolbar = findViewById(R.id.toolbar);
     setSupportActionBar(toolbar);
 
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     searchViewLayout = findViewById(R.id.searchview);
     searchViewLayout.setBackgroundColor(getPrimary());
@@ -172,7 +172,8 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
     outState.putInt(KEY_INDEX, mInput.getScrollY());
@@ -181,9 +182,12 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   private void checkUnsavedChanges() {
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    if (viewModel.getOriginal() != null && mInput.isShown() && !viewModel.getOriginal().equals(mInput.getText().toString())) {
+    if (viewModel.getOriginal() != null
+        && mInput.isShown()
+        && !viewModel.getOriginal().equals(mInput.getText().toString())) {
       new MaterialDialog.Builder(this)
           .title(R.string.unsaved_changes)
           .content(R.string.unsaved_changes_description)
@@ -212,40 +216,45 @@ public class TextEditorActivity extends ThemedActivity
    */
   private void saveFile(final String editTextString) {
     Toast.makeText(this, R.string.saving, Toast.LENGTH_SHORT).show();
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    final WriteFileAbstraction task = new WriteFileAbstraction(this, getContentResolver(),
-            viewModel.getFile(), editTextString, viewModel.getCacheFile(), isRootExplorer());
+    final WriteFileAbstraction task =
+        new WriteFileAbstraction(
+            this,
+            getContentResolver(),
+            viewModel.getFile(),
+            editTextString,
+            viewModel.getCacheFile(),
+            isRootExplorer());
 
-    final Consumer<Void> onFinished = (r) -> {
-      viewModel.setOriginal(editTextString);
-      viewModel.setModified(false);
-      invalidateOptionsMenu();
-      Toast.makeText(
-              getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT)
+    final Consumer<Void> onFinished =
+        (r) -> {
+          viewModel.setOriginal(editTextString);
+          viewModel.setModified(false);
+          invalidateOptionsMenu();
+          Toast.makeText(getApplicationContext(), getString(R.string.done), Toast.LENGTH_SHORT)
               .show();
-    };
+        };
 
-    final Consumer<? super Throwable> onError = error -> {
-      if(error instanceof StreamNotFoundException) {
-          Toast.makeText(
-                  getApplicationContext(),
-                  R.string.error_file_not_found,
-                  Toast.LENGTH_SHORT)
-                  .show();
-      } else if(error instanceof IOException) {
-        Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
+    final Consumer<? super Throwable> onError =
+        error -> {
+          if (error instanceof StreamNotFoundException) {
+            Toast.makeText(
+                    getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT)
                 .show();
-      } else if(error instanceof ShellNotRunningException) {
-        Toast.makeText(getApplicationContext(), R.string.root_failure, Toast.LENGTH_SHORT)
+          } else if (error instanceof IOException) {
+            Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
+          } else if (error instanceof ShellNotRunningException) {
+            Toast.makeText(getApplicationContext(), R.string.root_failure, Toast.LENGTH_SHORT)
                 .show();
-      }
-    };
+          }
+        };
 
     Flowable.fromCallable(task)
-            .subscribeOn(Schedulers.io())
-            .observeOn(Schedulers.single())
-            .subscribe(onFinished, onError);
+        .subscribeOn(Schedulers.io())
+        .observeOn(Schedulers.single())
+        .subscribe(onFinished, onError);
   }
 
   /**
@@ -254,85 +263,83 @@ public class TextEditorActivity extends ThemedActivity
   private void load() {
     final Snackbar snack = Snackbar.make(scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
     snack.show();
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    final ReadFileTask task = new ReadFileTask(getContentResolver(), viewModel.getFile(),
-            getExternalCacheDir(), isRootExplorer());
+    final ReadFileTask task =
+        new ReadFileTask(
+            getContentResolver(), viewModel.getFile(), getExternalCacheDir(), isRootExplorer());
 
-    final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished = (data) -> {
-      snack.dismiss();
+    final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished =
+        (data) -> {
+          snack.dismiss();
 
-      viewModel.setCacheFile(data.cachedFile);
-      viewModel.setOriginal(data.fileContents);
+          viewModel.setCacheFile(data.cachedFile);
+          viewModel.setOriginal(data.fileContents);
 
-      try {
-        mInput.setText(data.fileContents);
+          try {
+            mInput.setText(data.fileContents);
 
-        if (viewModel.getFile().scheme.equals(FILE)
+            if (viewModel.getFile().scheme.equals(FILE)
                 && getExternalCacheDir() != null
-                && viewModel.getFile()
-                .hybridFileParcelable
-                .getPath()
-                .contains(getExternalCacheDir().getPath())
+                && viewModel
+                    .getFile()
+                    .hybridFileParcelable
+                    .getPath()
+                    .contains(getExternalCacheDir().getPath())
                 && viewModel.getCacheFile() == null) {
-          // file in cache, and not a root temporary file
-          mInput.setInputType(EditorInfo.TYPE_NULL);
-          mInput.setSingleLine(false);
-          mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+              // file in cache, and not a root temporary file
+              mInput.setInputType(EditorInfo.TYPE_NULL);
+              mInput.setSingleLine(false);
+              mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
 
-          Snackbar snackbar =
+              Snackbar snackbar =
                   Snackbar.make(
-                          mInput,
-                          getResources().getString(R.string.file_read_only),
-                          Snackbar.LENGTH_INDEFINITE);
-          snackbar.setAction(
-                  getResources().getString(R.string.got_it).toUpperCase(),
-                  v -> snackbar.dismiss());
-          snackbar.show();
-        }
+                      mInput,
+                      getResources().getString(R.string.file_read_only),
+                      Snackbar.LENGTH_INDEFINITE);
+              snackbar.setAction(
+                  getResources().getString(R.string.got_it).toUpperCase(), v -> snackbar.dismiss());
+              snackbar.show();
+            }
 
-        if (data.fileContents.isEmpty()) {
-          mInput.setHint(R.string.file_empty);
-        } else {
-          mInput.setHint(null);
-        }
-      } catch (OutOfMemoryError e) {
-        Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT)
-                .show();
-        finish();
-      }
-    };
+            if (data.fileContents.isEmpty()) {
+              mInput.setHint(R.string.file_empty);
+            } else {
+              mInput.setHint(null);
+            }
+          } catch (OutOfMemoryError e) {
+            Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
+            finish();
+          }
+        };
 
-    final Consumer<? super Throwable> onError = error -> {
-      snack.dismiss();
+    final Consumer<? super Throwable> onError =
+        error -> {
+          snack.dismiss();
 
-      error.printStackTrace();
+          error.printStackTrace();
 
-      if(error instanceof StreamNotFoundException) {
-        Toast.makeText(
-                getApplicationContext(),
-                R.string.error_file_not_found,
-                Toast.LENGTH_SHORT)
+          if (error instanceof StreamNotFoundException) {
+            Toast.makeText(
+                    getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT)
                 .show();
-        finish();
-      } else if(error instanceof IOException) {
-        Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT)
+            finish();
+          } else if (error instanceof IOException) {
+            Toast.makeText(getApplicationContext(), R.string.error_io, Toast.LENGTH_SHORT).show();
+            finish();
+          } else if (error instanceof OutOfMemoryError) {
+            Toast.makeText(
+                    getApplicationContext(), R.string.error_file_too_large, Toast.LENGTH_SHORT)
                 .show();
-        finish();
-      } else if(error instanceof OutOfMemoryError) {
-        Toast.makeText(
-                getApplicationContext(),
-                R.string.error_file_too_large,
-                Toast.LENGTH_SHORT)
-                .show();
-        finish();
-      }
-    };
+            finish();
+          }
+        };
 
     Flowable.fromCallable(task)
-      .subscribeOn(Schedulers.io())
-      .observeOn(Schedulers.single())
-      .subscribe(onAsyncTaskFinished, onError);
+        .subscribeOn(Schedulers.io())
+        .observeOn(Schedulers.single())
+        .subscribe(onAsyncTaskFinished, onError);
   }
 
   @Override
@@ -348,7 +355,8 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public boolean onPrepareOptionsMenu(Menu menu) {
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     menu.findItem(R.id.save).setVisible(viewModel.getModified());
     menu.findItem(R.id.monofont).setChecked(mInputTypefaceMono.equals(mInput.getTypeface()));
@@ -357,7 +365,8 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public boolean onOptionsItemSelected(MenuItem item) {
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
     final EditableFileAbstraction editableFileAbstraction = viewModel.getFile();
 
     switch (item.getItemId()) {
@@ -369,11 +378,14 @@ public class TextEditorActivity extends ThemedActivity
         saveFile(mInput.getText().toString());
         break;
       case R.id.details:
-        if (editableFileAbstraction.scheme.equals(FILE) && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
+        if (editableFileAbstraction.scheme.equals(FILE)
+            && editableFileAbstraction.hybridFileParcelable.getFile().exists()) {
           GeneralDialogCreation.showPropertiesDialogWithoutPermissions(
               editableFileAbstraction.hybridFileParcelable, this, getAppTheme());
         } else if (editableFileAbstraction.scheme.equals(CONTENT)) {
-          if (getApplicationContext().getPackageName().equals(editableFileAbstraction.uri.getAuthority())) {
+          if (getApplicationContext()
+              .getPackageName()
+              .equals(editableFileAbstraction.uri.getAuthority())) {
             File file = FileUtils.fromContentUri(editableFileAbstraction.uri);
             HybridFileParcelable p = new HybridFileParcelable(file.getAbsolutePath());
             if (isRootExplorer()) p.setMode(OpenMode.ROOT);
@@ -413,7 +425,8 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
     final File cacheFile = viewModel.getCacheFile();
 
     if (cacheFile != null && cacheFile.exists()) {
@@ -425,7 +438,8 @@ public class TextEditorActivity extends ThemedActivity
   public void beforeTextChanged(CharSequence charSequence, int i, int i2, int i3) {
     // condition to check if callback is called in search editText
     if (searchEditText != null && charSequence.hashCode() == searchEditText.getText().hashCode()) {
-      final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+      final TextEditorActivityViewModel viewModel =
+          new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
       // clearing before adding new values
       if (searchTextTask != null) {
@@ -440,7 +454,8 @@ public class TextEditorActivity extends ThemedActivity
   @Override
   public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
     if (charSequence.hashCode() == mInput.getText().hashCode()) {
-      final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+      final TextEditorActivityViewModel viewModel =
+          new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
       final Timer oldTimer = viewModel.getTimer();
       viewModel.setTimer(null);
 
@@ -459,13 +474,15 @@ public class TextEditorActivity extends ThemedActivity
             @Override
             public void run() {
               final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-              if(textEditorActivity == null) {
+              if (textEditorActivity == null) {
                 return;
               }
 
-              final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
+              final TextEditorActivityViewModel viewModel =
+                  new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
 
-              modified = !textEditorActivity.mInput.getText().toString().equals(viewModel.getOriginal());
+              modified =
+                  !textEditorActivity.mInput.getText().toString().equals(viewModel.getOriginal());
               if (viewModel.getModified() != modified) {
                 viewModel.setModified(modified);
                 invalidateOptionsMenu();
@@ -484,43 +501,50 @@ public class TextEditorActivity extends ThemedActivity
     if (searchEditText != null && editable.hashCode() == searchEditText.getText().hashCode()) {
       final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(this);
 
-      final OnProgressUpdate<SearchResultIndex> onProgressUpdate = index -> {
-        final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-        if(textEditorActivity == null) {
-          return;
-        }
-        textEditorActivity.unhighlightSearchResult(index);
-      };
+      final OnProgressUpdate<SearchResultIndex> onProgressUpdate =
+          index -> {
+            final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+            if (textEditorActivity == null) {
+              return;
+            }
+            textEditorActivity.unhighlightSearchResult(index);
+          };
 
-      final OnAsyncTaskFinished<List<SearchResultIndex>> onAsyncTaskFinished = data -> {
-        final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+      final OnAsyncTaskFinished<List<SearchResultIndex>> onAsyncTaskFinished =
+          data -> {
+            final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
 
-        if(textEditorActivity == null) {
-          return;
-        }
+            if (textEditorActivity == null) {
+              return;
+            }
 
-        final TextEditorActivityViewModel viewModel = new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
-        viewModel.setSearchResultIndices(data);
+            final TextEditorActivityViewModel viewModel =
+                new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
+            viewModel.setSearchResultIndices(data);
 
-        for (SearchResultIndex searchResultIndex : data) {
-          textEditorActivity.unhighlightSearchResult(searchResultIndex);
-        }
+            for (SearchResultIndex searchResultIndex : data) {
+              textEditorActivity.unhighlightSearchResult(searchResultIndex);
+            }
 
-        if (data.size() != 0) {
-          textEditorActivity.upButton.setEnabled(true);
-          textEditorActivity.downButton.setEnabled(true);
+            if (data.size() != 0) {
+              textEditorActivity.upButton.setEnabled(true);
+              textEditorActivity.downButton.setEnabled(true);
 
-          // downButton
-          textEditorActivity.onClick(textEditorActivity.downButton);
-        } else {
-          textEditorActivity.upButton.setEnabled(false);
-          textEditorActivity.downButton.setEnabled(false);
-        }
-      };
+              // downButton
+              textEditorActivity.onClick(textEditorActivity.downButton);
+            } else {
+              textEditorActivity.upButton.setEnabled(false);
+              textEditorActivity.downButton.setEnabled(false);
+            }
+          };
 
-      searchTextTask = new SearchTextTask(mInput.getText().toString(), editable.toString(), onProgressUpdate, onAsyncTaskFinished);
+      searchTextTask =
+          new SearchTextTask(
+              mInput.getText().toString(),
+              editable.toString(),
+              onProgressUpdate,
+              onAsyncTaskFinished);
       searchTextTask.execute();
-
     }
   }
 
@@ -599,7 +623,8 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void onClick(View v) {
-    final TextEditorActivityViewModel viewModel = new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
+    final TextEditorActivityViewModel viewModel =
+        new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     switch (v.getId()) {
       case R.id.prev:
@@ -608,7 +633,7 @@ public class TextEditorActivity extends ThemedActivity
           unhighlightCurrentSearchResult(viewModel);
 
           // highlighting previous element in list
-          viewModel.setCurrent(viewModel.getCurrent()-1);
+          viewModel.setCurrent(viewModel.getCurrent() - 1);
 
           highlightCurrentSearchResult(viewModel);
         }
@@ -618,7 +643,7 @@ public class TextEditorActivity extends ThemedActivity
         if (viewModel.getCurrent() < viewModel.getSearchResultIndices().size() - 1) {
           unhighlightCurrentSearchResult(viewModel);
 
-          viewModel.setCurrent(viewModel.getCurrent()+1);
+          viewModel.setCurrent(viewModel.getCurrent() + 1);
 
           highlightCurrentSearchResult(viewModel);
         }
@@ -632,7 +657,7 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   private void unhighlightCurrentSearchResult(final TextEditorActivityViewModel viewModel) {
-    if(viewModel.getCurrent() == -1) {
+    if (viewModel.getCurrent() == -1) {
       return;
     }
 
@@ -646,11 +671,11 @@ public class TextEditorActivity extends ThemedActivity
 
     // scrolling to the highlighted element
     scrollView.scrollTo(
-            0,
-            (Integer) keyValueNew.getLineNumber()
-                    + mInput.getLineHeight()
-                    + Math.round(mInput.getLineSpacingExtra())
-                    - getSupportActionBar().getHeight());
+        0,
+        (Integer) keyValueNew.getLineNumber()
+            + mInput.getLineHeight()
+            + Math.round(mInput.getLineSpacingExtra())
+            - getSupportActionBar().getHeight());
   }
 
   private void unhighlightSearchResult(SearchResultIndex resultIndex) {
@@ -666,11 +691,12 @@ public class TextEditorActivity extends ThemedActivity
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
     mInput
-            .getText()
-            .setSpan(new BackgroundColorSpan(color),
-                    (Integer) resultIndex.getStartCharNumber(),
-                    (Integer) resultIndex.getEndCharNumber(),
-                    Spanned.SPAN_INCLUSIVE_INCLUSIVE);
+        .getText()
+        .setSpan(
+            new BackgroundColorSpan(color),
+            (Integer) resultIndex.getStartCharNumber(),
+            (Integer) resultIndex.getEndCharNumber(),
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE);
   }
 
   private void cleanSpans(TextEditorActivityViewModel viewModel) {
