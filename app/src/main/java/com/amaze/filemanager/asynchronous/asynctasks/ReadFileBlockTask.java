@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -45,9 +44,11 @@ import android.util.Log;
 import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
-public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
+public class ReadFileBlockTask implements Callable<ReturnedValueOnReadFile> {
 
-  private static final String TAG = ReadFileTask.class.getSimpleName();
+  public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
+
+  private static final String TAG = ReadFileBlockTask.class.getSimpleName();
 
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -56,11 +57,11 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
 
   private File cachedFile = null;
 
-  public ReadFileTask(
-      ContentResolver contentResolver,
-      EditableFileAbstraction file,
-      File cacheDir,
-      boolean isRootExplorer) {
+  public ReadFileBlockTask(
+          ContentResolver contentResolver,
+          EditableFileAbstraction file,
+          File cacheDir,
+          boolean isRootExplorer) {
     this.contentResolver = contentResolver;
     this.fileAbstraction = file;
     this.externalCacheDir = cacheDir;
@@ -79,12 +80,16 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
       case CONTENT:
         Objects.requireNonNull(fileAbstraction.uri);
 
-        if (fileAbstraction.uri.getAuthority().equals(AppConfig.getInstance().getPackageName())) {
-          DocumentFile documentFile =
-              DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
-          if (documentFile != null && documentFile.exists() && documentFile.canWrite())
+        final AppConfig appConfig = AppConfig.getInstance();
+
+        if (fileAbstraction.uri.getAuthority().equals(appConfig.getPackageName())) {
+          DocumentFile documentFile = DocumentFile.fromSingleUri(appConfig, fileAbstraction.uri);
+
+          if (documentFile != null && documentFile.exists() && documentFile.canWrite()) {
             inputStream = contentResolver.openInputStream(documentFile.getUri());
-          else inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+          } else {
+            inputStream = loadFile(FileUtils.fromContentUri(fileAbstraction.uri));
+          }
         } else {
           inputStream = contentResolver.openInputStream(fileAbstraction.uri);
         }
@@ -102,19 +107,22 @@ public class ReadFileTask implements Callable<ReturnedValueOnReadFile> {
             "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
     }
 
-    if (inputStream == null) throw new StreamNotFoundException();
-
-    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
-
-    String buffer;
-    while ((buffer = bufferedReader.readLine()) != null) {
-      stringBuilder.append(buffer).append("\n");
+    if (inputStream == null) {
+      throw new StreamNotFoundException();
     }
 
-    inputStream.close();
-    bufferedReader.close();
+    InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
-    return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile);
+    char[] buffer = new char[MAX_FILE_SIZE_CHARS];
+
+    final int readChars = inputStreamReader.read(buffer);
+    boolean tooLong = -1 != inputStream.read();
+
+    stringBuilder.append(buffer, 0, readChars);
+
+    inputStreamReader.close();
+
+    return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile, tooLong);
   }
 
   private InputStream loadFile(File file) {

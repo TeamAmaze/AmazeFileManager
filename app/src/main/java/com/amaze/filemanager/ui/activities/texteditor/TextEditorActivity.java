@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.activities.texteditor;
 
+import static com.amaze.filemanager.asynchronous.asynctasks.ReadFileBlockTask.MAX_FILE_SIZE_CHARS;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
@@ -34,7 +35,7 @@ import java.util.TimerTask;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.asynctasks.ReadFileTask;
+import com.amaze.filemanager.asynchronous.asynctasks.ReadFileBlockTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
@@ -88,7 +89,7 @@ import io.reactivex.schedulers.Schedulers;
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
 
-  public EditText mInput, searchEditText;
+  public EditText mainTextView, searchEditText;
   private Typeface mInputTypefaceDefault, mInputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
   ScrollView scrollView;
@@ -132,7 +133,7 @@ public class TextEditorActivity extends ThemedActivity
 
     getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
-    mInput = findViewById(R.id.fname);
+    mainTextView = findViewById(R.id.fname);
     scrollView = findViewById(R.id.editscroll);
 
     final Uri uri = getIntent().getData();
@@ -146,23 +147,29 @@ public class TextEditorActivity extends ThemedActivity
 
     getSupportActionBar().setTitle(viewModel.getFile().name);
 
-    mInput.addTextChangedListener(this);
-    if (getAppTheme().equals(AppTheme.DARK))
-      mInput.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
-    else if (getAppTheme().equals(AppTheme.BLACK))
-      mInput.setBackgroundColor(Utils.getColor(this, android.R.color.black));
+    mainTextView.addTextChangedListener(this);
 
-    if (mInput.getTypeface() == null) mInput.setTypeface(Typeface.DEFAULT);
+    if (getAppTheme().equals(AppTheme.DARK)) {
+      mainTextView.setBackgroundColor(Utils.getColor(this, R.color.holo_dark_background));
+    } else if (getAppTheme().equals(AppTheme.BLACK)) {
+      mainTextView.setBackgroundColor(Utils.getColor(this, android.R.color.black));
+    }
 
-    mInputTypefaceDefault = mInput.getTypeface();
+    if (mainTextView.getTypeface() == null) {
+      mainTextView.setTypeface(Typeface.DEFAULT);
+    }
+
+    mInputTypefaceDefault = mainTextView.getTypeface();
     mInputTypefaceMono = Typeface.MONOSPACE;
 
     if (savedInstanceState != null) {
       viewModel.setOriginal(savedInstanceState.getString(KEY_ORIGINAL_TEXT));
       int index = savedInstanceState.getInt(KEY_INDEX);
-      mInput.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
-      mInput.setScrollY(index);
-      if (savedInstanceState.getBoolean(KEY_MONOFONT)) mInput.setTypeface(mInputTypefaceMono);
+      mainTextView.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
+      mainTextView.setScrollY(index);
+      if (savedInstanceState.getBoolean(KEY_MONOFONT)) {
+        mainTextView.setTypeface(mInputTypefaceMono);
+      }
     } else {
       load();
     }
@@ -175,10 +182,10 @@ public class TextEditorActivity extends ThemedActivity
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    outState.putString(KEY_MODIFIED_TEXT, mInput.getText().toString());
-    outState.putInt(KEY_INDEX, mInput.getScrollY());
+    outState.putString(KEY_MODIFIED_TEXT, mainTextView.getText().toString());
+    outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
-    outState.putBoolean(KEY_MONOFONT, mInputTypefaceMono.equals(mInput.getTypeface()));
+    outState.putBoolean(KEY_MONOFONT, mInputTypefaceMono.equals(mainTextView.getTypeface()));
   }
 
   private void checkUnsavedChanges() {
@@ -186,8 +193,8 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     if (viewModel.getOriginal() != null
-        && mInput.isShown()
-        && !viewModel.getOriginal().equals(mInput.getText().toString())) {
+        && mainTextView.isShown()
+        && !viewModel.getOriginal().equals(mainTextView.getText().toString())) {
       new MaterialDialog.Builder(this)
           .title(R.string.unsaved_changes)
           .content(R.string.unsaved_changes_description)
@@ -197,7 +204,7 @@ public class TextEditorActivity extends ThemedActivity
           .negativeColor(getAccent())
           .onPositive(
               (dialog, which) -> {
-                saveFile(mInput.getText().toString());
+                saveFile(mainTextView.getText().toString());
                 finish();
               })
           .onNegative((dialog, which) -> finish())
@@ -209,7 +216,7 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   /**
-   * Method initiates a worker thread which writes the {@link #mInput} bytes to the defined file/uri
+   * Method initiates a worker thread which writes the {@link #mainTextView} bytes to the defined file/uri
    * 's output stream
    *
    * @param editTextString the edit text string
@@ -266,8 +273,8 @@ public class TextEditorActivity extends ThemedActivity
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
-    final ReadFileTask task =
-        new ReadFileTask(
+    final ReadFileBlockTask task =
+        new ReadFileBlockTask(
             getContentResolver(), viewModel.getFile(), getExternalCacheDir(), isRootExplorer());
 
     final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished =
@@ -277,40 +284,47 @@ public class TextEditorActivity extends ThemedActivity
           viewModel.setCacheFile(data.cachedFile);
           viewModel.setOriginal(data.fileContents);
 
-          try {
-            mInput.setText(data.fileContents);
+          mainTextView.setText(data.fileContents);
 
-            if (viewModel.getFile().scheme.equals(FILE)
-                && getExternalCacheDir() != null
-                && viewModel
-                    .getFile()
-                    .hybridFileParcelable
-                    .getPath()
-                    .contains(getExternalCacheDir().getPath())
-                && viewModel.getCacheFile() == null) {
-              // file in cache, and not a root temporary file
-              mInput.setInputType(EditorInfo.TYPE_NULL);
-              mInput.setSingleLine(false);
-              mInput.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+          if (viewModel.getFile().scheme.equals(FILE)
+                  && getExternalCacheDir() != null
+                  && viewModel
+                  .getFile()
+                  .hybridFileParcelable
+                  .getPath()
+                  .contains(getExternalCacheDir().getPath())
+                  && viewModel.getCacheFile() == null) {
+            // file in cache, and not a root temporary file
 
-              Snackbar snackbar =
-                  Snackbar.make(
-                      mInput,
-                      getResources().getString(R.string.file_read_only),
-                      Snackbar.LENGTH_INDEFINITE);
-              snackbar.setAction(
-                  getResources().getString(R.string.got_it).toUpperCase(), v -> snackbar.dismiss());
-              snackbar.show();
-            }
+            setReadOnly();
 
-            if (data.fileContents.isEmpty()) {
-              mInput.setHint(R.string.file_empty);
-            } else {
-              mInput.setHint(null);
-            }
-          } catch (OutOfMemoryError e) {
-            Toast.makeText(getApplicationContext(), R.string.error, Toast.LENGTH_SHORT).show();
-            finish();
+            Snackbar snackbar =
+                    Snackbar.make(
+                            mainTextView,
+                            getResources().getString(R.string.file_read_only),
+                            Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(
+                    getResources().getString(R.string.got_it).toUpperCase(), v -> snackbar.dismiss());
+            snackbar.show();
+          }
+
+          if (data.fileContents.isEmpty()) {
+            mainTextView.setHint(R.string.file_empty);
+          } else {
+            mainTextView.setHint(null);
+          }
+
+          if(data.fileIsTooLong) {
+            setReadOnly();
+
+            Snackbar snackbar =
+                    Snackbar.make(
+                            mainTextView,
+                            getResources().getString(R.string.file_too_long, MAX_FILE_SIZE_CHARS),
+                            Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(getResources().getString(R.string.got_it).toUpperCase(),
+                    v -> snackbar.dismiss());
+            snackbar.show();
           }
         };
 
@@ -342,6 +356,12 @@ public class TextEditorActivity extends ThemedActivity
         .subscribe(onAsyncTaskFinished, onError);
   }
 
+  private void setReadOnly() {
+    mainTextView.setInputType(EditorInfo.TYPE_NULL);
+    mainTextView.setSingleLine(false);
+    mainTextView.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+  }
+
   @Override
   public void onBackPressed() {
     checkUnsavedChanges();
@@ -359,7 +379,7 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     menu.findItem(R.id.save).setVisible(viewModel.getModified());
-    menu.findItem(R.id.monofont).setChecked(mInputTypefaceMono.equals(mInput.getTypeface()));
+    menu.findItem(R.id.monofont).setChecked(mInputTypefaceMono.equals(mainTextView.getTypeface()));
     return super.onPrepareOptionsMenu(menu);
   }
 
@@ -375,7 +395,7 @@ public class TextEditorActivity extends ThemedActivity
         break;
       case R.id.save:
         // Make sure EditText is visible before saving!
-        saveFile(mInput.getText().toString());
+        saveFile(mainTextView.getText().toString());
         break;
       case R.id.details:
         if (editableFileAbstraction.scheme.equals(FILE)
@@ -414,7 +434,7 @@ public class TextEditorActivity extends ThemedActivity
         break;
       case R.id.monofont:
         item.setChecked(!item.isChecked());
-        mInput.setTypeface(item.isChecked() ? mInputTypefaceMono : mInputTypefaceDefault);
+        mainTextView.setTypeface(item.isChecked() ? mInputTypefaceMono : mInputTypefaceDefault);
         break;
       default:
         return false;
@@ -453,7 +473,7 @@ public class TextEditorActivity extends ThemedActivity
 
   @Override
   public void onTextChanged(CharSequence charSequence, int i, int i2, int i3) {
-    if (charSequence.hashCode() == mInput.getText().hashCode()) {
+    if (charSequence.hashCode() == mainTextView.getText().hashCode()) {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
       final Timer oldTimer = viewModel.getTimer();
@@ -482,7 +502,7 @@ public class TextEditorActivity extends ThemedActivity
                   new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
 
               modified =
-                  !textEditorActivity.mInput.getText().toString().equals(viewModel.getOriginal());
+                  !textEditorActivity.mainTextView.getText().toString().equals(viewModel.getOriginal());
               if (viewModel.getModified() != modified) {
                 viewModel.setModified(modified);
                 invalidateOptionsMenu();
@@ -540,7 +560,7 @@ public class TextEditorActivity extends ThemedActivity
 
       searchTextTask =
           new SearchTextTask(
-              mInput.getText().toString(),
+              mainTextView.getText().toString(),
               editable.toString(),
               onProgressUpdate,
               onAsyncTaskFinished);
@@ -673,8 +693,8 @@ public class TextEditorActivity extends ThemedActivity
     scrollView.scrollTo(
         0,
         (Integer) keyValueNew.getLineNumber()
-            + mInput.getLineHeight()
-            + Math.round(mInput.getLineSpacingExtra())
+            + mainTextView.getLineHeight()
+            + Math.round(mainTextView.getLineSpacingExtra())
             - getSupportActionBar().getHeight());
   }
 
@@ -690,7 +710,7 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   private void colorSearchResult(SearchResultIndex resultIndex, @ColorInt int color) {
-    mInput
+    mainTextView
         .getText()
         .setSpan(
             new BackgroundColorSpan(color),
@@ -707,9 +727,9 @@ public class TextEditorActivity extends ThemedActivity
 
     // clearing textView spans
     BackgroundColorSpan[] colorSpans =
-        mInput.getText().getSpans(0, mInput.length(), BackgroundColorSpan.class);
+        mainTextView.getText().getSpans(0, mainTextView.length(), BackgroundColorSpan.class);
     for (BackgroundColorSpan colorSpan : colorSpans) {
-      mInput.getText().removeSpan(colorSpan);
+      mainTextView.getText().removeSpan(colorSpan);
     }
   }
 }

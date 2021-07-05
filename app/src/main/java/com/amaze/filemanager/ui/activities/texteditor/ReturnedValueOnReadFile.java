@@ -25,9 +25,11 @@ import java.io.File;
 public class ReturnedValueOnReadFile {
   public final String fileContents;
   public final File cachedFile;
+  public final boolean fileIsTooLong;
 
-  public ReturnedValueOnReadFile(String fileContents, File cachedFile) {
+  public ReturnedValueOnReadFile(String fileContents, File cachedFile, boolean fileIsTooLong) {
     this.fileContents = fileContents;
     this.cachedFile = cachedFile;
+    this.fileIsTooLong = fileIsTooLong;
   }
 }
