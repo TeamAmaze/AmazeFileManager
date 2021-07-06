@@ -87,6 +87,7 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.Unit;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
@@ -239,7 +240,7 @@ public class TextEditorActivity extends ThemedActivity
             viewModel.getCacheFile(),
             isRootExplorer());
 
-    final Consumer<Void> onFinished =
+    final Consumer<Unit> onFinished =
         (r) -> {
           viewModel.setOriginal(editTextString);
           viewModel.setModified(false);
@@ -250,6 +251,8 @@ public class TextEditorActivity extends ThemedActivity
 
     final Consumer<? super Throwable> onError =
         error -> {
+          Log.e(TAG, "Error on text write", error);
+
           if (error instanceof StreamNotFoundException) {
             Toast.makeText(
                     getApplicationContext(), R.string.error_file_not_found, Toast.LENGTH_SHORT)
@@ -340,7 +343,7 @@ public class TextEditorActivity extends ThemedActivity
         error -> {
           snack.dismiss();
 
-          Log.e(TAG, error.toString());
+          Log.e(TAG, "Error on text read", error);
 
           if (error instanceof StreamNotFoundException) {
             Toast.makeText(

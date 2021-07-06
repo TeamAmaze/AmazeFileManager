@@ -45,7 +45,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
-public class WriteFileAbstraction implements Callable<Void> {
+import kotlin.Unit;
+
+public class WriteFileAbstraction implements Callable<Unit> {
   private final WeakReference<Context> context;
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -70,7 +72,7 @@ public class WriteFileAbstraction implements Callable<Void> {
 
   @WorkerThread
   @Override
-  public Void call()
+  public Unit call()
       throws IOException, StreamNotFoundException, ShellNotRunningException,
           IllegalArgumentException {
     OutputStream outputStream;
@@ -122,7 +124,7 @@ public class WriteFileAbstraction implements Callable<Void> {
       ConcatenateFileCommand.INSTANCE.concatenateFile(cachedFile.getPath(), destFile.getPath());
       cachedFile.delete();
     }
-    return null;
+    return Unit.INSTANCE;
   }
 
   private OutputStream openFile(@NonNull File file, @NonNull Context context)
