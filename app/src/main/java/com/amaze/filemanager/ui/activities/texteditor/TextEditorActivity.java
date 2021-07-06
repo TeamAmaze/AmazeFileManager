@@ -66,6 +66,7 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -83,11 +84,14 @@ import androidx.annotation.ColorInt;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.reactivex.Flowable;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
+
+  private static final String TAG = TextEditorActivity.class.getSimpleName();
 
   public EditText mainTextView, searchEditText;
   private Typeface mInputTypefaceDefault, mInputTypefaceMono;
@@ -255,13 +259,17 @@ public class TextEditorActivity extends ThemedActivity
           } else if (error instanceof ShellNotRunningException) {
             Toast.makeText(getApplicationContext(), R.string.root_failure, Toast.LENGTH_SHORT)
                 .show();
+          } else {
+            Toast.makeText(
+                    getApplicationContext(), R.string.error, Toast.LENGTH_SHORT)
+                    .show();
           }
         };
 
     Flowable.fromCallable(task)
-        .subscribeOn(Schedulers.io())
-        .observeOn(Schedulers.single())
-        .subscribe(onFinished, onError);
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onFinished, onError);
   }
 
   /**
@@ -332,7 +340,7 @@ public class TextEditorActivity extends ThemedActivity
         error -> {
           snack.dismiss();
 
-          error.printStackTrace();
+          Log.e(TAG, error.toString());
 
           if (error instanceof StreamNotFoundException) {
             Toast.makeText(
@@ -351,9 +359,9 @@ public class TextEditorActivity extends ThemedActivity
         };
 
     Flowable.fromCallable(task)
-        .subscribeOn(Schedulers.io())
-        .observeOn(Schedulers.single())
-        .subscribe(onAsyncTaskFinished, onError);
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(onAsyncTaskFinished, onError);
   }
 
   private void setReadOnly() {
