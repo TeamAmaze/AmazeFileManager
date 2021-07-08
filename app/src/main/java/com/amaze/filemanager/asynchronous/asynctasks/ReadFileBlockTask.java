@@ -58,10 +58,10 @@ public class ReadFileBlockTask implements Callable<ReturnedValueOnReadFile> {
   private File cachedFile = null;
 
   public ReadFileBlockTask(
-          ContentResolver contentResolver,
-          EditableFileAbstraction file,
-          File cacheDir,
-          boolean isRootExplorer) {
+      ContentResolver contentResolver,
+      EditableFileAbstraction file,
+      File cacheDir,
+      boolean isRootExplorer) {
     this.contentResolver = contentResolver;
     this.fileAbstraction = file;
     this.externalCacheDir = cacheDir;

@@ -32,8 +32,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -225,23 +223,25 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   /**
-   * Method initiates a worker thread which writes the {@link #mainTextView} bytes to the defined file/uri
-   * 's output stream
+   * Method initiates a worker thread which writes the {@link #mainTextView} bytes to the defined
+   * file/uri 's output stream
    *
    * @param activity a reference to the current activity
    * @param editTextString the edit text string
    */
   private static void saveFile(final TextEditorActivity activity, final String editTextString) {
     final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(activity);
-    final WeakReference<Context> appContextWR = new WeakReference<>(activity.getApplicationContext());
+    final WeakReference<Context> appContextWR =
+        new WeakReference<>(activity.getApplicationContext());
 
     WriteFileAbstraction task;
 
     {
       final TextEditorActivityViewModel viewModel =
-              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
+          new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
-      task = new WriteFileAbstraction(
+      task =
+          new WriteFileAbstraction(
               activity,
               activity.getContentResolver(),
               viewModel.getFile(),
@@ -251,55 +251,51 @@ public class TextEditorActivity extends ThemedActivity
     }
 
     final Consumer<Unit> onFinished =
-            (r) -> {
-              final Context applicationContext = appContextWR.get();
-              if(applicationContext == null) {
-                return;
-              }
-              Toast.makeText(applicationContext, R.string.done, Toast.LENGTH_SHORT).show();
+        (r) -> {
+          final Context applicationContext = appContextWR.get();
+          if (applicationContext == null) {
+            return;
+          }
+          Toast.makeText(applicationContext, R.string.done, Toast.LENGTH_SHORT).show();
 
-              final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-              if(textEditorActivity == null) {
-                return;
-              }
+          final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
+          if (textEditorActivity == null) {
+            return;
+          }
 
-              final TextEditorActivityViewModel viewModel =
-                      new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
+          final TextEditorActivityViewModel viewModel =
+              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
-              viewModel.setOriginal(editTextString);
-              viewModel.setModified(false);
-              textEditorActivity.invalidateOptionsMenu();
-            };
+          viewModel.setOriginal(editTextString);
+          viewModel.setModified(false);
+          textEditorActivity.invalidateOptionsMenu();
+        };
 
     final Consumer<? super Throwable> onError =
-            error -> {
-              Log.e(TextEditorActivity.TAG, "Error on text write", error);
+        error -> {
+          Log.e(TextEditorActivity.TAG, "Error on text write", error);
 
-              final Context applicationContext = appContextWR.get();
-              if(applicationContext == null) {
-                return;
-              }
+          final Context applicationContext = appContextWR.get();
+          if (applicationContext == null) {
+            return;
+          }
 
-              if (error instanceof StreamNotFoundException) {
-                Toast.makeText(
-                        applicationContext, R.string.error_file_not_found, Toast.LENGTH_SHORT)
-                        .show();
-              } else if (error instanceof IOException) {
-                Toast.makeText(applicationContext, R.string.error_io, Toast.LENGTH_SHORT).show();
-              } else if (error instanceof ShellNotRunningException) {
-                Toast.makeText(applicationContext, R.string.root_failure, Toast.LENGTH_SHORT)
-                        .show();
-              } else {
-                Toast.makeText(
-                        applicationContext, R.string.error, Toast.LENGTH_SHORT)
-                        .show();
-              }
-            };
+          if (error instanceof StreamNotFoundException) {
+            Toast.makeText(applicationContext, R.string.error_file_not_found, Toast.LENGTH_SHORT)
+                .show();
+          } else if (error instanceof IOException) {
+            Toast.makeText(applicationContext, R.string.error_io, Toast.LENGTH_SHORT).show();
+          } else if (error instanceof ShellNotRunningException) {
+            Toast.makeText(applicationContext, R.string.root_failure, Toast.LENGTH_SHORT).show();
+          } else {
+            Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show();
+          }
+        };
 
     Flowable.fromCallable(task)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(onFinished, onError);
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(onFinished, onError);
   }
 
   /**
@@ -307,32 +303,39 @@ public class TextEditorActivity extends ThemedActivity
    */
   private static void load(final TextEditorActivity activity) {
     final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(activity);
-    final WeakReference<Context> appContextWR = new WeakReference<>(activity.getApplicationContext());
+    final WeakReference<Context> appContextWR =
+        new WeakReference<>(activity.getApplicationContext());
 
     final ReadFileBlockTask task;
 
     {
       final TextEditorActivityViewModel viewModel =
-              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
+          new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
-      if(activity.loadingSnackbar != null) {
+      if (activity.loadingSnackbar != null) {
         activity.loadingSnackbar.dismiss();
         activity.loadingSnackbar = null;
       }
-      activity.loadingSnackbar = Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
+      activity.loadingSnackbar =
+          Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
       activity.loadingSnackbar.show();
 
-      task = new ReadFileBlockTask(activity.getContentResolver(), viewModel.getFile(), activity.getExternalCacheDir(), activity.isRootExplorer());
+      task =
+          new ReadFileBlockTask(
+              activity.getContentResolver(),
+              viewModel.getFile(),
+              activity.getExternalCacheDir(),
+              activity.isRootExplorer());
     }
     final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished =
         (data) -> {
           final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-          if(textEditorActivity == null) {
+          if (textEditorActivity == null) {
             return;
           }
 
           final TextEditorActivityViewModel viewModel =
-                  new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
+              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
           textEditorActivity.loadingSnackbar.dismiss();
 
@@ -342,24 +345,25 @@ public class TextEditorActivity extends ThemedActivity
           textEditorActivity.mainTextView.setText(data.fileContents);
 
           if (viewModel.getFile().scheme.equals(FILE)
-                  && textEditorActivity.getExternalCacheDir() != null
-                  && viewModel
+              && textEditorActivity.getExternalCacheDir() != null
+              && viewModel
                   .getFile()
                   .hybridFileParcelable
                   .getPath()
                   .contains(textEditorActivity.getExternalCacheDir().getPath())
-                  && viewModel.getCacheFile() == null) {
+              && viewModel.getCacheFile() == null) {
             // file in cache, and not a root temporary file
 
             textEditorActivity.setReadOnly();
 
             Snackbar snackbar =
-                    Snackbar.make(
-                            textEditorActivity.mainTextView,
-                            R.string.file_read_only,
-                            Snackbar.LENGTH_INDEFINITE);
+                Snackbar.make(
+                    textEditorActivity.mainTextView,
+                    R.string.file_read_only,
+                    Snackbar.LENGTH_INDEFINITE);
             snackbar.setAction(
-                    textEditorActivity.getResources().getString(R.string.got_it).toUpperCase(), v -> snackbar.dismiss());
+                textEditorActivity.getResources().getString(R.string.got_it).toUpperCase(),
+                v -> snackbar.dismiss());
             snackbar.show();
           }
 
@@ -369,16 +373,19 @@ public class TextEditorActivity extends ThemedActivity
             textEditorActivity.mainTextView.setHint(null);
           }
 
-          if(data.fileIsTooLong) {
+          if (data.fileIsTooLong) {
             textEditorActivity.setReadOnly();
 
             Snackbar snackbar =
-                    Snackbar.make(
-                            textEditorActivity.mainTextView,
-                            textEditorActivity.getResources().getString(R.string.file_too_long, MAX_FILE_SIZE_CHARS),
-                            Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(textEditorActivity.getResources().getString(R.string.got_it).toUpperCase(),
-                    v -> snackbar.dismiss());
+                Snackbar.make(
+                    textEditorActivity.mainTextView,
+                    textEditorActivity
+                        .getResources()
+                        .getString(R.string.file_too_long, MAX_FILE_SIZE_CHARS),
+                    Snackbar.LENGTH_INDEFINITE);
+            snackbar.setAction(
+                textEditorActivity.getResources().getString(R.string.got_it).toUpperCase(),
+                v -> snackbar.dismiss());
             snackbar.show();
           }
         };
@@ -388,28 +395,27 @@ public class TextEditorActivity extends ThemedActivity
           Log.e(TAG, "Error on text read", error);
 
           final Context applicationContext = appContextWR.get();
-          if(applicationContext == null) {
+          if (applicationContext == null) {
             return;
           }
 
           if (error instanceof StreamNotFoundException) {
-            Toast.makeText(
-                    applicationContext, R.string.error_file_not_found, Toast.LENGTH_SHORT)
-                    .show();
+            Toast.makeText(applicationContext, R.string.error_file_not_found, Toast.LENGTH_SHORT)
+                .show();
           } else if (error instanceof IOException) {
             Toast.makeText(applicationContext, R.string.error_io, Toast.LENGTH_SHORT).show();
           } else if (error instanceof OutOfMemoryError) {
             Toast.makeText(applicationContext, R.string.error_file_too_large, Toast.LENGTH_SHORT)
-                    .show();
+                .show();
           }
 
           final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-          if(textEditorActivity == null) {
+          if (textEditorActivity == null) {
             return;
           }
 
           final TextEditorActivityViewModel viewModel =
-                  new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
+              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
           textEditorActivity.loadingSnackbar.dismiss();
 
@@ -417,9 +423,9 @@ public class TextEditorActivity extends ThemedActivity
         };
 
     Flowable.fromCallable(task)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe(onAsyncTaskFinished, onError);
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(onAsyncTaskFinished, onError);
   }
 
   private void setReadOnly() {
@@ -568,7 +574,11 @@ public class TextEditorActivity extends ThemedActivity
                   new ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel.class);
 
               modified =
-                  !textEditorActivity.mainTextView.getText().toString().equals(viewModel.getOriginal());
+                  !textEditorActivity
+                      .mainTextView
+                      .getText()
+                      .toString()
+                      .equals(viewModel.getOriginal());
               if (viewModel.getModified() != modified) {
                 viewModel.setModified(modified);
                 invalidateOptionsMenu();
