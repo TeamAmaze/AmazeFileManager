@@ -294,7 +294,6 @@ public class TextEditorActivity extends ThemedActivity
           }
 
           Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show();
-
         };
 
     Flowable.fromCallable(task)

@@ -39,7 +39,6 @@ import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 
 import android.content.ContentResolver;
-import android.util.Log;
 
 import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
@@ -69,7 +68,7 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
   @WorkerThread
   @Override
   public ReturnedValueOnReadFile call()
-          throws StreamNotFoundException, IOException, OutOfMemoryError, ShellNotRunningException {
+      throws StreamNotFoundException, IOException, OutOfMemoryError, ShellNotRunningException {
     InputStream inputStream;
 
     switch (fileAbstraction.scheme) {
@@ -134,7 +133,8 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
       try {
         inputStream = new FileInputStream(file.getAbsolutePath());
       } catch (FileNotFoundException e) {
-        throw new FileNotFoundException("Unable to open file [" + file.getAbsolutePath() + "] for reading");
+        throw new FileNotFoundException(
+            "Unable to open file [" + file.getAbsolutePath() + "] for reading");
       }
     } else {
       throw new IOException("Cannot read or write text file!");

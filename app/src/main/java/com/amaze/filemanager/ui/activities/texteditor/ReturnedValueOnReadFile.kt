@@ -17,8 +17,13 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.activities.texteditor
 
 import java.io.File
 
-class ReturnedValueOnReadFile(val fileContents: String, val cachedFile: File?, val fileIsTooLong: Boolean)
+class ReturnedValueOnReadFile(
+    val fileContents: String,
+    val cachedFile: File?,
+    val fileIsTooLong: Boolean
+)

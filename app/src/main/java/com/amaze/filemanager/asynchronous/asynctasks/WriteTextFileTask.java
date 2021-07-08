@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -123,8 +122,7 @@ public class WriteTextFileTask implements Callable<Unit> {
     return Unit.INSTANCE;
   }
 
-  private OutputStream openFile(@NonNull File file, @NonNull Context context)
-          throws IOException {
+  private OutputStream openFile(@NonNull File file, @NonNull Context context) throws IOException {
     OutputStream outputStream = FileUtil.getOutputStream(file, context);
 
     if (isRootExplorer && outputStream == null) {
