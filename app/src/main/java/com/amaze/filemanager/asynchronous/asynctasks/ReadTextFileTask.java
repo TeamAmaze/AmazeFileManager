@@ -48,8 +48,6 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
 
   public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
 
-  private static final String TAG = ReadTextFileTask.class.getSimpleName();
-
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
   private final File externalCacheDir;
@@ -72,8 +70,6 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
   @Override
   public ReturnedValueOnReadFile call()
           throws StreamNotFoundException, IOException, OutOfMemoryError, ShellNotRunningException {
-    StringBuilder stringBuilder = new StringBuilder();
-
     InputStream inputStream;
 
     switch (fileAbstraction.scheme) {
@@ -107,9 +103,7 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
             "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
     }
 
-    if (inputStream == null) {
-      throw new StreamNotFoundException();
-    }
+    Objects.requireNonNull(inputStream);
 
     InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
 
@@ -118,15 +112,16 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
     final int readChars = inputStreamReader.read(buffer);
     boolean tooLong = -1 != inputStream.read();
 
-    stringBuilder.append(buffer, 0, readChars);
-
     inputStreamReader.close();
 
-    return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile, tooLong);
+    final String fileContents = String.valueOf(buffer, 0, readChars);
+
+    return new ReturnedValueOnReadFile(fileContents, cachedFile, tooLong);
   }
 
-  private InputStream loadFile(File file) throws ShellNotRunningException, FileNotFoundException {
-    InputStream inputStream = null;
+  private InputStream loadFile(File file) throws ShellNotRunningException, IOException {
+    InputStream inputStream;
+
     if (!file.canWrite() && isRootExplorer) {
       // try loading stream associated using root
       cachedFile = new File(externalCacheDir, file.getName());
@@ -141,6 +136,8 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
       } catch (FileNotFoundException e) {
         throw new FileNotFoundException("Unable to open file [" + file.getAbsolutePath() + "] for reading");
       }
+    } else {
+      throw new IOException("Cannot read or write text file!");
     }
 
     return inputStream;

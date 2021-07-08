@@ -81,6 +81,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
 
 import io.reactivex.Flowable;
@@ -280,16 +281,20 @@ public class TextEditorActivity extends ThemedActivity
             return;
           }
 
+          @StringRes int errorMessage;
+
           if (error instanceof StreamNotFoundException) {
-            Toast.makeText(applicationContext, R.string.error_file_not_found, Toast.LENGTH_SHORT)
-                .show();
+            errorMessage = R.string.error_file_not_found;
           } else if (error instanceof IOException) {
-            Toast.makeText(applicationContext, R.string.error_io, Toast.LENGTH_SHORT).show();
+            errorMessage = R.string.error_io;
           } else if (error instanceof ShellNotRunningException) {
-            Toast.makeText(applicationContext, R.string.root_failure, Toast.LENGTH_SHORT).show();
+            errorMessage = R.string.root_failure;
           } else {
-            Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show();
+            errorMessage = R.string.error;
           }
+
+          Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show();
+
         };
 
     Flowable.fromCallable(task)
@@ -399,17 +404,19 @@ public class TextEditorActivity extends ThemedActivity
             return;
           }
 
+          @StringRes int errorMessage;
+
           if (error instanceof StreamNotFoundException) {
-            Toast.makeText(applicationContext, R.string.error_file_not_found, Toast.LENGTH_SHORT)
-                .show();
+            errorMessage = R.string.error_file_not_found;
           } else if (error instanceof IOException) {
-            Toast.makeText(applicationContext, R.string.error_io, Toast.LENGTH_SHORT).show();
+            errorMessage = R.string.error_io;
           } else if (error instanceof OutOfMemoryError) {
-            Toast.makeText(applicationContext, R.string.error_file_too_large, Toast.LENGTH_SHORT)
-                .show();
+            errorMessage = R.string.error_file_too_large;
           } else {
-            Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show();
+            errorMessage = R.string.error;
           }
+
+          Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show();
 
           final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
           if (textEditorActivity == null) {
