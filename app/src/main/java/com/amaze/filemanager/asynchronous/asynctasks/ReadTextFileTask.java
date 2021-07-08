@@ -71,7 +71,7 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
   @WorkerThread
   @Override
   public ReturnedValueOnReadFile call()
-      throws StreamNotFoundException, IOException, OutOfMemoryError {
+          throws StreamNotFoundException, IOException, OutOfMemoryError, ShellNotRunningException {
     StringBuilder stringBuilder = new StringBuilder();
 
     InputStream inputStream;
@@ -125,30 +125,21 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
     return new ReturnedValueOnReadFile(stringBuilder.toString(), cachedFile, tooLong);
   }
 
-  private InputStream loadFile(File file) {
+  private InputStream loadFile(File file) throws ShellNotRunningException, FileNotFoundException {
     InputStream inputStream = null;
     if (!file.canWrite() && isRootExplorer) {
       // try loading stream associated using root
-      try {
-        cachedFile = new File(externalCacheDir, file.getName());
-        // creating a cache file
-        CopyFilesCommand.INSTANCE.copyFiles(file.getAbsolutePath(), cachedFile.getPath());
+      cachedFile = new File(externalCacheDir, file.getName());
+      // creating a cache file
+      CopyFilesCommand.INSTANCE.copyFiles(file.getAbsolutePath(), cachedFile.getPath());
 
-        inputStream = new FileInputStream(cachedFile);
-      } catch (ShellNotRunningException e) {
-        e.printStackTrace();
-        inputStream = null;
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-        inputStream = null;
-      }
+      inputStream = new FileInputStream(cachedFile);
     } else if (file.canRead()) {
       // readable file in filesystem
       try {
         inputStream = new FileInputStream(file.getAbsolutePath());
       } catch (FileNotFoundException e) {
-        Log.e(TAG, "Unable to open file [" + file.getAbsolutePath() + "] for reading", e);
-        inputStream = null;
+        throw new FileNotFoundException("Unable to open file [" + file.getAbsolutePath() + "] for reading");
       }
     }
 

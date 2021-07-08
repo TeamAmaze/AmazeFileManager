@@ -407,15 +407,14 @@ public class TextEditorActivity extends ThemedActivity
           } else if (error instanceof OutOfMemoryError) {
             Toast.makeText(applicationContext, R.string.error_file_too_large, Toast.LENGTH_SHORT)
                 .show();
+          } else {
+            Toast.makeText(applicationContext, R.string.error, Toast.LENGTH_SHORT).show();
           }
 
           final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
           if (textEditorActivity == null) {
             return;
           }
-
-          final TextEditorActivityViewModel viewModel =
-              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
           textEditorActivity.loadingSnackbar.dismiss();
 
