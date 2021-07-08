@@ -22,10 +22,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.texteditor.write;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.Task;
+import com.amaze.filemanager.asynchronous.asynctasks.Task;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
@@ -35,13 +34,14 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
 
 import kotlin.Unit;
 
-public class WriteTextFileTask implements Task<Unit> {
+public class WriteTextFileTask implements Task<Unit, WriteTextFileCallable> {
   private static final String TAG = WriteTextFileTask.class.getSimpleName();
 
   private final String editTextString;
@@ -73,11 +73,12 @@ public class WriteTextFileTask implements Task<Unit> {
 
   @NonNull
   @Override
-  public Callable<Unit> getTask() {
+  public WriteTextFileCallable getTask() {
     return task;
   }
 
   @Override
+  @MainThread
   public void onError(@NonNull Throwable error) {
     Log.e(TAG, "Error on text write", error);
 
@@ -102,6 +103,7 @@ public class WriteTextFileTask implements Task<Unit> {
   }
 
   @Override
+  @MainThread
   public void onFinish(Unit value) {
     final Context applicationContext = appContextWR.get();
     if (applicationContext == null) {

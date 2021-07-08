@@ -25,10 +25,9 @@ import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FI
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.Task;
+import com.amaze.filemanager.asynchronous.asynctasks.Task;
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
@@ -39,16 +38,17 @@ import android.content.Context;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.MainThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
 
-public class ReadTextFileTask implements Task<ReturnedValueOnReadFile> {
+public class ReadTextFileTask implements Task<ReturnedValueOnReadFile, ReadTextFileCallable> {
   private static final String TAG = ReadTextFileTask.class.getSimpleName();
 
   private final WeakReference<TextEditorActivity> textEditorActivityWR;
   private final WeakReference<Context> appContextWR;
-  private final Callable<ReturnedValueOnReadFile> task;
+  private final ReadTextFileCallable task;
 
   public ReadTextFileTask(
       TextEditorActivity activity,
@@ -70,11 +70,12 @@ public class ReadTextFileTask implements Task<ReturnedValueOnReadFile> {
 
   @NonNull
   @Override
-  public Callable<ReturnedValueOnReadFile> getTask() {
+  public ReadTextFileCallable getTask() {
     return task;
   }
 
   @Override
+  @MainThread
   public void onError(@NonNull Throwable error) {
     Log.e(TAG, "Error on text read", error);
 
@@ -108,6 +109,7 @@ public class ReadTextFileTask implements Task<ReturnedValueOnReadFile> {
   }
 
   @Override
+  @MainThread
   public void onFinish(ReturnedValueOnReadFile data) {
     final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
     if (textEditorActivity == null) {

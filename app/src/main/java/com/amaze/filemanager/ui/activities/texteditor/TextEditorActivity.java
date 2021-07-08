@@ -33,8 +33,8 @@ import java.util.TimerTask;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.TaskKt;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.write.WriteTextFileTask;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -81,8 +81,6 @@ import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
-
-  private static final String TAG = TextEditorActivity.class.getSimpleName();
 
   public EditText mainTextView;
   public EditText searchEditText;
