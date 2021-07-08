@@ -81,21 +81,17 @@ public class WriteFileAbstraction implements Callable<Unit> {
     switch (fileAbstraction.scheme) {
       case CONTENT:
         Objects.requireNonNull(fileAbstraction.uri);
-        try {
-          if (fileAbstraction.uri.getAuthority().equals(context.get().getPackageName())) {
-            DocumentFile documentFile =
-                DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
-            if (documentFile != null && documentFile.exists() && documentFile.canWrite())
-              outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
-            else {
-              destFile = FileUtils.fromContentUri(fileAbstraction.uri);
-              outputStream = openFile(destFile, context.get());
-            }
-          } else {
+        if (fileAbstraction.uri.getAuthority().equals(context.get().getPackageName())) {
+          DocumentFile documentFile =
+              DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
+          if (documentFile != null && documentFile.exists() && documentFile.canWrite()) {
             outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+          } else {
+            destFile = FileUtils.fromContentUri(fileAbstraction.uri);
+            outputStream = openFile(destFile, context.get());
           }
-        } catch (FileNotFoundException e) {
-          throw new StreamNotFoundException(e);
+        } else {
+          outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
         }
         break;
       case FILE:
@@ -114,7 +110,7 @@ public class WriteFileAbstraction implements Callable<Unit> {
             "The scheme for '" + fileAbstraction.scheme + "' cannot be processed!");
     }
 
-    if (outputStream == null) throw new StreamNotFoundException();
+    Objects.requireNonNull(outputStream);
 
     outputStream.write(dataToSave.getBytes());
     outputStream.close();
@@ -128,19 +124,18 @@ public class WriteFileAbstraction implements Callable<Unit> {
   }
 
   private OutputStream openFile(@NonNull File file, @NonNull Context context)
-      throws FileNotFoundException {
+          throws IOException {
     OutputStream outputStream = FileUtil.getOutputStream(file, context);
 
     if (isRootExplorer && outputStream == null) {
       // try loading stream associated using root
-      try {
-        if (cachedFile != null && cachedFile.exists()) {
-          outputStream = new FileOutputStream(cachedFile);
-        }
-      } catch (FileNotFoundException e) {
-        e.printStackTrace();
-        outputStream = null;
+      if (cachedFile != null && cachedFile.exists()) {
+        outputStream = new FileOutputStream(cachedFile);
       }
+    }
+
+    if (outputStream == null) {
+      throw new IOException("Cannot read or write text file!");
     }
 
     return outputStream;
