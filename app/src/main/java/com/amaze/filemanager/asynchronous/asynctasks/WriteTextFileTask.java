@@ -125,11 +125,9 @@ public class WriteTextFileTask implements Callable<Unit> {
   private OutputStream openFile(@NonNull File file, @NonNull Context context) throws IOException {
     OutputStream outputStream = FileUtil.getOutputStream(file, context);
 
-    if (isRootExplorer && outputStream == null) {
-      // try loading stream associated using root
-      if (cachedFile != null && cachedFile.exists()) {
-        outputStream = new FileOutputStream(cachedFile);
-      }
+    // try loading stream associated using root
+    if (isRootExplorer && outputStream == null && cachedFile != null && cachedFile.exists()) {
+      outputStream = new FileOutputStream(cachedFile);
     }
 
     if (outputStream == null) {

@@ -24,7 +24,7 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
 import java.io.ByteArrayOutputStream;
@@ -81,7 +81,6 @@ public class WriteTextFileTaskTest {
         new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
-    assertTrue(true);
     assertEquals(contents, new String(bout.toByteArray(), StandardCharsets.UTF_8));
   }
 
@@ -96,7 +95,6 @@ public class WriteTextFileTaskTest {
         new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
-    assertTrue(true);
 
     String verify = IoUtils.readFully(new FileInputStream(file));
     assertEquals(contents, verify);
@@ -114,7 +112,6 @@ public class WriteTextFileTaskTest {
         new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
-    assertTrue(true);
 
     String verify = IoUtils.readFully(new FileInputStream(file));
     assertEquals(contents, verify);
@@ -134,7 +131,6 @@ public class WriteTextFileTaskTest {
         new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
     task.call();
-    assertTrue(true);
 
     String verify = IoUtils.readFully(new FileInputStream(file));
     assertEquals(contents, verify);
@@ -154,8 +150,9 @@ public class WriteTextFileTaskTest {
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true);
       task.call();
     } catch (StreamNotFoundException e) {
-      assertTrue(true);
+      return;
     }
+    fail();
   }
 
   @Test
@@ -174,8 +171,9 @@ public class WriteTextFileTaskTest {
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (StreamNotFoundException e) {
-      assertTrue(true);
+      return;
     }
+    fail();
   }
 
   @Test
@@ -195,8 +193,9 @@ public class WriteTextFileTaskTest {
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (ShellNotRunningException e) {
-      assertTrue(true);
+      return;
     }
+    fail();
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -213,7 +212,6 @@ public class WriteTextFileTaskTest {
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
 
     task.call();
-    assertTrue(true);
   }
 
   @Implements(FileUtil.class)

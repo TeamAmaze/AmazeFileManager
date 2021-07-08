@@ -95,8 +95,10 @@ public class TextEditorActivity extends ThemedActivity
 
   private static final String TAG = TextEditorActivity.class.getSimpleName();
 
-  public EditText mainTextView, searchEditText;
-  private Typeface mInputTypefaceDefault, mInputTypefaceMono;
+  public EditText mainTextView;
+  public EditText searchEditText;
+  private Typeface inputTypefaceDefault;
+  private Typeface inputTypefaceMono;
   private androidx.appcompat.widget.Toolbar toolbar;
   ScrollView scrollView;
 
@@ -107,7 +109,9 @@ public class TextEditorActivity extends ThemedActivity
   private static final String KEY_MONOFONT = "monofont";
 
   private RelativeLayout searchViewLayout;
-  public ImageButton upButton, downButton, closeButton;
+  public ImageButton upButton;
+  public ImageButton downButton;
+  public ImageButton closeButton;
 
   private Snackbar loadingSnackbar;
 
@@ -167,8 +171,8 @@ public class TextEditorActivity extends ThemedActivity
       mainTextView.setTypeface(Typeface.DEFAULT);
     }
 
-    mInputTypefaceDefault = mainTextView.getTypeface();
-    mInputTypefaceMono = Typeface.MONOSPACE;
+    inputTypefaceDefault = mainTextView.getTypeface();
+    inputTypefaceMono = Typeface.MONOSPACE;
 
     if (savedInstanceState != null) {
       viewModel.setOriginal(savedInstanceState.getString(KEY_ORIGINAL_TEXT));
@@ -176,7 +180,7 @@ public class TextEditorActivity extends ThemedActivity
       mainTextView.setText(savedInstanceState.getString(KEY_MODIFIED_TEXT));
       mainTextView.setScrollY(index);
       if (savedInstanceState.getBoolean(KEY_MONOFONT)) {
-        mainTextView.setTypeface(mInputTypefaceMono);
+        mainTextView.setTypeface(inputTypefaceMono);
       }
     } else {
       load(this);
@@ -193,7 +197,7 @@ public class TextEditorActivity extends ThemedActivity
     outState.putString(KEY_MODIFIED_TEXT, mainTextView.getText().toString());
     outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
-    outState.putBoolean(KEY_MONOFONT, mInputTypefaceMono.equals(mainTextView.getTypeface()));
+    outState.putBoolean(KEY_MONOFONT, inputTypefaceMono.equals(mainTextView.getTypeface()));
   }
 
   private void checkUnsavedChanges() {
@@ -456,7 +460,7 @@ public class TextEditorActivity extends ThemedActivity
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
 
     menu.findItem(R.id.save).setVisible(viewModel.getModified());
-    menu.findItem(R.id.monofont).setChecked(mInputTypefaceMono.equals(mainTextView.getTypeface()));
+    menu.findItem(R.id.monofont).setChecked(inputTypefaceMono.equals(mainTextView.getTypeface()));
     return super.onPrepareOptionsMenu(menu);
   }
 
@@ -511,7 +515,7 @@ public class TextEditorActivity extends ThemedActivity
         break;
       case R.id.monofont:
         item.setChecked(!item.isChecked());
-        mainTextView.setTypeface(item.isChecked() ? mInputTypefaceMono : mInputTypefaceDefault);
+        mainTextView.setTypeface(item.isChecked() ? inputTypefaceMono : inputTypefaceDefault);
         break;
       default:
         return false;
@@ -650,7 +654,7 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   /** show search view with a circular reveal animation */
-  void revealSearchView() {
+  private void revealSearchView() {
     int startRadius = 4;
     int endRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
@@ -686,7 +690,7 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   /** hide search view with a circular reveal animation */
-  void hideSearchView() {
+  private void hideSearchView() {
     int endRadius = 4;
     int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
 
@@ -754,6 +758,8 @@ public class TextEditorActivity extends ThemedActivity
         findViewById(R.id.searchview).setVisibility(View.GONE);
         cleanSpans(viewModel);
         break;
+      default:
+        throw new IllegalStateException();
     }
   }
 
