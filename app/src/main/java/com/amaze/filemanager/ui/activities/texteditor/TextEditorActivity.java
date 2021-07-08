@@ -37,7 +37,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.ReadTextFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
-import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
+import com.amaze.filemanager.asynchronous.asynctasks.WriteTextFileTask;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -235,14 +235,14 @@ public class TextEditorActivity extends ThemedActivity
     final WeakReference<Context> appContextWR =
         new WeakReference<>(activity.getApplicationContext());
 
-    WriteFileAbstraction task;
+    WriteTextFileTask task;
 
     {
       final TextEditorActivityViewModel viewModel =
           new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
 
       task =
-          new WriteFileAbstraction(
+          new WriteTextFileTask(
               activity,
               activity.getContentResolver(),
               viewModel.getFile(),

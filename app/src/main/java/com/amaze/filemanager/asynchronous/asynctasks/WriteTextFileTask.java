@@ -47,7 +47,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import kotlin.Unit;
 
-public class WriteFileAbstraction implements Callable<Unit> {
+public class WriteTextFileTask implements Callable<Unit> {
   private final WeakReference<Context> context;
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -55,7 +55,7 @@ public class WriteFileAbstraction implements Callable<Unit> {
   private final boolean isRootExplorer;
   private final String dataToSave;
 
-  public WriteFileAbstraction(
+  public WriteTextFileTask(
       Context context,
       ContentResolver contentResolver,
       EditableFileAbstraction file,

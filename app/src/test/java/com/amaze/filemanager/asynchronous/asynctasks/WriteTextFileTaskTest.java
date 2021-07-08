@@ -64,7 +64,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @Config(
     shadows = {ShadowMultiDex.class},
     sdk = {JELLY_BEAN, KITKAT, P})
-public class WriteFileAbstractionTest {
+public class WriteTextFileTaskTest {
 
   private static final String contents = "This is modified data";
 
@@ -77,8 +77,8 @@ public class WriteFileAbstractionTest {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     shadowOf(cr).registerOutputStream(uri, bout);
 
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
+    WriteTextFileTask task =
+        new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
     assertTrue(true);
@@ -92,8 +92,8 @@ public class WriteFileAbstractionTest {
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
+    WriteTextFileTask task =
+        new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
     assertTrue(true);
@@ -110,8 +110,8 @@ public class WriteFileAbstractionTest {
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
+    WriteTextFileTask task =
+        new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
     assertTrue(true);
@@ -130,8 +130,8 @@ public class WriteFileAbstractionTest {
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
+    WriteTextFileTask task =
+        new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
     task.call();
     assertTrue(true);
@@ -149,8 +149,8 @@ public class WriteFileAbstractionTest {
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
     try {
-      WriteFileAbstraction task =
-          new WriteFileAbstraction(
+      WriteTextFileTask task =
+          new WriteTextFileTask(
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true);
       task.call();
     } catch (StreamNotFoundException e) {
@@ -169,8 +169,8 @@ public class WriteFileAbstractionTest {
     ContentResolver cr = ctx.getContentResolver();
 
     try {
-      WriteFileAbstraction task =
-          new WriteFileAbstraction(
+      WriteTextFileTask task =
+          new WriteTextFileTask(
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (StreamNotFoundException e) {
@@ -190,8 +190,8 @@ public class WriteFileAbstractionTest {
     ContentResolver cr = ctx.getContentResolver();
 
     try {
-      WriteFileAbstraction task =
-          new WriteFileAbstraction(
+      WriteTextFileTask task =
+          new WriteTextFileTask(
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (ShellNotRunningException e) {
@@ -208,8 +208,8 @@ public class WriteFileAbstractionTest {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     shadowOf(cr).registerOutputStream(uri, bout);
 
-    WriteFileAbstraction task =
-        new WriteFileAbstraction(
+    WriteTextFileTask task =
+        new WriteTextFileTask(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
 
     task.call();
