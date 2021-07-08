@@ -20,13 +20,11 @@
 
 package com.amaze.filemanager.ui.activities.texteditor;
 
-import static com.amaze.filemanager.asynchronous.asynctasks.ReadTextFileTask.MAX_FILE_SIZE_CHARS;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
-import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.Collections;
 import java.util.List;
@@ -35,11 +33,10 @@ import java.util.TimerTask;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.asynctasks.ReadTextFileTask;
+import com.amaze.filemanager.asynchronous.TaskKt;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
-import com.amaze.filemanager.asynchronous.asynctasks.WriteTextFileTask;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileTask;
+import com.amaze.filemanager.asynchronous.asynctasks.texteditor.write.WriteTextFileTask;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -66,7 +63,6 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.text.style.BackgroundColorSpan;
 import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -81,14 +77,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.StringRes;
 import androidx.lifecycle.ViewModelProvider;
-
-import io.reactivex.Flowable;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.functions.Consumer;
-import io.reactivex.schedulers.Schedulers;
-import kotlin.Unit;
 
 public class TextEditorActivity extends ThemedActivity
     implements TextWatcher, View.OnClickListener {
@@ -239,208 +228,38 @@ public class TextEditorActivity extends ThemedActivity
     final WeakReference<Context> appContextWR =
         new WeakReference<>(activity.getApplicationContext());
 
-    WriteTextFileTask task;
-
-    {
-      final TextEditorActivityViewModel viewModel =
-          new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
-
-      task =
-          new WriteTextFileTask(
-              activity,
-              activity.getContentResolver(),
-              viewModel.getFile(),
-              editTextString,
-              viewModel.getCacheFile(),
-              activity.isRootExplorer());
-    }
-
-    final Consumer<Unit> onFinished =
-        (r) -> {
-          final Context applicationContext = appContextWR.get();
-          if (applicationContext == null) {
-            return;
-          }
-          Toast.makeText(applicationContext, R.string.done, Toast.LENGTH_SHORT).show();
-
-          final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-          if (textEditorActivity == null) {
-            return;
-          }
-
-          final TextEditorActivityViewModel viewModel =
-              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
-
-          viewModel.setOriginal(editTextString);
-          viewModel.setModified(false);
-          textEditorActivity.invalidateOptionsMenu();
-        };
-
-    final Consumer<? super Throwable> onError =
-        error -> {
-          Log.e(TextEditorActivity.TAG, "Error on text write", error);
-
-          final Context applicationContext = appContextWR.get();
-          if (applicationContext == null) {
-            return;
-          }
-
-          @StringRes int errorMessage;
-
-          if (error instanceof StreamNotFoundException) {
-            errorMessage = R.string.error_file_not_found;
-          } else if (error instanceof IOException) {
-            errorMessage = R.string.error_io;
-          } else if (error instanceof ShellNotRunningException) {
-            errorMessage = R.string.root_failure;
-          } else {
-            errorMessage = R.string.error;
-          }
-
-          Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show();
-        };
-
-    Flowable.fromCallable(task)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(onFinished, onError);
+    TaskKt.fromTask(
+        new WriteTextFileTask(activity, editTextString, textEditorActivityWR, appContextWR));
   }
 
   /**
    * Initiates loading of file/uri by getting an input stream associated with it on a worker thread
    */
   private static void load(final TextEditorActivity activity) {
+    activity.dismissLoadingSnackbar();
+
+    activity.loadingSnackbar =
+        Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
+    activity.loadingSnackbar.show();
+
     final WeakReference<TextEditorActivity> textEditorActivityWR = new WeakReference<>(activity);
     final WeakReference<Context> appContextWR =
         new WeakReference<>(activity.getApplicationContext());
 
-    final ReadTextFileTask task;
-
-    {
-      final TextEditorActivityViewModel viewModel =
-          new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
-
-      if (activity.loadingSnackbar != null) {
-        activity.loadingSnackbar.dismiss();
-        activity.loadingSnackbar = null;
-      }
-      activity.loadingSnackbar =
-          Snackbar.make(activity.scrollView, R.string.loading, Snackbar.LENGTH_SHORT);
-      activity.loadingSnackbar.show();
-
-      task =
-          new ReadTextFileTask(
-              activity.getContentResolver(),
-              viewModel.getFile(),
-              activity.getExternalCacheDir(),
-              activity.isRootExplorer());
-    }
-    final Consumer<ReturnedValueOnReadFile> onAsyncTaskFinished =
-        (data) -> {
-          final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-          if (textEditorActivity == null) {
-            return;
-          }
-
-          final TextEditorActivityViewModel viewModel =
-              new ViewModelProvider(activity).get(TextEditorActivityViewModel.class);
-
-          textEditorActivity.loadingSnackbar.dismiss();
-
-          viewModel.setCacheFile(data.getCachedFile());
-          viewModel.setOriginal(data.getFileContents());
-
-          textEditorActivity.mainTextView.setText(data.getFileContents());
-
-          if (viewModel.getFile().scheme.equals(FILE)
-              && textEditorActivity.getExternalCacheDir() != null
-              && viewModel
-                  .getFile()
-                  .hybridFileParcelable
-                  .getPath()
-                  .contains(textEditorActivity.getExternalCacheDir().getPath())
-              && viewModel.getCacheFile() == null) {
-            // file in cache, and not a root temporary file
-
-            textEditorActivity.setReadOnly();
-
-            Snackbar snackbar =
-                Snackbar.make(
-                    textEditorActivity.mainTextView,
-                    R.string.file_read_only,
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(
-                textEditorActivity.getResources().getString(R.string.got_it).toUpperCase(),
-                v -> snackbar.dismiss());
-            snackbar.show();
-          }
-
-          if (data.getFileContents().isEmpty()) {
-            textEditorActivity.mainTextView.setHint(R.string.file_empty);
-          } else {
-            textEditorActivity.mainTextView.setHint(null);
-          }
-
-          if (data.getFileIsTooLong()) {
-            textEditorActivity.setReadOnly();
-
-            Snackbar snackbar =
-                Snackbar.make(
-                    textEditorActivity.mainTextView,
-                    textEditorActivity
-                        .getResources()
-                        .getString(R.string.file_too_long, MAX_FILE_SIZE_CHARS),
-                    Snackbar.LENGTH_INDEFINITE);
-            snackbar.setAction(
-                textEditorActivity.getResources().getString(R.string.got_it).toUpperCase(),
-                v -> snackbar.dismiss());
-            snackbar.show();
-          }
-        };
-
-    final Consumer<? super Throwable> onError =
-        error -> {
-          Log.e(TAG, "Error on text read", error);
-
-          final Context applicationContext = appContextWR.get();
-          if (applicationContext == null) {
-            return;
-          }
-
-          @StringRes int errorMessage;
-
-          if (error instanceof StreamNotFoundException) {
-            errorMessage = R.string.error_file_not_found;
-          } else if (error instanceof IOException) {
-            errorMessage = R.string.error_io;
-          } else if (error instanceof OutOfMemoryError) {
-            errorMessage = R.string.error_file_too_large;
-          } else {
-            errorMessage = R.string.error;
-          }
-
-          Toast.makeText(applicationContext, errorMessage, Toast.LENGTH_SHORT).show();
-
-          final TextEditorActivity textEditorActivity = textEditorActivityWR.get();
-          if (textEditorActivity == null) {
-            return;
-          }
-
-          textEditorActivity.loadingSnackbar.dismiss();
-
-          textEditorActivity.finish();
-        };
-
-    Flowable.fromCallable(task)
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(onAsyncTaskFinished, onError);
+    TaskKt.fromTask(new ReadTextFileTask(activity, textEditorActivityWR, appContextWR));
   }
 
-  private void setReadOnly() {
+  public void setReadOnly() {
     mainTextView.setInputType(EditorInfo.TYPE_NULL);
     mainTextView.setSingleLine(false);
     mainTextView.setImeOptions(EditorInfo.IME_FLAG_NO_ENTER_ACTION);
+  }
+
+  public void dismissLoadingSnackbar() {
+    if (loadingSnackbar != null) {
+      loadingSnackbar.dismiss();
+      loadingSnackbar = null;
+    }
   }
 
   @Override

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -43,7 +43,7 @@ import android.content.ContentResolver;
 import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
-public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
+public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
   public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
 
@@ -54,7 +54,7 @@ public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
 
   private File cachedFile = null;
 
-  public ReadTextFileTask(
+  public ReadTextFileCallable(
       ContentResolver contentResolver,
       EditableFileAbstraction file,
       File cacheDir,

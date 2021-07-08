@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.texteditor.write;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -46,7 +46,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 import kotlin.Unit;
 
-public class WriteTextFileTask implements Callable<Unit> {
+public class WriteTextFileCallable implements Callable<Unit> {
   private final WeakReference<Context> context;
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -54,7 +54,7 @@ public class WriteTextFileTask implements Callable<Unit> {
   private final boolean isRootExplorer;
   private final String dataToSave;
 
-  public WriteTextFileTask(
+  public WriteTextFileCallable(
       Context context,
       ContentResolver contentResolver,
       EditableFileAbstraction file,

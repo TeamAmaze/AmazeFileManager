@@ -45,6 +45,7 @@ import org.robolectric.annotation.Config;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
+import com.amaze.filemanager.asynchronous.asynctasks.texteditor.write.WriteTextFileCallable;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
@@ -64,7 +65,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 @Config(
     shadows = {ShadowMultiDex.class},
     sdk = {JELLY_BEAN, KITKAT, P})
-public class WriteTextFileTaskTest {
+public class WriteTextFileCallableTest {
 
   private static final String contents = "This is modified data";
 
@@ -77,8 +78,8 @@ public class WriteTextFileTaskTest {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     shadowOf(cr).registerOutputStream(uri, bout);
 
-    WriteTextFileTask task =
-        new WriteTextFileTask(
+    WriteTextFileCallable task =
+        new WriteTextFileCallable(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
     assertEquals(contents, new String(bout.toByteArray(), StandardCharsets.UTF_8));
@@ -91,8 +92,8 @@ public class WriteTextFileTaskTest {
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteTextFileTask task =
-        new WriteTextFileTask(
+    WriteTextFileCallable task =
+        new WriteTextFileCallable(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
 
@@ -108,8 +109,8 @@ public class WriteTextFileTaskTest {
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteTextFileTask task =
-        new WriteTextFileTask(
+    WriteTextFileCallable task =
+        new WriteTextFileCallable(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
     task.call();
 
@@ -127,8 +128,8 @@ public class WriteTextFileTaskTest {
     Uri uri = Uri.fromFile(file);
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
-    WriteTextFileTask task =
-        new WriteTextFileTask(
+    WriteTextFileCallable task =
+        new WriteTextFileCallable(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
     task.call();
 
@@ -145,8 +146,8 @@ public class WriteTextFileTaskTest {
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
     try {
-      WriteTextFileTask task =
-          new WriteTextFileTask(
+      WriteTextFileCallable task =
+          new WriteTextFileCallable(
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, true);
       task.call();
     } catch (StreamNotFoundException e) {
@@ -166,8 +167,8 @@ public class WriteTextFileTaskTest {
     ContentResolver cr = ctx.getContentResolver();
 
     try {
-      WriteTextFileTask task =
-          new WriteTextFileTask(
+      WriteTextFileCallable task =
+          new WriteTextFileCallable(
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (StreamNotFoundException e) {
@@ -188,8 +189,8 @@ public class WriteTextFileTaskTest {
     ContentResolver cr = ctx.getContentResolver();
 
     try {
-      WriteTextFileTask task =
-          new WriteTextFileTask(
+      WriteTextFileCallable task =
+          new WriteTextFileCallable(
               ctx, cr, new EditableFileAbstraction(ctx, uri), contents, cacheFile, true);
       task.call();
     } catch (ShellNotRunningException e) {
@@ -207,8 +208,8 @@ public class WriteTextFileTaskTest {
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
     shadowOf(cr).registerOutputStream(uri, bout);
 
-    WriteTextFileTask task =
-        new WriteTextFileTask(
+    WriteTextFileCallable task =
+        new WriteTextFileCallable(
             ctx, cr, new EditableFileAbstraction(ctx, uri), contents, null, false);
 
     task.call();
