@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.activities.texteditor;
 
-import static com.amaze.filemanager.asynchronous.asynctasks.ReadFileBlockTask.MAX_FILE_SIZE_CHARS;
+import static com.amaze.filemanager.asynchronous.asynctasks.ReadTextFileTask.MAX_FILE_SIZE_CHARS;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FILE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
@@ -35,7 +35,7 @@ import java.util.TimerTask;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.asynctasks.ReadFileBlockTask;
+import com.amaze.filemanager.asynchronous.asynctasks.ReadTextFileTask;
 import com.amaze.filemanager.asynchronous.asynctasks.SearchTextTask;
 import com.amaze.filemanager.asynchronous.asynctasks.WriteFileAbstraction;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
@@ -306,7 +306,7 @@ public class TextEditorActivity extends ThemedActivity
     final WeakReference<Context> appContextWR =
         new WeakReference<>(activity.getApplicationContext());
 
-    final ReadFileBlockTask task;
+    final ReadTextFileTask task;
 
     {
       final TextEditorActivityViewModel viewModel =
@@ -321,7 +321,7 @@ public class TextEditorActivity extends ThemedActivity
       activity.loadingSnackbar.show();
 
       task =
-          new ReadFileBlockTask(
+          new ReadTextFileTask(
               activity.getContentResolver(),
               viewModel.getFile(),
               activity.getExternalCacheDir(),

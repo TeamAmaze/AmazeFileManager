@@ -44,11 +44,11 @@ import android.util.Log;
 import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
-public class ReadFileBlockTask implements Callable<ReturnedValueOnReadFile> {
+public class ReadTextFileTask implements Callable<ReturnedValueOnReadFile> {
 
   public static final int MAX_FILE_SIZE_CHARS = 50 * 1024;
 
-  private static final String TAG = ReadFileBlockTask.class.getSimpleName();
+  private static final String TAG = ReadTextFileTask.class.getSimpleName();
 
   private final ContentResolver contentResolver;
   private final EditableFileAbstraction fileAbstraction;
@@ -57,7 +57,7 @@ public class ReadFileBlockTask implements Callable<ReturnedValueOnReadFile> {
 
   private File cachedFile = null;
 
-  public ReadFileBlockTask(
+  public ReadTextFileTask(
       ContentResolver contentResolver,
       EditableFileAbstraction file,
       File cacheDir,
