@@ -339,10 +339,10 @@ public class TextEditorActivity extends ThemedActivity
 
           textEditorActivity.loadingSnackbar.dismiss();
 
-          viewModel.setCacheFile(data.cachedFile);
-          viewModel.setOriginal(data.fileContents);
+          viewModel.setCacheFile(data.getCachedFile());
+          viewModel.setOriginal(data.getFileContents());
 
-          textEditorActivity.mainTextView.setText(data.fileContents);
+          textEditorActivity.mainTextView.setText(data.getFileContents());
 
           if (viewModel.getFile().scheme.equals(FILE)
               && textEditorActivity.getExternalCacheDir() != null
@@ -367,13 +367,13 @@ public class TextEditorActivity extends ThemedActivity
             snackbar.show();
           }
 
-          if (data.fileContents.isEmpty()) {
+          if (data.getFileContents().isEmpty()) {
             textEditorActivity.mainTextView.setHint(R.string.file_empty);
           } else {
             textEditorActivity.mainTextView.setHint(null);
           }
 
-          if (data.fileIsTooLong) {
+          if (data.getFileIsTooLong()) {
             textEditorActivity.setReadOnly();
 
             Snackbar snackbar =

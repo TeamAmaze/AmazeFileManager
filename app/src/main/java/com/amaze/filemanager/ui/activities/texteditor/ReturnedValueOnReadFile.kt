@@ -17,19 +17,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.activities.texteditor
 
-package com.amaze.filemanager.ui.activities.texteditor;
+import java.io.File
 
-import java.io.File;
-
-public class ReturnedValueOnReadFile {
-  public final String fileContents;
-  public final File cachedFile;
-  public final boolean fileIsTooLong;
-
-  public ReturnedValueOnReadFile(String fileContents, File cachedFile, boolean fileIsTooLong) {
-    this.fileContents = fileContents;
-    this.cachedFile = cachedFile;
-    this.fileIsTooLong = fileIsTooLong;
-  }
-}
+class ReturnedValueOnReadFile(val fileContents: String, val cachedFile: File?, val fileIsTooLong: Boolean)
