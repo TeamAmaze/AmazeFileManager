@@ -97,13 +97,15 @@ class ReadTextFileTask(
         val externalCacheDir = textEditorActivity.externalCacheDir
 
         textEditorActivity.mainTextView.setText(value.fileContents)
-        if (
+
+        // file in cache, and not a root temporary file
+        val isFileInCacheAndNotRoot =
             file.scheme == EditableFileAbstraction.Scheme.FILE &&
-            externalCacheDir != null &&
-            file.hybridFileParcelable.path.contains(externalCacheDir.path) &&
-            viewModel.cacheFile == null
-        ) {
-            // file in cache, and not a root temporary file
+                externalCacheDir != null &&
+                file.hybridFileParcelable.path.contains(externalCacheDir.path) &&
+                viewModel.cacheFile == null
+
+        if (isFileInCacheAndNotRoot) {
             textEditorActivity.setReadOnly()
             val snackbar = Snackbar.make(
                 textEditorActivity.mainTextView,
@@ -116,6 +118,7 @@ class ReadTextFileTask(
             ) { snackbar.dismiss() }
             snackbar.show()
         }
+
         if (value.fileContents.isEmpty()) {
             textEditorActivity.mainTextView.setHint(R.string.file_empty)
         } else {

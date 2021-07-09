@@ -48,6 +48,9 @@ interface Task<V, T : Callable<V>> {
     fun onFinish(value: V)
 }
 
+/**
+ * This creates and starts a [Flowable] from a [Task].
+ */
 fun <V, T : Callable<V>> fromTask(task: Task<V, T>): Disposable {
     return Flowable.fromCallable(task.getTask())
         .subscribeOn(Schedulers.io())
