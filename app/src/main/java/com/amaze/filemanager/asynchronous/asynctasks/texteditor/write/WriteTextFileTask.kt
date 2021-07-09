@@ -23,9 +23,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.texteditor.write
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
-import androidx.lifecycle.ViewModelProvider
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
@@ -49,7 +49,7 @@ class WriteTextFileTask(
     private val task: WriteTextFileCallable
 
     init {
-        val viewModel = ViewModelProvider(activity).get(TextEditorActivityViewModel::class.java)
+        val viewModel: TextEditorActivityViewModel by activity.viewModels()
         task = WriteTextFileCallable(
             activity,
             activity.contentResolver,
@@ -88,8 +88,8 @@ class WriteTextFileTask(
         val applicationContext = appContextWR.get() ?: return
         Toast.makeText(applicationContext, R.string.done, Toast.LENGTH_SHORT).show()
         val textEditorActivity = textEditorActivityWR.get() ?: return
-        val viewModel = ViewModelProvider(textEditorActivity)
-            .get(TextEditorActivityViewModel::class.java)
+        val viewModel: TextEditorActivityViewModel by textEditorActivity.viewModels()
+
         viewModel.original = editTextString
         viewModel.modified = false
         textEditorActivity.invalidateOptionsMenu()

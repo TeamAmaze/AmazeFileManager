@@ -23,9 +23,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read
 import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
-import androidx.lifecycle.ViewModelProvider
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException
@@ -51,7 +51,7 @@ class ReadTextFileTask(
     }
 
     init {
-        val viewModel = ViewModelProvider(activity).get(TextEditorActivityViewModel::class.java)
+        val viewModel: TextEditorActivityViewModel by activity.viewModels()
         task = ReadTextFileCallable(
             activity.contentResolver,
             viewModel.file,
@@ -89,8 +89,7 @@ class ReadTextFileTask(
     @MainThread
     override fun onFinish(value: ReturnedValueOnReadFile) {
         val textEditorActivity = textEditorActivityWR.get() ?: return
-        val viewModel =
-            ViewModelProvider(textEditorActivity).get(TextEditorActivityViewModel::class.java)
+        val viewModel: TextEditorActivityViewModel by textEditorActivity.viewModels()
         textEditorActivity.dismissLoadingSnackbar()
         viewModel.cacheFile = value.cachedFile
         viewModel.original = value.fileContents
