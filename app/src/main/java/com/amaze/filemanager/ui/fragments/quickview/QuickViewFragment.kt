@@ -225,7 +225,7 @@ class QuickViewFragment : Fragment() {
      * see [MainFragment.onQuickViewClicked]
      */
     fun exit() {
-        // Fix fab visibility when changing workspaces
+        // TODO Fix fab visibility when changing workspaces
 
         parentFragmentManager
             .beginTransaction()
