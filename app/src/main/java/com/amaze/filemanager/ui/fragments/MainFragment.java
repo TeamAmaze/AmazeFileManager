@@ -38,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -64,6 +65,9 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
+import com.amaze.filemanager.ui.fragments.quickview.QuickViewFragment;
+import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewImage;
+import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewType;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -530,6 +534,8 @@ public class MainFragment extends Fragment
 
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+          assureNoQuickView();
+
           computeScroll();
           ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
           switch (item.getItemId()) {
@@ -707,6 +713,28 @@ public class MainFragment extends Fragment
         }
       };
 
+  /** When TabFragment detects this fragment is in view it calls this method */
+  public void onWorkspaceSelected() {
+    if (getCurrentPath() != null) {
+      getMainActivity().getDrawer().selectCorrectDrawerItemForPath(getCurrentPath());
+    }
+
+    final QuickViewFragment quickViewFragment = getCurrentQuickView();
+
+    if (quickViewFragment != null) {
+      quickViewFragment.runOpenVisibilityChanges();
+    }
+  }
+
+  /** When TabFragment detects this fragment is not in view it calls this method */
+  public void onWorkspaceUnselected() {
+    final QuickViewFragment quickViewFragment = getCurrentQuickView();
+
+    if (quickViewFragment != null) {
+      quickViewFragment.runExitVisibilityChanges();
+    }
+  }
+
   private BroadcastReceiver receiver2 =
       new BroadcastReceiver() {
 
@@ -866,6 +894,33 @@ public class MainFragment extends Fragment
         }
       }
     }
+  }
+
+  public void onQuickViewClicked(LayoutElementParcelable layoutElementParcelable) {
+    final IconDataParcelable iconData = layoutElementParcelable.iconData;
+
+    final QuickViewType quickViewType = new QuickViewImage(iconData, layoutElementParcelable.title);
+    final QuickViewFragment fragment = QuickViewFragment.newInstance(quickViewType);
+
+    getChildFragmentManager()
+        .beginTransaction()
+        .replace(R.id.quickViewContainer, fragment, MainActivity.TAG_QUICK_VIEW_FRAGMENT)
+        .commit();
+  }
+
+  private void assureNoQuickView() {
+    QuickViewFragment fragment = getCurrentQuickView();
+
+    if (fragment == null) {
+      return;
+    }
+
+    fragment.exit();
+  }
+
+  @Nullable
+  private QuickViewFragment getCurrentQuickView() {
+    return (QuickViewFragment) getChildFragmentManager().findFragmentById(R.id.quickViewContainer);
   }
 
   public void updateTabWithDb(Tab tab) {

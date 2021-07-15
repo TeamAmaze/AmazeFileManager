@@ -1,4 +1,5 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/second"
     android:layout_width="match_parent"
     android:layout_height="170dp"
@@ -74,6 +75,20 @@
             android:layout_height="wrap_content">
 
             <ImageButton
+                android:id="@+id/quickView"
+                android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:layout_toLeftOf="@+id/properties"
+                android:layout_toStartOf="@+id/properties"
+                android:background="@drawable/ripple"
+                android:clickable="true"
+                android:padding="1dp"
+                app:srcCompat="@drawable/ic_baseline_remove_red_eye_24"
+                android:focusable="true" />
+
+            <ImageButton
                 android:id="@+id/properties"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -91,8 +106,8 @@
                 android:id="@+id/line1"
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
-                android:layout_toStartOf="@+id/properties"
-                android:layout_toLeftOf="@id/properties"
+                android:layout_toStartOf="@+id/quickView"
+                android:layout_toLeftOf="@id/quickView"
                 android:baselineAligned="false"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
@@ -124,12 +139,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_below="@id/line1"
-                android:layout_toStartOf="@+id/properties"
-                android:layout_toLeftOf="@id/properties"
+                android:layout_toStartOf="@+id/quickView"
+                android:layout_toLeftOf="@id/quickView"
                 android:baselineAligned="false"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
-
 
                 <TextView
                     android:id="@+id/secondLine"

@@ -97,6 +97,8 @@ public class BottomBar implements View.OnTouchListener {
   private CountDownTimer timer;
   private GestureDetector gestureDetector;
 
+  private boolean isEnabledClick = true;
+
   public BottomBar(AppBar appbar, MainActivity a) {
     mainActivity = a;
     this.appbar = appbar;
@@ -221,6 +223,10 @@ public class BottomBar implements View.OnTouchListener {
 
   public boolean areButtonsShowing() {
     return buttons.getVisibility() == View.VISIBLE;
+  }
+
+  public void setIsClickEnabled(boolean isEnabled) {
+    isEnabledClick = isEnabled;
   }
 
   public void showButtons(final BottomBarButtonPath buttonPathInterface) {
@@ -567,6 +573,10 @@ public class BottomBar implements View.OnTouchListener {
 
   @Override
   public boolean onTouch(View v, MotionEvent event) {
+    if (!isEnabledClick) {
+      return true;
+    }
+
     return gestureDetector.onTouchEvent(event);
   }
 }
