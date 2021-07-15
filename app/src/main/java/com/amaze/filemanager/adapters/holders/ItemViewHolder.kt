@@ -69,6 +69,9 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val about: ImageButton = view.findViewById(R.id.properties)
 
     @JvmField
+    val quickView: ImageButton = view.findViewById(R.id.quickView)
+
+    @JvmField
     val checkImageView: ImageView? = view.findViewById(R.id.check_icon)
 
     @JvmField

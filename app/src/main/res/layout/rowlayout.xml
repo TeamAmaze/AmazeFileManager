@@ -18,6 +18,7 @@
     -->
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/second"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -94,6 +95,24 @@
     </RelativeLayout>
 
     <ImageButton
+        android:id="@+id/quickView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@id/properties"
+        android:layout_alignTop="@id/properties"
+        android:layout_centerVertical="true"
+        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_toLeftOf="@+id/properties"
+        android:layout_toStartOf="@+id/properties"
+        android:background="@drawable/ripple"
+        android:clickable="true"
+        android:focusable="true"
+        android:padding="8dp"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_baseline_remove_red_eye_24" />
+
+    <ImageButton
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/properties"
@@ -101,8 +120,6 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="16dp"
-        android:layout_marginStart="16dp"
         android:padding="8dp"
         android:clickable="true"
         android:src="@drawable/ic_more_vert_black_48dp"
@@ -113,8 +130,8 @@
     <RelativeLayout
         android:layout_toRightOf="@id/icon_frame_grid"
         android:layout_toEndOf="@id/icon_frame_grid"
-        android:layout_toLeftOf="@id/properties"
-        android:layout_toStartOf="@id/properties"
+        android:layout_toLeftOf="@id/quickView"
+        android:layout_toStartOf="@id/quickView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true">

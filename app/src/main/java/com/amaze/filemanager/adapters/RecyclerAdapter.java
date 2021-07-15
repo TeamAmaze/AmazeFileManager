@@ -33,6 +33,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import java.util.ArrayList;
 import java.util.List;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
@@ -50,6 +51,7 @@ import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.quickview.HasQuickView;
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
@@ -732,6 +734,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
               }
               return true;
             });
+
+        if (HasQuickView.hasQuickView(rowItem.filetype) && BuildConfig.DEBUG) {
+          holder.quickView.setVisibility(View.VISIBLE);
+          final View.OnClickListener listener = v -> mainFrag.onQuickViewClicked(rowItem);
+          holder.quickView.setOnClickListener(listener);
+        }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
           holder.checkImageView.setBackground(

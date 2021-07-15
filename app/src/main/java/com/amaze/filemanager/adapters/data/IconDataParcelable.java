@@ -20,10 +20,16 @@
 
 package com.amaze.filemanager.adapters.data;
 
+import com.amaze.filemanager.GlideRequests;
+import com.bumptech.glide.RequestBuilder;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+
+import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
 import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
 
 /**
  * Saves data on what should be loaded as an icon for LayoutElementParcelable
@@ -62,6 +68,22 @@ public class IconDataParcelable implements Parcelable {
 
   public void setImageBroken(boolean imageBroken) {
     isImageBroken = imageBroken;
+  }
+
+  /**
+   * This is hack to load this icon to a request: The problem is that cloud icons cannot be cached.
+   */
+  @NonNull
+  public RequestBuilder<Drawable> getPreloadRequestBuilder(@NonNull GlideRequests request) {
+    if (type == IconDataParcelable.IMAGE_FROMFILE) {
+      return request.load(path);
+    }
+
+    if (type == IconDataParcelable.IMAGE_FROMCLOUD) {
+      return request.load(path).diskCacheStrategy(DiskCacheStrategy.NONE);
+    }
+
+    return request.load(image);
   }
 
   @Override

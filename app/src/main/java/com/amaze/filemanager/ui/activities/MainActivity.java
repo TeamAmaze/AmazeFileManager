@@ -114,6 +114,7 @@ import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.quickview.QuickViewFragment;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
@@ -203,6 +204,7 @@ public class MainActivity extends PermissionsActivity
 
   public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
   public static final String TAG_ASYNC_HELPER = "async_helper";
+  public static final String TAG_QUICK_VIEW_FRAGMENT = "quick_view_fragment";
 
   private DataUtils dataUtils;
 
@@ -829,6 +831,14 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void onBackPressed() {
+    Fragment quickViewFragment =
+        getSupportFragmentManager().findFragmentById(R.id.quickViewContainer);
+
+    if (quickViewFragment != null) {
+      ((QuickViewFragment) quickViewFragment).onBackPressed();
+      return;
+    }
+
     if (!drawer.isLocked() && drawer.isOpen()) {
       drawer.close();
       return;

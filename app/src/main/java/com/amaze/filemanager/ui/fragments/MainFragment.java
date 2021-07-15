@@ -40,6 +40,7 @@ import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.application.AppConfig;
@@ -67,6 +68,9 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
+import com.amaze.filemanager.ui.fragments.quickview.QuickViewFragment;
+import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewImage;
+import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewType;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
@@ -76,6 +80,7 @@ import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.ui.views.appbar.BottomBar;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -558,6 +563,8 @@ public class MainFragment extends Fragment
 
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
+          assureNoQuickView();
+
           computeScroll();
           ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
           switch (item.getItemId()) {
@@ -906,6 +913,37 @@ public class MainFragment extends Fragment
         }
       }
     }
+  }
+
+  public void onQuickViewClicked(LayoutElementParcelable layoutElementParcelable) {
+    final IconDataParcelable iconData = layoutElementParcelable.iconData;
+
+    final QuickViewType quickViewType = new QuickViewImage(iconData, layoutElementParcelable.title);
+    final QuickViewFragment fragment = QuickViewFragment.Companion.newInstance(quickViewType);
+
+    final Menu menu = getMainActivity().getAppbar().getToolbar().getMenu();
+    menu.setGroupVisible(0, false);
+
+    final BottomBar bottomBar = getMainActivity().getAppbar().getBottomBar();
+    bottomBar.setIsClickEnabled(false);
+
+    getMainActivity().getFAB().getMainFab().setVisibility(View.GONE);
+
+    getChildFragmentManager()
+        .beginTransaction()
+        .replace(R.id.quickViewContainer, fragment, MainActivity.TAG_QUICK_VIEW_FRAGMENT)
+        .commit();
+  }
+
+  private void assureNoQuickView() {
+    QuickViewFragment fragment =
+        (QuickViewFragment) getChildFragmentManager().findFragmentById(R.id.quickViewContainer);
+
+    if (fragment == null) {
+      return;
+    }
+
+    fragment.exit();
   }
 
   public void updateTabWithDb(Tab tab) {
