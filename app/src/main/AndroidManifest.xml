@@ -133,7 +133,7 @@
         </activity>
         <activity
             android:label="@string/textreader"
-            android:name=".ui.activities.TextEditorActivity"
+            android:name=".ui.activities.texteditor.TextEditorActivity"
             android:theme="@style/appCompatBlack">
             <intent-filter
                 tools:ignore="AppLinkUrlError"

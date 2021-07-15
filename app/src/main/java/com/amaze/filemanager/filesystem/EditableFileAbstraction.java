@@ -35,8 +35,6 @@ import androidx.annotation.NonNull;
 /**
  * This is a special representation of a file that is to be used so that uris can be loaded as
  * editable files.
- *
- * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 16/1/2018, at 17:06.
  */
 public class EditableFileAbstraction {
 

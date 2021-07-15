@@ -30,6 +30,8 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
@@ -69,12 +71,12 @@ public class TextEditorActivityEspressoTest {
             .setData(uri);
     activityRule.launchActivity(intent);
     CountDownLatch waiter = new CountDownLatch(1);
-    while ("".equals(activityRule.getActivity().mInput.getText().toString())) {
+    while ("".equals(activityRule.getActivity().mainTextView.getText().toString())) {
       waiter.await();
     }
     waiter.countDown();
-    assertNotEquals("", activityRule.getActivity().mInput.getText());
-    assertNotEquals("foobar", activityRule.getActivity().mInput.getText());
+    assertNotEquals("", activityRule.getActivity().mainTextView.getText());
+    assertNotEquals("foobar", activityRule.getActivity().mainTextView.getText());
     // Add extra time for you to see the Activity did load, and text is actually there
     // Thread.sleep(1000);
   }

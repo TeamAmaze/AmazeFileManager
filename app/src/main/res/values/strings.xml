@@ -621,6 +621,7 @@
     <string name="no_obtainable_info">There\'s no info about this file</string>
     <string name="reopen_from_source">Can\'t, please reopen from last app</string>
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
+    <string name="file_too_long">The file is too long and cannot be edited, however you can read the first %d characters</string>
     <string name="file_read_only">The file opened is a read-only.</string>
     <string name="got_it">Got it!</string>
     <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>

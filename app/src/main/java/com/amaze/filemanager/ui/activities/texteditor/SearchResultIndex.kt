@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,23 +18,6 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.ui.activities.texteditor
 
-/**
- * Created by Vishal on 21/12/15 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> A helper
- * class which provides data structure of key/value pair
- *
- * <p>typedef ImmutableEntry<ImmutableEntry<Integer, Integer>, Integer> MapEntry
- */
-public class MapEntry extends ImmutableEntry<ImmutableEntry<Integer, Integer>, Integer> {
-
-  /**
-   * Constructor to provide values to the pair
-   *
-   * @param key object of {@link ImmutableEntry} which is another key/value pair
-   * @param value integer object in the pair
-   */
-  public MapEntry(ImmutableEntry<Integer, Integer> key, Integer value) {
-    super(key, value);
-  }
-}
+class SearchResultIndex(val startCharNumber: Int, val endCharNumber: Int, val lineNumber: Int)
