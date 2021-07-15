@@ -918,6 +918,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
               mainFrag.onListItemClicked(
                   isBackButton, vholder.getAdapterPosition(), rowItem, holder.checkImageViewGrid);
             });
+        if (HasQuickView.hasQuickView(rowItem.filetype) && BuildConfig.DEBUG) {
+          holder.quickView.setVisibility(View.VISIBLE);
+          final View.OnClickListener listener = v -> mainFrag.onQuickViewClicked(rowItem);
+          holder.quickView.setOnClickListener(listener);
+        }
         holder.txtTitle.setText(rowItem.title);
         holder.imageView1.setVisibility(View.INVISIBLE);
         holder.genericIcon.setVisibility(View.VISIBLE);
