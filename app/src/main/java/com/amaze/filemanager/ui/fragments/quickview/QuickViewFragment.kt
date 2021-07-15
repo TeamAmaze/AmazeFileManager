@@ -46,7 +46,7 @@ import com.bumptech.glide.request.target.Target
 import com.eightbitlab.supportrenderscriptblur.SupportRenderScriptBlur
 import eightbitlab.com.blurview.BlurView
 
-class QuickViewFragment private constructor(): Fragment() {
+class QuickViewFragment : Fragment() {
 
     companion object {
         private const val VIEW_TYPE_ARGUMENT = "QuickViewFragment.viewTypeArgument"
