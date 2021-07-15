@@ -919,7 +919,7 @@ public class MainFragment extends Fragment
     final IconDataParcelable iconData = layoutElementParcelable.iconData;
 
     final QuickViewType quickViewType = new QuickViewImage(iconData, layoutElementParcelable.title);
-    final QuickViewFragment fragment = QuickViewFragment.Companion.newInstance(quickViewType);
+    final QuickViewFragment fragment = QuickViewFragment.newInstance(quickViewType);
 
     final Menu menu = getMainActivity().getAppbar().getToolbar().getMenu();
     menu.setGroupVisible(0, false);

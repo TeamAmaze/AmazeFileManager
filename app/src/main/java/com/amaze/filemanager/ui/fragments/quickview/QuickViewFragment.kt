@@ -36,6 +36,7 @@ import com.amaze.filemanager.GlideApp
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
+import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewImage
 import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewType
 import com.bumptech.glide.load.DataSource
@@ -45,11 +46,17 @@ import com.bumptech.glide.request.target.Target
 import com.eightbitlab.supportrenderscriptblur.SupportRenderScriptBlur
 import eightbitlab.com.blurview.BlurView
 
-class QuickViewFragment : Fragment() {
+class QuickViewFragment private constructor(): Fragment() {
 
     companion object {
         private const val VIEW_TYPE_ARGUMENT = "QuickViewFragment.viewTypeArgument"
 
+        /**
+         * Creates a new instance of [QuickViewFragment]
+         *
+         * [viewType] is the [QuickViewType] that will be shown
+         */
+        @JvmStatic
         fun newInstance(viewType: QuickViewType): QuickViewFragment {
             val arguments = Bundle().also {
                 it.putParcelable(VIEW_TYPE_ARGUMENT, viewType)
@@ -203,10 +210,17 @@ class QuickViewFragment : Fragment() {
             .setIsClickEnabled(false)
     }
 
+    /**
+     * Called by MainActivity when a back press is detected, so the fragment can react
+     */
     fun onBackPressed() {
         exit()
     }
 
+    /**
+     * Exits the fragment undoing all that was changed when [MainFragment] creates this fragment,
+     * see [MainFragment.onQuickViewClicked]
+     */
     fun exit() {
         parentFragmentManager
             .beginTransaction()

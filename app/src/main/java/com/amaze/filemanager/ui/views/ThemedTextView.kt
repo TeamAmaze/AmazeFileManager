@@ -36,6 +36,9 @@ import com.amaze.filemanager.utils.Utils
  */
 class ThemedTextView(context: Context, attrs: AttributeSet?) : AppCompatTextView(context, attrs) {
     companion object {
+        /**
+         * This updates a [TextView] in [MainActivity] with the correct color based on theme
+         */
         @JvmStatic
         fun setTextViewColor(textView: TextView, context: Context) {
             if ((context as MainActivity).appTheme == AppTheme.LIGHT) {
