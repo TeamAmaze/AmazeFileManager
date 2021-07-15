@@ -30,14 +30,17 @@ import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.Utils
 
 /**
- *
  * Class sets text color based on current theme, without explicit method call in app lifecycle To
  * be used only under themed activity context
+ *
+ * @deprecated Use [ContrastingTextView.setIntelligentTextColor]
  */
 class ThemedTextView(context: Context, attrs: AttributeSet?) : AppCompatTextView(context, attrs) {
     companion object {
         /**
          * This updates a [TextView] in [MainActivity] with the correct color based on theme
+         *
+         * @deprecated Use [ContrastingTextView.setIntelligentTextColor]
          */
         @JvmStatic
         fun setTextViewColor(textView: TextView, context: Context) {

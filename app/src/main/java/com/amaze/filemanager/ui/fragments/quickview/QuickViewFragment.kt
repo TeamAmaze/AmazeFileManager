@@ -39,6 +39,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewImage
 import com.amaze.filemanager.ui.fragments.quickview.types.QuickViewType
+import com.amaze.filemanager.ui.views.ContrastingTextView
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
@@ -119,11 +120,11 @@ class QuickViewFragment : Fragment() {
     private fun showImage(quickViewType: QuickViewImage, constraintLayout: ConstraintLayout) {
         val imageViewContainer = constraintLayout
             .findViewById<ConstraintLayout>(R.id.imageViewContainer)
-        applyContainerColor(imageViewContainer)
+        val containerColor = applyContainerColor(imageViewContainer)
 
         val textView = constraintLayout.findViewById<TextView>(R.id.textView)
         textView.text = quickViewType.name
-        // TODO correct text color based on background
+        ContrastingTextView.setIntelligentTextColor(requireContext(), textView, containerColor)
 
         runAfterSizeComputed(constraintLayout) {
             val imageView = constraintLayout.findViewById<ImageView>(R.id.imageView)
@@ -182,7 +183,7 @@ class QuickViewFragment : Fragment() {
             })
     }
 
-    private fun applyContainerColor(container: View) {
+    private fun applyContainerColor(container: View): Int {
         val colorPrimary = (requireActivity() as ThemedActivity).primary
 
         val background: Drawable = container.background
@@ -198,6 +199,8 @@ class QuickViewFragment : Fragment() {
                 background.color = colorPrimary
             }
         }
+
+        return colorPrimary
     }
 
     override fun onPrepareOptionsMenu(menu: Menu) {
@@ -222,6 +225,8 @@ class QuickViewFragment : Fragment() {
      * see [MainFragment.onQuickViewClicked]
      */
     fun exit() {
+        // Fix fab visibility when changing workspaces
+
         parentFragmentManager
             .beginTransaction()
             .remove(this)
