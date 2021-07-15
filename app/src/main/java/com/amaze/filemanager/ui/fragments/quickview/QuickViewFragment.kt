@@ -69,18 +69,24 @@ class QuickViewFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        setHasOptionsMenu(true) // HACK its needed to get a onPrepareOptionsMenu() callback
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        setHasOptionsMenu(true)
-
+    ): View {
         return inflater.inflate(R.layout.quick_view_fragment, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        runOpenVisibilityChanges()
 
         val constraintLayout = view.findViewById<ConstraintLayout>(R.id.frameLayout)
         constraintLayout.setOnClickListener {
@@ -225,13 +231,32 @@ class QuickViewFragment : Fragment() {
      * see [MainFragment.onQuickViewClicked]
      */
     fun exit() {
-        // TODO Fix fab visibility when changing workspaces
-
         parentFragmentManager
             .beginTransaction()
             .remove(this)
             .commit()
 
+        runExitVisibilityChanges()
+    }
+
+    /**
+     * Run the visibility changes needed for this fragment to look good
+     */
+    fun runOpenVisibilityChanges() {
+        (requireActivity() as MainActivity)
+            .appbar.toolbar.menu.setGroupVisible(0, false)
+
+        (requireActivity() as MainActivity)
+            .appbar.bottomBar.setIsClickEnabled(false)
+
+        (requireActivity() as MainActivity)
+            .fab.mainFab.visibility = View.GONE
+    }
+
+    /**
+     * Undo the visibility changes needed for this fragment to look good
+     */
+    fun runExitVisibilityChanges() {
         (requireActivity() as MainActivity)
             .appbar.toolbar.menu.setGroupVisible(0, true)
 

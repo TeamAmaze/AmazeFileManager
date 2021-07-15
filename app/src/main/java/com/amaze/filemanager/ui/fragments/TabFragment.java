@@ -64,7 +64,7 @@ import androidx.viewpager.widget.ViewPager;
 /** Created by Arpit on 15-12-2014. */
 public class TabFragment extends Fragment implements ViewPager.OnPageChangeListener {
 
-  public List<Fragment> fragments = new ArrayList<>();
+  public List<Fragment> fragments = new ArrayList<>(2);
   public ScreenSlidePagerAdapter mSectionsPagerAdapter;
   public DisablableViewPager mViewPager;
 
@@ -265,7 +265,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   }
 
   @Override
-  public void onPageSelected(int p1) {
+  public void onPageSelected(int selectedTabId) {
     mainActivity
         .getAppbar()
         .getAppbarLayout()
@@ -274,7 +274,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         .setInterpolator(new DecelerateInterpolator(2))
         .start();
 
-    MainActivity.currentTab = p1;
+    MainActivity.currentTab = selectedTabId;
 
     if (sharedPrefs != null) {
       sharedPrefs
@@ -283,19 +283,25 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
           .apply();
     }
 
-    //        Log.d(getClass().getSimpleName(), "Page Selected: " + MainActivity.currentTab, new
-    // Exception());
-
-    Fragment fragment = fragments.get(p1);
-    if (fragment != null && fragment instanceof MainFragment) {
-      MainFragment ma = (MainFragment) fragment;
-      if (ma.getCurrentPath() != null) {
-        mainActivity.getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
-        updateBottomBar(ma);
-      }
+    Fragment notInView = fragments.get(selectedTabId == 0 ? 1 : 0);
+    if (notInView instanceof MainFragment) {
+      ((MainFragment) notInView).onWorkspaceUnselected();
     }
 
-    if (circleDrawable1 != null && circleDrawable2 != null) updateIndicator(p1);
+    Fragment inView = fragments.get(selectedTabId);
+    if (inView instanceof MainFragment) {
+      MainFragment mainFragment = (MainFragment) inView;
+
+      if (mainFragment.getCurrentPath() != null) {
+        updateBottomBar(mainFragment);
+      }
+
+      ((MainFragment) inView).onWorkspaceSelected();
+    }
+
+    if (circleDrawable1 != null && circleDrawable2 != null) {
+      updateIndicator(selectedTabId);
+    }
   }
 
   @Override

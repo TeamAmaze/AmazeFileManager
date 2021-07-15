@@ -80,7 +80,6 @@ import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
 import com.amaze.filemanager.ui.views.DividerItemDecoration;
 import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
-import com.amaze.filemanager.ui.views.appbar.BottomBar;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityHelper;
@@ -743,6 +742,28 @@ public class MainFragment extends Fragment
         }
       };
 
+  /** When TabFragment detects this fragment is in view it calls this method */
+  public void onWorkspaceSelected() {
+    if (getCurrentPath() != null) {
+      getMainActivity().getDrawer().selectCorrectDrawerItemForPath(getCurrentPath());
+    }
+
+    final QuickViewFragment quickViewFragment = getCurrentQuickView();
+
+    if (quickViewFragment != null) {
+      quickViewFragment.runOpenVisibilityChanges();
+    }
+  }
+
+  /** When TabFragment detects this fragment is not in view it calls this method */
+  public void onWorkspaceUnselected() {
+    final QuickViewFragment quickViewFragment = getCurrentQuickView();
+
+    if (quickViewFragment != null) {
+      quickViewFragment.runExitVisibilityChanges();
+    }
+  }
+
   private BroadcastReceiver receiver2 =
       new BroadcastReceiver() {
 
@@ -921,14 +942,6 @@ public class MainFragment extends Fragment
     final QuickViewType quickViewType = new QuickViewImage(iconData, layoutElementParcelable.title);
     final QuickViewFragment fragment = QuickViewFragment.newInstance(quickViewType);
 
-    final Menu menu = getMainActivity().getAppbar().getToolbar().getMenu();
-    menu.setGroupVisible(0, false);
-
-    final BottomBar bottomBar = getMainActivity().getAppbar().getBottomBar();
-    bottomBar.setIsClickEnabled(false);
-
-    getMainActivity().getFAB().getMainFab().setVisibility(View.GONE);
-
     getChildFragmentManager()
         .beginTransaction()
         .replace(R.id.quickViewContainer, fragment, MainActivity.TAG_QUICK_VIEW_FRAGMENT)
@@ -936,14 +949,18 @@ public class MainFragment extends Fragment
   }
 
   private void assureNoQuickView() {
-    QuickViewFragment fragment =
-        (QuickViewFragment) getChildFragmentManager().findFragmentById(R.id.quickViewContainer);
+    QuickViewFragment fragment = getCurrentQuickView();
 
     if (fragment == null) {
       return;
     }
 
     fragment.exit();
+  }
+
+  @Nullable
+  private QuickViewFragment getCurrentQuickView() {
+    return (QuickViewFragment) getChildFragmentManager().findFragmentById(R.id.quickViewContainer);
   }
 
   public void updateTabWithDb(Tab tab) {
