@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem;
 
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
-import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
 import com.amaze.filemanager.asynchronous.asynctasks.StatefulAsyncTask;
@@ -31,31 +30,43 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 
-import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
-public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Void>
+public class SearchAsyncTask extends AsyncTask<Void, HybridFileParcelable, Void>
     implements StatefulAsyncTask<SearchWorkerFragment.HelperCallbacks> {
 
   private static final String TAG = "SearchAsyncTask";
 
-  private WeakReference<Activity> activity;
+  /** This necessarily leaks the context */
+  private final Context applicationContext;
+
   private SearchWorkerFragment.HelperCallbacks callbacks;
-  private String input;
-  private OpenMode openMode;
-  private boolean rootMode, isRegexEnabled, isMatchesEnabled;
+  private final String input;
+  private final boolean rootMode;
+  private final boolean isRegexEnabled;
+  private final boolean isMatchesEnabled;
+  private final HybridFile file;
 
   public SearchAsyncTask(
-      Activity a, String input, OpenMode openMode, boolean root, boolean regex, boolean matches) {
-    activity = new WeakReference<>(a);
+      Context context,
+      String input,
+      OpenMode openMode,
+      boolean root,
+      boolean regex,
+      boolean matches,
+      String path) {
+    this.applicationContext = context.getApplicationContext();
     this.input = input;
-    this.openMode = openMode;
     rootMode = root;
     isRegexEnabled = regex;
     isMatchesEnabled = matches;
+
+    this.file = new HybridFile(openMode, path);
+    file.generateMode(this.applicationContext);
   }
 
   @Override
@@ -73,10 +84,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
   // callbacks not checked for null because of possibility of
   // race conditions b/w worker thread main thread
   @Override
-  protected Void doInBackground(String... params) {
-    String path = params[0];
-    HybridFile file = new HybridFile(openMode, path);
-    file.generateMode(activity.get());
+  protected Void doInBackground(Void... params) {
     if (file.isSmb()) return null;
 
     // level 1
@@ -123,17 +131,18 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
    * @param directory the current path
    */
   private void search(HybridFile directory, final SearchFilter filter) {
-    if (directory.isDirectory(activity.get())) { // do you have permission to read this directory?
+    if (directory.isDirectory(
+        applicationContext)) { // do you have permission to read this directory?
       directory.forEachChildrenFile(
-          activity.get(),
+          applicationContext,
           rootMode,
           file -> {
             boolean showHiddenFiles =
-                PreferenceManager.getDefaultSharedPreferences(activity.get())
+                PreferenceManager.getDefaultSharedPreferences(applicationContext)
                     .getBoolean(PREFERENCE_SHOW_HIDDENFILES, false);
 
             if ((!isCancelled() && (showHiddenFiles || !file.isHidden()))) {
-              if (filter.searchFilter(file.getName(activity.get()))) {
+              if (filter.searchFilter(file.getName(applicationContext))) {
                 publishProgress(file);
               }
               if (file.isDirectory() && !isCancelled()) {
@@ -142,7 +151,7 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
             }
           });
     } else {
-      Log.d(TAG, "Cannot search " + directory.getPath() + ": Permission Denied");
+      Log.w(TAG, "Cannot search " + directory.getPath() + ": Permission Denied");
     }
   }
 
@@ -199,7 +208,6 @@ public class SearchAsyncTask extends AsyncTask<String, HybridFileParcelable, Voi
       }
     }
 
-    Log.d(getClass().getSimpleName(), stringBuilder.toString());
     return stringBuilder.toString();
   }
 
