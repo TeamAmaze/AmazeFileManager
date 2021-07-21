@@ -23,33 +23,21 @@ package com.amaze.filemanager.asynchronous.asynctasks.movecopy;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.Callable;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.asynchronous.services.CopyService;
-import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
-import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
-import android.content.Intent;
-import android.os.AsyncTask;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.WorkerThread;
 
@@ -69,11 +57,11 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
   private final boolean isRootExplorer;
 
   public MoveFiles(
-          ArrayList<ArrayList<HybridFileParcelable>> files,
-          boolean isRootExplorer,
-          Context context,
-          OpenMode mode,
-          ArrayList<String> paths) {
+      ArrayList<ArrayList<HybridFileParcelable>> files,
+      boolean isRootExplorer,
+      Context context,
+      OpenMode mode,
+      ArrayList<String> paths) {
     this.context = context;
     this.files = files;
     this.mode = mode;
@@ -115,8 +103,9 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
               // check if we have root
               if (isRootExplorer) {
                 try {
-                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath)){
-                    return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
+                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath)) {
+                    return new MoveFilesReturn(
+                        false, invalidOperation, destinationSize, totalBytes);
                   }
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();

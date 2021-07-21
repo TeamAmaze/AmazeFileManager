@@ -58,17 +58,14 @@ import android.widget.Toast;
 import androidx.annotation.IntDef;
 
 /**
- * Created by arpitkh996 on 12-01-2016, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com>
- *
- * <p>This AsyncTask works by creating a tree where each folder that can be fusioned together with
+ * This AsyncTask works by creating a tree where each folder that can be fusioned together with
  * another in the destination is a node (CopyNode). While the tree is being created an indeterminate
  * ProgressDialog is shown. Each node is copied when the conflicts are dealt with (the dialog is
  * shown, and the tree is walked via a BFS). If the process is cancelled (via the button in the
  * dialog) the dialog closes without any more code to be executed, finishCopying() is never executed
  * so no changes are made.
  */
-public class PrepareCopyTask
-    extends AsyncTask<ArrayList<HybridFileParcelable>, String, PrepareCopyTask.CopyNode> {
+public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.CopyNode> {
 
   private final String path;
   private final Boolean move;
@@ -86,7 +83,7 @@ public class PrepareCopyTask
   private CopyNode copyFolder;
   private final ArrayList<String> paths = new ArrayList<>();
   private final ArrayList<ArrayList<HybridFileParcelable>> filesToCopyPerFolder = new ArrayList<>();
-  private ArrayList<HybridFileParcelable> filesToCopy; // a copy of params sent to this
+  private final ArrayList<HybridFileParcelable> filesToCopy; // a copy of params sent to this
 
   private static final int UNKNOWN = -1;
   private static final int DO_NOT_REPLACE = 0;
@@ -96,14 +93,19 @@ public class PrepareCopyTask
   @interface DialogState {}
 
   public PrepareCopyTask(
-      String path, Boolean move, MainActivity con, boolean rootMode, OpenMode openMode) {
+      String path,
+      Boolean move,
+      MainActivity con,
+      boolean rootMode,
+      OpenMode openMode,
+      ArrayList<HybridFileParcelable> filesToCopy) {
     this.move = move;
     mainActivity = new WeakReference<>(con);
     context = new WeakReference<>(con);
     this.openMode = openMode;
     this.rootMode = rootMode;
-
     this.path = path;
+    this.filesToCopy = filesToCopy;
   }
 
   @Override
@@ -119,8 +121,7 @@ public class PrepareCopyTask
   }
 
   @Override
-  protected CopyNode doInBackground(ArrayList<HybridFileParcelable>... params) {
-    filesToCopy = params[0];
+  protected CopyNode doInBackground(Void... params) {
     long totalBytes = 0;
 
     if (openMode == OpenMode.OTG
@@ -346,7 +347,9 @@ public class PrepareCopyTask
             startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
           }
         } else {
-          TaskKt.fromTask(new MoveFilesTask(filesToCopyPerFolder, rootMode, path, context.get(), openMode, paths));
+          TaskKt.fromTask(
+              new MoveFilesTask(
+                  filesToCopyPerFolder, rootMode, path, context.get(), openMode, paths));
         }
       }
     } else {

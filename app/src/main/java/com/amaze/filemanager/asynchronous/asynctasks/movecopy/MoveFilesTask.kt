@@ -60,7 +60,11 @@ class MoveFilesTask(
       }
 
       if (invalidOperation) {
-        Toast.makeText(applicationContext, R.string.some_files_failed_invalid_operation, Toast.LENGTH_LONG)
+        Toast.makeText(
+          applicationContext,
+          R.string.some_files_failed_invalid_operation,
+          Toast.LENGTH_LONG
+        )
           .show()
       }
 
@@ -68,7 +72,11 @@ class MoveFilesTask(
         val targetFiles: MutableList<HybridFile> = ArrayList()
         val sourcesFiles: MutableList<HybridFileParcelable> = ArrayList()
         for (f in files[i]) {
-          targetFiles.add(HybridFile(OpenMode.FILE, paths[i] + "/" + f.getName(applicationContext)))
+          val file = HybridFile(
+            OpenMode.FILE,
+            paths[i] + "/" + f.getName(applicationContext)
+          )
+          targetFiles.add(file)
         }
         for (hybridFileParcelables in files) {
           sourcesFiles.addAll(hybridFileParcelables)
@@ -89,7 +97,7 @@ class MoveFilesTask(
                   val newEntry = EncryptedEntry()
                   newEntry.id = oldEntry.id
                   newEntry.password = oldEntry.password
-                  newEntry.path = paths[i].toString() + "/" + file.getName(applicationContext)
+                  newEntry.path = paths[i] + "/" + file.getName(applicationContext)
                   cryptHandler.updateEntry(oldEntry, newEntry)
                 } catch (e: Exception) {
                   e.printStackTrace()
@@ -103,7 +111,10 @@ class MoveFilesTask(
       if (totalBytes > 0 && destinationSize < totalBytes) {
         // destination don't have enough space; return
         Toast.makeText(
-          applicationContext, applicationContext.resources.getString(R.string.in_safe), Toast.LENGTH_LONG)
+          applicationContext,
+          applicationContext.resources.getString(R.string.in_safe),
+          Toast.LENGTH_LONG
+        )
           .show()
         return
       }

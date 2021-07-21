@@ -169,8 +169,9 @@ public final class PasteHelper implements Parcelable {
                                   move,
                                   mainActivity,
                                   mainActivity.isRootExplorer(),
-                                  mainFragment.getMainFragmentViewModel().getOpenMode())
-                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+                                  mainFragment.getMainFragmentViewModel().getOpenMode(),
+                                  arrayList)
+                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                           dismissSnackbar(true);
                         },
                         () -> dismissSnackbar(true));
