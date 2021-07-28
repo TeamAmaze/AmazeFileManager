@@ -38,7 +38,7 @@
                 <color android:color="#FFFFFF"/>
             </item>
             <item android:state_focused="true">
-                <color android:color="#EEEEEE" />
+                <color android:color="@color/grey_translucent" />
             </item>
         </selector>
     </item>

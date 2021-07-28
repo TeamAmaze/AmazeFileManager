@@ -115,6 +115,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
+import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
@@ -129,6 +130,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.leinardi.android.speeddial.FabWithLabelView;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -145,6 +147,7 @@ import android.content.IntentFilter;
 import android.content.res.Configuration;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.drawable.ColorDrawable;
 import android.hardware.usb.UsbManager;
 import android.media.RingtoneManager;
@@ -165,6 +168,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.Toast;
 
@@ -1665,14 +1669,34 @@ public class MainActivity extends PermissionsActivity
 
   public void initializeFabActionViews() {
     // NOTE: SpeedDial inverts insert index than FABsmenu
-    initFabTitle(R.id.menu_new_cloud, R.string.cloud_connection, R.drawable.ic_cloud_white_24dp);
-    initFabTitle(R.id.menu_new_file, R.string.file, R.drawable.ic_insert_drive_file_white_48dp);
-    initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
+    FabWithLabelView cloudFab = initFabTitle(R.id.menu_new_cloud, R.string.cloud_connection, R.drawable.ic_cloud_white_24dp);
+    FabWithLabelView newFileFab = initFabTitle(R.id.menu_new_file, R.string.file, R.drawable.ic_insert_drive_file_white_48dp);
+    FabWithLabelView newFolderFab = initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
     floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
+    floatingActionButton.setOnClickListener(view -> {
+      if (floatingActionButton.isOpen()) {
+        floatingActionButton.close(true);
+      } else {
+        floatingActionButton.open(true);
+        cloudFab.requestFocus();
+      }
+    });
+    floatingActionButton.setOnFocusChangeListener(new CustomZoomFocusChange());
+    floatingActionButton.getMainFab().setOnFocusChangeListener(new CustomZoomFocusChange());
+    floatingActionButton.setNextFocusUpId(cloudFab.getId());
+    floatingActionButton.getMainFab().setNextFocusUpId(cloudFab.getId());
+    cloudFab.setNextFocusDownId(floatingActionButton.getMainFab().getId());
+    cloudFab.setNextFocusUpId(newFileFab.getId());
+    cloudFab.setOnFocusChangeListener(new CustomZoomFocusChange());
+    newFileFab.setNextFocusDownId(cloudFab.getId());
+    newFileFab.setNextFocusUpId(newFolderFab.getId());
+    newFileFab.setOnFocusChangeListener(new CustomZoomFocusChange());
+    newFolderFab.setNextFocusDownId(newFileFab.getId());
+    newFolderFab.setOnFocusChangeListener(new CustomZoomFocusChange());
   }
 
-  private void initFabTitle(@IdRes int id, @StringRes int fabTitle, @DrawableRes int icon) {
+  private FabWithLabelView initFabTitle(@IdRes int id, @StringRes int fabTitle, @DrawableRes int icon) {
     int iconSkin = getCurrentColorPreference().getIconSkin();
 
     SpeedDialActionItem.Builder builder =
@@ -1698,7 +1722,7 @@ public class MainActivity extends PermissionsActivity
         break;
     }
 
-    floatingActionButton.addActionItem(builder.create());
+    return floatingActionButton.addActionItem(builder.create());
   }
 
   public boolean copyToClipboard(Context context, String text) {

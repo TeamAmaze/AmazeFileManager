@@ -74,6 +74,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -619,6 +620,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             holder.about.setColorFilter(grey_color);
           showPopup(holder.about, rowItem);
+          holder.about.setNextFocusRightId(mainFrag.getMainActivity().getFAB().getId());
         }
         holder.genericIcon.setOnClickListener(
             v -> {
@@ -887,6 +889,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             holder.about.setColorFilter(grey_color);
           showPopup(holder.about, rowItem);
+          holder.about.setNextFocusRightId(mainFrag.getMainActivity().getFAB().getId());
         }
 
         if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
