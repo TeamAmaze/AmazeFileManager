@@ -18,12 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.movecopy;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -50,47 +51,48 @@ import android.os.AsyncTask;
 import android.util.Log;
 import android.widget.Toast;
 
+import androidx.annotation.WorkerThread;
+
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
  * in the same filesystem, else starting the copy service. Be advised - do not start this AsyncTask
  * directly but use {@link PrepareCopyTask} instead
  */
-public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
+public class MoveFiles implements Callable<MoveFilesReturn> {
 
-  private ArrayList<ArrayList<HybridFileParcelable>> files;
-  private ArrayList<String> paths;
-  private Context context;
-  private OpenMode mode;
-  private long totalBytes = 0l;
-  private long destinationSize = 0l;
+  private final ArrayList<ArrayList<HybridFileParcelable>> files;
+  private final ArrayList<String> paths;
+  private final Context context;
+  private final OpenMode mode;
+  private long totalBytes = 0L;
   private boolean invalidOperation = false;
-  private boolean isRootExplorer;
-  private String currentPath;
+  private final boolean isRootExplorer;
 
   public MoveFiles(
-      ArrayList<ArrayList<HybridFileParcelable>> files,
-      boolean isRootExplorer,
-      String currentPath,
-      Context context,
-      OpenMode mode) {
+          ArrayList<ArrayList<HybridFileParcelable>> files,
+          boolean isRootExplorer,
+          Context context,
+          OpenMode mode,
+          ArrayList<String> paths) {
     this.context = context;
     this.files = files;
     this.mode = mode;
     this.isRootExplorer = isRootExplorer;
-    this.currentPath = currentPath;
+    this.paths = paths;
   }
 
+  @WorkerThread
   @Override
-  protected Boolean doInBackground(ArrayList<String>... strings) {
-    paths = strings[0];
-
-    if (files.size() == 0) return true;
+  public MoveFilesReturn call() {
+    if (files.size() == 0) {
+      return new MoveFilesReturn(true, false, 0, 0);
+    }
 
     for (ArrayList<HybridFileParcelable> filesCurrent : files) {
       totalBytes += FileUtils.getTotalBytes(filesCurrent, context);
     }
     HybridFile destination = new HybridFile(mode, paths.get(0));
-    destinationSize = destination.getUsableSpace();
+    long destinationSize = destination.getUsableSpace();
 
     for (int i = 0; i < paths.size(); i++) {
       for (HybridFileParcelable baseFile : files.get(i)) {
@@ -113,13 +115,16 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
               // check if we have root
               if (isRootExplorer) {
                 try {
-                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath))
-                    return false;
+                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath)){
+                    return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
+                  }
                 } catch (ShellNotRunningException e) {
                   e.printStackTrace();
-                  return false;
+                  return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
                 }
-              } else return false;
+              } else {
+                return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
+              }
             }
             break;
           case DROPBOX:
@@ -138,95 +143,18 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
                     CloudUtil.stripPath(mode, destPath));
               } catch (Exception e) {
                 e.printStackTrace();
-                return false;
+                return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
               }
             } else {
               // not in same filesystem, execute service
-              return false;
+              return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
             }
           default:
-            return false;
+            return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
         }
       }
     }
-    return true;
-  }
-
-  @Override
-  public void onPostExecute(Boolean movedCorrectly) {
-    if (movedCorrectly) {
-      if (currentPath.equals(paths.get(0))) {
-        // mainFrag.updateList();
-        Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
-
-        intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, paths.get(0));
-        context.sendBroadcast(intent);
-      }
-
-      if (invalidOperation) {
-        Toast.makeText(context, R.string.some_files_failed_invalid_operation, Toast.LENGTH_LONG)
-            .show();
-      }
-
-      for (int i = 0; i < paths.size(); i++) {
-        List<HybridFile> targetFiles = new ArrayList<>();
-        List<HybridFileParcelable> sourcesFiles = new ArrayList<>();
-        for (HybridFileParcelable f : files.get(i)) {
-          targetFiles.add(new HybridFile(OpenMode.FILE, paths.get(i) + "/" + f.getName(context)));
-        }
-        for (List<HybridFileParcelable> hybridFileParcelables : files) {
-          sourcesFiles.addAll(hybridFileParcelables);
-        }
-        FileUtils.scanFile(
-            context, sourcesFiles.toArray(new HybridFileParcelable[sourcesFiles.size()]));
-        FileUtils.scanFile(context, targetFiles.toArray(new HybridFile[targetFiles.size()]));
-      }
-
-      // updating encrypted db entry if any encrypted file was moved
-      AppConfig.getInstance()
-          .runInBackground(
-              () -> {
-                for (int i = 0; i < paths.size(); i++) {
-                  for (HybridFileParcelable file : files.get(i)) {
-                    if (file.getName(context).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                      try {
-                        CryptHandler cryptHandler = CryptHandler.getInstance();
-                        EncryptedEntry oldEntry = cryptHandler.findEntry(file.getPath());
-                        EncryptedEntry newEntry = new EncryptedEntry();
-                        newEntry.setId(oldEntry.getId());
-                        newEntry.setPassword(oldEntry.getPassword());
-                        newEntry.setPath(paths.get(i) + "/" + file.getName(context));
-                        cryptHandler.updateEntry(oldEntry, newEntry);
-                      } catch (Exception e) {
-                        e.printStackTrace();
-                        // couldn't change the entry, leave it alone
-                      }
-                    }
-                  }
-                }
-              });
-
-    } else {
-
-      if (destinationSize < totalBytes) {
-        // destination don't have enough space; return
-        Toast.makeText(
-                context, context.getResources().getString(R.string.in_safe), Toast.LENGTH_LONG)
-            .show();
-        return;
-      }
-
-      for (int i = 0; i < paths.size(); i++) {
-        Intent intent = new Intent(context, CopyService.class);
-        intent.putExtra(CopyService.TAG_COPY_SOURCES, files.get(i));
-        intent.putExtra(CopyService.TAG_COPY_TARGET, paths.get(i));
-        intent.putExtra(CopyService.TAG_COPY_MOVE, true);
-        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal());
-        intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, isRootExplorer);
-
-        ServiceWatcherUtil.runService(context, intent);
-      }
-    }
+    return new MoveFilesReturn(true, invalidOperation, destinationSize, totalBytes);
   }
 
   private boolean isMoveOperationValid(HybridFileParcelable sourceFile, HybridFile targetFile) {

@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.Utils;

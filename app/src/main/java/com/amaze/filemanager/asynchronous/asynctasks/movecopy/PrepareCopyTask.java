@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.movecopy;
 
 import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
 import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COPY;
@@ -34,6 +34,7 @@ import java.util.Set;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.databinding.CopyDialogBinding;
@@ -345,8 +346,7 @@ public class PrepareCopyTask
             startService(filesToCopyPerFolder.get(i), paths.get(i), openMode);
           }
         } else {
-          new MoveFiles(filesToCopyPerFolder, rootMode, path, context.get(), openMode)
-              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, paths);
+          TaskKt.fromTask(new MoveFilesTask(filesToCopyPerFolder, rootMode, path, context.get(), openMode, paths));
         }
       }
     } else {
@@ -359,9 +359,10 @@ public class PrepareCopyTask
   }
 
   class CopyNode {
-    private String path;
-    private ArrayList<HybridFileParcelable> filesToCopy, conflictingFiles;
-    private ArrayList<CopyNode> nextNodes = new ArrayList<>();
+    private final String path;
+    private final ArrayList<HybridFileParcelable> filesToCopy;
+    private final ArrayList<HybridFileParcelable> conflictingFiles;
+    private final ArrayList<CopyNode> nextNodes = new ArrayList<>();
 
     CopyNode(String p, ArrayList<HybridFileParcelable> filesToCopy) {
       path = p;
@@ -425,14 +426,6 @@ public class PrepareCopyTask
 
     String getPath() {
       return path;
-    }
-
-    ArrayList<HybridFileParcelable> getFilesToCopy() {
-      return filesToCopy;
-    }
-
-    ArrayList<HybridFileParcelable> getConflictingFiles() {
-      return conflictingFiles;
     }
 
     private CopyNode getUnvisitedChildNode(Set<CopyNode> visited, CopyNode node) {

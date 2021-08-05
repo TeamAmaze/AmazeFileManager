@@ -32,7 +32,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
@@ -105,11 +105,11 @@ class DragAndDropDialog : DialogFragment() {
             mainActivity: MainActivity
         ) {
             PrepareCopyTask(
-                pasteLocation,
-                move,
-                mainActivity,
-                mainActivity.isRootExplorer,
-                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+              pasteLocation,
+              move,
+              mainActivity,
+              mainActivity.isRootExplorer,
+              mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
             )
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, files)
         }
