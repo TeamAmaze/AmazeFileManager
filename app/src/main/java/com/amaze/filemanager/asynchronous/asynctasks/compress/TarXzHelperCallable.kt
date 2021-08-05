@@ -20,20 +20,18 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import androidx.test.core.app.ApplicationProvider
-import java.io.File
+import android.content.Context
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 
-class TarGzHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+class TarXzHelperCallable(
+    context: Context,
+    filePath: String,
+    relativePath: String,
+    goBack: Boolean
+) :
+    AbstractCompressedTarArchiveHelperCallable(context, filePath, relativePath, goBack) {
 
-    override val archiveFileName: String
-        get() = "test-archive.tar.gz"
-
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        TarGzHelperTask(
-            ApplicationProvider.getApplicationContext(),
-            archive.absolutePath,
-            relativePath,
-            false,
-            emptyCallback
-        )
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
+        XZCompressorInputStream::class.java
 }

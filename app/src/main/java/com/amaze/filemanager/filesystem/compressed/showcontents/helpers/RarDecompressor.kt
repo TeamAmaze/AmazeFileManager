@@ -21,22 +21,17 @@
 package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
 
 import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.asynchronous.asynctasks.compress.RarHelperTask
+import com.amaze.filemanager.asynchronous.asynctasks.compress.RarHelperCallable
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import com.github.junrar.rarfile.FileHeader
-import java.util.*
 
 class RarDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean,
-        onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+        addGoBackItem: Boolean
     ) =
-        RarHelperTask(filePath, path, addGoBackItem, onFinish)
+    RarHelperCallable(filePath, path, addGoBackItem)
 
     override fun realRelativeDirectory(dir: String): String {
         var dir = dir

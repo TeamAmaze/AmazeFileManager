@@ -20,34 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Environment
-import org.junit.Assert
-import org.junit.Test
+import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
-class UnknownCompressedHelperTaskTest : AbstractCompressedHelperTaskTest() {
+class TarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
 
-    /**
-     * Test file decompression.
-     */
-    @Test
-    fun testExtract() {
-        listOf("lzma", "gz", "xz", "bz2").forEach { ext ->
-            doTestExtract(
-                UnknownCompressedFileHelperTask(
-                    File(
-                        Environment.getExternalStorageDirectory(),
-                        "test.txt.$ext"
-                    ).absolutePath,
-                    false, emptyCallback
-                )
-            )
-        }
-    }
+    override val archiveFileName: String
+        get() = "test-archive.tar"
 
-    private fun doTestExtract(task: CompressedHelperTask) {
-        val result = task.doInBackground()
-        Assert.assertEquals(1, result.result.size.toLong())
-        Assert.assertEquals("test.txt", result.result[0].name)
-    }
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            TarHelperCallable(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }

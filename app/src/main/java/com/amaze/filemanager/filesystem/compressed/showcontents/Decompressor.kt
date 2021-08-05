@@ -22,13 +22,9 @@ package com.amaze.filemanager.filesystem.compressed.showcontents
 
 import android.content.Context
 import android.content.Intent
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.asynchronous.asynctasks.compress.CompressedHelperTask
+import com.amaze.filemanager.asynchronous.asynctasks.compress.CompressedHelperCallable
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.ExtractService
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import java.util.*
 
 /** @author Emmanuel on 20/11/2017, at 17:14.
  */
@@ -43,9 +39,8 @@ abstract class Decompressor(protected var context: Context) {
      */
     abstract fun changePath(
         path: String,
-        addGoBackItem: Boolean,
-        onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-    ): CompressedHelperTask
+        addGoBackItem: Boolean
+    ): CompressedHelperCallable
 
     /** Decompress a file somewhere  */
     fun decompress(whereToDecompress: String) {

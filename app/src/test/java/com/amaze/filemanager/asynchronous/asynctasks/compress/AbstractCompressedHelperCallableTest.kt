@@ -42,7 +42,7 @@ import kotlin.collections.ArrayList
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
-abstract class AbstractCompressedHelperTaskTest {
+abstract class AbstractCompressedHelperCallableTest {
 
     private lateinit var systemTz: TimeZone
 
@@ -74,18 +74,6 @@ abstract class AbstractCompressedHelperTaskTest {
                     File(Environment.getExternalStorageDirectory(), it.name)
                 )
             )
-        }
-    }
-
-    companion object {
-
-        @JvmStatic
-        // To ensure this is created only once and for all.
-        val emptyCallback = object :
-            OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>> {
-            override fun onAsyncTaskFinished(
-                data: AsyncTaskResult<ArrayList<CompressedObjectParcelable>>
-            ) = Unit
         }
     }
 }

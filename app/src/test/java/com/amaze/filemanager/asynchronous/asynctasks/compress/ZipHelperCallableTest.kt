@@ -26,15 +26,15 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
-class ZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+class ZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
 
     override val archiveFileName: String
         get() = "test-archive.zip"
 
     /**
-     * Verification on logic in [ZipHelperTask] assigning zip entry path.
+     * Verification on logic in [ZipHelperCallable] assigning zip entry path.
      *
-     * @see ZipHelperTask.addElements
+     * @see ZipHelperCallable.addElements
      */
     @Test
     fun testVariableYAssignment() {
@@ -59,21 +59,19 @@ class ZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
      */
     @Test(expected = ArchiveException::class)
     fun testInvalidFileUriShouldThrowArchiveException() {
-        ZipHelperTask(
+        ZipHelperCallable(
             ApplicationProvider.getApplicationContext(),
             "mailto:test@test.com",
             "",
-            false,
-            emptyCallback
+            false
         ).addElements(ArrayList())
     }
 
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        ZipHelperTask(
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            ZipHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,
-            false,
-            emptyCallback
+            false
         )
 }

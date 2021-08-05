@@ -20,33 +20,34 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
+import android.os.Environment
 import org.junit.Assert
-import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
-@Ignore("Test skipped due to problem at upstream library.")
-class SevenZipHelperTaskTest2 : AbstractCompressedHelperTaskArchiveTest() {
+class UnknownCompressedHelperCallableTest : AbstractCompressedHelperCallableTest() {
 
-    override val archiveFileName: String
-        get() = "compress.7z"
-
+    /**
+     * Test file decompression.
+     */
     @Test
-    override fun testRoot() {
-        val task = createTask("")
-        val result = task.doInBackground()
-        Assert.assertEquals(result.result.size.toLong(), 0)
+    fun testExtract() {
+        listOf("lzma", "gz", "xz", "bz2").forEach { ext ->
+            doTestExtract(
+                UnknownCompressedFileHelperCallable(
+                    File(
+                        Environment.getExternalStorageDirectory(),
+                        "test.txt.$ext"
+                    ).absolutePath,
+                    false
+                )
+            )
+        }
     }
 
-    @Test
-    @Ignore("Not testing this one")
-    override fun testSublevels() = Unit
-
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        SevenZipHelperTask(
-        archive.absolutePath,
-        relativePath,
-        false,
-        emptyCallback
-    )
+    private fun doTestExtract(task: CompressedHelperCallable) {
+        val result = task.call()
+        Assert.assertEquals(1, result.size.toLong())
+        Assert.assertEquals("test.txt", result[0].name)
+    }
 }

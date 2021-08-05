@@ -20,18 +20,18 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import java.io.File
+import android.content.Context
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 
-class EncryptedSevenZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+class TarBzip2HelperCallable(
+    context: Context,
+    filePath: String,
+    relativePath: String,
+    goBack: Boolean
+) :
+    AbstractCompressedTarArchiveHelperCallable(context, filePath, relativePath, goBack) {
 
-    override val archiveFileName: String
-        get() = "test-archive-encrypted.7z"
-
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        SevenZipHelperTask(
-            archive.absolutePath,
-            relativePath,
-            false,
-            emptyCallback
-        )
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
+        BZip2CompressorInputStream::class.java
 }

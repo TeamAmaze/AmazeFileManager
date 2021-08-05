@@ -20,18 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import java.io.File
+import android.content.Context
+import org.apache.commons.compress.archivers.ArchiveInputStream
+import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
+import java.io.InputStream
 
-class SevenZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+class TarHelperCallable(
+    context: Context,
+    filePath: String,
+    relativePath: String,
+    goBack: Boolean
+) :
+    AbstractCommonsArchiveHelperCallable(context, filePath, relativePath, goBack) {
 
-    override val archiveFileName: String
-        get() = "test-archive.7z"
-
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        SevenZipHelperTask(
-            archive.absolutePath,
-            relativePath,
-            false,
-            emptyCallback
-        )
+    override fun createFrom(inputStream: InputStream): ArchiveInputStream =
+        TarArchiveInputStream(inputStream)
 }

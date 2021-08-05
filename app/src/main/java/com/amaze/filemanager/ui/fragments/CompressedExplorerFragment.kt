@@ -34,6 +34,7 @@ import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -72,10 +73,23 @@ import com.amaze.filemanager.utils.Utils
 import com.github.junrar.exception.UnsupportedRarV5Exception
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.apache.commons.compress.PasswordRequiredException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
+
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+
+import com.afollestad.materialdialogs.DialogAction
+
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.MaterialDialog.SingleButtonCallback
+
 
 @Suppress("TooManyFunctions")
 class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
@@ -518,28 +532,58 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         if (folder.startsWith("/")) folder = folder.substring(1)
         val addGoBackItem = gobackitem && !isRoot(folder)
         decompressor.let {
-            it.changePath(
-                folder,
-                addGoBackItem,
-                object :
-                    OnAsyncTaskFinished<AsyncTaskResult<
-                            ArrayList<CompressedObjectParcelable>>> {
-                    override fun onAsyncTaskFinished(
-                        data:
-                            AsyncTaskResult<ArrayList<CompressedObjectParcelable>>
-                    ) {
-                        if (data.exception == null) {
-                            viewModel.elements.postValue(data.result)
-                            viewModel.folder = folder
-                        } else {
-                            archiveCorruptOrUnsupportedToast(data.exception)
-                        }
+            Flowable.fromCallable(it.changePath(folder, addGoBackItem))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ result ->
+                    viewModel.elements.postValue(result)
+                    viewModel.folder = folder
+                }, { error ->
+                    if (error is PasswordRequiredException) {
+                        dialogGetPasswordFromUser(folder);
+                    } else {
+                        archiveCorruptOrUnsupportedToast(error);
                     }
-                }
-            ).execute()
+                })
             swipeRefreshLayout.isRefreshing = true
             updateBottomBar()
-        } ?: archiveCorruptOrUnsupportedToast(null)
+        }
+    }
+
+
+    private fun dialogGetPasswordFromUser(filePath: String) {
+        val positiveCallback =
+            SingleButtonCallback { dialog: MaterialDialog, action: DialogAction? ->
+                val editText = dialog.view.findViewById<EditText>(R.id.singleedittext_input)
+                val password: String = editText.getText().toString()
+                ArchivePasswordCache.getInstance()[filePath] = password
+                dialog.dismiss()
+                changePath(filePath)
+            }
+        ArchivePasswordCache.getInstance().remove(filePath)
+        GeneralDialogCreation.showPasswordDialog(
+            requireContext(),
+            (requireActivity() as MainActivity),
+            AppConfig.getInstance().utilsProvider.appTheme,
+            R.string.archive_password_prompt,
+            R.string.authenticate_password,
+            positiveCallback,
+            null
+        )
+    }
+
+    private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
+        @StringRes val msg: Int =
+            if (e?.cause?.javaClass is UnsupportedRarV5Exception)
+                R.string.error_unsupported_v5_rar
+            else
+                R.string.archive_unsupported_or_corrupt
+        Toast.makeText(
+            activity,
+            requireContext().getString(msg, compressedFile.absolutePath),
+            Toast.LENGTH_LONG
+        ).show()
+        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
     override val path: String
@@ -645,20 +689,6 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
      * @return [MainActivity]
      */
     fun requireMainActivity(): MainActivity = requireActivity() as MainActivity
-
-    private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
-        @StringRes val msg: Int =
-            if (e?.cause?.javaClass is UnsupportedRarV5Exception)
-                R.string.error_unsupported_v5_rar
-            else
-                R.string.archive_unsupported_or_corrupt
-        Toast.makeText(
-            activity,
-            requireContext().getString(msg, compressedFile.absolutePath),
-            Toast.LENGTH_LONG
-        ).show()
-        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
-    }
 
     companion object {
         const val KEY_PATH = "path"

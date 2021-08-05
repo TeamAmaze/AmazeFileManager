@@ -20,23 +20,27 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import org.apache.commons.compress.compressors.CompressorInputStream
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
-import java.util.*
+import org.junit.runner.RunWith
+import org.junit.runners.Suite
+import org.junit.runners.Suite.SuiteClasses
 
-class TarXzHelperTask(
-    context: Context,
-    filePath: String,
-    relativePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-) :
-    AbstractCompressedTarArchiveHelperTask(context, filePath, relativePath, goBack, l) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        XZCompressorInputStream::class.java
-}
+@RunWith(Suite::class)
+@SuiteClasses(
+    TarGzHelperCallableTest::class,
+    ZipHelperCallableTest::class,
+    TarHelperCallableTest::class,
+    RarHelperCallableTest::class,
+    TarBzip2HelperCallableTest::class,
+    TarLzmaHelperCallableTest::class,
+    TarXzHelperCallableTest::class,
+    TarXzHelperCallableTest2::class,
+    SevenZipHelperCallableTest::class,
+    SevenZipHelperCallableTest2::class,
+    EncryptedRarHelperCallableTest::class,
+    EncryptedZipHelperCallableTest::class,
+    EncryptedSevenZipHelperCallableTest::class,
+    ListEncryptedSevenZipHelperCallableTest::class,
+    UnknownCompressedHelperCallableTest::class,
+    CompressedHelperForBadArchiveTest::class
+)
+class CompressedHelperCallableTestSuite

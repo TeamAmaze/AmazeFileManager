@@ -20,20 +20,17 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
-class TarBzip2HelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+class EncryptedRarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
 
     override val archiveFileName: String
-        get() = "test-archive.tar.bz2"
+        get() = "test-archive-encrypted.rar"
 
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        TarBzip2HelperTask(
-            ApplicationProvider.getApplicationContext(),
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            RarHelperCallable(
             archive.absolutePath,
             relativePath,
-            false,
-            emptyCallback
+            false
         )
 }

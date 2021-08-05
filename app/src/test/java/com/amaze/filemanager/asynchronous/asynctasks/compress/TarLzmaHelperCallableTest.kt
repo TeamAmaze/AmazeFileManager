@@ -20,23 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import org.apache.commons.compress.compressors.CompressorInputStream
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
-import java.util.*
+import androidx.test.core.app.ApplicationProvider
+import java.io.File
 
-class TarBzip2HelperTask(
-    context: Context,
-    filePath: String,
-    relativePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-) :
-    AbstractCompressedTarArchiveHelperTask(context, filePath, relativePath, goBack, l) {
+class TarLzmaHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
 
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        BZip2CompressorInputStream::class.java
+    override val archiveFileName: String
+        get() = "test-archive.tar.lzma"
+
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            TarLzmaHelperCallable(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }

@@ -47,15 +47,18 @@ class CompressedHelperForBadArchiveTest {
             val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
             ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
             val task = CompressedHelper.getCompressorInstance(
-                ApplicationProvider.getApplicationContext(), badArchive
-            ).changePath("", false, AbstractCompressedHelperTaskTest.emptyCallback)
-            val result = task.doInBackground()
-            Assert.assertNull("Thrown from ${task.javaClass}", result.result)
-            Assert.assertNotNull(result.exception)
-            Assert.assertTrue(
-                "Thrown from ${task.javaClass}: ${result.exception.javaClass} was thrown",
-                ArchiveException::class.java.isAssignableFrom(result.exception.javaClass)
-            )
+                    ApplicationProvider.getApplicationContext(), badArchive
+            ).changePath("", false)
+            try {
+                val result = task.call()
+                Assert.assertNull("Thrown from ${task.javaClass}", result)
+            } catch (exception: ArchiveException) {
+                Assert.assertNotNull(exception)
+                Assert.assertTrue(
+                        "Thrown from ${task.javaClass}: ${exception.javaClass} was thrown",
+                        ArchiveException::class.java.isAssignableFrom(exception.javaClass)
+                )
+            }
         }
     }
 

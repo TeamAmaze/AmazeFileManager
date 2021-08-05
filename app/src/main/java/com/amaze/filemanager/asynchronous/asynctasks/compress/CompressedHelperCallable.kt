@@ -20,23 +20,34 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
+import android.os.AsyncTask
+import androidx.annotation.WorkerThread
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import org.apache.commons.compress.compressors.CompressorInputStream
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
+import org.apache.commons.compress.archivers.ArchiveException
+import java.io.IOException
 import java.util.*
+import java.util.concurrent.Callable
 
-class TarGzHelperTask(
-    context: Context,
-    filePath: String,
-    relativePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+abstract class CompressedHelperCallable internal constructor(
+    private val createBackItem: Boolean
 ) :
-    AbstractCompressedTarArchiveHelperTask(context, filePath, relativePath, goBack, l) {
+    Callable<ArrayList<CompressedObjectParcelable>> {
 
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        GzipCompressorInputStream::class.java
+    @WorkerThread
+    @Throws(ArchiveException::class)
+    override fun call(): ArrayList<CompressedObjectParcelable> {
+        val elements = ArrayList<CompressedObjectParcelable>()
+        if (createBackItem) {
+            elements.add(0, CompressedObjectParcelable())
+        }
+
+        addElements(elements)
+        Collections.sort(elements, CompressedObjectParcelable.Sorter())
+        return elements
+    }
+
+    @Throws(ArchiveException::class)
+    protected abstract fun addElements(elements: ArrayList<CompressedObjectParcelable>)
 }

@@ -20,27 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import org.junit.runner.RunWith
-import org.junit.runners.Suite
-import org.junit.runners.Suite.SuiteClasses
+import androidx.test.core.app.ApplicationProvider
+import java.io.File
 
-@RunWith(Suite::class)
-@SuiteClasses(
-    TarGzHelperTaskTest::class,
-    ZipHelperTaskTest::class,
-    TarHelperTaskTest::class,
-    RarHelperTaskTest::class,
-    TarBzip2HelperTaskTest::class,
-    TarLzmaHelperTaskTest::class,
-    TarXzHelperTaskTest::class,
-    TarXzHelperTaskTest2::class,
-    SevenZipHelperTaskTest::class,
-    SevenZipHelperTaskTest2::class,
-    EncryptedRarHelperTaskTest::class,
-    EncryptedZipHelperTaskTest::class,
-    EncryptedSevenZipHelperTaskTest::class,
-    ListEncryptedSevenZipHelperTaskTest::class,
-    UnknownCompressedHelperTaskTest::class,
-    CompressedHelperForBadArchiveTest::class
-)
-class CompressedHelperTaskTestSuite
+class TarGzHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
+
+    override val archiveFileName: String
+        get() = "test-archive.tar.gz"
+
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            TarGzHelperCallable(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false
+        )
+}

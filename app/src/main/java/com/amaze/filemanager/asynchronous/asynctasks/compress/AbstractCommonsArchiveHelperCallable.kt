@@ -24,9 +24,7 @@ import android.content.Context
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import org.apache.commons.compress.archivers.ArchiveEntry
 import org.apache.commons.compress.archivers.ArchiveException
 import org.apache.commons.compress.archivers.ArchiveInputStream
@@ -36,14 +34,12 @@ import java.io.InputStream
 import java.lang.ref.WeakReference
 import java.util.*
 
-abstract class AbstractCommonsArchiveHelperTask(
+abstract class AbstractCommonsArchiveHelperCallable(
     context: Context,
     private val filePath: String,
     private val relativePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-) :
-    CompressedHelperTask(goBack, l) {
+    goBack: Boolean
+) : CompressedHelperCallable(goBack) {
 
     private val context: WeakReference<Context> = WeakReference(context)
 

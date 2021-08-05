@@ -25,44 +25,42 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
-class TarXzHelperTaskTest2 : AbstractCompressedHelperTaskArchiveTest() {
-
+class TarXzHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest() {
     override val archiveFileName: String
         get() = "compress.tar.xz"
 
     @Test
     override fun testRoot() {
-        val task = createTask("")
-        val result = task.doInBackground()
-        assertEquals(result.result.size.toLong(), 1)
-        assertEquals("compress", result.result[0].name)
+        val task = createCallable("")
+        val result = task.call()
+        assertEquals(result.size.toLong(), 1)
+        assertEquals("compress", result[0].name)
     }
 
     @Test
     override fun testSublevels() {
-        var task = createTask("compress")
-        var result = task.doInBackground()
-        assertEquals(result.result.size.toLong(), 3)
-        assertEquals("a", result.result[0].name)
-        assertEquals("bç", result.result[1].name)
-        assertEquals("r.txt", result.result[2].name)
-        assertEquals(4, result.result[2].size)
-        task = createTask("compress/a")
-        result = task.doInBackground()
-        assertEquals(result.result.size.toLong(), 0)
-        task = createTask("compress/bç")
-        result = task.doInBackground()
-        assertEquals(result.result.size.toLong(), 1)
-        assertEquals("t.txt", result.result[0].name)
-        assertEquals(6, result.result[0].size)
+        var task = createCallable("compress")
+        var result = task.call()
+        assertEquals(result.size.toLong(), 3)
+        assertEquals("a", result[0].name)
+        assertEquals("bç", result[1].name)
+        assertEquals("r.txt", result[2].name)
+        assertEquals(4, result[2].size)
+        task = createCallable("compress/a")
+        result = task.call()
+        assertEquals(result.size.toLong(), 0)
+        task = createCallable("compress/bç")
+        result = task.call()
+        assertEquals(result.size.toLong(), 1)
+        assertEquals("t.txt", result[0].name)
+        assertEquals(6, result[0].size)
     }
 
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
-        TarXzHelperTask(
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            TarXzHelperCallable(
         ApplicationProvider.getApplicationContext(),
         archive.absolutePath,
         relativePath,
-        false,
-        emptyCallback
+        false
     )
 }

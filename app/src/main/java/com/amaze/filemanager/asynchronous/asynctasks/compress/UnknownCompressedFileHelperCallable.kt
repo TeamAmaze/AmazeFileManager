@@ -52,12 +52,11 @@ import java.util.ArrayList
  * It is possible to implement uncompressed size for xz and lzma properly in the future, but are of
  * lower priority. Any help would be appreciated.
  */
-class UnknownCompressedFileHelperTask(
+class UnknownCompressedFileHelperCallable(
     private val filePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+    goBack: Boolean
 ) :
-    CompressedHelperTask(goBack, l) {
+        CompressedHelperCallable(goBack) {
 
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         val entryName = filePath.substringAfterLast('/').substringBeforeLast('.')

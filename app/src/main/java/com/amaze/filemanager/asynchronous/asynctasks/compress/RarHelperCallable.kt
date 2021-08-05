@@ -21,10 +21,8 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor.Companion.convertName
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import com.github.junrar.Archive
 import com.github.junrar.exception.RarException
 import com.github.junrar.exception.UnsupportedRarV5Exception
@@ -40,13 +38,12 @@ import java.util.*
  * @param realFileDirectory the location of the zip file
  * @param dir relativeDirectory to access inside the zip file
  */
-class RarHelperTask(
+class RarHelperCallable(
     private val fileLocation: String,
     private val relativeDirectory: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+    goBack: Boolean
 ) :
-    CompressedHelperTask(goBack, l) {
+    CompressedHelperCallable(goBack) {
 
     @Throws(ArchiveException::class)
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {

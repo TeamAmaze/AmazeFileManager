@@ -25,26 +25,22 @@ import android.net.Uri
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.exception.ZipException
 import net.lingala.zip4j.model.FileHeader
 import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.lang.ref.WeakReference
-import java.util.*
 import kotlin.collections.ArrayList
 
-class ZipHelperTask(
+class ZipHelperCallable(
     c: Context,
     realFileDirectory: String,
     dir: String?,
-    goback: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+    goback: Boolean
 ) :
-    CompressedHelperTask(goback, l) {
+    CompressedHelperCallable(goback) {
 
     private val context: WeakReference<Context> = WeakReference(c)
     private val fileLocation: Uri = Uri.parse(realFileDirectory)

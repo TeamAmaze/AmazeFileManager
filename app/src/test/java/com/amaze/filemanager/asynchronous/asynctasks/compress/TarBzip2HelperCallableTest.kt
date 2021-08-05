@@ -20,18 +20,18 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
-class ListEncryptedSevenZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
-
+class TarBzip2HelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
     override val archiveFileName: String
-        get() = "test-archive-encrypted-list.7z"
+        get() = "test-archive.tar.bz2"
 
-    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask {
-        archive.absolutePath.let {
-            ArchivePasswordCache.getInstance()[it] = "123456"
-            return SevenZipHelperTask(it, relativePath, false, emptyCallback)
-        }
-    }
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            TarBzip2HelperCallable(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }
