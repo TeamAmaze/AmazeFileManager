@@ -38,6 +38,7 @@ import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.text.Editable;
 import android.view.View;
@@ -94,7 +95,12 @@ public class RenameBookmark extends DialogFragment {
       builder.positiveText(R.string.save);
       builder.neutralText(R.string.cancel);
       builder.negativeText(R.string.delete);
-      builder.theme(((BasicActivity) getActivity()).getAppTheme().getMaterialDialogTheme());
+      builder.theme(
+          ((BasicActivity) getActivity())
+              .getAppTheme()
+              .getMaterialDialogTheme(
+                  (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                      == Configuration.UI_MODE_NIGHT_YES));
       builder.autoDismiss(false);
       View v2 = getActivity().getLayoutInflater().inflate(R.layout.rename, null);
       builder.customView(v2, true);

@@ -52,6 +52,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
@@ -249,7 +250,13 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         MaterialDialog.Builder builder1 =
                             new MaterialDialog.Builder(fragment.requireContext());
                         builder1
-                            .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
+                            .theme(
+                                utilsProvider
+                                    .getAppTheme()
+                                    .getMaterialDialogTheme(
+                                        (fragment.getResources().getConfiguration().uiMode
+                                                & Configuration.UI_MODE_NIGHT_MASK)
+                                            == Configuration.UI_MODE_NIGHT_YES))
                             .content(fragment.getString(R.string.unin_system_apk))
                             .title(fragment.getString(R.string.warning))
                             .negativeColor(colorAccent)

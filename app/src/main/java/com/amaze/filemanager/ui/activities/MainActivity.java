@@ -115,6 +115,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
@@ -1109,7 +1110,12 @@ public class MainActivity extends PermissionsActivity
             case R.id.dsort:
               String[] sort = getResources().getStringArray(R.array.directorysortmode);
               MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(getAppTheme().getMaterialDialogTheme());
+              builder.theme(
+                  getAppTheme()
+                      .getMaterialDialogTheme(
+                          (getResources().getConfiguration().uiMode
+                                  & Configuration.UI_MODE_NIGHT_MASK)
+                              == Configuration.UI_MODE_NIGHT_YES));
               builder.title(R.string.directorysort);
               int current =
                   Integer.parseInt(
@@ -1219,6 +1225,33 @@ public class MainActivity extends PermissionsActivity
     super.onConfigurationChanged(newConfig);
     // Pass any configuration change to the drawer toggls
     drawer.onConfigurationChanged(newConfig);
+
+    int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    if (AppTheme.getTheme(
+            Integer.parseInt(getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4")))
+        .equals(AppTheme.SYSTEM))
+      switch (currentNightMode) {
+        case Configuration.UI_MODE_NIGHT_NO:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
+          restartPC(this);
+          break;
+        case Configuration.UI_MODE_NIGHT_YES:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
+          restartPC(this);
+          break;
+      }
+  }
+
+  public static void restartPC(final Activity activity) {
+    if (activity == null) return;
+
+    final int enter_anim = android.R.anim.fade_in;
+    final int exit_anim = android.R.anim.fade_out;
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.finish();
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.startActivity(activity.getIntent());
   }
 
   @Override
@@ -1608,7 +1641,10 @@ public class MainActivity extends PermissionsActivity
     getSupportActionBar().setDisplayShowTitleEnabled(false);
     fabBgView = findViewById(R.id.fabs_overlay_layout);
 
-    switch (getAppTheme().getSimpleTheme()) {
+    switch (getAppTheme()
+        .getSimpleTheme(
+            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES)) {
       case DARK:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         break;
@@ -1680,7 +1716,10 @@ public class MainActivity extends PermissionsActivity
             .setLabel(fabTitle)
             .setFabBackgroundColor(iconSkin);
 
-    switch (getAppTheme().getSimpleTheme()) {
+    switch (getAppTheme()
+        .getSimpleTheme(
+            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES)) {
       case LIGHT:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
         break;

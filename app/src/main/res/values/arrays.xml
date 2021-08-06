@@ -28,6 +28,7 @@
         <item>@string/dark</item>
         <item>@string/daytime</item>
         <item>@string/black</item>
+        <item>@string/system</item>
 
     </string-array>
     <string-array name="columns">

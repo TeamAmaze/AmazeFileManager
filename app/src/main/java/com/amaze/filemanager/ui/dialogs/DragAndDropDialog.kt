@@ -22,6 +22,7 @@ package com.amaze.filemanager.ui.dialogs
 
 import android.app.Dialog
 import android.content.Context
+import android.content.res.Configuration
 import android.os.AsyncTask
 import android.os.Bundle
 import android.util.Log
@@ -127,8 +128,16 @@ class DragAndDropDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+
+        val uiMode = resources.configuration.uiMode
+
+        val isNightMode =
+            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
         safeLet(
-            context, mainActivity?.appTheme?.materialDialogTheme, mainActivity?.accent,
+            context,
+            mainActivity?.appTheme?.getMaterialDialogTheme(isNightMode),
+            mainActivity?.accent,
             pasteLocation, operationFiles
         ) {
             context, dialogTheme, accent, pasteLocation, operationFiles ->

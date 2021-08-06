@@ -29,12 +29,14 @@ public enum AppTheme {
   LIGHT(0),
   DARK(1),
   TIMED(2),
-  BLACK(3);
+  BLACK(3),
+  SYSTEM(4);
 
   public static final int LIGHT_INDEX = 0;
   public static final int DARK_INDEX = 1;
   public static final int TIME_INDEX = 2;
   public static final int BLACK_INDEX = 3;
+  public static final int SYSTEM_INDEX = 4;
 
   private int id;
 
@@ -59,6 +61,8 @@ public enum AppTheme {
         return TIMED;
       case BLACK_INDEX:
         return BLACK;
+      case SYSTEM_INDEX:
+        return SYSTEM;
     }
   }
 
@@ -66,7 +70,7 @@ public enum AppTheme {
    * @return The Theme enum to provide to {@link
    *     com.afollestad.materialdialogs.MaterialDialog.Builder}
    */
-  public Theme getMaterialDialogTheme() {
+  public Theme getMaterialDialogTheme(boolean isNightMode) {
     switch (id) {
       default:
       case LIGHT_INDEX:
@@ -81,6 +85,8 @@ public enum AppTheme {
         } else {
           return Theme.LIGHT;
         }
+      case SYSTEM_INDEX:
+        return isNightMode ? Theme.DARK : Theme.LIGHT;
     }
   }
 
@@ -88,8 +94,9 @@ public enum AppTheme {
    * Returns the correct AppTheme. If index == TIME_INDEX, current time is used to select the theme.
    *
    * @return The AppTheme for the given index
+   * @param isNightMode Whether dark mode or not
    */
-  public AppTheme getSimpleTheme() {
+  public AppTheme getSimpleTheme(boolean isNightMode) {
     switch (id) {
       default:
       case LIGHT_INDEX:
@@ -105,6 +112,8 @@ public enum AppTheme {
         }
       case BLACK_INDEX:
         return BLACK;
+      case SYSTEM_INDEX:
+        return isNightMode ? DARK : LIGHT;
     }
   }
 

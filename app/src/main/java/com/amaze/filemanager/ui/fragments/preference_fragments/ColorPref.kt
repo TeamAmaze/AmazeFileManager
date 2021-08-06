@@ -21,6 +21,7 @@
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
 import android.content.SharedPreferences
+import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -165,10 +166,16 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 it.onItemClickListener = adapter
             }
             val fab_skin = activity.accent
+
+            val uiMode = resources.configuration.uiMode
+
+            val isNightMode =
+                uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
             dialog = MaterialDialog.Builder(activity)
                 .positiveText(com.amaze.filemanager.R.string.cancel)
                 .title(com.amaze.filemanager.R.string.choose_color)
-                .theme(activity.appTheme.materialDialogTheme)
+                .theme(activity.appTheme.getMaterialDialogTheme(isNightMode))
                 .autoDismiss(true)
                 .positiveColor(fab_skin)
                 .neutralColor(fab_skin)
@@ -309,7 +316,13 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 userColorPreferences.accent,
                 userColorPreferences.iconSkin
             )
-            if (activity.appTheme.materialDialogTheme == Theme.LIGHT) {
+
+            val uiMode = resources.configuration.uiMode
+
+            val isNightMode =
+                uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+            if (activity.appTheme.getMaterialDialogTheme(isNightMode) == Theme.LIGHT) {
                 selectedColors.setDividerColor(Color.WHITE)
             } else {
                 selectedColors.setDividerColor(Color.BLACK)

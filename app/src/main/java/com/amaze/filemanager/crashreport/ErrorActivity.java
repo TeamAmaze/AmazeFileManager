@@ -40,11 +40,15 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.Snackbar;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
 import android.os.Bundle;
@@ -61,6 +65,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
@@ -269,6 +274,38 @@ public class ErrorActivity extends ThemedActivity {
         break;
     }
     return false;
+  }
+
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    if (AppTheme.getTheme(
+            Integer.parseInt(getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4")))
+        .equals(AppTheme.SYSTEM))
+      switch (currentNightMode) {
+        case Configuration.UI_MODE_NIGHT_NO:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
+          restartPC(this);
+          break;
+        case Configuration.UI_MODE_NIGHT_YES:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
+          restartPC(this);
+          break;
+      }
+  }
+
+  public static void restartPC(final Activity activity) {
+    if (activity == null) return;
+
+    final int enter_anim = android.R.anim.fade_in;
+    final int exit_anim = android.R.anim.fade_out;
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.finish();
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.startActivity(activity.getIntent());
   }
 
   private void sendReportEmail() {

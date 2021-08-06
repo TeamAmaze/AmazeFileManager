@@ -26,6 +26,7 @@ import android.app.Dialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
@@ -118,12 +119,17 @@ class SftpConnectDialog : DialogFragment() {
             activityResultHandler.launch(intent)
         }
 
+        val uiMode = resources.configuration.uiMode
+
+        val isNightMode =
+            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
         // Define action for buttons
         val dialogBuilder = MaterialDialog.Builder(ctx!!.get()!!)
             .title(R.string.scp_connection)
             .autoDismiss(false)
             .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.materialDialogTheme)
+            .theme(utilsProvider.appTheme.getMaterialDialogTheme(isNightMode))
             .negativeText(R.string.cancel)
             .positiveText(if (edit) R.string.update else R.string.create)
             .positiveColor(accentColor)

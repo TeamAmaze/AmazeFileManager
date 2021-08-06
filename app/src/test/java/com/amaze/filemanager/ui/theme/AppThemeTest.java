@@ -28,6 +28,8 @@ import org.junit.Test;
 
 import com.afollestad.materialdialogs.Theme;
 
+import android.content.res.Configuration;
+
 /** Created by yuhalyn on 2018-04-02. */
 public class AppThemeTest {
 
@@ -85,13 +87,21 @@ public class AppThemeTest {
   @Test
   public void getSimpleThemeLIGHTTest() {
     AppTheme apptheme = AppTheme.getTheme(AppTheme.LIGHT_INDEX);
-    assertEquals(AppTheme.LIGHT, apptheme.getSimpleTheme());
+    assertEquals(
+        AppTheme.LIGHT,
+        apptheme.getSimpleTheme(
+            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
   public void getSimpleThemeDARKTest() {
     AppTheme apptheme = AppTheme.getTheme(AppTheme.DARK_INDEX);
-    assertEquals(AppTheme.DARK, apptheme.getSimpleTheme());
+    assertEquals(
+        AppTheme.DARK,
+        apptheme.getSimpleTheme(
+            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
@@ -99,14 +109,27 @@ public class AppThemeTest {
     AppTheme apptheme = AppTheme.getTheme(AppTheme.TIME_INDEX);
     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     if (hour <= 6 || hour >= 18) {
-      assertEquals(AppTheme.DARK, apptheme.getSimpleTheme());
-    } else assertEquals(AppTheme.LIGHT, apptheme.getSimpleTheme());
+      assertEquals(
+          AppTheme.DARK,
+          apptheme.getSimpleTheme(
+              (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                  == Configuration.UI_MODE_NIGHT_YES));
+    } else
+      assertEquals(
+          AppTheme.LIGHT,
+          apptheme.getSimpleTheme(
+              (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                  == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
   public void getSimpleThemeBLACKTest() {
     AppTheme apptheme = AppTheme.getTheme(AppTheme.BLACK_INDEX);
-    assertEquals(AppTheme.BLACK, apptheme.getSimpleTheme());
+    assertEquals(
+        AppTheme.BLACK,
+        apptheme.getSimpleTheme(
+            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test

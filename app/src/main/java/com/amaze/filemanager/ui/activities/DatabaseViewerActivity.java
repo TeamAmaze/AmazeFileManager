@@ -30,7 +30,11 @@ import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.DbViewerFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.theme.AppTheme;
 
+import android.app.Activity;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -39,6 +43,7 @@ import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
 
@@ -84,6 +89,38 @@ public class DatabaseViewerActivity extends ThemedActivity {
           fragmentTransaction.commit();
         });
     initStatusBarResources(findViewById(R.id.parentdb));
+  }
+
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    if (AppTheme.getTheme(
+            Integer.parseInt(getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4")))
+        .equals(AppTheme.SYSTEM))
+      switch (currentNightMode) {
+        case Configuration.UI_MODE_NIGHT_NO:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
+          restartPC(this);
+          break;
+        case Configuration.UI_MODE_NIGHT_YES:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
+          restartPC(this);
+          break;
+      }
+  }
+
+  public static void restartPC(final Activity activity) {
+    if (activity == null) return;
+
+    final int enter_anim = android.R.anim.fade_in;
+    final int exit_anim = android.R.anim.fade_out;
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.finish();
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.startActivity(activity.getIntent());
   }
 
   private ArrayList<String> getDbTableNames(Cursor c) {

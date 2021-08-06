@@ -32,6 +32,7 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.res.Configuration;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -132,7 +133,10 @@ public class ShareTask extends AsyncTask<String, String, Void> {
     if (!targetShareIntents.isEmpty()) {
       MaterialDialog.Builder builder = new MaterialDialog.Builder(contextc);
       builder.title(R.string.share);
-      builder.theme(appTheme.getMaterialDialogTheme());
+      builder.theme(
+          appTheme.getMaterialDialogTheme(
+              (contextc.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                  == Configuration.UI_MODE_NIGHT_YES));
       ShareAdapter shareAdapter = new ShareAdapter(contextc, targetShareIntents, labels, drawables);
       builder.adapter(shareAdapter, null);
       builder.negativeText(R.string.cancel);

@@ -33,6 +33,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
@@ -170,7 +171,10 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
       CircularColorsView colorsView = child.findViewById(R.id.circularColorsView);
       colorsView.setColors(getColor(i, 0), getColor(i, 1), getColor(i, 2), getColor(i, 3));
       AppTheme appTheme = AppTheme.getTheme(requireArguments().getInt(ARG_APP_THEME));
-      if (appTheme.getMaterialDialogTheme() == Theme.LIGHT) colorsView.setDividerColor(Color.WHITE);
+      if (appTheme.getMaterialDialogTheme(
+              (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                  == Configuration.UI_MODE_NIGHT_YES)
+          == Theme.LIGHT) colorsView.setDividerColor(Color.WHITE);
       else colorsView.setDividerColor(Color.BLACK);
       container.addView(child);
     }

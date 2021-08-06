@@ -48,6 +48,7 @@ import com.amaze.filemanager.utils.Utils;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.AsyncTask;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -222,7 +223,14 @@ public class PrepareCopyTask
     // checkBox
     final CheckBox checkBox = copyDialogBinding.checkBox;
     Utils.setTint(context.get(), checkBox, accentColor);
-    dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme());
+    dialogBuilder.theme(
+        mainActivity
+            .get()
+            .getAppTheme()
+            .getMaterialDialogTheme(
+                (context.get().getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK)
+                    == Configuration.UI_MODE_NIGHT_YES));
     dialogBuilder.title(context.get().getResources().getString(R.string.paste));
     dialogBuilder.positiveText(R.string.skip);
     dialogBuilder.negativeText(R.string.overwrite);

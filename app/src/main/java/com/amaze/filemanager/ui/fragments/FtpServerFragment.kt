@@ -26,6 +26,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.PackageManager
+import android.content.res.Configuration
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
 import android.net.Uri
@@ -388,6 +389,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     /** Check URI access if  */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {
+
+        val uiMode = resources.configuration.uiMode
+
+        val isNightMode =
+            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
         if (Build.VERSION.SDK_INT >= M) {
             val directoryUri: String = mainActivity.prefs.getString(
                 KEY_PREFERENCE_PATH, DEFAULT_PATH
@@ -402,7 +409,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                         MaterialDialog.Builder(mainActivity)
                             .content(R.string.ftp_prompt_accept_first_start_saf_access)
                             .widgetColor(accentColor)
-                            .theme(mainActivity.appTheme.materialDialogTheme)
+                            .theme(mainActivity.appTheme.getMaterialDialogTheme(isNightMode))
                             .title(R.string.ftp_prompt_accept_first_start_saf_access_title)
                             .positiveText(R.string.ok)
                             .positiveColor(accentColor)
@@ -611,7 +618,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val startDividerView = binding.dividerFtpStart
         val statusDividerView = binding.dividerFtpStatus
 
-        when (mainActivity.appTheme.simpleTheme) {
+        val uiMode = resources.configuration.uiMode
+
+        val isNightMode =
+            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+        when (mainActivity.appTheme.getSimpleTheme(isNightMode)) {
             AppTheme.LIGHT -> {
                 startDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
                 statusDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))

@@ -43,6 +43,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnProgressUpdate;
@@ -52,7 +53,9 @@ import com.google.android.material.snackbar.Snackbar;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.app.Activity;
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -77,6 +80,7 @@ import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.lifecycle.ViewModelProvider;
 
 public class TextEditorActivity extends ThemedActivity
@@ -185,6 +189,38 @@ public class TextEditorActivity extends ThemedActivity
     outState.putInt(KEY_INDEX, mainTextView.getScrollY());
     outState.putString(KEY_ORIGINAL_TEXT, viewModel.getOriginal());
     outState.putBoolean(KEY_MONOFONT, inputTypefaceMono.equals(mainTextView.getTypeface()));
+  }
+
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    if (AppTheme.getTheme(
+            Integer.parseInt(getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4")))
+        .equals(AppTheme.SYSTEM))
+      switch (currentNightMode) {
+        case Configuration.UI_MODE_NIGHT_NO:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
+          restartPC(this);
+          break;
+        case Configuration.UI_MODE_NIGHT_YES:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
+          restartPC(this);
+          break;
+      }
+  }
+
+  public static void restartPC(final Activity activity) {
+    if (activity == null) return;
+
+    final int enter_anim = android.R.anim.fade_in;
+    final int exit_anim = android.R.anim.fade_out;
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.finish();
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.startActivity(activity.getIntent());
   }
 
   private void checkUnsavedChanges() {

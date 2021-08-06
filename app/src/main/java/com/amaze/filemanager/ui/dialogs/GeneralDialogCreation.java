@@ -85,6 +85,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.hardware.fingerprint.FingerprintManager;
@@ -132,7 +133,13 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(themedActivity)
             .content(content)
             .widgetColor(accentColor)
-            .theme(themedActivity.getAppTheme().getMaterialDialogTheme())
+            .theme(
+                themedActivity
+                    .getAppTheme()
+                    .getMaterialDialogTheme(
+                        (themedActivity.getResources().getConfiguration().uiMode
+                                & Configuration.UI_MODE_NIGHT_MASK)
+                            == Configuration.UI_MODE_NIGHT_YES))
             .title(title)
             .positiveText(postiveText)
             .positiveColor(accentColor)
@@ -175,7 +182,11 @@ public class GeneralDialogCreation {
     builder
         .customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(m.getAppTheme().getMaterialDialogTheme())
+        .theme(
+            m.getAppTheme()
+                .getMaterialDialogTheme(
+                    (m.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                        == Configuration.UI_MODE_NIGHT_YES))
         .title(title)
         .positiveText(positiveButtonText)
         .onPositive(positiveButtonAction);
@@ -220,7 +231,10 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(c)
             .title(c.getString(R.string.dialog_delete_title))
             .customView(R.layout.dialog_delete, true)
-            .theme(appTheme.getMaterialDialogTheme())
+            .theme(
+                appTheme.getMaterialDialogTheme(
+                    (c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                        == Configuration.UI_MODE_NIGHT_YES))
             .negativeText(c.getString(R.string.cancel).toUpperCase())
             .positiveText(c.getString(R.string.delete).toUpperCase())
             .positiveColor(accentColor)
@@ -435,7 +449,10 @@ public class GeneralDialogCreation {
 
     MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
     builder.title(c.getString(R.string.properties));
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(
+        appTheme.getMaterialDialogTheme(
+            (c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
 
     View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
     TextView itemsText = v.findViewById(R.id.t7);
@@ -539,7 +556,11 @@ public class GeneralDialogCreation {
     /*Chart creation and data loading*/
     {
       boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
-      boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
+      boolean isDarkTheme =
+          appTheme.getMaterialDialogTheme(
+                  (c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                      == Configuration.UI_MODE_NIGHT_YES)
+              == Theme.DARK;
       PieChart chart = v.findViewById(R.id.chart);
 
       chart.setTouchEnabled(false);
@@ -705,7 +726,11 @@ public class GeneralDialogCreation {
         break;
     }
 
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(
+        appTheme.getMaterialDialogTheme(
+            (mainActivity.getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
     builder.content(mainActivity.getString(R.string.cloud_remove));
 
     builder.positiveText(mainActivity.getString(R.string.yes));
@@ -731,7 +756,10 @@ public class GeneralDialogCreation {
     final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
     builder.title(main.getString(R.string.warning));
     builder.content(main.getString(R.string.crypt_warning_key));
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(
+        appTheme.getMaterialDialogTheme(
+            (main.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
     builder.negativeText(main.getString(R.string.warning_never_show));
     builder.positiveText(main.getString(R.string.warning_confirm));
     builder.positiveColor(accentColor);
@@ -866,7 +894,10 @@ public class GeneralDialogCreation {
         .customView(rootView, true)
         .positiveText(c.getString(R.string.ok))
         .negativeText(c.getString(R.string.cancel))
-        .theme(appTheme.getMaterialDialogTheme())
+        .theme(
+            appTheme.getMaterialDialogTheme(
+                (c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                    == Configuration.UI_MODE_NIGHT_YES))
         .positiveColor(accentColor)
         .negativeColor(accentColor)
         .autoDismiss(false)
@@ -972,7 +1003,10 @@ public class GeneralDialogCreation {
     builder.customView(rootView, true);
     builder.canceledOnTouchOutside(false);
 
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(
+        appTheme.getMaterialDialogTheme(
+            (c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
 
     final MaterialDialog dialog = builder.show();
     cancelButton.setOnClickListener(v -> dialog.cancel());
@@ -1033,7 +1067,10 @@ public class GeneralDialogCreation {
 
     builder
         .customView(dialogLayout, false)
-        .theme(appTheme.getMaterialDialogTheme())
+        .theme(
+            appTheme.getMaterialDialogTheme(
+                (c.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                    == Configuration.UI_MODE_NIGHT_YES))
         .autoDismiss(false)
         .canceledOnTouchOutside(false)
         .title(titleText)
@@ -1083,7 +1120,11 @@ public class GeneralDialogCreation {
         .neutralColor(accentColor)
         .onPositive((dialog, which) -> FileUtils.installApk(f, m))
         .onNegative((dialog, which) -> m.openCompressed(f.getPath()))
-        .theme(m.getAppTheme().getMaterialDialogTheme())
+        .theme(
+            m.getAppTheme()
+                .getMaterialDialogTheme(
+                    (m.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                        == Configuration.UI_MODE_NIGHT_YES))
         .build()
         .show();
   }
@@ -1126,7 +1167,11 @@ public class GeneralDialogCreation {
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(m.getAppTheme().getMaterialDialogTheme())
+        .theme(
+            m.getAppTheme()
+                .getMaterialDialogTheme(
+                    (m.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                        == Configuration.UI_MODE_NIGHT_YES))
         .title(m.getResources().getString(R.string.enterzipname))
         .positiveText(R.string.create)
         .positiveColor(accentColor)
@@ -1180,7 +1225,10 @@ public class GeneralDialogCreation {
     String[] sort = m.getResources().getStringArray(R.array.sortby);
     int current = SortHandler.getSortType(m.getContext(), path);
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme());
+    a.theme(
+        appTheme.getMaterialDialogTheme(
+            (m.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
     a.items(sort)
         .itemsCallbackSingleChoice(
             current > 3 ? current - 4 : current, (dialog, view, which, text) -> true);
@@ -1254,7 +1302,10 @@ public class GeneralDialogCreation {
     a.negativeColor(accentColor);
     a.title(R.string.history);
     a.onNegative((dialog, which) -> dataUtils.clearHistory());
-    a.theme(appTheme.getMaterialDialogTheme());
+    a.theme(
+        appTheme.getMaterialDialogTheme(
+            (m.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
 
     HiddenAdapter adapter =
         new HiddenAdapter(
@@ -1285,7 +1336,11 @@ public class GeneralDialogCreation {
     builder.positiveText(R.string.close);
     builder.positiveColor(accentColor);
     builder.title(R.string.hiddenfiles);
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(
+        appTheme.getMaterialDialogTheme(
+            (mainFragment.getResources().getConfiguration().uiMode
+                    & Configuration.UI_MODE_NIGHT_MASK)
+                == Configuration.UI_MODE_NIGHT_YES));
     builder.autoDismiss(true);
     HiddenAdapter adapter =
         new HiddenAdapter(
@@ -1401,7 +1456,13 @@ public class GeneralDialogCreation {
 
     a.widgetColor(accentColor);
 
-    a.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
+    a.theme(
+        mainActivity
+            .getAppTheme()
+            .getMaterialDialogTheme(
+                (mainActivity.getResources().getConfiguration().uiMode
+                        & Configuration.UI_MODE_NIGHT_MASK)
+                    == Configuration.UI_MODE_NIGHT_YES));
     a.title(R.string.enterpath);
 
     a.positiveText(R.string.go);

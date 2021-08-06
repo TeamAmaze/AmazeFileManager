@@ -25,6 +25,7 @@ import static com.amaze.filemanager.utils.Utils.openURL;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.Utils;
@@ -34,7 +35,9 @@ import com.google.android.material.snackbar.Snackbar;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
+import android.app.Activity;
 import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -44,6 +47,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
@@ -144,6 +148,38 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
         });
   }
 
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    if (AppTheme.getTheme(
+            Integer.parseInt(mSharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "4")))
+        .equals(AppTheme.SYSTEM))
+      switch (currentNightMode) {
+        case Configuration.UI_MODE_NIGHT_NO:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
+          restartPC(this);
+          break;
+        case Configuration.UI_MODE_NIGHT_YES:
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
+          restartPC(this);
+          break;
+      }
+  }
+
+  public static void restartPC(final Activity activity) {
+    if (activity == null) return;
+
+    final int enter_anim = android.R.anim.fade_in;
+    final int exit_anim = android.R.anim.fade_out;
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.finish();
+    activity.overridePendingTransition(enter_anim, exit_anim);
+    activity.startActivity(activity.getIntent());
+  }
+
   /**
    * Calculates aspect ratio for the Amaze header
    *
@@ -235,7 +271,10 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 .withAboutSpecial1Description(getString(R.string.amaze_license))
                 .withLicenseShown(true);
 
-        switch (getAppTheme().getSimpleTheme()) {
+        switch (getAppTheme()
+            .getSimpleTheme(
+                (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+                    == Configuration.UI_MODE_NIGHT_YES)) {
           case LIGHT:
             libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
             break;
