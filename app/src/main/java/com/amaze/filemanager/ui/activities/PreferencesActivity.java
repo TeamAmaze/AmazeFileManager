@@ -43,7 +43,6 @@ import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
@@ -158,38 +157,6 @@ public class PreferencesActivity extends ThemedActivity
         return true;
     }
     return false;
-  }
-
-  @Override
-  public void onConfigurationChanged(@NonNull Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-
-    int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
-
-    if (AppTheme.getTheme(
-            Integer.parseInt(getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4")))
-        .equals(AppTheme.SYSTEM))
-      switch (currentNightMode) {
-        case Configuration.UI_MODE_NIGHT_NO:
-          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
-          restartPC(this);
-          break;
-        case Configuration.UI_MODE_NIGHT_YES:
-          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
-          restartPC(this);
-          break;
-      }
-  }
-
-  public static void restartPC(final Activity activity) {
-    if (activity == null) return;
-
-    final int enter_anim = android.R.anim.fade_in;
-    final int exit_anim = android.R.anim.fade_out;
-    activity.overridePendingTransition(enter_anim, exit_anim);
-    activity.finish();
-    activity.overridePendingTransition(enter_anim, exit_anim);
-    activity.startActivity(activity.getIntent());
   }
 
   /**
