@@ -50,12 +50,13 @@ public class AppThemeManager {
    */
   public AppThemeManager setAppTheme(AppTheme appTheme) {
     this.appTheme = appTheme;
-    preferences
-        .edit()
-        .putString(
-            PreferencesConstants.FRAGMENT_THEME,
-            Integer.toString(appTheme.getId() == 4 ? 4 : appTheme.getId()))
-        .apply();
+    if (!preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4"))
+      preferences
+          .edit()
+          .putString(
+              PreferencesConstants.FRAGMENT_THEME,
+              Integer.toString(appTheme.getId() == 4 ? 4 : appTheme.getId()))
+          .apply();
     return this;
   }
 }
