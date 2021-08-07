@@ -25,6 +25,7 @@ import static com.amaze.filemanager.utils.Utils.openURL;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.Utils;
@@ -51,7 +52,7 @@ import androidx.palette.graphics.Palette;
 import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 27/7/16. */
-public class AboutActivity extends PreferenceActivity implements View.OnClickListener {
+public class AboutActivity extends ThemedActivity implements View.OnClickListener {
 
   private static final String TAG = "AboutActivity";
 
