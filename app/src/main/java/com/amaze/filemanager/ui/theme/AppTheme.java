@@ -24,6 +24,9 @@ import java.util.Calendar;
 
 import com.afollestad.materialdialogs.Theme;
 
+import android.content.Context;
+import android.content.res.Configuration;
+
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
   LIGHT(0),
@@ -50,7 +53,11 @@ public enum AppTheme {
    * @param index The theme index
    * @return The AppTheme for the given index
    */
-  public static AppTheme getTheme(int index) {
+  public static AppTheme getTheme(Context context, int index) {
+    return getTheme(isNightMode(context),index);
+  }
+
+  public static AppTheme getTheme(boolean isNightMode, int index) {
     switch (index) {
       default:
       case LIGHT_INDEX:
@@ -62,15 +69,13 @@ public enum AppTheme {
       case BLACK_INDEX:
         return BLACK;
       case SYSTEM_INDEX:
-        return SYSTEM;
+        return isNightMode
+                ? DARK
+                : LIGHT;
     }
   }
 
-  /**
-   * @return The Theme enum to provide to {@link
-   *     com.afollestad.materialdialogs.MaterialDialog.Builder}
-   */
-  public Theme getMaterialDialogTheme(boolean isNightMode) {
+  public Theme getMaterialDialogTheme(Context context) {
     switch (id) {
       default:
       case LIGHT_INDEX:
@@ -86,7 +91,9 @@ public enum AppTheme {
           return Theme.LIGHT;
         }
       case SYSTEM_INDEX:
-        return isNightMode ? Theme.DARK : Theme.LIGHT;
+        return isNightMode(context)
+            ? Theme.DARK
+            : Theme.LIGHT;
     }
   }
 
@@ -94,8 +101,11 @@ public enum AppTheme {
    * Returns the correct AppTheme. If index == TIME_INDEX, current time is used to select the theme.
    *
    * @return The AppTheme for the given index
-   * @param isNightMode Whether dark mode or not
    */
+  public AppTheme getSimpleTheme(Context context) {
+    return getSimpleTheme(isNightMode(context));
+  }
+
   public AppTheme getSimpleTheme(boolean isNightMode) {
     switch (id) {
       default:
@@ -119,5 +129,10 @@ public enum AppTheme {
 
   public int getId() {
     return id;
+  }
+
+  private static boolean isNightMode(Context context) {
+    return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+            == Configuration.UI_MODE_NIGHT_YES;
   }
 }

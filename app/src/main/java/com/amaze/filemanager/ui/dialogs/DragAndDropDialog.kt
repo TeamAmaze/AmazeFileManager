@@ -128,15 +128,9 @@ class DragAndDropDialog : DialogFragment() {
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-
-        val uiMode = resources.configuration.uiMode
-
-        val isNightMode =
-            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
         safeLet(
             context,
-            mainActivity?.appTheme?.getMaterialDialogTheme(isNightMode),
+            mainActivity?.appTheme?.getMaterialDialogTheme(mainActivity?.applicationContext),
             mainActivity?.accent,
             pasteLocation, operationFiles
         ) {

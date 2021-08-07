@@ -42,7 +42,6 @@ import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.util.ViewPreloadSizeProvider;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
@@ -181,10 +180,7 @@ public class AppsListFragment extends ListFragment
     String[] sort = getResources().getStringArray(R.array.sortbyApps);
     MaterialDialog.Builder builder =
         new MaterialDialog.Builder(mainActivity)
-            .theme(
-                appTheme.getMaterialDialogTheme(
-                    (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                        == Configuration.UI_MODE_NIGHT_YES))
+            .theme(appTheme.getMaterialDialogTheme(requireContext()))
             .items(sort)
             .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
             .negativeText(R.string.ascending)

@@ -37,7 +37,6 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 
 import android.content.Context;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.text.SpannableString;
@@ -138,12 +137,7 @@ public class LoadFolderSpaceDataTask extends AsyncTask<Void, Long, Pair<String, 
   }
 
   private void updateChart(String totalSpace, List<PieEntry> entries) {
-    boolean isDarkTheme =
-        appTheme.getMaterialDialogTheme(
-                (context.getResources().getConfiguration().uiMode
-                        & Configuration.UI_MODE_NIGHT_MASK)
-                    == Configuration.UI_MODE_NIGHT_YES)
-            == Theme.DARK;
+    boolean isDarkTheme = appTheme.getMaterialDialogTheme(context) == Theme.DARK;
 
     PieDataSet set = new PieDataSet(entries, null);
     set.setColors(COLORS);

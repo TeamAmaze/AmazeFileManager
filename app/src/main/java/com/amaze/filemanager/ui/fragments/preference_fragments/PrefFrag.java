@@ -50,7 +50,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.content.res.Configuration;
 import android.hardware.fingerprint.FingerprintManager;
 import android.os.Build;
 import android.os.Bundle;
@@ -192,13 +191,7 @@ public class PrefFrag extends PreferenceFragmentCompat
       case PreferencesConstants.PREFERENCE_GRID_COLUMNS:
         sort = getResources().getStringArray(R.array.columns);
         builder = new MaterialDialog.Builder(getActivity());
-        builder.theme(
-            utilsProvider
-                .getAppTheme()
-                .getMaterialDialogTheme(
-                    (getContext().getResources().getConfiguration().uiMode
-                            & Configuration.UI_MODE_NIGHT_MASK)
-                        == Configuration.UI_MODE_NIGHT_YES));
+        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme(requireContext()));
         builder.title(R.string.gridcolumnno);
         int current =
             Integer.parseInt(
@@ -225,12 +218,7 @@ public class PrefFrag extends PreferenceFragmentCompat
         dragToMoveArray = getResources().getStringArray(R.array.dragAndDropPreference);
         dragDialogBuilder = new MaterialDialog.Builder(getActivity());
         dragDialogBuilder.theme(
-            utilsProvider
-                .getAppTheme()
-                .getMaterialDialogTheme(
-                    (getContext().getResources().getConfiguration().uiMode
-                            & Configuration.UI_MODE_NIGHT_MASK)
-                        == Configuration.UI_MODE_NIGHT_YES));
+            utilsProvider.getAppTheme().getMaterialDialogTheme(requireContext()));
         dragDialogBuilder.title(R.string.drag_and_drop_preference);
         int currentDragPreference =
             sharedPref.getInt(
@@ -264,7 +252,7 @@ public class PrefFrag extends PreferenceFragmentCompat
             .itemsCallbackSingleChoice(
                 current,
                 (dialog, view, which, text) -> {
-                  utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
+                  utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(requireContext(),which));
                   dialog.dismiss();
                   restartPC(getActivity());
                   return true;
@@ -338,12 +326,7 @@ public class PrefFrag extends PreferenceFragmentCompat
             true,
             (dialog, input) -> {});
         masterPasswordDialogBuilder.theme(
-            utilsProvider
-                .getAppTheme()
-                .getMaterialDialogTheme(
-                    (getContext().getResources().getConfiguration().uiMode
-                            & Configuration.UI_MODE_NIGHT_MASK)
-                        == Configuration.UI_MODE_NIGHT_YES));
+            utilsProvider.getAppTheme().getMaterialDialogTheme(requireContext()));
         masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
         masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
         masterPasswordDialogBuilder.positiveColor(((ThemedActivity) getActivity()).getAccent());

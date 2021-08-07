@@ -35,7 +35,6 @@ import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -236,10 +235,7 @@ public class AboutActivity extends PreferenceActivity implements View.OnClickLis
                 .withAboutSpecial1Description(getString(R.string.amaze_license))
                 .withLicenseShown(true);
 
-        switch (getAppTheme()
-            .getSimpleTheme(
-                (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                    == Configuration.UI_MODE_NIGHT_YES)) {
+        switch (getAppTheme().getSimpleTheme(this)) {
           case LIGHT:
             libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
             break;

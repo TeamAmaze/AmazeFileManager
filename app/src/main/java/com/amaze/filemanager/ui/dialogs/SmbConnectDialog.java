@@ -49,7 +49,6 @@ import android.app.DialogFragment;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.ColorStateList;
-import android.content.res.Configuration;
 import android.graphics.Color;
 import android.net.UrlQuerySanitizer;
 import android.os.Build;
@@ -271,12 +270,7 @@ public class SmbConnectDialog extends DialogFragment {
     }
 
     ba3.customView(v2, true);
-    ba3.theme(
-        utilsProvider
-            .getAppTheme()
-            .getMaterialDialogTheme(
-                (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                    == Configuration.UI_MODE_NIGHT_YES));
+    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme(getContext()));
     ba3.neutralText(R.string.cancel);
     ba3.positiveText(R.string.create);
     if (edit) ba3.negativeText(R.string.delete);

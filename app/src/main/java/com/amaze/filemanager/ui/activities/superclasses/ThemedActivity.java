@@ -33,7 +33,6 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.app.ActivityManager;
-import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -146,11 +145,7 @@ public class ThemedActivity extends PreferenceActivity {
   }
 
   void setTheme() {
-    AppTheme theme =
-        getAppTheme()
-            .getSimpleTheme(
-                (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                    == Configuration.UI_MODE_NIGHT_YES);
+    AppTheme theme = getAppTheme().getSimpleTheme(this);
     if (Build.VERSION.SDK_INT >= 21) {
 
       String stringRepresentation = String.format("#%06X", (0xFFFFFF & getAccent()));

@@ -119,17 +119,12 @@ class SftpConnectDialog : DialogFragment() {
             activityResultHandler.launch(intent)
         }
 
-        val uiMode = resources.configuration.uiMode
-
-        val isNightMode =
-            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
         // Define action for buttons
         val dialogBuilder = MaterialDialog.Builder(ctx!!.get()!!)
             .title(R.string.scp_connection)
             .autoDismiss(false)
             .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.getMaterialDialogTheme(isNightMode))
+            .theme(utilsProvider.appTheme.getMaterialDialogTheme(context))
             .negativeText(R.string.cancel)
             .positiveText(if (edit) R.string.update else R.string.create)
             .positiveColor(accentColor)

@@ -71,16 +71,16 @@ public class PreferenceActivity extends BasicActivity {
 
     int currentNightMode = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
-    if (AppTheme.getTheme(
+    if (AppTheme.getTheme(this,
             Integer.parseInt(getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4")))
         .equals(AppTheme.SYSTEM))
       switch (currentNightMode) {
         case Configuration.UI_MODE_NIGHT_NO:
-          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(0));
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this,0));
           restartPC(this);
           break;
         case Configuration.UI_MODE_NIGHT_YES:
-          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(1));
+          getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this,1));
           restartPC(this);
           break;
       }

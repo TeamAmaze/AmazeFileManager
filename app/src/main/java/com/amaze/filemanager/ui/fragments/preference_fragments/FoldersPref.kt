@@ -111,14 +111,9 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         val txtShortcutName = dialogBinding.text1
         val txtShortcutPath = dialogBinding.text2
 
-        val uiMode = resources.configuration.uiMode
-
-        val isNightMode =
-            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
         val dialog = MaterialDialog.Builder(requireActivity())
             .title(R.string.create_shortcut)
-            .theme(mainActivity.appTheme.getMaterialDialogTheme(isNightMode))
+            .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
             .positiveColor(fab_skin)
             .positiveText(R.string.create)
             .negativeColor(fab_skin)
@@ -163,14 +158,9 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         editText1.setText(p.title)
         editText2.setText(p.summary)
 
-        val uiMode = resources.configuration.uiMode
-
-        val isNightMode =
-            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
         val dialog = MaterialDialog.Builder(mainActivity)
             .title(R.string.edit_shortcut)
-            .theme(mainActivity.appTheme.getMaterialDialogTheme(isNightMode))
+            .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
             .positiveColor(fab_skin)
             .positiveText(getString(R.string.edit).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase()
             .negativeColor(fab_skin)
@@ -211,14 +201,9 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
     private fun loadDeleteDialog(p: PathSwitchPreference) {
         val fab_skin = mainActivity.accent
 
-        val uiMode = resources.configuration.uiMode
-
-        val isNightMode =
-            uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
-
         val dialog = MaterialDialog.Builder(mainActivity)
             .title(R.string.question_delete_shortcut)
-            .theme(mainActivity.appTheme.getMaterialDialogTheme(isNightMode))
+            .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
             .positiveColor(fab_skin)
             .positiveText(getString(R.string.delete).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
             .negativeColor(fab_skin)

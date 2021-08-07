@@ -66,7 +66,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -107,13 +106,7 @@ public class MainActivityHelper {
       ArrayList<HybridFileParcelable> failedOps, Context context) {
     MaterialDialog.Builder mat = new MaterialDialog.Builder(context);
     mat.title(context.getString(R.string.operation_unsuccesful));
-    mat.theme(
-        mainActivity
-            .getAppTheme()
-            .getMaterialDialogTheme(
-                (context.getResources().getConfiguration().uiMode
-                        & Configuration.UI_MODE_NIGHT_MASK)
-                    == Configuration.UI_MODE_NIGHT_YES));
+    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme(context));
     mat.positiveColor(accentColor);
     mat.positiveText(R.string.cancel);
     String content = context.getString(R.string.operation_fail_following);
@@ -306,12 +299,7 @@ public class MainActivityHelper {
   public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
     x.theme(
-        mainActivity
-            .getAppTheme()
-            .getMaterialDialogTheme(
-                (mainActivity.getResources().getConfiguration().uiMode
-                        & Configuration.UI_MODE_NIGHT_MASK)
-                    == Configuration.UI_MODE_NIGHT_YES));
+        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
     x.title(R.string.needs_access);
     LayoutInflater layoutInflater =
         (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);

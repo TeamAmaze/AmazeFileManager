@@ -1109,12 +1109,7 @@ public class MainActivity extends PermissionsActivity
             case R.id.dsort:
               String[] sort = getResources().getStringArray(R.array.directorysortmode);
               MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(
-                  getAppTheme()
-                      .getMaterialDialogTheme(
-                          (getResources().getConfiguration().uiMode
-                                  & Configuration.UI_MODE_NIGHT_MASK)
-                              == Configuration.UI_MODE_NIGHT_YES));
+              builder.theme(getAppTheme().getMaterialDialogTheme(this));
               builder.title(R.string.directorysort);
               int current =
                   Integer.parseInt(
@@ -1613,10 +1608,7 @@ public class MainActivity extends PermissionsActivity
     getSupportActionBar().setDisplayShowTitleEnabled(false);
     fabBgView = findViewById(R.id.fabs_overlay_layout);
 
-    switch (getAppTheme()
-        .getSimpleTheme(
-            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                == Configuration.UI_MODE_NIGHT_YES)) {
+    switch (getAppTheme().getSimpleTheme(this)) {
       case DARK:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         break;
@@ -1688,10 +1680,7 @@ public class MainActivity extends PermissionsActivity
             .setLabel(fabTitle)
             .setFabBackgroundColor(iconSkin);
 
-    switch (getAppTheme()
-        .getSimpleTheme(
-            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-                == Configuration.UI_MODE_NIGHT_YES)) {
+    switch (getAppTheme().getSimpleTheme(this)) {
       case LIGHT:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
         break;
