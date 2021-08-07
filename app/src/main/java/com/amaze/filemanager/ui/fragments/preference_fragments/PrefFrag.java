@@ -253,6 +253,12 @@ public class PrefFrag extends PreferenceFragmentCompat
                 current,
                 (dialog, view, which, text) -> {
                   utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(requireContext(),which));
+                  sharedPref
+                          .edit()
+                          .putString(
+                                  PreferencesConstants.FRAGMENT_THEME,
+                                  Integer.toString(which))
+                          .apply();
                   dialog.dismiss();
                   restartPC(getActivity());
                   return true;
