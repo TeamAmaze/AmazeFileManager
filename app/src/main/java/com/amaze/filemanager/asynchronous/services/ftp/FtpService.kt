@@ -29,7 +29,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.M
 import android.os.Environment
@@ -59,7 +59,6 @@ import java.net.NetworkInterface
 import java.net.UnknownHostException
 import java.security.GeneralSecurityException
 import java.security.KeyStore
-import java.util.*
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
 
@@ -112,7 +111,9 @@ class FtpService : Service(), Runnable {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         FtpServerFactory().run {
             val connectionConfigFactory = ConnectionConfigFactory()
-            if (Build.VERSION.SDK_INT >= KITKAT) {
+            if (SDK_INT >= KITKAT &&
+                preferences.getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
+            ) {
                 fileSystem = AndroidFileSystemFactory(applicationContext)
             }
 
@@ -142,7 +143,10 @@ class FtpService : Service(), Runnable {
                 user.name = username
                 user.password = password
             }
-            user.homeDirectory = preferences.getString(KEY_PREFERENCE_PATH, DEFAULT_PATH)
+            user.homeDirectory = preferences.getString(
+                KEY_PREFERENCE_PATH,
+                defaultPath(this@FtpService)
+            )
             if (!preferences.getBoolean(KEY_PREFERENCE_READONLY, false)) {
                 user.authorities = listOf(WritePermission())
             }
@@ -215,8 +219,13 @@ class FtpService : Service(), Runnable {
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
         val restartService = Intent(applicationContext, this.javaClass).setPackage(packageName)
+        val flag = if (SDK_INT >= M) {
+            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
+        } else {
+            PendingIntent.FLAG_ONE_SHOT
+        }
         val restartServicePI = PendingIntent.getService(
-            applicationContext, 1, restartService, PendingIntent.FLAG_ONE_SHOT
+            applicationContext, 1, restartService, flag
         )
         val alarmService = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmService[AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000] =
@@ -235,19 +244,11 @@ class FtpService : Service(), Runnable {
         const val KEY_PREFERENCE_TIMEOUT = "ftp_timeout"
         const val KEY_PREFERENCE_SECURE = "ftp_secure"
         const val KEY_PREFERENCE_READONLY = "ftp_readonly"
+        const val KEY_PREFERENCE_SAF_FILESYSTEM = "ftp_saf_filesystem"
         const val INITIALS_HOST_FTP = "ftp://"
         const val INITIALS_HOST_SFTP = "ftps://"
         private const val WIFI_AP_ADDRESS_PREFIX = "192.168.43."
         private val KEYSTORE_PASSWORD = "vishal007".toCharArray()
-
-        val DEFAULT_PATH: String = if (Build.VERSION.SDK_INT < M) {
-            Environment.getExternalStorageDirectory().absolutePath
-        } else {
-            DocumentsContract.buildTreeDocumentUri(
-                "com.android.externalstorage.documents",
-                "primary:"
-            ).toString()
-        }
 
         // RequestStartStopReceiver listens for these actions to start/stop this server
         const val ACTION_START_FTPSERVER =
@@ -259,6 +260,26 @@ class FtpService : Service(), Runnable {
 
         private var serverThread: Thread? = null
         private var server: FtpServer? = null
+
+        /**
+         * Derive the FTP server's default share path, depending the user's Android version.
+         *
+         * Default it's the internal storage's root as java.io.File; otherwise it's content://
+         * based URI if it's running on Android 7.0 or above.
+         */
+        @JvmStatic
+        fun defaultPath(context: Context): String {
+            return if (PreferenceManager.getDefaultSharedPreferences(context)
+                .getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false) && SDK_INT > M
+            ) {
+                DocumentsContract.buildTreeDocumentUri(
+                    "com.android.externalstorage.documents",
+                    "primary:"
+                ).toString()
+            } else {
+                Environment.getExternalStorageDirectory().absolutePath
+            }
+        }
 
         /**
          * Indicator whether FTP service is running
@@ -275,7 +296,7 @@ class FtpService : Service(), Runnable {
         fun isConnectedToLocalNetwork(context: Context): Boolean {
             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
             var connected: Boolean
-            if (Build.VERSION.SDK_INT >= M) {
+            if (SDK_INT >= M) {
                 return cm.activeNetwork?.let { activeNetwork ->
                     cm.getNetworkCapabilities(activeNetwork)?.let { ni ->
                         ni.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) or
@@ -309,7 +330,7 @@ class FtpService : Service(), Runnable {
         @JvmStatic
         fun isConnectedToWifi(context: Context): Boolean {
             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
-            return if (Build.VERSION.SDK_INT >= M) {
+            return if (SDK_INT >= M) {
                 cm.activeNetwork?.let {
                     cm.getNetworkCapabilities(it)?.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 } ?: false
@@ -392,6 +413,7 @@ class FtpService : Service(), Runnable {
             val method = wifiManager.javaClass.getDeclaredMethod("isWifiApEnabled")
             method.invoke(wifiManager) as Boolean
         }.getOrElse {
+            it.printStackTrace()
             false
         }
     }
