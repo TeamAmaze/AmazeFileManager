@@ -54,7 +54,7 @@ public enum AppTheme {
    * @return The AppTheme for the given index
    */
   public static AppTheme getTheme(Context context, int index) {
-    return getTheme(isNightMode(context),index);
+    return getTheme(isNightMode(context), index);
   }
 
   public static AppTheme getTheme(boolean isNightMode, int index) {
@@ -69,9 +69,7 @@ public enum AppTheme {
       case BLACK_INDEX:
         return BLACK;
       case SYSTEM_INDEX:
-        return isNightMode
-                ? DARK
-                : LIGHT;
+        return isNightMode ? DARK : LIGHT;
     }
   }
 
@@ -91,9 +89,7 @@ public enum AppTheme {
           return Theme.LIGHT;
         }
       case SYSTEM_INDEX:
-        return isNightMode(context)
-            ? Theme.DARK
-            : Theme.LIGHT;
+        return isNightMode(context) ? Theme.DARK : Theme.LIGHT;
     }
   }
 
@@ -133,6 +129,6 @@ public enum AppTheme {
 
   private static boolean isNightMode(Context context) {
     return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
-            == Configuration.UI_MODE_NIGHT_YES;
+        == Configuration.UI_MODE_NIGHT_YES;
   }
 }

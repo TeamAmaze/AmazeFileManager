@@ -305,6 +305,7 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
         if (isColor) {
             selectedColors!!.setColorsVisibility(View.VISIBLE)
             val userColorPreferences = activity.currentColorPreference
+
             selectedColors.setColors(
                 userColorPreferences.primaryFirstTab,
                 userColorPreferences.primarySecondTab,
@@ -312,11 +313,11 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 userColorPreferences.iconSkin
             )
 
-            if (activity.appTheme.getMaterialDialogTheme(activity.applicationContext) == Theme.LIGHT) {
+            if (activity.appTheme.getMaterialDialogTheme(activity.applicationContext) == Theme.LIGHT)
                 selectedColors.setDividerColor(Color.WHITE)
-            } else {
+            else
                 selectedColors.setDividerColor(Color.BLACK)
-            }
+
         } else {
             selectedColors!!.setColorsVisibility(View.GONE)
         }

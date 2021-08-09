@@ -24,7 +24,6 @@ import static com.amaze.filemanager.utils.Utils.openURL;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;

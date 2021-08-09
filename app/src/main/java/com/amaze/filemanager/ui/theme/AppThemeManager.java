@@ -34,7 +34,8 @@ public class AppThemeManager {
     this.preferences = preferences;
     this.isNightMode = isNightMode;
     String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
-    appTheme = AppTheme.getTheme(isNightMode,Integer.parseInt(themeId)).getSimpleTheme(isNightMode);
+    appTheme =
+        AppTheme.getTheme(isNightMode, Integer.parseInt(themeId)).getSimpleTheme(isNightMode);
   }
 
   /** @return The current Application theme */

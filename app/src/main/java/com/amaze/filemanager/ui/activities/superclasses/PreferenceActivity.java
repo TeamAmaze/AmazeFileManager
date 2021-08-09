@@ -42,15 +42,11 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
 
-import android.app.Activity;
 import android.content.SharedPreferences;
-import android.content.res.Configuration;
 import android.os.Bundle;
 
-import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 /** @author Emmanuel on 24/8/2017, at 23:13. */
