@@ -119,8 +119,10 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.ChecksSdkIntAtLeast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
@@ -941,7 +943,6 @@ public class MainFragment extends Fragment
    * @param back if we're coming back from any directory and want the scroll to be restored
    * @param providedOpenMode the mode in which the directory should be opened
    */
-  @SuppressWarnings("PMD.NPathComplexity")
   public void loadlist(
       final String providedPath, final boolean back, final OpenMode providedOpenMode) {
     if (mainFragmentViewModel == null) {
@@ -962,41 +963,7 @@ public class MainFragment extends Fragment
     String actualPath = FileProperties.remapPathForApi30OrAbove(providedPath, false);
 
     if (!providedPath.equals(actualPath) && SDK_INT >= Q) {
-      boolean hasAccessToSpecialFolder = false;
-      List<UriPermission> uriPermissions =
-          getContext().getContentResolver().getPersistedUriPermissions();
-      if (uriPermissions != null && uriPermissions.size() > 0) {
-        for (UriPermission p : uriPermissions) {
-          if (p.isReadPermission() && actualPath.startsWith(p.getUri().toString())) {
-            hasAccessToSpecialFolder = true;
-            SafRootHolder.setUriRoot(p.getUri());
-            break;
-          }
-        }
-      }
-      if (!hasAccessToSpecialFolder) {
-        Intent intent =
-            new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                .putExtra(
-                    DocumentsContract.EXTRA_INITIAL_URI,
-                    Uri.parse(FileProperties.remapPathForApi30OrAbove(providedPath, true)));
-        MaterialDialog d =
-            GeneralDialogCreation.showBasicDialog(
-                getMainActivity(),
-                R.string.android_data_prompt_saf_access,
-                R.string.android_data_prompt_saf_access_title,
-                android.R.string.ok,
-                android.R.string.cancel);
-        d.getActionButton(DialogAction.POSITIVE)
-            .setOnClickListener(
-                v -> {
-                  handleDocumentUriForRestrictedDirectories.launch(intent);
-                  d.dismiss();
-                });
-        d.show();
-      } else {
-        openMode = OpenMode.DOCUMENT_FILE;
-      }
+      openMode = loadPathInQ(actualPath, providedPath, providedOpenMode);
     }
 
     loadFilesListTask =
@@ -1022,6 +989,47 @@ public class MainFragment extends Fragment
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+  }
+
+  @RequiresApi(api = Q)
+  private OpenMode loadPathInQ(String actualPath, String providedPath, OpenMode providedMode) {
+    boolean hasAccessToSpecialFolder = false;
+    List<UriPermission> uriPermissions = getContext().getContentResolver().getPersistedUriPermissions();
+
+    if (uriPermissions != null && uriPermissions.size() > 0) {
+      for (UriPermission p : uriPermissions) {
+        if (p.isReadPermission() && actualPath.startsWith(p.getUri().toString())) {
+          hasAccessToSpecialFolder = true;
+          SafRootHolder.setUriRoot(p.getUri());
+          break;
+        }
+      }
+    }
+
+    if (!hasAccessToSpecialFolder) {
+      Intent intent =
+              new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                      .putExtra(
+                              DocumentsContract.EXTRA_INITIAL_URI,
+                              Uri.parse(FileProperties.remapPathForApi30OrAbove(providedPath, true)));
+      MaterialDialog d =
+              GeneralDialogCreation.showBasicDialog(
+                      getMainActivity(),
+                      R.string.android_data_prompt_saf_access,
+                      R.string.android_data_prompt_saf_access_title,
+                      android.R.string.ok,
+                      android.R.string.cancel);
+      d.getActionButton(DialogAction.POSITIVE)
+              .setOnClickListener(
+                      v -> {
+                        handleDocumentUriForRestrictedDirectories.launch(intent);
+                        d.dismiss();
+                      });
+      d.show();
+      return providedMode;
+    } else {
+      return OpenMode.DOCUMENT_FILE;
+    }
   }
 
   void initNoFileLayout() {
