@@ -119,7 +119,6 @@ import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
-import androidx.annotation.ChecksSdkIntAtLeast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -994,7 +993,8 @@ public class MainFragment extends Fragment
   @RequiresApi(api = Q)
   private OpenMode loadPathInQ(String actualPath, String providedPath, OpenMode providedMode) {
     boolean hasAccessToSpecialFolder = false;
-    List<UriPermission> uriPermissions = getContext().getContentResolver().getPersistedUriPermissions();
+    List<UriPermission> uriPermissions =
+        getContext().getContentResolver().getPersistedUriPermissions();
 
     if (uriPermissions != null && uriPermissions.size() > 0) {
       for (UriPermission p : uriPermissions) {
@@ -1008,23 +1008,23 @@ public class MainFragment extends Fragment
 
     if (!hasAccessToSpecialFolder) {
       Intent intent =
-              new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                      .putExtra(
-                              DocumentsContract.EXTRA_INITIAL_URI,
-                              Uri.parse(FileProperties.remapPathForApi30OrAbove(providedPath, true)));
+          new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+              .putExtra(
+                  DocumentsContract.EXTRA_INITIAL_URI,
+                  Uri.parse(FileProperties.remapPathForApi30OrAbove(providedPath, true)));
       MaterialDialog d =
-              GeneralDialogCreation.showBasicDialog(
-                      getMainActivity(),
-                      R.string.android_data_prompt_saf_access,
-                      R.string.android_data_prompt_saf_access_title,
-                      android.R.string.ok,
-                      android.R.string.cancel);
+          GeneralDialogCreation.showBasicDialog(
+              getMainActivity(),
+              R.string.android_data_prompt_saf_access,
+              R.string.android_data_prompt_saf_access_title,
+              android.R.string.ok,
+              android.R.string.cancel);
       d.getActionButton(DialogAction.POSITIVE)
-              .setOnClickListener(
-                      v -> {
-                        handleDocumentUriForRestrictedDirectories.launch(intent);
-                        d.dismiss();
-                      });
+          .setOnClickListener(
+              v -> {
+                handleDocumentUriForRestrictedDirectories.launch(intent);
+                d.dismiss();
+              });
       d.show();
       return providedMode;
     } else {
