@@ -182,7 +182,7 @@ object OTGUtil {
                     ).split(PATH_SEPARATOR_ENCODED)
                         .filterNot { it.isEmpty() or it.isBlank() }
                         .forEach {
-                            retval = this.findFile(it)
+                            retval = retval?.findFile(it)
                         }
                 } else {
                     var nextDocument = this.findFile(part)
