@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater

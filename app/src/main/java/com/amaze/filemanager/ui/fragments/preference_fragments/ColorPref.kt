@@ -21,7 +21,6 @@
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
@@ -313,11 +312,13 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 userColorPreferences.iconSkin
             )
 
-            if (activity.appTheme.getMaterialDialogTheme(activity.applicationContext) == Theme.LIGHT)
-                selectedColors.setDividerColor(Color.WHITE)
-            else
-                selectedColors.setDividerColor(Color.BLACK)
+            val theme = activity.appTheme.getMaterialDialogTheme(activity.applicationContext)
 
+            if (theme == Theme.LIGHT) {
+                selectedColors.setDividerColor(Color.WHITE)
+            } else {
+                selectedColors.setDividerColor(Color.BLACK)
+            }
         } else {
             selectedColors!!.setColorsVisibility(View.GONE)
         }
