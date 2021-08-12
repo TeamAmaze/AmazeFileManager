@@ -59,6 +59,7 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -179,6 +180,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.arch.core.util.Function;
+import androidx.core.view.MenuItemCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -1686,6 +1688,24 @@ public class MainActivity extends PermissionsActivity
     floatingActionButton.getMainFab().setOnFocusChangeListener(new CustomZoomFocusChange());
     floatingActionButton.setNextFocusUpId(cloudFab.getId());
     floatingActionButton.getMainFab().setNextFocusUpId(cloudFab.getId());
+    /*floatingActionButton.getMainFab().setOnKeyListener(new View.OnKeyListener() {
+      @Override
+      public boolean onKey(View v, int keyCode, KeyEvent event) {
+        Log.e(getClass().getSimpleName(), String.format("Call key event on FAB %s", event.getAction()));
+        if (event.getAction() == KeyEvent.ACTION_DOWN) {
+          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT && currentTab == 0) {
+            getTabFragment().onPageSelected(1);
+          }
+          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT && currentTab == 1) {
+            getTabFragment().onPageSelected(0);
+          }
+          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+            floatingActionButton.callOnClick();
+          }
+        }
+        return true;
+      }
+    });*/
     cloudFab.setNextFocusDownId(floatingActionButton.getMainFab().getId());
     cloudFab.setNextFocusUpId(newFileFab.getId());
     cloudFab.setOnFocusChangeListener(new CustomZoomFocusChange());

@@ -150,6 +150,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
     donateImageView.setOnClickListener(v -> new Billing(mainActivity));
     telegramImageView.setOnClickListener(v -> Utils.openTelegramURL(mainActivity));
+    initDrawerFocusItems();
     /*drawerHeaderView.setOnLongClickListener(
     v -> {
       Intent intent1;
@@ -568,6 +569,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       item.setChecked(true);
       actionViewStateManager.selectActionView(item);
     }
+  }
+
+  public void initDrawerFocusItems() {
+    donateImageView.setNextFocusRightId(mainActivity.getAppbar().getBottomBar().getPathLayout().getId());
   }
 
   private void addNewItem(

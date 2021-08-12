@@ -4,8 +4,7 @@
     android:id="@+id/lin"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:focusable="true"
-    android:nextFocusRight="@id/buttonbarframe"
+    android:descendantFocusability="afterDescendants"
     >
 
     <androidx.appcompat.widget.Toolbar
@@ -20,6 +19,8 @@
         app:contentInsetLeft="72dp"
         app:contentInsetStart="72dp"
         app:layout_scrollFlags="scroll|enterAlways"
+        android:focusable="true"
+        android:descendantFocusability="afterDescendants"
         >
 
     </androidx.appcompat.widget.Toolbar>
@@ -32,7 +33,7 @@
         android:minHeight="72dp"
         android:background="?android:attr/selectableItemBackground"
         android:focusable="true"
-        android:nextFocusDown="@id/lin"
+        android:nextFocusDown="@+id/fabs_menu"
         >
 
         <HorizontalScrollView
@@ -49,7 +50,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:descendantFocusability="afterDescendants"
                 >
             </LinearLayout>
         </HorizontalScrollView>

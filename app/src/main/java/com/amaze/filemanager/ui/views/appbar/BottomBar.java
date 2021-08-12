@@ -292,6 +292,10 @@ public class BottomBar implements View.OnTouchListener {
     }
   }
 
+  public FrameLayout getPathLayout() {
+      return this.frame;
+  }
+
   private ImageView createArrow() {
     ImageView buttonArrow;
 

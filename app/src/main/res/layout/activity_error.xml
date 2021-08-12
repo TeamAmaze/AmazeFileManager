@@ -12,7 +12,8 @@
         android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginTop="?attr/actionBarSize">
+        android:layout_marginTop="?attr/actionBarSize"
+        >
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -23,7 +24,9 @@
             android:paddingLeft="@dimen/activity_horizontal_margin"
             android:paddingTop="@dimen/activity_vertical_margin"
             android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingBottom="@dimen/activity_vertical_margin">
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:descendantFocusability="afterDescendants"
+            >
 
             <TextView
                 android:id="@+id/errorSorryView"

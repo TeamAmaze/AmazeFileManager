@@ -509,6 +509,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewType == TYPE_HEADER_FOLDERS
                 ? SpecialViewHolder.HEADER_FOLDERS
                 : SpecialViewHolder.HEADER_FILES;
+        view.setNextFocusUpId(mainFrag.getMainActivity().getAppbar().getToolbar().getId());
         return new SpecialViewHolder(context, view, utilsProvider, type);
       case TYPE_ITEM:
       case TYPE_BACK:
@@ -587,6 +588,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return true;
           });
+      /*holder.rl.setOnKeyListener(new View.OnKeyListener() {
+        @Override
+        public boolean onKey(View v, int keyCode, KeyEvent event) {
+          if (event.isLongPress() && event.getAction() == KeyEvent.ACTION_DOWN
+                  && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+            switch (v.getId()) {
+              case R.id.second:
+                toggleChecked(
+                        vholder.getAdapterPosition(),
+                        mainFrag.getMainFragmentViewModel().isList()
+                                ? holder.checkImageView
+                                : holder.checkImageViewGrid);
+                break;
+            }
+          }
+          return true;
+        }
+      });*/
       if (mainFrag.getMainFragmentViewModel().isList()) {
         // clear previously cached icon
         GlideApp.with(mainFrag).clear(holder.genericIcon);
