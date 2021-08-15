@@ -263,6 +263,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 promptUserToRestartServer()
                 return true
             }
+            R.id.checkbox_ftp_legacy_filesystem -> {
+                val shouldUseSafFileSystem = !item.isChecked
+                item.isChecked = shouldUseSafFileSystem
+                legacyFileSystemPreference = shouldUseSafFileSystem
+                promptUserToRestartServer()
+                return true
+            }
             R.id.ftp_timeout -> {
                 val timeoutBuilder = MaterialDialog.Builder(requireActivity())
                 timeoutBuilder.title(
@@ -312,6 +319,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         mainActivity.menuInflater.inflate(R.menu.ftp_server_menu, menu)
         menu.findItem(R.id.checkbox_ftp_readonly).isChecked = readonlyPreference
         menu.findItem(R.id.checkbox_ftp_secure).isChecked = securePreference
+        menu.findItem(R.id.checkbox_ftp_legacy_filesystem).isChecked = legacyFileSystemPreference
     }
 
     private fun shouldUseSafFileSystem(): Boolean {
@@ -378,18 +386,18 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     @Suppress("LabeledExpression")
     private fun createOpenDocumentTreeIntentCallback(callback: (directoryUri: Uri) -> Unit):
         ActivityResultLauncher<Intent> {
-            return registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()
-            ) {
-                if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
-                    val directoryUri = it.data?.data ?: return@registerForActivityResult
-                    requireContext().contentResolver.takePersistableUriPermission(
-                        directoryUri, GRANT_URI_RW_PERMISSION
-                    )
-                    callback.invoke(directoryUri)
-                }
+        return registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
+                val directoryUri = it.data?.data ?: return@registerForActivityResult
+                requireContext().contentResolver.takePersistableUriPermission(
+                    directoryUri, GRANT_URI_RW_PERMISSION
+                )
+                callback.invoke(directoryUri)
             }
         }
+    }
 
     /** Check URI access. Prompt user to DocumentsUI if necessary */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {
@@ -794,6 +802,16 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 .prefs
                 .edit()
                 .putBoolean(FtpService.KEY_PREFERENCE_READONLY, isReadonly)
+                .apply()
+        }
+
+    private var legacyFileSystemPreference: Boolean
+        get() = mainActivity.prefs.getBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, false)
+        private set(useSafFileSystem) {
+            mainActivity
+                .prefs
+                .edit()
+                .putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, useSafFileSystem)
                 .apply()
         }
 

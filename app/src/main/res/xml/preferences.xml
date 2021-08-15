@@ -130,14 +130,6 @@
         </com.amaze.filemanager.ui.views.preference.CheckBox>
     </PreferenceCategory>
 
-    <PreferenceCategory app:title="@string/ftp">
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="ftp_saf_filesystem"
-            app:summary="@string/ftp_preference_saf_filesystem"
-            app:title="@string/ftp_preference_saf_filesystem_title"/>
-    </PreferenceCategory>
-
     <PreferenceCategory app:title="@string/miscellaneous">
         <Preference
             app:key="advancedsearch"
