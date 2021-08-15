@@ -61,8 +61,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
 public class UtilsTest {
 
   @Test
-  public void testSanitizeInput() {
-    // This function is sanitize the string. It removes ";","|","&&","..."
+  public void testSanitizeInput() {                 // This function is sanitize the string. It removes ";","|","&&","..."
     // from string.
     assertEquals("a", sanitizeInput("|a|")); // test the removing of pipe sign from string.
     assertEquals("a", sanitizeInput("...a...")); // test the removing of dots from string.
