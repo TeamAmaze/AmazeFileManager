@@ -6,7 +6,6 @@ on:
       - '*'
       - '!master'
       - '!release/*'
-      -
 concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: true
@@ -22,9 +21,9 @@ jobs:
           distribution: "adopt"
           java-version: 11
       - name: Check formatting using spotless
-        run: ./gradlew spotlessCheck --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
+        run: ./gradlew spotlessCheck --stacktrace
       - name: Build with Gradle
         run: |
-          ./gradlew assembledebug --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
+          ./gradlew assembledebug --stacktrace
         env:
           TZ: UTC
