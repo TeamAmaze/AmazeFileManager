@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.hiya.jacoco-android'
-apply plugin: 'com.akaita.android.easylauncher'
+apply plugin: "com.starter.easylauncher"
 
 android {
     compileSdkVersion 29
@@ -48,6 +48,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             testProguardFile 'tests-proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
+            debuggable true //For "debug" banner on icon
         }
 
         release {
@@ -258,10 +259,6 @@ project.afterEvaluate {
 
 clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
-
-easylauncher {
-    foregroundIconNames "@mipmap/ic_launcher_foreground" // Foreground of adaptive launcher icon
-}
 
 jacoco {
     toolVersion = "${jacocoVersion}"

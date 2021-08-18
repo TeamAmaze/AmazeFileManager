@@ -341,7 +341,7 @@ public class TextEditorActivity extends ThemedActivity
   }
 
   @Override
-  protected void onDestroy() {
+  public void onDestroy() {
     super.onDestroy();
     final TextEditorActivityViewModel viewModel =
         new ViewModelProvider(this).get(TextEditorActivityViewModel.class);
