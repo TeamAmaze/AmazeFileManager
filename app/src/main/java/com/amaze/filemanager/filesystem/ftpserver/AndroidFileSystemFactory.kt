@@ -32,5 +32,5 @@ import org.apache.ftpserver.ftplet.User
 class AndroidFileSystemFactory(private val context: Context) : FileSystemFactory {
 
     override fun createFileSystemView(user: User?): FileSystemView =
-        AndroidFtpFileSystemView(context, user?.homeDirectory ?: FtpService.DEFAULT_PATH)
+        AndroidFtpFileSystemView(context, user?.homeDirectory ?: FtpService.defaultPath(context))
 }

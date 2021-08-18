@@ -20,4 +20,8 @@
     <item
         android:id="@+id/ftp_timeout"
         android:title="@string/ftp_timeout" />
+    <item
+        android:id="@+id/checkbox_ftp_legacy_filesystem"
+        android:title="@string/ftp_preference_saf_filesystem_title"
+        android:checkable="true" />
 </menu>

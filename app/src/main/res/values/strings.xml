@@ -712,5 +712,8 @@
     <string name="ftp_prompt_accept_first_start_saf_access">Since this is your first run of the FTP server, and you are using the device\'s internal storage as shared folder, please allow Amaze to access the storage using SAF.\n\n
 
 You only need to do this once, until the next time you select a new location for sharing.</string>
+    <string name="ftp_preference_saf_filesystem_title">Use legacy filesystem</string>
+    <string name="ftp_preference_saf_filesystem">Enable this for support for using device external storage on newer Android versions</string>
+    <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been resetted to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
 </resources>
 
