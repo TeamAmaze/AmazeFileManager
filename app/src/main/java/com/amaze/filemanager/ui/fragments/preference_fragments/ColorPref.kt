@@ -165,10 +165,11 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
                 it.onItemClickListener = adapter
             }
             val fab_skin = activity.accent
+
             dialog = MaterialDialog.Builder(activity)
                 .positiveText(com.amaze.filemanager.R.string.cancel)
                 .title(com.amaze.filemanager.R.string.choose_color)
-                .theme(activity.appTheme.materialDialogTheme)
+                .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
                 .autoDismiss(true)
                 .positiveColor(fab_skin)
                 .neutralColor(fab_skin)
@@ -303,13 +304,17 @@ class ColorPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListen
         if (isColor) {
             selectedColors!!.setColorsVisibility(View.VISIBLE)
             val userColorPreferences = activity.currentColorPreference
+
             selectedColors.setColors(
                 userColorPreferences.primaryFirstTab,
                 userColorPreferences.primarySecondTab,
                 userColorPreferences.accent,
                 userColorPreferences.iconSkin
             )
-            if (activity.appTheme.materialDialogTheme == Theme.LIGHT) {
+
+            val theme = activity.appTheme.getMaterialDialogTheme(activity.applicationContext)
+
+            if (theme == Theme.LIGHT) {
                 selectedColors.setDividerColor(Color.WHITE)
             } else {
                 selectedColors.setDividerColor(Color.BLACK)

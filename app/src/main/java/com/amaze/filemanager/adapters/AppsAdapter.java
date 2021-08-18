@@ -249,7 +249,10 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         MaterialDialog.Builder builder1 =
                             new MaterialDialog.Builder(fragment.requireContext());
                         builder1
-                            .theme(utilsProvider.getAppTheme().getMaterialDialogTheme())
+                            .theme(
+                                utilsProvider
+                                    .getAppTheme()
+                                    .getMaterialDialogTheme(fragment.requireContext()))
                             .content(fragment.getString(R.string.unin_system_apk))
                             .title(fragment.getString(R.string.warning))
                             .negativeColor(colorAccent)

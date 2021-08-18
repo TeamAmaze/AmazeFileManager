@@ -191,7 +191,7 @@ public class PrefFrag extends PreferenceFragmentCompat
       case PreferencesConstants.PREFERENCE_GRID_COLUMNS:
         sort = getResources().getStringArray(R.array.columns);
         builder = new MaterialDialog.Builder(getActivity());
-        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+        builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme(requireContext()));
         builder.title(R.string.gridcolumnno);
         int current =
             Integer.parseInt(
@@ -217,7 +217,8 @@ public class PrefFrag extends PreferenceFragmentCompat
       case PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE:
         dragToMoveArray = getResources().getStringArray(R.array.dragAndDropPreference);
         dragDialogBuilder = new MaterialDialog.Builder(getActivity());
-        dragDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+        dragDialogBuilder.theme(
+            utilsProvider.getAppTheme().getMaterialDialogTheme(requireContext()));
         dragDialogBuilder.title(R.string.drag_and_drop_preference);
         int currentDragPreference =
             sharedPref.getInt(
@@ -243,7 +244,7 @@ public class PrefFrag extends PreferenceFragmentCompat
         return true;
       case PreferencesConstants.FRAGMENT_THEME:
         sort = getResources().getStringArray(R.array.theme);
-        current = Integer.parseInt(sharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "0"));
+        current = Integer.parseInt(sharedPref.getString(PreferencesConstants.FRAGMENT_THEME, "4"));
         builder = new MaterialDialog.Builder(getActivity());
         // builder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
         builder
@@ -251,7 +252,13 @@ public class PrefFrag extends PreferenceFragmentCompat
             .itemsCallbackSingleChoice(
                 current,
                 (dialog, view, which, text) -> {
-                  utilsProvider.getThemeManager().setAppTheme(AppTheme.getTheme(which));
+                  utilsProvider
+                      .getThemeManager()
+                      .setAppTheme(AppTheme.getTheme(requireContext(), which));
+                  sharedPref
+                      .edit()
+                      .putString(PreferencesConstants.FRAGMENT_THEME, Integer.toString(which))
+                      .apply();
                   dialog.dismiss();
                   restartPC(getActivity());
                   return true;
@@ -324,7 +331,8 @@ public class PrefFrag extends PreferenceFragmentCompat
             decryptedPassword,
             true,
             (dialog, input) -> {});
-        masterPasswordDialogBuilder.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+        masterPasswordDialogBuilder.theme(
+            utilsProvider.getAppTheme().getMaterialDialogTheme(requireContext()));
         masterPasswordDialogBuilder.positiveText(getResources().getString(R.string.ok));
         masterPasswordDialogBuilder.negativeText(getResources().getString(R.string.cancel));
         masterPasswordDialogBuilder.positiveColor(((ThemedActivity) getActivity()).getAccent());

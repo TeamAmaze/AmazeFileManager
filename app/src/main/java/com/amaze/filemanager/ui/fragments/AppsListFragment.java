@@ -180,7 +180,7 @@ public class AppsListFragment extends ListFragment
     String[] sort = getResources().getStringArray(R.array.sortbyApps);
     MaterialDialog.Builder builder =
         new MaterialDialog.Builder(mainActivity)
-            .theme(appTheme.getMaterialDialogTheme())
+            .theme(appTheme.getMaterialDialogTheme(requireContext()))
             .items(sort)
             .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
             .negativeText(R.string.ascending)

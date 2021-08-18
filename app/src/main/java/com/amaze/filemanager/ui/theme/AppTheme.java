@@ -24,17 +24,22 @@ import java.util.Calendar;
 
 import com.afollestad.materialdialogs.Theme;
 
+import android.content.Context;
+import android.content.res.Configuration;
+
 /** This enum represents the theme of the app (LIGHT or DARK) */
 public enum AppTheme {
   LIGHT(0),
   DARK(1),
   TIMED(2),
-  BLACK(3);
+  BLACK(3),
+  SYSTEM(4);
 
   public static final int LIGHT_INDEX = 0;
   public static final int DARK_INDEX = 1;
   public static final int TIME_INDEX = 2;
   public static final int BLACK_INDEX = 3;
+  public static final int SYSTEM_INDEX = 4;
 
   private int id;
 
@@ -48,7 +53,11 @@ public enum AppTheme {
    * @param index The theme index
    * @return The AppTheme for the given index
    */
-  public static AppTheme getTheme(int index) {
+  public static AppTheme getTheme(Context context, int index) {
+    return getTheme(isNightMode(context), index);
+  }
+
+  public static AppTheme getTheme(boolean isNightMode, int index) {
     switch (index) {
       default:
       case LIGHT_INDEX:
@@ -59,14 +68,12 @@ public enum AppTheme {
         return TIMED;
       case BLACK_INDEX:
         return BLACK;
+      case SYSTEM_INDEX:
+        return isNightMode ? DARK : LIGHT;
     }
   }
 
-  /**
-   * @return The Theme enum to provide to {@link
-   *     com.afollestad.materialdialogs.MaterialDialog.Builder}
-   */
-  public Theme getMaterialDialogTheme() {
+  public Theme getMaterialDialogTheme(Context context) {
     switch (id) {
       default:
       case LIGHT_INDEX:
@@ -81,6 +88,8 @@ public enum AppTheme {
         } else {
           return Theme.LIGHT;
         }
+      case SYSTEM_INDEX:
+        return isNightMode(context) ? Theme.DARK : Theme.LIGHT;
     }
   }
 
@@ -89,7 +98,11 @@ public enum AppTheme {
    *
    * @return The AppTheme for the given index
    */
-  public AppTheme getSimpleTheme() {
+  public AppTheme getSimpleTheme(Context context) {
+    return getSimpleTheme(isNightMode(context));
+  }
+
+  public AppTheme getSimpleTheme(boolean isNightMode) {
     switch (id) {
       default:
       case LIGHT_INDEX:
@@ -105,10 +118,17 @@ public enum AppTheme {
         }
       case BLACK_INDEX:
         return BLACK;
+      case SYSTEM_INDEX:
+        return isNightMode ? DARK : LIGHT;
     }
   }
 
   public int getId() {
     return id;
+  }
+
+  private static boolean isNightMode(Context context) {
+    return (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+        == Configuration.UI_MODE_NIGHT_YES;
   }
 }

@@ -128,7 +128,9 @@ class DragAndDropDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         safeLet(
-            context, mainActivity?.appTheme?.materialDialogTheme, mainActivity?.accent,
+            context,
+            mainActivity?.appTheme?.getMaterialDialogTheme(mainActivity?.applicationContext),
+            mainActivity?.accent,
             pasteLocation, operationFiles
         ) {
             context, dialogTheme, accent, pasteLocation, operationFiles ->

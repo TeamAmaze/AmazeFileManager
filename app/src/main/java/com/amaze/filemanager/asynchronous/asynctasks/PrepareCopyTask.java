@@ -222,7 +222,7 @@ public class PrepareCopyTask
     // checkBox
     final CheckBox checkBox = copyDialogBinding.checkBox;
     Utils.setTint(context.get(), checkBox, accentColor);
-    dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme());
+    dialogBuilder.theme(mainActivity.get().getAppTheme().getMaterialDialogTheme(context.get()));
     dialogBuilder.title(context.get().getResources().getString(R.string.paste));
     dialogBuilder.positiveText(R.string.skip);
     dialogBuilder.negativeText(R.string.overwrite);

@@ -24,7 +24,7 @@ import static com.amaze.filemanager.utils.Utils.openURL;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.Utils;
@@ -51,7 +51,7 @@ import androidx.palette.graphics.Palette;
 import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 27/7/16. */
-public class AboutActivity extends BasicActivity implements View.OnClickListener {
+public class AboutActivity extends ThemedActivity implements View.OnClickListener {
 
   private static final String TAG = "AboutActivity";
 
@@ -84,7 +84,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
   private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
 
   @Override
-  protected void onCreate(@Nullable Bundle savedInstanceState) {
+  public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
     if (getAppTheme().equals(AppTheme.DARK)) {
@@ -235,7 +235,7 @@ public class AboutActivity extends BasicActivity implements View.OnClickListener
                 .withAboutSpecial1Description(getString(R.string.amaze_license))
                 .withLicenseShown(true);
 
-        switch (getAppTheme().getSimpleTheme()) {
+        switch (getAppTheme().getSimpleTheme(this)) {
           case LIGHT:
             libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR);
             break;

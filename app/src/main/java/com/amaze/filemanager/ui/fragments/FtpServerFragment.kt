@@ -399,10 +399,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     ) == PackageManager.PERMISSION_DENIED
                 ) {
                     mainActivity.accent.run {
+                        val c = mainActivity.applicationContext
+
                         MaterialDialog.Builder(mainActivity)
                             .content(R.string.ftp_prompt_accept_first_start_saf_access)
                             .widgetColor(accentColor)
-                            .theme(mainActivity.appTheme.materialDialogTheme)
+                            .theme(mainActivity.appTheme.getMaterialDialogTheme(c))
                             .title(R.string.ftp_prompt_accept_first_start_saf_access_title)
                             .positiveText(R.string.ok)
                             .positiveColor(accentColor)
@@ -611,7 +613,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val startDividerView = binding.dividerFtpStart
         val statusDividerView = binding.dividerFtpStatus
 
-        when (mainActivity.appTheme.simpleTheme) {
+        when (mainActivity.appTheme.getSimpleTheme(mainActivity.applicationContext)) {
             AppTheme.LIGHT -> {
                 startDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))
                 statusDividerView.setBackgroundColor(Utils.getColor(context, R.color.divider))

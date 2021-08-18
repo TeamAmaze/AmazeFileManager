@@ -270,7 +270,7 @@ public class SmbConnectDialog extends DialogFragment {
     }
 
     ba3.customView(v2, true);
-    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme());
+    ba3.theme(utilsProvider.getAppTheme().getMaterialDialogTheme(getContext()));
     ba3.neutralText(R.string.cancel);
     ba3.positiveText(R.string.create);
     if (edit) ba3.negativeText(R.string.delete);

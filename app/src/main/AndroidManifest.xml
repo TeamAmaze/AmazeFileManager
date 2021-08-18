@@ -57,7 +57,8 @@
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
-            android:theme="@style/appCompatBlack">
+            android:theme="@style/appCompatBlack"
+            android:configChanges="uiMode" >
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -121,7 +122,7 @@
 
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|uiMode"
             android:label="@string/setting"
             android:name=".ui.activities.PreferencesActivity"
             android:theme="@style/appCompatBlack">
@@ -134,6 +135,7 @@
         <activity
             android:label="@string/textreader"
             android:name=".ui.activities.texteditor.TextEditorActivity"
+            android:configChanges="uiMode"
             android:theme="@style/appCompatBlack">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
@@ -151,6 +153,7 @@
             android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
             android:theme="@style/appCompatBlack"
+            android:configChanges="uiMode"
             android:screenOrientation="locked">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
@@ -164,11 +167,13 @@
 
         <activity android:name=".ui.activities.AboutActivity"
             android:theme="@style/aboutBlack"
+            android:configChanges="uiMode"
             android:label="About"
             />
 
         <activity android:name=".crashreport.ErrorActivity"
             android:theme="@style/appCompatBlack"
+            android:configChanges="uiMode"
             android:label="Error"
             />
 
