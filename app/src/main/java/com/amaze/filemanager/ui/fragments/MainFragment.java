@@ -426,40 +426,32 @@ public class MainFragment extends Fragment
          * onCreateActionMode, but may be called multiple times if the mode is invalidated.
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-          ArrayList<LayoutElementParcelable> positions = adapter.getCheckedItems();
+          ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
           TextView textView1 = actionModeView.findViewById(R.id.item_count);
-          textView1.setText(String.valueOf(positions.size()));
+          textView1.setText(String.valueOf(checkedItems.size()));
           textView1.setOnClickListener(null);
-          mode.setTitle(positions.size() + "");
+          mode.setTitle(checkedItems.size() + "");
           hideOption(R.id.openmulti, menu);
           menu.findItem(R.id.all)
               .setTitle(
-                  positions.size()
+                  checkedItems.size()
                           == mainFragmentViewModel.getFolderCount()
                               + mainFragmentViewModel.getFileCount()
                       ? R.string.deselect_all
                       : R.string.select_all);
 
-          if (mainFragmentViewModel.getOpenMode() != OpenMode.FILE) {
-            hideOption(R.id.addshortcut, menu);
-            hideOption(R.id.compress, menu);
-            return true;
-          }
-
           if (getMainActivity().mReturnIntent && Build.VERSION.SDK_INT >= JELLY_BEAN) {
             showOption(R.id.openmulti, menu);
           }
-          // tv.setText(positions.size());
+          // tv.setText(checkedItems.size());
           if (!mainFragmentViewModel.getResults()) {
             hideOption(R.id.openparent, menu);
-            if (positions.size() == 1) {
+            if (checkedItems.size() == 1) {
               showOption(R.id.addshortcut, menu);
               showOption(R.id.openwith, menu);
               showOption(R.id.share, menu);
 
-              File x = new File(adapter.getCheckedItems().get(0).desc);
-
-              if (x.isDirectory()) {
+              if (adapter.getCheckedItems().get(0).isDirectory) {
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
                 hideOption(R.id.openmulti, menu);
@@ -474,8 +466,7 @@ public class MainFragment extends Fragment
                 if (getMainActivity().mReturnIntent)
                   if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
                 for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                  File x = new File(e.desc);
-                  if (x.isDirectory()) {
+                  if (e.isDirectory) {
                     hideOption(R.id.share, menu);
                     hideOption(R.id.openmulti, menu);
                   }
@@ -487,15 +478,13 @@ public class MainFragment extends Fragment
               hideOption(R.id.addshortcut, menu);
             }
           } else {
-            if (positions.size() == 1) {
+            if (checkedItems.size() == 1) {
               showOption(R.id.addshortcut, menu);
               showOption(R.id.openparent, menu);
               showOption(R.id.openwith, menu);
               showOption(R.id.share, menu);
 
-              File x = new File(adapter.getCheckedItems().get(0).desc);
-
-              if (x.isDirectory()) {
+              if (adapter.getCheckedItems().get(0).isDirectory) {
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
                 hideOption(R.id.openmulti, menu);
@@ -511,8 +500,7 @@ public class MainFragment extends Fragment
                 if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
               try {
                 for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                  File x = new File(e.desc);
-                  if (x.isDirectory()) {
+                  if (e.isDirectory) {
                     hideOption(R.id.share, menu);
                     hideOption(R.id.openmulti, menu);
                   }
@@ -525,6 +513,12 @@ public class MainFragment extends Fragment
             }
           }
 
+          if (mainFragmentViewModel.getOpenMode() != OpenMode.FILE) {
+            hideOption(R.id.addshortcut, menu);
+            hideOption(R.id.compress, menu);
+            hideOption(R.id.hide, menu);
+            hideOption(R.id.addshortcut, menu);
+          }
           return true; // Return false if nothing is done
         }
 
