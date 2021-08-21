@@ -38,8 +38,13 @@ object RenameFileCommand : IRootCommand() {
         val mountPoint = MountPathCommand.mountPath(oldPath, MountPathCommand.READ_WRITE)
         val command = "mv \"${RootHelper.getCommandLineString(oldPath)}\"" +
             " \"${RootHelper.getCommandLineString(newPath)}\""
-        val output = runShellCommandToList(command)
-        mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
-        return output.isEmpty()
+        return try {
+            val output = runShellCommandToList(command)
+            mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
+            output.isEmpty()
+        }catch(e: ShellCommandInvalidException){
+            e.printStackTrace()
+            false
+        }
     }
 }
