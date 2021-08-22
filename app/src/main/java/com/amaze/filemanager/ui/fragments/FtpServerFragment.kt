@@ -386,18 +386,18 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     @Suppress("LabeledExpression")
     private fun createOpenDocumentTreeIntentCallback(callback: (directoryUri: Uri) -> Unit):
         ActivityResultLauncher<Intent> {
-        return registerForActivityResult(
-            ActivityResultContracts.StartActivityForResult()
-        ) {
-            if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
-                val directoryUri = it.data?.data ?: return@registerForActivityResult
-                requireContext().contentResolver.takePersistableUriPermission(
-                    directoryUri, GRANT_URI_RW_PERMISSION
-                )
-                callback.invoke(directoryUri)
+            return registerForActivityResult(
+                ActivityResultContracts.StartActivityForResult()
+            ) {
+                if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
+                    val directoryUri = it.data?.data ?: return@registerForActivityResult
+                    requireContext().contentResolver.takePersistableUriPermission(
+                        directoryUri, GRANT_URI_RW_PERMISSION
+                    )
+                    callback.invoke(directoryUri)
+                }
             }
         }
-    }
 
     /** Check URI access. Prompt user to DocumentsUI if necessary */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {

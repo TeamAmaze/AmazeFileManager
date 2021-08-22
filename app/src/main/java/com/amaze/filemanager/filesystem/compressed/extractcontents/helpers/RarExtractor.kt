@@ -101,6 +101,8 @@ class RarExtractor(
                     }
                 }
                 listener.onFinish()
+            } else {
+                throw EmptyArchiveNotice()
             }
         } catch (e: RarException) {
             throw IOException(e)
