@@ -18,19 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.ftpserver
+package com.amaze.filemanager.filesystem.compressed
 
-import android.content.Context
-import android.os.Build.VERSION_CODES.KITKAT
-import androidx.annotation.RequiresApi
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService
-import org.apache.ftpserver.ftplet.FileSystemFactory
-import org.apache.ftpserver.ftplet.FileSystemView
-import org.apache.ftpserver.ftplet.User
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.M
+import com.github.junrar.Archive
 
-@RequiresApi(KITKAT)
-class AndroidFileSystemFactory(private val context: Context) : FileSystemFactory {
-
-    override fun createFileSystemView(user: User?): FileSystemView =
-        AndroidFtpFileSystemView(context, user?.homeDirectory ?: FtpService.defaultPath(context))
+/**
+ * Extension function to patch [Archive.isPasswordProtected] which uses API that is not available
+ * for Android 6.0 or lower.
+ *
+ * @see [Archive.isPasswordProtected]
+ * @see [java.util.stream.Stream]
+ * @return true if archive is password protected
+ */
+fun Archive.isPasswordProtectedCompat(): Boolean {
+    return if (SDK_INT > M) {
+        this.isPasswordProtected
+    } else {
+        fileHeaders.any { obj ->
+            obj.isEncrypted
+        }
+    }
 }
