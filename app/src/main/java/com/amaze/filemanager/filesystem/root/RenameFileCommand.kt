@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.root
 
+import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
