@@ -38,6 +38,7 @@ class SevenZipHelperCallable(
     CompressedHelperCallable(goBack) {
 
     @Throws(ArchiveException::class)
+    @Suppress("Detekt.RethrowCaughtException")
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         try {
             val sevenzFile = if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
@@ -71,6 +72,7 @@ class SevenZipHelperCallable(
                 }
             }
         } catch (e: PasswordRequiredException) {
+            //this is so that the caller can use onError to ask the user for the password
             throw e
         } catch (e: IOException) {
             throw ArchiveException(String.format("7zip archive %s is corrupt", filePath))

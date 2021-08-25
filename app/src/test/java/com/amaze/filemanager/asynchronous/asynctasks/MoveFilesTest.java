@@ -86,12 +86,13 @@ public class MoveFilesTest extends AbstractSftpServerTest {
 
     ArrayList<String> paths = new ArrayList<>();
     paths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
-    MoveFiles task = new MoveFiles(
-        filesToCopyPerFolder,
-        false,
+    MoveFiles task =
+        new MoveFiles(
+            filesToCopyPerFolder,
+            false,
             ApplicationProvider.getApplicationContext(),
-        OpenMode.FILE,
-        paths);
+            OpenMode.FILE,
+            paths);
 
     task.call();
 
