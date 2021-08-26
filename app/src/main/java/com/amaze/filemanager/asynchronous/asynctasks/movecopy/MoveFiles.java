@@ -39,6 +39,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import android.content.Context;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 /**
@@ -53,7 +54,6 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
   private final Context context;
   private final OpenMode mode;
   private long totalBytes = 0L;
-  private boolean invalidOperation = false;
   private final boolean isRootExplorer;
 
   public MoveFiles(
@@ -84,66 +84,73 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
 
     for (int i = 0; i < paths.size(); i++) {
       for (HybridFileParcelable baseFile : files.get(i)) {
-        String destPath = paths.get(i) + "/" + baseFile.getName(context);
-        if (baseFile.getPath().indexOf('?') > 0)
-          destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
-        if (!isMoveOperationValid(baseFile, new HybridFile(mode, paths.get(i)))) {
-          // TODO: 30/06/20 Replace runtime exception with generic exception
-          Log.w(
-              getClass().getSimpleName(), "Some files failed to be moved", new RuntimeException());
-          invalidOperation = true;
-          continue;
-        }
-        switch (mode) {
-          case FILE:
-            File dest = new File(destPath);
-            File source = new File(baseFile.getPath());
-            if (!source.renameTo(dest)) {
-
-              // check if we have root
-              if (isRootExplorer) {
-                try {
-                  if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath)) {
-                    return new MoveFilesReturn(
-                        false, invalidOperation, destinationSize, totalBytes);
-                  }
-                } catch (ShellNotRunningException e) {
-                  e.printStackTrace();
-                  return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
-                }
-              } else {
-                return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
-              }
-            }
-            break;
-          case DROPBOX:
-          case BOX:
-          case ONEDRIVE:
-          case GDRIVE:
-            DataUtils dataUtils = DataUtils.getInstance();
-
-            CloudStorage cloudStorage = dataUtils.getAccount(mode);
-            if (baseFile.getMode() == mode) {
-              // source and target both in same filesystem, use API method
-              try {
-
-                cloudStorage.move(
-                    CloudUtil.stripPath(mode, baseFile.getPath()),
-                    CloudUtil.stripPath(mode, destPath));
-              } catch (Exception e) {
-                e.printStackTrace();
-                return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
-              }
-            } else {
-              // not in same filesystem, execute service
-              return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
-            }
-          default:
-            return new MoveFilesReturn(false, invalidOperation, destinationSize, totalBytes);
+        final MoveFilesReturn r = processFile(baseFile, paths.get(i), destinationSize);
+        if(r != null) {
+          return r;
         }
       }
     }
-    return new MoveFilesReturn(true, invalidOperation, destinationSize, totalBytes);
+    return new MoveFilesReturn(true, false, destinationSize, totalBytes);
+  }
+
+  @Nullable
+  private MoveFilesReturn processFile(HybridFileParcelable baseFile, String path, long destinationSize){
+    String destPath = path + "/" + baseFile.getName(context);
+    if (baseFile.getPath().indexOf('?') > 0)
+      destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
+    if (!isMoveOperationValid(baseFile, new HybridFile(mode, path))) {
+      // TODO: 30/06/20 Replace runtime exception with generic exception
+      Log.w(
+              getClass().getSimpleName(), "Some files failed to be moved", new RuntimeException());
+      return new MoveFilesReturn(false, true, destinationSize, totalBytes);
+    }
+    switch (mode) {
+      case FILE:
+        File dest = new File(destPath);
+        File source = new File(baseFile.getPath());
+        if (!source.renameTo(dest)) {
+
+          // check if we have root
+          if (isRootExplorer) {
+            try {
+              if (!RenameFileCommand.INSTANCE.renameFile(baseFile.getPath(), destPath)) {
+                return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+              }
+            } catch (ShellNotRunningException e) {
+              e.printStackTrace();
+              return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+            }
+          } else {
+            return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+          }
+        }
+        break;
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
+        DataUtils dataUtils = DataUtils.getInstance();
+
+        CloudStorage cloudStorage = dataUtils.getAccount(mode);
+        if (baseFile.getMode() == mode) {
+          // source and target both in same filesystem, use API method
+          try {
+            cloudStorage.move(
+                    CloudUtil.stripPath(mode, baseFile.getPath()),
+                    CloudUtil.stripPath(mode, destPath));
+          } catch (RuntimeException e) {
+            e.printStackTrace();
+            return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+          }
+        } else {
+          // not in same filesystem, execute service
+          return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+        }
+      default:
+        return new MoveFilesReturn(false, false, destinationSize, totalBytes);
+    }
+
+    return null;
   }
 
   private boolean isMoveOperationValid(HybridFileParcelable sourceFile, HybridFile targetFile) {

@@ -58,6 +58,7 @@ class RarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
      * Test RAR v5.
      */
     @Test
+    @Suppress("Detekt.TooGenericExceptionCaught")
     fun testMultiVolumeRarV5() {
         val callable: CompressedHelperCallable = RarHelperCallable(
             File(
