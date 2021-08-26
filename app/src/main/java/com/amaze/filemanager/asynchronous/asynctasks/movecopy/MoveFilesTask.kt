@@ -98,17 +98,14 @@ class MoveFilesTask(
         for (i in paths.indices) {
           for (file in files[i]) {
             if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-              try {
-                val cryptHandler = CryptHandler.getInstance()
-                val oldEntry = cryptHandler.findEntry(file.path)
+              val cryptHandler = CryptHandler.getInstance()
+              val oldEntry = cryptHandler.findEntry(file.path)
+              if (oldEntry != null) {
                 val newEntry = EncryptedEntry()
                 newEntry.id = oldEntry.id
                 newEntry.password = oldEntry.password
                 newEntry.path = paths[i] + "/" + file.getName(applicationContext)
                 cryptHandler.updateEntry(oldEntry, newEntry)
-              } catch (e: Exception) {
-                e.printStackTrace()
-                // couldn't change the entry, leave it alone
               }
             }
           }

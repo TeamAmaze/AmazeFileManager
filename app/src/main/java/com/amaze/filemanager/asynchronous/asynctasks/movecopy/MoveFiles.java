@@ -85,7 +85,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
     for (int i = 0; i < paths.size(); i++) {
       for (HybridFileParcelable baseFile : files.get(i)) {
         final MoveFilesReturn r = processFile(baseFile, paths.get(i), destinationSize);
-        if(r != null) {
+        if (r != null) {
           return r;
         }
       }
@@ -94,14 +94,14 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
   }
 
   @Nullable
-  private MoveFilesReturn processFile(HybridFileParcelable baseFile, String path, long destinationSize){
+  private MoveFilesReturn processFile(
+      HybridFileParcelable baseFile, String path, long destinationSize) {
     String destPath = path + "/" + baseFile.getName(context);
     if (baseFile.getPath().indexOf('?') > 0)
       destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
     if (!isMoveOperationValid(baseFile, new HybridFile(mode, path))) {
       // TODO: 30/06/20 Replace runtime exception with generic exception
-      Log.w(
-              getClass().getSimpleName(), "Some files failed to be moved", new RuntimeException());
+      Log.w(getClass().getSimpleName(), "Some files failed to be moved", new RuntimeException());
       return new MoveFilesReturn(false, true, destinationSize, totalBytes);
     }
     switch (mode) {
@@ -136,8 +136,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
           // source and target both in same filesystem, use API method
           try {
             cloudStorage.move(
-                    CloudUtil.stripPath(mode, baseFile.getPath()),
-                    CloudUtil.stripPath(mode, destPath));
+                CloudUtil.stripPath(mode, baseFile.getPath()), CloudUtil.stripPath(mode, destPath));
           } catch (RuntimeException e) {
             e.printStackTrace();
             return new MoveFilesReturn(false, false, destinationSize, totalBytes);
