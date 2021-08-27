@@ -20,10 +20,13 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static android.provider.MediaStore.MediaColumns.DISPLAY_NAME;
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static kotlin.io.ConstantsKt.DEFAULT_BUFFER_SIZE;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -31,6 +34,7 @@ import java.util.List;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.services.ExtractService;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -52,14 +56,17 @@ import com.github.junrar.exception.UnsupportedRarV5Exception;
 import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.ComponentName;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.SharedPreferences;
+import android.database.Cursor;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -80,6 +87,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import kotlin.io.ByteStreamsKt;
+
 public class CompressedExplorerFragment extends Fragment implements BottomBarButtonPath {
   public static final String KEY_PATH = "path";
 
@@ -89,6 +98,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   private static final String KEY_WHOLE_LIST = "whole_list";
   private static final String KEY_ELEMENTS = "elements";
   private static final String KEY_OPEN = "is_open";
+  private static final String TAG = CompressedExplorerFragment.class.getSimpleName();
 
   public File compressedFile;
 
@@ -123,6 +133,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   private View mToolbarContainer;
   private boolean stopAnims = true;
   private int file = 0, folder = 0;
+  private boolean isCachedCompressedFile = false;
   private final AppBarLayout.OnOffsetChangedListener offsetListenerForToolbar =
       (appBarLayout, verticalOffset) -> {
         if (fastScroller == null) {
@@ -175,7 +186,49 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   public void onActivityCreated(Bundle savedInstanceState) {
     super.onActivityCreated(savedInstanceState);
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    compressedFile = new File(Uri.parse(getArguments().getString(KEY_PATH)).getPath());
+
+    String pathArg = getArguments().getString(KEY_PATH);
+    String fileName = null;
+    Uri pathUri = Uri.parse(pathArg);
+    if (ContentResolver.SCHEME_CONTENT.equals(pathUri.getScheme())) {
+      Cursor cursor =
+          requireContext()
+              .getContentResolver()
+              .query(pathUri, new String[] {DISPLAY_NAME}, null, null, null);
+      if (cursor != null) {
+        try {
+          if (cursor.moveToFirst()) {
+            fileName = cursor.getString(0);
+            compressedFile = new File(requireContext().getCacheDir(), fileName);
+          } else {
+            // At this point, we know nothing the file the URI represents, we are doing everything
+            // wild guess.
+            compressedFile =
+                File.createTempFile("compressed", null, requireContext().getCacheDir());
+            fileName = compressedFile.getName();
+          }
+          compressedFile.deleteOnExit();
+          ByteStreamsKt.copyTo(
+              requireContext().getContentResolver().openInputStream(pathUri),
+              new FileOutputStream(compressedFile),
+              DEFAULT_BUFFER_SIZE);
+          isCachedCompressedFile = true;
+        } catch (Exception e) {
+          Log.e(TAG, "Error opening URI " + pathUri + " for reading", e);
+          AppConfig.toast(
+              requireContext(),
+              requireContext()
+                  .getString(
+                      R.string.compressed_explorer_fragment_error_open_uri, pathUri.toString()));
+          requireActivity().onBackPressed();
+        } finally {
+          cursor.close();
+        }
+      }
+    } else {
+      compressedFile = new File(pathUri.getPath());
+      fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
+    }
 
     mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
     mToolbarContainer.setOnTouchListener(
@@ -217,9 +270,10 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
     if (savedInstanceState == null && compressedFile != null) {
       files = new ArrayList<>();
       // adding a cache file to delete where any user interaction elements will be cached
-      String fileName =
-          compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
-      String path = getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
+      String path =
+          (isCachedCompressedFile)
+              ? compressedFile.getAbsolutePath()
+              : getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
       files.add(new HybridFileParcelable(path));
       decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
 
@@ -383,6 +437,9 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
 
     if (files.get(0).exists()) {
       new DeleteTask(getActivity(), this).execute(files);
+    }
+    if (isCachedCompressedFile) {
+      compressedFile.delete();
     }
   }
 
