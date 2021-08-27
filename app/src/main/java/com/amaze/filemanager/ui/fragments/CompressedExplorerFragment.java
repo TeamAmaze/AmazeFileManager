@@ -79,6 +79,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.fragment.app.Fragment;
@@ -183,10 +184,69 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
   }
 
   @Override
-  public void onActivityCreated(Bundle savedInstanceState) {
-    super.onActivityCreated(savedInstanceState);
-    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(getActivity());
+  public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
 
+    SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(requireActivity());
+
+    String fileName = prepareCompressedFile();
+
+    mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
+    mToolbarContainer.setOnTouchListener(
+        (v, motionEvent) -> {
+          if (stopAnims) {
+            if ((!compressedExplorerAdapter.stoppedAnimation)) {
+              stopAnim();
+            }
+            compressedExplorerAdapter.stoppedAnimation = true;
+          }
+          stopAnims = false;
+          return false;
+        });
+
+    listView.setVisibility(View.VISIBLE);
+    mLayoutManager = new LinearLayoutManager(getActivity());
+    listView.setLayoutManager(mLayoutManager);
+
+    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
+      rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+      listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+    } else {
+      listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
+    }
+
+    gobackitem = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
+    coloriseIcons = sp.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
+    showSize = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, false);
+    showLastModified = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
+    showDividers = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
+    year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
+
+    accentColor = mainActivity.getAccent();
+    iconskin = mainActivity.getCurrentColorPreference().getIconSkin();
+
+    // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
+
+    if (savedInstanceState == null && compressedFile != null) {
+      files = new ArrayList<>();
+      // adding a cache file to delete where any user interaction elements will be cached
+      String path =
+          (isCachedCompressedFile)
+            ? compressedFile.getAbsolutePath()
+            : getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
+      files.add(new HybridFileParcelable(path));
+      decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
+
+      changePath("");
+    } else {
+      onRestoreInstanceState(savedInstanceState);
+    }
+    mainActivity.supportInvalidateOptionsMenu();
+  }
+
+  @NonNull
+  private String prepareCompressedFile() {
     String pathArg = getArguments().getString(KEY_PATH);
     String fileName = null;
     Uri pathUri = Uri.parse(pathArg);
@@ -229,59 +289,7 @@ public class CompressedExplorerFragment extends Fragment implements BottomBarBut
       compressedFile = new File(pathUri.getPath());
       fileName = compressedFile.getName().substring(0, compressedFile.getName().lastIndexOf("."));
     }
-
-    mToolbarContainer = mainActivity.getAppbar().getAppbarLayout();
-    mToolbarContainer.setOnTouchListener(
-        (view, motionEvent) -> {
-          if (stopAnims) {
-            if ((!compressedExplorerAdapter.stoppedAnimation)) {
-              stopAnim();
-            }
-            compressedExplorerAdapter.stoppedAnimation = true;
-          }
-          stopAnims = false;
-          return false;
-        });
-
-    listView.setVisibility(View.VISIBLE);
-    mLayoutManager = new LinearLayoutManager(getActivity());
-    listView.setLayoutManager(mLayoutManager);
-
-    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
-      rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
-      listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-    } else {
-      listView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.background_light));
-    }
-
-    gobackitem = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON, false);
-    coloriseIcons = sp.getBoolean(PreferencesConstants.PREFERENCE_COLORIZE_ICONS, true);
-    showSize = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE, false);
-    showLastModified = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_LAST_MODIFIED, true);
-    showDividers = sp.getBoolean(PreferencesConstants.PREFERENCE_SHOW_DIVIDERS, true);
-    year = ("" + Calendar.getInstance().get(Calendar.YEAR)).substring(2, 4);
-
-    accentColor = mainActivity.getAccent();
-    iconskin = mainActivity.getCurrentColorPreference().getIconSkin();
-
-    // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
-
-    if (savedInstanceState == null && compressedFile != null) {
-      files = new ArrayList<>();
-      // adding a cache file to delete where any user interaction elements will be cached
-      String path =
-          (isCachedCompressedFile)
-              ? compressedFile.getAbsolutePath()
-              : getActivity().getExternalCacheDir().getPath() + SEPARATOR + fileName;
-      files.add(new HybridFileParcelable(path));
-      decompressor = CompressedHelper.getCompressorInstance(getContext(), compressedFile);
-
-      changePath("");
-    } else {
-      onRestoreInstanceState(savedInstanceState);
-    }
-    mainActivity.supportInvalidateOptionsMenu();
+    return fileName;
   }
 
   @Override
