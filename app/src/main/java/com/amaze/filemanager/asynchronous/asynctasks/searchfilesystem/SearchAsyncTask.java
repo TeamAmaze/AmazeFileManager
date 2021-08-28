@@ -66,7 +66,6 @@ public class SearchAsyncTask extends AsyncTask<Void, HybridFileParcelable, Void>
     isMatchesEnabled = matches;
 
     this.file = new HybridFile(openMode, path);
-    file.generateMode(this.applicationContext);
   }
 
   @Override
