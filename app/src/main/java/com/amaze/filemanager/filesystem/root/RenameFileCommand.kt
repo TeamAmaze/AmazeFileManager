@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.root
 
+import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
@@ -37,9 +38,14 @@ object RenameFileCommand : IRootCommand() {
     fun renameFile(oldPath: String, newPath: String): Boolean {
         val mountPoint = MountPathCommand.mountPath(oldPath, MountPathCommand.READ_WRITE)
         val command = "mv \"${RootHelper.getCommandLineString(oldPath)}\"" +
-            " \"${RootHelper.getCommandLineString(newPath)}\""
-        val output = runShellCommandToList(command)
-        mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
-        return output.isEmpty()
+                " \"${RootHelper.getCommandLineString(newPath)}\""
+        return try {
+            val output = runShellCommandToList(command)
+            mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
+            output.isEmpty()
+        } catch (e: ShellCommandInvalidException) {
+            e.printStackTrace()
+            false
+        }
     }
 }
