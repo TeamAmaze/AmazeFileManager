@@ -112,4 +112,6 @@ public abstract class Extractor {
       return entryName;
     }
   }
+
+  public class EmptyArchiveNotice extends IOException {}
 }
