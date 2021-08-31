@@ -337,7 +337,7 @@ public class HybridFile {
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
-        if(path.isEmpty()) {
+        if (path.isEmpty()) {
           return "";
         }
 
@@ -396,7 +396,7 @@ public class HybridFile {
         return getFile().getParent();
       case SFTP:
       default:
-        if(path.length() == getName(context).length()) {
+        if (path.length() == getName(context).length()) {
           return null;
         }
 
