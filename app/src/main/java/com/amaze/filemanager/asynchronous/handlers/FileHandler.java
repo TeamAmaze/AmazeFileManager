@@ -33,15 +33,15 @@ import android.os.Looper;
 import android.os.Message;
 import android.view.View;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-/** @author Emmanuel on 8/11/2017, at 17:37. */
 public class FileHandler extends Handler {
-  private WeakReference<MainFragment> mainFragment;
-  private RecyclerView listView;
-  private boolean useThumbs;
+  private final WeakReference<MainFragment> mainFragment;
+  private final RecyclerView listView;
+  private final boolean useThumbs;
 
-  public FileHandler(MainFragment mainFragment, RecyclerView listView, boolean useThumbs) {
+  public FileHandler(@NonNull MainFragment mainFragment, @NonNull RecyclerView listView, boolean useThumbs) {
     super(Looper.getMainLooper());
     this.mainFragment = new WeakReference<>(mainFragment);
     this.listView = listView;
@@ -49,7 +49,7 @@ public class FileHandler extends Handler {
   }
 
   @Override
-  public void handleMessage(Message msg) {
+  public void handleMessage(@NonNull Message msg) {
     super.handleMessage(msg);
     final MainFragment main = mainFragment.get();
 
