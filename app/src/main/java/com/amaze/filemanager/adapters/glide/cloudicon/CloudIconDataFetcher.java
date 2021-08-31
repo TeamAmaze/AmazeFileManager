@@ -31,16 +31,19 @@ import com.bumptech.glide.load.data.DataFetcher;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 
-/** Created by Vishal Nehra on 3/27/2018. */
 public class CloudIconDataFetcher implements DataFetcher<Bitmap> {
 
-  private String path;
-  private Context context;
+  private static final String TAG = CloudIconDataFetcher.class.getSimpleName();
+
+  private final String path;
+  private final Context context;
   private InputStream inputStream;
-  private int width, height;
+  private final int width;
+  private final int height;
 
   public CloudIconDataFetcher(Context context, String path, int width, int height) {
     this.context = context;
@@ -50,7 +53,7 @@ public class CloudIconDataFetcher implements DataFetcher<Bitmap> {
   }
 
   @Override
-  public void loadData(Priority priority, DataCallback<? super Bitmap> callback) {
+  public void loadData(@NonNull Priority priority, DataCallback<? super Bitmap> callback) {
     inputStream = CloudUtil.getThumbnailInputStreamForCloud(context, path);
     BitmapFactory.Options options = new BitmapFactory.Options();
     options.outWidth = width;
@@ -62,9 +65,11 @@ public class CloudIconDataFetcher implements DataFetcher<Bitmap> {
   @Override
   public void cleanup() {
     try {
-      if (inputStream != null) inputStream.close();
+      if (inputStream != null) {
+        inputStream.close();
+      }
     } catch (IOException e) {
-      e.printStackTrace();
+      Log.e(TAG, "Error cleaning up cloud icon fetch", e);
     }
   }
 
