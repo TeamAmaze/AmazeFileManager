@@ -64,8 +64,7 @@ class FileHandler(
             }
             CustomFileObserver.DELETED_ITEM -> {
                 val index = elementsList.withIndex().find {
-                    val currentFile = File(it.value.desc)
-                    return@find currentFile.name == path
+                    File(it.value.desc).name == path
                 }?.index
 
                 if (index != null) {
