@@ -1765,6 +1765,7 @@ public class MainFragment extends Fragment
     return (MainActivity) getActivity();
   }
 
+  @Nullable
   public ArrayList<LayoutElementParcelable> getElementsList() {
     return mainFragmentViewModel.getListElements();
   }
