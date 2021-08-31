@@ -30,10 +30,9 @@ import android.util.Log;
 
 import jcifs.smb.SmbFile;
 
-/** Created by Vishal on 30-04-2017. */
 public class CloudStreamer extends CloudStreamServer {
 
-  private static final String TAG = "CloudStreamer";
+  private static final String TAG = CloudStreamer.class.getSimpleName();
 
   public static final int PORT = 7871;
   public static final String URL = "http://127.0.0.1:" + PORT;
@@ -57,7 +56,7 @@ public class CloudStreamer extends CloudStreamServer {
       try {
         instance = new CloudStreamer(PORT);
       } catch (IOException e) {
-        e.printStackTrace();
+        Log.e(TAG, "Error initializing CloudStreamer", e);
       }
     return instance;
   }
