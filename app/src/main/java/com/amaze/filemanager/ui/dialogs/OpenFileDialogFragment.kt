@@ -370,12 +370,12 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->
                     setLastOpenedApp(it, activity as PreferenceActivity)
-                    startActivityCatchingNFC(lastAppIntent)
+                    startActivityCatchingSecurityException(lastAppIntent)
                 }
                 alwaysButton.setTextColor((activity as ThemedActivity).accent)
                 alwaysButton.setOnClickListener { _ ->
                     setDefaultOpenedApp(it, activity as PreferenceActivity)
-                    startActivityCatchingNFC(lastAppIntent)
+                    startActivityCatchingSecurityException(lastAppIntent)
                 }
                 openAsButton.setOnClickListener {
                     FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
@@ -387,7 +387,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
     }
 
-    private fun startActivityCatchingNFC(intent: Intent) {
+    private fun startActivityCatchingSecurityException(intent: Intent) {
         try {
             requireContext().startActivity(intent)
         } catch (e: SecurityException) {
