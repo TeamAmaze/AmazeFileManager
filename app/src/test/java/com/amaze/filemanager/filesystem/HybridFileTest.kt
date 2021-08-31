@@ -48,6 +48,12 @@ class HybridFileTest {
             val file = HybridFile(OpenMode.UNKNOWN, path)
             file.getParent(ApplicationProvider.getApplicationContext())
         }
+
+        for (i in 0..50) {
+            val path = RandomPathGenerator.generateRandomPath(r, 50, 0)
+            val file = HybridFile(OpenMode.UNKNOWN, path)
+            file.getParent(ApplicationProvider.getApplicationContext())
+        }
     }
 
     /**
