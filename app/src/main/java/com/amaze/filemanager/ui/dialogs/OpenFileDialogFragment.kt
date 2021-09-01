@@ -50,6 +50,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
+import com.amaze.filemanager.ui.startActivityCatchingSecurityException
 import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
 import com.bumptech.glide.ListPreloader
@@ -370,12 +371,12 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->
                     setLastOpenedApp(it, activity as PreferenceActivity)
-                    startActivityCatchingSecurityException(lastAppIntent)
+                    requireContext().startActivityCatchingSecurityException(lastAppIntent)
                 }
                 alwaysButton.setTextColor((activity as ThemedActivity).accent)
                 alwaysButton.setOnClickListener { _ ->
                     setDefaultOpenedApp(it, activity as PreferenceActivity)
-                    startActivityCatchingSecurityException(lastAppIntent)
+                    requireContext().startActivityCatchingSecurityException(lastAppIntent)
                 }
                 openAsButton.setOnClickListener {
                     FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
@@ -384,15 +385,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                 ThemedTextView.setTextViewColor(lastAppTitle, requireContext())
                 ThemedTextView.setTextViewColor(chooseDifferentAppTextView, requireContext())
             }
-        }
-    }
-
-    private fun startActivityCatchingSecurityException(intent: Intent) {
-        try {
-            requireContext().startActivity(intent)
-        } catch (e: SecurityException) {
-            Log.e(TAG, "Error when starting activity: ", e)
-            Toast.makeText(requireContext(), R.string.security_error, Toast.LENGTH_SHORT).show()
         }
     }
 
