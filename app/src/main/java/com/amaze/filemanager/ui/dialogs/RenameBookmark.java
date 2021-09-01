@@ -20,6 +20,14 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
+import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.SimpleTextWatcher;
+import com.google.android.material.textfield.TextInputLayout;
+
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -30,14 +38,6 @@ import android.view.View;
 
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.preference.PreferenceManager;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
-import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.SimpleTextWatcher;
-import com.google.android.material.textfield.TextInputLayout;
 
 public class RenameBookmark extends DialogFragment {
 

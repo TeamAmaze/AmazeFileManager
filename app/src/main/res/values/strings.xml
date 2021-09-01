@@ -315,7 +315,6 @@
     <string name="report_bugs_summary">Report bugs or request new feature</string>
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>
-    <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">PayPal ID copied to clipboard</string>
     <string name="searching_devices">Searching for devices</string>
     <string name="use_custom_ip">Use custom IP</string>
@@ -374,7 +373,6 @@
     </string>
     <string name="share_limit">Can\'t share more than 100 files</string>
     <string name="otg_access">Select the root of OTG device</string>
-    <string name="opening">Opening..</string>
     <string name="information">Information</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Accessed</string>
