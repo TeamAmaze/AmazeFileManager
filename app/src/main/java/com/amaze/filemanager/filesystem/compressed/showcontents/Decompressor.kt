@@ -63,8 +63,8 @@ abstract class Decompressor(protected var context: Context) {
      * @param subDirectories separator is "/", ended with "/" if it is a directory, does not if it's a
      * file
      */
-    fun decompress(whereToDecompress: String, subDirectories: Array<String>) {
-        subDirectories.map {
+    fun decompress(whereToDecompress: String, subDirectories: Array<String?>) {
+        subDirectories.filterNotNull().map {
             realRelativeDirectory(it)
         }.run {
             val intent = Intent(context, ExtractService::class.java).also {
