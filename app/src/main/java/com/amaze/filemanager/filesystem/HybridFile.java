@@ -79,17 +79,15 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
-/** Created by Arpit on 07-07-2015. */
-// Hybrid file for handeling all types of files
+/** Hybrid file for handeling all types of files */
 public class HybridFile {
 
-  private static final String TAG = "HFile";
+  private static final String TAG = HybridFile.class.getSimpleName();
 
-  String path;
-  // public static final int ROOT_MODE=3,LOCAL_MODE=0,SMB_MODE=1,UNKNOWN=-1;
-  OpenMode mode = OpenMode.FILE;
+  private String path;
+  private OpenMode mode;
 
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private final DataUtils dataUtils = DataUtils.getInstance();
 
   public HybridFile(OpenMode mode, String path) {
     this.path = path;
@@ -326,25 +324,32 @@ public class HybridFile {
   }
 
   public String getName(Context context) {
-    String name = null;
     switch (mode) {
       case SMB:
         SmbFile smbFile = getSmbFile();
-        if (smbFile != null) return smbFile.getName();
-        break;
+        if (smbFile != null) {
+          return smbFile.getName();
+        }
+        return null;
       case FILE:
       case ROOT:
         return getFile().getName();
       case OTG:
         return OTGUtil.getDocumentFile(path, context, false).getName();
       default:
+        if (path.isEmpty()) {
+          return "";
+        }
+
         String _path = path;
         if (path.endsWith("/")) {
           _path = path.substring(0, path.length() - 1);
         }
-        name = _path.substring(_path.lastIndexOf('/') + 1);
+
+        int lastSeparator = _path.lastIndexOf('/');
+
+        return _path.substring(lastSeparator + 1);
     }
-    return name;
   }
 
   public SmbFile getSmbFile(int timeout) {
@@ -379,31 +384,27 @@ public class HybridFile {
 
   /** Helper method to get parent path */
   public String getParent(Context context) {
-
-    String parentPath = "";
     switch (mode) {
       case SMB:
         SmbFile smbFile = getSmbFile();
-        parentPath = (smbFile != null) ? smbFile.getParent() : "";
-        break;
+        if (smbFile != null) {
+          return smbFile.getParent();
+        }
+        return "";
       case FILE:
       case ROOT:
-        parentPath = getFile().getParent();
-        break;
+        return getFile().getParent();
       case SFTP:
-        StringBuilder builder = new StringBuilder(path);
-        StringBuilder parentPathBuilder =
-            new StringBuilder(
-                builder.substring(0, builder.length() - (getName(context).length()) - 1));
-        return parentPathBuilder.toString();
       default:
-        builder = new StringBuilder(path);
-        parentPathBuilder =
-            new StringBuilder(
-                builder.substring(0, builder.length() - (getName(context).length() + 1)));
-        return parentPathBuilder.toString();
+        if (path.length() == getName(context).length()) {
+          return null;
+        }
+
+        int start = 0;
+        int end = path.length() - getName(context).length() - 1;
+
+        return path.substring(start, end);
     }
-    return parentPath;
   }
 
   public String getParentName() {

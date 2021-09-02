@@ -27,12 +27,13 @@ import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import androidx.annotation.NonNull;
+
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 
-/** Created by arpitkh996 on 11-01-2016. */
 public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   private long date, size;
@@ -43,7 +44,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   public HybridFileParcelable(String path) {
     super(OpenMode.FILE, path);
-    this.path = path;
   }
 
   public HybridFileParcelable(
@@ -52,16 +52,10 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     this.date = date;
     this.size = size;
     this.isDirectory = isDirectory;
-    this.path = path;
     this.permission = permission;
   }
 
-  /**
-   * Constructor for jcifs {@link SmbFile}.
-   *
-   * @param smbFile
-   * @throws SmbException
-   */
+  /** Constructor for jcifs {@link SmbFile}. */
   public HybridFileParcelable(SmbFile smbFile) throws SmbException {
     super(OpenMode.SMB, smbFile.getPath());
     setName(smbFile.getName());
@@ -70,13 +64,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     setSize(smbFile.isDirectory() ? 0 : smbFile.length());
   }
 
-  /**
-   * Constructor for sshj {@link RemoteResourceInfo}.
-   *
-   * @param path
-   * @param isDirectory
-   * @param sshFile
-   */
+  /** Constructor for sshj {@link RemoteResourceInfo}. */
   public HybridFileParcelable(String path, boolean isDirectory, RemoteResourceInfo sshFile) {
     super(OpenMode.SFTP, String.format("%s/%s", path, sshFile.getName()));
     setName(sshFile.getName());
@@ -100,10 +88,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public OpenMode getMode() {
-    return mode;
   }
 
   public String getLink() {
@@ -140,10 +124,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   public void setDirectory(boolean directory) {
     isDirectory = directory;
-  }
-
-  public String getPath() {
-    return path;
   }
 
   public String getPermission() {
@@ -183,8 +163,8 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
-    dest.writeInt(mode.ordinal());
-    dest.writeString(path);
+    dest.writeInt(getMode().ordinal());
+    dest.writeString(getPath());
     dest.writeString(permission);
     dest.writeString(name);
     dest.writeLong(date);
@@ -192,35 +172,38 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     dest.writeByte((byte) (isDirectory ? 1 : 0));
   }
 
+  @NonNull
   @Override
   public String toString() {
-    return new StringBuilder("HybridFileParcelable, path=[")
-        .append(path)
-        .append(']')
-        .append(", name=[")
-        .append(name)
-        .append(']')
-        .append(", size=[")
-        .append(size)
-        .append(']')
-        .append(", date=[")
-        .append(date)
-        .append(']')
-        .append(", permission=[")
-        .append(permission)
-        .append(']')
-        .toString();
+    return "HybridFileParcelable, path=["
+        + getPath()
+        + "]"
+        + ", name=["
+        + name
+        + "]"
+        + ", size=["
+        + size
+        + "]"
+        + ", date=["
+        + date
+        + "]"
+        + ", permission=["
+        + permission
+        + "]";
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || (!(obj instanceof HybridFileParcelable))) return false;
-    return path.equals(((HybridFileParcelable) obj).path);
+    if (!(obj instanceof HybridFileParcelable)) {
+      return false;
+    }
+
+    return getPath().equals(((HybridFileParcelable) obj).getPath());
   }
 
   @Override
   public int hashCode() {
-    int result = path.hashCode();
+    int result = getPath().hashCode();
     result = 37 * result + name.hashCode();
     result = 37 * result + (isDirectory ? 1 : 0);
     result = 37 * result + (int) (size ^ size >>> 32);

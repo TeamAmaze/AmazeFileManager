@@ -386,7 +386,7 @@ public class Operations {
       protected Void doInBackground(Void... params) {
         // check whether file names for new file are valid or recursion occurs.
         // If rename is on OTG, we are skipping
-        if (!(oldFile.mode.equals(newFile.mode) && oldFile.mode.equals(OpenMode.OTG))
+        if (!(oldFile.getMode().equals(newFile.getMode()) && oldFile.getMode().equals(OpenMode.OTG))
             && !Operations.isFileNameValid(newFile.getName(context))) {
           errorCallBack.invalidName(newFile);
           return null;
@@ -412,7 +412,7 @@ public class Operations {
             String errmsg =
                 context.getString(
                     R.string.cannot_rename_file,
-                    HybridFile.parseAndFormatUriForDisplay(oldFile.path),
+                    HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
                     e.getMessage());
             try {
               ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
@@ -441,7 +441,7 @@ public class Operations {
                     String errmsg =
                         context.getString(
                             R.string.cannot_rename_file,
-                            HybridFile.parseAndFormatUriForDisplay(oldFile.path),
+                            HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
                             e.getMessage());
                     Log.e(TAG, errmsg);
                     ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
@@ -449,7 +449,7 @@ public class Operations {
                     // here
                     failedOps.add(
                         new HybridFileParcelable(
-                            oldFile.path,
+                            oldFile.getPath(),
                             "r",
                             oldFile.lastModified(),
                             0,
