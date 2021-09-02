@@ -20,143 +20,177 @@
 
 package com.amaze.filemanager.ui.theme;
 
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.KITKAT;
+import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 
 import java.util.Calendar;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowStorageManager;
 
 import com.afollestad.materialdialogs.Theme;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
+import com.amaze.filemanager.test.ShadowCryptUtil;
 
+import android.content.Context;
 import android.content.res.Configuration;
 
-/** Created by yuhalyn on 2018-04-02. */
-public class AppThemeTest {
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+@RunWith(AndroidJUnit4.class)
+@Config(
+        sdk = {JELLY_BEAN, KITKAT, P},
+        shadows = {ShadowMultiDex.class}
+        )
+public class AppThemeTest {
   @Test
   public void getThemeLightTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.LIGHT_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.LIGHT_INDEX);
     assertEquals(AppTheme.LIGHT, apptheme);
   }
 
   @Test
   public void getThemeDARKTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.DARK_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.DARK_INDEX);
     assertEquals(AppTheme.DARK, apptheme);
   }
 
   @Test
   public void getThemeTIMEDTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.TIME_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.TIME_INDEX);
     assertEquals(AppTheme.TIMED, apptheme);
   }
 
   @Test
   public void getThemeBLACKTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.BLACK_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.BLACK_INDEX);
     assertEquals(AppTheme.BLACK, apptheme);
   }
 
   @Test
   public void getMaterialDialogThemeLIGHTTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.LIGHT_INDEX);
-    assertEquals(Theme.LIGHT, apptheme.getMaterialDialogTheme());
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.LIGHT_INDEX);
+    assertEquals(Theme.LIGHT, apptheme.getMaterialDialogTheme(context));
   }
 
   @Test
   public void getMaterialDialogThemeDARKTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.DARK_INDEX);
-    assertEquals(Theme.DARK, apptheme.getMaterialDialogTheme());
+    final Context context = ApplicationProvider.getApplicationContext();
+
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.DARK_INDEX);
+    assertEquals(Theme.DARK, apptheme.getMaterialDialogTheme(context));
   }
 
   @Test
   public void getMaterialDialogThemeTIMEDTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.TIME_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.TIME_INDEX);
     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     if (hour <= 6 || hour >= 18) {
-      assertEquals(Theme.DARK, apptheme.getMaterialDialogTheme());
-    } else assertEquals(Theme.LIGHT, apptheme.getMaterialDialogTheme());
+      assertEquals(Theme.DARK, apptheme.getMaterialDialogTheme(context));
+    } else assertEquals(Theme.LIGHT, apptheme.getMaterialDialogTheme(context));
   }
 
   @Test
   public void getMaterialDialogThemeBLACKTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.BLACK_INDEX);
-    assertEquals(Theme.DARK, apptheme.getMaterialDialogTheme());
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.BLACK_INDEX);
+    assertEquals(Theme.DARK, apptheme.getMaterialDialogTheme(context));
   }
 
   @Test
   public void getSimpleThemeLIGHTTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.LIGHT_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.LIGHT_INDEX);
     assertEquals(
         AppTheme.LIGHT,
         apptheme.getSimpleTheme(
-            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+            (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
   public void getSimpleThemeDARKTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.DARK_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.DARK_INDEX);
     assertEquals(
         AppTheme.DARK,
         apptheme.getSimpleTheme(
-            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+            (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
   public void getSimpleThemeTIMEDTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.TIME_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.TIME_INDEX);
     int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
     if (hour <= 6 || hour >= 18) {
       assertEquals(
           AppTheme.DARK,
           apptheme.getSimpleTheme(
-              (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+              (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                   == Configuration.UI_MODE_NIGHT_YES));
     } else
       assertEquals(
           AppTheme.LIGHT,
           apptheme.getSimpleTheme(
-              (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+              (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                   == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
   public void getSimpleThemeBLACKTest() {
-    AppTheme apptheme = AppTheme.getTheme(AppTheme.BLACK_INDEX);
+    final Context context = ApplicationProvider.getApplicationContext();
+    AppTheme apptheme = AppTheme.getTheme(context, AppTheme.BLACK_INDEX);
     assertEquals(
         AppTheme.BLACK,
         apptheme.getSimpleTheme(
-            (getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
+            (context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK)
                 == Configuration.UI_MODE_NIGHT_YES));
   }
 
   @Test
   public void getIdLIGHTTest() {
+    final Context context = ApplicationProvider.getApplicationContext();
     int index = 0;
-    AppTheme apptheme = AppTheme.getTheme(index);
+    AppTheme apptheme = AppTheme.getTheme(context, index);
     assertEquals(index, apptheme.getId());
   }
 
   @Test
   public void getIdDARKTest() {
+    final Context context = ApplicationProvider.getApplicationContext();
     int index = 1;
-    AppTheme apptheme = AppTheme.getTheme(index);
+    AppTheme apptheme = AppTheme.getTheme(context, index);
     assertEquals(index, apptheme.getId());
   }
 
   @Test
   public void getIdTIMEDTest() {
+    final Context context = ApplicationProvider.getApplicationContext();
     int index = 2;
-    AppTheme apptheme = AppTheme.getTheme(index);
+    AppTheme apptheme = AppTheme.getTheme(context, index);
     assertEquals(index, apptheme.getId());
   }
 
   @Test
   public void getIdBLACKTest() {
+    final Context context = ApplicationProvider.getApplicationContext();
     int index = 3;
-    AppTheme apptheme = AppTheme.getTheme(index);
+    AppTheme apptheme = AppTheme.getTheme(context, index);
     assertEquals(index, apptheme.getId());
   }
 }
