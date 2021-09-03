@@ -57,7 +57,7 @@ public class CloudStreamSource extends RandomAccessStream {
    */
   public void open() throws IOException {
     if (fp > 0) {
-      inputStream.skip(fp);
+      fp = inputStream.skip(fp);
     }
   }
 
