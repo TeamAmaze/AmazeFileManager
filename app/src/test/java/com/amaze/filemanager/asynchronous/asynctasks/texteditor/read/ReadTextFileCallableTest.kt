@@ -29,6 +29,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFil
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
+import com.amaze.filemanager.filesystem.RandomPathGenerator
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile
 import org.junit.Assert
@@ -47,6 +48,9 @@ import kotlin.random.Random
 )
 class ReadTextFileCallableTest {
 
+    /**
+     * Test read an empty file with [ReadTextFileCallable]
+     */
     @Test
     @Throws(
         ShellNotRunningException::class,
@@ -54,7 +58,8 @@ class ReadTextFileCallableTest {
         StreamNotFoundException::class
     )
     fun testReadEmptyFile() {
-        val uri = Uri.parse("content://com.amaze.filemanager.test/foobar.txt")
+        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
+        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream("".toByteArray())
@@ -72,6 +77,9 @@ class ReadTextFileCallableTest {
         )
     }
 
+    /**
+     * Test read an [MAX_FILE_SIZE_CHARS] / 2 char file with [ReadTextFileCallable]
+     */
     @Test
     @Throws(
         ShellNotRunningException::class,
@@ -84,7 +92,8 @@ class ReadTextFileCallableTest {
 
         val fileContents = List(MAX_FILE_SIZE_CHARS / 2) { letters.random(random) }.joinToString("")
 
-        val uri = Uri.parse("content://com.amaze.filemanager.test/foobar.txt")
+        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
+        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream(fileContents.toByteArray())
@@ -102,6 +111,9 @@ class ReadTextFileCallableTest {
         )
     }
 
+    /**
+     * Test read a [MAX_FILE_SIZE_CHARS] * 2 char file  with [ReadTextFileCallable]
+     */
     @Test
     @Throws(
         ShellNotRunningException::class,
@@ -114,7 +126,8 @@ class ReadTextFileCallableTest {
 
         val fileContents = List(MAX_FILE_SIZE_CHARS * 2) { letters.random(random) }.joinToString("")
 
-        val uri = Uri.parse("content://com.amaze.filemanager.test/foobar.txt")
+        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
+        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream(fileContents.toByteArray())
