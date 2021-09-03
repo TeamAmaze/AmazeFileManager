@@ -32,9 +32,8 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
