@@ -58,8 +58,7 @@ class ReadTextFileCallableTest {
         StreamNotFoundException::class
     )
     fun testReadEmptyFile() {
-        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
-        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
+        val uri = generatePath()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream("".toByteArray())
@@ -92,8 +91,7 @@ class ReadTextFileCallableTest {
 
         val fileContents = List(MAX_FILE_SIZE_CHARS / 2) { letters.random(random) }.joinToString("")
 
-        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
-        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
+        val uri = generatePath()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream(fileContents.toByteArray())
@@ -126,8 +124,7 @@ class ReadTextFileCallableTest {
 
         val fileContents = List(MAX_FILE_SIZE_CHARS * 2) { letters.random(random) }.joinToString("")
 
-        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
-        val uri = Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
+        val uri = generatePath()
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val cr = ctx.contentResolver
         val input = ByteArrayInputStream(fileContents.toByteArray())
@@ -143,5 +140,10 @@ class ReadTextFileCallableTest {
             result,
             ReturnedValueOnReadFile(fileContents.substring(0, MAX_FILE_SIZE_CHARS), null, true)
         )
+    }
+
+    private fun generatePath(): Uri {
+        val path = RandomPathGenerator.generateRandomPath(Random(123), 50)
+        return Uri.parse("content://com.amaze.filemanager.test/$path/foobar.txt")
     }
 }
