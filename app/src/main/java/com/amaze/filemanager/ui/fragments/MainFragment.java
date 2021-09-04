@@ -964,6 +964,11 @@ public class MainFragment extends Fragment
     if (!providedPath.equals(actualPath) && SDK_INT >= Q) {
       openMode = loadPathInQ(actualPath, providedPath, providedOpenMode);
     }
+    // Monkeypatch :( to fix problems with unexpected non content URI path while openMode is still
+    // OpenMode.DOCUMENT_FILE
+    else if (actualPath.startsWith("/") && OpenMode.DOCUMENT_FILE.equals(openMode)) {
+      openMode = OpenMode.FILE;
+    }
 
     loadFilesListTask =
         new LoadFilesListTask(
@@ -992,6 +997,7 @@ public class MainFragment extends Fragment
 
   @RequiresApi(api = Q)
   private OpenMode loadPathInQ(String actualPath, String providedPath, OpenMode providedMode) {
+
     boolean hasAccessToSpecialFolder = false;
     List<UriPermission> uriPermissions =
         getContext().getContentResolver().getPersistedUriPermissions();
