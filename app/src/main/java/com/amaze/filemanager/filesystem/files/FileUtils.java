@@ -50,7 +50,6 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.DataUtils;
@@ -75,7 +74,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -85,7 +83,6 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -664,8 +661,6 @@ public class FileUtils {
     boolean useNewStack =
         sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
     boolean defaultHandler = isSelfDefault(f, m);
-    final Toast[] studioCount = {null};
-    final int studio_count = PreferenceManager.getDefaultSharedPreferences(m).getInt("studio", 0);
 
     if (f.getName().toLowerCase().endsWith(".apk")) {
       GeneralDialogCreation.showPackageDialog(f, m);
@@ -675,26 +670,6 @@ public class FileUtils {
       Intent intent = new Intent(m, DatabaseViewerActivity.class);
       intent.putExtra("path", f.getPath());
       m.startActivity(intent);
-    } else if (Icons.getTypeOfFile(f.getPath(), f.isDirectory()) == Icons.AUDIO
-        && studio_count != 0) {
-      // Behold! It's the  legendary easter egg!
-      new CountDownTimer(studio_count, 1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-          int sec = (int) millisUntilFinished / 1000;
-          if (studioCount[0] != null) studioCount[0].cancel();
-          studioCount[0] = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-          studioCount[0].show();
-        }
-
-        @Override
-        public void onFinish() {
-          if (studioCount[0] != null) studioCount[0].cancel();
-          studioCount[0] = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
-          studioCount[0].show();
-          openFileDialogFragmentFor(f, m, "audio/*");
-        }
-      }.start();
     } else {
       try {
         openFileDialogFragmentFor(f, m);
