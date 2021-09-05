@@ -38,6 +38,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
@@ -189,7 +190,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
               openFileParcelable.getClassName(),
               openFileParcelable.getPackageName());
       OpenFileDialogFragment.Companion.setLastOpenedApp(rowItem, themedActivity);
-      fragment.getContext().startActivity(intent);
+      ExtensionsKt.startActivityCatchingSecurityException(fragment.requireContext(), intent);
     } else {
       Intent i1 =
           fragment.getContext().getPackageManager().getLaunchIntentForPackage(rowItem.packageName);

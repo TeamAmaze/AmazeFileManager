@@ -716,5 +716,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="ftp_preference_saf_filesystem">Enable this for support for using device external storage on newer Android versions</string>
     <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been resetted to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
+    <string name="security_error">File could not be opened using this app</string>
 </resources>
 

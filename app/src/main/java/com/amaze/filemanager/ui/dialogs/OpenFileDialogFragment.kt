@@ -50,6 +50,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
+import com.amaze.filemanager.ui.startActivityCatchingSecurityException
 import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
 import com.bumptech.glide.ListPreloader
@@ -70,6 +71,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     private lateinit var sharedPreferences: SharedPreferences
 
     companion object {
+
+        private val TAG = OpenFileDialogFragment::class.java.simpleName
 
         private const val KEY_URI = "uri"
         private const val KEY_MIME_TYPE = "mime_type"
@@ -368,12 +371,12 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->
                     setLastOpenedApp(it, activity as PreferenceActivity)
-                    requireContext().startActivity(lastAppIntent)
+                    requireContext().startActivityCatchingSecurityException(lastAppIntent)
                 }
                 alwaysButton.setTextColor((activity as ThemedActivity).accent)
                 alwaysButton.setOnClickListener { _ ->
                     setDefaultOpenedApp(it, activity as PreferenceActivity)
-                    requireContext().startActivity(lastAppIntent)
+                    requireContext().startActivityCatchingSecurityException(lastAppIntent)
                 }
                 openAsButton.setOnClickListener {
                     FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)

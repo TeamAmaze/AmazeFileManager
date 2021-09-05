@@ -20,8 +20,15 @@
 
 package com.amaze.filemanager.ui
 
+import android.content.Context
+import android.content.Intent
 import android.text.TextUtils
+import android.util.Log
+import android.widget.Toast
+import com.amaze.filemanager.R
 import com.google.android.material.textfield.TextInputLayout
+
+private const val TAG = "ExtensionsKt"
 
 /**
  * Marks a text input field as mandatory (appends * at end)
@@ -29,4 +36,17 @@ import com.google.android.material.textfield.TextInputLayout
  */
 fun TextInputLayout.makeRequired() {
     hint = TextUtils.concat(hint, " *")
+}
+
+/**
+ * Makes the [Activity] starting not crash in case the app is
+ * not meant to deal with this kind of intent
+ */
+fun Context.startActivityCatchingSecurityException(intent: Intent) {
+    try {
+        startActivity(intent)
+    } catch (e: SecurityException) {
+        Log.e(TAG, "Error when starting activity: ", e)
+        Toast.makeText(this, R.string.security_error, Toast.LENGTH_SHORT).show()
+    }
 }
