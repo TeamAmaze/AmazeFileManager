@@ -113,7 +113,13 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
     inputStreamReader.close();
 
-    final String fileContents = String.valueOf(buffer, 0, readChars);
+    final String fileContents;
+
+    if (readChars == -1) {
+      fileContents = "";
+    } else {
+      fileContents = String.valueOf(buffer, 0, readChars);
+    }
 
     return new ReturnedValueOnReadFile(fileContents, cachedFile, tooLong);
   }
