@@ -641,7 +641,7 @@ public class GeneralDialogCreation {
                   Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath() + " failed!");
                 }
               } catch (IOException e) {
-                e.printStackTrace();
+                Log.e(TAG, "Error creating file", e);
               }
             } else {
               // checkbox is unchecked, delete .nomedia

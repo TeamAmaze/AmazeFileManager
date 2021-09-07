@@ -25,7 +25,6 @@ import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStre
 import java.io.IOException;
 import java.io.InputStream;
 
-/** Created by Vishal on 30-04-2017. */
 public class CloudStreamSource extends RandomAccessStream {
   protected long fp;
   protected String name;
@@ -57,10 +56,8 @@ public class CloudStreamSource extends RandomAccessStream {
    * somehow the buffer size to be equal with http server's buffer size which is 8192.
    */
   public void open() throws IOException {
-    try {
-      if (fp > 0) inputStream.skip(fp);
-    } catch (Exception e) {
-      throw new IOException(e);
+    if (fp > 0) {
+      fp = inputStream.skip(fp);
     }
   }
 
@@ -79,13 +76,9 @@ public class CloudStreamSource extends RandomAccessStream {
   }
 
   @Override
-  public void close() {
+  public void close() throws IOException {
     if (inputStream != null) {
-      try {
-        inputStream.close();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
+      inputStream.close();
     }
   }
 
