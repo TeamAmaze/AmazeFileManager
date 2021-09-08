@@ -162,7 +162,24 @@ public abstract class ExplorerDatabase extends RoomDatabase {
                   + COLUMN_HOME
                   + " TEXT)");
           database.execSQL(
-              "INSERT INTO " + TEMP_TABLE_PREFIX + TABLE_TAB + " SELECT * FROM " + TABLE_TAB);
+              "INSERT INTO "
+                  + TEMP_TABLE_PREFIX
+                  + TABLE_TAB
+                  + "("
+                  + COLUMN_TAB_NO
+                  + ","
+                  + COLUMN_PATH
+                  + ","
+                  + COLUMN_HOME
+                  + ")"
+                  + " SELECT "
+                  + COLUMN_TAB_NO
+                  + ","
+                  + COLUMN_PATH
+                  + ","
+                  + COLUMN_HOME
+                  + " FROM "
+                  + TABLE_TAB);
           database.execSQL("DROP TABLE " + TABLE_TAB);
           database.execSQL(
               "ALTER TABLE " + TEMP_TABLE_PREFIX + TABLE_TAB + " RENAME TO " + TABLE_TAB);
