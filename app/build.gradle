@@ -34,6 +34,14 @@ android {
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation"  : "$projectDir/schemas".toString(),
+                              "room.incremental"     : "true",
+                              "room.expandProjection": "true"]
+            }
+        }
     }
 
     signingConfigs {
@@ -145,6 +153,7 @@ dependencies {
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation 'org.jsoup:jsoup:1.11.2'
     testImplementation 'commons-net:commons-net:3.6'
+    testImplementation "androidx.room:room-migration:$roomVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
