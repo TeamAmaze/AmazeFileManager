@@ -1384,7 +1384,7 @@ public class MainActivity extends PermissionsActivity
 
   public void updatePaths(int pos) {
     TabFragment tabFragment = getTabFragment();
-    if (tabFragment != null) tabFragment.updatepaths(pos);
+    if (tabFragment != null) tabFragment.updatePaths(pos);
   }
 
   public void openCompressed(String path) {

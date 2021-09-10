@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 1/1/2018, at 21:16. */
 public class PreferencesConstants {
   // START fragments
   public static final String FRAGMENT_THEME = "theme";
@@ -96,6 +95,8 @@ public class PreferencesConstants {
 
   /** The value is an int with values RANDOM_INDEX, CUSTOM_INDEX, NO_DATA or [0, ...] */
   public static final String PREFERENCE_COLOR_CONFIG = "color config";
+
+  public static final String PREFERENCE_SAVED_PATHS = "savepaths";
   // END random preferences
 
   // START sort preferences
@@ -104,10 +105,11 @@ public class PreferencesConstants {
   public static final String PREFERENCE_APPLIST_ISASCENDING = "AppsListFragment.isAscending";
   // END sort preferences
 
-  // drag and drop preferences
+  // START drag and drop preferences
   public static final int PREFERENCE_DRAG_DEFAULT = 0;
   public static final int PREFERENCE_DRAG_TO_SELECT = 1;
   public static final int PREFERENCE_DRAG_TO_MOVE_COPY = 2;
   public static final String PREFERENCE_DRAG_REMEMBER_COPY = "copy";
   public static final String PREFERENCE_DRAG_REMEMBER_MOVE = "move";
+  // END drag and drop preferences
 }
