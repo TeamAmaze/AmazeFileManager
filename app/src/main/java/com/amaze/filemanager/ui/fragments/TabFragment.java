@@ -239,12 +239,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
     if (fragments != null && fragments.size() != 0) {
       if (fragmentManager == null) return;
+      fragmentManager.executePendingTransactions();
       for (Fragment fragment : fragments) {
-
-        if (fragment.isAdded()) {
-          fragmentManager.putFragment(outState, "tab" + i, fragment);
-        }
-
+        fragmentManager.putFragment(outState, "tab" + i, fragment);
         i++;
       }
       outState.putInt(KEY_POSITION, mViewPager.getCurrentItem());
