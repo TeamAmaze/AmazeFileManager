@@ -517,16 +517,10 @@ Systeminställning, då kommer du inte längre kunna dekryptera det här innehå
     <string name="authenticate_password">Ange lösenord</string>
 
     <string name="sidebar_preferences">Sidofält</string>
-    <string name="sidebar_folders_title">Genvägar i sidofältet</string>
     <string name="sidebar_quick_access_title">Snabbåtkomst i sidofältet</string>
-    <string name="show_folders_pref_title">Visa genvägar</string>
-    <string name="show_folders_pref">Genvägar</string>
     <string name="show_quick_access_pref_title">Visa snabbåtkomst</string>
     <string name="show_quick_access_pref">Snabbåtkomster</string>
-    <string name="create_shortcut">Skapa genväg</string>
-    <string name="edit_shortcut">Editera genväg</string>
     <string name="directory">Katalog</string>
-    <string name="question_delete_shortcut">Ta bort genväg?</string>
 
     <string name="cloud_error_plugin">Amaze Moln-plug-in kunde inte hittas. Var god ladda ner en från Play Store.</string>
     <string name="cloud_error_failed_restart">Misslyckades med att ladda anslutningen.

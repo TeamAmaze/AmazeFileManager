@@ -491,17 +491,11 @@
   <string name="crypt_decryption_fail_password">¡Contraseña incorrecta!</string>
   <string name="crypt_fingerprint_authenticate">Tocar sensor para continuar</string>
   <string name="authenticate_password">Introducir contraseña</string>
-  <string name="sidebar_folders_title">Barra lateral de accesos directos</string>
-  <string name="sidebar_quick_access_title">Barra lateral de accesos rápidos</string>
-  <string name="show_folders_pref_title">Mostrar accesos directos</string>
-  <string name="show_folders_pref">Accesos directos</string>
+    <string name="sidebar_quick_access_title">Barra lateral de accesos rápidos</string>
   <string name="show_quick_access_pref_title">Mostrar accesos rápidos</string>
   <string name="show_quick_access_pref">Accesos rápidos</string>
-  <string name="create_shortcut">Crear acceso directo</string>
-  <string name="edit_shortcut">Editar acceso directo</string>
   <string name="directory">Directorio</string>
-  <string name="question_delete_shortcut">¿Eliminar acceso directo?</string>
-    <string name="cloud_error_plugin">No se ha encontrado el plugin de la nube de Amaze. Por favor descárgalo desde el Play Store.</string>
+  <string name="cloud_error_plugin">No se ha encontrado el plugin de la nube de Amaze. Por favor descárgalo desde el Play Store.</string>
   <string name="cloud_error_failed_restart">Error al cargar la conexión.
         Abre otra vez Amaze Cloud.</string>
   <string name="cloud_remove">¿Desea quitar la conexión con la nube?</string>

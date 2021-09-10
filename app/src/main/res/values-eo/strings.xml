@@ -516,16 +516,10 @@
     <string name="authenticate_password">Enigi pasvorto</string>
 
     <string name="sidebar_preferences">Ekstrapanelo</string>
-    <string name="sidebar_folders_title">Ligiloj de la ekstrapanelo</string>
     <string name="sidebar_quick_access_title">Rapida alirujo de la ekstrapanelo</string>
-    <string name="show_folders_pref_title">Montri ligilojn</string>
-    <string name="show_folders_pref">Ligiloj</string>
     <string name="show_quick_access_pref_title">Montri rapidan alirujon</string>
     <string name="show_quick_access_pref">Rapida alirujo</string>
-    <string name="create_shortcut">Krei ligilon</string>
-    <string name="edit_shortcut">Redakti ligilon</string>
     <string name="directory">Dosierujo</string>
-    <string name="question_delete_shortcut">Forigi ligilon?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin ne estas instalita. Bonvolu, download el Play Store.</string>
     <string name="cloud_error_failed_restart">Ŝargo de la konekto malsukcesis.

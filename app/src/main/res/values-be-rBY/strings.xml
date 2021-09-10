@@ -488,17 +488,11 @@
   <string name="crypt_decryption_fail_password">Няслушны пароль!</string>
   <string name="crypt_fingerprint_authenticate">Краніцеся сэнсара для працягу</string>
   <string name="authenticate_password">Увядзіце пароль</string>
-  <string name="sidebar_folders_title">Бакавая панэль цэтлікаў</string>
-  <string name="sidebar_quick_access_title">Бакавая панэль хуткага доступу</string>
-  <string name="show_folders_pref_title">Паказаць цэтлікі</string>
-  <string name="show_folders_pref">Цэтлікі</string>
+    <string name="sidebar_quick_access_title">Бакавая панэль хуткага доступу</string>
   <string name="show_quick_access_pref_title">Паказаць хуткія доступы</string>
   <string name="show_quick_access_pref">Хуткі доступ</string>
-  <string name="create_shortcut">Стварыць цэтлік</string>
-  <string name="edit_shortcut">Змяніць цэтлік</string>
   <string name="directory">Каталог</string>
-  <string name="question_delete_shortcut">Выдаліць цэтлік?</string>
-    <string name="cloud_error_plugin">Плагіна Amaze Воблака не знойдзена. Вы можаце спампаваць яго з Play Store.</string>
+  <string name="cloud_error_plugin">Плагіна Amaze Воблака не знойдзена. Вы можаце спампаваць яго з Play Store.</string>
   <string name="cloud_error_failed_restart">Памылка загрузкі злучэння.
         Amaze Воблака зноў адкрываецца.</string>
   <string name="cloud_remove">Вы хочаце выдаліць падлучэння да Воблака?</string>

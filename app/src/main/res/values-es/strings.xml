@@ -520,16 +520,10 @@
     <string name="authenticate_password">Ingrese contraseña</string>
 
     <string name="sidebar_preferences">Barra lateral</string>
-    <string name="sidebar_folders_title">Accesos directos de la barra lateral</string>
     <string name="sidebar_quick_access_title">Accesos rapidos de la barra lateral</string>
-    <string name="show_folders_pref_title">Mostrar accesos directos</string>
-    <string name="show_folders_pref">Accesos directos</string>
     <string name="show_quick_access_pref_title">Mostrar accesos rapidos</string>
     <string name="show_quick_access_pref">Accesos rapidos</string>
-    <string name="create_shortcut">Crear acceso directo</string>
-    <string name="edit_shortcut">Editar acceso directo</string>
     <string name="directory">Directorio</string>
-    <string name="question_delete_shortcut">Eliminar acceso directo?</string>
 
     <string name="cloud_error_plugin">La app "Amaze Cloud plug-in" no pudo ser encontrada. Por favor descargar del Play Store.</string>
     <string name="cloud_error_failed_restart">Falló al cargar la conexión.
