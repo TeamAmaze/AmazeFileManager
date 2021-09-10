@@ -66,10 +66,6 @@ import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 public class TabFragment extends Fragment implements ViewPager.OnPageChangeListener {
-  public List<Fragment> fragments = new ArrayList<>();
-  public ScreenSlidePagerAdapter mSectionsPagerAdapter;
-  public DisablableViewPager mViewPager;
-
   private static final String TAG = TabFragment.class.getSimpleName();
 
   private static final String KEY_PATH = "path";
@@ -78,10 +74,12 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   private static final String KEY_FRAGMENT_0 = "tab0";
   private static final String KEY_FRAGMENT_1 = "tab1";
 
-  private MainActivity mainActivity;
-  private boolean savepaths;
+  private boolean savePaths;
   private FragmentManager fragmentManager;
 
+  private final List<Fragment> fragments = new ArrayList<>();
+  private ScreenSlidePagerAdapter sectionsPagerAdapter;
+  private DisablableViewPager viewPager;
   private SharedPreferences sharedPrefs;
   private String path;
 
@@ -118,31 +116,30 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     }
 
     sharedPrefs = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-    savepaths = sharedPrefs.getBoolean(PREFERENCE_SAVED_PATHS, DEFAULT_SAVED_PATHS);
+    savePaths = sharedPrefs.getBoolean(PREFERENCE_SAVED_PATHS, DEFAULT_SAVED_PATHS);
 
-    mViewPager = rootView.findViewById(R.id.pager);
+    viewPager = rootView.findViewById(R.id.pager);
 
     if (getArguments() != null) {
       path = getArguments().getString(KEY_PATH);
     }
 
-    mainActivity = ((MainActivity) requireActivity());
-    mainActivity.supportInvalidateOptionsMenu();
-    mViewPager.addOnPageChangeListener(this);
+    requireMainActivity().supportInvalidateOptionsMenu();
+    viewPager.addOnPageChangeListener(this);
 
-    mSectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
+    sectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
     if (savedInstanceState == null) {
       int lastOpenTab = sharedPrefs.getInt(PREFERENCE_CURRENT_TAB, DEFAULT_CURRENT_TAB);
       MainActivity.currentTab = lastOpenTab;
 
       refactorDrawerStorages(true);
 
-      mViewPager.setAdapter(mSectionsPagerAdapter);
+      viewPager.setAdapter(sectionsPagerAdapter);
 
       try {
-        mViewPager.setCurrentItem(lastOpenTab, true);
+        viewPager.setCurrentItem(lastOpenTab, true);
         if (circleDrawable1 != null && circleDrawable2 != null) {
-          updateIndicator(mViewPager.getCurrentItem());
+          updateIndicator(viewPager.getCurrentItem());
         }
       } catch (Exception e) {
         e.printStackTrace();
@@ -156,18 +153,18 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         e.printStackTrace();
       }
 
-      mSectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
+      sectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
 
-      mViewPager.setAdapter(mSectionsPagerAdapter);
+      viewPager.setAdapter(sectionsPagerAdapter);
       int pos1 = savedInstanceState.getInt(KEY_POSITION, 0);
       MainActivity.currentTab = pos1;
-      mViewPager.setCurrentItem(pos1);
-      mSectionsPagerAdapter.notifyDataSetChanged();
+      viewPager.setCurrentItem(pos1);
+      sectionsPagerAdapter.notifyDataSetChanged();
     }
 
-    if (indicator != null) indicator.setViewPager(mViewPager);
+    if (indicator != null) indicator.setViewPager(viewPager);
 
-    UserColorPreferences userColorPreferences = mainActivity.getCurrentColorPreference();
+    UserColorPreferences userColorPreferences = requireMainActivity().getCurrentColorPreference();
 
     // color of viewpager when current tab is 0
     startColor = userColorPreferences.getPrimaryFirstTab();
@@ -205,7 +202,9 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
             && i - 1 == MainActivity.currentTab
             && i == pos) {
           updateBottomBar(mainFragment);
-          mainActivity.getDrawer().selectCorrectDrawerItemForPath(mainFragment.getCurrentPath());
+          requireMainActivity()
+              .getDrawer()
+              .selectCorrectDrawerItemForPath(mainFragment.getCurrentPath());
           if (mainFragment.getMainFragmentViewModel().getOpenMode() == OpenMode.FILE) {
             tabHandler.update(
                 new Tab(
@@ -241,13 +240,13 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       fragmentManager.executePendingTransactions();
       fragmentManager.putFragment(outState, KEY_FRAGMENT_0, fragments.get(0));
       fragmentManager.putFragment(outState, KEY_FRAGMENT_1, fragments.get(1));
-      outState.putInt(KEY_POSITION, mViewPager.getCurrentItem());
+      outState.putInt(KEY_POSITION, viewPager.getCurrentItem());
     }
   }
 
   @Override
   public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-    final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+    final MainFragment mainFragment = requireMainActivity().getCurrentMainFragment();
     if (mainFragment == null
         || mainFragment.getMainFragmentViewModel() == null
         || mainFragment.getMainFragmentViewModel().getSelection()) {
@@ -258,12 +257,12 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     @ColorInt int color = (int) evaluator.evaluate(position + positionOffset, startColor, endColor);
 
     colorDrawable.setColor(color);
-    mainActivity.updateViews(colorDrawable);
+    requireMainActivity().updateViews(colorDrawable);
   }
 
   @Override
   public void onPageSelected(int p1) {
-    mainActivity
+    requireMainActivity()
         .getAppbar()
         .getAppbarLayout()
         .animate()
@@ -281,7 +280,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     if (fragment instanceof MainFragment) {
       MainFragment ma = (MainFragment) fragment;
       if (ma.getCurrentPath() != null) {
-        mainActivity.getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
+        requireMainActivity().getDrawer().selectCorrectDrawerItemForPath(ma.getCurrentPath());
         updateBottomBar(ma);
       }
     }
@@ -292,6 +291,14 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   @Override
   public void onPageScrollStateChanged(int state) {
     // nothing to do
+  }
+
+  public void setPagingEnabled(boolean isPaging) {
+    viewPager.setPagingEnabled(isPaging);
+  }
+
+  public void setCurrentItem(int index) {
+    viewPager.setCurrentItem(index);
   }
 
   private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter {
@@ -334,8 +341,8 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     Tab tab1 = tabHandler.findTab(1);
     Tab tab2 = tabHandler.findTab(2);
     Tab[] tabs = tabHandler.getAllTabs();
-    String firstTabPath = mainActivity.getDrawer().getFirstPath();
-    String secondTabPath = mainActivity.getDrawer().getSecondPath();
+    String firstTabPath = requireMainActivity().getDrawer().getFirstPath();
+    String secondTabPath = requireMainActivity().getDrawer().getSecondPath();
 
     if (tabs == null || tabs.length < 1 || tab1 == null || tab2 == null) {
       // creating tabs in db for the first time, probably the first launch of
@@ -378,19 +385,19 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       b.putString("lastpath", path);
       b.putInt("openmode", OpenMode.UNKNOWN.ordinal());
     } else {
-      b.putString("lastpath", tab.getOriginalPath(savepaths, mainActivity.getPrefs()));
+      b.putString("lastpath", tab.getOriginalPath(savePaths, requireMainActivity().getPrefs()));
     }
 
     b.putString("home", tab.home);
     b.putInt("no", tab.tabNumber);
     main.setArguments(b);
     fragments.add(main);
-    mSectionsPagerAdapter.notifyDataSetChanged();
-    mViewPager.setOffscreenPageLimit(4);
+    sectionsPagerAdapter.notifyDataSetChanged();
+    viewPager.setOffscreenPageLimit(4);
   }
 
   public Fragment getCurrentTabFragment() {
-    if (fragments.size() == 2) return fragments.get(mViewPager.getCurrentItem());
+    if (fragments.size() == 2) return fragments.get(viewPager.getCurrentItem());
     else return null;
   }
 
@@ -403,7 +410,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   void updateIndicator(int index) {
     if (index != 0 && index != 1) return;
 
-    int accentColor = mainActivity.getAccent();
+    int accentColor = requireMainActivity().getAccent();
 
     circleDrawable1.setImageDrawable(new ColorCircleDrawable(accentColor));
     circleDrawable2.setImageDrawable(new ColorCircleDrawable(Color.GRAY));
@@ -418,7 +425,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       Log.w(TAG, "Failed to update bottom bar: main fragment not available");
       return;
     }
-    mainActivity
+    requireMainActivity()
         .getAppbar()
         .getBottomBar()
         .updatePath(
@@ -444,7 +451,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
   }
 
   private void initLeftAndRightDragListeners(boolean destroy) {
-    final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+    final MainFragment mainFragment = requireMainActivity().getCurrentMainFragment();
     View leftPlaceholder = rootView.findViewById(R.id.placeholder_drag_left);
     View rightPlaceholder = rootView.findViewById(R.id.placeholder_drag_right);
     DataUtils dataUtils = DataUtils.getInstance();
@@ -459,27 +466,32 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
       leftPlaceholder.setOnDragListener(
           new TabFragmentSideDragListener(
               () -> {
-                if (mViewPager.getCurrentItem() == 1) {
+                if (viewPager.getCurrentItem() == 1) {
                   if (mainFragment != null) {
                     dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
                     mainFragment.disableActionMode();
                   }
-                  mViewPager.setCurrentItem(0, true);
+                  viewPager.setCurrentItem(0, true);
                 }
                 return null;
               }));
       rightPlaceholder.setOnDragListener(
           new TabFragmentSideDragListener(
               () -> {
-                if (mViewPager.getCurrentItem() == 0) {
+                if (viewPager.getCurrentItem() == 0) {
                   if (mainFragment != null) {
                     dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
                     mainFragment.disableActionMode();
                   }
-                  mViewPager.setCurrentItem(1, true);
+                  viewPager.setCurrentItem(1, true);
                 }
                 return null;
               }));
     }
+  }
+
+  @NonNull
+  private MainActivity requireMainActivity() {
+    return (MainActivity) requireActivity();
   }
 }
