@@ -455,7 +455,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
-        if (files!![0].exists()) {
+        if (true == files?.isNotEmpty() && files!![0].exists()) {
             DeleteTask(requireActivity(), this).execute(files)
         }
         if (isCachedCompressedFile) {
