@@ -20,7 +20,19 @@
 
 package com.amaze.filemanager.adapters;
 
-import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.*;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtension7zip;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApk;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionApks;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionBzip2TarShort;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarLong;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionGzipTarShort;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionJar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionLzma;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionRar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionTar;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionXz;
+import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.fileExtensionZip;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_FILE_SIZE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -394,6 +406,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   private void setItems(
       RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+    if (Utils.isNullOrEmpty(arrayList)) {
+      return;
+    }
     if (preloader != null) {
       recyclerView.removeOnScrollListener(preloader);
       preloader = null;
