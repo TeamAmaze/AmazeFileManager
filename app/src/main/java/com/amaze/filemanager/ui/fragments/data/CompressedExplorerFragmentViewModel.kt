@@ -18,35 +18,17 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui
+package com.amaze.filemanager.ui.fragments.data
 
-import android.content.Context
-import android.content.Intent
-import android.text.TextUtils
-import android.util.Log
-import android.widget.Toast
-import com.amaze.filemanager.R
-import com.google.android.material.textfield.TextInputLayout
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 
-private const val TAG = "ExtensionsKt"
+class CompressedExplorerFragmentViewModel : ViewModel() {
 
-/**
- * Marks a text input field as mandatory (appends * at end)
- *
- */
-fun TextInputLayout.makeRequired() {
-    hint = TextUtils.concat(hint, " *")
-}
-
-/**
- * Makes the [Activity] starting not crash in case the app is
- * not meant to deal with this kind of intent
- */
-fun Context.startActivityCatchingSecurityException(intent: Intent) {
-    try {
-        startActivity(intent)
-    } catch (e: SecurityException) {
-        Log.e(TAG, "Error when starting activity: ", e)
-        Toast.makeText(this, R.string.security_error, Toast.LENGTH_SHORT).show()
+    val elements: MutableLiveData<ArrayList<CompressedObjectParcelable>> by lazy {
+        MutableLiveData()
     }
+
+    var folder: String? = null
 }

@@ -318,6 +318,12 @@ public class ExtractService extends AbstractProgressiveService {
             extractor.extractEverything();
           }
           return (extractor.getInvalidArchiveEntries().size() == 0);
+        } catch (Extractor.EmptyArchiveNotice e) {
+          Log.e(TAG, "Archive " + compressedPath + " is an empty archive");
+          AppConfig.toast(
+              extractService,
+              extractService.getString(R.string.error_empty_archive, compressedPath));
+          return true;
         } catch (CorruptedInputException e) {
           Log.d(TAG, "Corrupted LZMA input", e);
           return false;

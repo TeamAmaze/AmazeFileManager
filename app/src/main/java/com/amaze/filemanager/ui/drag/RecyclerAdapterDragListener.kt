@@ -33,7 +33,6 @@ import com.amaze.filemanager.ui.dialogs.DragAndDropDialog
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
-import java.util.*
 import kotlin.collections.ArrayList
 
 class RecyclerAdapterDragListener(
@@ -156,9 +155,8 @@ class RecyclerAdapterDragListener(
                             ) {
                                 // dropping in goback button
                                 // hack to get the parent path
-                                Log.d(TAG, "Drop on goback button")
                                 val hybridFileParcelable = mainFragment
-                                    .elementsList[1].generateBaseFile()
+                                    .elementsList!!.get(1).generateBaseFile()
                                 val hybridFile = HybridFile(
                                     hybridFileParcelable.mode,
                                     hybridFileParcelable.getParent(mainFragment.context)
@@ -180,7 +178,8 @@ class RecyclerAdapterDragListener(
                         Log.d(
                             TAG,
                             "Didn't find checked items in adapter, " +
-                                "checking dataUtils size ${dataUtils.checkedItemsList.size}"
+                                "checking dataUtils size ${
+                                dataUtils.checkedItemsList?.size ?: "null"}"
                         )
                         checkedItems = dataUtils.checkedItemsList
                     }

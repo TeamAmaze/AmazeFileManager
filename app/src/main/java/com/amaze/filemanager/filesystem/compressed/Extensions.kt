@@ -18,35 +18,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ui
+package com.amaze.filemanager.filesystem.compressed
 
-import android.content.Context
-import android.content.Intent
-import android.text.TextUtils
-import android.util.Log
-import android.widget.Toast
-import com.amaze.filemanager.R
-import com.google.android.material.textfield.TextInputLayout
-
-private const val TAG = "ExtensionsKt"
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.M
+import com.github.junrar.Archive
 
 /**
- * Marks a text input field as mandatory (appends * at end)
+ * Extension function to patch [Archive.isPasswordProtected] which uses API that is not available
+ * for Android 6.0 or lower.
  *
+ * @see [Archive.isPasswordProtected]
+ * @see [java.util.stream.Stream]
+ * @return true if archive is password protected
  */
-fun TextInputLayout.makeRequired() {
-    hint = TextUtils.concat(hint, " *")
-}
-
-/**
- * Makes the [Activity] starting not crash in case the app is
- * not meant to deal with this kind of intent
- */
-fun Context.startActivityCatchingSecurityException(intent: Intent) {
-    try {
-        startActivity(intent)
-    } catch (e: SecurityException) {
-        Log.e(TAG, "Error when starting activity: ", e)
-        Toast.makeText(this, R.string.security_error, Toast.LENGTH_SHORT).show()
+fun Archive.isPasswordProtectedCompat(): Boolean {
+    return if (SDK_INT > M) {
+        this.isPasswordProtected
+    } else {
+        fileHeaders.any { obj ->
+            obj.isEncrypted
+        }
     }
 }

@@ -135,7 +135,7 @@ public class PreferencesActivity extends ThemedActivity
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case android.R.id.home:
-        if (currentFragment.onOptionsItemSelected(item)) return true;
+        if (currentFragment != null && currentFragment.onOptionsItemSelected(item)) return true;
 
         if (selectedItem != START_PREFERENCE && restartActivity) {
           restartActivity(this);
