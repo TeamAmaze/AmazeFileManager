@@ -509,7 +509,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             viewType == TYPE_HEADER_FOLDERS
                 ? SpecialViewHolder.HEADER_FOLDERS
                 : SpecialViewHolder.HEADER_FILES;
-        view.setNextFocusUpId(mainFrag.getMainActivity().getAppbar().getToolbar().getId());
         return new SpecialViewHolder(context, view, utilsProvider, type);
       case TYPE_ITEM:
       case TYPE_BACK:

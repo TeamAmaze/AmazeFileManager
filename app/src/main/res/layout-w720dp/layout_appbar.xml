@@ -6,7 +6,6 @@
     android:elevation="4dp"
     android:id="@+id/lin"
     android:focusable="true"
-    android:descendantFocusability="afterDescendants"
     >
 
     <androidx.appcompat.widget.Toolbar
@@ -21,6 +20,7 @@
         app:contentInsetLeft="72dp"
         app:contentInsetStart="72dp"
         app:layout_scrollFlags="scroll|enterAlways"
+        android:descendantFocusability="afterDescendants"
         >
 
     </androidx.appcompat.widget.Toolbar>
@@ -30,8 +30,6 @@
         android:layout_height="72dp"
         android:layout_width="match_parent"
         android:layout_below="@id/action_bar"
-        android:focusable="true"
-        android:nextFocusDown="@+id/fabs_menu"
         >
 
         <HorizontalScrollView
@@ -67,12 +65,15 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:paddingLeft="72dp"
-                android:paddingTop="5dp">
+                android:paddingTop="5dp"
+                android:focusable="true"
+                >
 
                 <LinearLayout
                     android:clickable="false"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
 
                     <TextView
                         android:clickable="false"
@@ -80,7 +81,7 @@
                         style="@android:style/TextAppearance.Medium"
                         android:textColor="@android:color/white"
                         android:layout_height="wrap_content"
-                        android:id="@+id/fullpath" />
+                        android:id="@+id/fullpath"/>
                     <TextView
                         android:clickable="false"
                         android:layout_width="wrap_content"

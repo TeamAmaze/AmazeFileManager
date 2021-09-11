@@ -41,6 +41,7 @@
             android:layout_alignParentBottom="true"
             android:padding="@dimen/md_content_padding_top"
             android:background="@drawable/ripple"
+            android:nextFocusRight="@+id/action_bar"
             />
         <ImageView
             android:id="@+id/telegram"

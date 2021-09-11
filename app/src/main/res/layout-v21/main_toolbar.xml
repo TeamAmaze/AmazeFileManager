@@ -47,7 +47,8 @@
         <include
             android:id="@+id/lin"
             layout="@layout/layout_appbar"
-            android:focusable="true"/>
+            android:focusable="true"
+            />
         <include layout="@layout/layout_search"/>
 
         <LinearLayout

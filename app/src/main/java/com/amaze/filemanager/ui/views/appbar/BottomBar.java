@@ -44,8 +44,10 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,6 +117,23 @@ public class BottomBar implements View.OnTouchListener {
 
     scroll.setSmoothScrollingEnabled(true);
     pathScroll.setSmoothScrollingEnabled(true);
+
+      pathScroll.setOnKeyListener(new View.OnKeyListener() {
+          @Override
+          public boolean onKey(View v, int keyCode, KeyEvent event) {
+              Log.i(getClass().getSimpleName(), String.format("Call key event on FAB %s", event.getAction()));
+              if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                  if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                      mainActivity.findViewById(R.id.content_frame).requestFocus();
+                  } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                      mainActivity.getDrawer().getDonateImageView().requestFocus();
+                  } else {
+                      return false;
+                  }
+              }
+              return true;
+          }
+      });
 
     buttonParams =
         new LinearLayout.LayoutParams(

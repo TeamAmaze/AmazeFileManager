@@ -30,7 +30,8 @@
         android:id="@+id/main_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:clipChildren="false">
+        android:clipChildren="false"
+        android:descendantFocusability="afterDescendants">
 
         <FrameLayout
             android:id="@+id/content_frame"
@@ -41,6 +42,7 @@
         <include
             android:id="@+id/lin"
             layout="@layout/layout_appbar"
+            android:descendantFocusability="afterDescendants"
             />
         <include layout="@layout/layout_search"/>
 
