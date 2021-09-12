@@ -394,7 +394,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private void setItems(
-          RecyclerView recyclerView, @NonNull List<LayoutElementParcelable> elements, boolean invalidate) {
+      RecyclerView recyclerView,
+      @NonNull List<LayoutElementParcelable> elements,
+      boolean invalidate) {
     if (preloader != null) {
       recyclerView.removeOnScrollListener(preloader);
       preloader = null;
