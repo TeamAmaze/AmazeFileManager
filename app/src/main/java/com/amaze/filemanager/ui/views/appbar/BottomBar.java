@@ -44,7 +44,6 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.CountDownTimer;
 import android.os.Handler;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -119,23 +118,19 @@ public class BottomBar implements View.OnTouchListener {
     pathScroll.setSmoothScrollingEnabled(true);
 
     pathScroll.setOnKeyListener(
-        new View.OnKeyListener() {
-          @Override
-          public boolean onKey(View v, int keyCode, KeyEvent event) {
-            Log.i(
-                getClass().getSimpleName(),
-                String.format("Call key event on FAB %s", event.getAction()));
-            if (event.getAction() == KeyEvent.ACTION_DOWN) {
-              if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                mainActivity.findViewById(R.id.content_frame).requestFocus();
-              } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                mainActivity.getDrawer().getDonateImageView().requestFocus();
-              } else {
-                return false;
-              }
+        (v, keyCode, event) -> {
+          if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+              mainActivity.findViewById(R.id.content_frame).requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+              mainActivity.getDrawer().getDonateImageView().requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+              mainActivity.onBackPressed();
+            } else {
+              return false;
             }
-            return true;
           }
+          return true;
         });
 
     buttonParams =

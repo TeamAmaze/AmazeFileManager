@@ -39,8 +39,9 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
+import com.amaze.filemanager.ui.fragments.AdjustListViewForTv;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -79,26 +80,28 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
   private SparseBooleanArray myChecked = new SparseBooleanArray();
   private SharedPreferences sharedPrefs;
   private boolean isBottomSheet;
-
-  private ThemedActivity themedActivity;
+  private MainActivity themedActivity;
+  private AdjustListViewForTv<AppHolder> adjustListViewCallback;
 
   public AppsAdapter(
       Fragment fragment,
-      ThemedActivity ba,
+      MainActivity mainActivity,
       UtilitiesProvider utilsProvider,
       AppsAdapterPreloadModel modelProvider,
       ViewPreloadSizeProvider<String> sizeProvider,
       int resourceId,
       SharedPreferences sharedPrefs,
-      boolean isBottomSheet) {
+      boolean isBottomSheet,
+      AdjustListViewForTv<AppHolder> adjustListViewCallback) {
     super(fragment.getContext(), resourceId);
-    themedActivity = ba;
+    themedActivity = mainActivity;
     this.utilsProvider = utilsProvider;
     this.modelProvider = modelProvider;
     this.sizeProvider = sizeProvider;
     this.fragment = fragment;
     this.sharedPrefs = sharedPrefs;
     this.isBottomSheet = isBottomSheet;
+    this.adjustListViewCallback = adjustListViewCallback;
 
     /*for (int i = 0; i < items.size(); i++) {
         myChecked.put(i, false);
@@ -134,6 +137,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
     }
 
     final AppHolder holder = (AppHolder) view.getTag();
+    adjustListViewCallback.adjustListViewForTv(holder, themedActivity);
 
     if (isBottomSheet) {
       holder.about.setVisibility(View.GONE);
@@ -164,6 +168,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
       holder.txtDesc.setText(rowItem.fileSize);
     }
     holder.rl.setClickable(true);
+    holder.rl.setNextFocusRightId(holder.about.getId());
     holder.rl.setOnClickListener(p1 -> startActivityForRowItem(rowItem));
 
     if (myChecked.get(position)) {

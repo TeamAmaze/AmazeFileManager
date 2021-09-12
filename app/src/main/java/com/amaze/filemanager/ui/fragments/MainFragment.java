@@ -134,7 +134,9 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment
-    implements BottomBarButtonPath, ViewTreeObserver.OnGlobalLayoutListener {
+    implements BottomBarButtonPath,
+        ViewTreeObserver.OnGlobalLayoutListener,
+        AdjustListViewForTv<ItemViewHolder> {
 
   public ActionMode mActionMode;
 
@@ -1874,17 +1876,19 @@ public class MainFragment extends Fragment
     }
   }
 
-  public void adjustListViewScrolledForTv(ItemViewHolder viewHolderParent) {
+  @Override
+  public void adjustListViewForTv(
+      @NonNull ItemViewHolder viewHolder, @NonNull MainActivity mainActivity) {
     try {
       int[] location = new int[2];
-      viewHolderParent.rl.getLocationOnScreen(location);
+      viewHolder.rl.getLocationOnScreen(location);
       Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
       if (location[1] < getMainActivity().getAppbar().getAppbarLayout().getHeight()) {
-        listView.scrollToPosition(Math.max(viewHolderParent.getAdapterPosition() - 5, 0));
-      } else if (location[1] + viewHolderParent.rl.getHeight()
-              > getContext().getResources().getDisplayMetrics().heightPixels) {
+        listView.scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
+      } else if (location[1] + viewHolder.rl.getHeight()
+          > getContext().getResources().getDisplayMetrics().heightPixels) {
         listView.scrollToPosition(
-                Math.min(viewHolderParent.getAdapterPosition() + 5, adapter.getItemCount() - 1));
+            Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
       }
     } catch (Exception e) {
       Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);

@@ -74,6 +74,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -544,7 +545,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       holder.rl.setOnFocusChangeListener(
           (v, hasFocus) -> {
             if (hasFocus) {
-              mainFrag.adjustListViewScrolledForTv(holder);
+              mainFrag.adjustListViewForTv(holder, mainFrag.getMainActivity());
             }
           });
       holder.txtTitle.setEllipsize(
@@ -592,24 +593,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             }
             return true;
           });
-      /*holder.rl.setOnKeyListener(new View.OnKeyListener() {
-        @Override
-        public boolean onKey(View v, int keyCode, KeyEvent event) {
-          if (event.isLongPress() && event.getAction() == KeyEvent.ACTION_DOWN
-                  && event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
-            switch (v.getId()) {
-              case R.id.second:
-                toggleChecked(
-                        vholder.getAdapterPosition(),
-                        mainFrag.getMainFragmentViewModel().isList()
-                                ? holder.checkImageView
-                                : holder.checkImageViewGrid);
-                break;
-            }
-          }
-          return true;
-        }
-      });*/
       if (mainFrag.getMainFragmentViewModel().isList()) {
         // clear previously cached icon
         GlideApp.with(mainFrag).clear(holder.genericIcon);
@@ -621,6 +604,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             v -> {
               mainFrag.onListItemClicked(
                   isBackButton, vholder.getAdapterPosition(), rowItem, holder.checkImageView);
+            });
+
+        holder.about.setOnKeyListener(
+            (v, keyCode, event) -> {
+              if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                  mainFrag.getMainActivity().getFAB().requestFocus();
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+                  showPopup(v, rowItem);
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                  mainFrag.getMainActivity().onBackPressed();
+                } else {
+                  return false;
+                }
+              }
+              return true;
             });
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -642,8 +641,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder.about != null) {
           if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             holder.about.setColorFilter(grey_color);
-          showPopup(holder.about, rowItem);
-          holder.about.setNextFocusRightId(mainFrag.getMainActivity().getFAB().getId());
+          holder.about.setOnClickListener(v -> showPopup(v, rowItem));
         }
         holder.genericIcon.setOnClickListener(
             v -> {
@@ -911,8 +909,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder.about != null) {
           if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             holder.about.setColorFilter(grey_color);
-          showPopup(holder.about, rowItem);
-          holder.about.setNextFocusRightId(mainFrag.getMainActivity().getFAB().getId());
+          holder.about.setOnClickListener(v -> showPopup(v, rowItem));
         }
 
         if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
@@ -1153,55 +1150,52 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
   }
 
-  private void showPopup(View v, final LayoutElementParcelable rowItem) {
-    v.setOnClickListener(
-        view -> {
-          PopupMenu popupMenu =
-              new ItemPopupMenu(
-                  context,
-                  mainFrag.getMainActivity(),
-                  utilsProvider,
-                  mainFrag,
-                  rowItem,
-                  view,
-                  sharedPrefs);
-          popupMenu.inflate(R.menu.item_extras);
-          String description = rowItem.desc.toLowerCase();
+  private void showPopup(View view, final LayoutElementParcelable rowItem) {
+    PopupMenu popupMenu =
+        new ItemPopupMenu(
+            context,
+            mainFrag.getMainActivity(),
+            utilsProvider,
+            mainFrag,
+            rowItem,
+            view,
+            sharedPrefs);
+    popupMenu.inflate(R.menu.item_extras);
+    String description = rowItem.desc.toLowerCase();
 
-          if (rowItem.isDirectory) {
-            popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
-            popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+    if (rowItem.isDirectory) {
+      popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.share).setVisible(false);
 
-            if (mainFrag.getMainActivity().mReturnIntent) {
-              popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
-            }
-          } else {
-            popupMenu.getMenu().findItem(R.id.book).setVisible(false);
-          }
+      if (mainFrag.getMainActivity().mReturnIntent) {
+        popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
+      }
+    } else {
+      popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+    }
 
-          if (description.endsWith(fileExtensionZip)
-              || description.endsWith(fileExtensionJar)
-              || description.endsWith(fileExtensionApk)
-              || description.endsWith(fileExtensionApks)
-              || description.endsWith(fileExtensionRar)
-              || description.endsWith(fileExtensionTar)
-              || description.endsWith(fileExtensionGzipTarLong)
-              || description.endsWith(fileExtensionGzipTarShort)
-              || description.endsWith(fileExtensionBzip2TarLong)
-              || description.endsWith(fileExtensionBzip2TarShort)
-              || description.endsWith(fileExtensionXz)
-              || description.endsWith(fileExtensionLzma)
-              || description.endsWith(fileExtension7zip))
-            popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+    if (description.endsWith(fileExtensionZip)
+        || description.endsWith(fileExtensionJar)
+        || description.endsWith(fileExtensionApk)
+        || description.endsWith(fileExtensionApks)
+        || description.endsWith(fileExtensionRar)
+        || description.endsWith(fileExtensionTar)
+        || description.endsWith(fileExtensionGzipTarLong)
+        || description.endsWith(fileExtensionGzipTarShort)
+        || description.endsWith(fileExtensionBzip2TarLong)
+        || description.endsWith(fileExtensionBzip2TarShort)
+        || description.endsWith(fileExtensionXz)
+        || description.endsWith(fileExtensionLzma)
+        || description.endsWith(fileExtension7zip))
+      popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
-              popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-            else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
-          }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+        popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+      else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+    }
 
-          popupMenu.show();
-        });
+    popupMenu.show();
   }
 
   private boolean getBoolean(String key) {

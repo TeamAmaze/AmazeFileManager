@@ -31,9 +31,9 @@ import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.AppsAdapter;
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
+import com.amaze.filemanager.adapters.holders.AppHolder;
 import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.GlideConstants;
@@ -45,8 +45,10 @@ import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.ListFragment;
@@ -55,7 +57,8 @@ import androidx.loader.content.Loader;
 import androidx.preference.PreferenceManager;
 
 public class AppsListFragment extends ListFragment
-    implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair> {
+    implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair>,
+        AdjustListViewForTv<AppHolder> {
 
   public static final int ID_LOADER_APP_LIST = 0;
 
@@ -102,15 +105,17 @@ public class AppsListFragment extends ListFragment
     adapter =
         new AppsAdapter(
             this,
-            (ThemedActivity) getActivity(),
+            mainActivity,
             utilsProvider,
             modelProvider,
             sizeProvider,
             R.layout.rowlayout,
             sharedPreferences,
-            false);
+            false,
+            this);
 
     getListView().setOnScrollListener(preloader);
+    getListView().setDescendantFocusability(ViewGroup.FOCUS_AFTER_DESCENDANTS);
     setListAdapter(adapter);
     setListShown(false);
     setEmptyText(getString(R.string.no_applications));
@@ -252,5 +257,25 @@ public class AppsListFragment extends ListFragment
   @Override
   public void onLoaderReset(@NonNull Loader<AppListLoader.AppsDataPair> loader) {
     adapter.setData(null);
+  }
+
+  @Override
+  public void adjustListViewForTv(
+      @NonNull AppHolder viewHolder, @NonNull MainActivity mainActivity) {
+    try {
+      int[] location = new int[2];
+      viewHolder.rl.getLocationOnScreen(location);
+      Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
+      if (location[1] < mainActivity.getAppbar().getAppbarLayout().getHeight()) {
+        getListView().smoothScrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
+      } else if (location[1] + viewHolder.rl.getHeight()
+          > getContext().getResources().getDisplayMetrics().heightPixels) {
+        getListView()
+            .smoothScrollToPosition(
+                Math.min(viewHolder.getAdapterPosition() + 5, adapter.getCount() - 1));
+      }
+    } catch (Exception e) {
+      Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
+    }
   }
 }

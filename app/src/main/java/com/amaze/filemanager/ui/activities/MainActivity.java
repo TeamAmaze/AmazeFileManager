@@ -1678,35 +1678,33 @@ public class MainActivity extends PermissionsActivity
     floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
     floatingActionButton.setOnClickListener(
         view -> {
-          if (floatingActionButton.isOpen()) {
-            floatingActionButton.close(true);
-          } else {
-            floatingActionButton.open(true);
-            cloudFab.requestFocus();
-          }
+          fabButtonClick(cloudFab);
         });
     floatingActionButton.setOnFocusChangeListener(new CustomZoomFocusChange());
     floatingActionButton.getMainFab().setOnFocusChangeListener(new CustomZoomFocusChange());
     floatingActionButton.setNextFocusUpId(cloudFab.getId());
     floatingActionButton.getMainFab().setNextFocusUpId(cloudFab.getId());
-    /*floatingActionButton.getMainFab().setOnKeyListener(new View.OnKeyListener() {
-      @Override
-      public boolean onKey(View v, int keyCode, KeyEvent event) {
-        Log.e(getClass().getSimpleName(), String.format("Call key event on FAB %s", event.getAction()));
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT && currentTab == 0) {
-            getTabFragment().onPageSelected(1);
+    floatingActionButton.setOnKeyListener(
+        (v, keyCode, event) -> {
+          if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+              if (getCurrentTab() == 0) {
+                if (getFAB().isFocused()) {
+                  getTabFragment().mViewPager.setCurrentItem(1);
+                }
+              }
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+              findViewById(R.id.content_frame).requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+              fabButtonClick(cloudFab);
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+              onBackPressed();
+            } else {
+              return false;
+            }
           }
-          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT && currentTab == 1) {
-            getTabFragment().onPageSelected(0);
-          }
-          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
-            floatingActionButton.callOnClick();
-          }
-        }
-        return true;
-      }
-    });*/
+          return true;
+        });
     cloudFab.setNextFocusDownId(floatingActionButton.getMainFab().getId());
     cloudFab.setNextFocusUpId(newFileFab.getId());
     cloudFab.setOnFocusChangeListener(new CustomZoomFocusChange());
@@ -1715,6 +1713,15 @@ public class MainActivity extends PermissionsActivity
     newFileFab.setOnFocusChangeListener(new CustomZoomFocusChange());
     newFolderFab.setNextFocusDownId(newFileFab.getId());
     newFolderFab.setOnFocusChangeListener(new CustomZoomFocusChange());
+  }
+
+  private void fabButtonClick(FabWithLabelView cloudFab) {
+    if (floatingActionButton.isOpen()) {
+      floatingActionButton.close(true);
+    } else {
+      floatingActionButton.open(true);
+      cloudFab.requestFocus();
+    }
   }
 
   private FabWithLabelView initFabTitle(

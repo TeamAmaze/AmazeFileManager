@@ -70,7 +70,8 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:paddingLeft="72dp"
-                android:paddingTop="5dp">
+                android:paddingTop="5dp"
+                android:focusable="true">
 
                 <LinearLayout
                     android:clickable="false"

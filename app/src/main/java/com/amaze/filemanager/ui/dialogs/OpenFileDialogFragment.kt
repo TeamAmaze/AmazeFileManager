@@ -40,6 +40,7 @@ import com.amaze.filemanager.adapters.AppsAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.data.OpenFileParcelable
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel
+import com.amaze.filemanager.adapters.holders.AppHolder
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.FragmentOpenFileDialogBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
@@ -48,6 +49,7 @@ import com.amaze.filemanager.ui.activities.superclasses.BasicActivity
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
+import com.amaze.filemanager.ui.fragments.AdjustListViewForTv
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.startActivityCatchingSecurityException
@@ -57,8 +59,9 @@ import com.bumptech.glide.ListPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import java.lang.Exception
 
-class OpenFileDialogFragment : BaseBottomSheetFragment() {
+class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
 
     private var uri: Uri? = null
     private var mimeType: String? = null
@@ -292,13 +295,13 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         adapter = AppsAdapter(
             this,
-            activity as ThemedActivity?,
+            (activity as MainActivity),
             utilsProvider,
             modelProvider,
             sizeProvider,
             R.layout.rowlayout,
             (activity as MainActivity).prefs,
-            true
+            true, this
         )
 
         val intent = buildIntent(
@@ -432,5 +435,22 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         lastAppData = lastAppData ?: appDataParcelableList[0]
         appDataParcelableList.remove(lastAppData)
         return lastAppData
+    }
+
+    override fun adjustListViewForTv(viewHolder: AppHolder, mainActivity: MainActivity) {
+        try {
+            val location = IntArray(2)
+            viewHolder.rl.getLocationOnScreen(location)
+            Log.i(javaClass.simpleName, "Current x and y " + location[0] + " " + location[1])
+            if (location[1] + viewHolder.rl.height
+            > requireContext().resources.displayMetrics.heightPixels
+            ) {
+                viewBinding.appsListView.smoothScrollToPosition(
+                    (viewHolder.adapterPosition + 5).coerceAtMost(adapter.count - 1)
+                )
+            }
+        } catch (e: Exception) {
+            Log.w(javaClass.simpleName, "Failed to adjust scrollview for tv", e)
+        }
     }
 }
