@@ -118,22 +118,25 @@ public class BottomBar implements View.OnTouchListener {
     scroll.setSmoothScrollingEnabled(true);
     pathScroll.setSmoothScrollingEnabled(true);
 
-      pathScroll.setOnKeyListener(new View.OnKeyListener() {
+    pathScroll.setOnKeyListener(
+        new View.OnKeyListener() {
           @Override
           public boolean onKey(View v, int keyCode, KeyEvent event) {
-              Log.i(getClass().getSimpleName(), String.format("Call key event on FAB %s", event.getAction()));
-              if (event.getAction() == KeyEvent.ACTION_DOWN) {
-                  if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
-                      mainActivity.findViewById(R.id.content_frame).requestFocus();
-                  } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
-                      mainActivity.getDrawer().getDonateImageView().requestFocus();
-                  } else {
-                      return false;
-                  }
+            Log.i(
+                getClass().getSimpleName(),
+                String.format("Call key event on FAB %s", event.getAction()));
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+              if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+                mainActivity.findViewById(R.id.content_frame).requestFocus();
+              } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+                mainActivity.getDrawer().getDonateImageView().requestFocus();
+              } else {
+                return false;
               }
-              return true;
+            }
+            return true;
           }
-      });
+        });
 
     buttonParams =
         new LinearLayout.LayoutParams(
@@ -312,7 +315,7 @@ public class BottomBar implements View.OnTouchListener {
   }
 
   public FrameLayout getPathLayout() {
-      return this.frame;
+    return this.frame;
   }
 
   private ImageView createArrow() {

@@ -39,6 +39,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
@@ -99,7 +100,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -1871,6 +1871,23 @@ public class MainFragment extends Fragment
     } else {
       Log.e(getClass().getSimpleName(), "Failed to get viewmodel, fragment not yet added");
       return null;
+    }
+  }
+
+  public void adjustListViewScrolledForTv(ItemViewHolder viewHolderParent) {
+    try {
+      int[] location = new int[2];
+      viewHolderParent.rl.getLocationOnScreen(location);
+      Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
+      if (location[1] < getMainActivity().getAppbar().getAppbarLayout().getHeight()) {
+        listView.scrollToPosition(Math.max(viewHolderParent.getAdapterPosition() - 5, 0));
+      } else if (location[1] + viewHolderParent.rl.getHeight()
+              > getContext().getResources().getDisplayMetrics().heightPixels) {
+        listView.scrollToPosition(
+                Math.min(viewHolderParent.getAdapterPosition() + 5, adapter.getItemCount() - 1));
+      }
+    } catch (Exception e) {
+      Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
     }
   }
 }

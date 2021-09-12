@@ -74,7 +74,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -542,6 +541,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
     if (vholder instanceof ItemViewHolder) {
       final ItemViewHolder holder = (ItemViewHolder) vholder;
+      holder.rl.setOnFocusChangeListener(
+          (v, hasFocus) -> {
+            if (hasFocus) {
+              mainFrag.adjustListViewScrolledForTv(holder);
+            }
+          });
       holder.txtTitle.setEllipsize(
           enableMarquee ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.MIDDLE);
       final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;

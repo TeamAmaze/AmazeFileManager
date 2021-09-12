@@ -574,25 +574,28 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   }
 
   private void initDrawerFocusItems() {
-//    donateImageView.setNextFocusRightId(mainActivity.getAppbar().getAppbarLayout().getId());
-//    donateImageView.setNextFocusUpId(mainActivity.getAppbar().getAppbarLayout().getId());
-    donateImageView.setOnKeyListener(new View.OnKeyListener() {
-      @Override
-      public boolean onKey(View v, int keyCode, KeyEvent event) {
-        Log.e(getClass().getSimpleName(), String.format("Call key event on FAB %s", event.getAction()));
-        if (event.getAction() == KeyEvent.ACTION_DOWN) {
-          if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-            mainActivity.getAppbar().getAppbarLayout().requestFocus();
-            mainActivity.getAppbar().getToolbar().requestFocus();
-          } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
-            new Billing(mainActivity);
-          } else {
-            return false;
+    //    donateImageView.setNextFocusRightId(mainActivity.getAppbar().getAppbarLayout().getId());
+    //    donateImageView.setNextFocusUpId(mainActivity.getAppbar().getAppbarLayout().getId());
+    donateImageView.setOnKeyListener(
+        new View.OnKeyListener() {
+          @Override
+          public boolean onKey(View v, int keyCode, KeyEvent event) {
+            Log.e(
+                getClass().getSimpleName(),
+                String.format("Call key event on FAB %s", event.getAction()));
+            if (event.getAction() == KeyEvent.ACTION_DOWN) {
+              if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                mainActivity.getAppbar().getAppbarLayout().requestFocus();
+                mainActivity.getAppbar().getToolbar().requestFocus();
+              } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+                new Billing(mainActivity);
+              } else {
+                return false;
+              }
+            }
+            return true;
           }
-        }
-        return true;
-      }
-    });
+        });
   }
 
   public ImageView getDonateImageView() {
