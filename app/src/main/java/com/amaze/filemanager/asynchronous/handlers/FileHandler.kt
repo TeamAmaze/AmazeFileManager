@@ -86,7 +86,7 @@ class FileHandler(
                 )
             } else {
                 // we already have some elements in list view, invalidate the adapter
-                (listView.adapter as RecyclerAdapter).setItems(listView, main.elementsList)
+                (listView.adapter as RecyclerAdapter).setItems(listView, main.elementsList ?: listOf())
             }
         } else {
             // there was no list view, means the directory was empty
