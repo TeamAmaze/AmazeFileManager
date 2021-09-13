@@ -242,7 +242,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     }
 
     private fun prepareCompressedFile(pathArg: String): String {
-        var fileName: String? = null
+        lateinit var fileName: String
         val pathUri = Uri.parse(pathArg)
         if (ContentResolver.SCHEME_CONTENT == pathUri.scheme) {
             requireContext()
@@ -285,11 +285,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     }
                 }
         } else {
-            compressedFile = File(pathUri.path).also {
+            compressedFile = File(pathUri.path!!).also {
                 fileName = it.name.substring(0, it.name.lastIndexOf("."))
             }
         }
-        return fileName!!
+        return fileName
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
