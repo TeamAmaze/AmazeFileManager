@@ -52,6 +52,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
 import com.amaze.filemanager.asynchronous.services.ExtractService
+import com.amaze.filemanager.databinding.ActionmodeBinding
 import com.amaze.filemanager.databinding.MainFragBinding
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -218,20 +219,22 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         iconskin = requireMainActivity().currentColorPreference.iconSkin
 
         // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
-        if (savedInstanceState == null && compressedFile != null) {
-            files = ArrayList()
-            // adding a cache file to delete where any user interaction elements will be cached
-            val path =
-                if (isCachedCompressedFile) {
-                    compressedFile!!.absolutePath
-                } else {
-                    requireActivity().externalCacheDir!!
-                        .path + CompressedHelper.SEPARATOR + fileName
-                }
-            files?.add(HybridFileParcelable(path))
-            decompressor =
-                CompressedHelper.getCompressorInstance(requireContext(), compressedFile!!)
-            changePath("")
+        if (savedInstanceState == null) {
+            compressedFile?.run {
+                files = ArrayList()
+                // adding a cache file to delete where any user interaction elements will be cached
+                val path =
+                    if (isCachedCompressedFile) {
+                        this.absolutePath
+                    } else {
+                        requireActivity().externalCacheDir!!
+                            .path + CompressedHelper.SEPARATOR + fileName
+                    }
+                files?.add(HybridFileParcelable(path))
+                decompressor =
+                    CompressedHelper.getCompressorInstance(requireContext(), this)
+                changePath("")
+            }
         } else {
             onRestoreInstanceState(savedInstanceState)
         }
@@ -282,8 +285,9 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     }
                 }
         } else {
-            compressedFile = File(pathUri.path)
-            fileName = compressedFile!!.name.substring(0, compressedFile!!.name.lastIndexOf("."))
+            compressedFile = File(pathUri.path).also {
+                fileName = it.name.substring(0, it.name.lastIndexOf("."))
+            }
         }
         return fileName!!
     }
@@ -298,15 +302,17 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     }
 
     private fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        savedInstanceState?.let {
-            prepareCompressedFile(it.getString(KEY_URI)!!)
-            files = it.getParcelableArrayList(KEY_CACHE_FILES)
-            isOpen = it.getBoolean(KEY_OPEN)
-            relativeDirectory = it.getString(KEY_PATH, "")
-            decompressor = CompressedHelper.getCompressorInstance(
-                requireContext(), compressedFile!!
-            )
-            viewModel.elements.value = it.getParcelableArrayList(KEY_ELEMENTS)
+        savedInstanceState?.let { bundle ->
+            prepareCompressedFile(bundle.getString(KEY_URI)!!)
+            files = bundle.getParcelableArrayList(KEY_CACHE_FILES)
+            isOpen = bundle.getBoolean(KEY_OPEN)
+            relativeDirectory = bundle.getString(KEY_PATH, "")
+            compressedFile?.let {
+                decompressor = CompressedHelper.getCompressorInstance(
+                    requireContext(), it
+                )
+            }
+            viewModel.elements.value = bundle.getParcelableArrayList(KEY_ELEMENTS)
         }
     }
 
@@ -322,16 +328,13 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             item.isVisible = true
         }
 
-        var v: View? = null
-
         // called when the action mode is created; startActionMode() was called
         override fun onCreateActionMode(mode: ActionMode, menu: Menu): Boolean {
             // Inflate a menu resource providing context menu items
-            val inflater = mode.menuInflater
-            v = requireActivity().layoutInflater.inflate(R.layout.actionmode, null)
+            val v = ActionmodeBinding.inflate(LayoutInflater.from(requireContext())).root
             mode.customView = v
             // assumes that you have "contexual.xml" menu resources
-            inflater.inflate(R.menu.contextual, menu)
+            mode.menuInflater.inflate(R.menu.contextual, menu)
             hideOption(R.id.cpy, menu)
             hideOption(R.id.cut, menu)
             hideOption(R.id.delete, menu)
@@ -371,7 +374,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         // may be called multiple times if the mode is invalidated.
         override fun onPrepareActionMode(mode: ActionMode, menu: Menu): Boolean {
             compressedExplorerAdapter?.checkedItemPositions?.let { positions ->
-                (v!!.findViewById<View>(R.id.item_count) as TextView).text =
+                (mode.customView.findViewById<View>(R.id.item_count) as TextView).text =
                     positions.size.toString()
                 menu.findItem(R.id.all)
                     .setTitle(
@@ -387,46 +390,48 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
         // called when the user selects a contextual menu item
         override fun onActionItemClicked(mode: ActionMode, item: MenuItem): Boolean {
-            when (item.itemId) {
-                R.id.all -> {
-                    val positions = compressedExplorerAdapter!!.checkedItemPositions
-                    val shouldDeselectAll = positions.size != folder + file
-                    compressedExplorerAdapter?.toggleChecked(shouldDeselectAll)
-                    mode.invalidate()
-                    item.setTitle(
-                        if (shouldDeselectAll) {
-                            R.string.deselect_all
-                        } else {
-                            R.string.select_all
+            return compressedExplorerAdapter?.let {
+                when (item.itemId) {
+                    R.id.all -> {
+                        val positions = it.checkedItemPositions
+                        val shouldDeselectAll = positions.size != folder + file
+                        it.toggleChecked(shouldDeselectAll)
+                        mode.invalidate()
+                        item.setTitle(
+                            if (shouldDeselectAll) {
+                                R.string.deselect_all
+                            } else {
+                                R.string.select_all
+                            }
+                        )
+                        if (!shouldDeselectAll) {
+                            selection = false
+                            mActionMode?.finish()
+                            mActionMode = null
                         }
-                    )
-                    if (!shouldDeselectAll) {
-                        selection = false
-                        mActionMode?.finish()
-                        mActionMode = null
+                        return true
                     }
-                    return true
-                }
-                R.id.ex -> {
-                    Toast.makeText(activity, getString(R.string.extracting), Toast.LENGTH_SHORT)
-                        .show()
-                    val dirs = arrayOfNulls<String>(
-                        compressedExplorerAdapter!!.checkedItemPositions.size
-                    )
-                    var i = 0
-                    while (i < dirs.size) {
-                        dirs[i] =
-                            viewModel
-                                .elements
-                                .value!![compressedExplorerAdapter!!.checkedItemPositions[i]].path
-                        i++
+                    R.id.ex -> {
+                        Toast.makeText(activity, getString(R.string.extracting), Toast.LENGTH_SHORT)
+                            .show()
+                        val dirs = arrayOfNulls<String>(
+                            it.checkedItemPositions.size
+                        )
+                        var i = 0
+                        while (i < dirs.size) {
+                            dirs[i] =
+                                viewModel
+                                    .elements
+                                    .value!![it.checkedItemPositions[i]].path
+                            i++
+                        }
+                        decompressor?.decompress(compressedFile!!.path, dirs)
+                        mode.finish()
+                        return true
                     }
-                    decompressor?.decompress(compressedFile!!.path, dirs)
-                    mode.finish()
-                    return true
+                    else -> false
                 }
-            }
-            return false
+            } ?: false
         }
 
         override fun onDestroyActionMode(actionMode: ActionMode) {
@@ -462,7 +467,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
         // needed to remove any extracted file from cache, when onResume was not called
         // in case of opening any unknown file inside the zip
-        if (true == files?.isNotEmpty() && files!![0].exists()) {
+        if (true == files?.isNotEmpty() && true == files?.get(0)?.exists()) {
             DeleteTask(requireActivity(), this).execute(files)
         }
         if (isCachedCompressedFile) {
@@ -584,12 +589,15 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         }
         stopAnims = true
         if (!addheader) {
-            listView?.removeItemDecoration(dividerItemDecoration!!)
+            dividerItemDecoration?.run {
+                listView?.removeItemDecoration(this)
+            }
             // listView.removeItemDecoration(headersDecor);
             addheader = true
         } else {
-            dividerItemDecoration = DividerItemDecoration(activity, true, showDividers)
-            listView?.addItemDecoration(dividerItemDecoration!!)
+            dividerItemDecoration = DividerItemDecoration(activity, true, showDividers).also {
+                listView?.addItemDecoration(it)
+            }
             // headersDecor = new StickyRecyclerHeadersDecoration(compressedExplorerAdapter);
             // listView.addItemDecoration(headersDecor);
             addheader = false
