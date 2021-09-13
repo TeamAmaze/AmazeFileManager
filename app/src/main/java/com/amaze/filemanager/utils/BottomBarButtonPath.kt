@@ -24,14 +24,12 @@ import androidx.annotation.DrawableRes
 
 /**
  * This lets BottomBar be independent of the Fragment MainActivity is housing
- *
- * @author Emmanuel on 20/8/2017, at 13:35.
  */
 interface BottomBarButtonPath {
     /**
      * This allows the fragment to change the path represented in the BottomBar directly
      */
-    fun changePath(path: String?)
+    fun changePath(path: String)
     val path: String?
 
     @get:DrawableRes

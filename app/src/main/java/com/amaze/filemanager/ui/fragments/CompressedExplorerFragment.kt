@@ -80,8 +80,7 @@ import java.util.*
 @Suppress("TooManyFunctions")
 class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
-    @JvmField
-    var compressedFile: File? = null
+    lateinit var compressedFile: File
 
     private val viewModel: CompressedExplorerFragmentViewModel by viewModels()
     /**
@@ -93,7 +92,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     @JvmField
     var selection = false
 
-    // Normally this would be "/" but for pathing issues it isn't
+    /** Normally this would be "/" but for pathing issues it isn't */
     var relativeDirectory = ""
 
     @JvmField
@@ -115,8 +114,9 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     var gobackitem = false
     var listView: RecyclerView? = null
     var swipeRefreshLayout: SwipeRefreshLayout? = null
+    /** flag states whether to open file after service extracts it */
     @JvmField
-    var isOpen = false // flag states whether to open file after service extracts it
+    var isOpen = false
     private var fastScroller: FastScroller? = null
     private var decompressor: Decompressor? = null
     private var addheader = true
@@ -181,7 +181,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val sp = PreferenceManager.getDefaultSharedPreferences(requireActivity())
-        val fileName = prepareCompressedFile(requireArguments().getString(KEY_PATH)!!)
+        val fileName = prepareCompressedFile(requireArguments().getString(KEY_PATH, "/"))
         mToolbarContainer = requireMainActivity().appbar.appbarLayout.also {
             it.setOnTouchListener { _: View?, _: MotionEvent? ->
                 if (stopAnims) {
@@ -220,7 +220,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
         // mainActivity.findViewById(R.id.buttonbarframe).setBackgroundColor(Color.parseColor(skin));
         if (savedInstanceState == null) {
-            compressedFile?.run {
+            compressedFile.run {
                 files = ArrayList()
                 // adding a cache file to delete where any user interaction elements will be cached
                 val path =
@@ -265,7 +265,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                                         fileName = it.name
                                     }
                         }
-                        compressedFile?.deleteOnExit()
+                        compressedFile.deleteOnExit()
                         requireContext().contentResolver.openInputStream(pathUri)
                             ?.copyTo(FileOutputStream(compressedFile), DEFAULT_BUFFER_SIZE)
                         isCachedCompressedFile = true
@@ -285,10 +285,13 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     }
                 }
         } else {
-            compressedFile = File(pathUri.path!!).also {
-                fileName = it.name.substring(0, it.name.lastIndexOf("."))
+            pathUri.path?.let { path ->
+                compressedFile = File(path).also {
+                    fileName = it.name.substring(0, it.name.lastIndexOf("."))
+                }
             }
         }
+
         return fileName
     }
 
@@ -296,7 +299,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         super.onSaveInstanceState(outState)
         outState.putParcelableArrayList(KEY_ELEMENTS, viewModel.elements.value)
         outState.putString(KEY_PATH, relativeDirectory)
-        outState.putString(KEY_URI, compressedFile!!.path)
+        outState.putString(KEY_URI, compressedFile.path)
         outState.putParcelableArrayList(KEY_CACHE_FILES, files)
         outState.putBoolean(KEY_OPEN, isOpen)
     }
@@ -307,7 +310,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             files = bundle.getParcelableArrayList(KEY_CACHE_FILES)
             isOpen = bundle.getBoolean(KEY_OPEN)
             relativeDirectory = bundle.getString(KEY_PATH, "")
-            compressedFile?.let {
+            compressedFile.let {
                 decompressor = CompressedHelper.getCompressorInstance(
                     requireContext(), it
                 )
@@ -425,7 +428,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                                     .value!![it.checkedItemPositions[i]].path
                             i++
                         }
-                        decompressor?.decompress(compressedFile!!.path, dirs)
+                        decompressor?.decompress(compressedFile.path, dirs)
                         mode.finish()
                         return true
                     }
@@ -471,7 +474,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             DeleteTask(requireActivity(), this).execute(files)
         }
         if (isCachedCompressedFile) {
-            compressedFile?.delete()
+            compressedFile.delete()
         }
     }
 
@@ -508,9 +511,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         }
     }
 
-    override fun changePath(folderArg: String?) {
-        var folder = folderArg
-        if (folder == null) folder = ""
+    override fun changePath(path: String) {
+        var folder = path
         if (folder.startsWith("/")) folder = folder.substring(1)
         val addGoBackItem = gobackitem && !isRoot(folder)
         decompressor?.let {
@@ -553,7 +555,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     }
 
     private fun updateBottomBar() {
-        compressedFile?.let {
+        compressedFile.let {
             val path =
                 if (!isRootRelativePath) {
                     it.name + CompressedHelper.SEPARATOR + relativeDirectory
@@ -624,7 +626,9 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
      * Go one level up in the archive hierarchy.
      */
     fun goBack() {
-        changePath(File(relativeDirectory).parent)
+        File(relativeDirectory).parent?.let { parent ->
+            changePath(parent)
+        }
     }
 
     private val isRootRelativePath: Boolean
@@ -649,7 +653,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 R.string.archive_unsupported_or_corrupt
         Toast.makeText(
             activity,
-            requireContext().getString(msg, compressedFile!!.absolutePath),
+            requireContext().getString(msg, compressedFile.absolutePath),
             Toast.LENGTH_LONG
         ).show()
         requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
