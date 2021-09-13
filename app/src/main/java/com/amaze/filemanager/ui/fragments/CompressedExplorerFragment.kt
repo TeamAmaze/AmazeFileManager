@@ -113,12 +113,12 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     var showLastModified = false
     var gobackitem = false
     var listView: RecyclerView? = null
-    var swipeRefreshLayout: SwipeRefreshLayout? = null
+    lateinit var swipeRefreshLayout: SwipeRefreshLayout
     /** flag states whether to open file after service extracts it */
     @JvmField
     var isOpen = false
-    private var fastScroller: FastScroller? = null
-    private var decompressor: Decompressor? = null
+    private lateinit var fastScroller: FastScroller
+    private lateinit var decompressor: Decompressor
     private var addheader = true
     private var dividerItemDecoration: DividerItemDecoration? = null
     private var showDividers = false
@@ -129,7 +129,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     private var isCachedCompressedFile = false
     private val offsetListenerForToolbar =
         OnOffsetChangedListener { appBarLayout: AppBarLayout?, verticalOffset: Int ->
-            fastScroller?.updateHandlePosition(verticalOffset, 112)
+            fastScroller.updateHandlePosition(verticalOffset, 112)
         }
 
     override fun onCreateView(
@@ -161,7 +161,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             { elements ->
                 viewModel.folder?.run {
                     createViews(elements, this)
-                    swipeRefreshLayout?.isRefreshing = false
+                    swipeRefreshLayout.isRefreshing = false
                     updateBottomBar()
                 }
             }
@@ -428,7 +428,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                                     .value!![it.checkedItemPositions[i]].path
                             i++
                         }
-                        decompressor?.decompress(compressedFile.path, dirs)
+                        decompressor.decompress(compressedFile.path, dirs)
                         mode.finish()
                         return true
                     }
@@ -515,7 +515,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         var folder = path
         if (folder.startsWith("/")) folder = folder.substring(1)
         val addGoBackItem = gobackitem && !isRoot(folder)
-        decompressor?.let {
+        decompressor.let {
             it.changePath(
                 folder,
                 addGoBackItem,
@@ -535,7 +535,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     }
                 }
             ).execute()
-            swipeRefreshLayout?.isRefreshing = true
+            swipeRefreshLayout.isRefreshing = true
             updateBottomBar()
         } ?: archiveCorruptOrUnsupportedToast(null)
     }
@@ -612,7 +612,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         listView?.stopScroll()
         relativeDirectory = dir
         updateBottomBar()
-        swipeRefreshLayout?.isRefreshing = false
+        swipeRefreshLayout.isRefreshing = false
     }
 
     /**
