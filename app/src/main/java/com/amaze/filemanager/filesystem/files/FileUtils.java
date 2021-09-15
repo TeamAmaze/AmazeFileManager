@@ -85,6 +85,7 @@ import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
 import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -93,6 +94,9 @@ import net.schmizz.sshj.sftp.SFTPException;
 public class FileUtils {
 
   private static final String TAG = FileUtils.class.getSimpleName();
+
+  private static final String[] COMPRESSED_FILE_EXTENSIONS =
+      new String[] {"zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"};
 
   public static final String FILE_PROVIDER_PREFIX = "storage_root";
   public static final String NOMEDIA_FILE = ".nomedia";
@@ -354,7 +358,7 @@ public class FileUtils {
         }
       }
 
-    if (!b || mime == (null)) mime = "*/*";
+    if (!b || mime == (null)) mime = MimeTypes.ALL_MIME_TYPES;
     try {
 
       new ShareTask(c, uris, appTheme, fab_skin).execute(mime);
@@ -410,7 +414,7 @@ public class FileUtils {
     chooserIntent.setAction(Intent.ACTION_VIEW);
     chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-    if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+    if (type != null && type.trim().length() != 0 && !type.equals(MimeTypes.ALL_MIME_TYPES)) {
       chooserIntent.setDataAndType(contentUri, type);
       Intent activityIntent;
       if (forcechooser) {
@@ -506,7 +510,8 @@ public class FileUtils {
                               FILE_PROVIDER_PREFIX.length() + 1));
                   break;
                 case 5:
-                  mimeType = "*/*";
+                  mimeType = MimeTypes.getMimeType(uri.getPath(), false);
+                  if (mimeType == null) mimeType = MimeTypes.ALL_MIME_TYPES;
                   break;
               }
               try {
@@ -668,6 +673,7 @@ public class FileUtils {
       GeneralDialogCreation.showArchiveDialog(f, m);
     } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
       Intent intent = new Intent(m, DatabaseViewerActivity.class);
+      intent.setType(MimeTypes.getMimeType(f.getPath(), false));
       intent.putExtra("path", f.getPath());
       m.startActivity(intent);
     } else {
@@ -886,6 +892,12 @@ public class FileUtils {
     return !dir.contains(OTGUtil.PREFIX_OTG)
         && !dir.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)
         && !dir.startsWith("/storage");
+  }
+
+  /** Convenience method to return if a path points to a compressed file. */
+  public static boolean isCompressedFile(String path) {
+    @Nullable String extension = MimeTypes.getExtension(path);
+    return ArraysKt.indexOf(COMPRESSED_FILE_EXTENSIONS, extension) > -1;
   }
 
   /** Converts ArrayList of HybridFileParcelable to ArrayList of File */

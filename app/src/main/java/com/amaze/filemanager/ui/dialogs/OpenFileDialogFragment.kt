@@ -90,9 +90,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             activity: PreferenceActivity,
             forceChooser: Boolean
         ) {
-            if (mimeType == "*/*" || forceChooser || !getPreferenceAndStartActivity(
-                    uri, mimeType, useNewStack, activity
-                )
+            if (mimeType == MimeTypes.ALL_MIME_TYPES ||
+                forceChooser ||
+                !getPreferenceAndStartActivity(
+                        uri, mimeType, useNewStack, activity
+                    )
             ) {
                 if (forceChooser) {
                     clearMimeTypePreference(
