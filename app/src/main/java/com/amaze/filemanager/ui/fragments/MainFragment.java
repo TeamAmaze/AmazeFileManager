@@ -1045,9 +1045,7 @@ public class MainFragment extends Fragment
                 utilsProvider,
                 sharedPref,
                 listView,
-                listElements == null
-                    ? Collections.emptyList()
-                    : listElements,
+                listElements == null ? Collections.emptyList() : listElements,
                 requireContext(),
                 grid);
       } else {
