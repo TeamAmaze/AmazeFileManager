@@ -1759,8 +1759,15 @@ public class MainFragment extends Fragment
     super.onDetach();
   }
 
+  @Nullable
   public MainActivity getMainActivity() {
     return (MainActivity) getActivity();
+  }
+
+  @SuppressWarnings("unused")
+  @NonNull
+  public MainActivity requireMainActivity() {
+    return (MainActivity) requireActivity();
   }
 
   @Nullable
