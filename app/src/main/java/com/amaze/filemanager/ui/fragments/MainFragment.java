@@ -1046,9 +1046,9 @@ public class MainFragment extends Fragment
                 sharedPref,
                 listView,
                 listElements == null
-                    ? Collections.<LayoutElementParcelable>emptyList()
+                    ? Collections.emptyList()
                     : listElements,
-                getActivity(),
+                requireContext(),
                 grid);
       } else {
         adapter.setItems(listView, new ArrayList<>(mainFragmentViewModel.getListElements()));
