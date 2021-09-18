@@ -1764,7 +1764,6 @@ public class MainFragment extends Fragment
     return (MainActivity) getActivity();
   }
 
-  @SuppressWarnings("unused")
   @NonNull
   public MainActivity requireMainActivity() {
     return (MainActivity) requireActivity();
