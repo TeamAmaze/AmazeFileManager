@@ -59,7 +59,6 @@ import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
@@ -556,7 +555,8 @@ public class MainFragment extends Fragment
               GeneralDialogCreation.showPropertiesDialogWithPermissions(
                   (x).generateBaseFile(),
                   x.permissions,
-                  (ThemedActivity) requireActivity(),
+                  (MainActivity) requireActivity(),
+                  MainFragment.this,
                   getMainActivity().isRootExplorer(),
                   utilsProvider.getAppTheme());
               mode.finish();

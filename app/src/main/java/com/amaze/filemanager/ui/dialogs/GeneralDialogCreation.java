@@ -397,36 +397,41 @@ public class GeneralDialogCreation {
   public static void showPropertiesDialogWithPermissions(
       @NonNull HybridFileParcelable baseFile,
       @Nullable final String permissions,
-      @NonNull ThemedActivity activity,
+      @NonNull MainActivity themedActivity,
+      @NonNull MainFragment mainFragment,
       boolean isRoot,
       @NonNull AppTheme appTheme) {
-    showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, false);
+    showPropertiesDialog(
+        baseFile, themedActivity, mainFragment, permissions, isRoot, appTheme, false);
   }
 
   public static void showPropertiesDialogWithoutPermissions(
       @NonNull final HybridFileParcelable f,
-      @NonNull ThemedActivity activity,
+      @NonNull ThemedActivity themedActivity,
       @NonNull AppTheme appTheme) {
-    showPropertiesDialog(f, null, activity, false, appTheme, false);
+    showPropertiesDialog(f, themedActivity, null, null, false, appTheme, false);
   }
 
   public static void showPropertiesDialogForStorage(
-      final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
-    showPropertiesDialog(f, null, activity, false, appTheme, true);
+      @NonNull final HybridFileParcelable f,
+      @NonNull MainActivity themedActivity,
+      @NonNull AppTheme appTheme) {
+    showPropertiesDialog(f, themedActivity, null, null, false, appTheme, true);
   }
 
   private static void showPropertiesDialog(
       @NonNull final HybridFileParcelable baseFile,
+      @NonNull ThemedActivity themedActivity,
+      @Nullable MainFragment mainFragment,
       @Nullable final String permissions,
-      @NonNull ThemedActivity base,
       boolean isRoot,
       @NonNull AppTheme appTheme,
       boolean forStorage) {
     final ExecutorService executor = Executors.newFixedThreadPool(3);
-    final Context c = base.getApplicationContext();
-    int accentColor = base.getAccent();
+    final Context c = themedActivity.getApplicationContext();
+    int accentColor = themedActivity.getAccent();
     long last = baseFile.getDate();
-    final String date = Utils.getDate(base, last),
+    final String date = Utils.getDate(themedActivity, last),
         items = c.getString(R.string.calculating),
         name = baseFile.getName(c),
         parent = baseFile.getReadablePath(baseFile.getParent(c));
@@ -434,11 +439,11 @@ public class GeneralDialogCreation {
     File nomediaFile =
         baseFile.isDirectory() ? new File(baseFile.getPath() + "/" + FileUtils.NOMEDIA_FILE) : null;
 
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(base);
+    MaterialDialog.Builder builder = new MaterialDialog.Builder(themedActivity);
     builder.title(c.getString(R.string.properties));
     builder.theme(appTheme.getMaterialDialogTheme());
 
-    View v = base.getLayoutInflater().inflate(R.layout.properties_dialog, null);
+    View v = themedActivity.getLayoutInflater().inflate(R.layout.properties_dialog, null);
     TextView itemsText = v.findViewById(R.id.t7);
     CheckBox nomediaCheckBox = v.findViewById(R.id.nomediacheckbox);
 
@@ -601,10 +606,7 @@ public class GeneralDialogCreation {
       chart.invalidate();
     }
 
-    if (!forStorage && permissions != null) {
-      final MainActivity mainActivity = (MainActivity) base;
-      final MainFragment mainFragment =
-          Objects.requireNonNull(mainActivity.getCurrentMainFragment());
+    if (!forStorage && permissions != null && mainFragment != null) {
       AppCompatButton appCompatButton = v.findViewById(R.id.permissionsButton);
       appCompatButton.setAllCaps(true);
 
@@ -628,7 +630,7 @@ public class GeneralDialogCreation {
     }
 
     builder.customView(v, true);
-    builder.positiveText(base.getString(R.string.ok));
+    builder.positiveText(themedActivity.getString(R.string.ok));
     builder.positiveColor(accentColor);
     builder.dismissListener(dialog -> executor.shutdown());
     builder.onPositive(

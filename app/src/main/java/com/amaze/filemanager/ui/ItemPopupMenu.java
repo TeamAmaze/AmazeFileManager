@@ -33,7 +33,6 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
@@ -94,7 +93,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         GeneralDialogCreation.showPropertiesDialogWithPermissions(
             (rowItem).generateBaseFile(),
             rowItem.permissions,
-            (ThemedActivity) mainActivity,
+            mainActivity,
+            mainFragment,
             mainActivity.isRootExplorer(),
             utilitiesProvider.getAppTheme());
         return true;
