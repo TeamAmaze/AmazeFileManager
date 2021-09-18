@@ -110,10 +110,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             ArrayList<File> arrayList = new ArrayList<>();
             arrayList.add(new File(rowItem.desc));
             FileUtils.shareFiles(
-                arrayList,
-                mainFragment.getMainActivity(),
-                utilitiesProvider.getAppTheme(),
-                accentColor);
+                arrayList, mainActivity, utilitiesProvider.getAppTheme(), accentColor);
             break;
         }
         return true;
@@ -127,19 +124,17 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
               item.getItemId() == R.id.cpy ? PasteHelper.OPERATION_COPY : PasteHelper.OPERATION_CUT;
           PasteHelper pasteHelper =
               new PasteHelper(
-                  mainFragment.getMainActivity(),
-                  op,
-                  new HybridFileParcelable[] {rowItem.generateBaseFile()});
-          mainFragment.getMainActivity().setPaste(pasteHelper);
+                  mainActivity, op, new HybridFileParcelable[] {rowItem.generateBaseFile()});
+          mainActivity.setPaste(pasteHelper);
           return true;
         }
       case R.id.ex:
-        mainFragment.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.desc));
+        mainActivity.mainActivityHelper.extractFile(new File(rowItem.desc));
         return true;
       case R.id.book:
         DataUtils dataUtils = DataUtils.getInstance();
         if (dataUtils.addBook(new String[] {rowItem.title, rowItem.desc}, true)) {
-          mainFragment.getMainActivity().getDrawer().refreshDrawer();
+          mainActivity.getDrawer().refreshDrawer();
           Toast.makeText(
                   mainFragment.getActivity(),
                   mainFragment.getString(R.string.bookmarks_added),
@@ -159,7 +154,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         GeneralDialogCreation.deleteFilesDialog(
             context,
             mainFragment.getElementsList(),
-            mainFragment.getMainActivity(),
+            mainActivity,
             positions,
             utilitiesProvider.getAppTheme());
         return true;
@@ -220,7 +215,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                   GeneralDialogCreation.showEncryptAuthenticateDialog(
                       context,
                       encryptIntent,
-                      mainFragment.getMainActivity(),
+                      mainActivity,
                       utilitiesProvider.getAppTheme(),
                       encryptButtonCallbackInterfaceAuthenticate);
                 }
