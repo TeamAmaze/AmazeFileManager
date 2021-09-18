@@ -152,11 +152,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
         positions.add(rowItem);
         GeneralDialogCreation.deleteFilesDialog(
-            context,
-            mainFragment.getElementsList(),
-            mainActivity,
-            positions,
-            utilitiesProvider.getAppTheme());
+            context, mainActivity, positions, utilitiesProvider.getAppTheme());
         return true;
       case R.id.open_with:
         boolean useNewStack =

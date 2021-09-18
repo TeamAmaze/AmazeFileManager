@@ -534,7 +534,7 @@ public class MainFragment extends Fragment
 
                 for (LayoutElementParcelable element : checkedItems) {
                   HybridFileParcelable baseFile = element.generateBaseFile();
-                  Uri resultUri = Utils.getUriForBaseFile(getActivity(), baseFile);
+                  Uri resultUri = Utils.getUriForBaseFile(requireContext(), baseFile);
 
                   if (resultUri != null) {
                     resulturis.add(resultUri);
@@ -542,9 +542,9 @@ public class MainFragment extends Fragment
                 }
 
                 intent_result.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getActivity().setResult(FragmentActivity.RESULT_OK, intent_result);
+                requireActivity().setResult(FragmentActivity.RESULT_OK, intent_result);
                 intent_result.putParcelableArrayListExtra(Intent.EXTRA_STREAM, resulturis);
-                getActivity().finish();
+                requireActivity().finish();
                 // mode.finish();
               } catch (Exception e) {
                 e.printStackTrace();
@@ -553,19 +553,18 @@ public class MainFragment extends Fragment
             case R.id.about:
               LayoutElementParcelable x = checkedItems.get(0);
               GeneralDialogCreation.showPropertiesDialogWithPermissions(
-                  (x).generateBaseFile(),
+                  x.generateBaseFile(),
                   x.permissions,
-                  (MainActivity) requireActivity(),
+                  requireMainActivity(),
                   MainFragment.this,
-                  getMainActivity().isRootExplorer(),
+                  requireMainActivity().isRootExplorer(),
                   utilsProvider.getAppTheme());
               mode.finish();
               return true;
             case R.id.delete:
               GeneralDialogCreation.deleteFilesDialog(
-                  getContext(),
-                  mainFragmentViewModel.getListElements(),
-                  getMainActivity(),
+                  requireContext(),
+                  requireMainActivity(),
                   checkedItems,
                   utilsProvider.getAppTheme());
               return true;
@@ -648,7 +647,7 @@ public class MainFragment extends Fragment
                 // when passing copies to PasteHelper
                 if (copies.length > 0) {
                   PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
-                  getMainActivity().setPaste(pasteHelper);
+                  requireMainActivity().setPaste(pasteHelper);
                 }
                 mode.finish();
                 return true;
@@ -659,11 +658,12 @@ public class MainFragment extends Fragment
                 copies1.add(checkedItems.get(i4).generateBaseFile());
               }
               GeneralDialogCreation.showCompressDialog(
-                  (MainActivity) getActivity(), copies1, mainFragmentViewModel.getCurrentPath());
+                  requireMainActivity(), copies1, mainFragmentViewModel.getCurrentPath());
               mode.finish();
               return true;
             case R.id.openwith:
-              FileUtils.openFile(new File(checkedItems.get(0).desc), getMainActivity(), sharedPref);
+              FileUtils.openFile(
+                  new File(checkedItems.get(0).desc), requireMainActivity(), sharedPref);
               return true;
             case R.id.addshortcut:
               addShortcut(checkedItems.get(0));

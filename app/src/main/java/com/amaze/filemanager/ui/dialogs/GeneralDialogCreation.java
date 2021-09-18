@@ -206,28 +206,28 @@ public class GeneralDialogCreation {
 
   @SuppressWarnings("ConstantConditions")
   public static void deleteFilesDialog(
-      final Context c,
-      final ArrayList<LayoutElementParcelable> layoutElements,
-      final MainActivity mainActivity,
-      final List<LayoutElementParcelable> positions,
-      AppTheme appTheme) {
+      @NonNull final Context context,
+      @NonNull final MainActivity mainActivity,
+      @NonNull final List<LayoutElementParcelable> positions,
+      @NonNull AppTheme appTheme) {
 
     final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
     int accentColor = mainActivity.getAccent();
 
     // Build dialog with custom view layout and accent color.
     MaterialDialog dialog =
-        new MaterialDialog.Builder(c)
-            .title(c.getString(R.string.dialog_delete_title))
+        new MaterialDialog.Builder(context)
+            .title(context.getString(R.string.dialog_delete_title))
             .customView(R.layout.dialog_delete, true)
             .theme(appTheme.getMaterialDialogTheme())
-            .negativeText(c.getString(R.string.cancel).toUpperCase())
-            .positiveText(c.getString(R.string.delete).toUpperCase())
+            .negativeText(context.getString(R.string.cancel).toUpperCase())
+            .positiveText(context.getString(R.string.delete).toUpperCase())
             .positiveColor(accentColor)
             .negativeColor(accentColor)
             .onPositive(
                 (dialog1, which) -> {
-                  Toast.makeText(c, c.getString(R.string.deleting), Toast.LENGTH_SHORT).show();
+                  Toast.makeText(context, context.getString(R.string.deleting), Toast.LENGTH_SHORT)
+                      .show();
                   mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
                 })
             .build();
@@ -254,9 +254,9 @@ public class GeneralDialogCreation {
       protected void onPreExecute() {
         super.onPreExecute();
 
-        listFiles.setText(c.getString(R.string.loading));
-        listDirectories.setText(c.getString(R.string.loading));
-        total.setText(c.getString(R.string.loading));
+        listFiles.setText(context.getString(R.string.loading));
+        listDirectories.setText(context.getString(R.string.loading));
+        total.setText(context.getString(R.string.loading));
       }
 
       @Override
@@ -273,14 +273,14 @@ public class GeneralDialogCreation {
               directories.append("\n");
             }
 
-            long sizeDirectory = layoutElement.generateBaseFile().folderSize(c);
+            long sizeDirectory = layoutElement.generateBaseFile().folderSize(context);
 
             directories
                 .append(++counterDirectories)
                 .append(". ")
                 .append(layoutElement.title)
                 .append(" (")
-                .append(Formatter.formatFileSize(c, sizeDirectory))
+                .append(Formatter.formatFileSize(context, sizeDirectory))
                 .append(")");
             sizeTotal += sizeDirectory;
             // Build list of files to delete.
@@ -373,9 +373,9 @@ public class GeneralDialogCreation {
         if (tempCounterFiles + tempCounterDirectories > 1 && tempSizeTotal > 0) {
           StringBuilder builderTotal =
               new StringBuilder()
-                  .append(c.getString(R.string.total))
+                  .append(context.getString(R.string.total))
                   .append(" ")
-                  .append(Formatter.formatFileSize(c, tempSizeTotal));
+                  .append(Formatter.formatFileSize(context, tempSizeTotal));
           total.setText(builderTotal);
           if (total.getVisibility() != View.VISIBLE) total.setVisibility(View.VISIBLE);
         } else {
@@ -1115,11 +1115,14 @@ public class GeneralDialogCreation {
   }
 
   public static void showCompressDialog(
-      final MainActivity m, final ArrayList<HybridFileParcelable> b, final String current) {
-    int accentColor = m.getAccent();
-    MaterialDialog.Builder a = new MaterialDialog.Builder(m);
+      @NonNull final MainActivity mainActivity,
+      final ArrayList<HybridFileParcelable> baseFiles,
+      final String current) {
+    int accentColor = mainActivity.getAccent();
+    MaterialDialog.Builder a = new MaterialDialog.Builder(mainActivity);
 
-    View dialogView = m.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
+    View dialogView =
+        mainActivity.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
     EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
     etFilename.setText(".zip");
@@ -1129,16 +1132,16 @@ public class GeneralDialogCreation {
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(m.getAppTheme().getMaterialDialogTheme())
-        .title(m.getResources().getString(R.string.enterzipname))
+        .theme(mainActivity.getAppTheme().getMaterialDialogTheme())
+        .title(mainActivity.getResources().getString(R.string.enterzipname))
         .positiveText(R.string.create)
         .positiveColor(accentColor)
         .onPositive(
             (materialDialog, dialogAction) -> {
               String name = current + "/" + etFilename.getText().toString();
-              m.mainActivityHelper.compressFiles(new File(name), b);
+              mainActivity.mainActivityHelper.compressFiles(new File(name), baseFiles);
             })
-        .negativeText(m.getResources().getString(R.string.cancel))
+        .negativeText(mainActivity.getResources().getString(R.string.cancel))
         .negativeColor(accentColor);
 
     final MaterialDialog materialDialog = a.build();
