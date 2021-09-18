@@ -395,31 +395,32 @@ public class GeneralDialogCreation {
   }
 
   public static void showPropertiesDialogWithPermissions(
-      HybridFileParcelable baseFile,
-      final String permissions,
-      ThemedActivity activity,
+      @NonNull HybridFileParcelable baseFile,
+      @Nullable final String permissions,
+      @NonNull ThemedActivity activity,
       boolean isRoot,
-      AppTheme appTheme) {
-    showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, true, false);
+      @NonNull AppTheme appTheme) {
+    showPropertiesDialog(baseFile, permissions, activity, isRoot, appTheme, false);
   }
 
   public static void showPropertiesDialogWithoutPermissions(
-      final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
-    showPropertiesDialog(f, null, activity, false, appTheme, false, false);
+      @NonNull final HybridFileParcelable f,
+      @NonNull ThemedActivity activity,
+      @NonNull AppTheme appTheme) {
+    showPropertiesDialog(f, null, activity, false, appTheme, false);
   }
 
   public static void showPropertiesDialogForStorage(
       final HybridFileParcelable f, ThemedActivity activity, AppTheme appTheme) {
-    showPropertiesDialog(f, null, activity, false, appTheme, false, true);
+    showPropertiesDialog(f, null, activity, false, appTheme, true);
   }
 
   private static void showPropertiesDialog(
-      final HybridFileParcelable baseFile,
-      final String permissions,
-      ThemedActivity base,
+      @NonNull final HybridFileParcelable baseFile,
+      @Nullable final String permissions,
+      @NonNull ThemedActivity base,
       boolean isRoot,
-      AppTheme appTheme,
-      boolean showPermissions,
+      @NonNull AppTheme appTheme,
       boolean forStorage) {
     final ExecutorService executor = Executors.newFixedThreadPool(3);
     final Context c = base.getApplicationContext();
@@ -600,7 +601,7 @@ public class GeneralDialogCreation {
       chart.invalidate();
     }
 
-    if (!forStorage && showPermissions) {
+    if (!forStorage && permissions != null) {
       final MainActivity mainActivity = (MainActivity) base;
       final MainFragment mainFragment =
           Objects.requireNonNull(mainActivity.getCurrentMainFragment());

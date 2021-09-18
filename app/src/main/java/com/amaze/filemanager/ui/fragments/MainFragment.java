@@ -556,7 +556,7 @@ public class MainFragment extends Fragment
               GeneralDialogCreation.showPropertiesDialogWithPermissions(
                   (x).generateBaseFile(),
                   x.permissions,
-                  (ThemedActivity) getActivity(),
+                  (ThemedActivity) requireActivity(),
                   getMainActivity().isRootExplorer(),
                   utilsProvider.getAppTheme());
               mode.finish();

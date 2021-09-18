@@ -48,6 +48,7 @@ import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -57,22 +58,22 @@ import androidx.preference.PreferenceManager;
  */
 public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
 
-  private Context context;
-  private MainActivity mainActivity;
-  private UtilitiesProvider utilitiesProvider;
-  private MainFragment mainFragment;
-  private SharedPreferences sharedPrefs;
-  private LayoutElementParcelable rowItem;
-  private int accentColor;
+  @NonNull private final Context context;
+  @NonNull private final MainActivity mainActivity;
+  @NonNull private final UtilitiesProvider utilitiesProvider;
+  @NonNull private final MainFragment mainFragment;
+  @NonNull private final SharedPreferences sharedPrefs;
+  @NonNull private final LayoutElementParcelable rowItem;
+  private final int accentColor;
 
   public ItemPopupMenu(
-      Context c,
-      MainActivity ma,
-      UtilitiesProvider up,
-      MainFragment mainFragment,
-      LayoutElementParcelable ri,
-      View anchor,
-      SharedPreferences sharedPreferences) {
+      @NonNull Context c,
+      @NonNull MainActivity ma,
+      @NonNull UtilitiesProvider up,
+      @NonNull MainFragment mainFragment,
+      @NonNull LayoutElementParcelable ri,
+      @NonNull View anchor,
+      @NonNull SharedPreferences sharedPreferences) {
     super(c, anchor);
 
     context = c;
@@ -93,7 +94,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         GeneralDialogCreation.showPropertiesDialogWithPermissions(
             (rowItem).generateBaseFile(),
             rowItem.permissions,
-            (ThemedActivity) mainFragment.getActivity(),
+            (ThemedActivity) mainActivity,
             mainActivity.isRootExplorer(),
             utilitiesProvider.getAppTheme());
         return true;
