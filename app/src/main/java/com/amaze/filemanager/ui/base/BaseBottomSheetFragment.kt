@@ -37,7 +37,13 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
             configuration.screenWidthDp > 450
         ) {
             // see recommendations on https://material.io/components/sheets-bottom#specs
-            dialog!!.window!!.setLayout(Utils.dpToPx(requireContext(), 450), -1)
+            dialog!!.window!!.setLayout(
+                Utils.dpToPx(
+                    requireContext(),
+                    configuration.screenWidthDp * 60 / 100
+                ),
+                -1
+            )
         }
     }
 

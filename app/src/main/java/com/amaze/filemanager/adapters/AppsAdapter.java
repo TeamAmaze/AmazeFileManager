@@ -141,12 +141,12 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     if (isBottomSheet) {
       holder.about.setVisibility(View.GONE);
-      holder.txtDesc.setText(rowItem.openFileParcelable.getClassName());
+      holder.txtDesc.setText(rowItem.getOpenFileParcelable().getClassName());
       holder.txtDesc.setSingleLine(true);
       holder.txtDesc.setEllipsize(TextUtils.TruncateAt.MIDDLE);
-      modelProvider.loadApkImage(rowItem.packageName, holder.apkIcon);
+      modelProvider.loadApkImage(rowItem.getPackageName(), holder.apkIcon);
     } else {
-      modelProvider.loadApkImage(rowItem.path, holder.apkIcon);
+      modelProvider.loadApkImage(rowItem.getPath(), holder.apkIcon);
     }
 
     if (holder.about != null && !isBottomSheet) {
@@ -154,7 +154,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
         holder.about.setColorFilter(Color.parseColor("#ff666666"));
       showPopup(holder.about, rowItem);
     }
-    holder.txtTitle.setText(rowItem.label);
+    holder.txtTitle.setText(rowItem.getLabel());
     boolean enableMarqueeFilename =
         sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME, true);
     if (enableMarqueeFilename) {
@@ -165,7 +165,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
     //	File f = new File(rowItem.getDesc());
     if (!isBottomSheet) {
-      holder.txtDesc.setText(rowItem.fileSize);
+      holder.txtDesc.setText(rowItem.getFileSize());
     }
     holder.rl.setClickable(true);
     holder.rl.setNextFocusRightId(holder.about.getId());
@@ -186,7 +186,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
 
   private void startActivityForRowItem(AppDataParcelable rowItem) {
     if (isBottomSheet) {
-      OpenFileParcelable openFileParcelable = rowItem.openFileParcelable;
+      OpenFileParcelable openFileParcelable = rowItem.getOpenFileParcelable();
       Intent intent =
           OpenFileDialogFragment.Companion.buildIntent(
               Objects.requireNonNull(openFileParcelable.getUri()),
@@ -198,7 +198,10 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
       ExtensionsKt.startActivityCatchingSecurityException(fragment.requireContext(), intent);
     } else {
       Intent i1 =
-          fragment.getContext().getPackageManager().getLaunchIntentForPackage(rowItem.packageName);
+          fragment
+              .getContext()
+              .getPackageManager()
+              .getLaunchIntentForPackage(rowItem.getPackageName());
       if (i1 != null) {
         fragment.startActivity(i1);
       } else {
@@ -224,7 +227,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         fragment
                             .getContext()
                             .getPackageManager()
-                            .getLaunchIntentForPackage(rowItem.packageName);
+                            .getLaunchIntentForPackage(rowItem.getPackageName());
                     if (i1 != null) fragment.startActivity(i1);
                     else
                       Toast.makeText(
@@ -235,7 +238,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                     return true;
                   case R.id.share:
                     ArrayList<File> arrayList2 = new ArrayList<File>();
-                    arrayList2.add(new File(rowItem.path));
+                    arrayList2.add(new File(rowItem.getPath()));
                     themedActivity.getColorPreference();
                     FileUtils.shareFiles(
                         arrayList2,
@@ -244,10 +247,11 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                         colorAccent);
                     return true;
                   case R.id.unins:
-                    final HybridFileParcelable f1 = new HybridFileParcelable(rowItem.path);
+                    final HybridFileParcelable f1 = new HybridFileParcelable(rowItem.getPath());
                     f1.setMode(OpenMode.ROOT);
 
-                    if ((Integer.valueOf(rowItem.data.substring(0, rowItem.data.indexOf("_")))
+                    if ((Integer.valueOf(
+                                rowItem.getData().substring(0, rowItem.getData().indexOf("_")))
                             & ApplicationInfo.FLAG_SYSTEM)
                         != 0) {
                       // system package
@@ -290,21 +294,22 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                             .show();
                       }
                     } else {
-                      FileUtils.uninstallPackage(rowItem.packageName, fragment.getContext());
+                      FileUtils.uninstallPackage(rowItem.getPackageName(), fragment.getContext());
                     }
                     return true;
                   case R.id.play:
                     Intent intent1 = new Intent(Intent.ACTION_VIEW);
                     try {
                       intent1.setData(
-                          Uri.parse(String.format("market://details?id=%s", rowItem.packageName)));
+                          Uri.parse(
+                              String.format("market://details?id=%s", rowItem.getPackageName())));
                       fragment.startActivity(intent1);
                     } catch (ActivityNotFoundException ifPlayStoreNotInstalled) {
                       intent1.setData(
                           Uri.parse(
                               String.format(
                                   "https://play.google.com/store/apps/details?id=%s",
-                                  rowItem.packageName)));
+                                  rowItem.getPackageName())));
                       fragment.startActivity(intent1);
                     }
                     return true;
@@ -312,7 +317,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                     fragment.startActivity(
                         new Intent(
                             android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                            Uri.parse(String.format("package:%s", rowItem.packageName))));
+                            Uri.parse(String.format("package:%s", rowItem.getPackageName()))));
                     return true;
                   case R.id.backup:
                     Toast.makeText(
@@ -322,7 +327,7 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                                 + "/app_backup",
                             Toast.LENGTH_LONG)
                         .show();
-                    File f = new File(rowItem.path);
+                    File f = new File(rowItem.getPath());
                     ArrayList<HybridFileParcelable> ab = new ArrayList<>();
                     File dst =
                         new File(
@@ -331,9 +336,11 @@ public class AppsAdapter extends ArrayAdapter<AppDataParcelable> {
                     Intent intent = new Intent(fragment.getContext(), CopyService.class);
                     HybridFileParcelable baseFile = RootHelper.generateBaseFile(f, true);
                     baseFile.setName(
-                        rowItem.label
+                        rowItem.getLabel()
                             + "_"
-                            + rowItem.packageName.substring(rowItem.packageName.indexOf("_") + 1)
+                            + rowItem
+                                .getPackageName()
+                                .substring(rowItem.getPackageName().indexOf("_") + 1)
                             + ".apk");
                     ab.add(baseFile);
 

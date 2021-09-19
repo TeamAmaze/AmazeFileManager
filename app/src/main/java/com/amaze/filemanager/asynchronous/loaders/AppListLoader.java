@@ -26,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 
 import com.amaze.filemanager.adapters.data.AppDataParcelable;
+import com.amaze.filemanager.adapters.data.AppDataSorter;
 import com.amaze.filemanager.asynchronous.broadcast_receivers.PackageReceiver;
 import com.amaze.filemanager.utils.InterestingConfigChange;
 
@@ -74,6 +75,12 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
     if (apps == null) return new AppsDataPair(Collections.emptyList(), Collections.emptyList());
 
     mApps = new AppsDataPair(new ArrayList<>(apps.size()), new ArrayList<>(apps.size()));
+    PackageInfo androidInfo = null;
+    try {
+      androidInfo = packageManager.getPackageInfo("android", PackageManager.GET_SIGNATURES);
+    } catch (PackageManager.NameNotFoundException e) {
+      e.printStackTrace();
+    }
 
     for (ApplicationInfo object : apps) {
       if (object.sourceDir == null) {
@@ -85,12 +92,12 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
       PackageInfo info;
 
       try {
-        info = packageManager.getPackageInfo(object.packageName, 0);
+        info = packageManager.getPackageInfo(object.packageName, PackageManager.GET_SIGNATURES);
       } catch (PackageManager.NameNotFoundException e) {
         e.printStackTrace();
         info = null;
       }
-
+      boolean isSystemApp = isAppInSystemPartition(object) || isSignedBySystem(info, androidInfo);
       AppDataParcelable elem =
           new AppDataParcelable(
               label == null ? object.packageName : label,
@@ -100,15 +107,16 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
               Formatter.formatFileSize(getContext(), sourceDir.length()),
               sourceDir.length(),
               sourceDir.lastModified(),
+              isSystemApp,
               null);
 
       mApps.first.add(elem);
+    }
 
-      Collections.sort(mApps.first, new AppDataParcelable.AppDataSorter(sortBy, isAscending));
+    Collections.sort(mApps.first, new AppDataSorter(sortBy, isAscending));
 
-      for (AppDataParcelable p : mApps.first) {
-        mApps.second.add(p.path);
-      }
+    for (AppDataParcelable p : mApps.first) {
+      mApps.second.add(p.getPath());
     }
 
     return mApps;
@@ -190,6 +198,24 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
   /** We would want to release resources here List is nothing we would want to close */
   // TODO do something
   private void onReleaseResources(AppsDataPair layoutElementList) {}
+
+  /**
+   * Check if an App is under /system or has been installed as an update to a built-in system
+   * application.
+   */
+  public static boolean isAppInSystemPartition(ApplicationInfo applicationInfo) {
+    return ((applicationInfo.flags
+            & (ApplicationInfo.FLAG_SYSTEM | ApplicationInfo.FLAG_UPDATED_SYSTEM_APP))
+        != 0);
+  }
+
+  /** Check if an App is signed by system or not. */
+  public boolean isSignedBySystem(PackageInfo piApp, PackageInfo piSys) {
+    return (piApp != null
+        && piSys != null
+        && piApp.signatures != null
+        && piSys.signatures[0].equals(piApp.signatures[0]));
+  }
 
   /** typedef Pair<List<AppDataParcelable>, List<String>> AppsDataPair */
   public static class AppsDataPair extends Pair<List<AppDataParcelable>, List<String>> {

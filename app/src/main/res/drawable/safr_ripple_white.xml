@@ -21,14 +21,14 @@
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_selected="true">
-        <color android:color="#EEEEEE" />
+        <color android:color="@color/grey_translucent" />
     </item>
     <item android:state_pressed="true">
-        <color android:color="#EEEEEE" />
+        <color android:color="@color/grey_translucent" />
     </item>
 
     <item android:state_activated="true">
-        <color android:color="#EEEEEE" />
+        <color android:color="@color/grey_translucent" />
     </item>
     <item android:state_focused="true">
         <color android:color="@color/grey_translucent" />

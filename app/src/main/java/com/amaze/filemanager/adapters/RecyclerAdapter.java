@@ -531,7 +531,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             marginFab = (int) context.getResources().getDimension(R.dimen.fab_margin);
         view = new View(context);
         view.setMinimumHeight(totalFabHeight + marginFab);
-        view.setFocusable(true);
         return new EmptyViewHolder(view);
       default:
         throw new IllegalArgumentException("Illegal: " + viewType);

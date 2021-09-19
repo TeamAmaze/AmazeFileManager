@@ -50,5 +50,7 @@ class AppHolder(view: View) : RecyclerView.ViewHolder(view) {
 
     init {
         apkIcon.visibility = View.VISIBLE
+        view.findViewById<ImageView>(R.id.picture_icon).visibility = View.GONE
+        view.findViewById<ImageView>(R.id.generic_icon).visibility = View.GONE
     }
 }

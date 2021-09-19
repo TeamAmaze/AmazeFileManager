@@ -100,6 +100,7 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -957,6 +958,21 @@ public class MainFragment extends Fragment
               (mainFragmentViewModel.getCurrentPath()), false, mainFragmentViewModel.getOpenMode());
           nofilesview.setRefreshing(false);
         });
+    nofilesview
+        .findViewById(R.id.no_files_relative)
+        .setOnKeyListener(
+            (v, keyCode, event) -> {
+              if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                  getMainActivity().getFAB().requestFocus();
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                  getMainActivity().onBackPressed();
+                } else {
+                  return false;
+                }
+              }
+              return true;
+            });
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
       ((ImageView) nofilesview.findViewById(R.id.image))
           .setColorFilter(Color.parseColor("#666666"));

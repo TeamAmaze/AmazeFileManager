@@ -1695,6 +1695,13 @@ public class MainActivity extends PermissionsActivity
               }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
               findViewById(R.id.content_frame).requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+              if (pasteHelper != null
+                  && pasteHelper.getSnackbar() != null
+                  && pasteHelper.getSnackbar().isShown())
+                ((Snackbar.SnackbarLayout) pasteHelper.getSnackbar().getView())
+                    .findViewById(R.id.snackBarActionButton)
+                    .requestFocus();
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
               fabButtonClick(cloudFab);
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {

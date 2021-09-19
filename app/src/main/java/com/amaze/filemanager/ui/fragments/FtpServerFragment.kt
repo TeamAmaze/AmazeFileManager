@@ -324,6 +324,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         menu.findItem(R.id.checkbox_ftp_readonly).isChecked = readonlyPreference
         menu.findItem(R.id.checkbox_ftp_secure).isChecked = securePreference
         menu.findItem(R.id.checkbox_ftp_legacy_filesystem).isChecked = legacyFileSystemPreference
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun shouldUseSafFileSystem(): Boolean {

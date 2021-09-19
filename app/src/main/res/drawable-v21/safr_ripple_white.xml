@@ -19,23 +19,23 @@
     -->
 
 <ripple xmlns:android="http://schemas.android.com/apk/res/android"
-    android:color="#DDDDDD">
+    android:color="@color/grey_translucent">
 
     <item>
         <selector>
             <item android:state_selected="true">
-                <color android:color="#EEEEEE" />
+                <color android:color="@color/grey_translucent" />
             </item>
 
             <item android:state_activated="true">
-                <color android:color="#EEEEEE" />
+                <color android:color="@color/grey_translucent" />
             </item>
 
             <!--<item>
                 <color android:color="#FFFFFF" />
             </item>-->
             <item android:state_pressed="true">
-                <color android:color="#FFFFFF"/>
+                <color android:color="@color/grey_translucent"/>
             </item>
             <item android:state_focused="true">
                 <color android:color="@color/grey_translucent" />
