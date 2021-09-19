@@ -84,6 +84,7 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -143,7 +144,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       UtilitiesProvider utilsProvider,
       SharedPreferences sharedPrefs,
       RecyclerView recyclerView,
-      ArrayList<LayoutElementParcelable> itemsRaw,
+      @NonNull List<LayoutElementParcelable> itemsRaw,
       Context context,
       boolean isGrid) {
     setHasStableIds(true);
@@ -388,12 +389,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     notifyItemInserted(getItemCount());
   }
 
-  public void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList) {
-    setItems(recyclerView, arrayList, true);
+  public void setItems(RecyclerView recyclerView, @NonNull List<LayoutElementParcelable> elements) {
+    setItems(recyclerView, elements, true);
   }
 
   private void setItems(
-      RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+      RecyclerView recyclerView,
+      @NonNull List<LayoutElementParcelable> elements,
+      boolean invalidate) {
     if (preloader != null) {
       recyclerView.removeOnScrollListener(preloader);
       preloader = null;
@@ -405,7 +408,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     ArrayList<IconDataParcelable> uris = new ArrayList<>(itemsDigested.size());
 
-    for (LayoutElementParcelable e : arrayList) {
+    for (LayoutElementParcelable e : elements) {
       itemsDigested.add(new ListItem(e.isBack, e));
       uris.add(e != null ? e.iconData : null);
     }
