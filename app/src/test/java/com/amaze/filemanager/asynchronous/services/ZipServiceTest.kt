@@ -32,8 +32,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.model.FileHeader
 import org.awaitility.Awaitility.await
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -115,17 +114,20 @@ class ZipServiceTest {
         await().atMost(10, TimeUnit.SECONDS).until { zipPath.length() > 0 }
         val verify = ZipFile(zipPath)
         val entries = verify.fileHeaders
-        assertEquals(files.size, entries.size)
+        assertEquals(files.filter { it.isFile }.size, entries.size)
         entries.sortBy { it.fileName }
-        verify.fileHeaders.forEachIndexed { idx: Int, any: Any? ->
-            run {
-                val entry = any as FileHeader
-                assertEquals(
-                    "${entry.fileName} timestamp not equal. " +
-                        "${Date(files[idx].lastModified())} " +
-                        "vs ${Date(entry.lastModifiedTimeEpoch)}",
-                    files[idx].lastModified(), entry.lastModifiedTimeEpoch
-                )
+        files.filter { it.isFile }.run {
+            verify.fileHeaders.forEachIndexed { idx: Int, any: Any? ->
+                run {
+                    val entry = any as FileHeader
+                    assertFalse(entry.fileName.startsWith('/'))
+                    assertEquals(
+                        "${entry.fileName} timestamp not equal. " +
+                            "${Date(this[idx].lastModified())} " +
+                            "vs ${Date(entry.lastModifiedTimeEpoch)}",
+                        this[idx].lastModified(), entry.lastModifiedTimeEpoch
+                    )
+                }
             }
         }
     }

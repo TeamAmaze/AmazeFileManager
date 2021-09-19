@@ -473,16 +473,10 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="authenticate_password">Inserisci la password</string>
 
     <string name="sidebar_preferences">Barra laterale</string>
-    <string name="sidebar_folders_title">Collegamenti della barra laterale</string>
     <string name="sidebar_quick_access_title">Accesso rapido Sidebar</string>
-    <string name="show_folders_pref_title">Visualizzare tasti di scelta rapida</string>
-    <string name="show_folders_pref">Tasti di scelta rapida</string>
     <string name="show_quick_access_pref_title">Visualizza gli accessi rapidi</string>
     <string name="show_quick_access_pref">Accessi rapidi</string>
-    <string name="create_shortcut">Crea collegamento</string>
-    <string name="edit_shortcut">Modificare la scelta rapida</string>
     <string name="directory">Directory</string>
-    <string name="question_delete_shortcut">Eliminare il collegamento?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
     <string name="cloud_error_failed_restart">Impossibile caricare la connessione.         Si prega di aprire una volta Amaze Cloud.</string>

@@ -382,10 +382,7 @@
     <string name="authenticate_password">비밀번호 입력</string>
 
     <string name="sidebar_preferences">사이드바</string>
-    <string name="sidebar_folders_title">사이드바 단축키</string>
     <string name="sidebar_quick_access_title">사이드바 quick access</string>
-    <string name="show_folders_pref_title">단축키 보기</string>
-    <string name="show_folders_pref">단축키</string>
     <string name="show_quick_access_pref_title">Quick accesses 보기</string>
     <string name="show_quick_access_pref">Quick accesses</string>
     <string name="showHeaders">Headers 보기</string>

@@ -505,16 +505,10 @@
     <string name="authenticate_password">請輸入密碼</string>
 
     <string name="sidebar_preferences">邊欄</string>
-    <string name="sidebar_folders_title">側欄捷徑</string>
     <string name="sidebar_quick_access_title">側欄快速存取</string>
-    <string name="show_folders_pref_title">顯示捷徑</string>
-    <string name="show_folders_pref">捷徑</string>
     <string name="show_quick_access_pref_title">顯示快速存取</string>
     <string name="show_quick_access_pref">快速存取</string>
-    <string name="create_shortcut">建立捷徑</string>
-    <string name="edit_shortcut">編輯捷徑</string>
     <string name="directory">目錄</string>
-    <string name="question_delete_shortcut">刪除捷徑？</string>
 
     <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
     <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
