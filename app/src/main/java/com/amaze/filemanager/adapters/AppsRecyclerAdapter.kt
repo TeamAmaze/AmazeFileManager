@@ -115,12 +115,8 @@ class AppsRecyclerAdapter(
                 (fragment.requireActivity() as MainActivity)
                     .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
             if (enableMarqueeFilename) {
-                holder.txtTitle.ellipsize =
-                    if (enableMarqueeFilename) {
-                        TextUtils.TruncateAt.MARQUEE
-                    } else {
-                        TextUtils.TruncateAt.MIDDLE
-                    }
+                holder.txtTitle.ellipsize = if (enableMarqueeFilename)
+                    TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.MIDDLE
                 marqueeAfterDelay(2000, holder.txtTitle)
             }
 
@@ -153,6 +149,10 @@ class AppsRecyclerAdapter(
         return appDataParcelableList.size
     }
 
+    /**
+     * Set list elements
+     * @param showSystemApps whether to filter system apps or not
+     */
     fun setData(data: List<AppDataParcelable>, showSystemApps: Boolean) {
         appDataParcelableList.run {
             clear()
@@ -213,76 +213,26 @@ class AppsRecyclerAdapter(
                 val colorAccent = themedActivity.accent
                 when (item.itemId) {
                     R.id.open -> {
-                        val i1 = fragment
-                            .context
-                            ?.packageManager
-                            ?.getLaunchIntentForPackage(rowItem!!.packageName)
-                        if (i1 != null) fragment.startActivity(i1) else Toast.makeText(
-                            fragment.context,
-                            fragment.getString(R.string.not_allowed),
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
+                        rowItem?.let {
+                            popupOpen(it)
+                        }
                         return@setOnMenuItemClickListener true
                     }
                     R.id.share -> {
-                        val arrayList2 =
-                            ArrayList<File>()
-                        arrayList2.add(File(rowItem!!.path))
-                        themedActivity.colorPreference
-                        FileUtils.shareFiles(
-                            arrayList2,
-                            fragment.activity,
-                            themedActivity.utilsProvider.appTheme,
-                            colorAccent
-                        )
+                        rowItem?.let {
+                            popupShare(it, themedActivity, colorAccent)
+                        }
                         return@setOnMenuItemClickListener true
                     }
                     R.id.unins -> {
-                        val f1 = HybridFileParcelable(rowItem!!.path)
-                        f1.mode = OpenMode.ROOT
-                        if (rowItem.isSystemApp) {
-                            // system package
-                            if ((fragment.requireActivity() as MainActivity).getBoolean(
-                                    PreferencesConstants.PREFERENCE_ROOTMODE
-                                )
-                            ) {
-                                showDeleteSystemAppDialog(themedActivity, colorAccent, f1)
-                            } else {
-                                Toast.makeText(
-                                    fragment.context,
-                                    fragment.getString(R.string.enablerootmde),
-                                    Toast.LENGTH_SHORT
-                                )
-                                    .show()
-                            }
-                        } else {
-                            FileUtils.uninstallPackage(
-                                rowItem.packageName,
-                                fragment.context
-                            )
+                        rowItem?.let {
+                            popupUninstall(it, themedActivity, colorAccent)
                         }
                         return@setOnMenuItemClickListener true
                     }
                     R.id.play -> {
-                        val intent1 =
-                            Intent(Intent.ACTION_VIEW)
-                        try {
-                            intent1.data = Uri.parse(
-                                String.format(
-                                    "market://details?id=%s",
-                                    rowItem!!.packageName
-                                )
-                            )
-                            fragment.startActivity(intent1)
-                        } catch (ifPlayStoreNotInstalled: ActivityNotFoundException) {
-                            intent1.data = Uri.parse(
-                                String.format(
-                                    "https://play.google.com/store/apps/details?id=%s",
-                                    rowItem!!.packageName
-                                )
-                            )
-                            fragment.startActivity(intent1)
+                        rowItem?.let {
+                            popupPlay(it)
                         }
                         return@setOnMenuItemClickListener true
                     }
@@ -301,36 +251,9 @@ class AppsRecyclerAdapter(
                         return@setOnMenuItemClickListener true
                     }
                     R.id.backup -> {
-                        Toast.makeText(
-                            fragment.context,
-                            fragment.getString(R.string.copyingapk) +
-                                Environment.getExternalStorageDirectory().path +
-                                "/app_backup",
-                            Toast.LENGTH_LONG
-                        )
-                            .show()
-                        val f = File(rowItem!!.path)
-                        val ab =
-                            ArrayList<HybridFileParcelable>()
-                        val dst = File(
-                            Environment.getExternalStorageDirectory()
-                                .path + "/app_backup"
-                        )
-                        if (!dst.exists() || !dst.isDirectory) dst.mkdirs()
-                        val intent = Intent(
-                            fragment.context,
-                            CopyService::class.java
-                        )
-                        val baseFile =
-                            RootHelper.generateBaseFile(f, true)
-                        val startIndex = rowItem.packageName.indexOf("_")
-                        val subString = rowItem.packageName.substring(startIndex + 1)
-                        baseFile.name = (rowItem.label + "_$subString.apk")
-                        ab.add(baseFile)
-                        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab)
-                        intent.putExtra(CopyService.TAG_COPY_TARGET, dst.path)
-                        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0)
-                        ServiceWatcherUtil.runService(fragment.context, intent)
+                        rowItem?.let {
+                            popupBackup(it)
+                        }
                         return@setOnMenuItemClickListener true
                     }
                 }
@@ -339,6 +262,114 @@ class AppsRecyclerAdapter(
             popupMenu.inflate(R.menu.app_options)
             popupMenu.show()
         }
+    }
+
+    private fun popupOpen(appDataParcelable: AppDataParcelable) {
+        val i1 = fragment
+            .context
+            ?.packageManager
+            ?.getLaunchIntentForPackage(appDataParcelable.packageName)
+        if (i1 != null) fragment.startActivity(i1) else Toast.makeText(
+            fragment.context,
+            fragment.getString(R.string.not_allowed),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun popupShare(appDataParcelable: AppDataParcelable,
+                           themedActivity: ThemedActivity, colorAccent: Int) {
+        val arrayList2 =
+            ArrayList<File>()
+        arrayList2.add(File(appDataParcelable.path))
+        themedActivity.colorPreference
+        FileUtils.shareFiles(
+            arrayList2,
+            fragment.activity,
+            themedActivity.utilsProvider.appTheme,
+            colorAccent
+        )
+    }
+
+    private fun popupUninstall(appDataParcelable: AppDataParcelable,
+                               themedActivity: ThemedActivity, colorAccent: Int) {
+        val f1 = HybridFileParcelable(appDataParcelable.path)
+        f1.mode = OpenMode.ROOT
+        if (appDataParcelable.isSystemApp) {
+            // system package
+            if ((fragment.requireActivity() as MainActivity).getBoolean(
+                    PreferencesConstants.PREFERENCE_ROOTMODE
+                )
+            ) {
+                showDeleteSystemAppDialog(themedActivity, colorAccent, f1)
+            } else {
+                Toast.makeText(
+                    fragment.context,
+                    fragment.getString(R.string.enablerootmde),
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
+            }
+        } else {
+            FileUtils.uninstallPackage(
+                appDataParcelable.packageName,
+                fragment.context
+            )
+        }
+    }
+
+    private fun popupPlay(appDataParcelable: AppDataParcelable) {
+        val intent1 =
+            Intent(Intent.ACTION_VIEW)
+        try {
+            intent1.data = Uri.parse(
+                String.format(
+                    "market://details?id=%s",
+                    appDataParcelable.packageName
+                )
+            )
+            fragment.startActivity(intent1)
+        } catch (ifPlayStoreNotInstalled: ActivityNotFoundException) {
+            intent1.data = Uri.parse(
+                String.format(
+                    "https://play.google.com/store/apps/details?id=%s",
+                    appDataParcelable.packageName
+                )
+            )
+            fragment.startActivity(intent1)
+        }
+    }
+
+    private fun popupBackup(appDataParcelable: AppDataParcelable) {
+        Toast.makeText(
+            fragment.context,
+            fragment.getString(R.string.copyingapk) +
+                    Environment.getExternalStorageDirectory().path +
+                    "/app_backup",
+            Toast.LENGTH_LONG
+        )
+            .show()
+        val f = File(appDataParcelable.path)
+        val ab =
+            ArrayList<HybridFileParcelable>()
+        val dst = File(
+            Environment.getExternalStorageDirectory()
+                .path + "/app_backup"
+        )
+        if (!dst.exists() || !dst.isDirectory) dst.mkdirs()
+        val intent = Intent(
+            fragment.context,
+            CopyService::class.java
+        )
+        val baseFile =
+            RootHelper.generateBaseFile(f, true)
+        val startIndex = appDataParcelable.packageName.indexOf("_")
+        val subString = appDataParcelable.packageName.substring(startIndex + 1)
+        baseFile.name = (appDataParcelable.label + "_$subString.apk")
+        ab.add(baseFile)
+        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab)
+        intent.putExtra(CopyService.TAG_COPY_TARGET, dst.path)
+        intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0)
+        ServiceWatcherUtil.runService(fragment.context, intent)
     }
 
     private fun showDeleteSystemAppDialog(

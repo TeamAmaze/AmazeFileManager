@@ -273,7 +273,7 @@ public class AppsListFragment extends Fragment
             .scrollToPosition(
                 Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
       }
-    } catch (Exception e) {
+    } catch (IndexOutOfBoundsException e) {
       Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
     }
   }

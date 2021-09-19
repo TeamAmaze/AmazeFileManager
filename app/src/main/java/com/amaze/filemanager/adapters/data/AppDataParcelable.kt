@@ -24,6 +24,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
+@Suppress("LongParameterList")
 class AppDataParcelable(
     var label: String,
     var path: String,

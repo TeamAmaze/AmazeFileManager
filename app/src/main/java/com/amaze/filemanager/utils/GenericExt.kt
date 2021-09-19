@@ -38,6 +38,10 @@ inline fun <T1 : Any, T2 : Any, T3 : Any, T4 : Any, T5 : Any, R : Any> safeLet(
     ) else null
 }
 
+/**
+ * Allow null checks on more than one parameters at the same time.
+ * Alternative of doing nested p1?.let p2?.let
+ */
 inline fun <T1 : Any, T2 : Any, T3 : Any, R : Any> safeLet(
     p1: T1?,
     p2: T2?,
@@ -50,6 +54,10 @@ inline fun <T1 : Any, T2 : Any, T3 : Any, R : Any> safeLet(
     ) else null
 }
 
+/**
+ * Allow null checks on more than one parameters at the same time.
+ * Alternative of doing nested p1?.let p2?.let
+ */
 inline fun <T1 : Any, T2 : Any, R : Any> safeLet(
     p1: T1?,
     p2: T2?,

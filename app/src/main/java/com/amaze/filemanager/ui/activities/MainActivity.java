@@ -1688,10 +1688,8 @@ public class MainActivity extends PermissionsActivity
         (v, keyCode, event) -> {
           if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-              if (getCurrentTab() == 0) {
-                if (getFAB().isFocused()) {
-                  getTabFragment().mViewPager.setCurrentItem(1);
-                }
+              if (getCurrentTab() == 0 && getFAB().isFocused()) {
+                getTabFragment().mViewPager.setCurrentItem(1);
               }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
               findViewById(R.id.content_frame).requestFocus();

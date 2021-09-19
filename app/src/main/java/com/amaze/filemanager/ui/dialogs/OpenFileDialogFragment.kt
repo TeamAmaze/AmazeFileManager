@@ -448,7 +448,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                     (viewHolder.adapterPosition + 1).coerceAtMost(adapter.itemCount - 1)
                 )
             }
-        } catch (e: Exception) {
+        } catch (e: IndexOutOfBoundsException) {
             Log.w(javaClass.simpleName, "Failed to adjust scrollview", e)
         }
     }
