@@ -37,12 +37,13 @@
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:layout_height="match_parent"/>
+            android:layout_height="match_parent"
+            android:descendantFocusability="afterDescendants"/>
 
         <include
             android:id="@+id/lin"
             layout="@layout/layout_appbar"
-            android:descendantFocusability="afterDescendants"
+            android:focusable="true"
             />
         <include layout="@layout/layout_search"/>
 

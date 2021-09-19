@@ -85,10 +85,6 @@ class AppsRecyclerAdapter(
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is AppHolder) {
             val rowItem: AppDataParcelable = appDataParcelableList[position]
-            adjustListViewCallback.adjustListViewForTv(
-                holder,
-                fragment.requireActivity() as MainActivity
-            )
             if (isBottomSheet) {
                 holder.about.visibility = View.GONE
                 holder.txtDesc.text = rowItem.openFileParcelable?.className
@@ -107,6 +103,12 @@ class AppsRecyclerAdapter(
                     )
                 }
                 showPopup(holder.about, rowItem)
+            }
+            holder.rl.setOnFocusChangeListener { _, _ ->
+                adjustListViewCallback.adjustListViewForTv(
+                    holder,
+                    fragment.requireActivity() as MainActivity
+                )
             }
             holder.txtTitle.text = rowItem.label
             val enableMarqueeFilename =

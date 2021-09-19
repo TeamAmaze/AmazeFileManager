@@ -15,7 +15,7 @@
         android:descendantFocusability="afterDescendants"
         android:visibility="gone"
         />
-    <androidx.appcompat.widget.AppCompatSpinner
+    <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         android:id="@+id/loading_spinner"
         android:layout_width="@dimen/material_generic_large"
         android:layout_height="@dimen/material_generic_large"

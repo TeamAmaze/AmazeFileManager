@@ -58,13 +58,14 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.AppCompatSpinner;
 import androidx.fragment.app.Fragment;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.Loader;
 import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class AppsListFragment extends Fragment
     implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair>,
@@ -281,7 +282,7 @@ public class AppsListFragment extends Fragment
     return rootView.findViewById(R.id.list_view);
   }
 
-  private AppCompatSpinner getSpinner() {
+  private MaterialProgressBar getSpinner() {
     return rootView.findViewById(R.id.loading_spinner);
   }
 }

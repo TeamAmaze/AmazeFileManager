@@ -445,7 +445,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             > requireContext().resources.displayMetrics.heightPixels
             ) {
                 viewBinding.appsRecyclerView.scrollToPosition(
-                    (viewHolder.adapterPosition + 2).coerceAtMost(adapter.itemCount - 1)
+                    (viewHolder.adapterPosition + 1).coerceAtMost(adapter.itemCount - 1)
                 )
             }
         } catch (e: Exception) {
