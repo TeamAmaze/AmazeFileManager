@@ -1814,6 +1814,7 @@ public class MainFragment extends Fragment
     }
   }
 
+  @Nullable
   public String getCurrentPath() {
     if (mainFragmentViewModel == null) {
       Log.w(getClass().getSimpleName(), "Viewmodel not available to get current path");
@@ -1823,7 +1824,7 @@ public class MainFragment extends Fragment
   }
 
   @Override
-  public void changePath(String path) {
+  public void changePath(@NonNull String path) {
     loadlist(path, false, mainFragmentViewModel.getOpenMode());
   }
 

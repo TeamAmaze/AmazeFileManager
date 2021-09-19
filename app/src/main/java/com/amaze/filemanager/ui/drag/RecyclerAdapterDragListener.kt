@@ -142,7 +142,7 @@ class RecyclerAdapterDragListener(
                     var currentFileParcelable: HybridFileParcelable? = null
                     var isCurrentElementDirectory: Boolean? = null
                     var isEmptyArea: Boolean? = null
-                    var pasteLocation: String = if (adapter.itemsDigested.size == 0) {
+                    var pasteLocation: String? = if (adapter.itemsDigested.size == 0) {
                         mainFragment.currentPath
                     } else {
                         if (holder == null || holder.adapterPosition == RecyclerView.NO_POSITION) {
@@ -226,7 +226,7 @@ class RecyclerAdapterDragListener(
                             ).format(pasteLocation)
                     )
                     DragAndDropDialog.showDialogOrPerformOperation(
-                        pasteLocation,
+                        pasteLocation!!,
                         arrayList, mainFragment.mainActivity
                     )
                     adapter.toggleChecked(false)
