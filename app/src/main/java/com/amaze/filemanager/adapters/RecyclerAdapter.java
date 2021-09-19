@@ -160,7 +160,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     this.dragAndDropPreference =
         sharedPrefs.getInt(
             PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-            PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+            PreferencesConstants.PREFERENCE_DRAG_DEFAULT);
     this.isGrid = isGrid;
 
     mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
