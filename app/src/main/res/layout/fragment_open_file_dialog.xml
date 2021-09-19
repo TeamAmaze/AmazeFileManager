@@ -3,13 +3,11 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent"
-    android:layout_width="@dimen/zero_dp"
+    android:layout_width="@dimen/material_sheet_peek_height"
     android:layout_height="wrap_content"
     android:maxHeight="@dimen/material_sheet_height"
     android:background="@drawable/shape_dialog_bottomsheet_white"
     android:elevation="@dimen/material_generic_card_elevation"
-    app:layout_constraintLeft_toLeftOf="parent"
-    app:layout_constraintRight_toRightOf="parent"
     >
     <ImageView
         android:id="@+id/last_app_image"

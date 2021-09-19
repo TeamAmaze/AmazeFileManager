@@ -97,9 +97,7 @@ class AppsRecyclerAdapter(
             if (holder.about != null && !isBottomSheet) {
                 if ((fragment.requireActivity() as MainActivity).appTheme == AppTheme.LIGHT) {
                     holder.about.setColorFilter(
-                        Color.parseColor(
-                            "#ff666666"
-                        )
+                        Color.parseColor("#ff666666")
                     )
                 }
                 showPopup(holder.about, rowItem)
@@ -127,9 +125,7 @@ class AppsRecyclerAdapter(
             holder.rl.isClickable = true
             holder.rl.nextFocusRightId = holder.about.id
             holder.rl.setOnClickListener {
-                startActivityForRowItem(
-                    rowItem
-                )
+                startActivityForRowItem(rowItem)
             }
             if (myChecked[position]) {
                 holder.rl.setBackgroundColor(
@@ -276,8 +272,11 @@ class AppsRecyclerAdapter(
         ).show()
     }
 
-    private fun popupShare(appDataParcelable: AppDataParcelable,
-                           themedActivity: ThemedActivity, colorAccent: Int) {
+    private fun popupShare(
+        appDataParcelable: AppDataParcelable,
+        themedActivity: ThemedActivity,
+        colorAccent: Int
+    ) {
         val arrayList2 =
             ArrayList<File>()
         arrayList2.add(File(appDataParcelable.path))
@@ -290,8 +289,11 @@ class AppsRecyclerAdapter(
         )
     }
 
-    private fun popupUninstall(appDataParcelable: AppDataParcelable,
-                               themedActivity: ThemedActivity, colorAccent: Int) {
+    private fun popupUninstall(
+        appDataParcelable: AppDataParcelable,
+        themedActivity: ThemedActivity,
+        colorAccent: Int
+    ) {
         val f1 = HybridFileParcelable(appDataParcelable.path)
         f1.mode = OpenMode.ROOT
         if (appDataParcelable.isSystemApp) {
@@ -343,8 +345,8 @@ class AppsRecyclerAdapter(
         Toast.makeText(
             fragment.context,
             fragment.getString(R.string.copyingapk) +
-                    Environment.getExternalStorageDirectory().path +
-                    "/app_backup",
+                Environment.getExternalStorageDirectory().path +
+                "/app_backup",
             Toast.LENGTH_LONG
         )
             .show()

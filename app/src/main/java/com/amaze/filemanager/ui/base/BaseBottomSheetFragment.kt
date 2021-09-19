@@ -32,8 +32,8 @@ open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
     override fun onResume() {
         super.onResume()
-        val configuration: Configuration = activity!!.resources.configuration
-        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
+        val configuration: Configuration = requireActivity().resources.configuration
+        if (configuration.orientation == Configuration.ORIENTATION_LANDSCAPE &&
             configuration.screenWidthDp > 450
         ) {
             // see recommendations on https://material.io/components/sheets-bottom#specs
