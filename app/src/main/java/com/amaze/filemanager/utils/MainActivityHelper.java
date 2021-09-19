@@ -51,6 +51,7 @@ import com.amaze.filemanager.filesystem.Operations;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -449,17 +450,17 @@ public class MainActivityHelper {
           }
 
           return WRITABLE_OR_ON_SDCARD;
-        } else if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
+        } else if (FileProperties.isWritable(new File(folder, FileUtils.DUMMY_FILE))) {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
       } else if (Build.VERSION.SDK_INT == 19) {
         if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
           // Assume that Kitkat workaround works
           return WRITABLE_OR_ON_SDCARD;
-        } else if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
+        } else if (FileProperties.isWritable(new File(folder, FileUtils.DUMMY_FILE))) {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
-      } else if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
+      } else if (FileProperties.isWritable(new File(folder, FileUtils.DUMMY_FILE))) {
         return WRITABLE_OR_ON_SDCARD;
       } else {
         return DOESNT_EXIST;
