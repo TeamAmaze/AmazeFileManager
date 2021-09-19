@@ -449,17 +449,17 @@ public class MainActivityHelper {
           }
 
           return WRITABLE_OR_ON_SDCARD;
-        } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+        } else if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
       } else if (Build.VERSION.SDK_INT == 19) {
         if (ExternalSdCardOperation.isOnExtSdCard(folder, context)) {
           // Assume that Kitkat workaround works
           return WRITABLE_OR_ON_SDCARD;
-        } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+        } else if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
           return WRITABLE_OR_ON_SDCARD;
         } else return DOESNT_EXIST;
-      } else if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+      } else if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
         return WRITABLE_OR_ON_SDCARD;
       } else {
         return DOESNT_EXIST;

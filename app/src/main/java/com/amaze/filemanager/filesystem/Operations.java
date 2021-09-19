@@ -594,7 +594,7 @@ public class Operations {
     }
 
     // file not on external sd card
-    if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+    if (FileProperties.isWritable(new File(folder, ".DummyFile"))) {
       return 1;
     } else {
       return 0;
