@@ -492,16 +492,10 @@
     <string name="crypt_fingerprint_authenticate">Stiskněte senzor pro pokračování</string>
     <string name="authenticate_password">Zadejte heslo</string>
 
-    <string name="sidebar_folders_title">Zkratky postranního panelu</string>
     <string name="sidebar_quick_access_title">Rychlý přístup k postrannímu panelu</string>
-    <string name="show_folders_pref_title">Zobrazit zkratky</string>
-    <string name="show_folders_pref">Zkratky</string>
     <string name="show_quick_access_pref_title">Zobrazit Rychlý přístup</string>
     <string name="show_quick_access_pref">Rychlý přístup</string>
-    <string name="create_shortcut">Vytvořit zástupce</string>
-    <string name="edit_shortcut">Upravit zástupce</string>
     <string name="directory">Adresář</string>
-    <string name="question_delete_shortcut">Odstranit zástupce?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin nebyl nalezen. Stáhněte si ho z Obchodu Play.</string>
     <string name="cloud_error_failed_restart">Nepodařilo se načíst připojení.         Prosím, otevřete jednou Amaze Cloud.</string>

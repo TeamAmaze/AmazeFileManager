@@ -51,11 +51,11 @@
         <com.amaze.filemanager.ui.views.preference.CheckBox
             app:defaultValue="true"
             app:key="sidebar_folders_enable"
-            app:title="@string/show_folders_pref_title"/>
+            app:title="@string/show_bookmarks_pref_title"/>
         <Preference
             app:dependency="sidebar_folders_enable"
             app:key="sidebar_folders"
-            app:title="@string/show_folders_pref"/>
+            app:title="@string/show_bookmarks_pref"/>
 
         <com.amaze.filemanager.ui.views.preference.CheckBox
             app:defaultValue="true"

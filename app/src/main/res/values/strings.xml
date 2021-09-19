@@ -518,16 +518,17 @@
     <string name="authenticate_password">Enter password</string>
 
     <string name="sidebar_preferences">Sidebar</string>
-    <string name="sidebar_folders_title">Sidebar shortcuts</string>
     <string name="sidebar_quick_access_title">Sidebar quick access</string>
-    <string name="show_folders_pref_title">Show shortcuts</string>
-    <string name="show_folders_pref">Shortcuts</string>
     <string name="show_quick_access_pref_title">Show quick accesses</string>
     <string name="show_quick_access_pref">Quick accesses</string>
-    <string name="create_shortcut">Create shortcut</string>
-    <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>
-    <string name="question_delete_shortcut">Delete shortcut?</string>
+
+    <string name="sidebar_bookmarks_title">Sidebar bookmarks</string>
+    <string name="show_bookmarks_pref_title">Show bookmarks</string>
+    <string name="show_bookmarks_pref">Bookmarks</string>
+    <string name="create_bookmark">Create bookmark</string>
+    <string name="edit_bookmark">Edit bookmark</string>
+    <string name="question_delete_bookmark">Delete bookmark?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.

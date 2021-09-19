@@ -492,16 +492,10 @@
     <string name="crypt_fingerprint_authenticate">Pre pokračovanie sa dotknite sa senzora</string>
     <string name="authenticate_password">Zadajte heslo</string>
 
-    <string name="sidebar_folders_title">Skratky bočného panela</string>
     <string name="sidebar_quick_access_title">Rýchly prístup k bočnému panelu</string>
-    <string name="show_folders_pref_title">Zobraziť odkazy</string>
-    <string name="show_folders_pref">Odkazy</string>
     <string name="show_quick_access_pref_title">Zobraziť Rýchly prístup</string>
     <string name="show_quick_access_pref">Rýchly prístup</string>
-    <string name="create_shortcut">Vytvoriť odkaz</string>
-    <string name="edit_shortcut">Upraviť odkaz</string>
     <string name="directory">Adresár</string>
-    <string name="question_delete_shortcut">Odstrániť odkaz?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin nebol nájdený. Stiahnite si ho prosím z obchodu Play.</string>
     <string name="cloud_error_failed_restart">Spojenie sa nepodarilo nadviazať.  Prosím najprv otvorte Amaze Cloud.</string>

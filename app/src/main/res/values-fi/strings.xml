@@ -502,16 +502,10 @@
     <string name="crypt_fingerprint_authenticate">Paina kosketusanturia jatkaaksesi</string>
     <string name="authenticate_password">Syötä salasana</string>
 
-    <string name="sidebar_folders_title">Sivupalkin pikanäppäimet</string>
     <string name="sidebar_quick_access_title">Sivupalkin nopeavaus</string>
-    <string name="show_folders_pref_title">Näytä pikanäppäimet</string>
-    <string name="show_folders_pref">Pikavalinnat</string>
     <string name="show_quick_access_pref_title">Hallitse pikakäyttöä</string>
     <string name="show_quick_access_pref">Pikavalikko</string>
-    <string name="create_shortcut">Luo pikakuvake</string>
-    <string name="edit_shortcut">Muokkaa pikakuvaketta</string>
     <string name="directory">Hakemisto</string>
-    <string name="question_delete_shortcut">Poista pikavalinta</string>
 
     <string name="cloud_error_plugin">Amaze laajennusta ei löytynyt, lataa Google Play Storesta.</string>
     <string name="cloud_error_failed_restart">Yhteys epäonnistui.  Avaa Amaze Cloud kerran.</string>

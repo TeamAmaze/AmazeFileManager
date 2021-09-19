@@ -495,16 +495,10 @@
     <string name="crypt_fingerprint_authenticate">Коснитесь сенсора для продолжения</string>
     <string name="authenticate_password">Введите пароль</string>
 
-    <string name="sidebar_folders_title">Быстрые клавиши на боковой панели</string>
     <string name="sidebar_quick_access_title">Боковая панель быстрого доступа</string>
-    <string name="show_folders_pref_title">Показать ярлыки</string>
-    <string name="show_folders_pref">Ярлыки</string>
     <string name="show_quick_access_pref_title">Показать быстрый доступ</string>
     <string name="show_quick_access_pref">Быстрый доступ</string>
-    <string name="create_shortcut">Создать ярлык</string>
-    <string name="edit_shortcut">Редактировать ярлык</string>
     <string name="directory">Директория</string>
-    <string name="question_delete_shortcut">Удалить ярлык?</string>
 
     <string name="cloud_error_plugin">Плагин Amaze Cloud не найден. Пожалуйста загрузите его из Play Маркета.</string>
     <string name="cloud_error_failed_restart">Не удалось установить соединение.        Пожалуйста откройте Amaze Cloud.</string>
