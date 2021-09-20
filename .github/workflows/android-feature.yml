@@ -6,7 +6,6 @@ on:
       - 'master'
       - 'release/*'
       - 'hotfix/*'
-      - 'vishnu-ci-fix'
 
 concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}
