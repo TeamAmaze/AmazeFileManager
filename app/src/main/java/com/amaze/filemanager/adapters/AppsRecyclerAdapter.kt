@@ -36,6 +36,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.afollestad.materialdialogs.DialogAction
@@ -201,8 +202,16 @@ class AppsRecyclerAdapter(
 
     private fun showPopup(v: View, rowItem: AppDataParcelable?) {
         v.setOnClickListener { view: View? ->
+            var context = fragment.context
+            if ((
+                fragment.requireActivity()
+                    as MainActivity
+                ).appTheme.simpleTheme == AppTheme.BLACK
+            ) {
+                context = ContextThemeWrapper(context, R.style.overflow_black)
+            }
             val popupMenu = PopupMenu(
-                fragment.context, view
+                context, view
             )
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 val themedActivity: MainActivity = fragment.requireActivity() as MainActivity

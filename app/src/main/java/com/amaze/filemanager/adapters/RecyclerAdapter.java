@@ -87,6 +87,7 @@ import android.widget.TextView;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -1153,6 +1154,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   private void showPopup(View view, final LayoutElementParcelable rowItem) {
+    if (mainFrag.getMainActivity().getAppTheme().getSimpleTheme() == AppTheme.BLACK) {
+      context = new ContextThemeWrapper(context, R.style.overflow_black);
+    }
     PopupMenu popupMenu =
         new ItemPopupMenu(
             context,

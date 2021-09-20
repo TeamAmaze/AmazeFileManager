@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.dialogs
 
-import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -33,7 +32,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -60,8 +58,6 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
 class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
 
@@ -322,31 +318,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         viewBinding.appsRecyclerView.addOnScrollListener(preloader)
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-
-        dialog.setOnShowListener {
-            val bottomSheet = (it as BottomSheetDialog)
-                .findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.run {
-                val behavior = BottomSheetBehavior.from(this)
-
-                behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                        }
-                    }
-
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        // do nothing
-                    }
-                })
-            }
-        }
-        return dialog
-    }
-
     override fun onPause() {
         super.onPause()
         dismiss()
@@ -437,19 +408,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
     }
 
     override fun adjustListViewForTv(viewHolder: AppHolder, mainActivity: MainActivity) {
-        try {
-            val location = IntArray(2)
-            viewHolder.rl.getLocationOnScreen(location)
-            Log.i(javaClass.simpleName, "Current x and y " + location[0] + " " + location[1])
-            if (location[1] + viewHolder.rl.height
-            > requireContext().resources.displayMetrics.heightPixels
-            ) {
-                viewBinding.appsRecyclerView.scrollToPosition(
-                    (viewHolder.adapterPosition + 1).coerceAtMost(adapter.itemCount - 1)
-                )
-            }
-        } catch (e: IndexOutOfBoundsException) {
-            Log.w(javaClass.simpleName, "Failed to adjust scrollview", e)
-        }
+        // do nothing
     }
 }
