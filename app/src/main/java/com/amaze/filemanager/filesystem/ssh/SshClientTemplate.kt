@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh
 
+import androidx.annotation.Nullable
 import net.schmizz.sshj.SSHClient
 import java.io.IOException
 
@@ -27,7 +28,7 @@ import java.io.IOException
  * Template class for executing actions with [SSHClient] while leave the complexities of
  * handling connection setup/teardown to [SshClientUtils].
  */
-abstract class SshClientTemplate
+abstract class SshClientTemplate <T>
 /**
  * Constructor, with closeClientOnFinish set to true (that the connection must close after `
  * execute`.
@@ -47,14 +48,6 @@ constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolea
      * @return Result of the execution of the type requested
      </T> */
     @Throws(IOException::class)
-    abstract fun <T> execute(client: SSHClient): T
-    /**
-     * Constructor.
-     *
-     * @param url SSH connection URL, in the form of `
-     * ssh://<username>:<password>@<host>:<port>` or `
-     * ssh://<username>@<host>:<port>`
-     * @param closeClientOnFinish if set to false, connection will be kept on after `execute
-     ` *  finishes. This is useful for other calls to reuse the connection.
-     */
+    @Nullable
+    abstract fun execute(client: SSHClient): T
 }

@@ -429,9 +429,9 @@ public class Operations {
           return null;
         } else if (oldFile.isSftp()) {
           SshClientUtils.execute(
-              new SFtpClientTemplate(oldFile.getPath()) {
+              new SFtpClientTemplate<Void>(oldFile.getPath()) {
                 @Override
-                public <Void> Void execute(@NonNull SFTPClient client) {
+                public Void execute(@NonNull SFTPClient client) {
                   try {
                     client.rename(
                         SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
