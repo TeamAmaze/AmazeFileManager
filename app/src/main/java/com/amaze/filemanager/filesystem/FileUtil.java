@@ -45,6 +45,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
@@ -267,6 +268,11 @@ public abstract class FileUtil {
 
               @Override
               public void onSuccess(@NonNull List<String> paths) {
+                MediaScannerConnection.scanFile(
+                    mainActivity.getApplicationContext(),
+                    paths.toArray(new String[0]),
+                    new String[paths.size()],
+                    null);
                 if (paths.size() == 1) {
                   Toast.makeText(
                           mainActivity,
