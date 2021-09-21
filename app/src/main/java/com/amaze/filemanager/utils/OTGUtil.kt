@@ -36,13 +36,13 @@ import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
-import com.amaze.filemanager.filesystem.SafRootHolder
 import kotlin.collections.ArrayList
 
 /** Created by Vishal on 27-04-2017.  */
 object OTGUtil {
 
     const val PREFIX_OTG = "otg:/"
+    private const val PREFIX_DOCUMENT_FILE = "content:/"
     const val PREFIX_MEDIA_REMOVABLE = "/mnt/media_rw"
 
     private val TAG = OTGUtil::class.java.simpleName
@@ -98,25 +98,19 @@ object OTGUtil {
         fileFound: OnFileFound
     ) {
         var rootUri = DocumentFile.fromTreeUri(context, rootUriString)
-        val parts = path.substringAfter(rootUriString.toString()).split("/").toTypedArray()
+        val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
+            path.substringAfter(rootUriString.toString())
+                .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
+        } else {
+            path.split("/").toTypedArray()
+        }
         for (part in parts.filterNot { it.isEmpty() or it.isBlank() }) {
             // first omit 'otg:/' before iterating through DocumentFile
-            if (path == "$PREFIX_OTG/") break
-            if (part == "otg:" || part.isEmpty() || part == PATH_ELEMENT_DOCUMENT) continue
+            if (path == "$PREFIX_OTG/" || path == "$PREFIX_DOCUMENT_FILE/") break
+            if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
-            if (part.startsWith(PRIMARY_STORAGE_PREFIX)) {
-                part.substringAfterLast(
-                    SafRootHolder.uriRoot.toString().substringAfterLast("/")
-                ).split(PATH_SEPARATOR_ENCODED)
-                    .filterNot { it.isEmpty() or it.isBlank() }
-                    .forEach {
-                        rootUri = rootUri!!.findFile(it)
-                    }
-                break
-            } else {
-                rootUri = rootUri!!.findFile(part)
-            }
+            rootUri = rootUri!!.findFile(part)
         }
 
         // we have the end point DocumentFile, list the files inside it and return
@@ -126,8 +120,7 @@ object OTGUtil {
                 if (!file.isDirectory) size = file.length()
                 Log.d(context.javaClass.simpleName, "Found file: ${file.name}")
                 val baseFile = HybridFileParcelable(
-//                    path + "/" + file.name,
-                    file.uri.toString(),
+                    path + "/" + file.name,
                     RootHelper.parseDocumentFilePermission(file),
                     file.lastModified(),
                     size,
@@ -156,7 +149,7 @@ object OTGUtil {
         val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
             ?: throw NullPointerException("USB OTG root not set!")
 
-        return getDocumentFile(path, rootUriString, context, createRecursive)
+        return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
     }
 
     @JvmStatic
@@ -164,34 +157,27 @@ object OTGUtil {
         path: String,
         rootUri: Uri,
         context: Context,
+        openMode: OpenMode,
         createRecursive: Boolean
     ): DocumentFile? {
         // start with root of SD card and then parse through document tree.
         var retval = DocumentFile.fromTreeUri(context, rootUri)
-        val parts = path.substringAfter(SafRootHolder.uriRoot.toString()).split("/").toTypedArray()
+        val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
+            path.substringAfter(rootUri.toString())
+                .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
+        } else {
+            path.split("/").toTypedArray()
+        }
         for (part in parts.filterNot { it.isEmpty() or it.isBlank() }) {
-            // first omit 'otg:/' before iterating through DocumentFile
-            if (path == "$PREFIX_OTG/") break
-            if (part == "otg:" || part.isEmpty() || part == PATH_ELEMENT_DOCUMENT) continue
+            if (path == "otg:/" || path == "content:/") break
+            if (part == "otg:" || part == "" || part == "content:") continue
 
-            retval?.run {
-                // iterating through the required path to find the end point
-                if (part.startsWith(PRIMARY_STORAGE_PREFIX)) {
-                    part.substringAfterLast(
-                        SafRootHolder.uriRoot.toString().substringAfterLast("/")
-                    ).split(PATH_SEPARATOR_ENCODED)
-                        .filterNot { it.isEmpty() or it.isBlank() }
-                        .forEach {
-                            retval = retval?.findFile(it)
-                        }
-                } else {
-                    var nextDocument = this.findFile(part)
-                    if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
-                        nextDocument = this.createFile(part.substring(part.lastIndexOf(".")), part)
-                    }
-                    retval = nextDocument
-                }
+            // iterating through the required path to find the end point
+            var nextDocument = retval!!.findFile(part)
+            if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
+                nextDocument = retval.createFile(part.substring(part.lastIndexOf(".")), part)
             }
+            retval = nextDocument
         }
         return retval
     }

@@ -111,7 +111,11 @@ public class GenericCopyUtil {
         DocumentFile documentSourceFile =
             mSourceFile.isDocumentFile()
                 ? OTGUtil.getDocumentFile(
-                    mSourceFile.getPath(), SafRootHolder.getUriRoot(), mContext, false)
+                    mSourceFile.getPath(),
+                    SafRootHolder.getUriRoot(),
+                    mContext,
+                    mSourceFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
+                    false)
                 : OTGUtil.getDocumentFile(mSourceFile.getPath(), mContext, false);
 
         bufferedInputStream =
@@ -172,7 +176,11 @@ public class GenericCopyUtil {
         DocumentFile documentTargetFile =
             mTargetFile.isDocumentFile()
                 ? OTGUtil.getDocumentFile(
-                    mTargetFile.getPath(), SafRootHolder.getUriRoot(), mContext, true)
+                    mTargetFile.getPath(),
+                    SafRootHolder.getUriRoot(),
+                    mContext,
+                    mTargetFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
+                    true)
                 : OTGUtil.getDocumentFile(mTargetFile.getPath(), mContext, true);
 
         bufferedOutputStream =

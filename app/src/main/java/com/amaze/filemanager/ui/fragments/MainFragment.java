@@ -868,6 +868,7 @@ public class MainFragment extends Fragment
                         layoutElementParcelable.desc,
                         SafRootHolder.getUriRoot(),
                         getContext(),
+                        OpenMode.DOCUMENT_FILE,
                         false),
                     (MainActivity) getActivity(),
                     sharedPref);
@@ -1299,6 +1300,8 @@ public class MainFragment extends Fragment
                           .appendEncodedPath(name1)
                           .build()
                           .toString(),
+                      name1,
+                      f.isDirectory(),
                       getActivity(),
                       getMainActivity().isRootExplorer());
             },
@@ -1706,7 +1709,10 @@ public class MainFragment extends Fragment
         try {
           getMainActivity()
               .mainActivityHelper
-              .mkFile(new HybridFile(OpenMode.FILE, f1.getPath()), this);
+              .mkFile(
+                  new HybridFile(OpenMode.FILE, path),
+                  new HybridFile(OpenMode.FILE, f1.getPath()),
+                  this);
         } catch (Exception e) {
           e.printStackTrace();
         }
