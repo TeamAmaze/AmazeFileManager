@@ -434,7 +434,7 @@
     <string name="cloud_connection">Облачное соединение</string>
     <string name="cloud_connection_new">Новое облачное соединение</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Диск</string>
+    <string name="cloud_drive">Google Диск&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Ящик</string>
     <string name="cloud_get">Получить Облачный плагин</string>

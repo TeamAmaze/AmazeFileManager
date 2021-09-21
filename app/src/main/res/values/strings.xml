@@ -455,7 +455,7 @@
     <string name="cloud_connection">Cloud Connection</string>
     <string name="cloud_connection_new">New Cloud Connection</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Get Cloud plugin</string>
@@ -717,5 +717,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
     <string name="security_error">File could not be opened using this app</string>
+    <string name="cloud_drive_tooltip">Create a Google Drive connection for managing files from within Amaze File Manager.</string>
 </resources>
 
