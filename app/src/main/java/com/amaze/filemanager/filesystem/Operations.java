@@ -264,9 +264,11 @@ public class Operations {
             if (input != null && input.isDirectory()) {
               boolean result = false;
               try {
-                result = input.createFile(
-                        file.getName(context).substring(file.getName(context).lastIndexOf(".")),
-                        file.getName(context)) != null;
+                result =
+                    input.createFile(
+                            file.getName(context).substring(file.getName(context).lastIndexOf(".")),
+                            file.getName(context))
+                        != null;
               } catch (Exception e) {
                 Log.w(getClass().getSimpleName(), "Failed to make file", e);
               }
