@@ -20,8 +20,15 @@
 
 package com.amaze.filemanager.filesystem
 
+import android.app.usage.StorageStatsManager
 import android.content.Context
+import android.net.Uri
 import android.os.Build
+import android.os.Build.VERSION_CODES.O
+import android.os.Environment
+import android.os.storage.StorageManager
+import android.provider.DocumentsContract
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.filesystem.DeleteOperation.deleteFile
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation.isOnExtSdCard
@@ -37,6 +44,16 @@ import java.util.regex.Pattern
 // TODO check if these can be done with just File methods
 // TODO make all of these methods File extensions
 object FileProperties {
+
+    private const val STORAGE_PRIMARY = "primary"
+    private const val COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS =
+        "com.android.externalstorage.documents"
+
+    val EXCLUDED_DIRS = arrayOf(
+        File(Environment.getExternalStorageDirectory(), "Android/data").absolutePath,
+        File(Environment.getExternalStorageDirectory(), "Android/obb").absolutePath
+    )
+
     /**
      * Check if a file is readable.
      *
@@ -144,7 +161,8 @@ object FileProperties {
             f.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
             f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE) ||
             f.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX) ||
-            f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)
+            f.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE) ||
+            f.startsWith("content://")
         ) return 1
         val folder = File(f)
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
@@ -186,5 +204,51 @@ object FileProperties {
         // (filename.zip) behind...
         // So we simply use equality to check them
         return !filenameRegex.matcher(text).find() && "." != text && ".." != text
+    }
+
+    @JvmStatic
+    fun unmapPathForApi30OrAbove(uriPath: String): String? {
+        val uri = Uri.parse(uriPath)
+        return uri.path?.let { p ->
+            File(
+                Environment.getExternalStorageDirectory(),
+                p.substringAfter("tree/primary:")
+            ).absolutePath
+        }
+    }
+
+    @JvmStatic
+    fun remapPathForApi30OrAbove(path: String, openDocumentTree: Boolean = false): String {
+        return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && EXCLUDED_DIRS.contains(path)) {
+            val suffix =
+                path.substringAfter(Environment.getExternalStorageDirectory().absolutePath)
+            val documentId = "$STORAGE_PRIMARY:${suffix.substring(1)}"
+            SafRootHolder.volumeLabel = STORAGE_PRIMARY
+            if (openDocumentTree) {
+                DocumentsContract.buildDocumentUri(
+                    COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS,
+                    documentId
+                ).toString()
+            } else {
+                DocumentsContract.buildTreeDocumentUri(
+                    COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS,
+                    documentId
+                ).toString()
+            }
+        } else {
+            path
+        }
+    }
+
+    @JvmStatic
+    fun getDeviceStorageRemainingSpace(volume: String = STORAGE_PRIMARY): Long {
+        return if (STORAGE_PRIMARY.equals(volume)) {
+            if (Build.VERSION.SDK_INT < O) {
+                Environment.getExternalStorageDirectory().freeSpace
+            } else {
+                AppConfig.getInstance().getSystemService(StorageStatsManager::class.java)
+                    .getFreeBytes(StorageManager.UUID_DEFAULT)
+            }
+        } else 0L
     }
 }
