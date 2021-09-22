@@ -412,7 +412,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cloud_connection">Connessione cloud</string>
     <string name="cloud_connection_new">Nuova connessione Cloud</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Scarica Cloud plugin</string>

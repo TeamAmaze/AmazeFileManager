@@ -451,7 +451,7 @@
     <string name="cloud_connection">Hodeiko konexioa</string>
     <string name="cloud_connection_new">Hodeiko konexio berria</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Eskuratu hodeiko plugina</string>
