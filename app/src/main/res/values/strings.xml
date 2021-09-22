@@ -717,6 +717,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
     <string name="security_error">File could not be opened using this app</string>
-    <string name="cloud_drive_tooltip">Create a Google Drive connection for managing files from within Amaze File Manager.</string>
+    <string name="cloud_drive_tooltip">Create a Google Drive™ connection for managing files from within Amaze File Manager.</string>
 </resources>
 
