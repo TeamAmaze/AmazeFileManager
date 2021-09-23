@@ -49,9 +49,9 @@ import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 /**
