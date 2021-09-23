@@ -38,6 +38,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
@@ -202,6 +203,15 @@ public class LoadFilesListTask
               if (elem != null) list.add(elem);
             });
         openmode = OpenMode.OTG;
+        break;
+      case DOCUMENT_FILE:
+        list = new ArrayList<>();
+        listDocumentFiles(
+            file -> {
+              LayoutElementParcelable elem = createListParcelables(file);
+              if (elem != null) list.add(elem);
+            });
+        openmode = OpenMode.DOCUMENT_FILE;
         break;
       case DROPBOX:
       case BOX:
@@ -411,9 +421,7 @@ public class LoadFilesListTask
                 || path.endsWith(".pl")
                 || path.endsWith(".prop")
                 || path.endsWith(".properties")
-                || path.endsWith(".rc")
                 || path.endsWith(".msg")
-                || path.endsWith(".odt")
                 || path.endsWith(".pages")
                 || path.endsWith(".wpd")
                 || path.endsWith(".wps"))) {
@@ -549,6 +557,18 @@ public class LoadFilesListTask
     }
 
     OTGUtil.getDocumentFiles(path, context, fileFound);
+  }
+
+  private void listDocumentFiles(OnFileFound fileFound) {
+    final Context context = this.context.get();
+
+    if (context == null) {
+      cancel(true);
+      return;
+    }
+
+    OTGUtil.getDocumentFiles(
+        SafRootHolder.getUriRoot(), path, context, OpenMode.DOCUMENT_FILE, fileFound);
   }
 
   private void listCloud(

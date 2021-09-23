@@ -35,6 +35,7 @@ import java.util.ArrayList;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.ZipService;
@@ -48,6 +49,7 @@ import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
@@ -79,6 +81,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
@@ -157,13 +160,16 @@ public class MainActivityHelper {
         (dialog, which) -> {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkDir(
+              new HybridFile(openMode, path),
               new HybridFile(
                   openMode,
                   Uri.parse(path)
                       .buildUpon()
                       .appendEncodedPath(textfield.getText().toString().trim())
                       .build()
-                      .toString()),
+                      .toString(),
+                  textfield.getText().toString().trim(),
+                  true),
               ma);
           dialog.dismiss();
         },
@@ -195,13 +201,16 @@ public class MainActivityHelper {
         (dialog, which) -> {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(
+              new HybridFile(openMode, path),
               new HybridFile(
                   openMode,
                   Uri.parse(path)
                       .buildUpon()
                       .appendEncodedPath(textfield.getText().toString().trim())
                       .build()
-                      .toString()),
+                      .toString(),
+                  textfield.getText().toString().trim(),
+                  false),
               ma);
           dialog.dismiss();
         },
@@ -332,13 +341,20 @@ public class MainActivityHelper {
       OpenMode mode,
       final String oldPath,
       final String newPath,
+      final String newName,
+      final boolean isDirectory,
       final Activity context,
       boolean rootmode) {
     final Toast toast =
         Toast.makeText(context, context.getString(R.string.renaming), Toast.LENGTH_SHORT);
     toast.show();
     HybridFile oldFile = new HybridFile(mode, oldPath);
-    HybridFile newFile = new HybridFile(mode, newPath);
+    HybridFile newFile;
+    if (Utils.isNullOrEmpty(newName)) {
+      newFile = new HybridFile(mode, newPath);
+    } else {
+      newFile = new HybridFile(mode, newPath, newName, isDirectory);
+    }
     Operations.rename(
         oldFile,
         newFile,
@@ -434,6 +450,13 @@ public class MainActivityHelper {
       return SmbUtil.checkFolder(path);
     } else if (OpenMode.SFTP.equals(openMode)) {
       return SshClientUtils.checkFolder(path);
+    } else if (OpenMode.DOCUMENT_FILE.equals(openMode)) {
+      DocumentFile d =
+          DocumentFile.fromTreeUri(AppConfig.getInstance(), SafRootHolder.getUriRoot());
+      if (d == null) return DOESNT_EXIST;
+      else {
+        return WRITABLE_OR_ON_SDCARD;
+      }
     } else {
       File folder = new File(path);
       if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
@@ -487,11 +510,12 @@ public class MainActivityHelper {
     } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
-  public void mkFile(final HybridFile path, final MainFragment ma) {
+  public void mkFile(final HybridFile parentFile, final HybridFile path, final MainFragment ma) {
     final Toast toast =
         Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfile), Toast.LENGTH_SHORT);
     toast.show();
     Operations.mkfile(
+        parentFile,
         path,
         ma.getActivity(),
         mainActivity.isRootExplorer(),
@@ -568,11 +592,12 @@ public class MainActivityHelper {
         });
   }
 
-  public void mkDir(final HybridFile path, final MainFragment ma) {
+  public void mkDir(final HybridFile parentPath, final HybridFile path, final MainFragment ma) {
     final Toast toast =
         Toast.makeText(ma.getActivity(), ma.getString(R.string.creatingfolder), Toast.LENGTH_SHORT);
     toast.show();
     Operations.mkdir(
+        parentPath,
         path,
         ma.getActivity(),
         mainActivity.isRootExplorer(),

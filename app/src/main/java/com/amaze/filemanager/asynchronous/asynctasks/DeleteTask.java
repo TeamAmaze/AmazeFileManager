@@ -29,8 +29,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -61,22 +63,23 @@ public class DeleteTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
 
   private ArrayList<HybridFileParcelable> files;
-  private final Context cd;
+  private final Context applicationContext;
   private final boolean rootMode;
   private CompressedExplorerFragment compressedExplorerFragment;
   private final DataUtils dataUtils = DataUtils.getInstance();
 
-  public DeleteTask(@NonNull Context cd) {
-    this.cd = cd;
+  public DeleteTask(@NonNull Context applicationContext) {
+    this.applicationContext = applicationContext.getApplicationContext();
     rootMode =
-        PreferenceManager.getDefaultSharedPreferences(cd)
+        PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
   }
 
-  public DeleteTask(@NonNull Context cd, CompressedExplorerFragment compressedExplorerFragment) {
-    this.cd = cd;
+  public DeleteTask(
+      @NonNull Context applicationContext, CompressedExplorerFragment compressedExplorerFragment) {
+    this.applicationContext = applicationContext.getApplicationContext();
     rootMode =
-        PreferenceManager.getDefaultSharedPreferences(cd)
+        PreferenceManager.getDefaultSharedPreferences(applicationContext)
             .getBoolean(PreferencesConstants.PREFERENCE_ROOTMODE, false);
     this.compressedExplorerFragment = compressedExplorerFragment;
   }
@@ -84,7 +87,7 @@ public class DeleteTask
   @Override
   protected void onProgressUpdate(String... values) {
     super.onProgressUpdate(values);
-    Toast.makeText(cd, values[0], Toast.LENGTH_SHORT).show();
+    Toast.makeText(applicationContext, values[0], Toast.LENGTH_SHORT).show();
   }
 
   @Override
@@ -106,14 +109,14 @@ public class DeleteTask
       // delete file from media database
       if (!file.isSmb()) {
         try {
-          deleteFromMediaDatabase(cd, file.getPath());
+          deleteFromMediaDatabase(applicationContext, file.getPath());
         } catch (Exception e) {
-          FileUtils.scanFile(cd, files.toArray(new HybridFile[files.size()]));
+          FileUtils.scanFile(applicationContext, files.toArray(new HybridFile[files.size()]));
         }
       }
 
       // delete file entry from encrypted database
-      if (file.getName(cd).endsWith(CryptUtil.CRYPT_EXTENSION)) {
+      if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
         CryptHandler handler = CryptHandler.getInstance();
         handler.clear(file.getPath());
       }
@@ -127,17 +130,17 @@ public class DeleteTask
 
     Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
     if (files.size() > 0) {
-      String path = files.get(0).getParent(cd);
+      String path = files.get(0).getParent(applicationContext);
       intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, path);
-      cd.sendBroadcast(intent);
+      applicationContext.sendBroadcast(intent);
     }
 
     if (result.result == null || !result.result) {
-      cd.sendBroadcast(
+      applicationContext.sendBroadcast(
           new Intent(TAG_INTENT_FILTER_GENERAL)
               .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, files));
     } else if (compressedExplorerFragment == null) {
-      AppConfig.toast(cd, R.string.done);
+      AppConfig.toast(applicationContext, R.string.done);
     }
 
     if (compressedExplorerFragment != null) {
@@ -146,14 +149,24 @@ public class DeleteTask
 
     // cancel any processing notification because of cut/paste operation
     NotificationManager notificationManager =
-        (NotificationManager) cd.getSystemService(Context.NOTIFICATION_SERVICE);
+        (NotificationManager) applicationContext.getSystemService(Context.NOTIFICATION_SERVICE);
     notificationManager.cancel(NotificationConstants.COPY_ID);
   }
 
   private boolean doDeleteFile(@NonNull HybridFileParcelable file) throws Exception {
     switch (file.getMode()) {
       case OTG:
-        DocumentFile documentFile = OTGUtil.getDocumentFile(file.getPath(), cd, false);
+        DocumentFile documentFile =
+            OTGUtil.getDocumentFile(file.getPath(), applicationContext, false);
+        return documentFile.delete();
+      case DOCUMENT_FILE:
+        documentFile =
+            OTGUtil.getDocumentFile(
+                file.getPath(),
+                SafRootHolder.getUriRoot(),
+                applicationContext,
+                OpenMode.DOCUMENT_FILE,
+                false);
         return documentFile.delete();
       case DROPBOX:
       case BOX:
@@ -169,7 +182,7 @@ public class DeleteTask
         }
       default:
         try {
-          return (file.delete(cd, rootMode));
+          return (file.delete(applicationContext, rootMode));
         } catch (ShellNotRunningException | SmbException e) {
           e.printStackTrace();
           throw e;

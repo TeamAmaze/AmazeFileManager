@@ -417,7 +417,7 @@
   <string name="cloud_connection">Connexion Cloud</string>
   <string name="cloud_connection_new">Nouvelle connexion Cloud</string>
   <string name="cloud_dropbox">Dropbox</string>
-  <string name="cloud_drive">Google Drive</string>
+  <string name="cloud_drive">Google Drive&#8482;</string>
   <string name="cloud_onedrive">OneDrive</string>
   <string name="cloud_box">Boîte</string>
   <string name="cloud_get">Téléchargez le plugin Cloud</string>

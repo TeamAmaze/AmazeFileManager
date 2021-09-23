@@ -192,7 +192,7 @@ public class FileUtils {
     return totalBytes;
   }
 
-  private static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
+  public static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
     if (baseFile.isDirectory(context)) {
       return baseFile.folderSize(context);
     } else {
@@ -908,6 +908,7 @@ public class FileUtils {
     if (!new File(path).exists()) {
       Toast.makeText(context, context.getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
       Operations.mkdir(
+          new HybridFile(OpenMode.FILE, path),
           RootHelper.generateBaseFile(new File(path), true),
           context,
           isRootExplorer,

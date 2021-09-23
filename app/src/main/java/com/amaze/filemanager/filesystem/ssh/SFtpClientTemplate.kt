@@ -27,7 +27,7 @@ import java.io.IOException
  * Template class for executing actions with [SFTPClient] while leave the complexities of
  * handling connection and session setup/teardown to [SshClientUtils].
  */
-abstract class SFtpClientTemplate
+abstract class SFtpClientTemplate <T>
 /**
  * If closeClientOnFinish is set to true, calling code needs to handle closing of [ ] session.
  *
@@ -46,5 +46,5 @@ constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolea
      * @return Result of the execution of the type requested
      */
     @Throws(IOException::class)
-    abstract fun <T> execute(client: SFTPClient): T
+    abstract fun execute(client: SFTPClient): T
 }

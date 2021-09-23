@@ -143,6 +143,7 @@
                 />
 
             <com.amaze.filemanager.ui.views.ThemedTextView
+                android:tooltipText="@string/cloud_drive_tooltip"
                 android:text="@string/cloud_drive"
                 android:textColor="@android:color/darker_gray"
                 android:textSize="@dimen/material_generic_title"

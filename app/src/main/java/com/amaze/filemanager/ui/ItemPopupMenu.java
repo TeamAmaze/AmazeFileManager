@@ -28,6 +28,7 @@ import java.util.ArrayList;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
@@ -42,11 +43,14 @@ import com.amaze.filemanager.utils.DataUtils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
@@ -157,7 +161,17 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
       case R.id.open_with:
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-        FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+        if (OpenMode.DOCUMENT_FILE.equals(rowItem.getMode())) {
+          @Nullable Uri fullUri = rowItem.generateBaseFile().getFullUri();
+          if (fullUri != null) {
+            FileUtils.openWith(
+                DocumentFile.fromSingleUri(context, fullUri), mainActivity, useNewStack);
+          } else {
+            FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+          }
+        } else {
+          FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+        }
         return true;
       case R.id.encrypt:
         final Intent encryptIntent = new Intent(context, EncryptService.class);

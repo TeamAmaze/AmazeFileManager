@@ -455,7 +455,7 @@
     <string name="cloud_connection">Cloud Connection</string>
     <string name="cloud_connection_new">New Cloud Connection</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Get Cloud plugin</string>
@@ -711,11 +711,14 @@
     <string name="ftp_prompt_accept_first_start_saf_access">Since this is your first run of the FTP server, and you are using the device\'s internal storage as shared folder, please allow Amaze to access the storage using SAF.\n\n
 
 You only need to do this once, until the next time you select a new location for sharing.</string>
+    <string name="android_data_prompt_saf_access">Since Android 10, Android had imposed restrictions on certain directories, and they need to access with Storage Access Framework.\n\nPlease allow Amaze to access the directory from the system\'s file manager by tapping \"Allow Access\".</string>
+    <string name="android_data_prompt_saf_access_title">Grant SAF access</string>
     <string name="ftp_preference_saf_filesystem_title">Use legacy filesystem</string>
     <string name="ftp_preference_saf_filesystem">Enable this for support for using device external storage on newer Android versions</string>
     <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been resetted to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
     <string name="security_error">File could not be opened using this app</string>
+    <string name="cloud_drive_tooltip">Create a Google Drive™ connection for managing files from within Amaze File Manager.</string>
 </resources>
 
