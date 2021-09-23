@@ -1699,7 +1699,7 @@ public class MainFragment extends Fragment
   }
 
   public void hide(String path) {
-    DataUtils.getInstance().addHistoryFile(path);
+    DataUtils.getInstance().addHiddenFile(path);
     File file = new File(path);
     if (file.isDirectory()) {
       File f1 = new File(path + "/" + ".nomedia");
