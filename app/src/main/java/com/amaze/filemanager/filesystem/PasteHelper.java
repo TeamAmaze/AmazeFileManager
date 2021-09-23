@@ -40,6 +40,8 @@ import android.text.Html;
 import android.text.Spanned;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -58,9 +60,9 @@ public final class PasteHelper implements Parcelable {
   private final int operation;
   private final HybridFileParcelable[] paths;
   private Snackbar snackbar;
-  private MainActivity mainActivity;
+  @Nullable private MainActivity mainActivity;
 
-  public PasteHelper(MainActivity mainActivity, int op, HybridFileParcelable[] paths) {
+  public PasteHelper(@Nullable MainActivity mainActivity, int op, HybridFileParcelable[] paths) {
     if (paths == null || paths.length == 0) throw new IllegalArgumentException();
     operation = op;
     this.paths = paths;

@@ -62,7 +62,6 @@ import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
@@ -560,7 +559,7 @@ public class MainFragment extends Fragment
 
                 for (LayoutElementParcelable element : checkedItems) {
                   HybridFileParcelable baseFile = element.generateBaseFile();
-                  Uri resultUri = Utils.getUriForBaseFile(getActivity(), baseFile);
+                  Uri resultUri = Utils.getUriForBaseFile(requireContext(), baseFile);
 
                   if (resultUri != null) {
                     resulturis.add(resultUri);
@@ -568,9 +567,9 @@ public class MainFragment extends Fragment
                 }
 
                 intent_result.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                getActivity().setResult(FragmentActivity.RESULT_OK, intent_result);
+                requireActivity().setResult(FragmentActivity.RESULT_OK, intent_result);
                 intent_result.putParcelableArrayListExtra(Intent.EXTRA_STREAM, resulturis);
-                getActivity().finish();
+                requireActivity().finish();
                 // mode.finish();
               } catch (Exception e) {
                 e.printStackTrace();
@@ -579,18 +578,18 @@ public class MainFragment extends Fragment
             case R.id.about:
               LayoutElementParcelable x = checkedItems.get(0);
               GeneralDialogCreation.showPropertiesDialogWithPermissions(
-                  (x).generateBaseFile(),
+                  x.generateBaseFile(),
                   x.permissions,
-                  (ThemedActivity) getActivity(),
-                  getMainActivity().isRootExplorer(),
+                  requireMainActivity(),
+                  MainFragment.this,
+                  requireMainActivity().isRootExplorer(),
                   utilsProvider.getAppTheme());
               mode.finish();
               return true;
             case R.id.delete:
               GeneralDialogCreation.deleteFilesDialog(
-                  getContext(),
-                  mainFragmentViewModel.getListElements(),
-                  getMainActivity(),
+                  requireContext(),
+                  requireMainActivity(),
                   checkedItems,
                   utilsProvider.getAppTheme());
               return true;
@@ -673,7 +672,7 @@ public class MainFragment extends Fragment
                 // when passing copies to PasteHelper
                 if (copies.length > 0) {
                   PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
-                  getMainActivity().setPaste(pasteHelper);
+                  requireMainActivity().setPaste(pasteHelper);
                 }
                 mode.finish();
                 return true;
@@ -684,11 +683,12 @@ public class MainFragment extends Fragment
                 copies1.add(checkedItems.get(i4).generateBaseFile());
               }
               GeneralDialogCreation.showCompressDialog(
-                  (MainActivity) getActivity(), copies1, mainFragmentViewModel.getCurrentPath());
+                  requireMainActivity(), copies1, mainFragmentViewModel.getCurrentPath());
               mode.finish();
               return true;
             case R.id.openwith:
-              FileUtils.openFile(new File(checkedItems.get(0).desc), getMainActivity(), sharedPref);
+              FileUtils.openFile(
+                  new File(checkedItems.get(0).desc), requireMainActivity(), sharedPref);
               return true;
             case R.id.addshortcut:
               addShortcut(checkedItems.get(0));
@@ -1139,10 +1139,8 @@ public class MainFragment extends Fragment
                 utilsProvider,
                 sharedPref,
                 listView,
-                listElements == null
-                    ? Collections.<LayoutElementParcelable>emptyList()
-                    : listElements,
-                getActivity(),
+                listElements == null ? Collections.emptyList() : listElements,
+                requireContext(),
                 grid);
       } else {
         adapter.setItems(listView, new ArrayList<>(mainFragmentViewModel.getListElements()));
@@ -1886,8 +1884,14 @@ public class MainFragment extends Fragment
     super.onDetach();
   }
 
+  @Nullable
   public MainActivity getMainActivity() {
     return (MainActivity) getActivity();
+  }
+
+  @NonNull
+  public MainActivity requireMainActivity() {
+    return (MainActivity) requireActivity();
   }
 
   @Nullable
