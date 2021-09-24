@@ -1135,10 +1135,20 @@ public class GeneralDialogCreation {
         mainActivity.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
     EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
-    etFilename.setText(".zip");
-    etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
+    etFilename.setText(".zip"); // TODO: Put the file/folder name here
+    etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+    etFilename.setSingleLine();
     WarnableTextInputLayout tilFilename =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
+
+    etFilename.requestFocus();
+    etFilename.postDelayed(
+        () -> {
+          InputMethodManager inputMethodManager =
+              (InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
+          inputMethodManager.showSoftInput(etFilename, InputMethodManager.SHOW_IMPLICIT);
+        },
+        100);
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
