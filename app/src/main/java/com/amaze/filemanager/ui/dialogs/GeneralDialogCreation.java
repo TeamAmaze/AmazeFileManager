@@ -858,6 +858,7 @@ public class GeneralDialogCreation {
             ? c.getString(R.string.encrypt_folder_save_as)
             : c.getString(R.string.encrypt_file_save_as));
 
+    passwordEditText.requestFocus();
     passwordEditText.post(
         () -> {
           InputMethodManager imm =
