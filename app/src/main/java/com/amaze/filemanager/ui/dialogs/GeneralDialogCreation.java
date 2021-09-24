@@ -1035,6 +1035,15 @@ public class GeneralDialogCreation {
     textfield.setHint(promptText);
     textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
+    textfield.requestFocus();
+    textfield.postDelayed(
+        () -> {
+          InputMethodManager inputMethodManager =
+              (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
+          inputMethodManager.showSoftInput(textfield, InputMethodManager.SHOW_IMPLICIT);
+        },
+        100);
+
     builder
         .customView(dialogLayout, false)
         .theme(appTheme.getMaterialDialogTheme())
