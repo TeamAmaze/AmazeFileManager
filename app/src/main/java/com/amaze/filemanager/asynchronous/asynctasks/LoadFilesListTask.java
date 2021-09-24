@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.LinkedHashSet;
 import java.util.LinkedList;
 
 import com.amaze.filemanager.R;
@@ -480,7 +481,10 @@ public class LoadFilesListTask
     }
 
     UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
-    final LinkedList<String> paths = utilsHandler.getHistoryLinkedList();
+    LinkedList<String> historyLinkedList = utilsHandler.getHistoryLinkedList();
+    Collections.reverse(historyLinkedList);
+    LinkedHashSet<String> paths = new LinkedHashSet<>(historyLinkedList);
+
     ArrayList<LayoutElementParcelable> songs = new ArrayList<>();
     for (String f : paths) {
       if (!f.equals("/")) {
