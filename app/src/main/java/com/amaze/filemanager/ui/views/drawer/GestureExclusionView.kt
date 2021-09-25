@@ -54,20 +54,10 @@ class GestureExclusionView(
         }
         visibility = VISIBLE
         setBackgroundColor(resources.getColor(android.R.color.transparent))
-
-        // First, lets clear out any existing rectangles
         gestureExclusionRects.clear()
-
-        // Now lets work out which areas should be excluded. For a SeekBar this will
-        // be the bounds of the thumb drawable.
         val rect = Rect()
         this.getGlobalVisibleRect(rect)
         gestureExclusionRects += rect
-
-        // If we had other elements in this view near the edges, we could exclude them
-        // here too, by adding their bounds to the list
-
-        // Finally pass our updated list of rectangles to the system
         systemGestureExclusionRects = gestureExclusionRects
     }
 }
