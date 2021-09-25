@@ -521,7 +521,8 @@ public class HybridFile {
                     } catch (IOException notFound) {
                       Log.e(
                           getClass().getSimpleName(),
-                          "Fail to execute isDirectory for SFTP path :" + path, notFound);
+                          "Fail to execute isDirectory for SFTP path :" + path,
+                          notFound);
                       return false;
                     }
                   }
