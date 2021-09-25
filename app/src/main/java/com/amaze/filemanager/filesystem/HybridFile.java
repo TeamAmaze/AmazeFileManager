@@ -512,17 +512,17 @@ public class HybridFile {
             SshClientUtils.<Boolean>execute(
                 new SFtpClientTemplate<Boolean>(path) {
                   @Override
-                  public Boolean execute(SFTPClient client) throws IOException {
+                  public Boolean execute(SFTPClient client) {
                     try {
                       return client
                           .stat(SshClientUtils.extractRemotePathFrom(path))
                           .getType()
                           .equals(FileMode.Type.DIRECTORY);
-                    } catch (SFTPException notFound) {
+                    } catch (IOException notFound) {
                       Log.e(
                           getClass().getSimpleName(),
-                          "Fail to execute isDirectory for SFTP path :" + path);
-                      notFound.printStackTrace();
+                          "Fail to execute isDirectory for SFTP path :" + path,
+                          notFound);
                       return false;
                     }
                   }
