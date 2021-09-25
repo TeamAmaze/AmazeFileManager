@@ -75,6 +75,7 @@ import android.graphics.Color;
 import android.os.Build;
 import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -107,7 +108,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     STORAGES_GROUP, SERVERS_GROUP, CLOUDS_GROUP, FOLDERS_GROUP, QUICKACCESSES_GROUP, LASTGROUP
   };
 
-  private MainActivity mainActivity;
+  @NonNull private final MainActivity mainActivity;
   private Resources resources;
   private DataUtils dataUtils;
 
@@ -150,6 +151,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     }
     donateImageView.setOnClickListener(v -> new Billing(mainActivity));
     telegramImageView.setOnClickListener(v -> Utils.openTelegramURL(mainActivity));
+    initDrawerFocusItems();
     /*drawerHeaderView.setOnLongClickListener(
     v -> {
       Intent intent1;
@@ -568,6 +570,29 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       item.setChecked(true);
       actionViewStateManager.selectActionView(item);
     }
+  }
+
+  private void initDrawerFocusItems() {
+    donateImageView.setOnKeyListener(
+        (v, keyCode, event) -> {
+          if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+              mainActivity.getAppbar().getAppbarLayout().requestFocus();
+              mainActivity.getAppbar().getToolbar().requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+              new Billing(mainActivity);
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+              mainActivity.onBackPressed();
+            } else {
+              return false;
+            }
+          }
+          return true;
+        });
+  }
+
+  public ImageView getDonateImageView() {
+    return this.donateImageView;
   }
 
   private void addNewItem(

@@ -36,6 +36,7 @@ public enum OpenMode {
 
   ROOT,
   OTG,
+  DOCUMENT_FILE,
   GDRIVE,
   DROPBOX,
   BOX,

@@ -28,7 +28,7 @@
 
     <TextView
         android:id="@+id/fileAlreadyExists"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero_dp"
         android:layout_height="wrap_content"
         android:text="@string/fileexist"
         android:textAppearance="?android:attr/textAppearanceMedium"
@@ -38,7 +38,7 @@
 
     <TextView
         android:id="@+id/fileNameText"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero_dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="File name"
@@ -49,7 +49,7 @@
 
     <CheckBox
         android:id="@+id/checkBox"
-        android:layout_width="0dp"
+        android:layout_width="@dimen/zero_dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/doforall"

@@ -44,6 +44,7 @@ import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
+import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -104,11 +105,18 @@ public class GenericCopyUtil {
 
     try {
       // initializing the input channels based on file types
-      if (mSourceFile.isOtgFile()) {
+      if (mSourceFile.isOtgFile() || mSourceFile.isDocumentFile()) {
         // source is in otg
         ContentResolver contentResolver = mContext.getContentResolver();
         DocumentFile documentSourceFile =
-            OTGUtil.getDocumentFile(mSourceFile.getPath(), mContext, false);
+            mSourceFile.isDocumentFile()
+                ? OTGUtil.getDocumentFile(
+                    mSourceFile.getPath(),
+                    SafRootHolder.getUriRoot(),
+                    mContext,
+                    mSourceFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
+                    false)
+                : OTGUtil.getDocumentFile(mSourceFile.getPath(), mContext, false);
 
         bufferedInputStream =
             new BufferedInputStream(
@@ -162,11 +170,18 @@ public class GenericCopyUtil {
       }
 
       // initializing the output channels based on file types
-      if (mTargetFile.isOtgFile()) {
+      if (mTargetFile.isOtgFile() || mTargetFile.isDocumentFile()) {
         // target in OTG, obtain streams from DocumentFile Uri's
         ContentResolver contentResolver = mContext.getContentResolver();
         DocumentFile documentTargetFile =
-            OTGUtil.getDocumentFile(mTargetFile.getPath(), mContext, true);
+            mTargetFile.isDocumentFile()
+                ? OTGUtil.getDocumentFile(
+                    mTargetFile.getPath(),
+                    SafRootHolder.getUriRoot(),
+                    mContext,
+                    mTargetFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
+                    true)
+                : OTGUtil.getDocumentFile(mTargetFile.getPath(), mContext, true);
 
         bufferedOutputStream =
             new BufferedOutputStream(

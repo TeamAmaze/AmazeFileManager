@@ -13,7 +13,7 @@
         >
         <LinearLayout
             android:id="@+id/test"
-            android:layout_width="0dp"
+            android:layout_width="@dimen/zero_dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginLeft="@dimen/minimal_material_padding"

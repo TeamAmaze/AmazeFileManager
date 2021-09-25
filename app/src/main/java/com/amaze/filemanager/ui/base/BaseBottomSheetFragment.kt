@@ -20,25 +20,42 @@
 
 package com.amaze.filemanager.ui.base
 
-import android.content.res.Configuration
+import android.app.Dialog
+import android.os.Bundle
 import android.view.View
+import android.widget.FrameLayout
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.theme.AppTheme
-import com.amaze.filemanager.utils.Utils
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class BaseBottomSheetFragment : BottomSheetDialogFragment() {
 
-    override fun onResume() {
-        super.onResume()
-        val configuration: Configuration = activity!!.resources.configuration
-        if (configuration.orientation === Configuration.ORIENTATION_LANDSCAPE &&
-            configuration.screenWidthDp > 450
-        ) {
-            // see recommendations on https://material.io/components/sheets-bottom#specs
-            dialog!!.window!!.setLayout(Utils.dpToPx(requireContext(), 450), -1)
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        dialog.setOnShowListener {
+            val bottomSheet = (it as BottomSheetDialog)
+                .findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.run {
+                val behavior = BottomSheetBehavior.from(this)
+
+                behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
+                    override fun onStateChanged(bottomSheet: View, newState: Int) {
+                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
+                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
+                        }
+                    }
+
+                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                        // do nothing
+                    }
+                })
+            }
         }
+        return dialog
     }
 
     /**

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/parent"
-    android:layout_width="match_parent"
+    android:layout_width="@dimen/material_sheet_peek_height"
     android:layout_height="wrap_content"
     android:maxHeight="@dimen/material_sheet_height"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/shape_dialog_bottomsheet_white"
     android:elevation="@dimen/material_generic_card_elevation"
     >
@@ -35,8 +36,9 @@
         android:layout_height="50dp"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/ripple"
+        android:background="@drawable/ripple_focusable"
         app:srcCompat="@drawable/ic_baseline_input_24"
+        android:focusable="true"
         android:layout_margin="@dimen/material_generic"
         />
     <TextView
@@ -44,7 +46,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/always"
-        android:background="@drawable/ripple"
+        android:background="@drawable/ripple_focusable"
+        android:focusable="true"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toBottomOf="@id/open_as_button"
         android:layout_marginTop="@dimen/material_generic_medium"
@@ -57,7 +60,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/just_once"
-        android:background="@drawable/ripple"
+        android:background="@drawable/ripple_focusable"
+        android:focusable="true"
         app:layout_constraintRight_toLeftOf="@+id/always_button"
         app:layout_constraintTop_toBottomOf="@id/open_as_button"
         android:layout_marginTop="@dimen/material_generic_medium"
@@ -84,12 +88,13 @@
         android:layout_margin="@dimen/material_generic"
         />
 
-    <ListView
-        android:id="@+id/apps_list_view"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/apps_recycler_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/material_sheet_listview_height"
         app:layout_constraintTop_toBottomOf="@+id/choose_different_app_text_view"
         android:layout_marginTop="@dimen/material_generic"
+        android:descendantFocusability="afterDescendants"
         />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

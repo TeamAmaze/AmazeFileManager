@@ -28,6 +28,8 @@ import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.bottomsheet.BottomSheetBehavior;
+import com.google.android.material.bottomsheet.BottomSheetDialog;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 import android.app.Dialog;
@@ -39,8 +41,10 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 /**
@@ -64,6 +68,22 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
+  }
+
+  @NonNull
+  @Override
+  public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
+    BottomSheetDialog dialog = (BottomSheetDialog) super.onCreateDialog(savedInstanceState);
+
+    dialog.setOnShowListener(
+        dialog1 -> {
+          BottomSheetDialog d = (BottomSheetDialog) dialog1;
+
+          FrameLayout bottomSheet =
+              (FrameLayout) d.findViewById(com.google.android.material.R.id.design_bottom_sheet);
+          BottomSheetBehavior.from(bottomSheet).setState(BottomSheetBehavior.STATE_EXPANDED);
+        });
+    return dialog;
   }
 
   @Override

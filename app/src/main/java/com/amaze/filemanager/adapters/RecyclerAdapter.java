@@ -45,6 +45,7 @@ import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
@@ -74,6 +75,7 @@ import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -84,7 +86,9 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -110,14 +114,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   public boolean stoppedAnimation = false;
 
   private PreferenceActivity preferenceActivity;
-  private UtilitiesProvider utilsProvider;
-  private MainFragment mainFrag;
-  private SharedPreferences sharedPrefs;
+  @NonNull private final UtilitiesProvider utilsProvider;
+  @NonNull private final MainFragment mainFrag;
+  @NonNull private final SharedPreferences sharedPrefs;
   private RecyclerViewPreloader<IconDataParcelable> preloader;
   private RecyclerPreloadSizeProvider sizeProvider;
   private RecyclerPreloadModelProvider modelProvider;
   private ArrayList<ListItem> itemsDigested = new ArrayList<>();
-  private Context context;
+  @NonNull private final Context context;
   private LayoutInflater mInflater;
   private float minRowHeight;
   private int grey_color,
@@ -139,12 +143,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   public RecyclerAdapter(
       PreferenceActivity preferenceActivity,
-      MainFragment m,
-      UtilitiesProvider utilsProvider,
-      SharedPreferences sharedPrefs,
+      @NonNull MainFragment m,
+      @NonNull UtilitiesProvider utilsProvider,
+      @NonNull SharedPreferences sharedPrefs,
       RecyclerView recyclerView,
-      ArrayList<LayoutElementParcelable> itemsRaw,
-      Context context,
+      @NonNull List<LayoutElementParcelable> itemsRaw,
+      @NonNull Context context,
       boolean isGrid) {
     setHasStableIds(true);
 
@@ -158,7 +162,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     this.dragAndDropPreference =
         sharedPrefs.getInt(
             PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-            PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+            PreferencesConstants.PREFERENCE_DRAG_DEFAULT);
     this.isGrid = isGrid;
 
     mInflater = (LayoutInflater) context.getSystemService(Activity.LAYOUT_INFLATER_SERVICE);
@@ -388,12 +392,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     notifyItemInserted(getItemCount());
   }
 
-  public void setItems(RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList) {
-    setItems(recyclerView, arrayList, true);
+  public void setItems(RecyclerView recyclerView, @NonNull List<LayoutElementParcelable> elements) {
+    setItems(recyclerView, elements, true);
   }
 
   private void setItems(
-      RecyclerView recyclerView, ArrayList<LayoutElementParcelable> arrayList, boolean invalidate) {
+      RecyclerView recyclerView,
+      @NonNull List<LayoutElementParcelable> elements,
+      boolean invalidate) {
     if (preloader != null) {
       recyclerView.removeOnScrollListener(preloader);
       preloader = null;
@@ -405,7 +411,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     ArrayList<IconDataParcelable> uris = new ArrayList<>(itemsDigested.size());
 
-    for (LayoutElementParcelable e : arrayList) {
+    for (LayoutElementParcelable e : elements) {
       itemsDigested.add(new ListItem(e.isBack, e));
       uris.add(e != null ? e.iconData : null);
     }
@@ -530,7 +536,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
             marginFab = (int) context.getResources().getDimension(R.dimen.fab_margin);
         view = new View(context);
         view.setMinimumHeight(totalFabHeight + marginFab);
-        view.setFocusable(true);
         return new EmptyViewHolder(view);
       default:
         throw new IllegalArgumentException("Illegal: " + viewType);
@@ -541,6 +546,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   public void onBindViewHolder(final RecyclerView.ViewHolder vholder, int p) {
     if (vholder instanceof ItemViewHolder) {
       final ItemViewHolder holder = (ItemViewHolder) vholder;
+      holder.rl.setOnFocusChangeListener(
+          (v, hasFocus) -> {
+            if (hasFocus) {
+              mainFrag.adjustListViewForTv(holder, mainFrag.getMainActivity());
+            }
+          });
       holder.txtTitle.setEllipsize(
           enableMarquee ? TextUtils.TruncateAt.MARQUEE : TextUtils.TruncateAt.MIDDLE);
       final boolean isBackButton = itemsDigested.get(p).specialType == TYPE_BACK;
@@ -599,6 +610,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                   isBackButton, vholder.getAdapterPosition(), rowItem, holder.checkImageView);
             });
 
+        holder.about.setOnKeyListener(
+            (v, keyCode, event) -> {
+              if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                  mainFrag.getMainActivity().getFAB().requestFocus();
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+                  showPopup(v, rowItem);
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                  mainFrag.getMainActivity().onBackPressed();
+                } else {
+                  return false;
+                }
+              }
+              return true;
+            });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
           holder.checkImageView.setBackground(
               new CircleGradientDrawable(
@@ -618,7 +645,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder.about != null) {
           if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             holder.about.setColorFilter(grey_color);
-          showPopup(holder.about, rowItem);
+          holder.about.setOnClickListener(v -> showPopup(v, rowItem));
         }
         holder.genericIcon.setOnClickListener(
             v -> {
@@ -886,7 +913,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (holder.about != null) {
           if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT))
             holder.about.setColorFilter(grey_color);
-          showPopup(holder.about, rowItem);
+          holder.about.setOnClickListener(v -> showPopup(v, rowItem));
         }
 
         if (getBoolean(PREFERENCE_SHOW_LAST_MODIFIED)) {
@@ -1127,55 +1154,56 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
   }
 
-  private void showPopup(View v, final LayoutElementParcelable rowItem) {
-    v.setOnClickListener(
-        view -> {
-          PopupMenu popupMenu =
-              new ItemPopupMenu(
-                  context,
-                  mainFrag.getMainActivity(),
-                  utilsProvider,
-                  mainFrag,
-                  rowItem,
-                  view,
-                  sharedPrefs);
-          popupMenu.inflate(R.menu.item_extras);
-          String description = rowItem.desc.toLowerCase();
+  private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
+    Context currentContext = this.context;
+    if (mainFrag.getMainActivity().getAppTheme().getSimpleTheme() == AppTheme.BLACK) {
+      currentContext = new ContextThemeWrapper(context, R.style.overflow_black);
+    }
+    PopupMenu popupMenu =
+        new ItemPopupMenu(
+            currentContext,
+            mainFrag.requireMainActivity(),
+            utilsProvider,
+            mainFrag,
+            rowItem,
+            view,
+            sharedPrefs);
+    popupMenu.inflate(R.menu.item_extras);
+    String description = rowItem.desc.toLowerCase();
 
-          if (rowItem.isDirectory) {
-            popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
-            popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+    if (rowItem.isDirectory) {
+      popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.share).setVisible(false);
 
-            if (mainFrag.getMainActivity().mReturnIntent) {
-              popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
-            }
-          } else {
-            popupMenu.getMenu().findItem(R.id.book).setVisible(false);
-          }
+      if (mainFrag.getMainActivity().mReturnIntent) {
+        popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
+      }
+    } else {
+      popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+    }
 
-          if (description.endsWith(fileExtensionZip)
-              || description.endsWith(fileExtensionJar)
-              || description.endsWith(fileExtensionApk)
-              || description.endsWith(fileExtensionApks)
-              || description.endsWith(fileExtensionRar)
-              || description.endsWith(fileExtensionTar)
-              || description.endsWith(fileExtensionGzipTarLong)
-              || description.endsWith(fileExtensionGzipTarShort)
-              || description.endsWith(fileExtensionBzip2TarLong)
-              || description.endsWith(fileExtensionBzip2TarShort)
-              || description.endsWith(fileExtensionXz)
-              || description.endsWith(fileExtensionLzma)
-              || description.endsWith(fileExtension7zip))
-            popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+    if (description.endsWith(fileExtensionZip)
+        || description.endsWith(fileExtensionJar)
+        || description.endsWith(fileExtensionApk)
+        || description.endsWith(fileExtensionApks)
+        || description.endsWith(fileExtensionRar)
+        || description.endsWith(fileExtensionTar)
+        || description.endsWith(fileExtensionGzipTarLong)
+        || description.endsWith(fileExtensionGzipTarShort)
+        || description.endsWith(fileExtensionBzip2TarLong)
+        || description.endsWith(fileExtensionBzip2TarShort)
+        || description.endsWith(fileExtensionXz)
+        || description.endsWith(fileExtensionLzma)
+        || description.endsWith(fileExtension7zip))
+      popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
 
-          if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
-              popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-            else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
-          }
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+      if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+        popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+      else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+    }
 
-          popupMenu.show();
-        });
+    popupMenu.show();
   }
 
   private boolean getBoolean(String key) {

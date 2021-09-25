@@ -456,7 +456,7 @@
     <string name="cloud_connection">Koneksi Cloud</string>
     <string name="cloud_connection_new">Koneksi Cloud Baru</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Dapatkan plugin Cloud</string>
@@ -519,16 +519,10 @@
     <string name="authenticate_password">Masukkan sandi</string>
 
     <string name="sidebar_preferences">Bilah Samping</string>
-    <string name="sidebar_folders_title">Pintasan</string>
     <string name="sidebar_quick_access_title">Akses cepat</string>
-    <string name="show_folders_pref_title">Tampilkan pintasan</string>
-    <string name="show_folders_pref">Pintasan</string>
     <string name="show_quick_access_pref_title">Tampilkan akses cepat</string>
     <string name="show_quick_access_pref">Akses cepat</string>
-    <string name="create_shortcut">Buat pintasan</string>
-    <string name="edit_shortcut">Sunting pintasan</string>
     <string name="directory">Direktori</string>
-    <string name="question_delete_shortcut">Hapus pintasan?</string>
 
     <string name="cloud_error_plugin">Plugin Amaze Cloud tidak ditemukan. Silakan unduh dari Play Store.</string>
     <string name="cloud_error_failed_restart">Gagal membuat koneksi.

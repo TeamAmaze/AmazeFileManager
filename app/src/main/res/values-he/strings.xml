@@ -457,7 +457,7 @@
     <string name="cloud_connection">חיבור לענן</string>
     <string name="cloud_connection_new">חיבור חדש לענן</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">הורדת תוסף ענן</string>
@@ -520,16 +520,10 @@
     <string name="authenticate_password">נא להקליד ססמה</string>
 
     <string name="sidebar_preferences">סרגל צד</string>
-    <string name="sidebar_folders_title">קיצורי דרך בסרגל הצד</string>
     <string name="sidebar_quick_access_title">גישה מהירה מסרגל הצד</string>
-    <string name="show_folders_pref_title">הצגת קיצורי דרך</string>
-    <string name="show_folders_pref">קיצורי דרך</string>
     <string name="show_quick_access_pref_title">הצגת פריטי גישה מהירה</string>
     <string name="show_quick_access_pref">פריטי גישה מהירה</string>
-    <string name="create_shortcut">יצירת קיצור דרך</string>
-    <string name="edit_shortcut">עריכת קיצור דרך</string>
     <string name="directory">תיקייה</string>
-    <string name="question_delete_shortcut">למחוק קיצור דרך?</string>
 
     <string name="cloud_error_plugin">תוסף הענן של Amaze לא נמצא. נא להוריד מהחנות Play.</string>
     <string name="cloud_error_failed_restart">טעינת החיבור נכשלה.
