@@ -23,7 +23,7 @@ package com.amaze.filemanager.filesystem.ssh
 import net.schmizz.sshj.connection.channel.direct.Session
 import java.io.IOException
 
-abstract class SshClientSessionTemplate
+abstract class SshClientSessionTemplate <T>
 /**
  * Constructor.
  *
@@ -41,5 +41,5 @@ abstract class SshClientSessionTemplate
      * @return Result of the execution of the type requested
      */
     @Throws(IOException::class)
-    abstract fun <T> execute(sshClientSession: Session): T
+    abstract fun execute(sshClientSession: Session): T
 }

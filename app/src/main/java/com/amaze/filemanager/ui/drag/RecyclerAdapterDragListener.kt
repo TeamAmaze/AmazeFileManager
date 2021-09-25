@@ -48,7 +48,7 @@ class RecyclerAdapterDragListener(
         return when (p1?.action) {
             DragEvent.ACTION_DRAG_ENDED -> {
                 Log.d(TAG, "ENDING DRAG, DISABLE CORNERS")
-                mainFragment.mainActivity.initCornersDragListener(
+                mainFragment.requireMainActivity().initCornersDragListener(
                     true,
                     dragAndDropPref
                         != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
@@ -58,7 +58,7 @@ class RecyclerAdapterDragListener(
                 ) {
                     val dataUtils = DataUtils.getInstance()
                     dataUtils.checkedItemsList = null
-                    mainFragment.mainActivity
+                    mainFragment.requireMainActivity()
                         .tabFragment.dragPlaceholder?.visibility = View.INVISIBLE
                 }
                 true
@@ -227,7 +227,7 @@ class RecyclerAdapterDragListener(
                     )
                     DragAndDropDialog.showDialogOrPerformOperation(
                         pasteLocation!!,
-                        arrayList, mainFragment.mainActivity
+                        arrayList, mainFragment.requireMainActivity()
                     )
                     adapter.toggleChecked(false)
                     holder?.rl?.run {

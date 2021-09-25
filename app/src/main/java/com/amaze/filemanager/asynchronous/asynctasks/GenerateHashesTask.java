@@ -75,7 +75,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
       if (file.isSftp()) {
         md5 =
             SshClientUtils.execute(
-                new SshClientSessionTemplate(file.getPath()) {
+                new SshClientSessionTemplate<String>(file.getPath()) {
                   @Override
                   public String execute(Session session) throws IOException {
                     Session.Command cmd =
@@ -94,7 +94,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                 });
         sha256 =
             SshClientUtils.execute(
-                new SshClientSessionTemplate(file.getPath()) {
+                new SshClientSessionTemplate<String>(file.getPath()) {
                   @Override
                   public String execute(Session session) throws IOException {
                     Session.Command cmd =
@@ -102,8 +102,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                             String.format(
                                 "sha256sum -b \"%s\" | cut -c -64",
                                 SshClientUtils.extractRemotePathFrom(file.getPath())));
-                    String result =
-                        new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
+                    String result = IOUtils.readFully(cmd.getInputStream()).toString();
                     cmd.close();
                     if (cmd.getExitStatus() == 0) return result;
                     else {

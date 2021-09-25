@@ -47,7 +47,7 @@ Support
 <a href="https://opencollective.com/TeamAmaze"><img width="20%" alt="OpenCollective" src="opencollective.svg" ></a>
 <a href="https://www.paypal.me/vishalnehra"><img width="20%" src="paypal.svg" alt="PayPal"></a>
 <a href="https://liberapay.com/Team-Amaze/donate"><img src="https://upload.wikimedia.org/wikipedia/commons/2/27/Liberapay_logo_v2_white-on-yellow.svg" alt="Liberapay" width="80px" ></a>  
-Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive, Dropbox, OneDrive and Box accounts.  
+Or buy the [Cloud Plugin](https://play.google.com/store/apps/details?id=com.filemanager.amazecloud) supports Google Drive™, Dropbox, OneDrive and Box accounts.  
 
 Warning
 ---

@@ -71,6 +71,7 @@ public class OperationsTest {
     CountDownLatch waiter = new CountDownLatch(1);
     Operations.mkdir(
         newFolderHF,
+        newFolderHF,
         ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
@@ -91,6 +92,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         newFolderHF,
+        newFolderHF,
         ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
@@ -105,6 +107,7 @@ public class OperationsTest {
     CountDownLatch waiter2 = new CountDownLatch(1);
     AtomicBoolean assertFlag = new AtomicBoolean(false);
     Operations.mkdir(
+        newFolderHF,
         newFolderHF,
         ApplicationProvider.getApplicationContext(),
         false,
@@ -127,6 +130,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         newFolderHF,
+        newFolderHF,
         ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
@@ -143,6 +147,7 @@ public class OperationsTest {
     CountDownLatch waiter2 = new CountDownLatch(1);
     Operations.mkdir(
         newFolder2HF,
+        newFolder2HF,
         ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
@@ -157,6 +162,7 @@ public class OperationsTest {
     CountDownLatch waiter3 = new CountDownLatch(1);
     AtomicBoolean assertFlag = new AtomicBoolean(false);
     Operations.mkdir(
+        newFolder2HF,
         newFolder2HF,
         ApplicationProvider.getApplicationContext(),
         false,
@@ -180,6 +186,7 @@ public class OperationsTest {
 
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
+        newFolderHF,
         oldFolderHF,
         ApplicationProvider.getApplicationContext(),
         false,
@@ -216,6 +223,7 @@ public class OperationsTest {
 
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
+        folderHF,
         folderHF,
         ApplicationProvider.getApplicationContext(),
         false,
@@ -255,6 +263,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         folderHF,
+        folderHF,
         ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
@@ -271,6 +280,7 @@ public class OperationsTest {
 
     CountDownLatch waiter2 = new CountDownLatch(1);
     Operations.mkdir(
+        folder2HF,
         folder2HF,
         ApplicationProvider.getApplicationContext(),
         false,
@@ -310,6 +320,7 @@ public class OperationsTest {
     CountDownLatch waiter1 = new CountDownLatch(1);
     Operations.mkdir(
         folderHF,
+        folderHF,
         ApplicationProvider.getApplicationContext(),
         false,
         new AbstractErrorCallback() {
@@ -326,6 +337,7 @@ public class OperationsTest {
 
     CountDownLatch waiter2 = new CountDownLatch(1);
     Operations.mkdir(
+        folder2HF,
         folder2HF,
         ApplicationProvider.getApplicationContext(),
         false,

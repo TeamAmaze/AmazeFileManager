@@ -108,7 +108,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     STORAGES_GROUP, SERVERS_GROUP, CLOUDS_GROUP, FOLDERS_GROUP, QUICKACCESSES_GROUP, LASTGROUP
   };
 
-  private MainActivity mainActivity;
+  @NonNull private final MainActivity mainActivity;
   private Resources resources;
   private DataUtils dataUtils;
 

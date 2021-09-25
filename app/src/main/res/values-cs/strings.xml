@@ -432,7 +432,7 @@
     <string name="cloud_connection">Připojení ke cloudu</string>
     <string name="cloud_connection_new">Nové připojení ke cloudu</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Disk Google</string>
+    <string name="cloud_drive">Disk Google&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Získat Cloud plugin</string>

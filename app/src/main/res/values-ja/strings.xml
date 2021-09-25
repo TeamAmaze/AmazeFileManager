@@ -452,7 +452,7 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="cloud_connection">クラウド接続</string>
     <string name="cloud_connection_new">新しいクラウド接続</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google ドライブ&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">クラウドプラグインを入手する</string>

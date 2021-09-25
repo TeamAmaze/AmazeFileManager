@@ -192,7 +192,7 @@ public class FileUtils {
     return totalBytes;
   }
 
-  private static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
+  public static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
     if (baseFile.isDirectory(context)) {
       return baseFile.folderSize(context);
     } else {
@@ -657,25 +657,30 @@ public class FileUtils {
     return f.canRead() && f.isDirectory();
   }
 
-  public static void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
+  public static void openFile(
+      @NonNull final File f,
+      @NonNull final MainActivity mainActivity,
+      @NonNull final SharedPreferences sharedPrefs) {
     boolean useNewStack =
         sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-    boolean defaultHandler = isSelfDefault(f, m);
+    boolean defaultHandler = isSelfDefault(f, mainActivity);
 
     if (f.getName().toLowerCase().endsWith(".apk")) {
-      GeneralDialogCreation.showPackageDialog(f, m);
+      GeneralDialogCreation.showPackageDialog(f, mainActivity);
     } else if (defaultHandler && CompressedHelper.isFileExtractable(f.getPath())) {
-      GeneralDialogCreation.showArchiveDialog(f, m);
+      GeneralDialogCreation.showArchiveDialog(f, mainActivity);
     } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
-      Intent intent = new Intent(m, DatabaseViewerActivity.class);
+      Intent intent = new Intent(mainActivity, DatabaseViewerActivity.class);
       intent.putExtra("path", f.getPath());
-      m.startActivity(intent);
+      mainActivity.startActivity(intent);
     } else {
       try {
-        openFileDialogFragmentFor(f, m);
+        openFileDialogFragmentFor(f, mainActivity);
       } catch (Exception e) {
-        Toast.makeText(m, m.getString(R.string.no_app_found), Toast.LENGTH_LONG).show();
-        openWith(f, m, useNewStack);
+        Toast.makeText(
+                mainActivity, mainActivity.getString(R.string.no_app_found), Toast.LENGTH_LONG)
+            .show();
+        openWith(f, mainActivity, useNewStack);
       }
     }
   }
@@ -903,6 +908,7 @@ public class FileUtils {
     if (!new File(path).exists()) {
       Toast.makeText(context, context.getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
       Operations.mkdir(
+          new HybridFile(OpenMode.FILE, path),
           RootHelper.generateBaseFile(new File(path), true),
           context,
           isRootExplorer,

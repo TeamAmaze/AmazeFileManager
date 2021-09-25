@@ -22,6 +22,7 @@ package com.amaze.filemanager.utils;
 
 import static com.amaze.filemanager.file_operations.filesystem.OpenMode.BOX;
 import static com.amaze.filemanager.file_operations.filesystem.OpenMode.CUSTOM;
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DOCUMENT_FILE;
 import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DROPBOX;
 import static com.amaze.filemanager.file_operations.filesystem.OpenMode.FILE;
 import static com.amaze.filemanager.file_operations.filesystem.OpenMode.GDRIVE;
@@ -50,10 +51,11 @@ public class OpenModeTest {
     assertEquals(CUSTOM, OpenMode.getOpenMode(4));
     assertEquals(ROOT, OpenMode.getOpenMode(5));
     assertEquals(OTG, OpenMode.getOpenMode(6));
-    assertEquals(GDRIVE, OpenMode.getOpenMode(7));
-    assertEquals(DROPBOX, OpenMode.getOpenMode(8));
-    assertEquals(BOX, OpenMode.getOpenMode(9));
-    assertEquals(ONEDRIVE, OpenMode.getOpenMode(10));
+    assertEquals(DOCUMENT_FILE, OpenMode.getOpenMode(7));
+    assertEquals(GDRIVE, OpenMode.getOpenMode(8));
+    assertEquals(DROPBOX, OpenMode.getOpenMode(9));
+    assertEquals(BOX, OpenMode.getOpenMode(10));
+    assertEquals(ONEDRIVE, OpenMode.getOpenMode(11));
     assertThrows(ArrayIndexOutOfBoundsException.class, () -> OpenMode.getOpenMode(-1));
     assertThrows(ArrayIndexOutOfBoundsException.class, () -> OpenMode.getOpenMode(MAX_VALUE));
   }

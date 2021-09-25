@@ -1525,19 +1525,26 @@ public class MainActivity extends PermissionsActivity
                 break;
               case NEW_FOLDER: // mkdir
                 mainActivityHelper.mkDir(
-                    RootHelper.generateBaseFile(new File(oppathe), true), mainFragment);
+                    new HybridFile(OpenMode.FILE, oppathe),
+                    RootHelper.generateBaseFile(new File(oppathe), true),
+                    mainFragment);
                 break;
               case RENAME:
                 mainActivityHelper.rename(
                     mainFragment.getMainFragmentViewModel().getOpenMode(),
                     (oppathe),
                     (oppathe1),
+                    null,
+                    false,
                     mainActivity,
                     isRootExplorer());
                 mainFragment.updateList();
                 break;
               case NEW_FILE:
-                mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), mainFragment);
+                mainActivityHelper.mkFile(
+                    new HybridFile(OpenMode.FILE, oppathe),
+                    new HybridFile(OpenMode.FILE, oppathe),
+                    mainFragment);
                 break;
               case EXTRACT:
                 mainActivityHelper.extractFile(new File(oppathe));
