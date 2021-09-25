@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,17 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.adapters.data
+package com.amaze.filemanager.ui.views;
 
-import android.net.Uri
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.amaze.filemanager.utils.Utils;
 
-@Parcelize
-class OpenFileParcelable(
-    var uri: Uri?,
-    var mimeType: String?,
-    var useNewStack: Boolean?,
-    var className: String?,
-    var packageName: String?
-) : Parcelable
+import android.graphics.PointF;
+import android.view.View;
+
+/** Use this with any widget that should be zoomed when it gains focus */
+public class CustomZoomFocusChange implements View.OnFocusChangeListener {
+  @Override
+  public void onFocusChange(View v, boolean hasFocus) {
+    if (!hasFocus) {
+      Utils.zoom(1f, 1f, new PointF(v.getWidth() / 2, v.getHeight() / 2), v);
+    } else {
+      Utils.zoom(1.2f, 1.2f, new PointF(v.getWidth() / 2, v.getHeight() / 2), v);
+    }
+  }
+}

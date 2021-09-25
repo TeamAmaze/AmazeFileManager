@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,17 +18,15 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.adapters.data
+package com.amaze.filemanager.ui.fragments
 
-import android.net.Uri
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import androidx.recyclerview.widget.RecyclerView
+import com.amaze.filemanager.ui.activities.MainActivity
 
-@Parcelize
-class OpenFileParcelable(
-    var uri: Uri?,
-    var mimeType: String?,
-    var useNewStack: Boolean?,
-    var className: String?,
-    var packageName: String?
-) : Parcelable
+interface AdjustListViewForTv<in T : RecyclerView.ViewHolder> {
+    /**
+     * Adjust list view focus scroll when using dpad.
+     * Scroll few more elements up / down so that it's easier for user to see list
+     */
+    fun adjustListViewForTv(viewHolder: T, mainActivity: MainActivity)
+}

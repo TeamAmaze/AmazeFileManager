@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.dialogs
 
-import android.app.Dialog
 import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
@@ -30,16 +29,19 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.*
-import android.widget.FrameLayout
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.Toast
 import androidx.preference.PreferenceManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.amaze.filemanager.GlideApp
 import com.amaze.filemanager.R
-import com.amaze.filemanager.adapters.AppsAdapter
+import com.amaze.filemanager.adapters.AppsRecyclerAdapter
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.data.OpenFileParcelable
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel
+import com.amaze.filemanager.adapters.holders.AppHolder
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.FragmentOpenFileDialogBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
@@ -48,17 +50,16 @@ import com.amaze.filemanager.ui.activities.superclasses.BasicActivity
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.base.BaseBottomSheetFragment
+import com.amaze.filemanager.ui.fragments.AdjustListViewForTv
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.ui.startActivityCatchingSecurityException
 import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
-import com.bumptech.glide.ListPreloader
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
-import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class OpenFileDialogFragment : BaseBottomSheetFragment() {
+class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
 
     private var uri: Uri? = null
     private var mimeType: String? = null
@@ -66,7 +67,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     private var fragmentOpenFileDialogBinding: FragmentOpenFileDialogBinding? = null
     private val viewBinding get() = fragmentOpenFileDialogBinding!!
 
-    private lateinit var adapter: AppsAdapter
+    private lateinit var adapter: AppsRecyclerAdapter
     private lateinit var utilsProvider: UtilitiesProvider
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -204,11 +205,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
-                appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_LAST),
+                appDataParcelable.openFileParcelable?.mimeType.plus(KEY_PREFERENCES_LAST),
                 String.format(
                     "%s %s",
-                    appDataParcelable.openFileParcelable.className,
-                    appDataParcelable.openFileParcelable.packageName
+                    appDataParcelable.openFileParcelable?.className,
+                    appDataParcelable.openFileParcelable?.packageName
                 )
             ).apply()
         }
@@ -221,11 +222,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             preferenceActivity: PreferenceActivity
         ) {
             preferenceActivity.prefs.edit().putString(
-                appDataParcelable.openFileParcelable.mimeType.plus(KEY_PREFERENCES_DEFAULT),
+                appDataParcelable.openFileParcelable?.mimeType.plus(KEY_PREFERENCES_DEFAULT),
                 String.format(
                     "%s %s",
-                    appDataParcelable.openFileParcelable.className,
-                    appDataParcelable.openFileParcelable.packageName
+                    appDataParcelable.openFileParcelable?.className,
+                    appDataParcelable.openFileParcelable?.packageName
                 )
             ).apply()
         }
@@ -286,20 +287,10 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
         val modelProvider = AppsAdapterPreloadModel(this, true)
         val sizeProvider = ViewPreloadSizeProvider<String>()
-        val preloader = ListPreloader(
-            GlideApp.with(this), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_APPSADAPTER
+        var preloader = RecyclerViewPreloader(
+            GlideApp.with(this), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES
         )
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        adapter = AppsAdapter(
-            this,
-            activity as ThemedActivity?,
-            utilsProvider,
-            modelProvider,
-            sizeProvider,
-            R.layout.rowlayout,
-            (activity as MainActivity).prefs,
-            true
-        )
 
         val intent = buildIntent(
             uri!!, mimeType!!, useNewStack!!, null, null
@@ -312,39 +303,19 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
             lastClassAndPackage, appDataParcelableList
         ) ?: return
 
-        adapter.setData(appDataParcelableList)
+        adapter = AppsRecyclerAdapter(
+            this,
+            modelProvider,
+            true, this, appDataParcelableList
+        )
         modelProvider.setItemList(
             appDataParcelableList.map { appDataParcelable ->
                 appDataParcelable.packageName
             }
         )
         loadViews(lastAppData)
-        viewBinding.appsListView.setOnScrollListener(preloader)
-    }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
-
-        dialog.setOnShowListener {
-            val bottomSheet = (it as BottomSheetDialog)
-                .findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.run {
-                val behavior = BottomSheetBehavior.from(this)
-
-                behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback() {
-                    override fun onStateChanged(bottomSheet: View, newState: Int) {
-                        if (newState == BottomSheetBehavior.STATE_DRAGGING) {
-                            behavior.state = BottomSheetBehavior.STATE_EXPANDED
-                        }
-                    }
-
-                    override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                        // do nothing
-                    }
-                })
-            }
-        }
-        return dialog
+        viewBinding.appsRecyclerView.addOnScrollListener(preloader)
     }
 
     override fun onPause() {
@@ -355,15 +326,16 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
     private fun loadViews(lastAppData: AppDataParcelable) {
         lastAppData.let {
             val lastAppIntent = buildIntent(
-                it.openFileParcelable.uri!!,
-                it.openFileParcelable.mimeType!!,
-                it.openFileParcelable.useNewStack!!,
-                it.openFileParcelable.className,
-                it.openFileParcelable.packageName
+                it.openFileParcelable?.uri!!,
+                it.openFileParcelable?.mimeType!!,
+                it.openFileParcelable?.useNewStack!!,
+                it.openFileParcelable?.className,
+                it.openFileParcelable?.packageName
             )
 
             viewBinding.run {
-                appsListView.adapter = adapter
+                appsRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+                appsRecyclerView.adapter = adapter
                 lastAppTitle.text = it.label
                 lastAppImage.setImageDrawable(
                     (activity as MainActivity).packageManager.getApplicationIcon(it.packageName)
@@ -388,24 +360,25 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         }
     }
 
-    private fun initAppDataParcelableList(intent: Intent): ArrayList<AppDataParcelable> {
+    private fun initAppDataParcelableList(intent: Intent): MutableList<AppDataParcelable> {
         val packageManager = requireContext().packageManager
-        val appDataParcelableList: ArrayList<AppDataParcelable> = ArrayList()
+        val appDataParcelableList: MutableList<AppDataParcelable> = ArrayList()
         packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL).forEach {
             val openFileParcelable = OpenFileParcelable(
                 uri, mimeType, useNewStack, it.activityInfo.name, it.activityInfo.packageName
             )
             val label = it.loadLabel(packageManager).toString()
-            val appDataParcelable = AppDataParcelable(
-                if (label.isNotEmpty()) label else it.activityInfo.packageName,
-                null,
-                it.activityInfo.packageName,
-                null,
-                null,
-                0,
-                0,
-                openFileParcelable
-            )
+            val appDataParcelable =
+                AppDataParcelable(
+                    if (label.isNotEmpty()) label else it.activityInfo.packageName,
+                    "",
+                    it.activityInfo.packageName,
+                    "",
+                    "",
+                    0,
+                    0, false,
+                    openFileParcelable
+                )
             appDataParcelableList.add(appDataParcelable)
         }
         return appDataParcelableList
@@ -413,7 +386,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
     private fun initLastAppData(
         lastClassAndPackage: List<String>?,
-        appDataParcelableList: ArrayList<AppDataParcelable>
+        appDataParcelableList: MutableList<AppDataParcelable>
     ): AppDataParcelable? {
         if (appDataParcelableList.size == 0) {
             AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))
@@ -424,7 +397,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
 
         var lastAppData: AppDataParcelable? = if (!lastClassAndPackage.isNullOrEmpty()) {
             appDataParcelableList.find {
-                it.openFileParcelable.className == lastClassAndPackage[0]
+                it.openFileParcelable?.className == lastClassAndPackage[0]
             }
         } else {
             null
@@ -432,5 +405,9 @@ class OpenFileDialogFragment : BaseBottomSheetFragment() {
         lastAppData = lastAppData ?: appDataParcelableList[0]
         appDataParcelableList.remove(lastAppData)
         return lastAppData
+    }
+
+    override fun adjustListViewForTv(viewHolder: AppHolder, mainActivity: MainActivity) {
+        // do nothing
     }
 }

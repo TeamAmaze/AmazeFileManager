@@ -31,22 +31,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clipChildren="false"
-        android:focusable="true"
-        android:nextFocusDown="@id/fabs_menu"
-        android:nextFocusUp="@id/lin">
+        android:descendantFocusability="afterDescendants">
 
         <FrameLayout
             android:id="@+id/content_frame"
             android:layout_width="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:nextFocusUp="@id/lin"/>
+            android:descendantFocusability="afterDescendants"/>
 
         <include
             android:id="@+id/lin"
             layout="@layout/layout_appbar"
-            android:focusable="true"/>
+            android:focusable="true"
+            />
         <include layout="@layout/layout_search"/>
 
         <LinearLayout

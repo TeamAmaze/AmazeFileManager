@@ -121,6 +121,10 @@ public final class PasteHelper implements Parcelable {
     }
   }
 
+  public Snackbar getSnackbar() {
+    return snackbar;
+  }
+
   /**
    * Dismisses snackbar and fab
    *

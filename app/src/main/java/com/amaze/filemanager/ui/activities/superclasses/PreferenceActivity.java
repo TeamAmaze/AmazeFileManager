@@ -24,6 +24,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING;
@@ -100,6 +101,7 @@ public class PreferenceActivity extends BasicActivity {
       case PREFERENCE_SHOW_SIDEBAR_FOLDERS:
       case PREFERENCE_VIEW:
       case PREFERENCE_SHOW_LAST_MODIFIED:
+      case PREFERENCE_ENABLE_MARQUEE_FILENAME:
         defaultValue = true;
         break;
       default:

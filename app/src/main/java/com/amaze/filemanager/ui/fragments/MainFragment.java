@@ -41,6 +41,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.RecyclerAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
@@ -104,6 +105,7 @@ import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -141,7 +143,9 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment
-    implements BottomBarButtonPath, ViewTreeObserver.OnGlobalLayoutListener {
+    implements BottomBarButtonPath,
+        ViewTreeObserver.OnGlobalLayoutListener,
+        AdjustListViewForTv<ItemViewHolder> {
 
   public ActionMode mActionMode;
 
@@ -1048,6 +1052,21 @@ public class MainFragment extends Fragment
               (mainFragmentViewModel.getCurrentPath()), false, mainFragmentViewModel.getOpenMode());
           nofilesview.setRefreshing(false);
         });
+    nofilesview
+        .findViewById(R.id.no_files_relative)
+        .setOnKeyListener(
+            (v, keyCode, event) -> {
+              if (event.getAction() == KeyEvent.ACTION_DOWN) {
+                if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+                  getMainActivity().getFAB().requestFocus();
+                } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+                  getMainActivity().onBackPressed();
+                } else {
+                  return false;
+                }
+              }
+              return true;
+            });
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
       ((ImageView) nofilesview.findViewById(R.id.image))
           .setColorFilter(Color.parseColor("#666666"));
@@ -2006,6 +2025,25 @@ public class MainFragment extends Fragment
     } else {
       Log.e(getClass().getSimpleName(), "Failed to get viewmodel, fragment not yet added");
       return null;
+    }
+  }
+
+  @Override
+  public void adjustListViewForTv(
+      @NonNull ItemViewHolder viewHolder, @NonNull MainActivity mainActivity) {
+    try {
+      int[] location = new int[2];
+      viewHolder.rl.getLocationOnScreen(location);
+      Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
+      if (location[1] < getMainActivity().getAppbar().getAppbarLayout().getHeight()) {
+        listView.scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
+      } else if (location[1] + viewHolder.rl.getHeight()
+          > getContext().getResources().getDisplayMetrics().heightPixels) {
+        listView.scrollToPosition(
+            Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
+      }
+    } catch (IndexOutOfBoundsException e) {
+      Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
     }
   }
 }

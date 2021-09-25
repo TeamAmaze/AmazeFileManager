@@ -141,22 +141,26 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         updateStatus()
         updateViews(mainActivity, binding)
         ftpBtn.setOnClickListener {
-            if (!isRunning()) {
-                if (isConnectedToWifi(requireContext()) ||
-                    isConnectedToLocalNetwork(requireContext()) ||
-                    isEnabledWifiHotspot(requireContext())
-                ) {
-                    startServer()
-                } else {
-                    // no Wi-Fi and no eth, we shouldn't be here in the first place,
-                    // because of broadcast receiver, but just to be sure
-                    statusText.text = spannedStatusNoConnection
-                }
-            } else {
-                stopServer()
-            }
+            ftpBtnOnClick()
         }
         return binding.root
+    }
+
+    private fun ftpBtnOnClick() {
+        if (!isRunning()) {
+            if (isConnectedToWifi(requireContext()) ||
+                isConnectedToLocalNetwork(requireContext()) ||
+                isEnabledWifiHotspot(requireContext())
+            ) {
+                startServer()
+            } else {
+                // no Wi-Fi and no eth, we shouldn't be here in the first place,
+                // because of broadcast receiver, but just to be sure
+                statusText.text = spannedStatusNoConnection
+            }
+        } else {
+            stopServer()
+        }
     }
 
     // Pending upgrading material-dialogs to simplify the logic here.
@@ -320,6 +324,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         menu.findItem(R.id.checkbox_ftp_readonly).isChecked = readonlyPreference
         menu.findItem(R.id.checkbox_ftp_secure).isChecked = securePreference
         menu.findItem(R.id.checkbox_ftp_legacy_filesystem).isChecked = legacyFileSystemPreference
+        super.onCreateOptionsMenu(menu, inflater)
     }
 
     private fun shouldUseSafFileSystem(): Boolean {
@@ -656,6 +661,29 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val skinTwoColor = mainActivity.currentColorPreference.primarySecondTab
         mainActivity.updateViews(
             ColorDrawable(if (MainActivity.currentTab == 1) skinTwoColor else skin_color)
+        )
+
+        ftpBtn.setOnKeyListener(
+            View.OnKeyListener { _, _, event ->
+                if (event.action == KeyEvent.ACTION_DOWN) {
+                    when (event.keyCode) {
+                        KeyEvent.KEYCODE_DPAD_UP -> {
+                            mainActivity.appbar.appbarLayout.requestFocus()
+                            mainActivity.appbar.toolbar.requestFocus()
+                        }
+                        KeyEvent.KEYCODE_DPAD_CENTER -> {
+                            ftpBtnOnClick()
+                        }
+                        KeyEvent.KEYCODE_BACK -> {
+                            mainActivity.onBackPressed()
+                        }
+                        else -> {
+                            return@OnKeyListener false
+                        }
+                    }
+                }
+                true
+            }
         )
     }
 

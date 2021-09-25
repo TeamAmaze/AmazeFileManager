@@ -90,6 +90,7 @@
     <color name="generic_item">#9e9e9e</color>
 
     <color name="grey">#ff666666</color>
+    <color name="grey_translucent">#59666666</color>
 
     <color name="appsadapter_background">#5f33b5e5</color>
 

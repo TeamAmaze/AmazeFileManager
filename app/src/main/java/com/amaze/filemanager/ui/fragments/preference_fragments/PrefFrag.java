@@ -222,7 +222,7 @@ public class PrefFrag extends PreferenceFragmentCompat
         int currentDragPreference =
             sharedPref.getInt(
                 PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-                PreferencesConstants.PREFERENCE_DRAG_TO_SELECT);
+                PreferencesConstants.PREFERENCE_DRAG_DEFAULT);
         dragDialogBuilder
             .items(dragToMoveArray)
             .itemsCallbackSingleChoice(

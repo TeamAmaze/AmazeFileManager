@@ -61,7 +61,7 @@ class DragAndDropDialog : DialogFragment() {
             val dragAndDropPref = activity.prefs
                 .getInt(
                     PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-                    PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
+                    PreferencesConstants.PREFERENCE_DRAG_DEFAULT
                 )
             if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_MOVE_COPY) {
                 val dragAndDropCopy = activity.prefs

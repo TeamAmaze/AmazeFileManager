@@ -22,7 +22,8 @@
     android:id="@+id/snackBarConstraintLayout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp">
+    android:padding="8dp"
+    android:descendantFocusability="afterDescendants">
 
     <androidx.cardview.widget.CardView
         android:id="@+id/snackBarCardView"
@@ -36,11 +37,13 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        android:descendantFocusability="afterDescendants">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:descendantFocusability="afterDescendants">
 
             <TextView
                 android:id="@+id/snackBarTextTV"
@@ -74,6 +77,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:focusable="true"
                 android:nextFocusRight="@id/snackBarActionButton"
+                android:background="@drawable/ripple_focusable"
                 />
 
             <Button
@@ -91,6 +95,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:focusable="true"
                 android:nextFocusLeft="@id/snackBarCancelButton"
+                android:background="@drawable/ripple_focusable"
                 />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
