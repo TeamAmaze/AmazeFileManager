@@ -45,7 +45,6 @@ import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
-import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;

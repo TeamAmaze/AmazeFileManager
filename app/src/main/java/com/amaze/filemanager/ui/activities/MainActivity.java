@@ -545,6 +545,9 @@ public class MainActivity extends PermissionsActivity
         // we don't have folder resource mime type set, supposed to be zip/rar
         openzip = true;
         zippath = Utils.sanitizeInput(uri.toString());
+        if (FileUtils.isCompressedFile(zippath)) {
+          openCompressed(zippath);
+        }
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
