@@ -23,6 +23,7 @@ package com.amaze.filemanager.utils
 import android.content.Context
 import android.hardware.usb.UsbConstants
 import android.hardware.usb.UsbManager
+import android.net.Uri
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.LOLLIPOP
@@ -40,9 +41,16 @@ import kotlin.collections.ArrayList
 /** Created by Vishal on 27-04-2017.  */
 object OTGUtil {
 
-    private val TAG = OTGUtil::class.java.simpleName
     const val PREFIX_OTG = "otg:/"
+    private const val PREFIX_DOCUMENT_FILE = "content:/"
     const val PREFIX_MEDIA_REMOVABLE = "/mnt/media_rw"
+
+    private val TAG = OTGUtil::class.java.simpleName
+
+    // URLEncoder.encode("/", Charsets.UTF_8.name())
+    private const val PATH_SEPARATOR_ENCODED = "%2F"
+    private const val PRIMARY_STORAGE_PREFIX = "primary%3AA"
+    private const val PATH_ELEMENT_DOCUMENT = "document"
 
     /**
      * Returns an array of list of files at a specific path in OTG
@@ -78,12 +86,28 @@ object OTGUtil {
     fun getDocumentFiles(path: String, context: Context, fileFound: OnFileFound) {
         val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
             ?: throw NullPointerException("USB OTG root not set!")
+        return getDocumentFiles(rootUriString, path, context, OpenMode.OTG, fileFound)
+    }
+
+    @JvmStatic
+    fun getDocumentFiles(
+        rootUriString: Uri,
+        path: String,
+        context: Context,
+        openMode: OpenMode,
+        fileFound: OnFileFound
+    ) {
         var rootUri = DocumentFile.fromTreeUri(context, rootUriString)
-        val parts = path.split("/").toTypedArray()
-        for (part in parts) {
+        val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
+            path.substringAfter(rootUriString.toString())
+                .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
+        } else {
+            path.split("/").toTypedArray()
+        }
+        for (part in parts.filterNot { it.isEmpty() or it.isBlank() }) {
             // first omit 'otg:/' before iterating through DocumentFile
-            if (path == "$PREFIX_OTG/") break
-            if (part == "otg:" || part == "") continue
+            if (path == "$PREFIX_OTG/" || path == "$PREFIX_DOCUMENT_FILE/") break
+            if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
             rootUri = rootUri!!.findFile(part)
@@ -94,7 +118,7 @@ object OTGUtil {
             if (file.exists()) {
                 var size: Long = 0
                 if (!file.isDirectory) size = file.length()
-                Log.d(context.javaClass.simpleName, "Found file: " + file.name)
+                Log.d(context.javaClass.simpleName, "Found file: ${file.name}")
                 val baseFile = HybridFileParcelable(
                     path + "/" + file.name,
                     RootHelper.parseDocumentFilePermission(file),
@@ -103,7 +127,8 @@ object OTGUtil {
                     file.isDirectory
                 )
                 baseFile.name = file.name
-                baseFile.mode = OpenMode.OTG
+                baseFile.mode = openMode
+                baseFile.fullUri = file.uri
                 fileFound.onFileFound(baseFile)
             }
         }
@@ -118,27 +143,43 @@ object OTGUtil {
     @JvmStatic
     fun getDocumentFile(
         path: String,
-        context: Context?,
+        context: Context,
         createRecursive: Boolean
     ): DocumentFile? {
         val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
             ?: throw NullPointerException("USB OTG root not set!")
 
+        return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
+    }
+
+    @JvmStatic
+    fun getDocumentFile(
+        path: String,
+        rootUri: Uri,
+        context: Context,
+        openMode: OpenMode,
+        createRecursive: Boolean
+    ): DocumentFile? {
         // start with root of SD card and then parse through document tree.
-        var rootUri = DocumentFile.fromTreeUri(context!!, rootUriString)
-        val parts = path.split("/").toTypedArray()
-        for (part in parts) {
-            if (path == "otg:/") break
-            if (part == "otg:" || part == "") continue
+        var retval = DocumentFile.fromTreeUri(context, rootUri)
+        val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
+            path.substringAfter(rootUri.toString())
+                .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
+        } else {
+            path.split("/").toTypedArray()
+        }
+        for (part in parts.filterNot { it.isEmpty() or it.isBlank() }) {
+            if (path == "otg:/" || path == "content:/") break
+            if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
-            var nextDocument = rootUri!!.findFile(part)
+            var nextDocument = retval!!.findFile(part)
             if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
-                nextDocument = rootUri.createFile(part.substring(part.lastIndexOf(".")), part)
+                nextDocument = retval.createFile(part.substring(part.lastIndexOf(".")), part)
             }
-            rootUri = nextDocument
+            retval = nextDocument
         }
-        return rootUri
+        return retval
     }
 
     /** Check if the usb uri is still accessible  */

@@ -442,7 +442,7 @@
     <string name="cloud_connection">雲端連線</string>
     <string name="cloud_connection_new">新增雲端連線</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google 雲端硬碟</string>
+    <string name="cloud_drive">Google 雲端硬碟&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">取得雲端套件</string>

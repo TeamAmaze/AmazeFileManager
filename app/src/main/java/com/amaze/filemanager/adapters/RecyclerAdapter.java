@@ -45,6 +45,7 @@ import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
+import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
@@ -111,14 +112,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   public boolean stoppedAnimation = false;
 
   private PreferenceActivity preferenceActivity;
-  private UtilitiesProvider utilsProvider;
-  private MainFragment mainFrag;
-  private SharedPreferences sharedPrefs;
+  @NonNull private final UtilitiesProvider utilsProvider;
+  @NonNull private final MainFragment mainFrag;
+  @NonNull private final SharedPreferences sharedPrefs;
   private RecyclerViewPreloader<IconDataParcelable> preloader;
   private RecyclerPreloadSizeProvider sizeProvider;
   private RecyclerPreloadModelProvider modelProvider;
   private ArrayList<ListItem> itemsDigested = new ArrayList<>();
-  private Context context;
+  @NonNull private final Context context;
   private LayoutInflater mInflater;
   private float minRowHeight;
   private int grey_color,
@@ -140,12 +141,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   public RecyclerAdapter(
       PreferenceActivity preferenceActivity,
-      MainFragment m,
-      UtilitiesProvider utilsProvider,
-      SharedPreferences sharedPrefs,
+      @NonNull MainFragment m,
+      @NonNull UtilitiesProvider utilsProvider,
+      @NonNull SharedPreferences sharedPrefs,
       RecyclerView recyclerView,
       @NonNull List<LayoutElementParcelable> itemsRaw,
-      Context context,
+      @NonNull Context context,
       boolean isGrid) {
     setHasStableIds(true);
 
@@ -1130,13 +1131,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     modelProvider.getPreloadRequestBuilder(iconData).listener(requestListener).into(view);
   }
 
-  private void showPopup(View v, final LayoutElementParcelable rowItem) {
+  private void showPopup(@NonNull View v, @NonNull final LayoutElementParcelable rowItem) {
     v.setOnClickListener(
         view -> {
           PopupMenu popupMenu =
               new ItemPopupMenu(
                   context,
-                  mainFrag.getMainActivity(),
+                  (MainActivity) mainFrag.requireActivity(),
                   utilsProvider,
                   mainFrag,
                   rowItem,
