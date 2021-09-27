@@ -100,6 +100,7 @@ public class FileUtils {
 
   public static final String FILE_PROVIDER_PREFIX = "storage_root";
   public static final String NOMEDIA_FILE = ".nomedia";
+  public static final String DUMMY_FILE = ".DummyFile";
 
   public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
     long length = 0;
