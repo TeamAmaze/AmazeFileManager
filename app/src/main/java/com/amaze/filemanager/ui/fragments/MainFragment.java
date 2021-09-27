@@ -1312,11 +1312,7 @@ public class MainFragment extends Fragment
                   .rename(
                       mainFragmentViewModel.getOpenMode(),
                       f.getPath(),
-                      Uri.parse(mainFragmentViewModel.getCurrentPath())
-                          .buildUpon()
-                          .appendEncodedPath(name1)
-                          .build()
-                          .toString(),
+                      mainFragmentViewModel.getCurrentPath(),
                       name1,
                       f.isDirectory(),
                       getActivity(),
@@ -1414,7 +1410,7 @@ public class MainFragment extends Fragment
               loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
             } else {
               List<String> pathSegments = Uri.parse(currentFile.getPath()).getPathSegments();
-              if (pathSegments.size() < 4) {
+              if (pathSegments.size() < 3) {
                 mainFragmentViewModel.setOpenMode(OpenMode.FILE);
                 String subPath = pathSegments.get(1);
                 currentFile.setMode(OpenMode.FILE);
