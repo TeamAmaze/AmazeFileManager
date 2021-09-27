@@ -135,9 +135,7 @@ public class Operations {
       @Override
       protected Void doInBackground(Void... params) {
         // checking whether filename is valid or a recursive call possible
-        if (!Operations.isFileNameValid(file.getName(context))
-            && !(file.getMode().equals(OpenMode.OTG)
-                || file.getMode().equals(OpenMode.DOCUMENT_FILE))) {
+        if (!Operations.isFileNameValid(file.getName(context))) {
           errorCallBack.invalidName(file);
           return null;
         }
@@ -280,9 +278,7 @@ public class Operations {
       @Override
       protected Void doInBackground(Void... params) {
         // check whether filename is valid or not
-        if (!Operations.isFileNameValid(file.getName(context))
-            && !(file.getMode().equals(OpenMode.OTG)
-                || file.getMode().equals(OpenMode.DOCUMENT_FILE))) {
+        if (!Operations.isFileNameValid(file.getName(context))) {
           errorCallBack.invalidName(file);
           return null;
         }
@@ -449,10 +445,7 @@ public class Operations {
       protected Void doInBackground(Void... params) {
         // check whether file names for new file are valid or recursion occurs.
         // If rename is on OTG, we are skipping
-        if (!(oldFile.getMode().equals(newFile.getMode())
-                && (oldFile.getMode().equals(OpenMode.OTG)
-                    || oldFile.getMode().equals(OpenMode.DOCUMENT_FILE)))
-            && !Operations.isFileNameValid(newFile.getName(context))) {
+        if (!Operations.isFileNameValid(newFile.getName(context))) {
           errorCallBack.invalidName(newFile);
           return null;
         }

@@ -68,7 +68,6 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -161,15 +160,7 @@ public class MainActivityHelper {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkDir(
               new HybridFile(openMode, path),
-              new HybridFile(
-                  openMode,
-                  Uri.parse(path)
-                      .buildUpon()
-                      .appendEncodedPath(textfield.getText().toString().trim())
-                      .build()
-                      .toString(),
-                  textfield.getText().toString().trim(),
-                  true),
+              new HybridFile(openMode, path, textfield.getText().toString().trim(), true),
               ma);
           dialog.dismiss();
         },
@@ -202,15 +193,7 @@ public class MainActivityHelper {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
           mkFile(
               new HybridFile(openMode, path),
-              new HybridFile(
-                  openMode,
-                  Uri.parse(path)
-                      .buildUpon()
-                      .appendEncodedPath(textfield.getText().toString().trim())
-                      .build()
-                      .toString(),
-                  textfield.getText().toString().trim(),
-                  false),
+              new HybridFile(openMode, path, textfield.getText().toString().trim(), false),
               ma);
           dialog.dismiss();
         },
