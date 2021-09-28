@@ -162,7 +162,7 @@ public class GeneralDialogCreation {
     WarnableTextInputLayout tilTextfield =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
-    dialogView.post(() -> ExtensionsKt.openKeyboard(textfield, m));
+    dialogView.post(() -> ExtensionsKt.openKeyboard(textfield, m.getApplicationContext()));
 
     builder
         .customView(dialogView, false)
@@ -880,7 +880,7 @@ public class GeneralDialogCreation {
     MDButton btnOK = dialog.getActionButton(DialogAction.POSITIVE);
     btnOK.setEnabled(false);
 
-    rootView.post(() -> ExtensionsKt.openKeyboard(passwordEditText, main));
+    rootView.post(() -> ExtensionsKt.openKeyboard(passwordEditText, main.getApplicationContext()));
 
     TextWatcher textWatcher =
         new SimpleTextWatcher() {
@@ -1021,7 +1021,7 @@ public class GeneralDialogCreation {
     textfield.setHint(promptText);
     textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
-    dialogLayout.post(() -> ExtensionsKt.openKeyboard(textfield, main));
+    dialogLayout.post(() -> ExtensionsKt.openKeyboard(textfield, main.getApplicationContext()));
 
     builder
         .customView(dialogLayout, false)
@@ -1120,7 +1120,8 @@ public class GeneralDialogCreation {
     WarnableTextInputLayout tilFilename =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
-    dialogView.post(() -> ExtensionsKt.openKeyboard(etFilename, mainActivity));
+    dialogView.post(
+        () -> ExtensionsKt.openKeyboard(etFilename, mainActivity.getApplicationContext()));
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)

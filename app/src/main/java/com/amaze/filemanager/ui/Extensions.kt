@@ -28,7 +28,6 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import com.amaze.filemanager.R
-import com.amaze.filemanager.ui.activities.MainActivity
 import com.google.android.material.textfield.TextInputLayout
 
 private const val TAG = "ExtensionsKt"
@@ -57,12 +56,12 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
 /**
  * Force keyboard pop up on focus
  */
-fun EditText.openKeyboard(mainActivity: MainActivity) {
+fun EditText.openKeyboard(context: Context) {
     this.requestFocus()
 
     this.postDelayed(
         {
-            (mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
+            (context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager)
                 .showSoftInput(
                     this,
                     InputMethodManager.SHOW_IMPLICIT
