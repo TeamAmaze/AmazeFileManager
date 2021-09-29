@@ -654,5 +654,6 @@
     <string name="ftp_prompt_accept_first_start_saf_access">呢次係你第一次開著個 FTP伺服器，咁啱你又用內部儲存空間來做共享檔案夾。請你容許 Amaze用 SAF存取儲存空間。\n\n
 
 你只需要做一次，直至下次你揀過另一個共享檔案夾。</string>
+    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
 </resources>
 

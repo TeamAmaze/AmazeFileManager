@@ -329,7 +329,7 @@
                          <b>اتاحة مشاركة الملف على Windows </b>\n 
                      </li>
                      <p style="margin-left: 40px">
-                        قم بفتح لوحة التحكم ، واضغط اختيار HomeGroup واختيارات المشاركة تحت شبكة الاتصالات والانترنت ، واضغط "تغيير محددات المشاركة المتقدمة" ، واتاحة "ملف ومشاركة وحدة الطباعة"  الخاصية المميزة. \n \n 
+                        قم بفتح لوحة التحكم ، واضغط اختيار HomeGroup واختيارات المشاركة تحت شبكة الاتصالات والانترنت ، واضغط \"تغيير محددات المشاركة المتقدمة\" ، واتاحة \"ملف ومشاركة وحدة الطباعة\"  الخاصية المميزة. \n \n
                      </p>
 
                      <li>
@@ -350,7 +350,7 @@
                          <b>ايجاد عنوان IP </b>\n 
                      </li>
                      <p style="margin-left: 40px">
-                        فتح رسالة حث الأمر.  أدخل \ 'ipconfig \' ثم اضغط Enter.  ابحث عن Default Gateway تحت موفق شبكة الاتصالات الخاص بك لتوجيه مسار التوجيه الخاص بك \ ' عنوان IP.  أنظر الى \ \\ "عنوان IPv4 \ \\" تحت نفس قسم الموفق لايجاد IP الخاص بالحاسب الخاص بك 
+                        فتح رسالة حث الأمر.  أدخل \'ipconfig \' ثم اضغط Enter.  ابحث عن Default Gateway تحت موفق شبكة الاتصالات الخاص بك لتوجيه مسار التوجيه الخاص بك \' عنوان IP.  أنظر الى \ \\"عنوان IPv4 \ \\" تحت نفس قسم الموفق لايجاد IP الخاص بالحاسب الخاص بك
                         عنوان. \n \n 
                      </p>
 
@@ -409,7 +409,7 @@
     <string name="paper_size">حجم الورقة </string>
 
     <!-- %s will be replaced with either copied or moved -->
-    <string name="copy_error">بعض الملفات التي تم صرفها \ ' 't بنجاح %s </string>
+    <string name="copy_error">بعض الملفات التي تم صرفها \' \'t بنجاح %s </string>
     <string name="copied">تم النسخ </string>
     <string name="moved">نقل </string>
     <string name="copy_complete">اتمام النسخ </string>
@@ -559,7 +559,7 @@
     <string name="channel_name_normal">الاعلامات الامامية </string>
     <string name="channel_description_normal">اخطارات File Manager \'s Notifications </string>
     <string name="channel_name_ftp">وحدة خدمة Azze FTP </string>
-    <string name="channel_description_ftp">وحدات خدمة MyAze File Manager FTP /'s Notifications </string>
+    <string name="channel_description_ftp">وحدات خدمة MyAze File Manager FTP \'s Notifications </string>
 
     <string name="processing">جاري التشغيل ... </string>
     <string name="failed_no_connection">فشل في تحميل الملفات.  برجاء التحقق من الوصلة الخاصة بك. </string>
@@ -567,7 +567,7 @@
     <string name="update">تعديل </string>
 	<string name="scp_connection">وصلة SCP/SFTP </string>
     <string name="scp_port">المنفذ </string>
-    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \ '%1$s \'. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \" نعم \ "لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \" لا \ ". </string>
+    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \'%1$s\'\. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \" نعم \"لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \" لا \". </string>
     <string name="ssh_host_key_verification_prompt_title">التحقق من النظام الرئيسي </string>
     <string name="ssh_select_pem_button">مفتاح SSH الخاص </string>
     <string name="ssh_pem_key_parse_error">غير قادر على قراءة PEM المحدد : %s </string>
@@ -587,7 +587,7 @@
     <string name="orange">برتقالي </string>
     <string name="blue">أزرق </string>
     <string name="green">أخضر </string>
-    <string name="password_no_match">كلمة السرية doesn \ 't مطابقة </string>
+    <string name="password_no_match">كلمة السرية doesn\'\t مطابقة </string>
     <string name="deselect_all">الغاء تحديد كل </string>
     <string name="filename">اسم الملف </string>
     <string name="compress_file_suggest_zip_extension">يفضل أن يقوم \ "باستخدام \". zip \ " كامتداد للملف. </string>
@@ -609,9 +609,9 @@
     <string name="got_it">! حصلت عليه </string>
     <string name="encrypt_file_save_as">حفظ الملف المشفر باسم ... </string>
     <string name="encrypt_folder_save_as">حفظ الحافظة التي تم تشفيرها باسم ... </string>
-    <string name="encrypt_file_must_end_with_aze">يجب أن تقوم الملفات المشفرة باستخدام \ ". seزى \" على أنه لاحقة الملف. </string>
+    <string name="encrypt_file_must_end_with_aze">يجب أن تقوم الملفات المشفرة باستخدام \". seزى \" على أنه لاحقة الملف. </string>
     <string name="cannot_overwrite">لا يمكن احلال الملف. </string>
-    <string name="saved_single_file">تم حفظ الملف على أنه \ ' %s \'. </string>
+    <string name="saved_single_file">تم حفظ الملف على أنه \' %s\'. </string>
     <string name="saved_multi_files">تم حفظ %d ملف. </string>
     <string name="create_hidden_file_warn">سيتم اخفاء الملف الذي تم تكوينه في كشف الملفات. </string>
     <string name="grant_apkinstall_permission">يجب الاستمرار في تطبيق تصريح App لتركيب التطبيقات. </string>

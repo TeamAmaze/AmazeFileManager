@@ -691,5 +691,6 @@
     <string name="ftp_prompt_accept_first_start_saf_access">因為這是你第一次開啟 FTP伺服器，而你正以內部儲存空間共享到 FTP伺服器上，請容許 Amaze以 SAF存取內部儲存空間。
 
 你只需進行這個動作一次，直至你選擇把另一個位置共享到 FTP伺服器上。</string>
+    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
 </resources>
 
