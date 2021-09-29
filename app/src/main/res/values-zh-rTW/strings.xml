@@ -629,5 +629,6 @@
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD卡</string>
     <string name="choose_folder">選擇此資料夾</string>
-    </resources>
+    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
+</resources>
 

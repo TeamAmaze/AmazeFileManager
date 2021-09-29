@@ -50,6 +50,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Sort;
+import com.amaze.filemanager.databinding.DialogSigninWithGoogleBinding;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
@@ -98,6 +99,7 @@ import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -1425,5 +1427,25 @@ public class GeneralDialogCreation {
         R.string.otg_access,
         R.string.ok,
         R.string.cancel);
+  }
+
+  public static void showSignInWithGoogleDialog(@NonNull MainActivity mainActivity) {
+    View customView =
+        DialogSigninWithGoogleBinding.inflate(LayoutInflater.from(mainActivity)).getRoot();
+    int accentColor = mainActivity.getAccent();
+    customView
+        .findViewById(R.id.signin_with_google)
+        .setOnClickListener(
+            v -> {
+              mainActivity.addConnection(OpenMode.GDRIVE);
+            });
+    new MaterialDialog.Builder(mainActivity)
+        .customView(customView, false)
+        .title(R.string.signin_with_google_title)
+        .negativeText(android.R.string.cancel)
+        .negativeColor(accentColor)
+        .onNegative((dialog, which) -> dialog.dismiss())
+        .build()
+        .show();
   }
 }

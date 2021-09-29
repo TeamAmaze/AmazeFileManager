@@ -497,5 +497,6 @@
     <string name="cannot_extract_archive">不能開啟壓縮檔 \"%s\"： %s</string>
     <string name="archive_unsupported_or_corrupt">不能開啟壓縮檔 \"%s\"。可能是程式庫不支援此壓縮檔，或者壓縮檔真的壞掉了。</string>
     <string name="close">關閉</string>
-    </resources>
+    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
+</resources>
 

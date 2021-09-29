@@ -627,6 +627,6 @@
     <string name="hide_media">从媒体浏览器隐藏</string>
     <string name="cancel_recommended">取消（建议）</string>
     <string name="failed_install_apk">安装失败</string>
-
-    </resources>
+    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
+</resources>
 
