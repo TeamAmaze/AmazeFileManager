@@ -61,6 +61,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -98,7 +99,6 @@ import android.text.TextWatcher;
 import android.text.format.Formatter;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
@@ -162,15 +162,7 @@ public class GeneralDialogCreation {
     WarnableTextInputLayout tilTextfield =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
 
-    tilTextfield.requestFocus();
-
-    textfield.postDelayed(
-        () -> {
-          InputMethodManager inputMethodManager =
-              (InputMethodManager) m.getSystemService(Context.INPUT_METHOD_SERVICE);
-          inputMethodManager.showSoftInput(textfield, InputMethodManager.SHOW_IMPLICIT);
-        },
-        100);
+    dialogView.post(() -> ExtensionsKt.openKeyboard(textfield, m.getApplicationContext()));
 
     builder
         .customView(dialogView, false)
@@ -858,13 +850,6 @@ public class GeneralDialogCreation {
             ? c.getString(R.string.encrypt_folder_save_as)
             : c.getString(R.string.encrypt_file_save_as));
 
-    passwordEditText.post(
-        () -> {
-          InputMethodManager imm =
-              (InputMethodManager) main.getSystemService(Context.INPUT_METHOD_SERVICE);
-          imm.showSoftInput(passwordEditText, InputMethodManager.SHOW_IMPLICIT);
-        });
-
     builder
         .customView(rootView, true)
         .positiveText(c.getString(R.string.ok))
@@ -894,6 +879,8 @@ public class GeneralDialogCreation {
     MaterialDialog dialog = builder.show();
     MDButton btnOK = dialog.getActionButton(DialogAction.POSITIVE);
     btnOK.setEnabled(false);
+
+    rootView.post(() -> ExtensionsKt.openKeyboard(passwordEditText, main.getApplicationContext()));
 
     TextWatcher textWatcher =
         new SimpleTextWatcher() {
@@ -1034,6 +1021,8 @@ public class GeneralDialogCreation {
     textfield.setHint(promptText);
     textfield.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
 
+    dialogLayout.post(() -> ExtensionsKt.openKeyboard(textfield, main.getApplicationContext()));
+
     builder
         .customView(dialogLayout, false)
         .theme(appTheme.getMaterialDialogTheme())
@@ -1125,10 +1114,14 @@ public class GeneralDialogCreation {
         mainActivity.getLayoutInflater().inflate(R.layout.dialog_singleedittext, null);
     EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
-    etFilename.setText(".zip");
-    etFilename.setInputType(InputType.TYPE_CLASS_TEXT);
+    etFilename.setText(".zip"); // TODO: Put the file/folder name here
+    etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+    etFilename.setSingleLine();
     WarnableTextInputLayout tilFilename =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
+
+    dialogView.post(
+        () -> ExtensionsKt.openKeyboard(etFilename, mainActivity.getApplicationContext()));
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
