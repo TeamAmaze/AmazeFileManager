@@ -97,6 +97,7 @@
     <string name="select_all">בחר הכל</string>
     <string name="delete">מחיקה</string>
     <string name="set_as_home">הגדרה כבית</string>
+    <string name="operation_not_supported">הפעולה אינה נתמכת</string>
 
     <!-- New -->
     <!-- Array -->
@@ -207,11 +208,8 @@
     <string name="unin_system_apk">זוהי אפליקציית מערכת, ולכן מחיקתה עלולה להוביל לאי יציבות. האם להמשיך?</string>
     <string name="warning">אזהרה</string>
     <string name="donate">תרומה</string>
-    <string name="archive_preferences">העדפות ארכיון</string>
     <string name="archive_extract_folder">תיקייה לחילוץ מארכיון</string>
-    <string name="zip_create_folder">תיקייה ליצירת Zip</string>
     <string name="archive_summary">קובצי ארכיון יחולצו לתיקייה זו. ערך בררת המחדל היא התיקייה בה נמצא הארכיון.</string>
-    <string name="zip_summary">קובצי zip חדשים יווצרו בתיקייה זו. ערך בררת המחדל היא התיקייה בה הקבצים נמצאים.</string>
     <string name="open_as">פתח כ...</string>
     <string name="text">טקסט</string>
     <string name="audio">שמע</string>
@@ -298,6 +296,7 @@
     <string name="ftp_status_not_running">לא פועל</string>
     <string name="ftp_no_wifi">נא לוודא שהתחברת לרשת אלחוטית</string>
     <string name="domain">דומיין</string>
+    <string name="smb_share">שיתוף נתיב</string>
     <string name="invalid">%s לא חוקי</string>
     <string name="ftp_notif_starting">מתחיל את שרת ה-FTP</string>
     <string name="ftp_notif_starting_title">שרת FTP</string>
@@ -443,6 +442,7 @@
     <string name="smb_launch_error">תצטרך להעתיק קובץ זה לאחסון הפנימי כדי לפתוח אותו</string>
     <string name="error_file_not_found">שגיאה: הקובץ לא נמצא</string>
     <string name="error_io">שגיאת I/O</string>
+    <string name="error_file_too_large">שגיאה: הקובץ גדול מדי</string>
     <string name="medium_text">טקסט בינוני</string>
     <string name="permission_read">קריאה</string>
     <string name="permission_write">כתיבה</string>
@@ -671,7 +671,6 @@
     <string name="app_ui_crash">היישומון/מנשק המשתמש קרס</string>
     <string name="error_report_title">דוח שגיאה</string>
     <string name="crash_report_copied">דוח הקריסה הועתק ללוח הגזירים</string>
-
     <string name="disableIpcSignature">השבתת בדיקת חתימת IPC (לשרתי SMBv1 מיושנים - מסוכן!)</string>
     <string name="cannot_delete_file">לא ניתן למחוק קובץ</string>
     <string name="cannot_delete_file_with_reason">לא ניתן למחוק קובץ - %s </string>
@@ -682,8 +681,23 @@
     <string name="choose_different_app">לבחור ביישומון אחר</string>
     <string name="clear_open_file">פינוי המטמון</string>
     <string name="clear_open_file_summary">מפנה את יישומוני בררת המחדל שנבחרו לפתיחת סוג הקובץ</string>
+    <string name="ftp_readonly">גישה לקריאה בלבד</string>
     <string name="legacy_listing_title">להשתמש בתצוגה מיושנת למשתמש על (root)</string>
-    <string name="legacy_listing_summary">אם פעיל, יעשה שימוש ב־stat להצגת הקבצים, אם לא אז ls</string>
+    <string name="legacy_listing_summary">אם פעיל, ייעשה שימוש בשיטה מיושנת להצגת קבצים</string>
+    <string name="error_unsupported_v5_rar">ארכיון ה־RAR ‏„%s” הוא ארכיון RAR v5 שאינו נתמך.</string>
+    <string name="ftp_prompt_restart_server">יהיה עליך להפעיל את שרת ה־FTP מחדש כדי שהשינויים ייכנסו לתוקף.</string>
     <string name="error_permission_denied">ההרשאה נדחתה</string>
+    <string name="error_archive_password_incorrect">ססמת הארכיון שגויה.</string>
+    <string name="error_archive_cannot_extract">לא ניתן לחלץ את רשומת הארכיון „%s” אל „%s”.</string>
+    <string name="drag_and_drop_preference">בחירת העדפת גרירה ועזיבה (ניסיוני)</string>
+    <string name="drag_to_move_copy">יש לגעת ולגרור כדי להעביר או להעתיק קבצים</string>
+    <string name="drag_to_select">יש לגעת ולגרור כדי לבחור קבצים</string>
+    <string name="disable">השבתה</string>
+    <string name="choose_operation">נא לבחור פעולה לביצוע</string>
+    <string name="remember">לזכור לפעם הבאה</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">הענקת גישת SAF לשרת FTP</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">מאחר שזו הפעלת שרת ה־FTP הראשונה שלך והאחסון הפנימי של המכשיר שלך משמש כתיקייה משותפת, נא לאפשר ל־Amaze לגשת לאחסון דרך SAF.\n\n
+
+עליך לבצע זאת פעם אחת בלבד, עד הפעם הבא בה ייבחר מקום חדש לשיתוף.</string>
 </resources>
 

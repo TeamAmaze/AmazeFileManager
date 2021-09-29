@@ -97,6 +97,7 @@
     <string name="select_all">選擇全部</string>
     <string name="delete">刪除</string>
     <string name="set_as_home">設為為首頁目錄</string>
+    <string name="operation_not_supported">不支援的操作</string>
 
     <!-- New -->
     <!-- Array -->
@@ -207,11 +208,8 @@
     <string name="unin_system_apk">這是一個系統應用程式，刪除它可能導致系統不穩定。\n是否繼續？</string>
     <string name="warning">警告</string>
     <string name="donate">捐贈</string>
-    <string name="archive_preferences">壓縮</string>
     <string name="archive_extract_folder">壓縮檔解壓縮資料夾</string>
-    <string name="zip_create_folder">Zip 新增資料夾</string>
     <string name="archive_summary">壓縮檔將會被解壓縮到該資料夾，預設解壓縮到壓縮檔所在資料夾</string>
-    <string name="zip_summary">新 Zip 檔案將會新增到該資料夾，預設新增壓縮檔到目前的資料夾</string>
     <string name="open_as">開啟方式</string>
     <string name="text">文字</string>
     <string name="audio">音訊</string>
@@ -297,6 +295,7 @@
     <string name="ftp_status_not_running">未執行中</string>
     <string name="ftp_no_wifi">請確保您連線至 Wi-Fi</string>
     <string name="domain">網域名稱</string>
+    <string name="smb_share">SMB檔案夾位置</string>
     <string name="invalid">不正確 %s</string>
     <string name="ftp_notif_starting">FTP 伺服器啟動中</string>
     <string name="ftp_notif_starting_title">FTP 伺服器</string>
@@ -310,6 +309,8 @@
     <string name="primary_two_summary">將顏色設定為右側頁籤的大使用者介面元素</string>
     <string name="support_development">支援開發</string>
     <string name="report_bugs_title">回報程式錯誤</string>
+    <string name="source_title">原始碼</string>
+    <string name="source_summary">在 Github上檢視我們 app的原始碼</string>
     <string name="report_bugs_summary">回報問題或告訴我們您想要的新功能</string>
     <string name="translate_title">翻譯</string>
     <string name="translate_summary">用您的語言翻譯 Amaze</string>
@@ -428,6 +429,7 @@
     <string name="smb_launch_error">您將需要將此檔案複製到儲存空間並開啟</string>
     <string name="error_file_not_found">錯誤：找不到檔案</string>
     <string name="error_io">I/O 錯誤</string>
+    <string name="error_file_too_large">錯誤：檔案太大</string>
     <string name="medium_text">中號字體</string>
     <string name="permission_read">已讀</string>
     <string name="permission_write">寫入</string>
@@ -442,7 +444,7 @@
     <string name="cloud_connection">雲端連線</string>
     <string name="cloud_connection_new">新增雲端連線</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google 雲端硬碟&#8482;</string>
+    <string name="cloud_drive">Google 雲端硬碟</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">取得雲端套件</string>
@@ -505,10 +507,16 @@
     <string name="authenticate_password">請輸入密碼</string>
 
     <string name="sidebar_preferences">邊欄</string>
+    <string name="sidebar_folders_title">側欄捷徑</string>
     <string name="sidebar_quick_access_title">側欄快速存取</string>
+    <string name="show_folders_pref_title">顯示捷徑</string>
+    <string name="show_folders_pref">捷徑</string>
     <string name="show_quick_access_pref_title">顯示快速存取</string>
     <string name="show_quick_access_pref">快速存取</string>
+    <string name="create_shortcut">建立捷徑</string>
+    <string name="edit_shortcut">編輯捷徑</string>
     <string name="directory">目錄</string>
+    <string name="question_delete_shortcut">刪除捷徑？</string>
 
     <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
     <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
@@ -611,6 +619,7 @@
     <string name="transfer_rate">傳輸速率</string>
     <string name="unknown">未知</string>
     <string name="multiple_invalid_archive_entries">壓縮檔有部份檔案未能解壓；壓縮檔可能已損壞或來自不明的來源。</string>
+    <string name="saf_otg_explanation">基於安全理由，你將會進入 Android的檔案系統 app。請在左側的列表上選擇你的 USB裝置。</string>
     <string name="donation_thanks">感謝你的捐款，這對我們是很好的鼓勵！ (:</string>
     <string name="enable_marquee_filename">檔案名稱以走馬燈方式顯示</string>
     <string name="archive_password_prompt">請輸入壓縮檔的密碼。</string>
@@ -619,6 +628,7 @@
     <string name="close">關閉</string>
     <string name="bookmark_exists">書籤已存在</string>
     <string name="hide_media">從媒體瀏覽器中隱藏</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">好像有人有不軌企圖！\n\n伺服器發出的公鑰指紋跟存在 Amaze的不同。可能有人在截聽你的通訊（中間人攻擊）！但是這也可能只是伺服器的公鑰剛剛更新了。\n\n你可以繼續，讓 Amaze更新伺服器的公鑰指紋，或者取消更新 SSH連線設定。</string>
     <string name="update_host_key">更新主機公鑰</string>
     <string name="cancel_recommended">取消(建議)</string>
     <string name="failed_install_apk">安裝失敗</string>
@@ -629,6 +639,58 @@
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD卡</string>
     <string name="choose_folder">選擇此資料夾</string>
+    <string name="some_files_failed_invalid_operation">有一些檔案因無效的動作而未能操作。</string>
+    <string name="ftp_server_prompt_connect_to_network">請連上網路或開啟存取熱點模式</string>
+    <string name="ftp_server_open_settings">開啟系統設定</string>
+    <string name="move">移動</string>
+    <string name="select_save_location">選擇儲存位置</string>
+    <string name="scp_default_path">預設位置（可留空）</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">真對不起，不該發生這樣的事情的。</string>
+    <string name="error_report_button_text">以電郵報告這個錯誤</string>
+    <string name="error_report_button_telegram">在 Telegram上報告這個錯誤</string>
+    <string name="copy_for_github">複製已格式化的報告</string>
+    <string name="error_report_open_issue_button_text">上報 GitHub</string>
+    <string name="error_report_open_github_notice">請先檢查同樣的問題是否已經有別人上報、討論中。</string>
+    <string name="error_snackbar_message">對不起，出了點問題。</string>
+    <string name="error_snackbar_action">報告</string>
+    <string name="what_device_headline">資料：</string>
+    <string name="what_happened_headline">發生了什麼事？</string>
+    <string name="info_labels">什麼事：\\n請求：\\nGMT 時間：\\n應用程序包：\\n版本：\\nOS 版本：\\n設備:\\n型號:\\n代號：</string>
+    <string name="your_comment">附加資料（請用英文填寫）：</string>
+    <string name="error_details_headline">詳情：</string>
+    <string name="app_ui_crash">應用程式/UI崩潰</string>
+    <string name="error_report_title">故障報告</string>
+    <string name="crash_report_copied">事故報告已複製到剪貼簿</string>
+    <string name="disableIpcSignature">關閉 IPC數位簽名檢查（適用於舊式 SMBv1伺服器—不安全！）</string>
+    <string name="cannot_delete_file">無法刪除檔案</string>
+    <string name="cannot_delete_file_with_reason">無法刪除檔案 - %s</string>
+    <string name="cannot_rename_file">無法重新命名檔案 %s - %s</string>
+    <string name="cannot_read_directory">無法讀取檔案夾 %s - %s</string>
+    <string name="just_once">只此一次</string>
+    <string name="always">總是</string>
+    <string name="choose_different_app">選擇另外的應用程式</string>
+    <string name="clear_open_file">清取快取</string>
+    <string name="clear_open_file_summary">清除選擇用作開啟檔案的預設應用程式設定</string>
+    <string name="ftp_readonly">唯讀存取</string>
+    <string name="legacy_listing_title">在 Root模式使用舊有方式列出文件</string>
+    <string name="legacy_listing_summary">開啟此設定的話，Amaze會使用原有的方法列出文件</string>
+    <string name="error_unsupported_v5_rar">RAR 壓縮檔 \"%s\" 是未能支援的 RAR v5壓縮檔。</string>
+    <string name="ftp_prompt_restart_server">請重新啟動 FTP伺服器以套用新設定。</string>
+    <string name="error_permission_denied">拒絕存取</string>
+    <string name="error_archive_password_incorrect">錯誤的壓縮檔密碼。</string>
+    <string name="error_archive_cannot_extract">不能把壓縮檔內的 \"%s\" 解壓到 \"%s\"。</string>
+    <string name="drag_and_drop_preference">拖放動作設定（實驗性）</string>
+    <string name="drag_to_move_copy">點擊並拖拉以移動/複製檔案</string>
+    <string name="drag_to_select">點擊並拖拉以選擇檔案</string>
+    <string name="disable">不使用</string>
+    <string name="choose_operation">選擇要執行的動作</string>
+    <string name="remember">記住設定</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">容許 FTP伺服器以 SAF存取檔案</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">因為這是你第一次開啟 FTP伺服器，而你正以內部儲存空間共享到 FTP伺服器上，請容許 Amaze以 SAF存取內部儲存空間。
+
+你只需進行這個動作一次，直至你選擇把另一個位置共享到 FTP伺服器上。</string>
     <string name="signin_with_google_title">登入以使用 Google Drive™</string>
 </resources>
 

@@ -97,6 +97,7 @@
     <string name="select_all">Pilih Semua</string>
     <string name="delete">Hapus</string>
     <string name="set_as_home">Atur Sebagai Beranda</string>
+    <string name="operation_not_supported">Tindakan tidak didukung</string>
 
     <!-- New -->
     <!-- Array -->
@@ -207,11 +208,8 @@
     <string name="unin_system_apk">Ini adalah aplikasi sistem, menghapusnya akan mengakibatkan ketidakstabilan sistem.\nLanjutkan?</string>
     <string name="warning">Peringatan</string>
     <string name="donate">Donasi</string>
-    <string name="archive_preferences">Preferensi Arsip</string>
     <string name="archive_extract_folder">Folder Ekstrak Arsip</string>
-    <string name="zip_create_folder">Folder Zip Baru</string>
     <string name="archive_summary">Berkas arsip akan diekstrak ke folder ini. Nilai bawaannya adalah direktori tempat arsip berada.</string>
-    <string name="zip_summary">Zip baru akan dibuat di folder ini. Nilai bawaannya adalah direktori tempat arsip berada.</string>
     <string name="open_as">Buka Sebagai</string>
     <string name="text">Teks</string>
     <string name="audio">Audio</string>
@@ -298,6 +296,7 @@
     <string name="ftp_status_not_running">Tidak Berjalan</string>
     <string name="ftp_no_wifi">Pastikan Anda tersambung ke Wi-Fi</string>
     <string name="domain">Domain</string>
+    <string name="smb_share">Jalur berbagi</string>
     <string name="invalid">%s tidak valid</string>
     <string name="ftp_notif_starting">Server FTP sedang berjalan</string>
     <string name="ftp_notif_starting_title">Server FTP</string>
@@ -442,6 +441,7 @@
     <string name="smb_launch_error">Anda perlu menyalin berkas ini ke penyimpanan agar bisa dibuka</string>
     <string name="error_file_not_found">Galat: Berkas Tidak Bisa Dibuka</string>
     <string name="error_io">Galat I/O</string>
+    <string name="error_file_too_large">Galat: Berkas Terlalu Besar</string>
     <string name="medium_text">Teks Medium</string>
     <string name="permission_read">Baca</string>
     <string name="permission_write">Tulis</string>
@@ -670,7 +670,6 @@
     <string name="app_ui_crash">Kesalahan App/UI</string>
     <string name="error_report_title">Laporan kesalahan</string>
     <string name="crash_report_copied">Laporan kesalahan telah disalin ke papan klip</string>
-
     <string name="disableIpcSignature">Nonaktifkan pemeriksaaan tanda tangan IPC (Untuk server SMBv1 lama - TIDAK AMAN!)</string>
     <string name="cannot_delete_file">Tidak bisa menghapus berkas</string>
     <string name="cannot_delete_file_with_reason">Tidak bisa menghapus berkas - %s </string>
@@ -681,6 +680,23 @@
     <string name="choose_different_app">Pilih aplikasi lainnya</string>
     <string name="clear_open_file">Hapus cache</string>
     <string name="clear_open_file_summary">Kembalikan ke bawaan apl untuk membuka berkas</string>
+    <string name="ftp_readonly">Akses baca-saja</string>
+    <string name="legacy_listing_title">Gunakan tampilan lama untuk root</string>
+    <string name="legacy_listing_summary">Jika diaktifkan, gunakan metode lama untuk menampilkan berkas</string>
+    <string name="error_unsupported_v5_rar">Arsip RAR \"%s\" adalah arsip RAR v5 yang tidak didukung.</string>
+    <string name="ftp_prompt_restart_server">Anda perlu memulai ulang server FTP agar perubahan terdampak.</string>
     <string name="error_permission_denied">Perizinan ditolak</string>
+    <string name="error_archive_password_incorrect">Sandi arsip salah.</string>
+    <string name="error_archive_cannot_extract">Tidak bisa mengekstrak entri arsip \"%s\" ke \"%s\".</string>
+    <string name="drag_and_drop_preference">Pilih preferensi seret dan jatuhkan (Eksperimental)</string>
+    <string name="drag_to_move_copy">Sentuh dan seret untuk memindahkan atau menyalin berkas</string>
+    <string name="drag_to_select">Sentuh dan seret untuk memilih berkas</string>
+    <string name="disable">Nonaktifkan</string>
+    <string name="choose_operation">Pilih tindakan untuk dikerjakan</string>
+    <string name="remember">Ingat untuk selanjutnya</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">Beri izin akses SAF untuk server FTP</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Karena ini adalah pertama kalinya Anda menjalankan server FTP, dan Anda menggunakan penyimpanan perangkat internal sebagai folder berbagi, silakan izinkan Amaze untuk mengakses penyimpanan menggunakan SAF.\n\n
+
+Anda hanya perlu melakukan ini sekali, sampai nanti jika Anda ingin memilih lokasi baru untuk berbagi.</string>
 </resources>
 
