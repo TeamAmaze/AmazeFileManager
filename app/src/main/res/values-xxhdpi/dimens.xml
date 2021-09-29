@@ -6,5 +6,4 @@
     <!-- +8 -->
 
     <dimen name="drawer_header_height_with_padding">179dp</dimen>
-
 </resources>

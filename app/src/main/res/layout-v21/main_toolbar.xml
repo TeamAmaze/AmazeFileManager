@@ -30,9 +30,7 @@
         android:id="@+id/main_parent"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"
-        android:nextFocusDown="@id/fabs_menu"
-        android:nextFocusUp="@id/lin"
+        android:descendantFocusability="afterDescendants"
         >
 
         <FrameLayout
@@ -41,14 +39,15 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             android:clipToPadding="false"
             android:layout_height="match_parent"
-            android:focusable="true"
-            android:nextFocusUp="@id/lin" >
+            android:descendantFocusability="afterDescendants"
+            >
         </FrameLayout>
 
         <include
             android:id="@+id/lin"
             layout="@layout/layout_appbar"
-            android:focusable="true"/>
+            android:focusable="true"
+            />
         <include layout="@layout/layout_search"/>
 
         <LinearLayout
@@ -83,6 +82,14 @@
                 app:sdMainFabOpenedSrc="@drawable/ic_close_white_24dp"
                 app:sdOverlayLayout="@id/fabs_overlay_layout"
                 app:layout_behavior="@string/speeddial_scrolling_view_snackbar_behavior" />
+
+        <com.amaze.filemanager.ui.views.drawer.GestureExclusionView
+            android:id="@+id/placeholder_drag_start"
+            android:layout_width="@dimen/material_generic"
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:layout_gravity="start"
+            />
         <View
             android:id="@+id/placeholder_drag_bottom"
             android:layout_width="match_parent"

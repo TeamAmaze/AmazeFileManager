@@ -75,7 +75,7 @@ public abstract class SshClientUtils {
    * @param <T> Type of return value
    * @return Template execution results
    */
-  public static final <T> T execute(@NonNull SshClientTemplate template) {
+  public static <T> T execute(@NonNull SshClientTemplate<T> template) {
     SSHClient client = SshConnectionPool.INSTANCE.getConnection(extractBaseUriFrom(template.url));
     if (client == null) {
       client = SshConnectionPool.INSTANCE.getConnection(template.url);
@@ -106,9 +106,9 @@ public abstract class SshClientUtils {
    * @param <T> Type of return value
    * @return Template execution results
    */
-  public static final <T> T execute(@NonNull final SshClientSessionTemplate template) {
+  public static <T> T execute(@NonNull final SshClientSessionTemplate<T> template) {
     return execute(
-        new SshClientTemplate(template.url, false) {
+        new SshClientTemplate<T>(template.url, false) {
           @Override
           public T execute(SSHClient client) {
             Session session = null;
@@ -139,10 +139,12 @@ public abstract class SshClientUtils {
    * @param <T> Type of return value
    * @return Template execution results
    */
-  public static final <T> T execute(@NonNull final SFtpClientTemplate template) {
-    return execute(
-        new SshClientTemplate(template.url, false) {
+  @Nullable
+  public static <T> T execute(@NonNull final SFtpClientTemplate<T> template) {
+    final SshClientTemplate<T> sshClient =
+        new SshClientTemplate<T>(template.url, false) {
           @Override
+          @Nullable
           public T execute(SSHClient client) {
             SFTPClient sftpClient = null;
             T retval = null;
@@ -162,7 +164,9 @@ public abstract class SshClientUtils {
             }
             return retval;
           }
-        });
+        };
+
+    return execute(sshClient);
   }
 
   /**
@@ -172,7 +176,7 @@ public abstract class SshClientUtils {
    * @param fullUri SSH URL
    * @return SSH URL with the password (if exists) encrypted
    */
-  public static final String encryptSshPathAsNecessary(@NonNull String fullUri) {
+  public static String encryptSshPathAsNecessary(@NonNull String fullUri) {
     String uriWithoutProtocol =
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
@@ -192,7 +196,7 @@ public abstract class SshClientUtils {
    * @param fullUri SSH URL
    * @return SSH URL with the password (if exists) decrypted
    */
-  public static final String decryptSshPathAsNecessary(@NonNull String fullUri) {
+  public static String decryptSshPathAsNecessary(@NonNull String fullUri) {
     String uriWithoutProtocol =
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
@@ -214,7 +218,7 @@ public abstract class SshClientUtils {
    * @param fullUri Full SSH URL
    * @return The remote path part of the full SSH URL
    */
-  public static final String extractBaseUriFrom(@NonNull String fullUri) {
+  public static String extractBaseUriFrom(@NonNull String fullUri) {
     String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
     return uriWithoutProtocol.indexOf('/') == -1
         ? fullUri
@@ -230,7 +234,7 @@ public abstract class SshClientUtils {
    * @param fullUri Full SSH URL
    * @return The remote path part of the full SSH URL
    */
-  public static final String extractRemotePathFrom(@NonNull String fullUri) {
+  public static String extractRemotePathFrom(@NonNull String fullUri) {
     String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
     return uriWithoutProtocol.indexOf('/') == -1
         ? "/"
@@ -243,7 +247,7 @@ public abstract class SshClientUtils {
    *
    * @param client {@link SSHClient} instance
    */
-  public static final void tryDisconnect(SSHClient client) {
+  public static void tryDisconnect(SSHClient client) {
     if (client != null && client.isConnected()) {
       try {
         client.disconnect();
@@ -326,10 +330,10 @@ public abstract class SshClientUtils {
   }
 
   public static @FolderState int checkFolder(@NonNull String path) {
-    return Single.<Integer>fromCallable(
+    return Single.fromCallable(
             () ->
                 execute(
-                    new SFtpClientTemplate(extractBaseUriFrom(path)) {
+                    new SFtpClientTemplate<Integer>(extractBaseUriFrom(path)) {
                       @Override
                       public @FolderState Integer execute(@NonNull SFTPClient client)
                           throws IOException {

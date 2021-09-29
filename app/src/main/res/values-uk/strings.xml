@@ -455,7 +455,7 @@
     <string name="cloud_connection">Підключення до хмари</string>
     <string name="cloud_connection_new">Нове підключення до хмари</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Ящик</string>
     <string name="cloud_get">Отримати плагін хмари</string>
@@ -516,16 +516,10 @@
     <string name="authenticate_password">Введіть пароль</string>
 
     <string name="sidebar_preferences">Бічна панель</string>
-    <string name="sidebar_folders_title">Ярлики бокової панелі</string>
     <string name="sidebar_quick_access_title">Швидкий доступ бічної панелі</string>
-    <string name="show_folders_pref_title">Показати ярлики</string>
-    <string name="show_folders_pref">Ярлики</string>
     <string name="show_quick_access_pref_title">Показати швидкий доступ</string>
     <string name="show_quick_access_pref">Швидкий доступ</string>
-    <string name="create_shortcut">Створити ярлик</string>
-    <string name="edit_shortcut">Редагувати ярлик</string>
     <string name="directory">Каталог</string>
-    <string name="question_delete_shortcut">Видалити ярлик?</string>
 
     <string name="cloud_error_plugin">Плагін для цієї хмари не знайдено. Будь ласка, завантажити з Play Store.</string>
     <string name="cloud_error_failed_restart">Помилка завантаження. Будь ласка, выдкрийте Amaze Cloud. </string>

@@ -25,7 +25,8 @@ import android.app.PendingIntent
 import android.content.*
 import android.net.Uri
 import android.os.AsyncTask
-import android.os.Build
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.O
 import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.annotation.StringRes
@@ -213,11 +214,10 @@ class ZipService : AbstractProgressiveService() {
             try {
                 out = FileUtil.getOutputStream(zipDirectory, context)
                 zos = ZipOutputStream(BufferedOutputStream(out))
-                var fileProgress = 0
-                for (file in baseFiles) {
+                for ((fileProgress, file) in baseFiles.withIndex()) {
                     if (isCancelled) return
                     progressHandler.fileName = file.name
-                    progressHandler.sourceFilesProcessed = ++fileProgress
+                    progressHandler.sourceFilesProcessed = fileProgress + 1
                     compressFile(file, "")
                 }
             } catch (e: IOException) {
@@ -239,8 +239,8 @@ class ZipService : AbstractProgressiveService() {
         @Throws(IOException::class, NullPointerException::class, ZipException::class)
         private fun compressFile(file: File, path: String) {
             if (progressHandler.cancelled) return
-            zos!!.putNextEntry(createZipEntry(file, path))
             if (!file.isDirectory) {
+                zos!!.putNextEntry(createZipEntry(file, path))
                 val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
                 var len: Int
                 BufferedInputStream(FileInputStream(file)).use { `in` ->
@@ -254,14 +254,21 @@ class ZipService : AbstractProgressiveService() {
                 return
             }
             file.listFiles()?.forEach {
-                compressFile(it, "$path${File.separator}${file.name}")
+                compressFile(it, "${createZipEntryPrefixWith(path)}${file.name}")
             }
         }
     }
 
+    private fun createZipEntryPrefixWith(path: String): String =
+        if (path.isEmpty()) {
+            path
+        } else {
+            "$path/"
+        }
+
     private fun createZipEntry(file: File, path: String): ZipEntry =
-        ZipEntry("$path/${file.name}").apply {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+        ZipEntry("${createZipEntryPrefixWith(path)}${file.name}").apply {
+            if (SDK_INT >= O) {
                 val attrs = Files.readAttributes(
                     Paths.get(file.absolutePath),
                     BasicFileAttributes::class.java

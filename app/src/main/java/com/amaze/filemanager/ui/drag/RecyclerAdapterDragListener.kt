@@ -33,7 +33,6 @@ import com.amaze.filemanager.ui.dialogs.DragAndDropDialog
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
-import java.util.*
 import kotlin.collections.ArrayList
 
 class RecyclerAdapterDragListener(
@@ -49,7 +48,7 @@ class RecyclerAdapterDragListener(
         return when (p1?.action) {
             DragEvent.ACTION_DRAG_ENDED -> {
                 Log.d(TAG, "ENDING DRAG, DISABLE CORNERS")
-                mainFragment.mainActivity.initCornersDragListener(
+                mainFragment.requireMainActivity().initCornersDragListener(
                     true,
                     dragAndDropPref
                         != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT
@@ -59,7 +58,7 @@ class RecyclerAdapterDragListener(
                 ) {
                     val dataUtils = DataUtils.getInstance()
                     dataUtils.checkedItemsList = null
-                    mainFragment.mainActivity
+                    mainFragment.requireMainActivity()
                         .tabFragment.dragPlaceholder?.visibility = View.INVISIBLE
                 }
                 true
@@ -143,7 +142,7 @@ class RecyclerAdapterDragListener(
                     var currentFileParcelable: HybridFileParcelable? = null
                     var isCurrentElementDirectory: Boolean? = null
                     var isEmptyArea: Boolean? = null
-                    var pasteLocation: String = if (adapter.itemsDigested.size == 0) {
+                    var pasteLocation: String? = if (adapter.itemsDigested.size == 0) {
                         mainFragment.currentPath
                     } else {
                         if (holder == null || holder.adapterPosition == RecyclerView.NO_POSITION) {
@@ -156,9 +155,8 @@ class RecyclerAdapterDragListener(
                             ) {
                                 // dropping in goback button
                                 // hack to get the parent path
-                                Log.d(TAG, "Drop on goback button")
                                 val hybridFileParcelable = mainFragment
-                                    .elementsList[1].generateBaseFile()
+                                    .elementsList!!.get(1).generateBaseFile()
                                 val hybridFile = HybridFile(
                                     hybridFileParcelable.mode,
                                     hybridFileParcelable.getParent(mainFragment.context)
@@ -180,7 +178,8 @@ class RecyclerAdapterDragListener(
                         Log.d(
                             TAG,
                             "Didn't find checked items in adapter, " +
-                                "checking dataUtils size ${dataUtils.checkedItemsList.size}"
+                                "checking dataUtils size ${
+                                dataUtils.checkedItemsList?.size ?: "null"}"
                         )
                         checkedItems = dataUtils.checkedItemsList
                     }
@@ -227,8 +226,8 @@ class RecyclerAdapterDragListener(
                             ).format(pasteLocation)
                     )
                     DragAndDropDialog.showDialogOrPerformOperation(
-                        pasteLocation,
-                        arrayList, mainFragment.mainActivity
+                        pasteLocation!!,
+                        arrayList, mainFragment.requireMainActivity()
                     )
                     adapter.toggleChecked(false)
                     holder?.rl?.run {

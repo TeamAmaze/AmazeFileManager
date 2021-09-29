@@ -28,12 +28,20 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 94
-        versionName "3.6.0"
+        versionCode 96
+        versionName "3.6.2"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments += ["room.schemaLocation"  : "$projectDir/schemas".toString(),
+                              "room.incremental"     : "true",
+                              "room.expandProjection": "true"]
+            }
+        }
     }
 
     signingConfigs {
@@ -100,6 +108,16 @@ android {
 }
 
 dependencies {
+
+    modules {
+        module("org.bouncycastle:bcprov-jdk15to18") {
+            replacedBy("org.bouncycastle:bcprov-jdk15on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15to18") {
+            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+        }
+    }
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
@@ -135,6 +153,7 @@ dependencies {
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation 'org.jsoup:jsoup:1.11.2'
     testImplementation 'commons-net:commons-net:3.6'
+    testImplementation "androidx.room:room-migration:$roomVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
@@ -226,7 +245,7 @@ dependencies {
 
     implementation project(':commons_compress_7z')
     implementation project(':file_operations')
-    implementation "androidx.core:core-ktx:+"
+    implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
 }

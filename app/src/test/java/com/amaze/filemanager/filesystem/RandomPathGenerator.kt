@@ -23,25 +23,103 @@ package com.amaze.filemanager.filesystem
 import kotlin.random.Random
 
 object RandomPathGenerator {
-    val CHARS_FOR_PATH = ('A'..'Z').toList() + ('a'..'z').toList()
-    val SEPARATOR = '/'
+    const val separator = '/'
+
+    private val letters = ('A'..'Z').toSet() + ('a'..'z').toSet()
+    private val numbers = ('0'..'9').toSet()
+    private val other = setOf('.', '_', '-')
+    private val reservedFileNames = setOf("", ".", "..")
 
     /**
      * Generates a valid random path
      */
     fun generateRandomPath(random: Random, length: Int): String {
-        val randomString = (1..length)
-            .map { i -> random.nextInt(0, CHARS_FOR_PATH.count()) }
-            .map(CHARS_FOR_PATH::get)
+        assert(length > 0)
 
-        val path = randomString.mapIndexed { i, e ->
-            if (random.nextInt(10) < 1 && i > 0 && randomString[i - 1] != SEPARATOR) {
-                SEPARATOR
-            } else {
-                e
-            }
+        val slashesInPath = random.nextInt(length / 4)
+
+        return generateRandomPath(random, length, slashesInPath)
+    }
+
+    /**
+     * Generates a valid random path, with a specific amount of directories
+     */
+    fun generateRandomPath(random: Random, length: Int, slashesInPath: Int): String {
+        assert(length > slashesInPath * 2)
+
+        val namesInPath = slashesInPath + 1
+
+        val filenameLengths = List(namesInPath) {
+            (length - slashesInPath) / namesInPath
         }
 
-        return path.joinToString("")
+        val pathBuilder = mutableListOf<String>()
+
+        for (filenameLength in filenameLengths) {
+            val filename = generateRandomFilename(random, filenameLength)
+            pathBuilder.add(filename)
+        }
+
+        var path = pathBuilder.joinToString(separator = separator.toString())
+
+        val randomNumber = random.nextDouble(0.0, 1.0)
+
+        if (randomNumber < 0.2) {
+            // 20% end slash
+            path = path.dropLast(1)
+            path += separator
+            return path
+        }
+
+        if (randomNumber < 0.6) {
+            // 40% end extension
+            val extension = List(3) { letters.random(random) }.joinToString(separator = "")
+
+            path = path.dropLast(4)
+            path += ".$extension"
+            return path
+        }
+
+        return path
+    }
+
+    private fun generateRandomFilename(random: Random, length: Int): String {
+        assert(length > 0)
+
+        var name = ""
+
+        while (reservedFileNames.contains(name)) {
+            name = List(length) { generateRandomCharacter(random) }
+                .joinToString("")
+        }
+
+        return name
+    }
+
+    /**
+     * Characters from POSIX 3.282 Portable Filename Character Set.
+     *
+     * Not all characters should be tested equally,
+     * this ensures that paths not only contain letters.
+     */
+    private fun generateRandomCharacter(random: Random): Char {
+        val randomNumber = random.nextDouble(0.0, 1.0)
+
+        if (randomNumber < 0.4) {
+            // 40% characters
+            return letters.random(random)
+        }
+
+        if (randomNumber < 0.8) {
+            // 40% numbers
+            return numbers.random(random)
+        }
+
+        if (randomNumber < 1.0) {
+            // 20% other
+            return other.random(random)
+        }
+
+        throw IllegalStateException()
     }
 }

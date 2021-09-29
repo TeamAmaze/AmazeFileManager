@@ -22,18 +22,13 @@ jobs:
           distribution: "adopt"
           java-version: 11
       - name: Check formatting using spotless
-        run: ./gradlew spotlessCheck --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
+        run: ./gradlew spotlessCheck --stacktrace
       - name: Build with Gradle
         run: |
-          ./gradlew assembledebug --stacktrace | grep -vE 'Transform|Build cache is disabled|history is available.'
+          ./gradlew assembledebug --stacktrace
         env:
           TZ: UTC
       - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info | grep -vE 'Transform|Build cache is disabled|history is available.'
+        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info
         env:
           TZ: UTC
-      - name: Publish test cases
-        run: |
-          export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
-          bash <(curl -Ls https://coverage.codacy.com/get.sh)
-        continue-on-error: true

@@ -57,6 +57,7 @@
     <color name="primary_grey_900">#000000</color>
     <color name="primary_blue_grey">#607d8b</color>
     <color name="primary_teal_900">#004d40</color>
+    <color name="primary_white">#ffffff</color>
 
     <!-- accent color palatte -->
     <color name="accent_red">#F44336</color>
@@ -90,6 +91,7 @@
     <color name="generic_item">#9e9e9e</color>
 
     <color name="grey">#ff666666</color>
+    <color name="grey_translucent">#59666666</color>
 
     <color name="appsadapter_background">#5f33b5e5</color>
 

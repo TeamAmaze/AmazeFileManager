@@ -31,10 +31,30 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
 class HybridFileTest {
+
+    /**
+     * Test []
+     */
+    @Test
+    fun testGetParentGeneric() {
+        val r = Random(123)
+        for (i in 0..50) {
+            val path = RandomPathGenerator.generateRandomPath(r, 50)
+            val file = HybridFile(OpenMode.UNKNOWN, path)
+            file.getParent(ApplicationProvider.getApplicationContext())
+        }
+
+        for (i in 0..50) {
+            val path = RandomPathGenerator.generateRandomPath(r, 50, 0)
+            val file = HybridFile(OpenMode.UNKNOWN, path)
+            file.getParent(ApplicationProvider.getApplicationContext())
+        }
+    }
 
     /**
      * Test [HybridFile.getParent] for SSH paths with trailing slash.

@@ -28,6 +28,8 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 
 import android.webkit.MimeTypeMap;
 
+import androidx.annotation.Nullable;
+
 public final class MimeTypes {
 
   public static final String ALL_MIME_TYPES = "*/*";
@@ -52,7 +54,6 @@ public final class MimeTypes {
     MIME_TYPES.put("pl", "text/plain");
     MIME_TYPES.put("prop", "text/plain");
     MIME_TYPES.put("properties", "text/plain");
-    MIME_TYPES.put("rc", "text/plain");
     MIME_TYPES.put("ini", "text/plain");
     MIME_TYPES.put("md", "text/markdown");
 
@@ -163,8 +164,9 @@ public final class MimeTypes {
    * @param path the path of file
    * @return extension extracted from name in lowercase
    */
-  public static String getExtension(String path) {
-    if (path.contains(".")) return path.substring(path.lastIndexOf(".") + 1).toLowerCase();
+  public static String getExtension(@Nullable String path) {
+    if (path != null && path.contains("."))
+      return path.substring(path.lastIndexOf(".") + 1).toLowerCase();
     else return "";
   }
 }

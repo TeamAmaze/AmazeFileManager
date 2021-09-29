@@ -50,7 +50,6 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.DataUtils;
@@ -75,7 +74,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.CountDownTimer;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
@@ -85,9 +83,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
@@ -97,8 +95,12 @@ public class FileUtils {
 
   private static final String TAG = FileUtils.class.getSimpleName();
 
+  private static final String[] COMPRESSED_FILE_EXTENSIONS =
+      new String[] {"zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"};
+
   public static final String FILE_PROVIDER_PREFIX = "storage_root";
   public static final String NOMEDIA_FILE = ".nomedia";
+  public static final String DUMMY_FILE = ".DummyFile";
 
   public static long folderSize(File directory, OnProgressUpdate<Long> updateState) {
     long length = 0;
@@ -195,7 +197,7 @@ public class FileUtils {
     return totalBytes;
   }
 
-  private static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
+  public static long getBaseFileSize(HybridFileParcelable baseFile, Context context) {
     if (baseFile.isDirectory(context)) {
       return baseFile.folderSize(context);
     } else {
@@ -357,7 +359,7 @@ public class FileUtils {
         }
       }
 
-    if (!b || mime == (null)) mime = "*/*";
+    if (!b || mime == (null)) mime = MimeTypes.ALL_MIME_TYPES;
     try {
 
       new ShareTask(c, uris, appTheme, fab_skin).execute(mime);
@@ -413,7 +415,7 @@ public class FileUtils {
     chooserIntent.setAction(Intent.ACTION_VIEW);
     chooserIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
 
-    if (type != null && type.trim().length() != 0 && !type.equals("*/*")) {
+    if (type != null && type.trim().length() != 0 && !type.equals(MimeTypes.ALL_MIME_TYPES)) {
       chooserIntent.setDataAndType(contentUri, type);
       Intent activityIntent;
       if (forcechooser) {
@@ -509,7 +511,8 @@ public class FileUtils {
                               FILE_PROVIDER_PREFIX.length() + 1));
                   break;
                 case 5:
-                  mimeType = "*/*";
+                  mimeType = MimeTypes.getMimeType(uri.getPath(), false);
+                  if (mimeType == null) mimeType = MimeTypes.ALL_MIME_TYPES;
                   break;
               }
               try {
@@ -660,47 +663,31 @@ public class FileUtils {
     return f.canRead() && f.isDirectory();
   }
 
-  public static void openFile(final File f, final MainActivity m, SharedPreferences sharedPrefs) {
+  public static void openFile(
+      @NonNull final File f,
+      @NonNull final MainActivity mainActivity,
+      @NonNull final SharedPreferences sharedPrefs) {
     boolean useNewStack =
         sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-    boolean defaultHandler = isSelfDefault(f, m);
-    final Toast[] studioCount = {null};
-    final int studio_count = PreferenceManager.getDefaultSharedPreferences(m).getInt("studio", 0);
+    boolean defaultHandler = isSelfDefault(f, mainActivity);
 
     if (f.getName().toLowerCase().endsWith(".apk")) {
-      GeneralDialogCreation.showPackageDialog(f, m);
+      GeneralDialogCreation.showPackageDialog(f, mainActivity);
     } else if (defaultHandler && CompressedHelper.isFileExtractable(f.getPath())) {
-      GeneralDialogCreation.showArchiveDialog(f, m);
+      GeneralDialogCreation.showArchiveDialog(f, mainActivity);
     } else if (defaultHandler && f.getName().toLowerCase().endsWith(".db")) {
-      Intent intent = new Intent(m, DatabaseViewerActivity.class);
+      Intent intent = new Intent(mainActivity, DatabaseViewerActivity.class);
+      intent.setType(MimeTypes.getMimeType(f.getPath(), false));
       intent.putExtra("path", f.getPath());
-      m.startActivity(intent);
-    } else if (Icons.getTypeOfFile(f.getPath(), f.isDirectory()) == Icons.AUDIO
-        && studio_count != 0) {
-      // Behold! It's the  legendary easter egg!
-      new CountDownTimer(studio_count, 1000) {
-        @Override
-        public void onTick(long millisUntilFinished) {
-          int sec = (int) millisUntilFinished / 1000;
-          if (studioCount[0] != null) studioCount[0].cancel();
-          studioCount[0] = Toast.makeText(m, sec + "", Toast.LENGTH_LONG);
-          studioCount[0].show();
-        }
-
-        @Override
-        public void onFinish() {
-          if (studioCount[0] != null) studioCount[0].cancel();
-          studioCount[0] = Toast.makeText(m, m.getString(R.string.opening), Toast.LENGTH_LONG);
-          studioCount[0].show();
-          openFileDialogFragmentFor(f, m, "audio/*");
-        }
-      }.start();
+      mainActivity.startActivity(intent);
     } else {
       try {
-        openFileDialogFragmentFor(f, m);
+        openFileDialogFragmentFor(f, mainActivity);
       } catch (Exception e) {
-        Toast.makeText(m, m.getString(R.string.no_app_found), Toast.LENGTH_LONG).show();
-        openWith(f, m, useNewStack);
+        Toast.makeText(
+                mainActivity, mainActivity.getString(R.string.no_app_found), Toast.LENGTH_LONG)
+            .show();
+        openWith(f, mainActivity, useNewStack);
       }
     }
   }
@@ -913,6 +900,12 @@ public class FileUtils {
         && !dir.startsWith("/storage");
   }
 
+  /** Convenience method to return if a path points to a compressed file. */
+  public static boolean isCompressedFile(String path) {
+    @Nullable String extension = MimeTypes.getExtension(path);
+    return ArraysKt.indexOf(COMPRESSED_FILE_EXTENSIONS, extension) > -1;
+  }
+
   /** Converts ArrayList of HybridFileParcelable to ArrayList of File */
   public static ArrayList<File> hybridListToFileArrayList(ArrayList<HybridFileParcelable> a) {
     ArrayList<File> b = new ArrayList<>();
@@ -928,6 +921,7 @@ public class FileUtils {
     if (!new File(path).exists()) {
       Toast.makeText(context, context.getString(R.string.bookmark_lost), Toast.LENGTH_SHORT).show();
       Operations.mkdir(
+          new HybridFile(OpenMode.FILE, path),
           RootHelper.generateBaseFile(new File(path), true),
           context,
           isRootExplorer,

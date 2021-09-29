@@ -115,6 +115,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
+import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
@@ -129,6 +130,7 @@ import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
+import com.leinardi.android.speeddial.FabWithLabelView;
 import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
@@ -543,6 +545,9 @@ public class MainActivity extends PermissionsActivity
         // we don't have folder resource mime type set, supposed to be zip/rar
         openzip = true;
         zippath = Utils.sanitizeInput(uri.toString());
+        if (FileUtils.isCompressedFile(zippath)) {
+          openCompressed(zippath);
+        }
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -1523,19 +1528,26 @@ public class MainActivity extends PermissionsActivity
                 break;
               case NEW_FOLDER: // mkdir
                 mainActivityHelper.mkDir(
-                    RootHelper.generateBaseFile(new File(oppathe), true), mainFragment);
+                    new HybridFile(OpenMode.FILE, oppathe),
+                    RootHelper.generateBaseFile(new File(oppathe), true),
+                    mainFragment);
                 break;
               case RENAME:
                 mainActivityHelper.rename(
                     mainFragment.getMainFragmentViewModel().getOpenMode(),
                     (oppathe),
                     (oppathe1),
+                    null,
+                    false,
                     mainActivity,
                     isRootExplorer());
                 mainFragment.updateList();
                 break;
               case NEW_FILE:
-                mainActivityHelper.mkFile(new HybridFile(OpenMode.FILE, oppathe), mainFragment);
+                mainActivityHelper.mkFile(
+                    new HybridFile(OpenMode.FILE, oppathe),
+                    new HybridFile(OpenMode.FILE, oppathe),
+                    mainFragment);
                 break;
               case EXTRACT:
                 mainActivityHelper.extractFile(new File(oppathe));
@@ -1665,14 +1677,70 @@ public class MainActivity extends PermissionsActivity
 
   public void initializeFabActionViews() {
     // NOTE: SpeedDial inverts insert index than FABsmenu
-    initFabTitle(R.id.menu_new_cloud, R.string.cloud_connection, R.drawable.ic_cloud_white_24dp);
-    initFabTitle(R.id.menu_new_file, R.string.file, R.drawable.ic_insert_drive_file_white_48dp);
-    initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
+    FabWithLabelView cloudFab =
+        initFabTitle(
+            R.id.menu_new_cloud, R.string.cloud_connection, R.drawable.ic_cloud_white_24dp);
+    FabWithLabelView newFileFab =
+        initFabTitle(R.id.menu_new_file, R.string.file, R.drawable.ic_insert_drive_file_white_48dp);
+    FabWithLabelView newFolderFab =
+        initFabTitle(R.id.menu_new_folder, R.string.folder, R.drawable.folder_fab);
 
     floatingActionButton.setOnActionSelectedListener(new FabActionListener(this));
+    floatingActionButton.setOnClickListener(
+        view -> {
+          fabButtonClick(cloudFab);
+        });
+    floatingActionButton.setOnFocusChangeListener(new CustomZoomFocusChange());
+    floatingActionButton.getMainFab().setOnFocusChangeListener(new CustomZoomFocusChange());
+    floatingActionButton.setNextFocusUpId(cloudFab.getId());
+    floatingActionButton.getMainFab().setNextFocusUpId(cloudFab.getId());
+    floatingActionButton.setOnKeyListener(
+        (v, keyCode, event) -> {
+          if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
+              if (getCurrentTab() == 0 && getFAB().isFocused()) {
+                getTabFragment().mViewPager.setCurrentItem(1);
+              }
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+              findViewById(R.id.content_frame).requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+              if (pasteHelper != null
+                  && pasteHelper.getSnackbar() != null
+                  && pasteHelper.getSnackbar().isShown())
+                ((Snackbar.SnackbarLayout) pasteHelper.getSnackbar().getView())
+                    .findViewById(R.id.snackBarActionButton)
+                    .requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_CENTER) {
+              fabButtonClick(cloudFab);
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+              onBackPressed();
+            } else {
+              return false;
+            }
+          }
+          return true;
+        });
+    cloudFab.setNextFocusDownId(floatingActionButton.getMainFab().getId());
+    cloudFab.setNextFocusUpId(newFileFab.getId());
+    cloudFab.setOnFocusChangeListener(new CustomZoomFocusChange());
+    newFileFab.setNextFocusDownId(cloudFab.getId());
+    newFileFab.setNextFocusUpId(newFolderFab.getId());
+    newFileFab.setOnFocusChangeListener(new CustomZoomFocusChange());
+    newFolderFab.setNextFocusDownId(newFileFab.getId());
+    newFolderFab.setOnFocusChangeListener(new CustomZoomFocusChange());
   }
 
-  private void initFabTitle(@IdRes int id, @StringRes int fabTitle, @DrawableRes int icon) {
+  private void fabButtonClick(FabWithLabelView cloudFab) {
+    if (floatingActionButton.isOpen()) {
+      floatingActionButton.close(true);
+    } else {
+      floatingActionButton.open(true);
+      cloudFab.requestFocus();
+    }
+  }
+
+  private FabWithLabelView initFabTitle(
+      @IdRes int id, @StringRes int fabTitle, @DrawableRes int icon) {
     int iconSkin = getCurrentColorPreference().getIconSkin();
 
     SpeedDialActionItem.Builder builder =
@@ -1698,7 +1766,7 @@ public class MainActivity extends PermissionsActivity
         break;
     }
 
-    floatingActionButton.addActionItem(builder.create());
+    return floatingActionButton.addActionItem(builder.create());
   }
 
   public boolean copyToClipboard(Context context, String text) {

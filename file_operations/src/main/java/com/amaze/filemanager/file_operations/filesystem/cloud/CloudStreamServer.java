@@ -124,21 +124,6 @@ public abstract class CloudStreamServer {
       this.data = data;
     }
 
-    /** Convenience method that makes an InputStream out of given text. */
-    //              public Response( String status, String mimeType, String txt )
-    //              {
-    //                      this.status = status;
-    //                      this.mimeType = mimeType;
-    //                      try
-    //                      {
-    //                              this.data = new ByteArrayInputStream( txt.getBytes("UTF-8"));
-    //                      }
-    //                      catch ( java.io.UnsupportedEncodingException uee )
-    //                      {
-    //                              uee.printStackTrace();
-    //                      }
-    //              }
-
     /** Adds given line to the header. */
     public void addHeader(String name, String value) {
       header.put(name, value);

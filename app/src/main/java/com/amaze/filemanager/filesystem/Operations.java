@@ -54,6 +54,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.arch.core.util.Function;
 import androidx.documentfile.provider.DocumentFile;
 
 import jcifs.smb.SmbException;
@@ -107,6 +108,7 @@ public class Operations {
   }
 
   public static void mkdir(
+      final HybridFile parentFile,
       @NonNull final HybridFile file,
       final Context context,
       final boolean rootMode,
@@ -115,6 +117,20 @@ public class Operations {
     new AsyncTask<Void, Void, Void>() {
 
       private DataUtils dataUtils = DataUtils.getInstance();
+
+      private Function<DocumentFile, Void> safCreateDirectory =
+          input -> {
+            if (input != null && input.isDirectory()) {
+              boolean result = false;
+              try {
+                result = input.createDirectory(file.getName(context)) != null;
+              } catch (Exception e) {
+                Log.w(getClass().getSimpleName(), "Failed to make directory", e);
+              }
+              errorCallBack.done(file, result);
+            } else errorCallBack.done(file, false);
+            return null;
+          };
 
       @Override
       protected Void doInBackground(Void... params) {
@@ -143,17 +159,24 @@ public class Operations {
           errorCallBack.done(file, file.exists());
           return null;
         } else if (file.isOtgFile()) {
-
-          // first check whether new directory already exists
-          DocumentFile directoryToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
-          if (directoryToCreate != null) errorCallBack.exists(file);
-
-          DocumentFile parentDirectory =
-              OTGUtil.getDocumentFile(file.getParent(context), context, false);
-          if (parentDirectory.isDirectory()) {
-            parentDirectory.createDirectory(file.getName(context));
-            errorCallBack.done(file, true);
-          } else errorCallBack.done(file, false);
+          if (checkOtgNewFileExists(file, context)) {
+            errorCallBack.exists(file);
+            return null;
+          }
+          safCreateDirectory.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
+          return null;
+        } else if (file.isDocumentFile()) {
+          if (checkDocumentFileNewFileExists(file, context)) {
+            errorCallBack.exists(file);
+            return null;
+          }
+          safCreateDirectory.apply(
+              OTGUtil.getDocumentFile(
+                  parentFile.getPath(),
+                  SafRootHolder.getUriRoot(),
+                  context,
+                  OpenMode.DOCUMENT_FILE,
+                  false));
           return null;
         } else if (file.isDropBoxFile()) {
           CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -224,6 +247,7 @@ public class Operations {
   }
 
   public static void mkfile(
+      final HybridFile parentFile,
       @NonNull final HybridFile file,
       final Context context,
       final boolean rootMode,
@@ -232,6 +256,24 @@ public class Operations {
     new AsyncTask<Void, Void, Void>() {
 
       private DataUtils dataUtils = DataUtils.getInstance();
+
+      private Function<DocumentFile, Void> safCreateFile =
+          input -> {
+            if (input != null && input.isDirectory()) {
+              boolean result = false;
+              try {
+                result =
+                    input.createFile(
+                            file.getName(context).substring(file.getName(context).lastIndexOf(".")),
+                            file.getName(context))
+                        != null;
+              } catch (Exception e) {
+                Log.w(getClass().getSimpleName(), "Failed to make file", e);
+              }
+              errorCallBack.done(file, result);
+            } else errorCallBack.done(file, false);
+            return null;
+          };
 
       @Override
       protected Void doInBackground(Void... params) {
@@ -328,19 +370,24 @@ public class Operations {
             errorCallBack.done(file, false);
           }
         } else if (file.isOtgFile()) {
-
-          // first check whether new file already exists
-          DocumentFile fileToCreate = OTGUtil.getDocumentFile(file.getPath(), context, false);
-          if (fileToCreate != null) errorCallBack.exists(file);
-
-          DocumentFile parentDirectory =
-              OTGUtil.getDocumentFile(file.getParent(context), context, false);
-          if (parentDirectory.isDirectory()) {
-            parentDirectory.createFile(
-                file.getName(context).substring(file.getName(context).lastIndexOf(".")),
-                file.getName(context));
-            errorCallBack.done(file, true);
-          } else errorCallBack.done(file, false);
+          if (checkOtgNewFileExists(file, context)) {
+            errorCallBack.exists(file);
+            return null;
+          }
+          safCreateFile.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
+          return null;
+        } else if (file.isDocumentFile()) {
+          if (checkDocumentFileNewFileExists(file, context)) {
+            errorCallBack.exists(file);
+            return null;
+          }
+          safCreateFile.apply(
+              OTGUtil.getDocumentFile(
+                  parentFile.getPath(),
+                  SafRootHolder.getUriRoot(),
+                  context,
+                  OpenMode.DOCUMENT_FILE,
+                  false));
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
@@ -380,14 +427,25 @@ public class Operations {
 
     new AsyncTask<Void, Void, Void>() {
 
-      private DataUtils dataUtils = DataUtils.getInstance();
+      private final DataUtils dataUtils = DataUtils.getInstance();
+
+      private Function<DocumentFile, Void> safRenameFile =
+          input -> {
+            boolean result = false;
+            try {
+              result = input.renameTo(newFile.getName(context));
+            } catch (Exception e) {
+              Log.w(getClass().getSimpleName(), "Failed to rename", e);
+            }
+            errorCallBack.done(newFile, result);
+            return null;
+          };
 
       @Override
       protected Void doInBackground(Void... params) {
         // check whether file names for new file are valid or recursion occurs.
         // If rename is on OTG, we are skipping
-        if (!(oldFile.mode.equals(newFile.mode) && oldFile.mode.equals(OpenMode.OTG))
-            && !Operations.isFileNameValid(newFile.getName(context))) {
+        if (!Operations.isFileNameValid(newFile.getName(context))) {
           errorCallBack.invalidName(newFile);
           return null;
         }
@@ -412,7 +470,7 @@ public class Operations {
             String errmsg =
                 context.getString(
                     R.string.cannot_rename_file,
-                    HybridFile.parseAndFormatUriForDisplay(oldFile.path),
+                    HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
                     e.getMessage());
             try {
               ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
@@ -429,9 +487,9 @@ public class Operations {
           return null;
         } else if (oldFile.isSftp()) {
           SshClientUtils.execute(
-              new SFtpClientTemplate(oldFile.getPath()) {
+              new SFtpClientTemplate<Void>(oldFile.getPath()) {
                 @Override
-                public <Void> Void execute(@NonNull SFTPClient client) {
+                public Void execute(@NonNull SFTPClient client) {
                   try {
                     client.rename(
                         SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
@@ -441,7 +499,7 @@ public class Operations {
                     String errmsg =
                         context.getString(
                             R.string.cannot_rename_file,
-                            HybridFile.parseAndFormatUriForDisplay(oldFile.path),
+                            HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
                             e.getMessage());
                     Log.e(TAG, errmsg);
                     ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
@@ -449,7 +507,7 @@ public class Operations {
                     // here
                     failedOps.add(
                         new HybridFileParcelable(
-                            oldFile.path,
+                            oldFile.getPath(),
                             "r",
                             oldFile.lastModified(),
                             0,
@@ -507,16 +565,26 @@ public class Operations {
             errorCallBack.done(newFile, false);
           }
         } else if (oldFile.isOtgFile()) {
-          DocumentFile oldDocumentFile = OTGUtil.getDocumentFile(oldFile.getPath(), context, false);
-          DocumentFile newDocumentFile = OTGUtil.getDocumentFile(newFile.getPath(), context, false);
-          if (newDocumentFile != null) {
+          if (checkOtgNewFileExists(newFile, context)) {
             errorCallBack.exists(newFile);
             return null;
           }
-          errorCallBack.done(newFile, oldDocumentFile.renameTo(newFile.getName(context)));
+          safRenameFile.apply(OTGUtil.getDocumentFile(oldFile.getPath(), context, false));
+          return null;
+        } else if (oldFile.isDocumentFile()) {
+          if (checkDocumentFileNewFileExists(newFile, context)) {
+            errorCallBack.exists(newFile);
+            return null;
+          }
+          safRenameFile.apply(
+              OTGUtil.getDocumentFile(
+                  oldFile.getPath(),
+                  SafRootHolder.getUriRoot(),
+                  context,
+                  OpenMode.DOCUMENT_FILE,
+                  false));
           return null;
         } else {
-
           File file = new File(oldFile.getPath());
           File file1 = new File(newFile.getPath());
           switch (oldFile.getMode()) {
@@ -571,6 +639,33 @@ public class Operations {
     }.executeOnExecutor(executor);
   }
 
+  private static boolean checkOtgNewFileExists(HybridFile newFile, Context context) {
+    boolean doesFileExist = false;
+    try {
+      doesFileExist = OTGUtil.getDocumentFile(newFile.getPath(), context, false) != null;
+    } catch (Exception e) {
+      Log.d(Operations.class.getSimpleName(), "Failed find existing file", e);
+    }
+    return doesFileExist;
+  }
+
+  private static boolean checkDocumentFileNewFileExists(HybridFile newFile, Context context) {
+    boolean doesFileExist = false;
+    try {
+      doesFileExist =
+          OTGUtil.getDocumentFile(
+                  newFile.getPath(),
+                  SafRootHolder.getUriRoot(),
+                  context,
+                  OpenMode.DOCUMENT_FILE,
+                  false)
+              != null;
+    } catch (Exception e) {
+      Log.w(Operations.class.getSimpleName(), "Failed to find existing file", e);
+    }
+    return doesFileExist;
+  }
+
   private static int checkFolder(final File folder, Context context) {
     boolean lol = Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP;
     if (lol) {
@@ -594,7 +689,7 @@ public class Operations {
     }
 
     // file not on external sd card
-    if (FileProperties.isWritable(new File(folder, "DummyFile"))) {
+    if (FileProperties.isWritable(new File(folder, FileUtils.DUMMY_FILE))) {
       return 1;
     } else {
       return 0;

@@ -46,6 +46,7 @@ import android.os.CountDownTimer;
 import android.os.Handler;
 import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -115,6 +116,22 @@ public class BottomBar implements View.OnTouchListener {
 
     scroll.setSmoothScrollingEnabled(true);
     pathScroll.setSmoothScrollingEnabled(true);
+
+    pathScroll.setOnKeyListener(
+        (v, keyCode, event) -> {
+          if (event.getAction() == KeyEvent.ACTION_DOWN) {
+            if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_DOWN) {
+              mainActivity.findViewById(R.id.content_frame).requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
+              mainActivity.getDrawer().getDonateImageView().requestFocus();
+            } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
+              mainActivity.onBackPressed();
+            } else {
+              return false;
+            }
+          }
+          return true;
+        });
 
     buttonParams =
         new LinearLayout.LayoutParams(
@@ -290,6 +307,10 @@ public class BottomBar implements View.OnTouchListener {
         timer.start();
       }
     }
+  }
+
+  public FrameLayout getPathLayout() {
+    return this.frame;
   }
 
   private ImageView createArrow() {

@@ -455,7 +455,7 @@
     <string name="cloud_connection">Hodeiko konexioa</string>
     <string name="cloud_connection_new">Hodeiko konexio berria</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Eskuratu hodeiko plugina</string>
@@ -518,16 +518,10 @@
     <string name="authenticate_password">Sartu pasahitza</string>
 
     <string name="sidebar_preferences">Alboko barra</string>
-    <string name="sidebar_folders_title">Alboko barrako lasterbideak</string>
     <string name="sidebar_quick_access_title">Alboko barrara sarbide azkarra</string>
-    <string name="show_folders_pref_title">Erakutsi lasterbideak</string>
-    <string name="show_folders_pref">Lasterbideak</string>
     <string name="show_quick_access_pref_title">Erakutsi sarbide azkarrak</string>
     <string name="show_quick_access_pref">Sarbide azkarrak</string>
-    <string name="create_shortcut">Sortu lasterbidea</string>
-    <string name="edit_shortcut">Editatu lasterbidea</string>
     <string name="directory">Direktorioa</string>
-    <string name="question_delete_shortcut">Ezabatu lasterbidea?</string>
 
     <string name="cloud_error_plugin">Ez da Amaze Cloud plugina aurkitu. Mesedez, deskargatu Play Store-tik.</string>
     <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.

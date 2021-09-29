@@ -336,7 +336,7 @@
     <string name="cloud_connection">Povezava v oblak</string>
     <string name="cloud_connection_new">Nova povezava v oblak</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Dobi vtičnik za oblak</string>
@@ -382,16 +382,10 @@
     <string name="crypt_fingerprint_authenticate">Dotaknite se senzorja za nadaljevanje</string>
     <string name="authenticate_password">Vnesite geslo</string>
 
-    <string name="sidebar_folders_title">Bližnjice stranske vrstice</string>
     <string name="sidebar_quick_access_title">Hitri dostop stranske vrstice</string>
-    <string name="show_folders_pref_title">Pokaži bližnjice</string>
-    <string name="show_folders_pref">Bližnjice</string>
     <string name="show_quick_access_pref_title">Pokaži hiter dostop</string>
     <string name="show_quick_access_pref">Hitri dostop</string>
-    <string name="create_shortcut">Ustvari bližnjico</string>
-    <string name="edit_shortcut">Uredi bližnjico</string>
     <string name="directory">Mapa</string>
-    <string name="question_delete_shortcut">Izbrišem to bližnjico?</string>
 
     <string name="cloud_error_plugin">Vtičnika za Amaze oblak ni mogoče najti. Prenesite si ga iz trgovine play.</string>
     <string name="cloud_remove">Ali želite odstraniti povezavo v oblak?</string>
