@@ -153,7 +153,7 @@ public class CompressedExplorerAdapter extends RecyclerView.Adapter<CompressedIt
       compressedExplorerFragment.mActionModeCallback);*/
       compressedExplorerFragment.mActionMode =
           compressedExplorerFragment
-              .mainActivity
+              .requireMainActivity()
               .getAppbar()
               .getToolbar()
               .startActionMode(compressedExplorerFragment.mActionModeCallback);

@@ -229,7 +229,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
     builder.title(R.string.donate);
     builder.adapter(this, null);
-    builder.theme(context.getAppTheme().getMaterialDialogTheme());
+    builder.theme(context.getAppTheme().getMaterialDialogTheme(context));
     builder.cancelListener(dialog -> purchaseProduct.purchaseCancel());
     builder.show();
   }

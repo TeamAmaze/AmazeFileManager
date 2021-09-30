@@ -53,6 +53,7 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
+import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
 import com.amaze.filemanager.utils.BookSorter
 import com.amaze.filemanager.utils.DataUtils
@@ -114,7 +115,9 @@ class SftpConnectDialog : DialogFragment() {
 
         // Use system provided action to get Uri to PEM.
         binding.selectPemBTN.setOnClickListener {
-            val intent = Intent().setType("*/*").setAction(Intent.ACTION_GET_CONTENT)
+            val intent = Intent()
+                .setType(MimeTypes.ALL_MIME_TYPES)
+                .setAction(Intent.ACTION_GET_CONTENT)
             activityResultHandler.launch(intent)
         }
 

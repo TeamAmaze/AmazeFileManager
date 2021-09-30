@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/checkbox_system_apps"
+        android:title="@string/show_system_apps"
+        android:checkable="true" />
+</menu>

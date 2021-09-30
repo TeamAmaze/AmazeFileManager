@@ -68,12 +68,16 @@ class ZipExtractor(
                     invalidArchiveEntries.add(fileHeader.fileName)
                 }
             }
-            listener.onStart(totalBytes, entriesToExtract[0].fileName)
-            for (entry in entriesToExtract) {
-                if (!listener.isCancelled) {
-                    listener.onUpdate(entry.fileName)
-                    extractEntry(context, zipfile, entry, outputPath)
+            if (entriesToExtract.size > 0) {
+                listener.onStart(totalBytes, entriesToExtract[0].fileName)
+                for (entry in entriesToExtract) {
+                    if (!listener.isCancelled) {
+                        listener.onUpdate(entry.fileName)
+                        extractEntry(context, zipfile, entry, outputPath)
+                    }
                 }
+            } else {
+                throw EmptyArchiveNotice()
             }
             listener.onFinish()
         } catch (e: ZipException) {

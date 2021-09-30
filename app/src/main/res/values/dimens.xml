@@ -58,4 +58,5 @@
 
     <dimen name="dialogPreferredPadding">24dp</dimen>
 
+    <dimen name="zero_dp">0dp</dimen>
 </resources>

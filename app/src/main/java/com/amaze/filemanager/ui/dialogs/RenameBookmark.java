@@ -20,12 +20,6 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
-import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
-
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -45,16 +39,12 @@ import android.view.View;
 import androidx.appcompat.widget.AppCompatEditText;
 import androidx.preference.PreferenceManager;
 
-/** Created by arpitkh996 on 21-01-2016. */
 public class RenameBookmark extends DialogFragment {
 
   private String title;
   private String path;
-  private String user = "";
-  private String pass = "";
   private BookmarkCallback bookmarkCallback;
-  private int studiomode = 0;
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private final DataUtils dataUtils = DataUtils.getInstance();
 
   public static RenameBookmark getInstance(String name, String path, int accentColor) {
     RenameBookmark renameBookmark = new RenameBookmark();
@@ -82,7 +72,6 @@ public class RenameBookmark extends DialogFragment {
     int accentColor = getArguments().getInt("accentColor");
     SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(c);
 
-    studiomode = sp.getInt("studio", 0);
     if (dataUtils.containsBooks(new String[] {title, path}) != -1) {
       final MaterialDialog materialDialog;
       String pa = path;
@@ -114,31 +103,7 @@ public class RenameBookmark extends DialogFragment {
             }
           });
       final AppCompatEditText ip = v2.findViewById(R.id.editText);
-      if (studiomode != 0) {
-        if (path.startsWith(SMB_URI_PREFIX)) {
-          try {
-            URL a = new URL(path);
-            String userinfo = a.getUserInfo();
-            if (userinfo != null) {
-              String inf = URLDecoder.decode(userinfo, "UTF-8");
-              user = inf.substring(0, inf.indexOf(":"));
-              pass = inf.substring(inf.indexOf(":") + 1, inf.length());
-              String ipp = a.getHost();
-              pa = SMB_URI_PREFIX + ipp + a.getPath();
-            }
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-        }
-        ip.addTextChangedListener(
-            new SimpleTextWatcher() {
-              @Override
-              public void afterTextChanged(Editable s) {
-                if (ip.getText().toString().length() == 0) t2.setError(s1);
-                else t2.setError("");
-              }
-            });
-      } else t2.setVisibility(View.GONE);
+      t2.setVisibility(View.GONE);
       ip.setText(pa);
       builder.onNeutral((dialog, which) -> dialog.dismiss());
 
@@ -149,24 +114,6 @@ public class RenameBookmark extends DialogFragment {
               v -> {
                 String t = ip.getText().toString();
                 String name = conName.getText().toString();
-                if (studiomode != 0 && t.startsWith(SMB_URI_PREFIX)) {
-                  try {
-                    URL a = new URL(t);
-                    String userinfo = a.getUserInfo();
-                    if (userinfo == null && user.length() > 0) {
-                      t =
-                          SMB_URI_PREFIX
-                              + ((URLEncoder.encode(user, "UTF-8")
-                                  + ":"
-                                  + URLEncoder.encode(pass, "UTF-8")
-                                  + "@"))
-                              + a.getHost()
-                              + a.getPath();
-                    }
-                  } catch (Exception e) {
-                    e.printStackTrace();
-                  }
-                }
                 int i = -1;
                 if ((i = dataUtils.containsBooks(new String[] {title, path})) != -1) {
                   if (!t.equals(title) && t.length() >= 1) {

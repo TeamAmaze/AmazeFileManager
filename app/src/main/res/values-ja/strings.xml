@@ -452,7 +452,7 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="cloud_connection">クラウド接続</string>
     <string name="cloud_connection_new">新しいクラウド接続</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google ドライブ&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">クラウドプラグインを入手する</string>
@@ -514,16 +514,10 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="authenticate_password">パスワードを入力してください</string>
 
     <string name="sidebar_preferences">サードバー</string>
-    <string name="sidebar_folders_title">サードバー ショートカット</string>
     <string name="sidebar_quick_access_title">サードバー</string>
-    <string name="show_folders_pref_title">ショートカットを表示する</string>
-    <string name="show_folders_pref">ショートカット</string>
     <string name="show_quick_access_pref_title">クイックアクセスを表示する</string>
     <string name="show_quick_access_pref">クイックアクセス</string>
-    <string name="create_shortcut">ショートカットを作成</string>
-    <string name="edit_shortcut">ショートカットを編集</string>
     <string name="directory">フォルダ</string>
-    <string name="question_delete_shortcut">ショートカットを削除する？</string>
 
     <string name="cloud_error_plugin">Amaze クラウドプラクインがありません。Play ストアでダウンロードしてください。</string>
     <string name="cloud_error_failed_restart">接続をロードできません。Amaze クラウドプラクインを一度起動してください。</string>
@@ -646,5 +640,6 @@ Wi-Fiに接続する必要があります。\n\n
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD カード</string>
     <string name="choose_folder">このフォルダーを選択</string>
-    </resources>
+    <string name="signin_with_google_title">サインインして、Googleドライブ™を使える</string>
+</resources>
 

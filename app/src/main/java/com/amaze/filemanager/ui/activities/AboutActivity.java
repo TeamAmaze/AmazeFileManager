@@ -30,11 +30,9 @@ import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.google.android.material.snackbar.Snackbar;
 import com.mikepenz.aboutlibraries.Libs;
 import com.mikepenz.aboutlibraries.LibsBuilder;
 
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
@@ -48,7 +46,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.palette.graphics.Palette;
-import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 27/7/16. */
 public class AboutActivity extends ThemedActivity implements View.OnClickListener {
@@ -61,13 +58,9 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private AppBarLayout mAppBarLayout;
   private CollapsingToolbarLayout mCollapsingToolbarLayout;
   private TextView mTitleTextView;
-  private int mCount = 0;
-  private Snackbar snackbar;
-  private SharedPreferences mSharedPref;
   private View mAuthorsDivider, mDeveloper1Divider;
   private Billing billing;
 
-  private static final String KEY_PREF_STUDIO = "studio";
   private static final String URL_AUTHOR1_GITHUB = "https://github.com/arpitkh96";
   private static final String URL_AUTHOR2_GITHUB = "https://github.com/VishalNehra";
   private static final String URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess";
@@ -96,8 +89,6 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     }
 
     setContentView(R.layout.activity_about);
-
-    mSharedPref = PreferenceManager.getDefaultSharedPreferences(this);
 
     mAppBarLayout = findViewById(R.id.appBarLayout);
     mCollapsingToolbarLayout = findViewById(R.id.collapsing_toolbar_layout);
@@ -189,27 +180,6 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   @Override
   public void onClick(View v) {
     switch (v.getId()) {
-      case R.id.relative_layout_version:
-        mCount++;
-        if (mCount >= 5) {
-          String text = getResources().getString(R.string.easter_egg_title) + " : " + mCount;
-
-          if (snackbar != null && snackbar.isShown()) {
-            snackbar.setText(text);
-          } else {
-            snackbar = Snackbar.make(v, text, Snackbar.LENGTH_SHORT);
-          }
-
-          snackbar.show();
-          mSharedPref
-              .edit()
-              .putInt(KEY_PREF_STUDIO, Integer.parseInt(Integer.toString(mCount) + "000"))
-              .apply();
-        } else {
-          mSharedPref.edit().putInt(KEY_PREF_STUDIO, 0).apply();
-        }
-        break;
-
       case R.id.relative_layout_source:
         openURL(URL_REPO, this);
         break;

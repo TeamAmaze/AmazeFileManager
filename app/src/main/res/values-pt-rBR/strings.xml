@@ -445,7 +445,7 @@
     <string name="cloud_connection">Conexão em nuvem</string>
     <string name="cloud_connection_new">Nova conexão em nuvem</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Obter plugin para nuvem</string>
@@ -506,16 +506,10 @@
     <string name="authenticate_password">Digite a senha</string>
 
     <string name="sidebar_preferences">Barra Lateral</string>
-    <string name="sidebar_folders_title">Atalhos da barra lateral</string>
     <string name="sidebar_quick_access_title">Acesso rápido à barra lateral</string>
-    <string name="show_folders_pref_title">Mostrar atalhos</string>
-    <string name="show_folders_pref">Atalhos</string>
     <string name="show_quick_access_pref_title">Mostrar acessos rápidos</string>
     <string name="show_quick_access_pref">Acessos rápidos</string>
-    <string name="create_shortcut">Criar atalho</string>
-    <string name="edit_shortcut">Editar atalho</string>
     <string name="directory">Pasta</string>
-    <string name="question_delete_shortcut">Excluir o atalho?</string>
 
     <string name="cloud_error_plugin">O plugin Amaze Cloud não foi encontrado. Faça download a partir da Play Store.</string>
     <string name="cloud_error_failed_restart">Falha ao carregar a conexão. Por favor, abra o Amaze Cloud uma vez.</string>

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:padding="0dp">
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/signin_with_google"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/google_blue_background"
+        android:drawablePadding="10dp"
+        android:foregroundGravity="center"
+        android:gravity="center"
+        android:paddingVertical="10dp"
+        android:paddingHorizontal="12dp"
+        android:textColor="@color/accent_black"
+        app:drawableStartCompat="@drawable/ic_google_logo"
+        app:drawableEndCompat="@drawable/ic_sign_in_with_google_roboto_text"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

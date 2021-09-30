@@ -28,12 +28,12 @@ import java.util.ArrayList;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
@@ -43,11 +43,15 @@ import com.amaze.filemanager.utils.DataUtils;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -57,22 +61,22 @@ import androidx.preference.PreferenceManager;
  */
 public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClickListener {
 
-  private Context context;
-  private MainActivity mainActivity;
-  private UtilitiesProvider utilitiesProvider;
-  private MainFragment mainFragment;
-  private SharedPreferences sharedPrefs;
-  private LayoutElementParcelable rowItem;
-  private int accentColor;
+  @NonNull private final Context context;
+  @NonNull private final MainActivity mainActivity;
+  @NonNull private final UtilitiesProvider utilitiesProvider;
+  @NonNull private final MainFragment mainFragment;
+  @NonNull private final SharedPreferences sharedPrefs;
+  @NonNull private final LayoutElementParcelable rowItem;
+  private final int accentColor;
 
   public ItemPopupMenu(
-      Context c,
-      MainActivity ma,
-      UtilitiesProvider up,
-      MainFragment mainFragment,
-      LayoutElementParcelable ri,
-      View anchor,
-      SharedPreferences sharedPreferences) {
+      @NonNull Context c,
+      @NonNull MainActivity ma,
+      @NonNull UtilitiesProvider up,
+      @NonNull MainFragment mainFragment,
+      @NonNull LayoutElementParcelable ri,
+      @NonNull View anchor,
+      @NonNull SharedPreferences sharedPreferences) {
     super(c, anchor);
 
     context = c;
@@ -93,7 +97,8 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         GeneralDialogCreation.showPropertiesDialogWithPermissions(
             (rowItem).generateBaseFile(),
             rowItem.permissions,
-            (ThemedActivity) mainFragment.getActivity(),
+            mainActivity,
+            mainFragment,
             mainActivity.isRootExplorer(),
             utilitiesProvider.getAppTheme());
         return true;
@@ -109,10 +114,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
             ArrayList<File> arrayList = new ArrayList<>();
             arrayList.add(new File(rowItem.desc));
             FileUtils.shareFiles(
-                arrayList,
-                mainFragment.getMainActivity(),
-                utilitiesProvider.getAppTheme(),
-                accentColor);
+                arrayList, mainActivity, utilitiesProvider.getAppTheme(), accentColor);
             break;
         }
         return true;
@@ -126,19 +128,17 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
               item.getItemId() == R.id.cpy ? PasteHelper.OPERATION_COPY : PasteHelper.OPERATION_CUT;
           PasteHelper pasteHelper =
               new PasteHelper(
-                  mainFragment.getMainActivity(),
-                  op,
-                  new HybridFileParcelable[] {rowItem.generateBaseFile()});
-          mainFragment.getMainActivity().setPaste(pasteHelper);
+                  mainActivity, op, new HybridFileParcelable[] {rowItem.generateBaseFile()});
+          mainActivity.setPaste(pasteHelper);
           return true;
         }
       case R.id.ex:
-        mainFragment.getMainActivity().mainActivityHelper.extractFile(new File(rowItem.desc));
+        mainActivity.mainActivityHelper.extractFile(new File(rowItem.desc));
         return true;
       case R.id.book:
         DataUtils dataUtils = DataUtils.getInstance();
         if (dataUtils.addBook(new String[] {rowItem.title, rowItem.desc}, true)) {
-          mainFragment.getMainActivity().getDrawer().refreshDrawer();
+          mainActivity.getDrawer().refreshDrawer();
           Toast.makeText(
                   mainFragment.getActivity(),
                   mainFragment.getString(R.string.bookmarks_added),
@@ -156,16 +156,22 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
         positions.add(rowItem);
         GeneralDialogCreation.deleteFilesDialog(
-            context,
-            mainFragment.getElementsList(),
-            mainFragment.getMainActivity(),
-            positions,
-            utilitiesProvider.getAppTheme());
+            context, mainActivity, positions, utilitiesProvider.getAppTheme());
         return true;
       case R.id.open_with:
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);
-        FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+        if (OpenMode.DOCUMENT_FILE.equals(rowItem.getMode())) {
+          @Nullable Uri fullUri = rowItem.generateBaseFile().getFullUri();
+          if (fullUri != null) {
+            FileUtils.openWith(
+                DocumentFile.fromSingleUri(context, fullUri), mainActivity, useNewStack);
+          } else {
+            FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+          }
+        } else {
+          FileUtils.openWith(new File(rowItem.desc), mainActivity, useNewStack);
+        }
         return true;
       case R.id.encrypt:
         final Intent encryptIntent = new Intent(context, EncryptService.class);
@@ -219,7 +225,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
                   GeneralDialogCreation.showEncryptAuthenticateDialog(
                       context,
                       encryptIntent,
-                      mainFragment.getMainActivity(),
+                      mainActivity,
                       utilitiesProvider.getAppTheme(),
                       encryptButtonCallbackInterfaceAuthenticate);
                 }

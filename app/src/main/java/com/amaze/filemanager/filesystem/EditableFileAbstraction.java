@@ -25,6 +25,7 @@ import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.FI
 
 import com.amaze.filemanager.utils.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
@@ -50,7 +51,7 @@ public class EditableFileAbstraction {
 
   public EditableFileAbstraction(@NonNull Context context, @NonNull Uri uri) {
     switch (uri.getScheme()) {
-      case "content":
+      case ContentResolver.SCHEME_CONTENT:
         this.uri = uri;
         this.scheme = CONTENT;
 
@@ -83,7 +84,7 @@ public class EditableFileAbstraction {
 
         this.hybridFileParcelable = null;
         break;
-      case "file":
+      case ContentResolver.SCHEME_FILE:
         this.scheme = FILE;
 
         String path = uri.getPath();

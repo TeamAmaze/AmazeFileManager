@@ -111,7 +111,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         val txtShortcutPath = dialogBinding.text2
 
         val dialog = MaterialDialog.Builder(requireActivity())
-            .title(R.string.create_shortcut)
+            .title(R.string.create_bookmark)
             .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
             .positiveColor(fab_skin)
             .positiveText(R.string.create)
@@ -158,7 +158,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         editText2.setText(p.summary)
 
         val dialog = MaterialDialog.Builder(mainActivity)
-            .title(R.string.edit_shortcut)
+            .title(R.string.edit_bookmark)
             .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
             .positiveColor(fab_skin)
             .positiveText(getString(R.string.edit).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase()
@@ -201,7 +201,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         val fab_skin = mainActivity.accent
 
         val dialog = MaterialDialog.Builder(mainActivity)
-            .title(R.string.question_delete_shortcut)
+            .title(R.string.question_delete_bookmark)
             .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
             .positiveColor(fab_skin)
             .positiveText(getString(R.string.delete).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?

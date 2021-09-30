@@ -316,7 +316,6 @@
     <string name="report_bugs_summary">Report bugs or request new feature</string>
     <string name="translate_title">Translate</string>
     <string name="translate_summary">Translate Amaze in your language</string>
-    <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">PayPal ID copied to clipboard</string>
     <string name="searching_devices">Searching for devices</string>
     <string name="use_custom_ip">Use custom IP</string>
@@ -375,7 +374,6 @@
     </string>
     <string name="share_limit">Can\'t share more than 100 files</string>
     <string name="otg_access">Select the root of OTG device</string>
-    <string name="opening">Opening..</string>
     <string name="information">Information</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Accessed</string>
@@ -458,7 +456,7 @@
     <string name="cloud_connection">Cloud Connection</string>
     <string name="cloud_connection_new">New Cloud Connection</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Get Cloud plugin</string>
@@ -521,16 +519,17 @@
     <string name="authenticate_password">Enter password</string>
 
     <string name="sidebar_preferences">Sidebar</string>
-    <string name="sidebar_folders_title">Sidebar shortcuts</string>
     <string name="sidebar_quick_access_title">Sidebar quick access</string>
-    <string name="show_folders_pref_title">Show shortcuts</string>
-    <string name="show_folders_pref">Shortcuts</string>
     <string name="show_quick_access_pref_title">Show quick accesses</string>
     <string name="show_quick_access_pref">Quick accesses</string>
-    <string name="create_shortcut">Create shortcut</string>
-    <string name="edit_shortcut">Edit shortcut</string>
     <string name="directory">Directory</string>
-    <string name="question_delete_shortcut">Delete shortcut?</string>
+
+    <string name="sidebar_bookmarks_title">Sidebar bookmarks</string>
+    <string name="show_bookmarks_pref_title">Show bookmarks</string>
+    <string name="show_bookmarks_pref">Bookmarks</string>
+    <string name="create_bookmark">Create bookmark</string>
+    <string name="edit_bookmark">Edit bookmark</string>
+    <string name="question_delete_bookmark">Delete bookmark?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud plugin not found. Please download from Play Store.</string>
     <string name="cloud_error_failed_restart">Failed to load the connection.
@@ -714,5 +713,16 @@
     <string name="ftp_prompt_accept_first_start_saf_access">Since this is your first run of the FTP server, and you are using the device\'s internal storage as shared folder, please allow Amaze to access the storage using SAF.\n\n
 
 You only need to do this once, until the next time you select a new location for sharing.</string>
+    <string name="android_data_prompt_saf_access">Since Android 10, Android had imposed restrictions on certain directories, and they need to access with Storage Access Framework.\n\nPlease allow Amaze to access the directory from the system\'s file manager by tapping \"Allow Access\".</string>
+    <string name="android_data_prompt_saf_access_title">Grant SAF access</string>
+    <string name="ftp_preference_saf_filesystem_title">Use legacy filesystem</string>
+    <string name="ftp_preference_saf_filesystem">Enable this for support for using device external storage on newer Android versions</string>
+    <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been resetted to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
+    <string name="error_empty_archive">\"%s\" is an empty archive.</string>
+    <string name="security_error">File could not be opened using this app</string>
+    <string name="cloud_drive_tooltip">Create a Google Drive™ connection for managing files from within Amaze File Manager.</string>
+    <string name="signin_with_google_title">Authenticate to use Google Drive™</string>
+    <string name="show_system_apps">Show system apps</string>
 </resources>
 

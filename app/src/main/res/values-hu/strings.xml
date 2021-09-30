@@ -457,7 +457,7 @@
     <string name="cloud_connection">Felhő-kapcsolat</string>
     <string name="cloud_connection_new">Új felhő kapcsolat</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Felhő beépülő letöltése</string>
@@ -520,16 +520,10 @@
     <string name="authenticate_password">Adja meg a jelszót</string>
 
     <string name="sidebar_preferences">Oldalsáv</string>
-    <string name="sidebar_folders_title">Oldalsáv parancsikonjai</string>
     <string name="sidebar_quick_access_title">Oldalsáv gyorselérés</string>
-    <string name="show_folders_pref_title">Parancsikonok megjelenítése</string>
-    <string name="show_folders_pref">Parancsikonok</string>
     <string name="show_quick_access_pref_title">Gyorselérés megjelenítése</string>
     <string name="show_quick_access_pref">Gyorselérés</string>
-    <string name="create_shortcut">Parancsikon létrehozása</string>
-    <string name="edit_shortcut">Parancsikon szerkesztése</string>
     <string name="directory">Könyvtár</string>
-    <string name="question_delete_shortcut">Törli a parancsikont?</string>
 
     <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.

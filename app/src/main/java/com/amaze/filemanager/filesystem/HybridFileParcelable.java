@@ -20,19 +20,26 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DOCUMENT_FILE;
+
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 
-/** Created by arpitkh996 on 11-01-2016. */
 public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   private long date, size;
@@ -40,10 +47,10 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
   private String permission;
   private String name;
   private String link = "";
+  private Uri fullUri = null;
 
   public HybridFileParcelable(String path) {
     super(OpenMode.FILE, path);
-    this.path = path;
   }
 
   public HybridFileParcelable(
@@ -52,16 +59,10 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     this.date = date;
     this.size = size;
     this.isDirectory = isDirectory;
-    this.path = path;
     this.permission = permission;
   }
 
-  /**
-   * Constructor for jcifs {@link SmbFile}.
-   *
-   * @param smbFile
-   * @throws SmbException
-   */
+  /** Constructor for jcifs {@link SmbFile}. */
   public HybridFileParcelable(SmbFile smbFile) throws SmbException {
     super(OpenMode.SMB, smbFile.getPath());
     setName(smbFile.getName());
@@ -70,13 +71,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     setSize(smbFile.isDirectory() ? 0 : smbFile.length());
   }
 
-  /**
-   * Constructor for sshj {@link RemoteResourceInfo}.
-   *
-   * @param path
-   * @param isDirectory
-   * @param sshFile
-   */
+  /** Constructor for sshj {@link RemoteResourceInfo}. */
   public HybridFileParcelable(String path, boolean isDirectory, RemoteResourceInfo sshFile) {
     super(OpenMode.SFTP, String.format("%s/%s", path, sshFile.getName()));
     setName(sshFile.getName());
@@ -100,10 +95,6 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   public void setName(String name) {
     this.name = name;
-  }
-
-  public OpenMode getMode() {
-    return mode;
   }
 
   public String getLink() {
@@ -142,16 +133,28 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     isDirectory = directory;
   }
 
-  public String getPath() {
-    return path;
-  }
-
   public String getPermission() {
     return permission;
   }
 
   public void setPermission(String permission) {
     this.permission = permission;
+  }
+
+  @Nullable
+  public Uri getFullUri() {
+    return DOCUMENT_FILE.equals(mode) ? fullUri : null;
+  }
+
+  public void setFullUri(Uri fullUri) {
+    if (!ContentResolver.SCHEME_CONTENT.equals(fullUri.getScheme())) {
+      // TODO: throw IllegalArgumentException is not a good idea here?
+      // FIXME: OpenMode is mutable (which is a bad idea) hence check for OpenMode.DOCUMENT_FILE
+      //        will not make sense either.
+      Log.d(TAG, "Provided URI is not content URI, skipping. Given URI: " + fullUri.toString());
+    } else {
+      this.fullUri = fullUri;
+    }
   }
 
   protected HybridFileParcelable(Parcel in) {
@@ -183,8 +186,8 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   @Override
   public void writeToParcel(Parcel dest, int flags) {
-    dest.writeInt(mode.ordinal());
-    dest.writeString(path);
+    dest.writeInt(getMode().ordinal());
+    dest.writeString(getPath());
     dest.writeString(permission);
     dest.writeString(name);
     dest.writeLong(date);
@@ -192,35 +195,38 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     dest.writeByte((byte) (isDirectory ? 1 : 0));
   }
 
+  @NonNull
   @Override
   public String toString() {
-    return new StringBuilder("HybridFileParcelable, path=[")
-        .append(path)
-        .append(']')
-        .append(", name=[")
-        .append(name)
-        .append(']')
-        .append(", size=[")
-        .append(size)
-        .append(']')
-        .append(", date=[")
-        .append(date)
-        .append(']')
-        .append(", permission=[")
-        .append(permission)
-        .append(']')
-        .toString();
+    return "HybridFileParcelable, path=["
+        + getPath()
+        + "]"
+        + ", name=["
+        + name
+        + "]"
+        + ", size=["
+        + size
+        + "]"
+        + ", date=["
+        + date
+        + "]"
+        + ", permission=["
+        + permission
+        + "]";
   }
 
   @Override
   public boolean equals(Object obj) {
-    if (obj == null || (!(obj instanceof HybridFileParcelable))) return false;
-    return path.equals(((HybridFileParcelable) obj).path);
+    if (!(obj instanceof HybridFileParcelable)) {
+      return false;
+    }
+
+    return getPath().equals(((HybridFileParcelable) obj).getPath());
   }
 
   @Override
   public int hashCode() {
-    int result = path.hashCode();
+    int result = getPath().hashCode();
     result = 37 * result + name.hashCode();
     result = 37 * result + (isDirectory ? 1 : 0);
     result = 37 * result + (int) (size ^ size >>> 32);

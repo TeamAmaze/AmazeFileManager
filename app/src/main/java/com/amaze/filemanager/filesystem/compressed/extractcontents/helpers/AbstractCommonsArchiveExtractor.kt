@@ -56,27 +56,35 @@ abstract class AbstractCommonsArchiveExtractor(
         val archiveEntries = ArrayList<ArchiveEntry>()
         var inputStream = createFrom(FileInputStream(filePath))
         var archiveEntry: ArchiveEntry?
-        while (inputStream.nextEntry.also { archiveEntry = it } != null) {
-            archiveEntry?.run {
-                if (filter.shouldExtract(name, isDirectory)) {
-                    archiveEntries.add(this)
-                    totalBytes += size
+        try {
+            while (inputStream.nextEntry.also { archiveEntry = it } != null) {
+                archiveEntry?.run {
+                    if (filter.shouldExtract(name, isDirectory)) {
+                        archiveEntries.add(this)
+                        totalBytes += size
+                    }
                 }
             }
-        }
-        listener.onStart(totalBytes, archiveEntries[0].name)
-        inputStream.close()
-        inputStream = createFrom(FileInputStream(filePath))
-        archiveEntries.forEach { entry ->
-            if (!listener.isCancelled) {
-                listener.onUpdate(entry.name)
-                // TAR is sequential, you need to walk all the way to the file you want
-                while (entry.hashCode() != inputStream.nextEntry.hashCode()) {}
-                extractEntry(context, inputStream, entry, outputPath)
+            if (archiveEntries.size > 0) {
+                listener.onStart(totalBytes, archiveEntries[0].name)
+                inputStream.close()
+                inputStream = createFrom(FileInputStream(filePath))
+                archiveEntries.forEach { entry ->
+                    if (!listener.isCancelled) {
+                        listener.onUpdate(entry.name)
+                        // TAR is sequential, you need to walk all the way to the file you want
+                        while (entry.hashCode() != inputStream.nextEntry.hashCode()) {}
+                        extractEntry(context, inputStream, entry, outputPath)
+                    }
+                }
+                inputStream.close()
+                listener.onFinish()
+            } else {
+                throw EmptyArchiveNotice()
             }
+        } finally {
+            inputStream.close()
         }
-        inputStream.close()
-        listener.onFinish()
     }
 
     @Throws(IOException::class)
