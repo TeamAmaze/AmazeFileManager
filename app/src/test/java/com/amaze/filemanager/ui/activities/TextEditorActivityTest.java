@@ -77,7 +77,7 @@ public class TextEditorActivityTest {
     intent.setData(Uri.fromFile(file));
     generateActivity(intent);
 
-    assertEquals(fileContents + "\n", text.getText().toString());
+    assertEquals(fileContents, text.getText().toString());
   }
 
   @Test

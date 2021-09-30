@@ -122,7 +122,8 @@ public class WriteTextFileCallable implements Callable<Unit> {
     return Unit.INSTANCE;
   }
 
-  private OutputStream openFile(@NonNull File file, @NonNull Context context) throws IOException {
+  private OutputStream openFile(@NonNull File file, @NonNull Context context)
+      throws IOException, StreamNotFoundException {
     OutputStream outputStream = FileUtil.getOutputStream(file, context);
 
     // try loading stream associated using root
@@ -131,7 +132,7 @@ public class WriteTextFileCallable implements Callable<Unit> {
     }
 
     if (outputStream == null) {
-      throw new IOException("Cannot read or write text file!");
+      throw new StreamNotFoundException("Cannot read or write text file!");
     }
 
     return outputStream;
