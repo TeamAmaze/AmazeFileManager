@@ -315,7 +315,6 @@
     <string name="report_bugs_summary">דווח על באגים, או בקש תכונות חדשות</string>
     <string name="translate_title">תרגום</string>
     <string name="translate_summary">תרגם את Amaze לשפה שלך</string>
-    <string name="easter_egg_title">מצב סטודיו</string>
     <string name="paypal_copy_message">מזהה ה־PayPal הועתק ללוח הגזירים</string>
     <string name="searching_devices">מחפש התקנים</string>
     <string name="use_custom_ip">השתמש בכתובת IP מותאמת אישית</string>
@@ -374,7 +373,6 @@
     </string>
     <string name="share_limit">לא ניתן לשתף יותר מ-100 קבצים</string>
     <string name="otg_access">בחר את השורש של התקן ה-OTG</string>
-    <string name="opening">פותח...</string>
     <string name="information">מידע</string>
     <!-- reference to file accessed date -->
     <string name="accessed">נצפה</string>
@@ -524,6 +522,13 @@
     <string name="show_quick_access_pref_title">הצגת פריטי גישה מהירה</string>
     <string name="show_quick_access_pref">פריטי גישה מהירה</string>
     <string name="directory">תיקייה</string>
+
+    <string name="sidebar_bookmarks_title">סימניות בסרגל הצד</string>
+    <string name="show_bookmarks_pref_title">הצגת סימניות</string>
+    <string name="show_bookmarks_pref">סימניות</string>
+    <string name="create_bookmark">יצירת סימניה</string>
+    <string name="edit_bookmark">עריכת סימניה</string>
+    <string name="question_delete_bookmark">למחוק סימניה?</string>
 
     <string name="cloud_error_plugin">תוסף הענן של Amaze לא נמצא. נא להוריד מהחנות Play.</string>
     <string name="cloud_error_failed_restart">טעינת החיבור נכשלה.
@@ -699,5 +704,16 @@
     <string name="ftp_prompt_accept_first_start_saf_access">מאחר שזו הפעלת שרת ה־FTP הראשונה שלך והאחסון הפנימי של המכשיר שלך משמש כתיקייה משותפת, נא לאפשר ל־Amaze לגשת לאחסון דרך SAF.\n\n
 
 עליך לבצע זאת פעם אחת בלבד, עד הפעם הבא בה ייבחר מקום חדש לשיתוף.</string>
+    <string name="android_data_prompt_saf_access">מאז Android 10, מערכת Android כופה הגבלות על תיקיות מסוימות ויש לגשת אליהן עם תשתית הגישה לאחסון.\n\nנא לאפשר ל־Amaze גישה לתיקייה ממנהל הקבצים של המערכת על ידי לחיצה על „לאפשר גישה”.</string>
+    <string name="android_data_prompt_saf_access_title">הענקת גישת לתשתית גישה לאחסון</string>
+    <string name="ftp_preference_saf_filesystem_title">להשתמש במערכת קבצים מיושנת</string>
+    <string name="ftp_preference_saf_filesystem">יש להפעיל את זה לקבלת תמיכה בשימוש באחסון החיצוני של המכשיר בגרסאות חדשות של Android</string>
+    <string name="ftp_server_fallback_path_reset_prompt">הנתיב המשותף של שרת ה־FTP אופס לאחסון המקומי עקב החלפה בחזרה להטמעה מיושנת של מערכת קבצים. נא לבחור בנתיב חדש באמצעות התפריט שמשמאל בהתאם לדרישה.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">שגיאה בפתיחת הכתובת „%s” לקריאה.</string>
+    <string name="error_empty_archive">„%s” הוא ארכיון ריק.</string>
+    <string name="security_error">אי אפשר לפתוח את הקובץ באמצעות היישום הזה</string>
+    <string name="cloud_drive_tooltip">יצירת חיבור ל־Google Drive™‎ לטובת ניהול קבצים מתוך מנהל הקבצים Amaze.</string>
+    <string name="signin_with_google_title">יש לעבור אימות כדי להשתמש ב־Google Drive™‎</string>
+    <string name="show_system_apps">הצגת יישומי המערכת</string>
 </resources>
 
