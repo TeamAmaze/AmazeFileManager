@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.asynchronous.asynctasks.movecopy
 
 import android.content.Context
@@ -20,118 +40,118 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import java.util.*
 
 data class MoveFilesReturn(
-  val movedCorrectly: Boolean,
-  val invalidOperation: Boolean,
-  val destinationSize: Long,
-  val totalSize: Long
-  )
+    val movedCorrectly: Boolean,
+    val invalidOperation: Boolean,
+    val destinationSize: Long,
+    val totalSize: Long
+)
 
 class MoveFilesTask(
-  val files: ArrayList<ArrayList<HybridFileParcelable>>,
-  val isRootExplorer: Boolean,
-  val currentPath: String,
-  context: Context,
-  val mode: OpenMode,
-  val paths: ArrayList<String>
-): Task<MoveFilesReturn, MoveFiles> {
+    val files: ArrayList<ArrayList<HybridFileParcelable>>,
+    val isRootExplorer: Boolean,
+    val currentPath: String,
+    context: Context,
+    val mode: OpenMode,
+    val paths: ArrayList<String>
+) : Task<MoveFilesReturn, MoveFiles> {
 
-  companion object {
-    private val TAG = MoveFilesTask::class.java.simpleName
-  }
-
-  private val task: MoveFiles = MoveFiles(files, isRootExplorer, context, mode, paths)
-  private val applicationContext: Context = context.applicationContext
-
-  override fun getTask(): MoveFiles = task
-
-  override fun onError(error: Throwable) {
-    Log.e(TAG, "Unexpected error on file move: ", error)
-  }
-
-  override fun onFinish(value: MoveFilesReturn) {
-    val (movedCorrectly, invalidOperation, destinationSize, totalBytes) = value
-
-    if (movedCorrectly) {
-      onMovedCorrectly(invalidOperation)
-    } else {
-      onMovedFail(destinationSize, totalBytes)
-    }
-  }
-
-  private fun onMovedCorrectly(invalidOperation: Boolean) {
-    if (currentPath == paths[0]) {
-      // mainFrag.updateList();
-      val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
-      intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, paths[0])
-      applicationContext.sendBroadcast(intent)
+    companion object {
+        private val TAG = MoveFilesTask::class.java.simpleName
     }
 
-    if (invalidOperation) {
-      Toast.makeText(
-        applicationContext,
-        R.string.some_files_failed_invalid_operation,
-        Toast.LENGTH_LONG
-      )
-        .show()
+    private val task: MoveFiles = MoveFiles(files, isRootExplorer, context, mode, paths)
+    private val applicationContext: Context = context.applicationContext
+
+    override fun getTask(): MoveFiles = task
+
+    override fun onError(error: Throwable) {
+        Log.e(TAG, "Unexpected error on file move: ", error)
     }
 
-    for (i in paths.indices) {
-      val targetFiles: MutableList<HybridFile> = ArrayList()
-      val sourcesFiles: MutableList<HybridFileParcelable> = ArrayList()
-      for (f in files[i]) {
-        val file = HybridFile(
-          OpenMode.FILE,
-          paths[i] + "/" + f.getName(applicationContext)
-        )
-        targetFiles.add(file)
-      }
-      for (hybridFileParcelables in files) {
-        sourcesFiles.addAll(hybridFileParcelables)
-      }
-      FileUtils.scanFile(applicationContext, sourcesFiles.toTypedArray())
-      FileUtils.scanFile(applicationContext, targetFiles.toTypedArray())
-    }
+    override fun onFinish(value: MoveFilesReturn) {
+        val (movedCorrectly, invalidOperation, destinationSize, totalBytes) = value
 
-    // updating encrypted db entry if any encrypted file was moved
-    AppConfig.getInstance()
-      .runInBackground {
-        for (i in paths.indices) {
-          for (file in files[i]) {
-            if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
-              val cryptHandler = CryptHandler.getInstance()
-              val oldEntry = cryptHandler.findEntry(file.path)
-              if (oldEntry != null) {
-                val newEntry = EncryptedEntry()
-                newEntry.id = oldEntry.id
-                newEntry.password = oldEntry.password
-                newEntry.path = paths[i] + "/" + file.getName(applicationContext)
-                cryptHandler.updateEntry(oldEntry, newEntry)
-              }
-            }
-          }
+        if (movedCorrectly) {
+            onMovedCorrectly(invalidOperation)
+        } else {
+            onMovedFail(destinationSize, totalBytes)
         }
-      }
-  }
+    }
 
-  private fun onMovedFail(destinationSize: Long, totalBytes: Long) {
-    if (totalBytes > 0 && destinationSize < totalBytes) {
-      // destination don't have enough space; return
-      Toast.makeText(
-        applicationContext,
-        applicationContext.resources.getString(R.string.in_safe),
-        Toast.LENGTH_LONG
-      )
-        .show()
-      return
+    private fun onMovedCorrectly(invalidOperation: Boolean) {
+        if (currentPath == paths[0]) {
+            // mainFrag.updateList();
+            val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
+            intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, paths[0])
+            applicationContext.sendBroadcast(intent)
+        }
+
+        if (invalidOperation) {
+            Toast.makeText(
+                applicationContext,
+                R.string.some_files_failed_invalid_operation,
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+
+        for (i in paths.indices) {
+            val targetFiles: MutableList<HybridFile> = ArrayList()
+            val sourcesFiles: MutableList<HybridFileParcelable> = ArrayList()
+            for (f in files[i]) {
+                val file = HybridFile(
+                    OpenMode.FILE,
+                    paths[i] + "/" + f.getName(applicationContext)
+                )
+                targetFiles.add(file)
+            }
+            for (hybridFileParcelables in files) {
+                sourcesFiles.addAll(hybridFileParcelables)
+            }
+            FileUtils.scanFile(applicationContext, sourcesFiles.toTypedArray())
+            FileUtils.scanFile(applicationContext, targetFiles.toTypedArray())
+        }
+
+        // updating encrypted db entry if any encrypted file was moved
+        AppConfig.getInstance()
+            .runInBackground {
+                for (i in paths.indices) {
+                    for (file in files[i]) {
+                        if (file.getName(applicationContext).endsWith(CryptUtil.CRYPT_EXTENSION)) {
+                            val cryptHandler = CryptHandler.getInstance()
+                            val oldEntry = cryptHandler.findEntry(file.path)
+                            if (oldEntry != null) {
+                                val newEntry = EncryptedEntry()
+                                newEntry.id = oldEntry.id
+                                newEntry.password = oldEntry.password
+                                newEntry.path = paths[i] + "/" + file.getName(applicationContext)
+                                cryptHandler.updateEntry(oldEntry, newEntry)
+                            }
+                        }
+                    }
+                }
+            }
     }
-    for (i in paths.indices) {
-      val intent = Intent(applicationContext, CopyService::class.java)
-      intent.putExtra(CopyService.TAG_COPY_SOURCES, files[i])
-      intent.putExtra(CopyService.TAG_COPY_TARGET, paths[i])
-      intent.putExtra(CopyService.TAG_COPY_MOVE, true)
-      intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal)
-      intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, isRootExplorer)
-      ServiceWatcherUtil.runService(applicationContext, intent)
+
+    private fun onMovedFail(destinationSize: Long, totalBytes: Long) {
+        if (totalBytes > 0 && destinationSize < totalBytes) {
+            // destination don't have enough space; return
+            Toast.makeText(
+                applicationContext,
+                applicationContext.resources.getString(R.string.in_safe),
+                Toast.LENGTH_LONG
+            )
+                .show()
+            return
+        }
+        for (i in paths.indices) {
+            val intent = Intent(applicationContext, CopyService::class.java)
+            intent.putExtra(CopyService.TAG_COPY_SOURCES, files[i])
+            intent.putExtra(CopyService.TAG_COPY_TARGET, paths[i])
+            intent.putExtra(CopyService.TAG_COPY_MOVE, true)
+            intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, mode.ordinal)
+            intent.putExtra(CopyService.TAG_IS_ROOT_EXPLORER, isRootExplorer)
+            ServiceWatcherUtil.runService(applicationContext, intent)
+        }
     }
-  }
 }

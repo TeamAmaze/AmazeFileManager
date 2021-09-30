@@ -105,11 +105,11 @@ class DragAndDropDialog : DialogFragment() {
             mainActivity: MainActivity
         ) {
             PrepareCopyTask(
-              pasteLocation,
-              move,
-              mainActivity,
-              mainActivity.isRootExplorer,
-              mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
+                pasteLocation,
+                move,
+                mainActivity,
+                mainActivity.isRootExplorer,
+                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
                 files
             )
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)

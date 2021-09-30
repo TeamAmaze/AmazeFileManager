@@ -52,14 +52,14 @@ class SevenZipHelperCallable(
             for (entry in sevenzFile.entries) {
                 val name = entry.name
                 val isInBaseDir = (
-                        relativePath == "" &&
-                                !name.contains(CompressedHelper.SEPARATOR)
-                        )
+                    relativePath == "" &&
+                        !name.contains(CompressedHelper.SEPARATOR)
+                    )
                 val isInRelativeDir = (
-                        name.contains(CompressedHelper.SEPARATOR) &&
-                                name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
-                                == relativePath
-                        )
+                    name.contains(CompressedHelper.SEPARATOR) &&
+                        name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
+                        == relativePath
+                    )
                 if (isInBaseDir || isInRelativeDir) {
                     elements.add(
                         CompressedObjectParcelable(
@@ -72,7 +72,7 @@ class SevenZipHelperCallable(
                 }
             }
         } catch (e: PasswordRequiredException) {
-            //this is so that the caller can use onError to ask the user for the password
+            // this is so that the caller can use onError to ask the user for the password
             throw e
         } catch (e: IOException) {
             throw ArchiveException(String.format("7zip archive %s is corrupt", filePath))

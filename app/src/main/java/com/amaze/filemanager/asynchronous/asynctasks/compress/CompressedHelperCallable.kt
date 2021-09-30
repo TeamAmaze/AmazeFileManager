@@ -20,13 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.AsyncTask
 import androidx.annotation.WorkerThread
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import org.apache.commons.compress.archivers.ArchiveException
-import java.io.IOException
 import java.util.*
 import java.util.concurrent.Callable
 

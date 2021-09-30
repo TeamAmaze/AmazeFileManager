@@ -46,29 +46,32 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.MaterialDialog.SingleButtonCallback
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
 import com.amaze.filemanager.asynchronous.services.ExtractService
 import com.amaze.filemanager.databinding.ActionmodeBinding
 import com.amaze.filemanager.databinding.MainFragBinding
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.fragments.data.CompressedExplorerFragmentViewModel
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.ui.views.DividerItemDecoration
 import com.amaze.filemanager.ui.views.FastScroller
 import com.amaze.filemanager.utils.BottomBarButtonPath
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import com.amaze.filemanager.utils.Utils
 import com.github.junrar.exception.UnsupportedRarV5Exception
 import com.google.android.material.appbar.AppBarLayout
@@ -81,15 +84,6 @@ import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
-
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
-
-import com.afollestad.materialdialogs.DialogAction
-
-import com.afollestad.materialdialogs.MaterialDialog
-import com.afollestad.materialdialogs.MaterialDialog.SingleButtonCallback
-
 
 @Suppress("TooManyFunctions")
 class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
@@ -535,21 +529,23 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             Flowable.fromCallable(it.changePath(folder, addGoBackItem))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ result ->
-                    viewModel.elements.postValue(result)
-                    viewModel.folder = folder
-                }, { error ->
-                    if (error is PasswordRequiredException) {
-                        dialogGetPasswordFromUser(folder);
-                    } else {
-                        archiveCorruptOrUnsupportedToast(error);
+                .subscribe(
+                    { result ->
+                        viewModel.elements.postValue(result)
+                        viewModel.folder = folder
+                    },
+                    { error ->
+                        if (error is PasswordRequiredException) {
+                            dialogGetPasswordFromUser(folder)
+                        } else {
+                            archiveCorruptOrUnsupportedToast(error)
+                        }
                     }
-                })
+                )
             swipeRefreshLayout.isRefreshing = true
             updateBottomBar()
         }
     }
-
 
     private fun dialogGetPasswordFromUser(filePath: String) {
         val positiveCallback =
