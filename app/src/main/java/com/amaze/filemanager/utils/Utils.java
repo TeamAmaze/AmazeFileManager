@@ -40,6 +40,7 @@ import android.content.pm.ActivityInfo;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.graphics.PointF;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
@@ -398,5 +399,12 @@ public class Utils {
     }
     emailIntent.setType("message/rfc822");
     return emailIntent;
+  }
+
+  public static void zoom(Float scaleX, Float scaleY, PointF pivot, View view) {
+    view.setPivotX(pivot.x);
+    view.setPivotY(pivot.y);
+    view.setScaleX(scaleX);
+    view.setScaleY(scaleY);
   }
 }

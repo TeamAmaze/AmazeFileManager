@@ -47,7 +47,7 @@ class CloudTest {
                 else -> null
             }
             requireNotNull(prefix)
-            prefix + RandomPathGenerator.SEPARATOR + path
+            prefix + RandomPathGenerator.separator + path
         }
 
         val r = Random(123)

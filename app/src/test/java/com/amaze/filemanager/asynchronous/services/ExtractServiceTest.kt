@@ -61,8 +61,10 @@ class ExtractServiceTest {
     private val zipfile1: File
     private val zipfile2: File
     private val zipfile3: File
+    private val emptyZip: File
     private val rarfile: File
     private val tarfile: File
+    private val emptyTar: File
     private val tarballfile: File
     private val tarLzmafile: File
     private val tarXzfile: File
@@ -83,8 +85,10 @@ class ExtractServiceTest {
             zipfile1 = File(this, "zip-slip.zip")
             zipfile2 = File(this, "zip-slip-win.zip")
             zipfile3 = File(this, "test-archive.zip")
+            emptyZip = File(this, "empty.zip")
             rarfile = File(this, "test-archive.rar")
             tarfile = File(this, "test-archive.tar")
+            emptyTar = File(this, "empty.tar")
             tarballfile = File(this, "test-archive.tar.gz")
             tarLzmafile = File(this, "test-archive.tar.lzma")
             tarXzfile = File(this, "test-archive.tar.xz")
@@ -117,8 +121,10 @@ class ExtractServiceTest {
             getResourceAsStream("zip-slip.zip").copyTo(FileOutputStream(zipfile1))
             getResourceAsStream("zip-slip-win.zip").copyTo(FileOutputStream(zipfile2))
             getResourceAsStream("test-archive.zip").copyTo(FileOutputStream(zipfile3))
+            getResourceAsStream("empty.zip").copyTo(FileOutputStream(emptyZip))
             getResourceAsStream("test-archive.rar").copyTo(FileOutputStream(rarfile))
             getResourceAsStream("test-archive.tar").copyTo(FileOutputStream(tarfile))
+            getResourceAsStream("empty.tar").copyTo(FileOutputStream(emptyTar))
             getResourceAsStream("test-archive.tar.gz").copyTo(FileOutputStream(tarballfile))
             getResourceAsStream("test-archive.tar.lzma").copyTo(FileOutputStream(tarLzmafile))
             getResourceAsStream("test-archive.tar.xz").copyTo(FileOutputStream(tarXzfile))
@@ -144,6 +150,7 @@ class ExtractServiceTest {
                 .copyTo(FileOutputStream(multiVolumeRarFileV5Part3))
         }
         ShadowPausedAsyncTask.overrideExecutor(InlineExecutorService())
+        ShadowToast.reset()
 
         service = Robolectric.setupService(ExtractService::class.java)
     }
@@ -338,6 +345,40 @@ class ExtractServiceTest {
             .atMost(10, TimeUnit.SECONDS)
             .until {
                 ShadowToast.getLatestToast() != null
+            }
+    }
+
+    /**
+     * Test for extracting zip with zero entries.
+     *
+     * @see [https://github.com/TeamAmaze/AmazeFileManager/issues/2659]
+     */
+    @Test
+    fun testEmptyZip() {
+        performTest(emptyZip)
+        ShadowLooper.idleMainLooper()
+        await()
+            .atMost(10, TimeUnit.SECONDS)
+            .until {
+                ShadowToast.getLatestToast() != null
+                ShadowToast.getTextOfLatestToast().contains("is an empty archive")
+            }
+    }
+
+    /**
+     * Test for extracting tar with zero entries.
+     *
+     * @see [https://github.com/TeamAmaze/AmazeFileManager/issues/2659]
+     */
+    @Test
+    fun testEmptyTar() {
+        performTest(emptyTar)
+        ShadowLooper.idleMainLooper()
+        await()
+            .atMost(10, TimeUnit.SECONDS)
+            .until {
+                ShadowToast.getLatestToast() != null
+                ShadowToast.getTextOfLatestToast().contains("is an empty archive")
             }
     }
 

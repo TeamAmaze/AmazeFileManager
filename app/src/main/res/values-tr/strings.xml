@@ -452,7 +452,7 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="cloud_connection">Bulut bağlantısı</string>
     <string name="cloud_connection_new">Yeni bulut bağlantısı</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Bulut eklentisi al</string>
@@ -515,16 +515,10 @@ Kaldırmak için boş bırakın.</string>
     <string name="authenticate_password">Şifreyi girin</string>
 
     <string name="sidebar_preferences">Kenar çubuğu</string>
-    <string name="sidebar_folders_title">Kenar çubuğu kısayolları</string>
     <string name="sidebar_quick_access_title">Kenar çubuğu hızlı erişim</string>
-    <string name="show_folders_pref_title">Kısayolları göster</string>
-    <string name="show_folders_pref">Kısayollar</string>
     <string name="show_quick_access_pref_title">Hızlı erişimleri göster</string>
     <string name="show_quick_access_pref">Hızlı erişimler</string>
-    <string name="create_shortcut">Kısayol oluştur</string>
-    <string name="edit_shortcut">Kısayolu düzelt</string>
     <string name="directory">Dizin</string>
-    <string name="question_delete_shortcut">Kısayol silinsin mi?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud eklentisi bulunamadı. Play Store dan indirin.</string>
     <string name="cloud_error_failed_restart">Bağlantı yüklenemedi.

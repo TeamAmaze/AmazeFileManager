@@ -57,6 +57,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 
 import net.schmizz.sshj.sftp.RemoteFile;
@@ -245,6 +246,7 @@ public class CloudUtil {
   }
 
   /** Get an input stream for thumbnail for a given {@link IconDataParcelable} */
+  @Nullable
   public static InputStream getThumbnailInputStreamForCloud(Context context, String path) {
     InputStream inputStream;
     HybridFile hybridFile = new HybridFile(OpenMode.UNKNOWN, path);
@@ -255,7 +257,7 @@ public class CloudUtil {
       case SFTP:
         inputStream =
             SshClientUtils.execute(
-                new SFtpClientTemplate(hybridFile.getPath(), false) {
+                new SFtpClientTemplate<InputStream>(hybridFile.getPath(), false) {
                   @Override
                   public InputStream execute(final SFTPClient client) throws IOException {
                     final RemoteFile rf =

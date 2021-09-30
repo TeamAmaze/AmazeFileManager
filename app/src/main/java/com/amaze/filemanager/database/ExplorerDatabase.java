@@ -46,8 +46,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  */
 @Database(
     entities = {Tab.class, Sort.class, EncryptedEntry.class, CloudEntry.class},
-    version = 7,
-    exportSchema = false)
+    version = 7)
 public abstract class ExplorerDatabase extends RoomDatabase {
 
   private static final String DATABASE_NAME = "explorer.db";
@@ -76,7 +75,7 @@ public abstract class ExplorerDatabase extends RoomDatabase {
   private static final String TEMP_TABLE_PREFIX = "temp_";
 
   // 1->2: add encrypted table (66f08f34)
-  private static final Migration MIGRATION_1_2 =
+  static final Migration MIGRATION_1_2 =
       new Migration(1, 2) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -96,7 +95,7 @@ public abstract class ExplorerDatabase extends RoomDatabase {
       };
 
   // 2->3: add cloud table (8a5ced1b)
-  private static final Migration MIGRATION_2_3 =
+  static final Migration MIGRATION_2_3 =
       new Migration(2, 3) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -116,21 +115,21 @@ public abstract class ExplorerDatabase extends RoomDatabase {
       };
 
   // 3->4: same as 2->3 (765140f6)
-  private static final Migration MIGRATION_3_4 =
+  static final Migration MIGRATION_3_4 =
       new Migration(3, 4) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {}
       };
 
   // 4->5: same as 3->4, same as 2->3 (37357436)
-  private static final Migration MIGRATION_4_5 =
+  static final Migration MIGRATION_4_5 =
       new Migration(4, 5) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {}
       };
 
   // 5->6: add sort table (fe7c0aba)
-  private static final Migration MIGRATION_5_6 =
+  static final Migration MIGRATION_5_6 =
       new Migration(5, 6) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -146,7 +145,7 @@ public abstract class ExplorerDatabase extends RoomDatabase {
         }
       };
 
-  private static final Migration MIGRATION_6_7 =
+  static final Migration MIGRATION_6_7 =
       new Migration(6, DATABASE_VERSION) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
@@ -162,7 +161,24 @@ public abstract class ExplorerDatabase extends RoomDatabase {
                   + COLUMN_HOME
                   + " TEXT)");
           database.execSQL(
-              "INSERT INTO " + TEMP_TABLE_PREFIX + TABLE_TAB + " SELECT * FROM " + TABLE_TAB);
+              "INSERT INTO "
+                  + TEMP_TABLE_PREFIX
+                  + TABLE_TAB
+                  + "("
+                  + COLUMN_TAB_NO
+                  + ","
+                  + COLUMN_PATH
+                  + ","
+                  + COLUMN_HOME
+                  + ")"
+                  + " SELECT "
+                  + COLUMN_TAB_NO
+                  + ","
+                  + COLUMN_PATH
+                  + ","
+                  + COLUMN_HOME
+                  + " FROM "
+                  + TABLE_TAB);
           database.execSQL("DROP TABLE " + TABLE_TAB);
           database.execSQL(
               "ALTER TABLE " + TEMP_TABLE_PREFIX + TABLE_TAB + " RENAME TO " + TABLE_TAB);

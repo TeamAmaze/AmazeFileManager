@@ -455,7 +455,7 @@
     <string name="cloud_connection">Skýjatenging</string>
     <string name="cloud_connection_new">Ný tenging við tölvuský</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Ná í Cloud-plugin skýjaviðbót</string>
@@ -518,16 +518,10 @@
     <string name="authenticate_password">Settu inn lykilorð</string>
 
     <string name="sidebar_preferences">Hliðarspjald</string>
-    <string name="sidebar_folders_title">Flýtileiðir á hliðarspjaldi</string>
     <string name="sidebar_quick_access_title">Flýtiaðgangur á hliðarspjaldi</string>
-    <string name="show_folders_pref_title">Birta flýtileiðir</string>
-    <string name="show_folders_pref">Flýtileiðir</string>
     <string name="show_quick_access_pref_title">Sýna flýtiaðganga</string>
     <string name="show_quick_access_pref">Flýtiaðgangar</string>
-    <string name="create_shortcut">Búa til flýtileið</string>
-    <string name="edit_shortcut">Breyta flýtileið</string>
     <string name="directory">Mappa</string>
-    <string name="question_delete_shortcut">Eyða flýtileið?</string>
 
     <string name="cloud_error_plugin">Amaze skýjaviðbótin (cloud plugin) fannst ekki. Náðu í hana úr Play Store safninu.</string>
     <string name="cloud_error_failed_restart">Mistókst að hlaða inn tengingunni.

@@ -7,7 +7,7 @@
     android:id="@+id/lin"
     android:elevation="4dp"
     android:focusable="true"
-    android:nextFocusRight="@id/buttonbarframe">
+    >
 
     <androidx.appcompat.widget.Toolbar
         xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -21,6 +21,7 @@
         app:contentInsetLeft="72dp"
         app:contentInsetStart="72dp"
         app:layout_scrollFlags="scroll|enterAlways"
+        android:descendantFocusability="afterDescendants"
         >
 
     </androidx.appcompat.widget.Toolbar>
@@ -30,8 +31,6 @@
         android:layout_height="72dp"
         android:layout_width="match_parent"
         android:layout_below="@id/action_bar"
-        android:focusable="true"
-        android:nextFocusDown="@id/lin"
         >
 
         <HorizontalScrollView
@@ -67,12 +66,15 @@
                 android:layout_height="wrap_content"
                 android:clickable="false"
                 android:paddingLeft="72dp"
-                android:paddingTop="5dp">
+                android:paddingTop="5dp"
+                android:focusable="true"
+                >
 
                 <LinearLayout
                     android:clickable="false"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    >
 
                     <TextView
                         android:clickable="false"

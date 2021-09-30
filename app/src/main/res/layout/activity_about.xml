@@ -88,7 +88,6 @@
                         android:layout_height="@dimen/material_generic_list_item"
                         android:background="?android:attr/selectableItemBackground"
                         android:gravity="center_vertical"
-                        android:onClick="onClick"
                         android:nextFocusUp="@id/appBarLayout"
                         >
                         <ImageView

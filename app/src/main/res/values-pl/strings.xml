@@ -431,7 +431,7 @@ smb_instructions
     <string name="please_wait">Proszę czekać</string>
 
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="change">Zmień</string>
     <string name="unknown_error">Ups, coś poszło nie tak!</string>

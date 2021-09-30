@@ -94,8 +94,12 @@
     </style>
 
     <style name="overflow_black" parent="overflow_dark">
-        <item name="android:itemBackground">@android:color/black</item>
+        <item name="android:windowBackground">@color/background_material_light</item>
+        <item name="android:colorForeground">@color/foreground_material_light</item>
+        <item name="android:colorForegroundInverse">@color/foreground_material_dark</item>
         <item name="android:colorBackground">@android:color/black</item>
+        <item name="android:colorBackgroundCacheHint">@color/abc_background_cache_hint_selector_material_light</item>
+        <item name="colorBackgroundFloating">@color/background_floating_material_light</item>
     </style>
 
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
