@@ -22,7 +22,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="app_name">ادارة ملف أمازي </string>
+    <string name="app_name">مدير ملفات Amaze</string>
     <string name="drawer_open">فتح درج التجول </string>
     <string name="drawer_close">اغلاق درج التجول </string>
     <string name="icon">شارة </string>
@@ -314,7 +314,6 @@
     <string name="report_bugs_summary">تسجيل الأخطاء أو طلب خاصية جديدة </string>
     <string name="translate_title">ترجمة </string>
     <string name="translate_summary">ترجمة العز باللغة الخاصة بك </string>
-    <string name="easter_egg_title">نمط الاستوديو </string>
     <string name="paypal_copy_message">تم نسخ كود PayPal الى المسودة </string>
     <string name="searching_devices">البحث عن أجهزة </string>
     <string name="use_custom_ip">استخدام IP المهيأ </string>
@@ -329,7 +328,7 @@
                          <b>اتاحة مشاركة الملف على Windows </b>\n 
                      </li>
                      <p style="margin-left: 40px">
-                        قم بفتح لوحة التحكم ، واضغط اختيار HomeGroup واختيارات المشاركة تحت شبكة الاتصالات والانترنت ، واضغط \"تغيير محددات المشاركة المتقدمة\" ، واتاحة \"ملف ومشاركة وحدة الطباعة\"  الخاصية المميزة. \n \n
+                        قم بفتح لوحة التحكم ، واضغط اختيار HomeGroup واختيارات المشاركة تحت شبكة الاتصالات والانترنت ، واضغط "تغيير محددات المشاركة المتقدمة" ، واتاحة "ملف ومشاركة وحدة الطباعة"  الخاصية المميزة. \n \n 
                      </p>
 
                      <li>
@@ -350,7 +349,7 @@
                          <b>ايجاد عنوان IP </b>\n 
                      </li>
                      <p style="margin-left: 40px">
-                        فتح رسالة حث الأمر.  أدخل \'ipconfig \' ثم اضغط Enter.  ابحث عن Default Gateway تحت موفق شبكة الاتصالات الخاص بك لتوجيه مسار التوجيه الخاص بك \' عنوان IP.  أنظر الى \ \\"عنوان IPv4 \ \\" تحت نفس قسم الموفق لايجاد IP الخاص بالحاسب الخاص بك
+                        فتح رسالة حث الأمر.  أدخل \ 'ipconfig \' ثم اضغط Enter.  ابحث عن Default Gateway تحت موفق شبكة الاتصالات الخاص بك لتوجيه مسار التوجيه الخاص بك \ ' عنوان IP.  أنظر الى \ \\ "عنوان IPv4 \ \\" تحت نفس قسم الموفق لايجاد IP الخاص بالحاسب الخاص بك 
                         عنوان. \n \n 
                      </p>
 
@@ -361,7 +360,6 @@
      </string>
     <string name="share_limit">لا يمكن مشاركة أكثر من 100 ملف </string>
     <string name="otg_access">حدد الدليل الرئيسي لجهاز OTG </string>
-    <string name="opening">افتتاح .. </string>
     <string name="information">المعلومات </string>
     <!-- reference to file accessed date -->
     <string name="accessed">تم التوصل </string>
@@ -409,7 +407,7 @@
     <string name="paper_size">حجم الورقة </string>
 
     <!-- %s will be replaced with either copied or moved -->
-    <string name="copy_error">بعض الملفات التي تم صرفها \' \'t بنجاح %s </string>
+    <string name="copy_error">بعض الملفات التي تم صرفها \ ' 't بنجاح %s </string>
     <string name="copied">تم النسخ </string>
     <string name="moved">نقل </string>
     <string name="copy_complete">اتمام النسخ </string>
@@ -444,7 +442,7 @@
     <string name="cloud_connection">وصلة Cloud </string>
     <string name="cloud_connection_new">وصلة Clud جديدة </string>
     <string name="cloud_dropbox">Dropbox </string>
-    <string name="cloud_drive">جوجل درايف </string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">مشغل واحد </string>
     <string name="cloud_box">مربع </string>
     <string name="cloud_get">عرض البرنامج المساعد Cloud </string>
@@ -506,16 +504,17 @@
     <string name="authenticate_password">أدخل كلمة السرية </string>
 
     <string name="sidebar_preferences">الشريط الجانبي </string>
-    <string name="sidebar_folders_title">اختصارات الشريط الجانبي </string>
     <string name="sidebar_quick_access_title">التوصل السريع للشريط الجانبي </string>
-    <string name="show_folders_pref_title">عرض المسارات المختصرة </string>
-    <string name="show_folders_pref">المسارات المختصرة </string>
     <string name="show_quick_access_pref_title">عرض امكانيات التوصل السريعة </string>
     <string name="show_quick_access_pref">اتصالات سريعة </string>
-    <string name="create_shortcut">تكوين مسار مختصر </string>
-    <string name="edit_shortcut">تحرير المسار المختصر </string>
     <string name="directory">الدليل </string>
-    <string name="question_delete_shortcut">حذف المسار المختصر ؟ </string>
+
+    <string name="sidebar_bookmarks_title">الإشارات المرجعية للشريط الجانبي</string>
+    <string name="show_bookmarks_pref_title">إظهار الإشارات المرجعية</string>
+    <string name="show_bookmarks_pref">المفضلات</string>
+    <string name="create_bookmark">إنشاء إشارة مرجعية</string>
+    <string name="edit_bookmark">تحرير الإشارة المرجعية</string>
+    <string name="question_delete_bookmark">حذف الإشارة المرجعية?</string>
 
     <string name="cloud_error_plugin">لم يتم ايجاد برنامج مساعد Clud Cloud.  برجاء التحميل من تشغيل المتجر. </string>
     <string name="cloud_error_failed_restart">فشل في تحميل الوصلة. 
@@ -559,7 +558,7 @@
     <string name="channel_name_normal">الاعلامات الامامية </string>
     <string name="channel_description_normal">اخطارات File Manager \'s Notifications </string>
     <string name="channel_name_ftp">وحدة خدمة Azze FTP </string>
-    <string name="channel_description_ftp">وحدات خدمة MyAze File Manager FTP \'s Notifications </string>
+    <string name="channel_description_ftp">وحدات خدمة MyAze File Manager FTP /'s Notifications </string>
 
     <string name="processing">جاري التشغيل ... </string>
     <string name="failed_no_connection">فشل في تحميل الملفات.  برجاء التحقق من الوصلة الخاصة بك. </string>
@@ -567,7 +566,7 @@
     <string name="update">تعديل </string>
 	<string name="scp_connection">وصلة SCP/SFTP </string>
     <string name="scp_port">المنفذ </string>
-    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \'%1$s\'\. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \" نعم \"لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \" لا \". </string>
+    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \ '%1$s \'. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \" نعم \ "لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \" لا \ ". </string>
     <string name="ssh_host_key_verification_prompt_title">التحقق من النظام الرئيسي </string>
     <string name="ssh_select_pem_button">مفتاح SSH الخاص </string>
     <string name="ssh_pem_key_parse_error">غير قادر على قراءة PEM المحدد : %s </string>
@@ -587,7 +586,7 @@
     <string name="orange">برتقالي </string>
     <string name="blue">أزرق </string>
     <string name="green">أخضر </string>
-    <string name="password_no_match">كلمة السرية doesn\'\t مطابقة </string>
+    <string name="password_no_match">كلمة السرية doesn \ 't مطابقة </string>
     <string name="deselect_all">الغاء تحديد كل </string>
     <string name="filename">اسم الملف </string>
     <string name="compress_file_suggest_zip_extension">يفضل أن يقوم \ "باستخدام \". zip \ " كامتداد للملف. </string>
@@ -609,9 +608,9 @@
     <string name="got_it">! حصلت عليه </string>
     <string name="encrypt_file_save_as">حفظ الملف المشفر باسم ... </string>
     <string name="encrypt_folder_save_as">حفظ الحافظة التي تم تشفيرها باسم ... </string>
-    <string name="encrypt_file_must_end_with_aze">يجب أن تقوم الملفات المشفرة باستخدام \". seزى \" على أنه لاحقة الملف. </string>
+    <string name="encrypt_file_must_end_with_aze">يجب أن تقوم الملفات المشفرة باستخدام \ ". seزى \" على أنه لاحقة الملف. </string>
     <string name="cannot_overwrite">لا يمكن احلال الملف. </string>
-    <string name="saved_single_file">تم حفظ الملف على أنه \' %s\'. </string>
+    <string name="saved_single_file">تم حفظ الملف على أنه \ ' %s \'. </string>
     <string name="saved_multi_files">تم حفظ %d ملف. </string>
     <string name="create_hidden_file_warn">سيتم اخفاء الملف الذي تم تكوينه في كشف الملفات. </string>
     <string name="grant_apkinstall_permission">يجب الاستمرار في تطبيق تصريح App لتركيب التطبيقات. </string>
@@ -691,5 +690,16 @@
     <string name="ftp_prompt_accept_first_start_saf_access">حيث أن هذه هي المرة الأولى التي تقوم فيها بتشغيل وحدة خدمة FTP ، وتقوم باستخدام مساحة التخزين الداخلية الخاصة بالجهاز كحافظة مشتركة ، برجاء السماح لأمازي بالوصول الى مساحة التخزين باستخدام SAF. \n \n 
 
 يجب أن تقوم بذلك مرة واحدة فقط ، حتى تقوم بتحديد مكان جديد للمشاركة فيه في المرة القادمة. </string>
+    <string name="android_data_prompt_saf_access">منذ Android 10 ، فرض Android قيودًا على أدلة معينة ، ويحتاجون إلى الوصول إلى Storage Access Framework.\n\nيُرجى السماح لـ Amaze بالوصول إلى الدليل من مدير ملفات النظام عن طريق النقر على \"السماح بالوصول\".</string>
+    <string name="android_data_prompt_saf_access_title">منح وصول SAF</string>
+    <string name="ftp_preference_saf_filesystem_title">استخدم نظام الملفات القديم</string>
+    <string name="ftp_preference_saf_filesystem">قم بتمكين هذا لدعم استخدام وحدة التخزين الخارجية للجهاز على إصدارات Android الأحدث</string>
+    <string name="ftp_server_fallback_path_reset_prompt">تم إعادة تعيين المسار المشترك لخادم FTP إلى وحدة التخزين الداخلية أثناء العودة إلى تطبيق نظام الملفات القديم. الرجاء تحديد مسار جديد باستخدام القائمة الموجودة في الجزء العلوي الأيمن حسب الضرورة.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">خطأ في فتح URI \"%s\" للقراءة.</string>
+    <string name="error_empty_archive">\"%s\" هو أرشيف فارغ.</string>
+    <string name="security_error">تعذر فتح الملف باستخدام هذا التطبيق</string>
+    <string name="cloud_drive_tooltip">قم بإنشاء اتصال Google Drive ™ لإدارة الملفات من داخل Amaze File Manager.</string>
+    <string name="signin_with_google_title">المصادقة لاستخدام Google Drive™</string>
+    <string name="show_system_apps">عرض تطبيقات النظام</string>
 </resources>
 
