@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.database;
 
+import static com.amaze.filemanager.database.UtilitiesDatabase.DATABASE_VERSION;
+
 import com.amaze.filemanager.database.daos.BookmarkEntryDao;
 import com.amaze.filemanager.database.daos.GridEntryDao;
 import com.amaze.filemanager.database.daos.HiddenEntryDao;
@@ -60,11 +62,12 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
       SmbEntry.class,
       SftpEntry.class
     },
-    version = 5,
+    version = DATABASE_VERSION,
     exportSchema = false)
 public abstract class UtilitiesDatabase extends RoomDatabase {
 
   private static final String DATABASE_NAME = "utilities.db";
+  protected static final int DATABASE_VERSION = 5;
 
   public static final String TABLE_HISTORY = "history";
   public static final String TABLE_HIDDEN = "hidden";
@@ -329,7 +332,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
       };
 
   private static final Migration MIGRATION_4_5 =
-      new Migration(4, 5) {
+      new Migration(4, DATABASE_VERSION) {
         @Override
         public void migrate(@NonNull SupportSQLiteDatabase database) {
           String backupTable = TEMP_TABLE_PREFIX + TABLE_BOOKMARKS;
@@ -378,7 +381,7 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
 
   protected abstract SftpEntryDao sftpEntryDao();
 
-  public static final UtilitiesDatabase initialize(@NonNull Context context) {
+  public static UtilitiesDatabase initialize(@NonNull Context context) {
     return Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
         .allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)

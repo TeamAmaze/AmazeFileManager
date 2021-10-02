@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.database;
 
+import static com.amaze.filemanager.database.ExplorerDatabase.DATABASE_VERSION;
+
 import com.amaze.filemanager.database.daos.CloudEntryDao;
 import com.amaze.filemanager.database.daos.EncryptedEntryDao;
 import com.amaze.filemanager.database.daos.SortDao;
@@ -46,11 +48,11 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
  */
 @Database(
     entities = {Tab.class, Sort.class, EncryptedEntry.class, CloudEntry.class},
-    version = 7)
+    version = DATABASE_VERSION)
 public abstract class ExplorerDatabase extends RoomDatabase {
 
   private static final String DATABASE_NAME = "explorer.db";
-  private static final int DATABASE_VERSION = 7;
+  protected static final int DATABASE_VERSION = 8;
 
   public static final String TABLE_TAB = "tab";
   public static final String TABLE_CLOUD_PERSIST = "cloud";
@@ -250,6 +252,21 @@ public abstract class ExplorerDatabase extends RoomDatabase {
         }
       };
 
+  static final Migration MIGRATION_7_8 =
+      new Migration(7, DATABASE_VERSION) {
+        @Override
+        public void migrate(@NonNull SupportSQLiteDatabase database) {
+          database.execSQL(
+              "UPDATE "
+                  + TABLE_CLOUD_PERSIST
+                  + " SET "
+                  + COLUMN_CLOUD_SERVICE
+                  + " = "
+                  + COLUMN_CLOUD_SERVICE
+                  + "+1");
+        }
+      };
+
   protected abstract TabDao tabDao();
 
   protected abstract SortDao sortDao();
@@ -266,6 +283,7 @@ public abstract class ExplorerDatabase extends RoomDatabase {
         .addMigrations(MIGRATION_4_5)
         .addMigrations(MIGRATION_5_6)
         .addMigrations(MIGRATION_6_7)
+        .addMigrations(MIGRATION_7_8)
         .allowMainThreadQueries()
         .build();
   }
