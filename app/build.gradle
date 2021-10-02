@@ -28,7 +28,7 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 29
-        versionCode 97
+        versionCode 98
         versionName "3.7.0"
         multiDexEnabled true
 
