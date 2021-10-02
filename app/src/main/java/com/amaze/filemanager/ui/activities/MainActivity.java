@@ -1878,25 +1878,23 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-    Uri uri = Uri.parse(path);
-    String userinfo = uri.getUserInfo();
+    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(path);
+
     Bundle bundle = new Bundle();
     bundle.putString(ARG_NAME, name);
-    bundle.putString(ARG_ADDRESS, uri.getHost());
-    bundle.putInt(ARG_PORT, uri.getPort());
-    if (!TextUtils.isEmpty(uri.getPath())) {
-      bundle.putString(ARG_DEFAULT_PATH, uri.getPath());
+    bundle.putString(ARG_ADDRESS, connInfo.getHost());
+    bundle.putInt(ARG_PORT, connInfo.getPort());
+    if (!TextUtils.isEmpty(connInfo.getDefaultPath())) {
+      bundle.putString(ARG_DEFAULT_PATH, connInfo.getDefaultPath());
     }
-    bundle.putString(
-        ARG_USERNAME,
-        userinfo.indexOf(':') > 0 ? userinfo.substring(0, userinfo.indexOf(':')) : userinfo);
+    bundle.putString(ARG_USERNAME, connInfo.getUsername());
 
-    if (userinfo.indexOf(':') < 0) {
+    if (connInfo.getPassword() == null) {
       bundle.putBoolean(ARG_HAS_PASSWORD, false);
       bundle.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
     } else {
       bundle.putBoolean(ARG_HAS_PASSWORD, true);
-      bundle.putString(ARG_PASSWORD, userinfo.substring(userinfo.indexOf(':') + 1));
+      bundle.putString(ARG_PASSWORD, connInfo.getPassword());
     }
     bundle.putBoolean(ARG_EDIT, edit);
     sftpConnectDialog.setArguments(bundle);

@@ -48,6 +48,7 @@ import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.Statvfs;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
@@ -987,8 +988,18 @@ public class HybridFile {
   }
 
   public static String parseAndFormatUriForDisplay(@NonNull String uriString) {
-    Uri uri = Uri.parse(uriString);
-    return String.format("%s://%s%s", uri.getScheme(), uri.getHost(), uri.getPath());
+    if (uriString.startsWith(SSH_URI_PREFIX)) {
+      SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(uriString);
+      return connInfo.toString();
+    } else {
+      Uri uri = Uri.parse(uriString);
+      return formatUriForDisplayInternal(uri.getScheme(), uri.getHost(), uri.getPath());
+    }
+  }
+
+  private static String formatUriForDisplayInternal(
+      @NonNull String scheme, @NonNull String host, @NonNull String path) {
+    return String.format("%s://%s%s", scheme, host, path);
   }
 
   /**

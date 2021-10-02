@@ -102,7 +102,9 @@ public class ShadowCryptUtilTest {
         .atMost(10, TimeUnit.SECONDS)
         .until(
             () -> {
-              assertEquals(fingerprint, utilsHandler.getSshHostKey(url));
+              assertEquals(
+                  fingerprint,
+                  utilsHandler.getSshHostKey(SshClientUtils.encryptSshPathAsNecessary(url)));
               utilitiesDatabase.close();
               return true;
             });

@@ -72,13 +72,22 @@ public interface SftpEntryDao {
   @Query("SELECT * FROM " + TABLE_SFTP + " WHERE " + COLUMN_NAME + " = :name")
   Single<SftpEntry> findByName(String name);
 
-  @Query("SELECT " + COLUMN_HOST_PUBKEY + " FROM " + TABLE_SFTP + " WHERE PATH = :uri")
+  @Query(
+      "SELECT " + COLUMN_HOST_PUBKEY + " FROM " + TABLE_SFTP + " WHERE " + COLUMN_PATH + " = :uri")
   Single<String> getSshHostKey(String uri);
 
-  @Query("SELECT " + COLUMN_PRIVATE_KEY_NAME + " FROM " + TABLE_SFTP + " WHERE PATH = :uri")
+  @Query(
+      "SELECT "
+          + COLUMN_PRIVATE_KEY_NAME
+          + " FROM "
+          + TABLE_SFTP
+          + " WHERE "
+          + COLUMN_PATH
+          + " = :uri")
   Single<String> getSshAuthPrivateKeyName(String uri);
 
-  @Query("SELECT " + COLUMN_PRIVATE_KEY + " FROM " + TABLE_SFTP + " WHERE PATH = :uri")
+  @Query(
+      "SELECT " + COLUMN_PRIVATE_KEY + " FROM " + TABLE_SFTP + " WHERE " + COLUMN_PATH + " = :uri")
   Single<String> getSshAuthPrivateKey(String uri);
 
   @Query("DELETE FROM " + TABLE_SFTP + " WHERE " + COLUMN_NAME + " = :name")
