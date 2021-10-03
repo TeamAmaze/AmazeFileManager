@@ -22,6 +22,10 @@ package com.amaze.filemanager.filesystem
 
 import android.net.Uri
 
+/**
+ * If any of the members is null at time of usage it means that the
+ * value failed to be obtained
+ */
 object SafRootHolder {
     var uriRoot: Uri? = null
         @JvmStatic set

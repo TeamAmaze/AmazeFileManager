@@ -69,6 +69,8 @@ import jcifs.smb.SmbFile;
 public class LoadFilesListTask
     extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
+  private static final String TAG = LoadFilesListTask.class.getSimpleName();
+
   private String path;
   private WeakReference<MainFragment> mainFragmentReference;
   private WeakReference<Context> context;
@@ -563,6 +565,14 @@ public class LoadFilesListTask
     final Context context = this.context.get();
 
     if (context == null) {
+      cancel(true);
+      return;
+    }
+
+    final Uri uriRoot = SafRootHolder.getUriRoot();
+
+    if (uriRoot == null) {
+      Log.e(TAG, "Error getting Uri Root");
       cancel(true);
       return;
     }

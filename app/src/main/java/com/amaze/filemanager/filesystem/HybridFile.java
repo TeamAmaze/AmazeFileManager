@@ -227,11 +227,7 @@ public class HybridFile {
   @Nullable
   public DocumentFile getDocumentFile(boolean createRecursive) {
     return OTGUtil.getDocumentFile(
-        path,
-        SafRootHolder.getUriRoot(),
-        AppConfig.getInstance(),
-        OpenMode.DOCUMENT_FILE,
-        createRecursive);
+        path, AppConfig.getInstance(), OpenMode.DOCUMENT_FILE, createRecursive);
   }
 
   HybridFileParcelable generateBaseFileFromParent() {
@@ -382,9 +378,7 @@ public class HybridFile {
         if (!Utils.isNullOrEmpty(name)) {
           return name;
         }
-        return OTGUtil.getDocumentFile(
-                path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
-            .getName();
+        return OTGUtil.getDocumentFile(path, context, OpenMode.DOCUMENT_FILE, false).getName();
       default:
         if (path.isEmpty()) {
           return "";
@@ -676,28 +670,33 @@ public class HybridFile {
 
   /** Gets usable i.e. free space of a device */
   public long getUsableSpace() {
-    long size = 0L;
     switch (mode) {
       case SMB:
         try {
           SmbFile smbFile = getSmbFile();
-          size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
+          if (smbFile == null) {
+            return 0;
+          }
+          return smbFile.getDiskFreeSpace();
         } catch (SmbException e) {
-          size = 0L;
-          e.printStackTrace();
+          Log.e(TAG, "Failed to get free space in device for SMB", e);
+          return 0L;
         }
-        break;
       case FILE:
       case ROOT:
-        size = getFile().getUsableSpace();
-        break;
+        final File file = getFile();
+
+        if (file == null) {
+          return 0;
+        }
+
+        return file.getUsableSpace();
       case DROPBOX:
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
         SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAllocation();
-        size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
-        break;
+        return spaceAllocation.getTotal() - spaceAllocation.getUsed();
       case SFTP:
         final Long returnValue =
             SshClientUtils.<Long>execute(
@@ -727,19 +726,24 @@ public class HybridFile {
 
         if (returnValue == null) {
           Log.e(TAG, "Error obtaining usable space over SFTP");
+          return 0L;
         }
 
-        size = returnValue == null ? 0L : returnValue;
-        break;
+        return returnValue;
       case DOCUMENT_FILE:
-        size =
-            FileProperties.getDeviceStorageRemainingSpace(SafRootHolder.INSTANCE.getVolumeLabel());
-        break;
+        final String volume = SafRootHolder.getVolumeLabel();
+
+        if (volume == null) {
+          return 0;
+        }
+
+        return FileProperties.getDeviceStorageRemainingSpace(volume);
       case OTG:
         // TODO: Get free space from OTG when {@link DocumentFile} API adds support
-        break;
+        return 0;
+      default:
+        return 0;
     }
-    return size;
   }
 
   /** Gets total size of the disk */
@@ -1252,10 +1256,7 @@ public class HybridFile {
       if (isOtgFile()) {
         exists = OTGUtil.getDocumentFile(path, context, false) != null;
       } else if (isDocumentFile()) {
-        exists =
-            OTGUtil.getDocumentFile(
-                    path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
-                != null;
+        exists = OTGUtil.getDocumentFile(path, context, OpenMode.DOCUMENT_FILE, false) != null;
       } else return (exists());
     } catch (Exception e) {
       Log.i(getClass().getSimpleName(), "Failed to find file", e);
@@ -1332,12 +1333,7 @@ public class HybridFile {
     } else if (isDocumentFile()) {
       if (!exists(context)) {
         DocumentFile parentDirectory =
-            OTGUtil.getDocumentFile(
-                getParent(context),
-                SafRootHolder.getUriRoot(),
-                context,
-                OpenMode.DOCUMENT_FILE,
-                true);
+            OTGUtil.getDocumentFile(getParent(context), context, OpenMode.DOCUMENT_FILE, true);
         if (parentDirectory.isDirectory()) {
           parentDirectory.createDirectory(getName(context));
         }

@@ -172,11 +172,7 @@ public class Operations {
           }
           safCreateDirectory.apply(
               OTGUtil.getDocumentFile(
-                  parentFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+                  parentFile.getPath(), context, OpenMode.DOCUMENT_FILE, false));
           return null;
         } else if (file.isDropBoxFile()) {
           CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -383,11 +379,7 @@ public class Operations {
           }
           safCreateFile.apply(
               OTGUtil.getDocumentFile(
-                  parentFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+                  parentFile.getPath(), context, OpenMode.DOCUMENT_FILE, false));
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
@@ -577,12 +569,7 @@ public class Operations {
             return null;
           }
           safRenameFile.apply(
-              OTGUtil.getDocumentFile(
-                  oldFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+              OTGUtil.getDocumentFile(oldFile.getPath(), context, OpenMode.DOCUMENT_FILE, false));
           return null;
         } else {
           File file = new File(oldFile.getPath());
@@ -653,12 +640,7 @@ public class Operations {
     boolean doesFileExist = false;
     try {
       doesFileExist =
-          OTGUtil.getDocumentFile(
-                  newFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false)
+          OTGUtil.getDocumentFile(newFile.getPath(), context, OpenMode.DOCUMENT_FILE, false)
               != null;
     } catch (Exception e) {
       Log.w(Operations.class.getSimpleName(), "Failed to find existing file", e);

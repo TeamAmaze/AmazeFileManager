@@ -875,11 +875,7 @@ public class MainFragment extends Fragment
               case DOCUMENT_FILE:
                 FileUtils.openFile(
                     OTGUtil.getDocumentFile(
-                        layoutElementParcelable.desc,
-                        SafRootHolder.getUriRoot(),
-                        getContext(),
-                        OpenMode.DOCUMENT_FILE,
-                        false),
+                        layoutElementParcelable.desc, getContext(), OpenMode.DOCUMENT_FILE, false),
                     (MainActivity) getActivity(),
                     sharedPref);
                 break;

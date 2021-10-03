@@ -36,6 +36,7 @@ import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
+import com.amaze.filemanager.filesystem.SafRootHolder
 import kotlin.collections.ArrayList
 
 /** Created by Vishal on 27-04-2017.  */
@@ -146,20 +147,18 @@ object OTGUtil {
         context: Context,
         createRecursive: Boolean
     ): DocumentFile? {
-        val rootUriString = SingletonUsbOtg.getInstance().usbOtgRoot
-            ?: throw NullPointerException("USB OTG root not set!")
-
-        return getDocumentFile(path, rootUriString, context, OpenMode.OTG, createRecursive)
+        return getDocumentFile(path, context, OpenMode.OTG, createRecursive)
     }
 
     @JvmStatic
     fun getDocumentFile(
         path: String,
-        rootUri: Uri,
         context: Context,
         openMode: OpenMode,
         createRecursive: Boolean
     ): DocumentFile? {
+        val rootUri = SafRootHolder.uriRoot ?: return null
+
         // start with root of SD card and then parse through document tree.
         var retval = DocumentFile.fromTreeUri(context, rootUri)
         val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {

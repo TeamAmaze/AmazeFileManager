@@ -32,7 +32,6 @@ import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -162,11 +161,7 @@ public class DeleteTask
       case DOCUMENT_FILE:
         documentFile =
             OTGUtil.getDocumentFile(
-                file.getPath(),
-                SafRootHolder.getUriRoot(),
-                applicationContext,
-                OpenMode.DOCUMENT_FILE,
-                false);
+                file.getPath(), applicationContext, OpenMode.DOCUMENT_FILE, false);
         return documentFile.delete();
       case DROPBOX:
       case BOX:

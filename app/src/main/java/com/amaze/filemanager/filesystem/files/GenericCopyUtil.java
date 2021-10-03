@@ -44,7 +44,6 @@ import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MediaStoreHack;
-import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -112,7 +111,6 @@ public class GenericCopyUtil {
             mSourceFile.isDocumentFile()
                 ? OTGUtil.getDocumentFile(
                     mSourceFile.getPath(),
-                    SafRootHolder.getUriRoot(),
                     mContext,
                     mSourceFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
                     false)
@@ -177,7 +175,6 @@ public class GenericCopyUtil {
             mTargetFile.isDocumentFile()
                 ? OTGUtil.getDocumentFile(
                     mTargetFile.getPath(),
-                    SafRootHolder.getUriRoot(),
                     mContext,
                     mTargetFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
                     true)
