@@ -225,7 +225,7 @@ object ListFilesCommand : IRootCommand() {
                         }
                     }
                 } else {
-                    RootHelper.isDirectory(this.link, 0).let {
+                    RootHelper.isDirectory(this.link).let {
                         this.isDirectory = it
                     }
                 }

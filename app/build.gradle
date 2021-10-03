@@ -42,6 +42,11 @@ android {
                               "room.expandProjection": "true"]
             }
         }
+        externalNativeBuild {
+            cmake {
+                cFlags '-std=c11'
+            }
+        }
     }
 
     signingConfigs {
@@ -104,6 +109,12 @@ android {
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
+        }
+    }
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.10.2'
         }
     }
 }

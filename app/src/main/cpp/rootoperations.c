@@ -1,0 +1,29 @@
+#include <jni.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdbool.h>
+
+jboolean JNICALL Java_com_amaze_filemanager_filesystem_RootHelper_isDirectory(
+        JNIEnv * env,
+        jobject thiz,
+        jstring path
+        ) {
+    struct stat path_stat;
+    const char * cPath = (*env)->GetStringUTFChars(env, path, NULL);
+    int returnCode = stat(cPath, &path_stat);
+    (*env)->ReleaseStringUTFChars(env, path, cPath);
+
+    if(returnCode == -1) {
+        switch (errno) {
+            case ELOOP:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    //This follows links
+    return S_ISDIR(path_stat.st_mode);
+}

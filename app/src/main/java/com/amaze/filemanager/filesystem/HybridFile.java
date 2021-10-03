@@ -485,12 +485,7 @@ public class HybridFile {
         isDirectory = getFile().isDirectory();
         break;
       case ROOT:
-        try {
-          isDirectory = RootHelper.isDirectory(path, 5);
-        } catch (ShellNotRunningException e) {
-          e.printStackTrace();
-          isDirectory = false;
-        }
+        isDirectory = RootHelper.isDirectory(path);
         break;
       case DOCUMENT_FILE:
         return getDocumentFile(false).isDirectory();
@@ -552,12 +547,7 @@ public class HybridFile {
         isDirectory = getFile().isDirectory();
         break;
       case ROOT:
-        try {
-          isDirectory = RootHelper.isDirectory(path, 5);
-        } catch (ShellNotRunningException e) {
-          e.printStackTrace();
-          isDirectory = false;
-        }
+        isDirectory = RootHelper.isDirectory(path);
         break;
       case DOCUMENT_FILE:
         isDirectory = getDocumentFile(false).isDirectory();
