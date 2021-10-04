@@ -17,17 +17,18 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager
 
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import com.bumptech.glide.module.AppGlideModule
-import com.bumptech.glide.Glide
 import com.amaze.filemanager.adapters.glide.apkimage.ApkImageModelLoaderFactory
 import com.amaze.filemanager.adapters.glide.cloudicon.CloudIconModelFactory
+import com.bumptech.glide.Glide
 import com.bumptech.glide.Registry
 import com.bumptech.glide.annotation.GlideModule
+import com.bumptech.glide.module.AppGlideModule
 
 /** Ensures that Glide's generated API is created.  */
 @GlideModule

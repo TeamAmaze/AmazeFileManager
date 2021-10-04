@@ -41,7 +41,8 @@ public class CloudIconModelLoader implements ModelLoader<String, Bitmap> {
 
   @Nullable
   @Override
-  public LoadData<Bitmap> buildLoadData(@NonNull String s, int width, int height, @NonNull Options options) {
+  public LoadData<Bitmap> buildLoadData(
+      @NonNull String s, int width, int height, @NonNull Options options) {
     // we put key as current time since we're not disk caching the images for cloud,
     // as there is no way to differentiate input streams returned by different cloud services
     // for future instances and they don't expose concrete paths either

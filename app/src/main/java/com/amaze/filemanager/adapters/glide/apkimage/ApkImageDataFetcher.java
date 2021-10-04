@@ -43,7 +43,8 @@ public class ApkImageDataFetcher implements DataFetcher<Drawable> {
   }
 
   @Override
-  public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super Drawable> callback) {
+  public void loadData(
+      @NonNull Priority priority, @NonNull DataCallback<? super Drawable> callback) {
     PackageInfo pi = context.getPackageManager().getPackageArchiveInfo(model, 0);
     Drawable apkIcon;
     if (pi != null) {

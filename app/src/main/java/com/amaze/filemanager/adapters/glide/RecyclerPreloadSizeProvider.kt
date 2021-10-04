@@ -17,13 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.adapters.glide
 
 import android.util.SparseArray
 import android.view.View
+import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.glide.RecyclerPreloadSizeProvider.RecyclerPreloadSizeProviderCallback
 import com.bumptech.glide.ListPreloader.PreloadSizeProvider
-import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.bumptech.glide.request.target.SizeReadyCallback
 import com.bumptech.glide.request.target.ViewTarget
 import com.bumptech.glide.request.transition.Transition
@@ -43,10 +44,10 @@ class RecyclerPreloadSizeProvider(private val callback: RecyclerPreloadSizeProvi
      * you are done.
      *
      * @param id a unique number for each view loaded to this object
-     * @param v the ciew to load
+     * @param v the view to load
      */
     fun addView(id: Int, v: View) {
-        if (!isAdditionClosed && viewSizes[id, null] != null){
+        if (!isAdditionClosed && viewSizes[id, null] != null) {
             return
         }
 
@@ -77,13 +78,16 @@ class RecyclerPreloadSizeProvider(private val callback: RecyclerPreloadSizeProvi
         fun getCorrectView(item: IconDataParcelable?, adapterPosition: Int): Int
     }
 
-    private class SizeViewTarget(view: View, callback: SizeReadyCallback) : ViewTarget<View?, Any>(view) {
-        override fun onResourceReady(resource: Any, transition: Transition<in Any>?) {
-            // Do nothing
-        }
-
+    private class SizeViewTarget(
+        view: View,
+        callback: SizeReadyCallback
+    ) : ViewTarget<View?, Any>(view) {
         init {
             getSize(callback)
+        }
+
+        override fun onResourceReady(resource: Any, transition: Transition<in Any>?) {
+            // Do nothing
         }
     }
 }

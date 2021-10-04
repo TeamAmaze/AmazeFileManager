@@ -40,7 +40,8 @@ public class ApkImageModelLoader implements ModelLoader<String, Drawable> {
 
   @Nullable
   @Override
-  public LoadData<Drawable> buildLoadData(@NonNull String s, int width, int height, @NonNull Options options) {
+  public LoadData<Drawable> buildLoadData(
+      @NonNull String s, int width, int height, @NonNull Options options) {
     return new LoadData<>(new ObjectKey(s), new ApkImageDataFetcher(context, s));
   }
 

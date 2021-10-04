@@ -17,19 +17,22 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.adapters.glide
 
 import android.graphics.drawable.Drawable
 import androidx.fragment.app.Fragment
+import com.amaze.filemanager.GlideApp
+import com.amaze.filemanager.GlideRequest
 import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.bumptech.glide.ListPreloader.PreloadModelProvider
-import com.amaze.filemanager.GlideRequest
 import com.bumptech.glide.RequestBuilder
 import com.bumptech.glide.load.engine.DiskCacheStrategy
-import com.amaze.filemanager.GlideApp
 
 class RecyclerPreloadModelProvider(
-    fragment: Fragment, private val urisToLoad: List<IconDataParcelable>, isCircled: Boolean
+    fragment: Fragment,
+    private val urisToLoad: List<IconDataParcelable>,
+    isCircled: Boolean
 ) : PreloadModelProvider<IconDataParcelable> {
     private val request: GlideRequest<Drawable>
     init {
@@ -48,8 +51,8 @@ class RecyclerPreloadModelProvider(
     }
 
     override fun getPreloadRequestBuilder(iconData: IconDataParcelable): RequestBuilder<Drawable> {
-        val requestBuilder
-            = when (iconData.type) {
+        val requestBuilder =
+            when (iconData.type) {
                 IconDataParcelable.IMAGE_FROMFILE -> {
                     request.load(iconData.path)
                 }
@@ -62,6 +65,4 @@ class RecyclerPreloadModelProvider(
             }
         return requestBuilder
     }
-
-
 }

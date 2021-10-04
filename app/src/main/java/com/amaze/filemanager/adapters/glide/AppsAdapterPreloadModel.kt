@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.adapters.glide
 
 import android.content.Context
@@ -26,11 +27,11 @@ import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.bumptech.glide.ListPreloader.PreloadModelProvider
-import com.amaze.filemanager.GlideRequest
-import com.bumptech.glide.RequestBuilder
 import com.amaze.filemanager.GlideApp
+import com.amaze.filemanager.GlideRequest
 import com.amaze.filemanager.R
+import com.bumptech.glide.ListPreloader.PreloadModelProvider
+import com.bumptech.glide.RequestBuilder
 
 class AppsAdapterPreloadModel(
     f: Fragment,
@@ -74,5 +75,4 @@ class AppsAdapterPreloadModel(
             ContextCompat.getDrawable(context, R.drawable.ic_broken_image_white_24dp)
         }
     }
-
 }
