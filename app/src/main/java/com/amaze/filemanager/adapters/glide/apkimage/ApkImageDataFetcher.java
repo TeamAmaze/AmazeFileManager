@@ -32,11 +32,10 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:12. */
 public class ApkImageDataFetcher implements DataFetcher<Drawable> {
 
-  private Context context;
-  private String model;
+  private final Context context;
+  private final String model;
 
   public ApkImageDataFetcher(Context context, String model) {
     this.context = context;
@@ -44,7 +43,7 @@ public class ApkImageDataFetcher implements DataFetcher<Drawable> {
   }
 
   @Override
-  public void loadData(Priority priority, DataCallback<? super Drawable> callback) {
+  public void loadData(@NonNull Priority priority, @NonNull DataCallback<? super Drawable> callback) {
     PackageInfo pi = context.getPackageManager().getPackageArchiveInfo(model, 0);
     Drawable apkIcon;
     if (pi != null) {

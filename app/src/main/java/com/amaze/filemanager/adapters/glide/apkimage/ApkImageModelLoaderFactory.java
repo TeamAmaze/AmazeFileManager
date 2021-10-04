@@ -27,17 +27,19 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:21. */
+import androidx.annotation.NonNull;
+
 public class ApkImageModelLoaderFactory implements ModelLoaderFactory<String, Drawable> {
 
-  private Context context;
+  private final Context context;
 
   public ApkImageModelLoaderFactory(Context context) {
     this.context = context;
   }
 
+  @NonNull
   @Override
-  public ModelLoader<String, Drawable> build(MultiModelLoaderFactory multiFactory) {
+  public ModelLoader<String, Drawable> build(@NonNull MultiModelLoaderFactory multiFactory) {
     return new ApkImageModelLoader(context);
   }
 
