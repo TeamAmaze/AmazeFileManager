@@ -41,6 +41,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
@@ -485,12 +486,7 @@ public class HybridFile {
         isDirectory = getFile().isDirectory();
         break;
       case ROOT:
-        try {
-          isDirectory = RootHelper.isDirectory(path, 5);
-        } catch (ShellNotRunningException e) {
-          e.printStackTrace();
-          isDirectory = false;
-        }
+        isDirectory = NativeOperations.isDirectory(path);
         break;
       case DOCUMENT_FILE:
         return getDocumentFile(false).isDirectory();
@@ -552,12 +548,7 @@ public class HybridFile {
         isDirectory = getFile().isDirectory();
         break;
       case ROOT:
-        try {
-          isDirectory = RootHelper.isDirectory(path, 5);
-        } catch (ShellNotRunningException e) {
-          e.printStackTrace();
-          isDirectory = false;
-        }
+        isDirectory = NativeOperations.isDirectory(path);
         break;
       case DOCUMENT_FILE:
         isDirectory = getDocumentFile(false).isDirectory();
