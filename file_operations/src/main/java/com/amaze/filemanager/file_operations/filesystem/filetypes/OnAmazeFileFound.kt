@@ -18,15 +18,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils
-
-import com.amaze.filemanager.filesystem.HybridFileParcelable
+package com.amaze.filemanager.file_operations.filesystem.filetypes
 
 /**
  * This allows the caller of a function to know when a file has ben found and deal with it ASAP
  */
-@Deprecated(message = "Replaced with OnAmazeFileFound")
-interface OnFileFound {
+interface OnAmazeFileFound {
     @Suppress("UndocumentedPublicFunction")
-    fun onFileFound(file: HybridFileParcelable)
+    fun onFileFound(file: AmazeFile)
 }
