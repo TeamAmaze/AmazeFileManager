@@ -1357,114 +1357,14 @@ public class MainFragment extends Fragment
   }
 
   public void goBack() {
-    if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
-      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+    final MainFragmentViewModel viewModel = this.mainFragmentViewModel;
+
+    if (viewModel.getOpenMode() == OpenMode.CUSTOM) {
+      loadlist(viewModel.getHome(), false, OpenMode.FILE);
       return;
     }
 
-    HybridFile currentFile =
-        new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
-    if (!mainFragmentViewModel.getResults()) {
-      if (!mainFragmentViewModel.getRetainSearchTask()) {
-        // normal case
-        if (mainFragmentViewModel.getSelection()) {
-          adapter.toggleChecked(false);
-        } else {
-          if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
-            if (mainFragmentViewModel.getSmbPath() != null
-                && !mainFragmentViewModel
-                    .getSmbPath()
-                    .equals(mainFragmentViewModel.getCurrentPath())) {
-              StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
-              if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
-                path.append(
-                    mainFragmentViewModel
-                        .getCurrentPath()
-                        .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
-              loadlist(
-                  path.toString().replace("%3D", "="), true, mainFragmentViewModel.getOpenMode());
-            } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
-          } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
-            if (mainFragmentViewModel.getCurrentPath() != null
-                && !mainFragmentViewModel
-                    .getCurrentPath()
-                    .substring(SSH_URI_PREFIX.length())
-                    .contains("/")) {
-              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
-            } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
-              loadlist(currentFile.getParent(getContext()), true, currentFile.getMode());
-            } else {
-              loadlist(
-                  currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
-            }
-          } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
-              || (mainFragmentViewModel.getHome() != null
-                  && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
-              || mainFragmentViewModel.getIsOnCloud()) {
-            getMainActivity().exit();
-          } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
-            if (!currentFile.getPath().startsWith("content://")) {
-              mainFragmentViewModel.setOpenMode(OpenMode.FILE);
-              currentFile.setMode(OpenMode.FILE);
-              currentFile.setPath(Environment.getExternalStorageDirectory().getAbsolutePath());
-              loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
-            } else {
-              List<String> pathSegments = Uri.parse(currentFile.getPath()).getPathSegments();
-              if (pathSegments.size() < 3) {
-                mainFragmentViewModel.setOpenMode(OpenMode.FILE);
-                String subPath = pathSegments.get(1);
-                currentFile.setMode(OpenMode.FILE);
-                currentFile.setPath(
-                    new File(
-                            Environment.getExternalStorageDirectory(),
-                            subPath.substring(
-                                subPath.lastIndexOf(':') + 1, subPath.lastIndexOf('/')))
-                        .getAbsolutePath());
-                loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
-              } else {
-                loadlist(
-                    currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
-              }
-            }
-
-          } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-            loadlist(
-                currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
-          } else getMainActivity().exit();
-        }
-      } else {
-        // case when we had pressed on an item from search results and wanna go back
-        // leads to resuming the search task
-
-        if (MainActivityHelper.SEARCH_TEXT != null) {
-
-          // starting the search query again :O
-          FragmentManager fm = getMainActivity().getSupportFragmentManager();
-
-          // getting parent path to resume search from there
-          String parentPath =
-              new HybridFile(
-                      mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath())
-                  .getParent(getActivity());
-          // don't fuckin' remove this line, we need to change
-          // the path back to parent on back press
-          mainFragmentViewModel.setCurrentPath(parentPath);
-
-          MainActivityHelper.addSearchFragment(
-              fm,
-              new SearchWorkerFragment(),
-              parentPath,
-              MainActivityHelper.SEARCH_TEXT,
-              mainFragmentViewModel.getOpenMode(),
-              getMainActivity().isRootExplorer(),
-              sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
-              sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
-        } else {
-          loadlist(mainFragmentViewModel.getCurrentPath(), true, OpenMode.UNKNOWN);
-        }
-        mainFragmentViewModel.setRetainSearchTask(false);
-      }
-    } else {
+    if (viewModel.getResults()) {
       // to go back after search list have been popped
       FragmentManager fm = getActivity().getSupportFragmentManager();
       SearchWorkerFragment fragment =
@@ -1474,11 +1374,102 @@ public class MainFragment extends Fragment
           fragment.searchAsyncTask.cancel(true);
         }
       }
-      if (mainFragmentViewModel.getCurrentPath() != null) {
-        loadlist(
-            new File(mainFragmentViewModel.getCurrentPath()).getPath(), true, OpenMode.UNKNOWN);
+      if (viewModel.getCurrentPath() != null) {
+        loadlist(new File(viewModel.getCurrentPath()).getPath(), true, OpenMode.UNKNOWN);
       }
-      mainFragmentViewModel.setResults(false);
+      viewModel.setResults(false);
+      return;
+    }
+
+    if (viewModel.getRetainSearchTask()) {
+      // case when we had pressed on an item from search results and wanna go back
+      // leads to resuming the search task
+
+      if (MainActivityHelper.SEARCH_TEXT != null) {
+
+        // starting the search query again :O
+        FragmentManager fm = getMainActivity().getSupportFragmentManager();
+
+        // getting parent path to resume search from there
+        String parentPath =
+            new HybridFile(viewModel.getOpenMode(), viewModel.getCurrentPath())
+                .getParent(getActivity());
+        // we need to change the path back to parent on back press
+        viewModel.setCurrentPath(parentPath);
+
+        MainActivityHelper.addSearchFragment(
+            fm,
+            new SearchWorkerFragment(),
+            parentPath,
+            MainActivityHelper.SEARCH_TEXT,
+            viewModel.getOpenMode(),
+            getMainActivity().isRootExplorer(),
+            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
+            sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
+      } else {
+        loadlist(viewModel.getCurrentPath(), true, OpenMode.UNKNOWN);
+      }
+      viewModel.setRetainSearchTask(false);
+
+      return;
+    }
+
+    // normal case
+    if (viewModel.getSelection()) {
+      adapter.toggleChecked(false);
+      return;
+    }
+
+    HybridFile currentFile = new HybridFile(viewModel.getOpenMode(), viewModel.getCurrentPath());
+    if (OpenMode.SMB.equals(viewModel.getOpenMode())) {
+      if (viewModel.getSmbPath() != null
+          && !viewModel.getSmbPath().equals(viewModel.getCurrentPath())) {
+        StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+        if (viewModel.getCurrentPath().indexOf('?') > 0)
+          path.append(
+              viewModel.getCurrentPath().substring(viewModel.getCurrentPath().indexOf('?')));
+        loadlist(path.toString().replace("%3D", "="), true, viewModel.getOpenMode());
+      } else {
+        loadlist(viewModel.getHome(), false, OpenMode.FILE);
+      }
+    } else if (OpenMode.SFTP.equals(viewModel.getOpenMode())) {
+      if (viewModel.getCurrentPath() != null
+          && !viewModel.getCurrentPath().substring(SSH_URI_PREFIX.length()).contains("/")) {
+        loadlist(viewModel.getHome(), false, OpenMode.FILE);
+      } else if (OpenMode.DOCUMENT_FILE.equals(viewModel.getOpenMode())) {
+        loadlist(currentFile.getParent(getContext()), true, currentFile.getMode());
+      } else {
+        loadlist(currentFile.getParent(getContext()), true, viewModel.getOpenMode());
+      }
+    } else if (("/").equals(viewModel.getCurrentPath())
+        || (viewModel.getHome() != null && viewModel.getHome().equals(viewModel.getCurrentPath()))
+        || viewModel.getIsOnCloud()) {
+      getMainActivity().exit();
+    } else if (OpenMode.DOCUMENT_FILE.equals(viewModel.getOpenMode())) {
+      if (!currentFile.getPath().startsWith("content://")) {
+        viewModel.setOpenMode(OpenMode.FILE);
+        currentFile.setMode(OpenMode.FILE);
+        currentFile.setPath(Environment.getExternalStorageDirectory().getAbsolutePath());
+        loadlist(currentFile.getPath(), false, viewModel.getOpenMode());
+      } else {
+        List<String> pathSegments = Uri.parse(currentFile.getPath()).getPathSegments();
+        if (pathSegments.size() < 3) {
+          viewModel.setOpenMode(OpenMode.FILE);
+          String subPath = pathSegments.get(1);
+          String path = subPath.substring(subPath.lastIndexOf(':') + 1, subPath.lastIndexOf('/'));
+          String absolutePath =
+              new File(Environment.getExternalStorageDirectory(), path).getAbsolutePath();
+          currentFile.setMode(OpenMode.FILE);
+          currentFile.setPath(absolutePath);
+          loadlist(currentFile.getPath(), false, viewModel.getOpenMode());
+        } else {
+          loadlist(currentFile.getParent(getContext()), true, viewModel.getOpenMode());
+        }
+      }
+    } else if (FileUtils.canGoBack(getContext(), currentFile)) {
+      loadlist(currentFile.getParent(getContext()), true, viewModel.getOpenMode());
+    } else {
+      getMainActivity().exit();
     }
   }
 
