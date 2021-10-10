@@ -55,10 +55,6 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
     this.isBottomSheet = isBottomSheet;
   }
 
-  public void setItemList(List<String> items) {
-    this.items = items;
-  }
-
   public void addItem(String item) {
     if (items == null) {
       items = new ArrayList<>();
