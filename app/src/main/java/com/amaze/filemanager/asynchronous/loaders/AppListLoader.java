@@ -36,7 +36,6 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.text.format.Formatter;
 
-import androidx.core.util.Pair;
 import androidx.loader.content.AsyncTaskLoader;
 
 /**
@@ -44,11 +43,11 @@ import androidx.loader.content.AsyncTaskLoader;
  *
  * <p>Class loads all the packages installed
  */
-public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
+public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
 
   private PackageManager packageManager;
   private PackageReceiver packageReceiver;
-  private AppsDataPair mApps;
+  private List<AppDataParcelable> mApps;
   private final int sortBy;
   private final boolean isAscending;
 
@@ -66,15 +65,14 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
   }
 
   @Override
-  public AppsDataPair loadInBackground() {
+  public List<AppDataParcelable> loadInBackground() {
     List<ApplicationInfo> apps =
         packageManager.getInstalledApplications(
             PackageManager.MATCH_UNINSTALLED_PACKAGES
                 | PackageManager.MATCH_DISABLED_UNTIL_USED_COMPONENTS);
 
-    if (apps == null) return new AppsDataPair(Collections.emptyList(), Collections.emptyList());
-
-    mApps = new AppsDataPair(new ArrayList<>(apps.size()), new ArrayList<>(apps.size()));
+    if (apps == null) return Collections.emptyList();
+    mApps = new ArrayList<>(apps.size());
     PackageInfo androidInfo = null;
     try {
       androidInfo = packageManager.getPackageInfo("android", PackageManager.GET_SIGNATURES);
@@ -110,27 +108,22 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
               isSystemApp,
               null);
 
-      mApps.first.add(elem);
+      mApps.add(elem);
     }
 
-    Collections.sort(mApps.first, new AppDataSorter(sortBy, isAscending));
-
-    for (AppDataParcelable p : mApps.first) {
-      mApps.second.add(p.getPath());
-    }
-
+    Collections.sort(mApps, new AppDataSorter(sortBy, isAscending));
     return mApps;
   }
 
   @Override
-  public void deliverResult(AppsDataPair data) {
+  public void deliverResult(List<AppDataParcelable> data) {
     if (isReset()) {
 
       if (data != null) onReleaseResources(data); // TODO onReleaseResources() is empty
     }
 
     // preserving old data for it to be closed
-    AppsDataPair oldData = mApps;
+    List<AppDataParcelable> oldData = mApps;
     mApps = data;
     if (isStarted()) {
       // loader has been started, if we have data, return immediately
@@ -168,7 +161,7 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
   }
 
   @Override
-  public void onCanceled(AppsDataPair data) {
+  public void onCanceled(List<AppDataParcelable> data) {
     super.onCanceled(data);
 
     onReleaseResources(data); // TODO onReleaseResources() is empty
@@ -197,7 +190,7 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
 
   /** We would want to release resources here List is nothing we would want to close */
   // TODO do something
-  private void onReleaseResources(AppsDataPair layoutElementList) {}
+  private void onReleaseResources(List<AppDataParcelable> layoutElementList) {}
 
   /**
    * Check if an App is under /system or has been installed as an update to a built-in system
@@ -215,19 +208,5 @@ public class AppListLoader extends AsyncTaskLoader<AppListLoader.AppsDataPair> {
         && piSys != null
         && piApp.signatures != null
         && piSys.signatures[0].equals(piApp.signatures[0]));
-  }
-
-  /** typedef Pair<List<AppDataParcelable>, List<String>> AppsDataPair */
-  public static class AppsDataPair extends Pair<List<AppDataParcelable>, List<String>> {
-
-    /**
-     * Constructor for a Pair.
-     *
-     * @param first the first object in the Pair
-     * @param second the second object in the pair
-     */
-    public AppsDataPair(List<AppDataParcelable> first, List<String> second) {
-      super(first, second);
-    }
   }
 }

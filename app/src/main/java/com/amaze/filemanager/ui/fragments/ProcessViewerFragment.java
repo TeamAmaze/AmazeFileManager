@@ -148,7 +148,7 @@ public class ProcessViewerFragment extends Fragment {
 
     setRetainInstance(true);
     mainActivity.getAppbar().setTitle(R.string.process_viewer);
-    mainActivity.getFAB().hide();
+    mainActivity.hideFab();
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
