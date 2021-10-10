@@ -57,8 +57,9 @@ object ListFilesCommand : IRootCommand() {
             result.first.forEach {
                 if (!it.contains("Permission denied")) {
                     parseStringForHybridFile(
-                        it, path,
-                        !result.second
+                        rawFile = it,
+                        path = path,
+                        isStat = !result.second
                     )
                         ?.let(onFileFoundCallback)
                 }
@@ -101,40 +102,40 @@ object ListFilesCommand : IRootCommand() {
 
             val command = "stat -c '%A %h %G %U %B %Y %N' " +
                 "$appendedPath*" + (if (showHidden) " $appendedPath.* " else "")
-            return if (!retryWithLs &&
-                !PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
+            val enforceLegacyFileListing: Boolean =
+                PreferenceManager.getDefaultSharedPreferences(AppConfig.getInstance())
                     .getBoolean(
-                            PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING,
-                            false
-                        )
-            ) {
-                Log.i(javaClass.simpleName, "Using stat for list parsing")
+                        PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING,
+                        false
+                    )
+            return if (!retryWithLs && !enforceLegacyFileListing) {
+                Log.i(TAG, "Using stat for list parsing")
                 Pair(
                     first = runShellCommandToList(command).map {
                         it.replace(appendedPath, "")
                     },
-                    second = retryWithLs
+                    second = enforceLegacyFileListing
                 )
             } else {
-                Log.i(javaClass.simpleName, "Using ls for list parsing")
+                Log.i(TAG, "Using ls for list parsing")
                 Pair(
                     first = runShellCommandToList(
                         "ls -l " + (if (showHidden) "-a " else "") +
                             "\"$sanitizedPath\""
                     ),
-                    second = retryWithLs
+                    second = enforceLegacyFileListing
                 )
             }
         } catch (invalidCommand: ShellCommandInvalidException) {
-            Log.w(javaClass.simpleName, "Command not found - ${invalidCommand.message}")
+            Log.w(TAG, "Command not found - ${invalidCommand.message}")
             return if (retryWithLs) {
-                Pair(first = ArrayList(), second = true)
+                Pair(first = emptyList(), second = true)
             } else {
                 executeRootCommand(path, showHidden, true)
             }
         } catch (exception: ShellNotRunningException) {
             exception.printStackTrace()
-            return Pair(first = ArrayList(), second = false)
+            return Pair(first = emptyList(), second = false)
         }
     }
 
@@ -234,4 +235,6 @@ object ListFilesCommand : IRootCommand() {
             }
         }
     }
+
+    data class ExecuteRootCommandResult(val lines: List<String>, val forcedLs: Boolean)
 }
