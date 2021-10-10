@@ -44,12 +44,16 @@ class SpecialViewHolder(
     companion object {
         const val HEADER_FILES = 0
         const val HEADER_FOLDERS = 1
+        const val HEADER_SYSTEM_APP = 2
+        const val HEADER_THIRD_PARTY_APP = 3
     }
 
     init {
         when (type) {
             HEADER_FILES -> txtTitle.setText(R.string.files)
             HEADER_FOLDERS -> txtTitle.setText(R.string.folders)
+            HEADER_SYSTEM_APP -> txtTitle.setText(R.string.system_apps)
+            HEADER_THIRD_PARTY_APP -> txtTitle.setText(R.string.third_party_apps)
             else -> throw IllegalStateException(": $type")
         }
 

@@ -480,7 +480,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
     override fun onResume() {
         super.onResume()
-        requireMainActivity().fab.hide()
+        requireMainActivity().hideFab()
         val intent = Intent(activity, ExtractService::class.java)
         requireActivity().bindService(intent, mServiceConnection, 0)
     }
