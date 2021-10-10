@@ -69,7 +69,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class AppsListFragment extends Fragment
-    implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair>,
+    implements LoaderManager.LoaderCallbacks<List<AppDataParcelable>>,
         AdjustListViewForTv<AppHolder> {
 
   public static final int ID_LOADER_APP_LIST = 0;
@@ -126,7 +126,13 @@ public class AppsListFragment extends Fragment
     fastScroller = rootView.findViewById(R.id.fastscroll);
     fastScroller.setPressedHandleColor(mainActivity.getAccent());
     fastScroller.setRecyclerView(getRecyclerView(), 1);
-
+    mainActivity
+        .getAppbar()
+        .getAppbarLayout()
+        .addOnOffsetChangedListener(
+            (appBarLayout, verticalOffset) -> {
+              fastScroller.updateHandlePosition(verticalOffset, 112);
+            });
     LoaderManager.getInstance(this).initLoader(ID_LOADER_APP_LIST, null, this);
   }
 
@@ -240,22 +246,21 @@ public class AppsListFragment extends Fragment
 
   @NonNull
   @Override
-  public Loader<AppListLoader.AppsDataPair> onCreateLoader(int id, Bundle args) {
+  public Loader<List<AppDataParcelable>> onCreateLoader(int id, Bundle args) {
     return new AppListLoader(getContext(), sortby, isAscending);
   }
 
   @Override
   public void onLoadFinished(
-      @NonNull Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
+      @NonNull Loader<List<AppDataParcelable>> loader, List<AppDataParcelable> data) {
     getSpinner().setVisibility(View.GONE);
-    if (data.first.isEmpty()) {
+    if (data.isEmpty()) {
       getRecyclerView().setVisibility(View.GONE);
       rootView.findViewById(R.id.empty_text_view).setVisibility(View.VISIBLE);
     } else {
-      modelProvider.setItemList(data.second);
-      appDataParcelableList = new ArrayList<>(data.first);
+      appDataParcelableList = new ArrayList<>(data);
       List<AppDataParcelable> adapterList = new ArrayList<>();
-      for (AppDataParcelable appDataParcelable : data.first) {
+      for (AppDataParcelable appDataParcelable : data) {
         if (!showSystemApps && appDataParcelable.isSystemApp()) {
           continue;
         }
@@ -268,7 +273,7 @@ public class AppsListFragment extends Fragment
   }
 
   @Override
-  public void onLoaderReset(@NonNull Loader<AppListLoader.AppsDataPair> loader) {
+  public void onLoaderReset(@NonNull Loader<List<AppDataParcelable>> loader) {
     adapter.setData(Collections.emptyList(), true);
   }
 

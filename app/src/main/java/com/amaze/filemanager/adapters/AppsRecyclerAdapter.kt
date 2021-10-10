@@ -88,14 +88,18 @@ class AppsRecyclerAdapter(
             appDataParcelableList.forEach {
                 if (!isBottomSheet && it.isSystemApp && !headerFlags[0]) {
                     value.add(ListItem(TYPE_HEADER_SYSTEM))
+                    modelProvider.addItem("")
                     headerFlags[0] = true
                 } else if (!isBottomSheet && !it.isSystemApp && !headerFlags[1]) {
                     value.add(ListItem(TYPE_HEADER_THIRD_PARTY))
+                    modelProvider.addItem("")
                     headerFlags[1] = true
                 }
+                modelProvider.addItem(it.path)
                 value.add(ListItem(it))
             }
             if (!isBottomSheet) {
+                modelProvider.addItem("")
                 value.add(ListItem(EMPTY_LAST_ITEM))
             }
             field = value
@@ -135,12 +139,11 @@ class AppsRecyclerAdapter(
             }
             EMPTY_LAST_ITEM -> {
                 view.minimumHeight =
-                    (fragment.requireActivity().resources.getDimension(R.dimen.fab_height) +
+                    (
+                        fragment.requireActivity().resources.getDimension(R.dimen.fab_height) +
                             fragment.requireContext().resources
                                 .getDimension(R.dimen.fab_margin)
                         ).roundToInt()
-                view.visibility = View.VISIBLE
-                view.isFocusable = true
                 return EmptyViewHolder(view)
             }
             else -> {
