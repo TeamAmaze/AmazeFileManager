@@ -25,7 +25,6 @@ import android.os.Build
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.utils.OTGUtil
-import jcifs.smb.SmbException
 import java.io.File
 import java.io.IOException
 

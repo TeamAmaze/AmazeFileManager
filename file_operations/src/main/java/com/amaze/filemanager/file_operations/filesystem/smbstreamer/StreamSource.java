@@ -29,8 +29,6 @@ import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStre
 
 import android.webkit.MimeTypeMap;
 
-import jcifs.smb.SmbFile;
-
 public class StreamSource extends RandomAccessStream {
 
   protected String mime;

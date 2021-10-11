@@ -1,26 +1,21 @@
 /*
- * Copyright (c) 1994, 2013, Oracle and/or its affiliates. All rights reserved.
- * DO NOT ALTER OR REMOVE COPYRIGHT NOTICES OR THIS FILE HEADER.
+ * Copyright (C) 2014-2013 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
- * This code is free software; you can redistribute it and/or modify it
- * under the terms of the GNU General Public License version 2 only, as
- * published by the Free Software Foundation.  Oracle designates this
- * particular file as subject to the "Classpath" exception as provided
- * by Oracle in the LICENSE file that accompanied this code.
+ * This file is part of Amaze File Manager.
  *
- * This code is distributed in the hope that it will be useful, but WITHOUT
- * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License
- * version 2 for more details (a copy is included in the LICENSE file that
- * accompanied this code).
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
- * You should have received a copy of the GNU General Public License version
- * 2 along with this work; if not, write to the Free Software Foundation,
- * Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * Please contact Oracle, 500 Oracle Parkway, Redwood Shores, CA 94065 USA
- * or visit www.oracle.com if you need additional information or have any
- * questions.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes;
@@ -29,27 +24,25 @@ package com.amaze.filemanager.file_operations.filesystem.filetypes;
 // @see     java.awt.FileDialog#setFilenameFilter(java.io.FilenameFilter)
 
 /**
- * Instances of classes that implement this interface are used to
- * filter filenames. These instances are used to filter directory
- * listings in the <code>list</code> method of class
- * <code>File</code>, and by the Abstract Window Toolkit's file
- * dialog component.
+ * Instances of classes that implement this interface are used to filter filenames. These instances
+ * are used to filter directory listings in the <code>list</code> method of class <code>File</code>,
+ * and by the Abstract Window Toolkit's file dialog component.
  *
- * @author  Arthur van Hoff
- * @author  Jonathan Payne
- * @see     java.io.File
- * @see     java.io.File#list(java.io.FilenameFilter)
- * @since   JDK1.0
+ * @author Arthur van Hoff
+ * @author Jonathan Payne
+ * @see java.io.File
+ * @see java.io.File#list(java.io.FilenameFilter)
+ * @since JDK1.0
  */
 @FunctionalInterface
 public interface AmazeFilenameFilter {
   /**
    * Tests if a specified file should be included in a file list.
    *
-   * @param   dir    the directory in which the file was found.
-   * @param   name   the name of the file.
-   * @return  <code>true</code> if and only if the name should be
-   * included in the file list; <code>false</code> otherwise.
+   * @param dir the directory in which the file was found.
+   * @param name the name of the file.
+   * @return <code>true</code> if and only if the name should be included in the file list; <code>
+   *     false</code> otherwise.
    */
   boolean accept(AmazeFile dir, String name);
 }

@@ -32,7 +32,11 @@ import jcifs.context.SingletonContext
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-@Deprecated("Replaced with [com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts]")
+@Deprecated(
+    "" +
+        "Replaced with " +
+        "[com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts]"
+)
 object CifsContexts {
 
     const val SMB_URI_PREFIX = "smb://"

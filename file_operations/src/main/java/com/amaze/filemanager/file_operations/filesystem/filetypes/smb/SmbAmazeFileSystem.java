@@ -1,17 +1,27 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.smb;
 
 import static com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.clearBaseContexts;
-
-import android.net.Uri;
-import android.text.TextUtils;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,6 +30,16 @@ import java.net.MalformedURLException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+
+import android.net.Uri;
+import android.text.TextUtils;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import jcifs.SmbConstants;
 import jcifs.smb.NtlmPasswordAuthenticator;
 import jcifs.smb.SmbException;
@@ -27,12 +47,9 @@ import jcifs.smb.SmbFile;
 import kotlin.NotImplementedError;
 
 /**
- * Root is
- * "smb://<user>:<password>@<ip>"
- * or "smb://<ip>"
- * or "smb://<user>:<password>@<ip>/?disableIpcSigningCheck=true"
- * or "smb://<ip>/?disableIpcSigningCheck=true"
- * Relative paths are not supported
+ * Root is "smb://<user>:<password>@<ip>" or "smb://<ip>" or
+ * "smb://<user>:<password>@<ip>/?disableIpcSigningCheck=true" or
+ * "smb://<ip>/?disableIpcSigningCheck=true" Relative paths are not supported
  */
 public class SmbAmazeFileSystem extends AmazeFileSystem {
   public static final String TAG = SmbAmazeFileSystem.class.getSimpleName();
@@ -41,10 +58,12 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   public static final char SEPARATOR = '/';
   public static final String PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck";
 
-  private static final Pattern IPv4_PATTERN = Pattern.compile("[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+");
-  private static final Pattern METADATA_PATTERN = Pattern.compile("([?][a-zA-Z]+=(\")?[a-zA-Z]+(\")?)+");
+  private static final Pattern IPv4_PATTERN =
+      Pattern.compile("[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+");
+  private static final Pattern METADATA_PATTERN =
+      Pattern.compile("([?][a-zA-Z]+=(\")?[a-zA-Z]+(\")?)+");
 
-  private SmbAmazeFileSystem() { }
+  private SmbAmazeFileSystem() {}
 
   public static final SmbAmazeFileSystem INSTANCE = new SmbAmazeFileSystem();
 
@@ -67,7 +86,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   public String normalize(String pathname) {
     try {
       String canonical = canonicalize(pathname);
-      return canonical.substring(0, canonical.length()-1);
+      return canonical.substring(0, canonical.length() - 1);
     } catch (MalformedURLException e) {
       Log.e(TAG, "Error getting canonical path for SMB file", e);
       return null;
@@ -81,7 +100,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     }
 
     Matcher matcherMetadata = METADATA_PATTERN.matcher(path);
-    if(matcherMetadata.find()) {
+    if (matcherMetadata.find()) {
       return matcherMetadata.end();
     }
 
@@ -99,9 +118,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     return prefix + basicUnixResolve(simplePathParent, simplePathChild);
   }
 
-  /**
-   * This makes no sense for SMB
-   */
+  /** This makes no sense for SMB */
   @Override
   public String getDefaultParent() {
     throw new IllegalStateException("There is no default SMB path");
@@ -204,17 +221,17 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   }
 
   private static SmbFile create(String path) throws MalformedURLException {
-    if(!path.endsWith(SEPARATOR + "")) {
+    if (!path.endsWith(SEPARATOR + "")) {
       path = path + SEPARATOR;
     }
     Uri uri = Uri.parse(path);
     boolean disableIpcSigningCheck =
-            Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
+        Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
     String userInfo = uri.getUserInfo();
     return new SmbFile(
-            path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
-            CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-                    .withCredentials(createFrom(userInfo)));
+        path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
+        CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
+            .withCredentials(createFrom(userInfo)));
   }
 
   /**
@@ -227,8 +244,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
    *     for you already
    * @return {@link NtlmPasswordAuthenticator} instance
    */
-  private static @NonNull
-  NtlmPasswordAuthenticator createFrom(@Nullable String userInfo) {
+  private static @NonNull NtlmPasswordAuthenticator createFrom(@Nullable String userInfo) {
     if (!TextUtils.isEmpty(userInfo)) {
       String dom = null;
       String user = null;

@@ -40,15 +40,12 @@ import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.smbstreamer.StreamSource;
 import com.amaze.filemanager.file_operations.shadows.ShadowMultiDex;
 import com.amaze.filemanager.file_operations.shadows.jcifs.smb.ShadowSmbFile;
 
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import jcifs.smb.SmbFile;
 
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(AndroidJUnit4.class)

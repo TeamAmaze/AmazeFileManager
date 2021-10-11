@@ -71,6 +71,7 @@ spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.java'
+        target 'file_operations/src/**/*.java'
         googleJavaFormat('1.7')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
@@ -78,6 +79,7 @@ spotless {
     kotlin {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.kt'
+        target 'file_operations/src/**/*.kt'
         ktlint("0.39.0").userData(['disabled_rules': 'no-wildcard-imports',
                                    'kotlin_imports_layout': 'idea', 'indent_size': '4',
                                    'max_line_length': '100'])
