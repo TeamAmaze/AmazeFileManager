@@ -123,7 +123,6 @@ import kotlin.NotImplementedError;
  * list} methods) are converted to strings by decoding them as UTF-8 byte sequences.
  *
  * @author unascribed
- * @since JDK1.0
  */
 public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
 
@@ -366,23 +365,32 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @throws IllegalArgumentException If the preconditions on the parameter do not hold
    * @see #toURI()
    * @see java.net.URI
-   * @since 1.4
    */
   public AmazeFile(@NonNull URI uri) {
-
     // Check our many preconditions
-    if (!uri.isAbsolute()) throw new IllegalArgumentException("URI is not absolute");
-    if (uri.isOpaque()) throw new IllegalArgumentException("URI is not hierarchical");
+    if (!uri.isAbsolute()) {
+      throw new IllegalArgumentException("URI is not absolute");
+    }
+    if (uri.isOpaque()) {
+      throw new IllegalArgumentException("URI is not hierarchical");
+    }
     String scheme = uri.getScheme();
-    if ((scheme == null) || !scheme.equalsIgnoreCase("file"))
+    if ((scheme == null) || !scheme.equalsIgnoreCase("file")) {
       throw new IllegalArgumentException("URI scheme is not \"file\"");
-    if (uri.getAuthority() != null)
+    }
+    if (uri.getAuthority() != null) {
       throw new IllegalArgumentException("URI has an authority component");
-    if (uri.getFragment() != null)
+    }
+    if (uri.getFragment() != null) {
       throw new IllegalArgumentException("URI has a fragment component");
-    if (uri.getQuery() != null) throw new IllegalArgumentException("URI has a query component");
+    }
+    if (uri.getQuery() != null) {
+      throw new IllegalArgumentException("URI has a query component");
+    }
     String p = uri.getPath();
-    if (p.equals("")) throw new IllegalArgumentException("URI path component is empty");
+    if (p.equals("")) {
+      throw new IllegalArgumentException("URI path component is empty");
+    }
 
     loadFilesystem(uri.toString());
     separatorChar = fs.getSeparator();
@@ -541,7 +549,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     pathname
    * @throws IOException If an I/O error occurs, which is possible because the construction of the
    *     canonical pathname may require filesystem queries
-   * @since JDK1.1
    * @see Path#toRealPath
    */
   @NonNull
@@ -612,7 +619,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see #AmazeFile(java.net.URI)
    * @see java.net.URI
    * @see java.net.URI#toURL()
-   * @since 1.4
    */
   @Deprecated(message = "Left for reference, do not use")
   @NonNull
@@ -623,7 +629,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       if (sp.startsWith("//")) sp = "//" + sp;
       return new URI("file", null, sp, null);
     } catch (URISyntaxException x) {
-      throw new Error(x); // Can't happen
+      throw new RuntimeException(x); // Can't happen
     }
   }
 
@@ -1138,7 +1144,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the operation succeeded. The operation will fail if
    *     the user does not have permission to change the access permissions of this abstract
    *     pathname.
-   * @since 1.6
    */
   public boolean setWritable(boolean writable, boolean ownerOnly) {
     if (isInvalid()) {
@@ -1163,7 +1168,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the operation succeeded. The operation will fail if
    *     the user does not have permission to change the access permissions of this abstract
    *     pathname.
-   * @since 1.6
    */
   public boolean setWritable(boolean writable) {
     return setWritable(writable, true);
@@ -1188,7 +1192,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     the user does not have permission to change the access permissions of this abstract
    *     pathname. If <code>readable</code> is <code>false</code> and the underlying file system
    *     does not implement a read permission, then the operation will fail.
-   * @since 1.6
    */
   public boolean setReadable(boolean readable, boolean ownerOnly) {
     if (isInvalid()) {
@@ -1214,7 +1217,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     the user does not have permission to change the access permissions of this abstract
    *     pathname. If <code>readable</code> is <code>false</code> and the underlying file system
    *     does not implement a read permission, then the operation will fail.
-   * @since 1.6
    */
   public boolean setReadable(boolean readable) {
     return setReadable(readable, true);
@@ -1239,7 +1241,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     the user does not have permission to change the access permissions of this abstract
    *     pathname. If <code>executable</code> is <code>false</code> and the underlying file system
    *     does not implement an execute permission, then the operation will fail.
-   * @since 1.6
    */
   public boolean setExecutable(boolean executable, boolean ownerOnly) {
     if (isInvalid()) {
@@ -1265,7 +1266,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     the user does not have permission to change the access permissions of this abstract
    *     pathname. If <code>executable</code> is <code>false</code> and the underlying file system
    *     does not implement an execute permission, then the operation will fail.
-   * @since 1.6
    */
   public boolean setExecutable(boolean executable) {
     return setExecutable(executable, true);
@@ -1278,7 +1278,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @return <code>true</code> if and only if the abstract pathname exists <em>and</em> the
    *     application is allowed to execute the file
-   * @since 1.6
    */
   public boolean canExecute() {
     if (isInvalid()) {
@@ -1305,7 +1304,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @return The size, in bytes, of the partition or <tt>0L</tt> if this abstract pathname does not
    *     name a partition If there is no way to determine, total space is -1
-   * @since 1.6
    */
   public long getTotalSpace() {
     if (isInvalid()) {
@@ -1332,7 +1330,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return The number of unallocated bytes on the partition or <tt>0L</tt> if the abstract
    *     pathname does not name a partition. This value will be less than or equal to the total file
    *     system size returned by {@link #getTotalSpace}.
-   * @since 1.6
    */
   public long getFreeSpace() {
     if (isInvalid()) {
@@ -1363,7 +1360,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     does not name a partition. On systems where this information is not available, this method
    *     will be equivalent to a call to {@link #getFreeSpace}. If there is no way to determine the
    *     current space left -1 is returned.
-   * @since 1.6
    */
   public long getUsableSpace() {
     if (isInvalid()) {
@@ -1458,17 +1454,19 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @throws IOException If a file could not be created
    */
   @NonNull
-  public AmazeFile createTempFile(String prefix, String suffix, AmazeFile directory)
+  public AmazeFile createTempFile(
+      @NonNull String prefix, @Nullable String suffix, @Nullable AmazeFile directory)
       throws IOException {
-    if (prefix.length() < 3) throw new IllegalArgumentException("Prefix string too short");
-    if (suffix == null) suffix = ".tmp";
+    if (prefix.length() < 3) {
+      throw new IllegalArgumentException("Prefix string too short");
+    }
 
     // Android-changed: Handle java.io.tmpdir changes.
     AmazeFile tmpdir =
         (directory != null) ? directory : new AmazeFile(System.getProperty("java.io.tmpdir", "."));
     AmazeFile f;
     do {
-      f = TempDirectory.generateFile(prefix, suffix, tmpdir);
+      f = TempDirectory.generateFile(prefix, suffix != null ? suffix : ".tmp", tmpdir);
     } while ((fs.getBooleanAttributes(f) & AmazeFileSystem.BA_EXISTS) != 0);
 
     if (!fs.createFileExclusively(f.getPath()))
