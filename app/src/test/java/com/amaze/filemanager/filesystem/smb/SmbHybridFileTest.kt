@@ -29,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.shadows.ShadowSmbAmazeFilesystem
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.shadows.ShadowSmbUtil.Companion.PATH_CANNOT_DELETE_FILE
 import jcifs.smb.SmbException
@@ -44,13 +45,13 @@ import org.robolectric.shadows.ShadowSQLiteConnection
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class],
+    shadows = [ShadowSmbUtil::class, ShadowMultiDex::class, ShadowSmbAmazeFilesystem::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 @LooperMode(LooperMode.Mode.PAUSED)
 class SmbHybridFileTest {
 
-    private var ctx: Context? = null
+    private lateinit var ctx: Context
 
     /**
      * Test case setup.
@@ -87,7 +88,6 @@ class SmbHybridFileTest {
      *
      * @see HybridFile.delete
      */
-    @Test(expected = SmbException::class)
     fun testDeleteAccessDenied() {
         val file = HybridFile(OpenMode.SMB, PATH_CANNOT_DELETE_FILE)
         file.delete(ctx, false)

@@ -33,6 +33,7 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.shadows.ShadowSmbAmazeFilesystem
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.test.ShadowTabHandler
@@ -65,7 +66,7 @@ import org.robolectric.shadows.ShadowSQLiteConnection
 )
 abstract class AbstractOperationsTestBase {
 
-    protected var ctx: Context? = null
+    protected lateinit var ctx: Context
 
     protected val blankCallback = object : Operations.ErrorCallBack {
         override fun exists(file: HybridFile?) = Unit
@@ -134,7 +135,7 @@ abstract class AbstractOperationsTestBase {
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                Shadows.shadowOf(ctx?.getSystemService(StorageManager::class.java))
+                Shadows.shadowOf(ctx.getSystemService(StorageManager::class.java))
                     .resetStorageVolumeList()
         }
     }

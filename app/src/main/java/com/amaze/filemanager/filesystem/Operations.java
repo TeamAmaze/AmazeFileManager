@@ -27,6 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
@@ -43,6 +44,7 @@ import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.SmbUtil;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
@@ -57,6 +59,8 @@ import androidx.arch.core.util.Function;
 import androidx.documentfile.provider.DocumentFile;
 
 import net.schmizz.sshj.sftp.SFTPClient;
+
+import jcifs.smb.SmbException;
 
 public class Operations {
 
@@ -455,8 +459,20 @@ public class Operations {
             return null;
           }
           smbFile.renameTo(smbFile1);
-          if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
-          return null;
+          if (!smbFile.exists() && smbFile1.exists()) {
+            errorCallBack.done(newFile, true);
+            return null;
+          } else {
+            try {
+              ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
+              failedOps.add(new HybridFileParcelable(SmbUtil.create(oldFile.getPath())));
+              context.sendBroadcast(
+                      new Intent(TAG_INTENT_FILTER_GENERAL)
+                              .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
+            } catch (SmbException | MalformedURLException exceptionThrownDuringBuildParcelable) {
+              Log.e(TAG, "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
+            }
+          }
         } else if (oldFile.isSftp()) {
           SshClientUtils.execute(
               new SFtpClientTemplate<Void>(oldFile.getPath()) {
