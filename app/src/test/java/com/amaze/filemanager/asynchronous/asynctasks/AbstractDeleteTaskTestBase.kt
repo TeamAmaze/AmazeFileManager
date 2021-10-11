@@ -34,6 +34,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.shadows.ShadowSmbAmazeFilesystem
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.test.ShadowCryptUtil
 import com.amaze.filemanager.test.ShadowTabHandler
@@ -59,13 +60,14 @@ import org.robolectric.shadows.ShadowToast
         ShadowMultiDex::class,
         ShadowSmbUtil::class,
         ShadowTabHandler::class,
-        ShadowCryptUtil::class
+        ShadowCryptUtil::class,
+        ShadowSmbAmazeFilesystem::class
     ],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 abstract class AbstractDeleteTaskTestBase {
 
-    private var ctx: Context? = null
+    private lateinit var ctx: Context
 
     /**
      * Test case setup.
@@ -90,15 +92,15 @@ abstract class AbstractDeleteTaskTestBase {
     }
 
     protected fun doTestDeleteFileOk(file: HybridFileParcelable) {
-        val task = DeleteTask(ctx!!)
-        val result = task.doInBackground(ArrayList(listOf(file)))
+        val task = DeleteTask(ctx)
+        val result = task.doInBackground(arrayListOf(file))
         assertTrue(result.result)
         assertNull(result.exception)
 
         task.onPostExecute(result)
         shadowOf(Looper.getMainLooper()).idle()
         assertNotNull(ShadowToast.getLatestToast())
-        assertEquals(ctx?.getString(R.string.done), ShadowToast.getTextOfLatestToast())
+        assertEquals(ctx.getString(R.string.done), ShadowToast.getTextOfLatestToast())
     }
 
     protected fun doTestDeleteFileAccessDenied(file: HybridFileParcelable) {
@@ -109,7 +111,7 @@ abstract class AbstractDeleteTaskTestBase {
             shadowOf(Looper.getMainLooper()).idle()
         }.moveToState(Lifecycle.State.STARTED).onActivity { activity ->
 
-            val task = DeleteTask(ctx!!)
+            val task = DeleteTask(ctx)
             val result = task.doInBackground(ArrayList(listOf(file)))
             if (result.result != null) {
                 assertFalse(result.result)
@@ -136,7 +138,7 @@ abstract class AbstractDeleteTaskTestBase {
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                shadowOf(ctx?.getSystemService(StorageManager::class.java))
+                shadowOf(ctx.getSystemService(StorageManager::class.java))
                     .resetStorageVolumeList()
         }
     }

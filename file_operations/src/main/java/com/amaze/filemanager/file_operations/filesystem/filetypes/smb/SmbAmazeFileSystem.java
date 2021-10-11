@@ -63,9 +63,9 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   private static final Pattern METADATA_PATTERN =
       Pattern.compile("([?][a-zA-Z]+=(\")?[a-zA-Z]+(\")?)+");
 
-  private SmbAmazeFileSystem() {}
-
   public static final SmbAmazeFileSystem INSTANCE = new SmbAmazeFileSystem();
+
+  private SmbAmazeFileSystem() {}
 
   @Override
   public boolean isPathOfThisFilesystem(@NonNull String path) {
@@ -197,7 +197,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
         case ACCESS_CHECK_EXISTS:
           SmbFile file = create(f.getPath());
           file.setConnectTimeout(2000);
-          file.exists();
+          return file.exists();
         default:
           throw new IllegalStateException();
       }
@@ -227,11 +227,14 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     return create(f.getPath()).length();
   }
 
-  private static SmbFile create(String path) throws MalformedURLException {
+  public static SmbFile create(String path) throws MalformedURLException {
+    String processedPath;
     if (!path.endsWith(SEPARATOR + "")) {
-      path = path + SEPARATOR;
+      processedPath = path + SEPARATOR;
+    } else {
+      processedPath = path;
     }
-    Uri uri = Uri.parse(path);
+    Uri uri = Uri.parse(processedPath);
     boolean disableIpcSigningCheck =
         Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
     String userInfo = uri.getUserInfo();
@@ -393,6 +396,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
           return create(f.getPath()).getDiskFreeSpace();
         } catch (SmbException | MalformedURLException e) {
           Log.e(TAG, "Error getting SMB file to read free volume space", e);
+          return 0;
         }
       case SPACE_USABLE:
         // TODO: Find total storage space of SMB when JCIFS adds support
