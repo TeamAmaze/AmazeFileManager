@@ -28,8 +28,10 @@ import java.io.OutputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
+import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem;
 
@@ -38,10 +40,10 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import kotlin.Deprecated;
 import kotlin.NotImplementedError;
-import kotlin.random.Random;
 
 // Android-added: Info about UTF-8 usage in filenames.
 /**
@@ -134,38 +136,13 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * This abstract pathname's normalized pathname string. A normalized pathname string uses the
    * default name-separator character and does not contain any duplicate or redundant separators.
    */
-  private final String path;
-
-  /** Enum type that indicates the status of a file path. */
-  private static enum PathStatus {
-    INVALID,
-    CHECKED
-  };
+  @NonNull private final String path;
 
   /** The flag indicating whether the file path is invalid. */
   private transient PathStatus status = null;
 
-  /**
-   * Check if the file has an invalid path. Currently, the inspection of a file path is very
-   * limited, and it only covers Nul character check. Returning true means the path is definitely
-   * invalid/garbage. But returning false does not guarantee that the path is valid.
-   *
-   * @return true if the file path is invalid.
-   */
-  final boolean isInvalid() {
-    if (status == null) {
-      status = (this.path.indexOf('\u0000') < 0) ? PathStatus.CHECKED : PathStatus.INVALID;
-    }
-    return status == PathStatus.INVALID;
-  }
-
   /** The length of this abstract pathname's prefix, or zero if it has no prefix. */
   private final transient int prefixLength;
-
-  /** Returns the length of this abstract pathname's prefix. For use by FileSystem classes. */
-  int getPrefixLength() {
-    return prefixLength;
-  }
 
   /**
    * The system-dependent default name-separator character. This field is initialized to contain the
@@ -200,10 +177,35 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    */
   public final String pathSeparator;
 
+  /** Enum type that indicates the status of a file path. */
+  private enum PathStatus {
+    INVALID,
+    CHECKED
+  };
+
+  /**
+   * Check if the file has an invalid path. Currently, the inspection of a file path is very
+   * limited, and it only covers Nul character check. Returning true means the path is definitely
+   * invalid/garbage. But returning false does not guarantee that the path is valid.
+   *
+   * @return true if the file path is invalid.
+   */
+  final boolean isInvalid() {
+    if (status == null) {
+      status = (this.path.indexOf('\u0000') < 0) ? PathStatus.CHECKED : PathStatus.INVALID;
+    }
+    return status == PathStatus.INVALID;
+  }
+
+  /** Returns the length of this abstract pathname's prefix. For use by FileSystem classes. */
+  int getPrefixLength() {
+    return prefixLength;
+  }
+
   /* -- Constructors -- */
 
   /** Internal constructor for already-normalized pathname strings. */
-  private AmazeFile(String pathname, int prefixLength) {
+  private AmazeFile(@NonNull String pathname, int prefixLength) {
     loadFilesystem(pathname);
     separatorChar = fs.getSeparator();
     separator = "" + separatorChar;
@@ -217,8 +219,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * Internal constructor for already-normalized pathname strings. The parameter order is used to
    * disambiguate this method from the public(AmazeFile, String) constructor.
    */
-  private AmazeFile(String child, AmazeFile parent) {
-    assert parent.path != null;
+  private AmazeFile(@NonNull String child, @NonNull AmazeFile parent) {
     assert (!parent.path.equals(""));
     loadFilesystem(parent.path);
     separatorChar = fs.getSeparator();
@@ -235,12 +236,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * abstract pathname.
    *
    * @param pathname A pathname string
-   * @throws NullPointerException If the <code>pathname</code> argument is <code>null</code>
    */
-  public AmazeFile(String pathname) {
-    if (pathname == null) {
-      throw new NullPointerException();
-    }
+  public AmazeFile(@NonNull String pathname) {
     loadFilesystem(pathname);
     separatorChar = fs.getSeparator();
     separator = "" + separatorChar;
@@ -276,12 +273,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @param parent The parent pathname string
    * @param child The child pathname string
-   * @throws NullPointerException If <code>child</code> is <code>null</code>
    */
-  public AmazeFile(String parent, String child) {
-    if (child == null) {
-      throw new NullPointerException();
-    }
+  public AmazeFile(@Nullable String parent, @NonNull String child) {
     // BEGIN Android-changed: b/25859957, app-compat; don't substitute empty parent.
     if (parent != null && !parent.isEmpty()) {
       loadFilesystem(parent);
@@ -321,12 +314,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @param parent The parent abstract pathname
    * @param child The child pathname string
-   * @throws NullPointerException If <code>child</code> is <code>null</code>
    */
-  public AmazeFile(AmazeFile parent, String child) {
-    if (child == null) {
-      throw new NullPointerException();
-    }
+  public AmazeFile(@Nullable AmazeFile parent, @NonNull String child) {
     if (parent != null) {
       loadFilesystem(parent.getPath());
       separatorChar = fs.getSeparator();
@@ -374,13 +363,12 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @param uri An absolute, hierarchical URI with a scheme equal to <tt>"file"</tt>, a non-empty
    *     path component, and undefined authority, query, and fragment components
-   * @throws NullPointerException If <tt>uri</tt> is <tt>null</tt>
    * @throws IllegalArgumentException If the preconditions on the parameter do not hold
    * @see #toURI()
    * @see java.net.URI
    * @since 1.4
    */
-  public AmazeFile(URI uri) {
+  public AmazeFile(@NonNull URI uri) {
 
     // Check our many preconditions
     if (!uri.isAbsolute()) throw new IllegalArgumentException("URI is not absolute");
@@ -427,6 +415,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return The name of the file or directory denoted by this abstract pathname, or the empty
    *     string if this pathname's name sequence is empty
    */
+  @NonNull
   public String getName() {
     int index = path.lastIndexOf(separatorChar);
     if (index < prefixLength) return path.substring(prefixLength);
@@ -444,11 +433,13 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return The pathname string of the parent directory named by this abstract pathname, or <code>
    *     null</code> if this pathname does not name a parent
    */
+  @Nullable
   public String getParent() {
     int index = path.lastIndexOf(separatorChar);
     if (index < prefixLength) {
-      if ((prefixLength > 0) && (path.length() > prefixLength))
+      if ((prefixLength > 0) && (path.length() > prefixLength)) {
         return path.substring(0, prefixLength);
+      }
       return null;
     }
     return path.substring(0, index);
@@ -464,11 +455,13 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @return The abstract pathname of the parent directory named by this abstract pathname, or
    *     <code>null</code> if this pathname does not name a parent
-   * @since 1.2
    */
+  @Nullable
   public AmazeFile getParentFile() {
     String p = this.getParent();
-    if (p == null) return null;
+    if (p == null) {
+      return null;
+    }
     return new AmazeFile(p, this.prefixLength);
   }
 
@@ -478,6 +471,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @return The string form of this abstract pathname
    */
+  @NonNull
   public String getPath() {
     return path;
   }
@@ -508,6 +502,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     pathname
    * @see java.io.File#isAbsolute()
    */
+  @NonNull
   public String getAbsolutePath() {
     return fs.resolve(this);
   }
@@ -518,8 +513,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @return The absolute abstract pathname denoting the same file or directory as this abstract
    *     pathname
-   * @since 1.2
    */
+  @NonNull
   public AmazeFile getAbsoluteFile() {
     String absPath = getAbsolutePath();
     return new AmazeFile(absPath, fs.prefixLength(absPath));
@@ -549,6 +544,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @since JDK1.1
    * @see Path#toRealPath
    */
+  @NonNull
   public String getCanonicalPath() throws IOException {
     if (isInvalid()) {
       throw new IOException("Invalid file path");
@@ -564,14 +560,15 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     pathname
    * @throws IOException If an I/O error occurs, which is possible because the construction of the
    *     canonical pathname may require filesystem queries
-   * @since 1.2
    * @see Path#toRealPath
    */
+  @NonNull
   public AmazeFile getCanonicalFile() throws IOException {
     String canonPath = getCanonicalPath();
     return new AmazeFile(canonPath, fs.prefixLength(canonPath));
   }
 
+  @NonNull
   private static String slashify(String path, boolean isDirectory) {
     String p = path;
     if (File.separatorChar != '/') p = p.replace(File.separatorChar, '/');
@@ -618,6 +615,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @since 1.4
    */
   @Deprecated(message = "Left for reference, do not use")
+  @NonNull
   public URI toURI() {
     try {
       AmazeFile f = getAbsoluteFile();
@@ -724,7 +722,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @return <code>true</code> if and only if the file denoted by this abstract pathname is hidden
    *     according to the conventions of the underlying platform
-   * @since 1.2
    */
   public boolean isHidden() {
     if (isInvalid()) {
@@ -788,7 +785,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if the named file does not exist and was successfully created; <code>
    *     false</code> if the named file already exists
    * @throws IOException If an I/O error occurred
-   * @since 1.2
    */
   public boolean createNewFile() throws IOException {
     if (isInvalid()) {
@@ -845,7 +841,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * </ul>
    *
    * @see #delete
-   * @since 1.2
    */
   public void deleteOnExit() {
     if (isInvalid()) {
@@ -875,6 +870,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     abstract pathname. The array will be empty if the directory is empty. Returns {@code null}
    *     if this abstract pathname does not denote a directory, or if an I/O error occurs.
    */
+  @Nullable
   public String[] list() {
     if (isInvalid()) {
       return null;
@@ -899,6 +895,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     if this abstract pathname does not denote a directory, or if an I/O error occurs.
    * @see java.nio.file.Files#newDirectoryStream(Path,String)
    */
+  @Nullable
   public String[] list(AmazeFilenameFilter filter) {
     String names[] = list();
     if ((names == null) || (filter == null)) {
@@ -937,8 +934,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     denoted by this abstract pathname. The array will be empty if the directory is empty.
    *     Returns {@code null} if this abstract pathname does not denote a directory, or if an I/O
    *     error occurs.
-   * @since 1.2
    */
+  @Nullable
   public AmazeFile[] listFiles() {
     String[] ss = list();
     if (ss == null) return null;
@@ -965,9 +962,9 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     denoted by this abstract pathname. The array will be empty if the directory is empty.
    *     Returns {@code null} if this abstract pathname does not denote a directory, or if an I/O
    *     error occurs.
-   * @since 1.2
    * @see java.nio.file.Files#newDirectoryStream(Path,String)
    */
+  @Nullable
   public AmazeFile[] listFiles(AmazeFilenameFilter filter) {
     String ss[] = list();
     if (ss == null) return null;
@@ -991,9 +988,9 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     denoted by this abstract pathname. The array will be empty if the directory is empty.
    *     Returns {@code null} if this abstract pathname does not denote a directory, or if an I/O
    *     error occurs.
-   * @since 1.2
    * @see java.nio.file.Files#newDirectoryStream(Path,java.nio.file.DirectoryStream.Filter)
    */
+  @Nullable
   public AmazeFile[] listFiles(AmazeFileFilter filter) {
     String ss[] = list();
     if (ss == null) return null;
@@ -1005,10 +1002,12 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     return files.toArray(new AmazeFile[files.size()]);
   }
 
+  @NonNull
   public InputStream getInputStream() {
     return fs.getInputStream(this);
   }
 
+  @NonNull
   public OutputStream getOutputStream() {
     return fs.getOutputStream(this);
   }
@@ -1074,12 +1073,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *
    * @param dest The new abstract pathname for the named file
    * @return <code>true</code> if and only if the renaming succeeded; <code>false</code> otherwise
-   * @throws NullPointerException If parameter <code>dest</code> is <code>null</code>
    */
-  public boolean renameTo(AmazeFile dest) {
-    if (dest == null) {
-      throw new NullPointerException();
-    }
+  public boolean renameTo(@NonNull AmazeFile dest) {
     if (this.isInvalid() || dest.isInvalid()) {
       return false;
     }
@@ -1099,7 +1094,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     January 1, 1970)
    * @return <code>true</code> if and only if the operation succeeded; <code>false</code> otherwise
    * @throws IllegalArgumentException If the argument is negative
-   * @since 1.2
    */
   public boolean setLastModified(long time) {
     if (time < 0) throw new IllegalArgumentException("Negative time");
@@ -1118,7 +1112,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * deleted depends upon the underlying system.
    *
    * @return <code>true</code> if and only if the operation succeeded; <code>false</code> otherwise
-   * @since 1.2
    */
   public boolean setReadOnly() {
     if (isInvalid()) {
@@ -1387,22 +1380,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   /* -- Temporary files -- */
 
   private static class TempDirectory {
-    private TempDirectory() {}
-
-    // Android-changed: Don't cache java.io.tmpdir value
-    // temporary directory location.
-    /*
-    private static final File tmpdir = new AmazeFile(AccessController
-       .doPrivileged(new GetPropertyAction("java.io.tmpdir")));
-    static File location() {
-        return tmpdir;
-    }
-    */
-
     // file name generation
-    // private static final SecureRandom random = new SecureRandom();
-    static AmazeFile generateFile(String prefix, String suffix, AmazeFile dir, Random random)
-        throws IOException {
+    private static final SecureRandom random = new SecureRandom();
+
+    @NonNull
+    static AmazeFile generateFile(String prefix, String suffix, AmazeFile dir) throws IOException {
       // Android-changed: Use Math.randomIntInternal. This (pseudo) random number
       // is initialized post-fork
 
@@ -1474,9 +1456,9 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @throws IllegalArgumentException If the <code>prefix</code> argument contains fewer than three
    *     characters
    * @throws IOException If a file could not be created
-   * @since 1.2
    */
-  public AmazeFile createTempFile(String prefix, String suffix, AmazeFile directory, Random random)
+  @NonNull
+  public AmazeFile createTempFile(String prefix, String suffix, AmazeFile directory)
       throws IOException {
     if (prefix.length() < 3) throw new IllegalArgumentException("Prefix string too short");
     if (suffix == null) suffix = ".tmp";
@@ -1486,7 +1468,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
         (directory != null) ? directory : new AmazeFile(System.getProperty("java.io.tmpdir", "."));
     AmazeFile f;
     do {
-      f = TempDirectory.generateFile(prefix, suffix, tmpdir, random);
+      f = TempDirectory.generateFile(prefix, suffix, tmpdir);
     } while ((fs.getBooleanAttributes(f) & AmazeFileSystem.BA_EXISTS) != 0);
 
     if (!fs.createFileExclusively(f.getPath()))
@@ -1517,11 +1499,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @throws IllegalArgumentException If the <code>prefix</code> argument contains fewer than three
    *     characters
    * @throws IOException If a file could not be created
-   * @since 1.2
    * @see java.nio.file.Files#createTempDirectory(String,FileAttribute[])
    */
-  public AmazeFile createTempFile(String prefix, String suffix, Random random) throws IOException {
-    return createTempFile(prefix, suffix, null, random);
+  @NonNull
+  public AmazeFile createTempFile(String prefix, String suffix) throws IOException {
+    return createTempFile(prefix, suffix, null);
   }
 
   /* -- Basic infrastructure -- */
@@ -1535,7 +1517,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return Zero if the argument is equal to this abstract pathname, a value less than zero if this
    *     abstract pathname is lexicographically less than the argument, or a value greater than zero
    *     if this abstract pathname is lexicographically greater than the argument
-   * @since 1.2
    */
   public int compareTo(AmazeFile pathname) {
     return fs.compare(this, pathname);
@@ -1597,7 +1578,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   public static final Parcelable.Creator<AmazeFile> CREATOR =
       new Parcelable.Creator<AmazeFile>() {
         public AmazeFile createFromParcel(Parcel in) {
-          return new AmazeFile(in.readString());
+          return new AmazeFile(Objects.requireNonNull(in.readString()));
         }
 
         public AmazeFile[] newArray(int size) {

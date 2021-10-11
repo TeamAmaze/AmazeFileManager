@@ -68,7 +68,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   public static final SmbAmazeFileSystem INSTANCE = new SmbAmazeFileSystem();
 
   @Override
-  public boolean isPathOfThisFilesystem(String path) {
+  public boolean isPathOfThisFilesystem(@NonNull String path) {
     return path.startsWith(SmbAmazeFileSystem.PREFIX);
   }
 
@@ -82,19 +82,21 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     return 0;
   }
 
+  @NonNull
   @Override
-  public String normalize(String pathname) {
+  public String normalize(@NonNull String pathname) {
+    String canonical;
     try {
-      String canonical = canonicalize(pathname);
-      return canonical.substring(0, canonical.length() - 1);
+      canonical = canonicalize(pathname);
     } catch (MalformedURLException e) {
-      Log.e(TAG, "Error getting canonical path for SMB file", e);
-      return null;
+      Log.e(TAG, "Error getting SMB file canonical path", e);
+      canonical = pathname.substring(0, prefixLength(pathname)) + "/";
     }
+    return canonical.substring(0, canonical.length() - 1);
   }
 
   @Override
-  public int prefixLength(String path) {
+  public int prefixLength(@NonNull String path) {
     if (path.length() == 0) {
       return 0;
     }
@@ -109,6 +111,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     return matcher.end();
   }
 
+  @NonNull
   @Override
   public String resolve(String parent, String child) {
     final String prefix = parent.substring(0, prefixLength(parent));
@@ -119,13 +122,15 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   }
 
   /** This makes no sense for SMB */
+  @NonNull
   @Override
   public String getDefaultParent() {
     throw new IllegalStateException("There is no default SMB path");
   }
 
+  @NonNull
   @Override
-  public String fromURIPath(String path) {
+  public String fromURIPath(@NonNull String path) {
     throw new NotImplementedError();
   }
 
@@ -134,6 +139,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     return f.getPath().startsWith(PREFIX);
   }
 
+  @NonNull
   @Override
   public String resolve(AmazeFile f) {
     if (isAbsolute(f)) {
@@ -143,6 +149,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     throw new IllegalArgumentException("Relative paths are not supported");
   }
 
+  @NonNull
   @Override
   public String canonicalize(String path) throws MalformedURLException {
     return create(path).getCanonicalPath();
@@ -304,6 +311,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     return list;
   }
 
+  @Nullable
   @Override
   public InputStream getInputStream(AmazeFile f) {
     try {
@@ -314,6 +322,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     }
   }
 
+  @Nullable
   @Override
   public OutputStream getOutputStream(AmazeFile f) {
     try {

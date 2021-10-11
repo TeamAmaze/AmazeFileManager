@@ -26,12 +26,15 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Native;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public abstract class AmazeFileSystem implements Closeable {
 
   /* -- Normalization and construction -- */
 
   /** Is the path of this filesystem? */
-  public abstract boolean isPathOfThisFilesystem(String path);
+  public abstract boolean isPathOfThisFilesystem(@NonNull String path);
 
   /** Return the local filesystem's name-separator character. */
   public abstract char getSeparator();
@@ -43,24 +46,27 @@ public abstract class AmazeFileSystem implements Closeable {
    * Convert the given pathname string to normal form. If the string is already in normal form then
    * it is simply returned.
    */
-  public abstract String normalize(String path);
+  @NonNull
+  public abstract String normalize(@NonNull String path);
 
   /**
    * Compute the length of this pathname string's prefix. The pathname string must be in normal
    * form.
    */
-  public abstract int prefixLength(String path);
+  public abstract int prefixLength(@NonNull String path);
 
   /**
    * Resolve the child pathname string against the parent. Both strings must be in normal form, and
    * the result will be in normal form.
    */
+  @NonNull
   public abstract String resolve(String parent, String child);
 
   /**
    * Return the parent pathname string to be used when the parent-directory argument in one of the
    * two-argument File constructors is the empty pathname.
    */
+  @NonNull
   public abstract String getDefaultParent();
 
   /**
@@ -68,7 +74,8 @@ public abstract class AmazeFileSystem implements Closeable {
    * "/c:/foo" into "c:/foo". The path string still has slash separators; code in the File class
    * will translate them after this method returns.
    */
-  public abstract String fromURIPath(String path);
+  @NonNull
+  public abstract String fromURIPath(@NonNull String path);
 
   /* -- Path operations -- */
 
@@ -79,8 +86,10 @@ public abstract class AmazeFileSystem implements Closeable {
    * Resolve the given abstract pathname into absolute form. Invoked by the getAbsolutePath and
    * getCanonicalPath methods in the F class.
    */
+  @NonNull
   public abstract String resolve(AmazeFile f);
 
+  @NonNull
   public abstract String canonicalize(String path) throws IOException;
 
   /* -- Attribute accessors -- */
@@ -147,10 +156,13 @@ public abstract class AmazeFileSystem implements Closeable {
    * strings naming the elements of the directory if successful; otherwise, return <code>null</code>
    * .
    */
+  @Nullable
   public abstract String[] list(AmazeFile f);
 
+  @Nullable
   public abstract InputStream getInputStream(AmazeFile f);
 
+  @Nullable
   public abstract OutputStream getOutputStream(AmazeFile f);
 
   /**
@@ -207,12 +219,10 @@ public abstract class AmazeFileSystem implements Closeable {
 
   private static boolean getBooleanProperty(String prop, boolean defaultVal) {
     String val = System.getProperty(prop);
-    if (val == null) return defaultVal;
-    if (val.equalsIgnoreCase("true")) {
-      return true;
-    } else {
-      return false;
+    if (val == null) {
+      return defaultVal;
     }
+    return val.equalsIgnoreCase("true");
   }
 
   static {
@@ -296,17 +306,22 @@ public abstract class AmazeFileSystem implements Closeable {
    * questions.
    */
   // Invariant: Both |parent| and |child| are normalized paths.
-  public static String basicUnixResolve(String parent, String child) {
+  @NonNull
+  public static String basicUnixResolve(@NonNull String parent, @NonNull String child) {
     if (child.isEmpty() || child.equals("/")) {
       return parent;
     }
 
     if (child.charAt(0) == '/') {
-      if (parent.equals("/")) return child;
+      if (parent.equals("/")) {
+        return child;
+      }
       return parent + child;
     }
 
-    if (parent.equals("/")) return parent + child;
+    if (parent.equals("/")) {
+      return parent + child;
+    }
     return parent + '/' + child;
   }
 
