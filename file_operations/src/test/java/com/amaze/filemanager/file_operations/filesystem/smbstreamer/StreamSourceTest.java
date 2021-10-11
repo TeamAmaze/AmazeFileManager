@@ -47,8 +47,6 @@ import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import jcifs.smb.SmbFile;
-
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(AndroidJUnit4.class)
 @Config(

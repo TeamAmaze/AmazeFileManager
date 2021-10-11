@@ -25,9 +25,9 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import android.util.Log;
-
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+
+import android.util.Log;
 
 import jcifs.smb.SmbFile;
 
