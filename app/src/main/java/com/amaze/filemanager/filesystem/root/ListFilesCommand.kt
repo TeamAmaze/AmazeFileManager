@@ -123,7 +123,11 @@ object ListFilesCommand : IRootCommand() {
                         "ls -l " + (if (showHidden) "-a " else "") +
                             "\"$sanitizedPath\""
                     ),
-                    second = enforceLegacyFileListing
+                    second = if (retryWithLs) {
+                        true
+                    } else {
+                        enforceLegacyFileListing
+                    }
                 )
             }
         } catch (invalidCommand: ShellCommandInvalidException) {
