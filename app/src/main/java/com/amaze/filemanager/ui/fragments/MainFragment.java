@@ -417,7 +417,7 @@ public class MainFragment extends Fragment
           mode.setCustomView(actionModeView);
 
           getMainActivity().setPagingEnabled(false);
-          getMainActivity().getFAB().hide();
+          getMainActivity().hideFab();
 
           // translates the drawable content down
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
@@ -711,7 +711,7 @@ public class MainFragment extends Fragment
           // translates the drawer content up
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
-          getMainActivity().getFAB().show();
+          getMainActivity().showFab();
           if (!mainFragmentViewModel.getResults())
             adapter.toggleChecked(false, mainFragmentViewModel.getCurrentPath());
           else adapter.toggleChecked(false);
@@ -991,8 +991,6 @@ public class MainFragment extends Fragment
                         == DataUtils.GRID;
                 setListElements(
                     data.second, back, providedPath, data.first, false, isPathLayoutGrid);
-                setListElements(
-                    data.second, back, providedPath, data.first, false, isPathLayoutGrid);
               } else {
                 Log.w(getClass().getSimpleName(), "Load list operation cancelled");
               }
@@ -1196,7 +1194,7 @@ public class MainFragment extends Fragment
       }
 
       getMainActivity().updatePaths(mainFragmentViewModel.getNo());
-      getMainActivity().getFAB().show();
+      getMainActivity().showFab();
       getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       listView.stopScroll();
       fastScroller.setRecyclerView(

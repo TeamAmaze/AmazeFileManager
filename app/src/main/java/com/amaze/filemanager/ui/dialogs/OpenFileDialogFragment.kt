@@ -310,11 +310,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             modelProvider,
             true, this, appDataParcelableList
         )
-        modelProvider.setItemList(
-            appDataParcelableList.map { appDataParcelable ->
-                appDataParcelable.packageName
-            }
-        )
         loadViews(lastAppData)
 
         viewBinding.appsRecyclerView.addOnScrollListener(preloader)

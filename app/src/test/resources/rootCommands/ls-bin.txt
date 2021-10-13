@@ -1,0 +1,584 @@
+total 33712
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 [ -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 [[ -> busybox
+-rwxr-xr-x 1 root shell  115244 2009-01-01 08:00 abb
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 acpi -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 acpid -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 adjtimex -> busybox
+-rwxr-xr-x 1 root shell     207 2009-01-01 08:00 am
+-rwxr-xr-x 1 root shell  712768 2009-01-01 08:00 apexd
+lrwxrwxrwx 1 root root       13 2021-10-09 14:06 app_process -> app_process32
+-rwxr-xr-x 1 root shell   26132 2009-01-01 08:00 app_process32
+-rwxr-xr-x 1 root shell      33 2009-01-01 08:00 appops
+-rwxr-xr-x 1 root shell     141 2009-01-01 08:00 appwidget
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ar -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 arch -> busybox
+drwxr-x--x 2 root shell    4096 2009-01-01 08:00 arm
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 arp -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 arping -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ascii -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ash -> busybox
+-rwxr-xr-x 1 root shell   70356 2009-01-01 08:00 atrace
+-rwxr-xr-x 1 root shell   11072 2009-01-01 08:00 audioserver
+-rwxr-xr-x 1 root shell    6100 2009-01-01 08:00 auditctl
+-rwxr-xr-x 1 root shell  138296 2009-01-01 08:00 awk
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 base32 -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 base64 -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 basename -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 bbconfig -> busybox
+-rwxr-xr-x 1 root shell   80772 2009-01-01 08:00 bc
+-rwxr-xr-x 1 root shell   41236 2009-01-01 08:00 bcc
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 beep -> busybox
+-rwxr-xr-x 1 root shell   25044 2009-01-01 08:00 blank_screen
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 blkdiscard -> busybox
+-rwxr-xr-x 1 root shell   11272 2009-01-01 08:00 blkid
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 blockdev -> toybox
+-rwxr-xr-x 1 root shell     126 2009-01-01 08:00 bmgr
+-rwxr-xr-x 1 root shell   15444 2009-01-01 08:00 bootanimation
+-rwxr-xr-x 1 root shell  168792 2009-01-01 08:00 bootstat
+drwxr-x--x 2 root shell    4096 2009-01-01 08:00 bootstrap
+-rwxr-xr-x 1 root shell    3136 2009-01-01 08:00 boringssl_self_test32
+-rwxr-xr-x 1 root shell    6308 2009-01-01 08:00 bpfloader
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 brctl -> busybox
+-rwxr-xr-x 1 root shell     173 2009-01-01 08:00 bu
+-rwxr-xr-x 1 root shell    5084 2009-01-01 08:00 bugreport
+-rwxr-xr-x 1 root shell    6428 2009-01-01 08:00 bugreportz
+lrwxrwxrwx 1 root root        5 2021-10-09 14:06 bunzip2 -> bzip2
+-rwxrwxrwx 1 root root  2111256 2021-10-04 23:51 busybox
+lrwxrwxrwx 1 root root        5 2021-10-09 14:06 bzcat -> bzip2
+-rwxr-xr-x 1 root shell   94324 2009-01-01 08:00 bzip2
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cal -> toybox
+-rwxr-xr-x 1 root shell    5652 2009-01-01 08:00 cameraserver
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cat -> toybox
+-rwxr-xr-x 1 root shell  201584 2009-01-01 08:00 charger
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 chat -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chattr -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chcon -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chgrp -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chmod -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chown -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chroot -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 chrt -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 chvt -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cksum -> toybox
+-rwxr-xr-x 1 root shell   48508 2009-01-01 08:00 clatd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 clear -> toybox
+-rwxr-xr-x 1 root shell   46712 2009-01-01 08:00 cmd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cmp -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 comm -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 conspy -> busybox
+-rwxr-xr-x 1 root shell     135 2009-01-01 08:00 content
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cp -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cpio -> toybox
+-rwxr-xr-x 1 root shell    2611 2009-01-01 08:00 cppreopts.sh
+-rwxr-xr-x 1 root shell  142588 2009-01-01 08:00 crash_dump32
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 crc32 -> busybox
+-rwxr-xr-x 1 root shell  221548 2009-01-01 08:00 credstore
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 crond -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 crontab -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 cttyhack -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 cut -> toybox
+lrwxrwxrwx 1 root root       34 2021-10-09 14:06 dalvikvm -> /apex/com.android.art/bin/dalvikvm
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 date -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 dc -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 dd -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 deallocvt -> busybox
+-rwxr-xr-x 1 root shell    8752 2009-01-01 08:00 debuggerd
+lrwxrwxrwx 1 root root        9 2021-10-09 14:06 defrag.f2fs -> fsck.f2fs
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 depmod -> busybox
+-rwxr-xr-x 1 root shell      40 2009-01-01 08:00 device_config
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 devmem -> toybox
+lrwxrwxrwx 1 root root       35 2021-10-09 14:06 dex2oat -> /apex/com.android.art/bin/dex2oat32
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 df -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 dhcprelay -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 diff -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 dirname -> toybox
+lrwxrwxrwx 1 root root       16 2021-10-09 14:06 disable-verity -> set-verity-state
+-rwxr-xr-x 1 root shell   91756 2009-01-01 08:00 dmctl
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 dmesg -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 dnsd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 dnsdomainname -> busybox
+-rwxr-xr-x 1 root shell  165568 2009-01-01 08:00 dnsmasq
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 dos2unix -> toybox
+-rwxr-xr-x 1 root shell     173 2009-01-01 08:00 dpm
+-rwxr-xr-x 1 root shell   98680 2009-01-01 08:00 drmserver
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 du -> toybox
+lrwxrwxrwx 1 root root        9 2021-10-09 14:06 dump.f2fs -> fsck.f2fs
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 dumpkmap -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 dumpleases -> busybox
+-rwxr-xr-x 1 root shell  370664 2009-01-01 08:00 dumpstate
+-rwxr-xr-x 1 root shell   34800 2009-01-01 08:00 dumpsys
+-rwxr-xr-x 1 root shell    9988 2009-01-01 08:00 e2freefrag
+-rwxr-xr-x 1 root shell  259336 2009-01-01 08:00 e2fsck
+-rwxr-xr-x 1 root shell   24940 2009-01-01 08:00 e2fsdroid
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 echo -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ed -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 egrep -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 eject -> busybox
+lrwxrwxrwx 1 root root       16 2021-10-09 14:06 enable-verity -> set-verity-state
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 env -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ether-wake -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 expand -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 expr -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 factor -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fakeidentd -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 fallocate -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 false -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fatattr -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fbset -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fbsplash -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fdflush -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fdformat -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fdisk -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fgconsole -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 fgrep -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 file -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 find -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 findfs -> busybox
+-rwxr-xr-x 1 root shell    8128 2009-01-01 08:00 flags_health_check
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 flash_eraseall -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 flash_lock -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 flash_unlock -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 flock -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 fmt -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fold -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 free -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 freeramdisk -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fsck -> busybox
+-rwxr-xr-x 1 root shell  269488 2009-01-01 08:00 fsck.f2fs
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fsck.minix -> busybox
+-rwxr-xr-x 1 root shell   34000 2009-01-01 08:00 fsck_msdos
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fsfreeze -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fstrim -> busybox
+-rwxr-xr-x 1 root shell   44528 2009-01-01 08:00 fsverity_init
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 fsync -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ftpd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ftpget -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ftpput -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 fuser -> busybox
+-rwxr-xr-x 1 root shell   30300 2009-01-01 08:00 gatekeeperd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 getconf -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 getenforce -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 getevent -> toolbox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 getopt -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 getprop -> toolbox
+-rwxr-xr-x 1 root shell    5200 2009-01-01 08:00 gpuservice
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 grep -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 groups -> toybox
+-rwxr-xr-x 1 root shell   40188 2009-01-01 08:00 gsi_tool
+-rwxr-xr-x 1 root shell  408372 2009-01-01 08:00 gsid
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 gunzip -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 gzip -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 hd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 hdparm -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 head -> toybox
+-rwxr-xr-x 1 root shell  507068 2009-01-01 08:00 heapprofd
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 hexdump -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 hexedit -> busybox
+-rwxr-xr-x 1 root shell     379 2009-01-01 08:00 hid
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 hostname -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 httpd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 hush -> busybox
+drwxr-x--x 2 root shell    4096 2009-01-01 08:00 hw
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 hwclock -> toybox
+-rwxr-xr-x 1 root shell  107020 2009-01-01 08:00 hwservicemanager
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 i2cdetect -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 i2cdump -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 i2cget -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 i2cset -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 iconv -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 id -> toybox
+-rwxr-xr-x 1 root shell   96704 2009-01-01 08:00 idmap2
+-rwxr-xr-x 1 root shell   46244 2009-01-01 08:00 idmap2d
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 ifconfig -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ifdown -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ifenslave -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ifplugd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ifup -> busybox
+-rwxr-xr-x 1 root shell      48 2009-01-01 08:00 ime
+-rwxr-xr-x 1 root shell   36444 2009-01-01 08:00 incident
+-rwxr-xr-x 1 root shell     220 2009-01-01 08:00 incident-helper-cmd
+-rwxr-xr-x 1 root shell  284488 2009-01-01 08:00 incident_helper
+-rwxr-xr-x 1 root shell  288464 2009-01-01 08:00 incidentd
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 inetd -> busybox
+-rwxr-xr-x 1 root shell 1282424 2009-01-01 08:00 init
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 inotifyd -> toybox
+-rwxr-xr-x 1 root shell     129 2009-01-01 08:00 input
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 insmod -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 install -> toybox
+-rwxr-xr-x 1 root shell  421256 2009-01-01 08:00 installd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 ionice -> toybox
+-rwxr-xr-x 1 root shell 3103776 2009-01-01 08:00 iorap.cmd.compiler
+-rwxr-xr-x 1 root shell  602864 2009-01-01 08:00 iorap.cmd.maintenance
+-rwxr-xr-x 1 root shell  457860 2009-01-01 08:00 iorap.inode2filename
+-rwxr-xr-x 1 root shell  238200 2009-01-01 08:00 iorap.prefetcherd
+-rwxr-xr-x 1 root shell 1348544 2009-01-01 08:00 iorapd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 iorenice -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 iostat -> busybox
+-rwxr-xr-x 1 root shell  430476 2009-01-01 08:00 ip
+lrwxrwxrwx 1 root root       20 2021-10-09 14:06 ip-wrapper-1.0 -> netutils-wrapper-1.0
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 ip6tables -> iptables
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 ip6tables-restore -> iptables
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 ip6tables-save -> iptables
+lrwxrwxrwx 1 root root       20 2021-10-09 14:06 ip6tables-wrapper-1.0 -> netutils-wrapper-1.0
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ipaddr -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ipcalc -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ipcrm -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ipcs -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 iplink -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ipneigh -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 iproute -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 iprule -> busybox
+-rwxr-xr-x 1 root shell  495332 2009-01-01 08:00 iptables
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 iptables-restore -> iptables
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 iptables-save -> iptables
+lrwxrwxrwx 1 root root       20 2021-10-09 14:06 iptables-wrapper-1.0 -> netutils-wrapper-1.0
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 iptunnel -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 kbd_mode -> busybox
+-rwxr-xr-x 1 root shell  397296 2009-01-01 08:00 keystore
+-rwxr-xr-x 1 root shell   62164 2009-01-01 08:00 keystore_cli_v2
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 kill -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 killall -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 killall5 -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 klogd -> busybox
+-rwxr-xr-x 1 root shell  965556 2009-01-01 08:00 ld.mc
+-rwxr-xr-x 1 root shell     357 2009-01-01 08:00 ldd
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 less -> busybox
+-rwxr-xr-x 1 root shell   42404 2009-01-01 08:00 librank
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 link -> busybox
+lrwxrwxrwx 1 root root       36 2021-10-09 14:06 linker -> /apex/com.android.runtime/bin/linker
+lrwxrwxrwx 1 root root       36 2021-10-09 14:06 linker_asan -> /apex/com.android.runtime/bin/linker
+-rwxr-xr-x 1 root shell  922668 2009-01-01 08:00 linkerconfig
+-rwxr-xr-x 1 root shell   88192 2009-01-01 08:00 llkd
+-rwxr-xr-x 1 root shell   47192 2009-01-01 08:00 lmkd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 ln -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 load_policy -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 loadfont -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 loadkmap -> busybox
+-rwxr-xr-x 1 root shell     211 2009-01-01 08:00 locksettings
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 log -> toybox
+-rwxr-xr-x 1 root shell  173020 2009-01-01 08:00 logcat
+-r-xr-x--- 1 logd logd   202720 2009-01-01 08:00 logd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 logname -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 logread -> busybox
+-rwxr-xr-x 1 root shell   13204 2009-01-01 08:00 logwrapper
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 losetup -> toybox
+-rwxr-xr-x 1 root shell   11076 2009-01-01 08:00 lpdump
+-rwxr-xr-x 1 root shell   26956 2009-01-01 08:00 lpdumpd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 ls -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 lsattr -> toybox
+-rwxr-xr-x 1 root shell  283700 2009-01-01 08:00 lshal
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 lsmod -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 lsof -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 lspci -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 lsscsi -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 lsusb -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 lzcat -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 lzma -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 lzop -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 lzopcat -> busybox
+-rwxr-xr-x 1 root root   313144 2021-10-09 14:05 magisk
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 magiskhide -> ./magisk
+-rwxr-xr-x 1 root root   609452 2021-10-09 14:05 magiskinit
+lrwxrwxrwx 1 root root       12 2021-10-09 14:06 magiskpolicy -> ./magiskinit
+-rwxr-xr-x 1 root shell  118408 2009-01-01 08:00 make_f2fs
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 makedevs -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 makemime -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 man -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 md5sum -> toybox
+-rwxr-xr-x 1 root shell  796140 2009-01-01 08:00 mdnsd
+-rwxr-xr-x 1 root shell    5872 2009-01-01 08:00 mediaextractor
+-rwxr-xr-x 1 root shell    4956 2009-01-01 08:00 mediametrics
+-rwxr-xr-x 1 root shell    5024 2009-01-01 08:00 mediaserver
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mesg -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 microcom -> toybox
+-rwxr-xr-x 1 root shell    1418 2009-01-01 08:00 migrate_legacy_obb_data.sh
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mim -> busybox
+-rwxr-xr-x 1 root shell   28852 2009-01-01 08:00 mini-keyctl
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mkdir -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mkdosfs -> busybox
+-rwxr-xr-x 1 root shell   70888 2009-01-01 08:00 mke2fs
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mkfifo -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mkfs.ext2 -> mke2fs
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mkfs.ext3 -> mke2fs
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mkfs.ext4 -> mke2fs
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mkfs.minix -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mkfs.reiser -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mkfs.vfat -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mknod -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mkswap -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mktemp -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 modinfo -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 modprobe -> toolbox
+-rwxr-xr-x 1 root shell     268 2009-01-01 08:00 monkey
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 more -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mount -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mountpoint -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 mpstat -> busybox
+-rwxr-xr-x 1 root shell   24928 2009-01-01 08:00 mtpd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 mv -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nameif -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nanddump -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nandwrite -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nbd-client -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 nc -> toybox
+-rwxr-xr-x 1 root shell   73060 2009-01-01 08:00 ndc
+lrwxrwxrwx 1 root root       20 2021-10-09 14:06 ndc-wrapper-1.0 -> netutils-wrapper-1.0
+-rwxr-xr-x 1 root shell   53920 2009-01-01 08:00 ndk_translation_program_runner_binfmt_misc
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 netcat -> toybox
+-rwxr-xr-x 1 root shell  896280 2009-01-01 08:00 netd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 netstat -> toybox
+-rwxr-xr-x 1 root shell   73324 2009-01-01 08:00 netutils-wrapper-1.0
+-rwxr-xr-x 1 root shell   23676 2009-01-01 08:00 newfs_msdos
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 nice -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 nl -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nmeter -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 nohup -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nologin -> busybox
+-rwxr-xr-x 1 root shell     103 2009-01-01 08:00 notify_traceur.sh
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 nproc -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 nsenter -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nslookup -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 nuke -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 od -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 openvt -> busybox
+-rwxr-xr-x 1 root shell  227140 2009-01-01 08:00 otapreopt
+-rwxr-xr-x 1 root shell  432888 2009-01-01 08:00 otapreopt_chroot
+-rwxr-xr-x 1 root shell    2416 2009-01-01 08:00 otapreopt_script
+-rwxr-xr-x 1 root shell    1420 2009-01-01 08:00 otapreopt_slot
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 partprobe -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 paste -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 patch -> toybox
+-rwxr-xr-x 1 root shell  752524 2009-01-01 08:00 perfetto
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 pgrep -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 pidof -> toybox
+-rwxr-xr-x 1 root shell   34976 2009-01-01 08:00 ping
+-rwxr-xr-x 1 root shell   37172 2009-01-01 08:00 ping6
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 pipe_progress -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 pivot_root -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 pkill -> toybox
+-rwxr-xr-x 1 root shell      34 2009-01-01 08:00 pm
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 pmap -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 popmaildir -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 poweroff -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 powertop -> busybox
+-rwxr-xr-x 1 root shell  244260 2009-01-01 08:00 pppd
+-rwxr-xr-x 1 root shell    1317 2009-01-01 08:00 preloads_copy.sh
+-rwxr-xr-x 1 root shell   10312 2009-01-01 08:00 preopt2cachename
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 printenv -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 printf -> toybox
+-rwxr-xr-x 1 root shell   46184 2009-01-01 08:00 procrank
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 ps -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 pscan -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 pstree -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 pwd -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 pwdx -> busybox
+-rwxr-xr-x 1 root shell  271504 2009-01-01 08:00 racoon
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 raidautorun -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 rdate -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 rdev -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 readelf -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 readlink -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 readprofile -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 realpath -> toybox
+-rwxr-xr-x 1 root shell    4616 2009-01-01 08:00 reboot
+-rwxr-xr-x 1 root shell   13672 2009-01-01 08:00 recovery-persist
+-rwxr-xr-x 1 root shell   11920 2009-01-01 08:00 recovery-refresh
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 reformime -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 renice -> toybox
+-rwxr-xr-x 1 root shell     205 2009-01-01 08:00 requestsync
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 reset -> busybox
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 resetprop -> ./magisk
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 resize -> busybox
+lrwxrwxrwx 1 root root        9 2021-10-09 14:06 resize.f2fs -> fsck.f2fs
+-rwxr-xr-x 1 root shell   57252 2009-01-01 08:00 resize2fs
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 restorecon -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 resume -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 rev -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 rfkill -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 rm -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 rmdir -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 rmmod -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 route -> busybox
+-rwxr-xr-x 1 root shell    4200 2009-01-01 08:00 rss_hwm_reset
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 rtcwake -> busybox
+-rwxr-x--- 1 root shell   10384 2009-01-01 08:00 run-as
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 run-init -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 run-parts -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 runcon -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 rx -> busybox
+-rwxr-xr-x 1 root shell    3548 2009-01-01 08:00 schedtest
+-rwxr-xr-x 1 root shell    9644 2009-01-01 08:00 screencap
+-rwxr-xr-x 1 root shell  119964 2009-01-01 08:00 screenrecord
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 script -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 scriptreplay -> busybox
+-rwxr-xr-x 1 root shell   21884 2009-01-01 08:00 sdcard
+-rwxr-xr-x 1 root shell   17728 2009-01-01 08:00 secdiscard
+-rwx------ 1 root root   353820 2009-01-01 08:00 secilc
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sed -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 selinuxenabled -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sendevent -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 sendmail -> busybox
+-rwxr-xr-x 1 root shell    5048 2009-01-01 08:00 sensorservice
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 seq -> toybox
+-rwxr-xr-x 1 root shell   38160 2009-01-01 08:00 service
+-rwxr-xr-x 1 root shell   56016 2009-01-01 08:00 servicemanager
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 sestatus -> busybox
+-rwxr-xr-x 1 root shell   78772 2009-01-01 08:00 set-verity-state
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setconsole -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 setenforce -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setfattr -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setfont -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setkeycodes -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setlogcons -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setpriv -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setprop -> toolbox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setserial -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 setsid -> toybox
+-rwxr-xr-x 1 root shell      35 2009-01-01 08:00 settings
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 setuidgid -> busybox
+-rwxr-xr-x 1 root shell  204652 2009-01-01 08:00 sgdisk
+-rwxr-xr-x 1 root shell  319228 2009-01-01 08:00 sh
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sha1sum -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sha224sum -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sha256sum -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sha384sum -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 sha3sum -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sha512sum -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 showkey -> busybox
+-rwxr-xr-x 1 root shell   15340 2009-01-01 08:00 showmap
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 shred -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 shuf -> busybox
+-rwxr-xr-x 1 root shell 1486164 2009-01-01 08:00 simpleperf
+-rwxr-x--- 1 root shell   17964 2009-01-01 08:00 simpleperf_app_runner
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 slattach -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sleep -> toybox
+-rwxr-xr-x 1 root shell  248016 2009-01-01 08:00 sload_f2fs
+-rwxr-xr-x 1 root shell     120 2009-01-01 08:00 sm
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 smemcap -> busybox
+-rwxr-xr-x 1 root shell  141340 2009-01-01 08:00 snapshotctl
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sort -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 split -> toybox
+-rwxr-xr-x 1 root shell   71208 2009-01-01 08:00 ss
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ssl_client -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 start -> toolbox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 start-stop-daemon -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 stat -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 stop -> toolbox
+-rwxr-xr-x 1 root shell  215536 2009-01-01 08:00 storaged
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 strings -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 stty -> toybox
+lrwxrwxrwx 1 root root        8 2021-10-09 14:06 su -> ./magisk
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 sum -> busybox
+lrwxrwxrwx 1 root root       12 2021-10-09 14:06 supolicy -> ./magiskinit
+-rwxr-xr-x 1 root shell    9340 2009-01-01 08:00 surfaceflinger
+-rwxr-xr-x 1 root shell    1068 2009-01-01 08:00 svc
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 svok -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 swapoff -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 swapon -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 switch_root -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sync -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 sysctl -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 syslogd -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 tac -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 tail -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 tar -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 taskset -> toybox
+-rwxr-xr-x 1 root shell  292968 2009-01-01 08:00 tc
+lrwxrwxrwx 1 root root       20 2021-10-09 14:06 tc-wrapper-1.0 -> netutils-wrapper-1.0
+-rwxr-xr-x 1 root shell  880708 2009-01-01 08:00 tcpdump
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 tcpsvd -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 tee -> toybox
+-rwxr-xr-x 1 root shell     189 2009-01-01 08:00 telecom
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 telnet -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 telnetd -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 test -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 tftp -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 tftpd -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 time -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 timeout -> toybox
+-rwxr-xr-x 1 root shell  113284 2009-01-01 08:00 tombstoned
+-rwxr-xr-x 1 root shell  117868 2009-01-01 08:00 toolbox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 top -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 touch -> toybox
+-rwxr-xr-x 1 root shell  492880 2009-01-01 08:00 toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 tr -> toybox
+-rwxr-xr-x 1 root shell    3180 2009-01-01 08:00 traced
+-rwxr-xr-x 1 root shell  450160 2009-01-01 08:00 traced_perf
+-rwxr-xr-x 1 root shell    3184 2009-01-01 08:00 traced_probes
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 traceroute -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 traceroute6 -> busybox
+-rwxr-xr-x 1 root shell  324504 2009-01-01 08:00 trigger_perfetto
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 true -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 truncate -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ts -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 tty -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ttysize -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 tunctl -> busybox
+-rwxr-xr-x 1 root shell   52876 2009-01-01 08:00 tune2fs
+-rwxr-xr-x 1 root shell   20092 2009-01-01 08:00 tzdatacheck
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubiattach -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubidetach -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubimkvol -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubirename -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubirmvol -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubirsvol -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 ubiupdatevol -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 udhcpc -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 udhcpc6 -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 udhcpd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 udpsvd -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 uevent -> busybox
+lrwxrwxrwx 1 root root        4 2021-10-09 14:06 ueventd -> init
+-rwxr-xr-x 1 root shell    4173 2009-01-01 08:00 uiautomator
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 ulimit -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 umount -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 uname -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 uncompress -> busybox
+-rwxr-x--- 1 root root    34676 2009-01-01 08:00 uncrypt
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 unexpand -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 uniq -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 unix2dos -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 unlink -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 unlzma -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 unlzop -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 unshare -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 unxz -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 unzip -> ziptool
+-rwxr-xr-x 1 root shell 1268156 2009-01-01 08:00 update_engine
+-rwxr-xr-x 1 root shell  120608 2009-01-01 08:00 update_verifier
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 uptime -> toybox
+-rwxr-xr-x 1 root shell    8476 2009-01-01 08:00 usbd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 usleep -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 uudecode -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 uuencode -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 uuidgen -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 vconfig -> busybox
+-rwxr-xr-x 1 root shell   89752 2009-01-01 08:00 vdc
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 vi -> busybox
+-rwxr-xr-x 1 root shell  270744 2009-01-01 08:00 viewcompiler
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 vmstat -> toybox
+-rwxr-xr-x 1 root shell 1113160 2009-01-01 08:00 vold
+-rwxr-xr-x 1 root shell   32408 2009-01-01 08:00 vold_prepare_subdirs
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 volname -> busybox
+-rwxr-xr-x 1 root shell     169 2009-01-01 08:00 vr
+-rwxr-xr-x 1 root shell   19816 2009-01-01 08:00 wait_for_keymaster
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 watch -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 watchdog -> busybox
+-rwxr-xr-x 1 root shell    9872 2009-01-01 08:00 watchdogd
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 wc -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 wget -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 which -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 whoami -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 whois -> busybox
+-rwxr-xr-x 1 root shell  444660 2009-01-01 08:00 wificond
+-rwxr-xr-x 1 root shell      33 2009-01-01 08:00 wm
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 xargs -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 xxd -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 xz -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 xzcat -> busybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 yes -> toybox
+lrwxrwxrwx 1 root root        6 2021-10-09 14:06 zcat -> toybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 zcip -> busybox
+lrwxrwxrwx 1 root root        7 2021-10-09 14:06 zipinfo -> ziptool
+-rwxr-xr-x 1 root shell   20492 2009-01-01 08:00 ziptool

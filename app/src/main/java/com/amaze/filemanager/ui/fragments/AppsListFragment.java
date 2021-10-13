@@ -40,6 +40,7 @@ import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.utils.GlideConstants;
 import com.amaze.filemanager.utils.Utils;
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
@@ -68,7 +69,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class AppsListFragment extends Fragment
-    implements LoaderManager.LoaderCallbacks<AppListLoader.AppsDataPair>,
+    implements LoaderManager.LoaderCallbacks<List<AppDataParcelable>>,
         AdjustListViewForTv<AppHolder> {
 
   public static final int ID_LOADER_APP_LIST = 0;
@@ -82,6 +83,8 @@ public class AppsListFragment extends Fragment
   private LinearLayoutManager linearLayoutManager;
   private RecyclerViewPreloader<String> preloader;
   private List<AppDataParcelable> appDataParcelableList;
+  private FastScroller fastScroller;
+  private boolean showSystemApps = true;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +104,7 @@ public class AppsListFragment extends Fragment
 
   @Override
   public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+    super.onViewCreated(view, savedInstanceState);
     final MainActivity mainActivity = (MainActivity) getActivity();
     Objects.requireNonNull(mainActivity);
 
@@ -119,9 +123,17 @@ public class AppsListFragment extends Fragment
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
     isAscending = sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
     sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
-
+    fastScroller = rootView.findViewById(R.id.fastscroll);
+    fastScroller.setPressedHandleColor(mainActivity.getAccent());
+    fastScroller.setRecyclerView(getRecyclerView(), 1);
+    mainActivity
+        .getAppbar()
+        .getAppbarLayout()
+        .addOnOffsetChangedListener(
+            (appBarLayout, verticalOffset) -> {
+              fastScroller.updateHandlePosition(verticalOffset, 112);
+            });
     LoaderManager.getInstance(this).initLoader(ID_LOADER_APP_LIST, null, this);
-    super.onViewCreated(view, savedInstanceState);
   }
 
   @Override
@@ -141,8 +153,9 @@ public class AppsListFragment extends Fragment
         requireActivity().finish();
         return true;
       case R.id.checkbox_system_apps:
-        adapter.setData(appDataParcelableList, !item.isChecked());
         item.setChecked(!item.isChecked());
+        adapter.setData(appDataParcelableList, item.isChecked());
+        showSystemApps = item.isChecked();
         return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -151,7 +164,7 @@ public class AppsListFragment extends Fragment
 
   private void updateViews(MainActivity mainActivity, UtilitiesProvider utilsProvider) {
     mainActivity.getAppbar().setTitle(R.string.apps);
-    mainActivity.getFAB().hide();
+    mainActivity.hideFab();
     mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
     mainActivity.supportInvalidateOptionsMenu();
 
@@ -233,28 +246,34 @@ public class AppsListFragment extends Fragment
 
   @NonNull
   @Override
-  public Loader<AppListLoader.AppsDataPair> onCreateLoader(int id, Bundle args) {
+  public Loader<List<AppDataParcelable>> onCreateLoader(int id, Bundle args) {
     return new AppListLoader(getContext(), sortby, isAscending);
   }
 
   @Override
   public void onLoadFinished(
-      @NonNull Loader<AppListLoader.AppsDataPair> loader, AppListLoader.AppsDataPair data) {
+      @NonNull Loader<List<AppDataParcelable>> loader, List<AppDataParcelable> data) {
     getSpinner().setVisibility(View.GONE);
-    if (data.first.isEmpty()) {
+    if (data.isEmpty()) {
       getRecyclerView().setVisibility(View.GONE);
       rootView.findViewById(R.id.empty_text_view).setVisibility(View.VISIBLE);
     } else {
-      modelProvider.setItemList(data.second);
-      appDataParcelableList = new ArrayList<>(data.first);
-      adapter = new AppsRecyclerAdapter(this, modelProvider, false, this, data.first);
+      appDataParcelableList = new ArrayList<>(data);
+      List<AppDataParcelable> adapterList = new ArrayList<>();
+      for (AppDataParcelable appDataParcelable : data) {
+        if (!showSystemApps && appDataParcelable.isSystemApp()) {
+          continue;
+        }
+        adapterList.add(appDataParcelable);
+      }
+      adapter = new AppsRecyclerAdapter(this, modelProvider, false, this, adapterList);
       getRecyclerView().setVisibility(View.VISIBLE);
       getRecyclerView().setAdapter(adapter);
     }
   }
 
   @Override
-  public void onLoaderReset(@NonNull Loader<AppListLoader.AppsDataPair> loader) {
+  public void onLoaderReset(@NonNull Loader<List<AppDataParcelable>> loader) {
     adapter.setData(Collections.emptyList(), true);
   }
 
