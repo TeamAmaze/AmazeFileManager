@@ -50,7 +50,7 @@ class FileHandler(
             return
         }
 
-        val path = msg.obj as String
+        val path = (msg.obj as? String) ?: ""
         when (msg.what) {
             CustomFileObserver.GOBACK -> {
                 main.goBack()
