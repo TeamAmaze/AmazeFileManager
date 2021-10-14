@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes;
 
-import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
