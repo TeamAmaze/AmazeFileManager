@@ -29,7 +29,7 @@ import java.lang.annotation.Native;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public abstract class AmazeFileSystem implements Closeable {
+public abstract class AmazeFileSystem {
 
   /* -- Normalization and construction -- */
 
