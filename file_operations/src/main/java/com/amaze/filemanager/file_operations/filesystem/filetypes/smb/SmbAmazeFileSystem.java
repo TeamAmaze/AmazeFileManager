@@ -21,7 +21,6 @@
 package com.amaze.filemanager.file_operations.filesystem.filetypes.smb;
 
 import static com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.SMB_URI_PREFIX;
-import static com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.clearBaseContexts;
 
 import java.io.IOException;
 import java.io.InputStream;
