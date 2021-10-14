@@ -715,5 +715,7 @@
     <string name="cloud_drive_tooltip">יצירת חיבור ל־Google Drive™‎ לטובת ניהול קבצים מתוך מנהל הקבצים Amaze.</string>
     <string name="signin_with_google_title">יש לעבור אימות כדי להשתמש ב־Google Drive™‎</string>
     <string name="show_system_apps">הצגת יישומי המערכת</string>
+    <string name="system_apps">יישומוני מערכת</string>
+    <string name="third_party_apps">יישומוני צד־שלישי</string>
 </resources>
 
