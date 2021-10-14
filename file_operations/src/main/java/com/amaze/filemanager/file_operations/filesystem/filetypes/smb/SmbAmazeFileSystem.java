@@ -415,9 +415,4 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   public int hashCode(AmazeFile f) {
     return basicUnixHashCode(f.getPath());
   }
-
-  @Override
-  public void close() throws IOException {
-    clearBaseContexts();
-  }
 }
