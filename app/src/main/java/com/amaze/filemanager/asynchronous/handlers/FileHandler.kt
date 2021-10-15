@@ -24,6 +24,7 @@ import android.os.Handler
 import android.os.Looper
 import android.os.Message
 import android.view.View
+import android.util.Log
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.filesystem.CustomFileObserver
@@ -41,6 +42,10 @@ class FileHandler(
 ) {
     private val mainFragment: WeakReference<MainFragment> = WeakReference(mainFragment)
 
+    companion object {
+        private val TAG = FileHandler::class.java.simpleName
+    }
+
     override fun handleMessage(msg: Message) {
         super.handleMessage(msg)
         val main = mainFragment.get() ?: return
@@ -50,12 +55,16 @@ class FileHandler(
             return
         }
 
-        val path = (msg.obj as? String) ?: ""
+        val path = msg.obj as? String
         when (msg.what) {
             CustomFileObserver.GOBACK -> {
                 main.goBack()
             }
             CustomFileObserver.NEW_ITEM -> {
+                if (path == null){
+                    Log.e(TAG, "Path is empty for file")
+                    return
+                }
                 val fileCreated = HybridFile(
                     mainFragmentViewModel.openMode, "${main.currentPath}/$path"
                 )
