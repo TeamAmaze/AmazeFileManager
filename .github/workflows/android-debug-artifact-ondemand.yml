@@ -35,6 +35,7 @@ jobs:
         with:
           distribution: "adopt"
           java-version: 11
+          cache: 'gradle'
       - name: Build with Gradle
         run: |
           echo Run on-demand by ${GITHUB_ACTOR}

@@ -22,6 +22,7 @@ jobs:
         with:
           distribution: "adopt"
           java-version: 11
+          cache: 'gradle'
       - name: Check formatting using spotless
         run: ./gradlew spotlessCheck --stacktrace
   build:
