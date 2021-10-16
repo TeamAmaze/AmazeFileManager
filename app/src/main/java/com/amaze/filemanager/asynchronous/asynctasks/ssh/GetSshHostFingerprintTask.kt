@@ -73,7 +73,7 @@ class GetSshHostFingerprintTask(
         val latch = CountDownLatch(1)
         val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig()).also {
             it.connectTimeout = SSH_CONNECT_TIMEOUT
-            it.addHostKeyVerifier(object: HostKeyVerifier {
+            it.addHostKeyVerifier(object : HostKeyVerifier {
                 override fun verify(hostname: String?, port: Int, key: PublicKey?): Boolean {
                     holder.set(AsyncTaskResult(key))
                     latch.countDown()
