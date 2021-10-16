@@ -83,9 +83,7 @@ class GetSshHostFingerprintTask(
                 override fun findExistingAlgorithms(
                     hostname: String?,
                     port: Int
-                ): MutableList<String> {
-                    return Collections.emptyList()
-                }
+                ): MutableList<String> = Collections.emptyList()
             })
         }
         return runCatching {
