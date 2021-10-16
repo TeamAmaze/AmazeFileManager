@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:descendantFocusability="afterDescendants">
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/list_view"
         android:layout_width="@dimen/zero_dp"
@@ -15,6 +16,15 @@
         android:descendantFocusability="afterDescendants"
         android:visibility="gone"
         />
+
+    <com.amaze.filemanager.ui.views.FastScroller
+        android:id="@+id/fastscroll"
+        android:orientation="vertical"
+        android:layout_width="wrap_content"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_height="match_parent"/>
+
     <me.zhanghai.android.materialprogressbar.MaterialProgressBar
         android:id="@+id/loading_spinner"
         android:layout_width="@dimen/material_generic_large"

@@ -1,0 +1,583 @@
+lrwxrwxrwx 1 root root 512 1633759570 /bin/[ -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/[[ -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/abb
+lrwxrwxrwx 1 root root 512 1633759570 /bin/acpi -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/acpid -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/adjtimex -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/am
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/apexd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/app_process -> 'app_process32'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/app_process32
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/appops
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/appwidget
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ar -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/arch -> 'busybox'
+drwxr-x--x 2 shell root 512 1230768000 /bin/arm
+lrwxrwxrwx 1 root root 512 1633759570 /bin/arp -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/arping -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ascii -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ash -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/atrace
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/audioserver
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/auditctl
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/awk
+lrwxrwxrwx 1 root root 512 1633759570 /bin/base32 -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/base64 -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/basename -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/bbconfig -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bc
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bcc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/beep -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/blank_screen
+lrwxrwxrwx 1 root root 512 1633759570 /bin/blkdiscard -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/blkid
+lrwxrwxrwx 1 root root 512 1633759570 /bin/blockdev -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bmgr
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bootanimation
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bootstat
+drwxr-x--x 2 shell root 512 1230768000 /bin/bootstrap
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/boringssl_self_test32
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bpfloader
+lrwxrwxrwx 1 root root 512 1633759570 /bin/brctl -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bu
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bugreport
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bugreportz
+lrwxrwxrwx 1 root root 512 1633759570 /bin/bunzip2 -> 'bzip2'
+-rwxrwxrwx 1 root root 512 1633362686 /bin/busybox
+lrwxrwxrwx 1 root root 512 1633759570 /bin/bzcat -> 'bzip2'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/bzip2
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cal -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/cameraserver
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cat -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/charger
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chat -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chattr -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chcon -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chgrp -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chmod -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chown -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chroot -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chrt -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/chvt -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cksum -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/clatd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/clear -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/cmd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cmp -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/comm -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/conspy -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/content
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cp -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cpio -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/cppreopts.sh
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/crash_dump32
+lrwxrwxrwx 1 root root 512 1633759570 /bin/crc32 -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/credstore
+lrwxrwxrwx 1 root root 512 1633759570 /bin/crond -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/crontab -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cttyhack -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/cut -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dalvikvm -> '/apex/com.android.art/bin/dalvikvm'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/date -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dc -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dd -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/deallocvt -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/debuggerd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/defrag.f2fs -> 'fsck.f2fs'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/depmod -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/device_config
+lrwxrwxrwx 1 root root 512 1633759570 /bin/devmem -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dex2oat -> '/apex/com.android.art/bin/dex2oat32'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/df -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dhcprelay -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/diff -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dirname -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/disable-verity -> 'set-verity-state'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/dmctl
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dmesg -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dnsd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dnsdomainname -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/dnsmasq
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dos2unix -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/dpm
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/drmserver
+lrwxrwxrwx 1 root root 512 1633759570 /bin/du -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dump.f2fs -> 'fsck.f2fs'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dumpkmap -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/dumpleases -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/dumpstate
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/dumpsys
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/e2freefrag
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/e2fsck
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/e2fsdroid
+lrwxrwxrwx 1 root root 512 1633759570 /bin/echo -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ed -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/egrep -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/eject -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/enable-verity -> 'set-verity-state'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/env -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ether-wake -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/expand -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/expr -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/factor -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fakeidentd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fallocate -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/false -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fatattr -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fbset -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fbsplash -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fdflush -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fdformat -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fdisk -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fgconsole -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fgrep -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/file -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/find -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/findfs -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/flags_health_check
+lrwxrwxrwx 1 root root 512 1633759570 /bin/flash_eraseall -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/flash_lock -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/flash_unlock -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/flock -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fmt -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fold -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/free -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/freeramdisk -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fsck -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/fsck.f2fs
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fsck.minix -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/fsck_msdos
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fsfreeze -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fstrim -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/fsverity_init
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fsync -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ftpd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ftpget -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ftpput -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/fuser -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/gatekeeperd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/getconf -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/getenforce -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/getevent -> 'toolbox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/getopt -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/getprop -> 'toolbox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/gpuservice
+lrwxrwxrwx 1 root root 512 1633759570 /bin/grep -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/groups -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/gsi_tool
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/gsid
+lrwxrwxrwx 1 root root 512 1633759570 /bin/gunzip -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/gzip -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hdparm -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/head -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/heapprofd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hexdump -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hexedit -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/hid
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hostname -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/httpd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hush -> 'busybox'
+drwxr-x--x 2 shell root 512 1230768000 /bin/hw
+lrwxrwxrwx 1 root root 512 1633759570 /bin/hwclock -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/hwservicemanager
+lrwxrwxrwx 1 root root 512 1633759570 /bin/i2cdetect -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/i2cdump -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/i2cget -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/i2cset -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iconv -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/id -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/idmap2
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/idmap2d
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ifconfig -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ifdown -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ifenslave -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ifplugd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ifup -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ime
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/incident
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/incident-helper-cmd
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/incident_helper
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/incidentd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/inetd -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/init
+lrwxrwxrwx 1 root root 512 1633759570 /bin/inotifyd -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/input
+lrwxrwxrwx 1 root root 512 1633759570 /bin/insmod -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/install -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/installd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ionice -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/iorap.cmd.compiler
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/iorap.cmd.maintenance
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/iorap.inode2filename
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/iorap.prefetcherd
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/iorapd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iorenice -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iostat -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ip
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ip-wrapper-1.0 -> 'netutils-wrapper-1.0'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ip6tables -> 'iptables'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ip6tables-restore -> 'iptables'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ip6tables-save -> 'iptables'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ip6tables-wrapper-1.0 -> 'netutils-wrapper-1.0'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ipaddr -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ipcalc -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ipcrm -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ipcs -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iplink -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ipneigh -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iproute -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iprule -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/iptables
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iptables-restore -> 'iptables'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iptables-save -> 'iptables'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iptables-wrapper-1.0 -> 'netutils-wrapper-1.0'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/iptunnel -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/kbd_mode -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/keystore
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/keystore_cli_v2
+lrwxrwxrwx 1 root root 512 1633759570 /bin/kill -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/killall -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/killall5 -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/klogd -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ld.mc
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ldd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/less -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/librank
+lrwxrwxrwx 1 root root 512 1633759570 /bin/link -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/linker -> '/apex/com.android.runtime/bin/linker'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/linker_asan -> '/apex/com.android.runtime/bin/linker'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/linkerconfig
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/llkd
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/lmkd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ln -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/load_policy -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/loadfont -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/loadkmap -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/locksettings
+lrwxrwxrwx 1 root root 512 1633759570 /bin/log -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/logcat
+-r-xr-x--- 1 logd logd 512 1230768000 /bin/logd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/logname -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/logread -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/logwrapper
+lrwxrwxrwx 1 root root 512 1633759570 /bin/losetup -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/lpdump
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/lpdumpd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ls -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lsattr -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/lshal
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lsmod -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lsof -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lspci -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lsscsi -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lsusb -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lzcat -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lzma -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lzop -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/lzopcat -> 'busybox'
+-rwxr-xr-x 1 root root 512 1633759534 /bin/magisk
+lrwxrwxrwx 1 root root 512 1633759570 /bin/magiskhide -> './magisk'
+-rwxr-xr-x 1 root root 512 1633759534 /bin/magiskinit
+lrwxrwxrwx 1 root root 512 1633759570 /bin/magiskpolicy -> './magiskinit'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/make_f2fs
+lrwxrwxrwx 1 root root 512 1633759570 /bin/makedevs -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/makemime -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/man -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/md5sum -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mdnsd
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mediaextractor
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mediametrics
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mediaserver
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mesg -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/microcom -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/migrate_legacy_obb_data.sh
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mim -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mini-keyctl
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkdir -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkdosfs -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mke2fs
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfifo -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfs.ext2 -> 'mke2fs'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfs.ext3 -> 'mke2fs'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfs.ext4 -> 'mke2fs'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfs.minix -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfs.reiser -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkfs.vfat -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mknod -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mkswap -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mktemp -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/modinfo -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/modprobe -> 'toolbox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/monkey
+lrwxrwxrwx 1 root root 512 1633759570 /bin/more -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mount -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mountpoint -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mpstat -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/mtpd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/mv -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nameif -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nanddump -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nandwrite -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nbd-client -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nc -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ndc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ndc-wrapper-1.0 -> 'netutils-wrapper-1.0'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ndk_translation_program_runner_binfmt_misc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/netcat -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/netd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/netstat -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/netutils-wrapper-1.0
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/newfs_msdos
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nice -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nl -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nmeter -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nohup -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nologin -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/notify_traceur.sh
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nproc -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nsenter -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nslookup -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/nuke -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/od -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/openvt -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/otapreopt
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/otapreopt_chroot
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/otapreopt_script
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/otapreopt_slot
+lrwxrwxrwx 1 root root 512 1633759570 /bin/partprobe -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/paste -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/patch -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/perfetto
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pgrep -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pidof -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ping
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ping6
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pipe_progress -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pivot_root -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pkill -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/pm
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pmap -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/popmaildir -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/poweroff -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/powertop -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/pppd
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/preloads_copy.sh
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/preopt2cachename
+lrwxrwxrwx 1 root root 512 1633759570 /bin/printenv -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/printf -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/procrank
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ps -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pscan -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pstree -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pwd -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/pwdx -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/racoon
+lrwxrwxrwx 1 root root 512 1633759570 /bin/raidautorun -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rdate -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rdev -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/readelf -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/readlink -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/readprofile -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/realpath -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/reboot
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/recovery-persist
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/recovery-refresh
+lrwxrwxrwx 1 root root 512 1633759570 /bin/reformime -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/renice -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/requestsync
+lrwxrwxrwx 1 root root 512 1633759570 /bin/reset -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/resetprop -> './magisk'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/resize -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/resize.f2fs -> 'fsck.f2fs'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/resize2fs
+lrwxrwxrwx 1 root root 512 1633759570 /bin/restorecon -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/resume -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rev -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rfkill -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rm -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rmdir -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rmmod -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/route -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/rss_hwm_reset
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rtcwake -> 'busybox'
+-rwxr-x--- 1 shell root 512 1230768000 /bin/run-as
+lrwxrwxrwx 1 root root 512 1633759570 /bin/run-init -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/run-parts -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/runcon -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/rx -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/schedtest
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/screencap
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/screenrecord
+lrwxrwxrwx 1 root root 512 1633759570 /bin/script -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/scriptreplay -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/sdcard
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/secdiscard
+-rwx------ 1 root root 512 1230768000 /bin/secilc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sed -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/selinuxenabled -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sendevent -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sendmail -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/sensorservice
+lrwxrwxrwx 1 root root 512 1633759570 /bin/seq -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/service
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/servicemanager
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sestatus -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/set-verity-state
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setconsole -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setenforce -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setfattr -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setfont -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setkeycodes -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setlogcons -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setpriv -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setprop -> 'toolbox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setserial -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setsid -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/settings
+lrwxrwxrwx 1 root root 512 1633759570 /bin/setuidgid -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/sgdisk
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/sh
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sha1sum -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sha224sum -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sha256sum -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sha384sum -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sha3sum -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sha512sum -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/showkey -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/showmap
+lrwxrwxrwx 1 root root 512 1633759570 /bin/shred -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/shuf -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/simpleperf
+-rwxr-x--- 1 shell root 512 1230768000 /bin/simpleperf_app_runner
+lrwxrwxrwx 1 root root 512 1633759570 /bin/slattach -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sleep -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/sload_f2fs
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/sm
+lrwxrwxrwx 1 root root 512 1633759570 /bin/smemcap -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/snapshotctl
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sort -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/split -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ss
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ssl_client -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/start -> 'toolbox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/start-stop-daemon -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/stat -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/stop -> 'toolbox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/storaged
+lrwxrwxrwx 1 root root 512 1633759570 /bin/strings -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/stty -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/su -> './magisk'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sum -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/supolicy -> './magiskinit'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/surfaceflinger
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/svc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/svok -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/swapoff -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/swapon -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/switch_root -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sync -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/sysctl -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/syslogd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tac -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tail -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tar -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/taskset -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/tc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tc-wrapper-1.0 -> 'netutils-wrapper-1.0'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/tcpdump
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tcpsvd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tee -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/telecom
+lrwxrwxrwx 1 root root 512 1633759570 /bin/telnet -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/telnetd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/test -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tftp -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tftpd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/time -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/timeout -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/tombstoned
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/toolbox
+lrwxrwxrwx 1 root root 512 1633759570 /bin/top -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/touch -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/toybox
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tr -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/traced
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/traced_perf
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/traced_probes
+lrwxrwxrwx 1 root root 512 1633759570 /bin/traceroute -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/traceroute6 -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/trigger_perfetto
+lrwxrwxrwx 1 root root 512 1633759570 /bin/true -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/truncate -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ts -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tty -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ttysize -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/tunctl -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/tune2fs
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/tzdatacheck
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubiattach -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubidetach -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubimkvol -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubirename -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubirmvol -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubirsvol -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ubiupdatevol -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/udhcpc -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/udhcpc6 -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/udhcpd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/udpsvd -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uevent -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ueventd -> 'init'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/uiautomator
+lrwxrwxrwx 1 root root 512 1633759570 /bin/ulimit -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/umount -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uname -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uncompress -> 'busybox'
+-rwxr-x--- 1 root root 512 1230768000 /bin/uncrypt
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unexpand -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uniq -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unix2dos -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unlink -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unlzma -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unlzop -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unshare -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unxz -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/unzip -> 'ziptool'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/update_engine
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/update_verifier
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uptime -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/usbd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/usleep -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uudecode -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uuencode -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/uuidgen -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/vconfig -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/vdc
+lrwxrwxrwx 1 root root 512 1633759570 /bin/vi -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/viewcompiler
+lrwxrwxrwx 1 root root 512 1633759570 /bin/vmstat -> 'toybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/vold
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/vold_prepare_subdirs
+lrwxrwxrwx 1 root root 512 1633759570 /bin/volname -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/vr
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/wait_for_keymaster
+lrwxrwxrwx 1 root root 512 1633759570 /bin/watch -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/watchdog -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/watchdogd
+lrwxrwxrwx 1 root root 512 1633759570 /bin/wc -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/wget -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/which -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/whoami -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/whois -> 'busybox'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/wificond
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/wm
+lrwxrwxrwx 1 root root 512 1633759570 /bin/xargs -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/xxd -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/xz -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/xzcat -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/yes -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/zcat -> 'toybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/zcip -> 'busybox'
+lrwxrwxrwx 1 root root 512 1633759570 /bin/zipinfo -> 'ziptool'
+-rwxr-xr-x 1 shell root 512 1230768000 /bin/ziptool
