@@ -226,7 +226,9 @@ abstract class AbstractExtractorTest {
     }
 
     private fun copyArchivesToStorage() {
-        File("src/test/resources").listFiles()?.forEach {
+        File("src/test/resources").listFiles()?.filter {
+            it.isFile
+        }?.forEach {
             FileInputStream(it).copyTo(
                 FileOutputStream(
                     File(Environment.getExternalStorageDirectory(), it.name)

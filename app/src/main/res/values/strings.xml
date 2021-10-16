@@ -724,5 +724,11 @@ You only need to do this once, until the next time you select a new location for
     <string name="cloud_drive_tooltip">Create a Google Drive™ connection for managing files from within Amaze File Manager.</string>
     <string name="signin_with_google_title">Authenticate to use Google Drive™</string>
     <string name="show_system_apps">Show system apps</string>
+    <string name="system_apps">System apps</string>
+    <string name="third_party_apps">Third party apps</string>
+    <string name="select_inverse">Select Inverse</string>
+    <string name="select_by_type">Select by type</string>
+    <string name="select_by_date">Select by date</string>
+    <string name="select_similar">Select similar</string>
 </resources>
 

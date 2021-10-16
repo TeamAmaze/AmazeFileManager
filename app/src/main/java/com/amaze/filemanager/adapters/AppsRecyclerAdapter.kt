@@ -36,6 +36,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.annotation.IntDef
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
@@ -45,6 +46,8 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.AppDataParcelable
 import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel
 import com.amaze.filemanager.adapters.holders.AppHolder
+import com.amaze.filemanager.adapters.holders.EmptyViewHolder
+import com.amaze.filemanager.adapters.holders.SpecialViewHolder
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
@@ -66,6 +69,8 @@ import com.amaze.filemanager.utils.Utils
 import com.amaze.filemanager.utils.safeLet
 import java.io.File
 import java.util.*
+import kotlin.collections.ArrayList
+import kotlin.math.roundToInt
 
 class AppsRecyclerAdapter(
     private val fragment: Fragment,
@@ -74,59 +79,128 @@ class AppsRecyclerAdapter(
     private val adjustListViewCallback: AdjustListViewForTv<AppHolder>,
     private val appDataParcelableList: MutableList<AppDataParcelable>
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
     private val myChecked = SparseBooleanArray()
+    private var appDataListItem: MutableList<ListItem> = mutableListOf()
+        set(value) {
+            value.clear()
+            val headerFlags = BooleanArray(2)
+            appDataParcelableList.forEach {
+                if (!isBottomSheet && it.isSystemApp && !headerFlags[0]) {
+                    value.add(ListItem(TYPE_HEADER_SYSTEM))
+                    modelProvider.addItem("")
+                    headerFlags[0] = true
+                } else if (!isBottomSheet && !it.isSystemApp && !headerFlags[1]) {
+                    value.add(ListItem(TYPE_HEADER_THIRD_PARTY))
+                    modelProvider.addItem("")
+                    headerFlags[1] = true
+                }
+                modelProvider.addItem(it.path)
+                value.add(ListItem(it))
+            }
+            if (!isBottomSheet) {
+                modelProvider.addItem("")
+                value.add(ListItem(EMPTY_LAST_ITEM))
+            }
+            field = value
+        }
+
+    init {
+        appDataListItem = mutableListOf()
+    }
+
     private val mInflater: LayoutInflater get() = fragment.requireActivity()
         .getSystemService(Activity.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+    companion object {
+        const val TYPE_ITEM = 0
+        const val TYPE_HEADER_SYSTEM = 1
+        const val TYPE_HEADER_THIRD_PARTY = 2
+        const val EMPTY_LAST_ITEM = 3
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        val view = mInflater.inflate(R.layout.rowlayout, parent, false)
-        return AppHolder(view)
+        var view = View(fragment.requireContext())
+        when (viewType) {
+            TYPE_ITEM -> {
+                view = mInflater.inflate(R.layout.rowlayout, parent, false)
+                return AppHolder(view)
+            }
+            TYPE_HEADER_SYSTEM, TYPE_HEADER_THIRD_PARTY -> {
+                view = mInflater.inflate(R.layout.list_header, parent, false)
+                return SpecialViewHolder(
+                    fragment.requireContext(), view,
+                    (fragment.requireActivity() as MainActivity).utilsProvider,
+                    if (viewType == TYPE_HEADER_SYSTEM)
+                        SpecialViewHolder.HEADER_SYSTEM_APP
+                    else
+                        SpecialViewHolder.HEADER_THIRD_PARTY_APP
+                )
+            }
+            EMPTY_LAST_ITEM -> {
+                view.minimumHeight =
+                    (
+                        fragment.requireActivity().resources.getDimension(R.dimen.fab_height) +
+                            fragment.requireContext().resources
+                                .getDimension(R.dimen.fab_margin)
+                        ).roundToInt()
+                return EmptyViewHolder(view)
+            }
+            else -> {
+                throw IllegalStateException("Illegal $viewType in apps adapter")
+            }
+        }
+    }
+
+    override fun getItemViewType(position: Int): Int {
+        return appDataListItem[position].listItemType
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         if (holder is AppHolder) {
-            val rowItem: AppDataParcelable = appDataParcelableList[position]
-            if (isBottomSheet) {
-                holder.about.visibility = View.GONE
-                holder.txtDesc.text = rowItem.openFileParcelable?.className
-                holder.txtDesc.isSingleLine = true
-                holder.txtDesc.ellipsize = TextUtils.TruncateAt.MIDDLE
-                modelProvider.loadApkImage(rowItem.packageName, holder.apkIcon)
-            } else {
-                modelProvider.loadApkImage(rowItem.path, holder.apkIcon)
-            }
-            if (holder.about != null && !isBottomSheet) {
-                if ((fragment.requireActivity() as MainActivity).appTheme == AppTheme.LIGHT) {
-                    holder.about.setColorFilter(
-                        Color.parseColor("#ff666666")
+            appDataListItem[position].appDataParcelable?.let { rowItem ->
+                if (isBottomSheet) {
+                    holder.about.visibility = View.GONE
+                    holder.txtDesc.text = rowItem.openFileParcelable?.className
+                    holder.txtDesc.isSingleLine = true
+                    holder.txtDesc.ellipsize = TextUtils.TruncateAt.MIDDLE
+                    modelProvider.loadApkImage(rowItem.packageName, holder.apkIcon)
+                } else {
+                    modelProvider.loadApkImage(rowItem.path, holder.apkIcon)
+                }
+                if (holder.about != null && !isBottomSheet) {
+                    if ((fragment.requireActivity() as MainActivity).appTheme == AppTheme.LIGHT) {
+                        holder.about.setColorFilter(
+                            Color.parseColor("#ff666666")
+                        )
+                    }
+                    showPopup(holder.about, rowItem)
+                }
+                holder.rl.setOnFocusChangeListener { _, _ ->
+                    adjustListViewCallback.adjustListViewForTv(
+                        holder,
+                        fragment.requireActivity() as MainActivity
                     )
                 }
-                showPopup(holder.about, rowItem)
-            }
-            holder.rl.setOnFocusChangeListener { _, _ ->
-                adjustListViewCallback.adjustListViewForTv(
-                    holder,
-                    fragment.requireActivity() as MainActivity
-                )
-            }
-            holder.txtTitle.text = rowItem.label
-            val enableMarqueeFilename =
-                (fragment.requireActivity() as MainActivity)
-                    .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
-            if (enableMarqueeFilename) {
-                holder.txtTitle.ellipsize = if (enableMarqueeFilename)
-                    TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.MIDDLE
-                marqueeAfterDelay(2000, holder.txtTitle)
-            }
+                holder.txtTitle.text = rowItem.label
+                val enableMarqueeFilename =
+                    (fragment.requireActivity() as MainActivity)
+                        .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
+                if (enableMarqueeFilename) {
+                    holder.txtTitle.ellipsize = if (enableMarqueeFilename)
+                        TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.MIDDLE
+                    marqueeAfterDelay(2000, holder.txtTitle)
+                }
 
-            // 	File f = new File(rowItem.getDesc());
-            if (!isBottomSheet) {
-                holder.txtDesc.text = rowItem.fileSize
-            }
-            holder.rl.isClickable = true
-            holder.rl.nextFocusRightId = holder.about.id
-            holder.rl.setOnClickListener {
-                startActivityForRowItem(rowItem)
+                // 	File f = new File(rowItem.getDesc());
+                if (!isBottomSheet) {
+                    holder.txtDesc.text = rowItem.fileSize
+                }
+                holder.rl.isClickable = true
+                holder.rl.nextFocusRightId = holder.about.id
+                holder.rl.setOnClickListener {
+                    startActivityForRowItem(rowItem)
+                }
             }
             if (myChecked[position]) {
                 holder.rl.setBackgroundColor(
@@ -143,7 +217,7 @@ class AppsRecyclerAdapter(
     }
 
     override fun getItemCount(): Int {
-        return appDataParcelableList.size
+        return appDataListItem.size
     }
 
     /**
@@ -155,7 +229,7 @@ class AppsRecyclerAdapter(
             clear()
             val list = if (!showSystemApps) data.filter { !it.isSystemApp } else data
             addAll(list)
-            modelProvider.setItemList(list.map { it.path })
+            appDataListItem = mutableListOf()
             notifyDataSetChanged()
         }
     }
@@ -423,5 +497,21 @@ class AppsRecyclerAdapter(
             }
             .build()
             .show()
+    }
+
+    @Target(AnnotationTarget.TYPE)
+    @IntDef(
+        TYPE_ITEM,
+        TYPE_HEADER_SYSTEM,
+        TYPE_HEADER_THIRD_PARTY,
+        EMPTY_LAST_ITEM,
+    )
+    annotation class ListItemType
+
+    data class ListItem(
+        var appDataParcelable: AppDataParcelable?,
+        var listItemType: @ListItemType Int = TYPE_ITEM
+    ) {
+        constructor(listItemType: @ListItemType Int) : this(null, listItemType)
     }
 }

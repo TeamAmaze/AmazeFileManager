@@ -636,7 +636,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun updateViews(mainActivity: MainActivity, binding: FragmentFtpBinding) {
         mainActivity.appbar.setTitle(R.string.ftp)
-        mainActivity.fab.hide()
+        mainActivity.hideFab()
         mainActivity.appbar.bottomBar.setVisibility(View.GONE)
         mainActivity.invalidateOptionsMenu()
 
