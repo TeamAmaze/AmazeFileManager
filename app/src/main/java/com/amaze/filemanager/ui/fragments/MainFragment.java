@@ -69,6 +69,7 @@ import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
 import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
@@ -448,10 +449,15 @@ public class MainFragment extends Fragment
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
           ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
-          TextView textView1 = actionModeView.findViewById(R.id.item_count);
-          textView1.setText(String.valueOf(checkedItems.size()));
-          textView1.setOnClickListener(null);
-          mode.setTitle(checkedItems.size() + "");
+          actionModeView.setOnClickListener(
+              v ->
+                  SelectionPopupMenu.Companion.invokeSelectionDropdown(
+                      adapter,
+                      actionModeView,
+                      mainFragmentViewModel.getCurrentPath(),
+                      getMainActivity()));
+          TextView textView = actionModeView.findViewById(R.id.item_count);
+          textView.setText(String.valueOf(checkedItems.size()));
           hideOption(R.id.openmulti, menu);
           menu.findItem(R.id.all)
               .setTitle(
