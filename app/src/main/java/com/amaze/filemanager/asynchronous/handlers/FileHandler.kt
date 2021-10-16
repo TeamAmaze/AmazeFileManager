@@ -23,8 +23,8 @@ package com.amaze.filemanager.asynchronous.handlers
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.view.View
 import android.util.Log
+import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.filesystem.CustomFileObserver
@@ -61,7 +61,7 @@ class FileHandler(
                 main.goBack()
             }
             CustomFileObserver.NEW_ITEM -> {
-                if (path == null){
+                if (path == null) {
                     Log.e(TAG, "Path is empty for file")
                     return
                 }
