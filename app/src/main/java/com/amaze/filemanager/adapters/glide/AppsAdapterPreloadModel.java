@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.adapters.glide;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -54,8 +55,11 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
     this.isBottomSheet = isBottomSheet;
   }
 
-  public void setItemList(List<String> items) {
-    this.items = items;
+  public void addItem(String item) {
+    if (items == null) {
+      items = new ArrayList<>();
+    }
+    items.add(item);
   }
 
   @NonNull

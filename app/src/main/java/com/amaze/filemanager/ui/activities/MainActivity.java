@@ -177,6 +177,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.arch.core.util.Function;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
@@ -1441,6 +1442,24 @@ public class MainActivity extends PermissionsActivity
 
   public SpeedDialView getFAB() {
     return floatingActionButton;
+  }
+
+  public void showFab() {
+    getFAB().setVisibility(View.VISIBLE);
+    getFAB().show();
+    CoordinatorLayout.LayoutParams params =
+        (CoordinatorLayout.LayoutParams) getFAB().getLayoutParams();
+    params.setBehavior(new SpeedDialView.ScrollingViewSnackbarBehavior());
+    getFAB().requestLayout();
+  }
+
+  public void hideFab() {
+    getFAB().setVisibility(View.GONE);
+    getFAB().hide();
+    CoordinatorLayout.LayoutParams params =
+        (CoordinatorLayout.LayoutParams) getFAB().getLayoutParams();
+    params.setBehavior(new SpeedDialView.NoBehavior());
+    getFAB().requestLayout();
   }
 
   public AppBar getAppbar() {

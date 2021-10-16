@@ -53,6 +53,7 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.icons.Icons;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CircleGradientDrawable;
 import com.amaze.filemanager.utils.AnimUtils;
@@ -256,17 +257,126 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
   }
 
-  public void toggleChecked(boolean b, String path) {
+  public void toggleChecked(boolean selectAll, String path) {
     int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
 
     for (; i < itemsDigested.size(); i++) {
       ListItem item = itemsDigested.get(i);
-      if (b && item.getChecked() != ListItem.CHECKED) {
+      if (selectAll && item.getChecked() != ListItem.CHECKED) {
         item.setChecked(true);
         notifyItemChanged(i);
-      } else if (!b && item.getChecked() == ListItem.CHECKED) {
+      } else if (!selectAll && item.getChecked() == ListItem.CHECKED) {
         item.setChecked(false);
         notifyItemChanged(i);
+      }
+    }
+    invalidateActionMode();
+  }
+
+  public void toggleInverse(String path) {
+    int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
+
+    for (; i < itemsDigested.size(); i++) {
+      ListItem item = itemsDigested.get(i);
+      if (item.getChecked() != ListItem.CHECKED) {
+        item.setChecked(true);
+        notifyItemChanged(i);
+      } else if (item.getChecked() == ListItem.CHECKED) {
+        item.setChecked(false);
+        notifyItemChanged(i);
+      }
+    }
+    invalidateActionMode();
+  }
+
+  public void toggleSameTypes() {
+    ArrayList<Integer> checkedItemsIndexes = getCheckedItemsIndex();
+    for (int i = 0; i < checkedItemsIndexes.size(); i++) {
+      LayoutElementParcelable selectedElement =
+          itemsDigested.get(checkedItemsIndexes.get(i)).getElem();
+      for (int z = 0; z < itemsDigested.size(); z++) {
+        ListItem currentItem = itemsDigested.get(z);
+        if (currentItem.getElem() == null) {
+          // header type list item ('Files' / 'Folders')
+          continue;
+        }
+        if (selectedElement.isDirectory || currentItem.getElem().isDirectory) {
+          if (selectedElement.isDirectory && currentItem.getElem().isDirectory) {
+            if (currentItem.getChecked() != ListItem.CHECKED) {
+              currentItem.setChecked(true);
+              notifyItemChanged(z);
+            }
+          }
+        } else {
+          String mimeTypeCurrentItem = MimeTypes.getExtension(currentItem.getElem().desc);
+          String mimeTypeSelectedElement = MimeTypes.getExtension(selectedElement.desc);
+          if (mimeTypeCurrentItem.equalsIgnoreCase(mimeTypeSelectedElement)
+              && currentItem.getChecked() != ListItem.CHECKED) {
+            currentItem.setChecked(true);
+            notifyItemChanged(z);
+          }
+        }
+      }
+    }
+    invalidateActionMode();
+  }
+
+  public void toggleSameDates() {
+    ArrayList<Integer> checkedItemsIndexes = getCheckedItemsIndex();
+    for (int i = 0; i < checkedItemsIndexes.size(); i++) {
+      LayoutElementParcelable selectedElement =
+          itemsDigested.get(checkedItemsIndexes.get(i)).getElem();
+      for (int z = 0; z < itemsDigested.size(); z++) {
+        ListItem currentItem = itemsDigested.get(z);
+        if (currentItem.getElem() == null) {
+          // header type list item ('Files' / 'Folders')
+          continue;
+        }
+        String dateModifiedCurrentItem = currentItem.getElem().dateModification.split("\\|")[0];
+        String dateModifiedSelectedElement = selectedElement.dateModification.split("\\|")[0];
+        if (dateModifiedCurrentItem.trim().equalsIgnoreCase(dateModifiedSelectedElement.trim())
+            && currentItem.getChecked() != ListItem.CHECKED) {
+          currentItem.setChecked(true);
+          notifyItemChanged(z);
+        }
+      }
+    }
+    invalidateActionMode();
+  }
+
+  public void toggleSimilarNames() {
+    ArrayList<Integer> checkedItemsIndexes = getCheckedItemsIndex();
+    for (int i = 0; i < checkedItemsIndexes.size(); i++) {
+      LayoutElementParcelable selectedElement =
+          itemsDigested.get(checkedItemsIndexes.get(i)).getElem();
+      int fuzzinessFactor = selectedElement.title.length() / SelectionPopupMenu.FUZZYNESS_FACTOR;
+      if (fuzzinessFactor >= 1) {
+        for (int z = 0; z < itemsDigested.size(); z++) {
+          ListItem currentItem = itemsDigested.get(z);
+          if (currentItem.getElem() == null) {
+            // header type list item ('Files' / 'Folders')
+            continue;
+          }
+          int remainingFuzzyness = fuzzinessFactor;
+
+          char[] currentItemName = currentItem.getElem().title.toCharArray();
+          char[] selectedElementName = selectedElement.title.toCharArray();
+          boolean isSimilar = true;
+          for (int j = 0; j < Math.min(currentItemName.length, selectedElementName.length); j++) {
+            if (currentItemName[j] != selectedElementName[j] && remainingFuzzyness-- < 0) {
+              isSimilar = false;
+              break;
+            }
+          }
+          if (isSimilar
+              && Math.abs(currentItemName.length - selectedElementName.length)
+                  <= remainingFuzzyness) {
+            if (currentItem.getChecked() != ListItem.CHECKED) {
+              currentItem.setChecked(true);
+              notifyItemChanged(z);
+            }
+          }
+        }
       }
     }
     invalidateActionMode();
@@ -308,16 +418,14 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
   }
 
   public boolean areAllChecked(String path) {
-    boolean allChecked = true;
     int i = (path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)) ? 0 : 1;
 
     for (; i < itemsDigested.size(); i++) {
       if (itemsDigested.get(i).getChecked() == ListItem.NOT_CHECKED) {
-        allChecked = false;
+        return false;
       }
     }
-
-    return allChecked;
+    return true;
   }
 
   public ArrayList<Integer> getCheckedItemsIndex() {

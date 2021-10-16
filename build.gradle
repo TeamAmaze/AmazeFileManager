@@ -19,6 +19,7 @@ buildscript {
         junitVersion = "4.13.2"
         slf4jVersion = "1.7.25"
         mockitoVersion = "3.9.0"
+        mockitoKotlinVersion = "3.2.0"
         androidBillingVersion = "2.1.0"
         junrarVersion = "7.4.0"
         zip4jVersion = "2.6.4"

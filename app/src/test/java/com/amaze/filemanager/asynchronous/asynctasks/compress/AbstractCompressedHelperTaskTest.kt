@@ -147,7 +147,9 @@ abstract class AbstractCompressedHelperTaskTest {
     protected abstract fun createTask(relativePath: String): CompressedHelperTask
 
     private fun copyArchivesToStorage() {
-        File("src/test/resources").listFiles()?.forEach {
+        File("src/test/resources").listFiles()?.filter {
+            it.isFile
+        }?.forEach {
             FileInputStream(it).copyTo(
                 FileOutputStream(
                     File(Environment.getExternalStorageDirectory(), it.name)

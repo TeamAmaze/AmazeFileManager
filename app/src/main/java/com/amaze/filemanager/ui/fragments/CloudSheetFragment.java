@@ -22,8 +22,10 @@ package com.amaze.filemanager.ui.fragments;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudContract;
+import com.amaze.filemanager.databinding.FragmentSheetCloudBinding;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.ui.dialogs.SmbSearchDialog;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -39,7 +41,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -90,11 +92,13 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
   public void setupDialog(Dialog dialog, int style) {
     super.setupDialog(dialog, style);
 
-    rootView = getActivity().getLayoutInflater().inflate(R.layout.fragment_sheet_cloud, null);
+    rootView = FragmentSheetCloudBinding.inflate(LayoutInflater.from(requireActivity())).getRoot();
 
-    if (((MainActivity) getActivity()).getAppTheme().equals(AppTheme.DARK)) {
+    MainActivity activity = (MainActivity) getActivity();
+
+    if (activity.getAppTheme().equals(AppTheme.DARK)) {
       rootView.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    } else if (((MainActivity) getActivity()).getAppTheme().equals(AppTheme.BLACK)) {
+    } else if (activity.getAppTheme().equals(AppTheme.BLACK)) {
       rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
     } else {
       rootView.setBackgroundColor(Utils.getColor(getContext(), android.R.color.white));
@@ -142,9 +146,6 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
 
   @Override
   public void onClick(View v) {
-
-    Log.d(TAG_FRAGMENT, "Clicked: " + v.getId());
-
     switch (v.getId()) {
       case R.id.linear_layout_smb:
         dismiss();
@@ -166,7 +167,7 @@ public class CloudSheetFragment extends BottomSheetDialogFragment implements Vie
         ((MainActivity) getActivity()).addConnection(OpenMode.DROPBOX);
         break;
       case R.id.linear_layout_google_drive:
-        ((MainActivity) getActivity()).addConnection(OpenMode.GDRIVE);
+        GeneralDialogCreation.showSignInWithGoogleDialog((MainActivity) getActivity());
         break;
       case R.id.linear_layout_onedrive:
         ((MainActivity) getActivity()).addConnection(OpenMode.ONEDRIVE);

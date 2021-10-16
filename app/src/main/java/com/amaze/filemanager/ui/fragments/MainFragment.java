@@ -69,6 +69,7 @@ import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
 import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
@@ -417,7 +418,7 @@ public class MainFragment extends Fragment
           mode.setCustomView(actionModeView);
 
           getMainActivity().setPagingEnabled(false);
-          getMainActivity().getFAB().hide();
+          getMainActivity().hideFab();
 
           // translates the drawable content down
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
@@ -448,10 +449,15 @@ public class MainFragment extends Fragment
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
           ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
-          TextView textView1 = actionModeView.findViewById(R.id.item_count);
-          textView1.setText(String.valueOf(checkedItems.size()));
-          textView1.setOnClickListener(null);
-          mode.setTitle(checkedItems.size() + "");
+          actionModeView.setOnClickListener(
+              v ->
+                  SelectionPopupMenu.Companion.invokeSelectionDropdown(
+                      adapter,
+                      actionModeView,
+                      mainFragmentViewModel.getCurrentPath(),
+                      getMainActivity()));
+          TextView textView = actionModeView.findViewById(R.id.item_count);
+          textView.setText(String.valueOf(checkedItems.size()));
           hideOption(R.id.openmulti, menu);
           menu.findItem(R.id.all)
               .setTitle(
@@ -711,7 +717,7 @@ public class MainFragment extends Fragment
           // translates the drawer content up
           // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
 
-          getMainActivity().getFAB().show();
+          getMainActivity().showFab();
           if (!mainFragmentViewModel.getResults())
             adapter.toggleChecked(false, mainFragmentViewModel.getCurrentPath());
           else adapter.toggleChecked(false);
@@ -991,8 +997,6 @@ public class MainFragment extends Fragment
                         == DataUtils.GRID;
                 setListElements(
                     data.second, back, providedPath, data.first, false, isPathLayoutGrid);
-                setListElements(
-                    data.second, back, providedPath, data.first, false, isPathLayoutGrid);
               } else {
                 Log.w(getClass().getSimpleName(), "Load list operation cancelled");
               }
@@ -1196,7 +1200,7 @@ public class MainFragment extends Fragment
       }
 
       getMainActivity().updatePaths(mainFragmentViewModel.getNo());
-      getMainActivity().getFAB().show();
+      getMainActivity().showFab();
       getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       listView.stopScroll();
       fastScroller.setRecyclerView(
@@ -1312,11 +1316,7 @@ public class MainFragment extends Fragment
                   .rename(
                       mainFragmentViewModel.getOpenMode(),
                       f.getPath(),
-                      Uri.parse(mainFragmentViewModel.getCurrentPath())
-                          .buildUpon()
-                          .appendEncodedPath(name1)
-                          .build()
-                          .toString(),
+                      mainFragmentViewModel.getCurrentPath(),
                       name1,
                       f.isDirectory(),
                       getActivity(),
@@ -1414,7 +1414,7 @@ public class MainFragment extends Fragment
               loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
             } else {
               List<String> pathSegments = Uri.parse(currentFile.getPath()).getPathSegments();
-              if (pathSegments.size() < 4) {
+              if (pathSegments.size() < 3) {
                 mainFragmentViewModel.setOpenMode(OpenMode.FILE);
                 String subPath = pathSegments.get(1);
                 currentFile.setMode(OpenMode.FILE);

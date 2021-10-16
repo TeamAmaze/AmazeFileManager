@@ -97,6 +97,7 @@
     <string name="select_all">Alles auswählen</string>
     <string name="delete">Löschen</string>
     <string name="set_as_home"> Als Home-Verzeichnis festlegen</string>
+    <string name="operation_not_supported">Vorgang nicht unterstützt</string>
 
     <!-- New -->
     <!-- Array -->
@@ -207,11 +208,8 @@
     <string name="unin_system_apk">Das ist eine Systemanwendung. Das Löschen könnte zu einer Instabilität des Systems führen. Ausführen?</string>
     <string name="warning">Warnung</string>
     <string name="donate">Spenden</string>
-    <string name="archive_preferences">Archiv-Einstellungen</string>
     <string name="archive_extract_folder">Verzeichnis zum Entpacken von Archiven</string>
-    <string name="zip_create_folder">Zip Erstellungsordner</string>
     <string name="archive_summary">Archiv-Dateien werden in dieses Verzeichnis entpackt. Standardmäßig ist dies dasjenige Verzeichnis, in welchem sich das Archiv befindet.</string>
-    <string name="zip_summary">Neue zip Dateien werden in diesem Ordner erstellt. Die Standardeinstellung ist der Ordner, in denen die Dateien liegen.</string>
     <string name="open_as">Öffnen als</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>
@@ -298,6 +296,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_status_not_running">Läuft nicht</string>
     <string name="ftp_no_wifi">Stelle sicher, dass du mit Wi-Fi verbunden bist.</string>
     <string name="domain">Domain</string>
+    <string name="smb_share">Pfad teilen</string>
     <string name="invalid">Ungültig %s</string>
     <string name="ftp_notif_starting">FTP Server startet</string>
     <string name="ftp_notif_starting_title">FTP-Server</string>
@@ -394,6 +393,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="smb_launch_error">Kopiere diese Datei in den Gerätespeicher, um sie zu öffnen</string>
     <string name="error_file_not_found">Fehler: Datei nicht gefunden</string>
     <string name="error_io">E/A-Fehler</string>
+    <string name="error_file_too_large">Fehler: Datei zu groß</string>
     <string name="medium_text">Mittelgroßer Text</string>
     <string name="permission_read">Lesen</string>
     <string name="permission_write">Schreibrechte</string>
@@ -622,7 +622,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="app_ui_crash">App/Oberfläche abgestürzt</string>
     <string name="error_report_title">Fehlerbericht</string>
     <string name="crash_report_copied">Fehlerbericht in Zwischenablage kopiert</string>
-
     <string name="disableIpcSignature">IPC Signaturprüfung deaktivieren (Für veraltete SMBv1 Server - UNSICHER!)</string>
     <string name="cannot_delete_file">Datei kann nicht gelöscht werden</string>
     <string name="cannot_delete_file_with_reason">Datei %s kann nicht gelöscht werden</string>
@@ -633,8 +632,23 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="choose_different_app">Andere Anwendung auswählen</string>
     <string name="clear_open_file">Cache leeren</string>
     <string name="clear_open_file_summary">Setzt die Auswahl der Standard-Apps für das Öffnen von Dateien zurück</string>
+    <string name="ftp_readonly">Nur-Lesen Zugriff</string>
     <string name="legacy_listing_title">Alte Auflistung für Root verwenden</string>
-    <string name="legacy_listing_summary">Wenn aktiviert wird stat anstelle von ls für das Auflisten verwendet</string>
+    <string name="legacy_listing_summary">Wenn aktiviert, wird die Legacy-Methode fur Auflistung von Dateien verwendet</string>
+    <string name="error_unsupported_v5_rar">RAR-Archiv \"%s\" ist ein nicht unterstütztes RAR v5-Archiv.</string>
+    <string name="ftp_prompt_restart_server">Sie müssen den FTP-Server neu starten, damit die Änderungen angewendet werden.</string>
     <string name="error_permission_denied">Berechtigung verweigert</string>
+    <string name="error_archive_password_incorrect">Falsches Archiv-Passwort.</string>
+    <string name="error_archive_cannot_extract">Kann Archiv-Eintrag \"%s\" nicht nach \"%s\" extrahieren.</string>
+    <string name="drag_and_drop_preference">Drag and Drop Präferenz auswählen (Experimentell)</string>
+    <string name="drag_to_move_copy">Berühren und Wischen um Dateien zu verschieben oder zu kopieren</string>
+    <string name="drag_to_select">Berühren und Wischen um Dateien auszuwählen</string>
+    <string name="disable">Deaktivieren</string>
+    <string name="choose_operation">Aktion für Durchführung auswählen</string>
+    <string name="remember">Für nächstes mal merken</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">Für FTP-Server den Zugriff auf SAF gewähren</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).
+
+Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für die Datenfreigabe verwenden.</string>
 </resources>
 
