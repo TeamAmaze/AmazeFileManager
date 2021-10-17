@@ -13,6 +13,12 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+        externalNativeBuild {
+            cmake {
+                cFlags '-std=c11'
+            }
+        }
     }
 
     buildTypes {
@@ -31,6 +37,13 @@ android {
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
+        }
+    }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/c/CMakeLists.txt')
+            version '3.10.2'
         }
     }
 }
