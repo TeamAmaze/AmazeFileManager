@@ -23,8 +23,8 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">مدير ملفات Amaze</string>
-    <string name="drawer_open">فتح درج التجول </string>
-    <string name="drawer_close">اغلاق درج التجول </string>
+    <string name="drawer_open">فتح نافذة التنقل</string>
+    <string name="drawer_close">إغلاق نافذة التنقل</string>
     <string name="icon">شارة </string>
     <string name="apps">مدير التطبيق </string>
     <string name="ftp">وحدة خدمة FTP </string>
@@ -36,19 +36,19 @@
     <string name="uninstall">الغاء تركيب </string>
     <string name="play">تشغيل المتجر </string>
     <string name="properties">خصائص </string>
-    <string name="copyingapk">"نسخ APK الى" </string>
+    <string name="copyingapk">\"\نسخ APK الى\"\ </string>
     <string name="delbook">حذف علامة توقف </string>
     <string name="add_to_bookmarks">اضافة الى علامات التوقف </string>
     <string name="enterpath">ادخال المسار </string>
     <string name="cancel">الغاء </string>
     <string name="create">تكوين </string>
     <string name="loading">تحميل ... </string>
-    <string name="file_empty">الملف خالي </string>
+    <string name="file_empty">File is empty</string>
     <string name="error">خطأ </string>
-    <string name="search_results">نتائج البحث الى %s </string>
+    <string name="search_results">Search results of %s</string>
     <string name="rename">اعادة تسمية </string>
     <string name="save">حفظ </string>
-    <string name="bookmarks_added">علامات التوقف التي تمت </string>
+    <string name="bookmarks_added">تمت إضافة الإشارات المرجعية</string>
     <string name="fileexist">الملف بنفس الاسم موجود بالفعل   </string>
     <string name="name">الاسم </string>
     <string name="date">التاريخ </string>
@@ -151,7 +151,7 @@
     <string name="general">عام </string>
     <string name="thumb_summary">عرض الصور المصغرة لتطبيقات وصور التطبيقات </string>
     <string name="thumb">عرض الصور المصغرة </string>
-    <string name="hidden">عرض الملفات والحافظات المخفية </string>
+    <string name="hidden">Show Hidden Files and Folders</string>
     <string name="lastModifiedSummary">عرض التاريخ والوقت الذي تم فيه تعديل الملف آخر مرة </string>
     <string name="lastModifiedPref">عرض تاريخ ووقت آخر تعديل </string>
     <string name="size_pref_summary">عرض حجم الملفات وعدد البنود في الحافظات </string>
@@ -163,7 +163,7 @@
     <string name="version">النسخة </string>
     <string name="rate">تقييم التطبيق </string>
     <string name="feedback">ارسال معلومات مرجعية </string>
-    <string name="hiddenfiles">الملفات المخفية </string>
+    <string name="hiddenfiles">Hidden Files</string>
     <string name="type">النوع </string>
     <string name="root_directory">الأصل </string>
     <string name="add_shortcut">اضافة مسار مختصر </string>
@@ -176,7 +176,7 @@
     <string name="archive">تخزين </string>
     <string name="archive_text">هذا أرشيف  ما هو التصرف الذي تريد تنفيذه ؟ </string>
     <string name="package_installer_text">هذا هو برنامج تركيب مجموعة البرامج.  ما هو التصرف الذي تريد تنفيذه ؟ </string>
-    <string name="xda_title">سلسلة عمليات XDA </string>
+    <string name="xda_title">منتدى المطورين XDA</string>
     <string name="xda_summary">Q&amp;A ، مساعدة &amp; تصحيح الأخطاء </string>
     <string name="circular_images">استخدام الشارات الدائرية للصور والفيديوهات </string>
     <string name="circular_icons">استخدام الشارات الدائرية </string>
@@ -227,7 +227,7 @@
     <string name="color_title">اللون </string>
     <string name="color_summary">تحديد اللون لمكونات UI المختلفة </string>
     <string name="primary_color_title">اللون الأساسي (جدولة يسار) </string>
-    <string name="primary_color_summary">تحديد اللون لعناصر UI الكبيرة لعلامة التبويب اليسرى </string>
+    <string name="primary_color_summary">اضبط اللون على عناصر واجهة المستخدم الكبيرة لعلامة التبويب اليسرى</string>
     <string name="accent_color_title">لون نسبة الاستخدام </string>
     <string name="accent_color_summary">تحديد اللون الى FAB وعناصر UI الصغيرة الأخرى </string>
     <string name="icon_color_title">لون الشارة </string>
@@ -301,7 +301,7 @@
     <string name="ftp_notif_starting_title">وحدة خدمة FTP </string>
     <string name="ftp_notif_title">تشغيل وحدة خدمة AzAze FTP </string>
     <string name="ftp_notif_text">عند %s </string>
-    <string name="ftp_notif_stop_server">! توقف </string>
+    <string name="ftp_notif_stop_server">إيقاف</string>
     <string name="ftp_port_edit_menu_title">منفذ FTP </string>
     <string name="ftp_port_change_success">تم تغيير منفذ FTP بنجاح </string>
     <string name="ftp_port_change_error_invalid">تم تحديد رقم منفذ غير صحيح </string>
@@ -328,7 +328,7 @@
                          <b>اتاحة مشاركة الملف على Windows </b>\n 
                      </li>
                      <p style="margin-left: 40px">
-                        قم بفتح لوحة التحكم ، واضغط اختيار HomeGroup واختيارات المشاركة تحت شبكة الاتصالات والانترنت ، واضغط "تغيير محددات المشاركة المتقدمة" ، واتاحة "ملف ومشاركة وحدة الطباعة"  الخاصية المميزة. \n \n 
+                        قم بفتح لوحة التحكم ، واضغط اختيار HomeGroup واختيارات المشاركة تحت شبكة الاتصالات والانترنت ، واضغط \\"تغيير محددات المشاركة المتقدمة\" ، واتاحة \"ملف ومشاركة وحدة الطباعة\"  الخاصية المميزة. \n \n 
                      </p>
 
                      <li>
@@ -349,7 +349,7 @@
                          <b>ايجاد عنوان IP </b>\n 
                      </li>
                      <p style="margin-left: 40px">
-                        فتح رسالة حث الأمر.  أدخل \ 'ipconfig \' ثم اضغط Enter.  ابحث عن Default Gateway تحت موفق شبكة الاتصالات الخاص بك لتوجيه مسار التوجيه الخاص بك \ ' عنوان IP.  أنظر الى \ \\ "عنوان IPv4 \ \\" تحت نفس قسم الموفق لايجاد IP الخاص بالحاسب الخاص بك 
+                        فتح رسالة حث الأمر.  أدخل \'\ ipconfig \'\ ثم اضغط Enter.  ابحث عن Default Gateway تحت موفق شبكة الاتصالات الخاص بك لتوجيه مسار التوجيه الخاص بك \\' عنوان IP.  أنظر الى \\"عنوان IPv4 \"\ تحت نفس قسم الموفق لايجاد IP الخاص بالحاسب الخاص بك 
                         عنوان. \n \n 
                      </p>
 
@@ -385,7 +385,7 @@
     <string name="height">الارتفاع </string>
     <string name="date_modified">تاريخ التعديل </string>
     <string name="software">البرامجيات </string>
-    <string name="creator">القائم بالتكوين </string>
+    <string name="creator">المنشئ</string>
     <string name="camera_brand">كاميرا الكاميرا </string>
     <string name="camera_model">نموذج الكاميرا </string>
     <string name="date_taken">تاريخ التكين </string>
@@ -407,7 +407,7 @@
     <string name="paper_size">حجم الورقة </string>
 
     <!-- %s will be replaced with either copied or moved -->
-    <string name="copy_error">بعض الملفات التي تم صرفها \ ' 't بنجاح %s </string>
+    <string name="copy_error">بعض الملفات التي تم صرفها \'\ \'\t بنجاح %s </string>
     <string name="copied">تم النسخ </string>
     <string name="moved">نقل </string>
     <string name="copy_complete">اتمام النسخ </string>
@@ -558,7 +558,7 @@
     <string name="channel_name_normal">الاعلامات الامامية </string>
     <string name="channel_description_normal">اخطارات File Manager \'s Notifications </string>
     <string name="channel_name_ftp">وحدة خدمة Azze FTP </string>
-    <string name="channel_description_ftp">وحدات خدمة MyAze File Manager FTP /'s Notifications </string>
+    <string name="channel_description_ftp">وحدات خدمة MyAze File Manager FTP \'\s Notifications </string>
 
     <string name="processing">جاري التشغيل ... </string>
     <string name="failed_no_connection">فشل في تحميل الملفات.  برجاء التحقق من الوصلة الخاصة بك. </string>
@@ -566,7 +566,7 @@
     <string name="update">تعديل </string>
 	<string name="scp_connection">وصلة SCP/SFTP </string>
     <string name="scp_port">المنفذ </string>
-    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \ '%1$s \'. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \" نعم \ "لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \" لا \ ". </string>
+    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \\'%1$s \'\. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \"\ نعم \\"لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \\" لا \"\. </string>
     <string name="ssh_host_key_verification_prompt_title">التحقق من النظام الرئيسي </string>
     <string name="ssh_select_pem_button">مفتاح SSH الخاص </string>
     <string name="ssh_pem_key_parse_error">غير قادر على قراءة PEM المحدد : %s </string>
@@ -586,15 +586,15 @@
     <string name="orange">برتقالي </string>
     <string name="blue">أزرق </string>
     <string name="green">أخضر </string>
-    <string name="password_no_match">كلمة السرية doesn \ 't مطابقة </string>
+    <string name="password_no_match">كلمة السرية doesn \'\t مطابقة </string>
     <string name="deselect_all">الغاء تحديد كل </string>
     <string name="filename">اسم الملف </string>
-    <string name="compress_file_suggest_zip_extension">يفضل أن يقوم \ "باستخدام \". zip \ " كامتداد للملف. </string>
+    <string name="compress_file_suggest_zip_extension">يفضل أن يقوم \\"باستخدام \"\. zip \"\ كامتداد للملف. </string>
     <string name="about_amaze">مدير ملف تصميم المواد لأندرويد </string>
     <string name="license">الترخيص </string>
     <string name="libraries">المكتبات </string>
     <string name="password_repeat">تكرار كلمة السرية </string>
-    <string name="create_file_suggest_txt_extension">يفضل أن يقوم \ "باستخدام \". txt \" على أنه لاحقة الملف. </string>
+    <string name="create_file_suggest_txt_extension">يفضل أن يقوم \\"باستخدام \"\. txt \"\ على أنه لاحقة الملف. </string>
     <string name="ssh_select_pem">تحديد المفتاح الخاص للتوثيق </string>
     <string name="ssh_key_invalid_passphrase">عبارة passphrase غير صحيحة. </string>
     <string name="encryption_fail_copy">فشل في تعديل ادخال التشفير في قاعدة البيانات </string>
@@ -608,9 +608,9 @@
     <string name="got_it">! حصلت عليه </string>
     <string name="encrypt_file_save_as">حفظ الملف المشفر باسم ... </string>
     <string name="encrypt_folder_save_as">حفظ الحافظة التي تم تشفيرها باسم ... </string>
-    <string name="encrypt_file_must_end_with_aze">يجب أن تقوم الملفات المشفرة باستخدام \ ". seزى \" على أنه لاحقة الملف. </string>
+    <string name="encrypt_file_must_end_with_aze">يجب أن تقوم الملفات المشفرة باستخدام \"\. seزى \\" على أنه لاحقة الملف. </string>
     <string name="cannot_overwrite">لا يمكن احلال الملف. </string>
-    <string name="saved_single_file">تم حفظ الملف على أنه \ ' %s \'. </string>
+    <string name="saved_single_file">تم حفظ الملف على أنه \'\ %s \'\. </string>
     <string name="saved_multi_files">تم حفظ %d ملف. </string>
     <string name="create_hidden_file_warn">سيتم اخفاء الملف الذي تم تكوينه في كشف الملفات. </string>
     <string name="grant_apkinstall_permission">يجب الاستمرار في تطبيق تصريح App لتركيب التطبيقات. </string>
@@ -622,8 +622,8 @@
     <string name="donation_thanks">شكرا للتبرع ، هذا يبقينا متحفزا ! (: </string>
     <string name="enable_marquee_filename">اتاحة تأثير marquee لأسماء الملفات </string>
     <string name="archive_password_prompt">برجاء ادخال كلمة سرية التخزين : </string>
-    <string name="cannot_extract_archive">لا يمكن استخراج الأرشيف \ " %s \" : %s </string>
-    <string name="archive_unsupported_or_corrupt">لا يمكن فتح التخزين \ " %s \".  اما أنه لا يمكن فتح ملف التخزين ، أو أنه قد حدث تلف في التخزين. </string>
+    <string name="cannot_extract_archive">لا يمكن استخراج الأرشيف \"\ %s \"\ : %s </string>
+    <string name="archive_unsupported_or_corrupt">لا يمكن فتح التخزين \\" %s \\".  اما أنه لا يمكن فتح ملف التخزين ، أو أنه قد حدث تلف في التخزين. </string>
     <string name="close">اغلاق </string>
     <string name="bookmark_exists">علامة التوقف موجودة </string>
     <string name="hide_media">اخفاء من برامج استعراض وسط التخزين </string>
@@ -679,7 +679,7 @@
     <string name="ftp_prompt_restart_server">سيكون من الضروري اعادة بدء وحدة خدمة FTP لكي تصبح التغييرات فعالة. </string>
     <string name="error_permission_denied">تم رفض التصريح </string>
     <string name="error_archive_password_incorrect">كلمة سرية أرشيف غير صحيحة. </string>
-    <string name="error_archive_cannot_extract">لا يمكن استخراج مدخلات التخزين \ "%s \" الى \ " %s \". </string>
+    <string name="error_archive_cannot_extract">لا يمكن استخراج مدخلات التخزين \\"%s \\" الى \"\ %s \"\. </string>
     <string name="drag_and_drop_preference">حدد سحب ووضع تفضيلات (Expertal) </string>
     <string name="drag_to_move_copy">اللمس والسحب لنقل أو نسخ ملفات </string>
     <string name="drag_to_select">قم باللمس والسحب لاختيار الملفات </string>
@@ -701,5 +701,11 @@
     <string name="cloud_drive_tooltip">قم بإنشاء اتصال Google Drive ™ لإدارة الملفات من داخل Amaze File Manager.</string>
     <string name="signin_with_google_title">المصادقة لاستخدام Google Drive™</string>
     <string name="show_system_apps">عرض تطبيقات النظام</string>
+    <string name="system_apps">System apps</string>
+    <string name="third_party_apps">Third party apps</string>
+    <string name="select_inverse">Select Inverse</string>
+    <string name="select_by_type">Select by type</string>
+    <string name="select_by_date">Select by date</string>
+    <string name="select_similar">Select similar</string>
 </resources>
 
