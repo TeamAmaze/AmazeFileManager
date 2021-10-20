@@ -314,7 +314,6 @@
     <string name="report_bugs_summary">回報問題或告訴我們您想要的新功能</string>
     <string name="translate_title">翻譯</string>
     <string name="translate_summary">用您的語言翻譯 Amaze</string>
-    <string name="easter_egg_title">工作室模式</string>
     <string name="paypal_copy_message">Paypal ID 已複製到剪貼簿</string>
     <string name="searching_devices">正在搜尋裝置</string>
     <string name="use_custom_ip">使用自訂的 IP</string>
@@ -324,7 +323,6 @@
 <html><body><center>\n<h1>如何存取共用 Windows 資料夾上的 android (SMB)</h1>\n</center> \n <ol>\n <li>\n <b>啟用檔案共用</b> \n <br/> 開啟控制台，點選選擇家用群組和共用選項下網路和網際網怒，並按一下更改進階共用設定。啟用檔案和印表機共用功能 \n</li> <br/> <li/> <b>其他檔案共用設定</b> <br/> 您可能還想配置其他例如進階共用設定這裡 \n，您可以啟用存取您無需密碼的檔案，如果您相信在您的本地網路上的所有裝置。一旦啟用了檔案和印表機共用，則可以開啟檔案資源管理器或 Windows 檔案總管中，按右鍵您想要共用的資料夾並選擇屬性。\n 按一下共用按鈕，使此資料夾可在 \n 網路。 <li><li/> <br/> <b>確保兩個裝置都在相同的 Wi-Fi</b> <br/> \n 此功能使檔可用在本地網路上，因此您的 PC 和行動裝置必須具有相同的本地網路上。您無法無法訪問共用的 Windows 資料夾透過網際網路或您的智慧手機連線至其行動數據時 — — 已連線至 Wi-Fi。</li><li>\n <br/><b>尋找 IP 位址</b> \n <br/> 開啟命令提示字元。輸入 ipconfig，然後按 enter 鍵。尋找根據您為您的路由器的 IP 位址的網路介面卡的預設閘道。尋找 "IPv4 Address" 相同的配接器部分，以查找您的電腦的 IP 位址下。</li> <li/> <br/>\n <b>在 SMB 對話方塊中輸入詳細資訊</b> \n <br/> \n</ol> \n</body> \n</html>    </string>
     <string name="share_limit">無法分享超過 100 個檔案</string>
     <string name="otg_access">選擇 OTG 裝置的根目錄。</string>
-    <string name="opening">正在開始...</string>
     <string name="information">資訊</string>
     <!-- reference to file accessed date -->
     <string name="accessed">存取日期</string>
@@ -407,7 +405,6 @@
     <string name="cloud_connection">雲端連線</string>
     <string name="cloud_connection_new">新增雲端連線</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google 雲端硬碟</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">取得雲端套件</string>
@@ -470,17 +467,12 @@
     <string name="authenticate_password">請輸入密碼</string>
 
     <string name="sidebar_preferences">側欄</string>
-    <string name="sidebar_folders_title">側欄捷徑</string>
     <string name="sidebar_quick_access_title">側欄快速存取</string>
-    <string name="show_folders_pref_title">顯示捷徑</string>
-    <string name="show_folders_pref">捷徑</string>
     <string name="show_quick_access_pref_title">顯示快速存取</string>
     <string name="show_quick_access_pref">快速存取</string>
-    <string name="create_shortcut">建立捷徑</string>
-    <string name="edit_shortcut">編輯捷徑</string>
     <string name="directory">目錄</string>
-    <string name="question_delete_shortcut">刪除捷徑？</string>
 
+    <string name="show_bookmarks_pref">書籤</string>
     <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
     <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
     <string name="cloud_remove">您想要移除此雲端連線嗎？</string>
@@ -654,6 +646,5 @@
     <string name="ftp_prompt_accept_first_start_saf_access">呢次係你第一次開著個 FTP伺服器，咁啱你又用內部儲存空間來做共享檔案夾。請你容許 Amaze用 SAF存取儲存空間。\n\n
 
 你只需要做一次，直至下次你揀過另一個共享檔案夾。</string>
-    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
-</resources>
+    </resources>
 
