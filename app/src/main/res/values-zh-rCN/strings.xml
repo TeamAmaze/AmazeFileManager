@@ -23,8 +23,8 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze 文件管理器</string>
-    <string name="drawer_open">打开导航抽屉</string>
-    <string name="drawer_close">关闭导航抽屉</string>
+    <string name="drawer_open">打开抽屉式导航栏</string>
+    <string name="drawer_close">关闭抽屉式导航栏</string>
     <string name="icon">图标</string>
     <string name="apps">应用管理</string>
     <string name="ftp">FTP 服务器</string>
@@ -42,7 +42,7 @@
     <string name="enterpath">请输入路径</string>
     <string name="cancel">取消</string>
     <string name="create">新建</string>
-    <string name="loading">正在载入&#8230;</string>
+    <string name="loading">正在加载&#8230;</string>
     <string name="file_empty">文件是空的</string>
     <string name="error">错误</string>
     <string name="search_results">%s 的搜索结果</string>
@@ -55,7 +55,7 @@
     <string name="location">路径</string>
     <string name="size_capitalized">大小</string>
     <string name="size">文件夹大小</string>
-    <string name="enterzipname">请输入 ZIP 文件名</string>
+    <string name="enterzipname">请输入 Zip 文件名</string>
     <string name="no_app_found">无法找到可以打开此文件的应用</string>
     <string name="copying">正在复制</string>
     <string name="moving">正在移动</string>
@@ -78,7 +78,7 @@
     <string name="dialog_delete_disclaimer">您确定要永久删除这些文件吗？删除后将无法恢复。</string>
     <string name="dialog_delete_title">永久删除？</string>
     <string name="deleting">正在删除</string>
-    <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的默认位置吗？</string>
+    <string name="question_set_path_as_home">您确定要将当前路径设置为此选项卡的首页吗？</string>
     <string name="directorysort">目录排序方式</string>
     <string name="sort_by">排序方式</string>
     <string name="sort_only_this">仅应用于此目录</string>
@@ -87,7 +87,7 @@
     <string name="random_summary">每次启动都显示随机主题</string>
     <string name="colorize">多彩图标</string>
     <string name="colorize_summary">设置静态图标的颜色，不会覆盖目录图标设置</string>
-    <string name="home">首页目录</string>
+    <string name="home">首页</string>
     <string name="paste">粘贴</string>
     <string name="history">历史记录</string>
     <string name="copy">复制</string>
@@ -96,17 +96,18 @@
     <string name="root_failure">未获取 Root 权限</string>
     <string name="select_all">全选</string>
     <string name="delete">删除</string>
-    <string name="set_as_home">设为首页目录</string>
+    <string name="set_as_home">设为首页</string>
+    <string name="operation_not_supported">不支持此操作</string>
 
     <!-- New -->
     <!-- Array -->
 
     <!-- UI -->
     <!-- Theme -->
-    <string name="light">明亮</string>
-    <string name="dark">夜间</string>
-    <string name="daytime">白天</string>
-    <string name="black">黑（用于 OLED）</string>
+    <string name="light">Material 浅色</string>
+    <string name="dark">Material 深色</string>
+    <string name="daytime">随昼夜变化</string>
+    <string name="black">OLED 黑</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">文件夹显示在顶部</string>
@@ -207,11 +208,8 @@
     <string name="unin_system_apk">这是一个系统应用，删除它可能导致系统不稳定。\n请问您是否继续？</string>
     <string name="warning">警告</string>
     <string name="donate">捐赠</string>
-    <string name="archive_preferences">压缩设置</string>
     <string name="archive_extract_folder">压缩包提取目录</string>
-    <string name="zip_create_folder">ZIP 创建目录</string>
     <string name="archive_summary">压缩包内的文件会被解压到此目录，默认解压到压缩包所在目录。</string>
-    <string name="zip_summary">新 ZIP 文件会被创建到此目录，默认创建压缩包到当前目录。</string>
     <string name="open_as">打开方式</string>
     <string name="text">文本</string>
     <string name="audio">音乐</string>
@@ -297,6 +295,7 @@
     <string name="ftp_status_not_running">没有运行</string>
     <string name="ftp_no_wifi">请确保您已连接上可用的 Wi-Fi</string>
     <string name="domain">域名</string>
+    <string name="smb_share">分享路径</string>
     <string name="invalid">无效的 %s</string>
     <string name="ftp_notif_starting">FTP 服务器正在启动中</string>
     <string name="ftp_notif_starting_title">FTP 服务器</string>
@@ -310,10 +309,11 @@
     <string name="primary_two_summary">设置右侧面板大部分控件的颜色</string>
     <string name="support_development">协助开发</string>
     <string name="report_bugs_title">反馈问题</string>
+    <string name="source_title">源代码</string>
+    <string name="source_summary">在 GitHub 上查看源代码</string>
     <string name="report_bugs_summary">反馈问题或提交新功能需求</string>
     <string name="translate_title">贡献翻译</string>
     <string name="translate_summary">前往 Amaze 本地化系统进行语言翻译</string>
-    <string name="easter_egg_title">工作室模式</string>
     <string name="paypal_copy_message">Paypal ID 已复制至剪切板</string>
     <string name="searching_devices">正在搜索设备</string>
     <string name="use_custom_ip">使用自定义 IP</string>
@@ -363,7 +363,6 @@
     </string>
     <string name="share_limit">最多只能分享 100 个文件</string>
     <string name="otg_access">选择根目录下的 OTG 设备</string>
-    <string name="opening">正在打开</string>
     <string name="information">信息</string>
     <!-- reference to file accessed date -->
     <string name="accessed">访问时间</string>
@@ -431,6 +430,7 @@
     <string name="smb_launch_error">您需要将此文件复制到存储空间中才能打开它</string>
     <string name="error_file_not_found">错误：无法找到文件</string>
     <string name="error_io">I/O 错误</string>
+    <string name="error_file_too_large">错误：文件太大</string>
     <string name="medium_text">中号字体</string>
     <string name="permission_read">读取</string>
     <string name="permission_write">写入</string>
@@ -476,7 +476,7 @@
     <string name="contributors_2_summary">图标和横幅</string>
     <string name="contributors_3_summary">主题引擎</string>
     <string name="contributors_4_summary">浮动操作按钮阴影</string>
-    <string name="contributors_5_summary">滑动按钮时进行颜色过渡</string>
+    <string name="contributors_5_summary">在选项卡间滑动时的颜色过渡</string>
     <string name="contributors_6_summary">FTP 服务器</string>
     <string name="contributors_7_summary">启动交互式 Shell</string>
     <string name="connection_exists">连接已存在</string>
@@ -511,6 +511,13 @@
     <string name="show_quick_access_pref">快速访问</string>
     <string name="directory">目录</string>
 
+    <string name="sidebar_bookmarks_title">侧边栏书签</string>
+    <string name="show_bookmarks_pref_title">显示书签</string>
+    <string name="show_bookmarks_pref">书签</string>
+    <string name="create_bookmark">新建书签</string>
+    <string name="edit_bookmark">编辑书签</string>
+    <string name="question_delete_bookmark">删除书签？</string>
+
     <string name="cloud_error_plugin">无法找到 Amaze Cloud 插件，请从应用商店下载。</string>
     <string name="cloud_error_failed_restart">无法加载此连接，请再次打开 Amaze Cloud。</string>
     <string name="cloud_remove">您想要移除此网盘吗？</string>
@@ -540,8 +547,8 @@
     <string name="intent_save_as">保存为&#8230;</string>
     <string name="go">进入</string>
     <string name="advanced">高级</string>
-    <string name="typeable_paths_title">自定义地址</string>
-    <string name="typeable_paths_summary">长按地址栏，以输入自定义地址</string>
+    <string name="typeable_paths_title">自定义路径</string>
+    <string name="typeable_paths_summary">长按路径栏，以输入自定义路径</string>
     <string name="send_email_to">发送邮件到</string>
 
     <string name="text_editor">文本编辑器设置</string>
@@ -625,8 +632,34 @@
     <string name="close">关闭</string>
     <string name="bookmark_exists">书签已存在</string>
     <string name="hide_media">从媒体浏览器隐藏</string>
+    <string name="update_host_key">更新热键</string>
     <string name="cancel_recommended">取消（建议）</string>
     <string name="failed_install_apk">安装失败</string>
-    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
-</resources>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">内部存储</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">外置存储卡</string>
+    <string name="choose_folder">选择此文件夹</string>
+    <string name="ftp_server_open_settings">打开设置</string>
+    <string name="move">移动</string>
+    <string name="select_save_location">选择保存位置</string>
+    <string name="scp_default_path">默认路径（可选）</string>
+
+    <string name="error_report_button_text">发邮件报告此错误</string>
+    <string name="what_happened_headline">发生了：</string>
+    <string name="error_details_headline">详情：</string>
+    <string name="cannot_delete_file">无法删除文件</string>
+    <string name="cannot_delete_file_with_reason">无法删除文件 - %s</string>
+    <string name="cannot_rename_file">无法重命名文件%s-%s</string>
+    <string name="cannot_read_directory">无法读取文件夹%s-%s</string>
+    <string name="just_once">仅本次</string>
+    <string name="always">总是</string>
+    <string name="clear_open_file">清除缓存</string>
+    <string name="error_permission_denied">权限不足</string>
+    <string name="error_archive_password_incorrect">解压密码有误</string>
+    <string name="disable">停用</string>
+    <string name="show_system_apps">显示系统应用</string>
+    </resources>
 
