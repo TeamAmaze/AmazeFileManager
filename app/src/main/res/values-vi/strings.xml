@@ -277,13 +277,13 @@
     <string name="cant_be_empty">%s không thể để trống</string>
     <string name="ip">Địa chỉ</string>
     <string name="connection_name">Tên kết nối</string>
-    <string name="no_device_found">Không tìm thấy thiết bị</string>
+    <string name="no_device_found">Không có thiết bị nào được tìm thấy</string>
     <string name="path">Đường dẫn</string>
-    <string name="rename_bookmark">Tùy chỉnh Bookmark</string>
+    <string name="rename_bookmark">Sửa Dấu trang</string>
     <string name="cut">Cắt</string>
     <string name="search">Tìm kiếm</string>
     <string name="invalid_name">Tên không hợp lệ</string>
-    <string name="search_hint">Gõ để tìm kiếm&#8230;</string>
+    <string name="search_hint">Nhập để tìm kiếm&#8230;</string>
     <string name="advanced_search">Tìm kiếm nâng cao</string>
     <string name="regular_expression">Cú pháp thường dùng</string>
     <string name="regular_expression_summary">Tìm kiếm dùng một dạng cú pháp BASH thường dùng</string>
@@ -298,9 +298,9 @@
     <string name="domain">Tên miền</string>
     <string name="smb_share">Chia sẻ đường dẫn</string>
     <string name="invalid">Không hợp lệ %s</string>
-    <string name="ftp_notif_starting">FTP Server đang bắt đầu</string>
-    <string name="ftp_notif_starting_title">FTP Server</string>
-    <string name="ftp_notif_title">Amaze FTP Server đang chạy</string>
+    <string name="ftp_notif_starting">Máy chủ FTP đang bắt đầu</string>
+    <string name="ftp_notif_starting_title">Máy chủ FTP</string>
+    <string name="ftp_notif_title">Máy chủ FTP Amaze đang chạy</string>
     <string name="ftp_notif_text">tại %s</string>
     <string name="ftp_notif_stop_server">Ngừng</string>
     <string name="ftp_port_edit_menu_title">Chọn công FTP</string>
@@ -597,9 +597,9 @@
     <string name="customize">Tùy chỉnh</string>
     <string name="custom">Tùy chỉnh</string>
     <string name="preselected_configs_title">Các cấu hình được chọn trước</string>
-    <string name="orange">Orange</string>
-    <string name="blue">Blue</string>
-    <string name="green">Green</string>
+    <string name="orange">Cam</string>
+    <string name="blue">Xanh dương</string>
+    <string name="green">Xanh lá cây</string>
     <string name="password_no_match">Mật khẩu không khớp</string>
     <string name="deselect_all">Bỏ chọn tất cả</string>
     <string name="filename">Tên tập tin</string>
@@ -714,6 +714,6 @@ Bạn chỉ cần làm điều này một lần cho đến lần tiếp theo b�
     <string name="security_error">Tập tin không thể được mở bằng ứng dụng này</string>
     <string name="cloud_drive_tooltip">Tạo một kết nối Google Drive™ để quản lý tệp từ trong Amaze File Manager.</string>
     <string name="signin_with_google_title">Xác thực để sử dụng Google Drive™</string>
-    <string name="show_system_apps">Hiển thị ứng dụng hệ thống</string>
-</resources>
+    <string name="show_system_apps">Hiện ứng dụng hệ thống</string>
+    </resources>
 
