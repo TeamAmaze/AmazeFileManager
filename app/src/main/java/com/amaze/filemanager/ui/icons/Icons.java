@@ -197,7 +197,8 @@ public class Icons {
 
   public static @DrawableRes int loadMimeIcon(String path, boolean isDirectory) {
     if (path.equals("..")) return R.drawable.ic_arrow_left_white_24dp;
-    if (CompressedHelper.isFileExtractable(path)) return R.drawable.ic_compressed_white_24dp;
+    if (CompressedHelper.isFileExtractable(path) && !isDirectory)
+      return R.drawable.ic_compressed_white_24dp;
 
     int type = getTypeOfFile(path, isDirectory);
 
