@@ -314,7 +314,6 @@
     <string name="report_bugs_summary">回報問題或告訴我們您想要的新功能</string>
     <string name="translate_title">翻譯</string>
     <string name="translate_summary">用您的語言翻譯 Amaze</string>
-    <string name="easter_egg_title">工作室模式</string>
     <string name="paypal_copy_message">Paypal ID 已複製到剪貼簿</string>
     <string name="searching_devices">正在搜尋裝置</string>
     <string name="use_custom_ip">使用自訂的 IP</string>
@@ -361,7 +360,6 @@
         </html>    </string>
     <string name="share_limit">無法分享超過 100 個檔案</string>
     <string name="otg_access">選擇 OTG 裝置的根目錄。</string>
-    <string name="opening">正在開始...</string>
     <string name="information">資訊</string>
     <!-- reference to file accessed date -->
     <string name="accessed">存取日期</string>
@@ -444,7 +442,7 @@
     <string name="cloud_connection">雲端連線</string>
     <string name="cloud_connection_new">新增雲端連線</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google 雲端硬碟</string>
+    <string name="cloud_drive">Google雲端硬碟&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">取得雲端套件</string>
@@ -507,16 +505,17 @@
     <string name="authenticate_password">請輸入密碼</string>
 
     <string name="sidebar_preferences">邊欄</string>
-    <string name="sidebar_folders_title">側欄捷徑</string>
     <string name="sidebar_quick_access_title">側欄快速存取</string>
-    <string name="show_folders_pref_title">顯示捷徑</string>
-    <string name="show_folders_pref">捷徑</string>
     <string name="show_quick_access_pref_title">顯示快速存取</string>
     <string name="show_quick_access_pref">快速存取</string>
-    <string name="create_shortcut">建立捷徑</string>
-    <string name="edit_shortcut">編輯捷徑</string>
     <string name="directory">目錄</string>
-    <string name="question_delete_shortcut">刪除捷徑？</string>
+
+    <string name="sidebar_bookmarks_title">側欄書籤</string>
+    <string name="show_bookmarks_pref_title">顯示書籤</string>
+    <string name="show_bookmarks_pref">書籤</string>
+    <string name="create_bookmark">建立書籤</string>
+    <string name="edit_bookmark">編輯書籤</string>
+    <string name="question_delete_bookmark">刪除書籤？</string>
 
     <string name="cloud_error_plugin">找不到 Amaze Cloud 套件。請從 Play 商店中下載。</string>
     <string name="cloud_error_failed_restart">載入連線失敗。請再開啟一次 Amaze Cloud。</string>
@@ -691,6 +690,14 @@
     <string name="ftp_prompt_accept_first_start_saf_access">因為這是你第一次開啟 FTP伺服器，而你正以內部儲存空間共享到 FTP伺服器上，請容許 Amaze以 SAF存取內部儲存空間。
 
 你只需進行這個動作一次，直至你選擇把另一個位置共享到 FTP伺服器上。</string>
-    <string name="signin_with_google_title">登入以使用 Google Drive™</string>
-</resources>
+    <string name="ftp_preference_saf_filesystem_title">使用傳統檔案系統</string>
+    <string name="ftp_server_fallback_path_reset_prompt">選擇以傳統檔案系統運行後， FTP伺服器的共享路徑已經重置為內部儲存空間。如有需要，請以右上角的菜單選擇新的共享路徑。</string>
+    <string name="error_empty_archive">\"%s\" 是空白的壓縮檔。</string>
+    <string name="security_error">檔案不能以此 app開啟</string>
+    <string name="cloud_drive_tooltip">建立到 Google雲端硬碟™的連線，以便在 Amaze檔案管理員內管理在雲端硬碟上的檔案。</string>
+    <string name="signin_with_google_title">登入以使用 Google雲端硬碟&#8482;</string>
+    <string name="show_system_apps">顯示系統應用程式</string>
+    <string name="system_apps">系統應用程式</string>
+    <string name="third_party_apps">第三方應用程式</string>
+    </resources>
 
