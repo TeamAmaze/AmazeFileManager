@@ -97,7 +97,6 @@
     <string name="select_all">Markera alla</string>
     <string name="delete">Ta bort</string>
     <string name="set_as_home">Ange som hem</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -207,11 +206,8 @@
     <string name="unin_system_apk">Detta är en system-app, borttagning av den kan leda till systeminstabilitet.\nFortsätt?</string>
     <string name="warning">Varning</string>
     <string name="donate">Donera</string>
-    <string name="archive_preferences">Arkiv-alternativ</string>
     <string name="archive_extract_folder">Arkivera Uppackningsmapp</string>
-    <string name="zip_create_folder">Zippa Skapakatalog</string>
     <string name="archive_summary">Arkiv-filer kommer att läggas i denna mapp. Standard-värde är den katalog arkivet redan ligger i.</string>
-    <string name="zip_summary">Nya zip-filer kommer att skapas i denna mapp. Standard-värde är den katalog filerna redan ligger i.</string>
     <string name="open_as">Öppna som</string>
     <string name="text">Text</string>
     <string name="audio">Audio</string>
@@ -314,7 +310,6 @@ kommer annars att söka efter förekomster.</string>
     <string name="report_bugs_summary">Rapportera buggar eller begär ny funktion</string>
     <string name="translate_title">Översätt</string>
     <string name="translate_summary">Översätt Amaze till ditt språk</string>
-    <string name="easter_egg_title">Studioläge</string>
     <string name="paypal_copy_message">PayPal-UD kopierat till urklipp</string>
     <string name="searching_devices">Söker efter enheter</string>
     <string name="use_custom_ip">Använd egen IP</string>
@@ -372,7 +367,6 @@ kommer annars att söka efter förekomster.</string>
     </string>
     <string name="share_limit">Kan inte dela fler än 100 filer</string>
     <string name="otg_access">Välj roten utav OTG-enhet</string>
-    <string name="opening">Öppnar..</string>
     <string name="information">Information</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Tillträde lyckades</string>
@@ -454,7 +448,6 @@ kommer annars att söka efter förekomster.</string>
     <string name="cloud_connection">Moln-anslutning</string>
     <string name="cloud_connection_new">Ny Moln-anslutning</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Hämta moln-plugin</string>
@@ -522,6 +515,7 @@ Systeminställning, då kommer du inte längre kunna dekryptera det här innehå
     <string name="show_quick_access_pref">Snabbåtkomster</string>
     <string name="directory">Katalog</string>
 
+    <string name="show_bookmarks_pref">Bokmärken</string>
     <string name="cloud_error_plugin">Amaze Moln-plug-in kunde inte hittas. Var god ladda ner en från Play Store.</string>
     <string name="cloud_error_failed_restart">Misslyckades med att ladda anslutningen.
 Var god öppna Amaze Moln en gång.</string>
