@@ -95,7 +95,6 @@
     <string name="select_all">Выбрать все</string>
     <string name="delete">Удалить</string>
     <string name="set_as_home">Сделать домашней папкой</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -307,7 +306,6 @@
     <string name="report_bugs_summary">Сообщить о баге или запросить новый функционал</string>
     <string name="translate_title">Перевести</string>
     <string name="translate_summary">Перевести Amaze на ваш язык</string>
-    <string name="easter_egg_title">Студийный режим</string>
     <string name="paypal_copy_message">Paypal id скопирован в буфер обмена</string>
     <string name="searching_devices">Поиск устройств</string>
     <string name="use_custom_ip">Использовать другой IP</string>
@@ -352,7 +350,6 @@
         </html>    </string>
     <string name="share_limit">Нельзя отправить больше 100 файлов</string>
     <string name="otg_access">Выберите корень OTG устройства</string>
-    <string name="opening">Открываю..</string>
     <string name="information">Информация</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Доступ</string>
@@ -434,7 +431,6 @@
     <string name="cloud_connection">Облачное соединение</string>
     <string name="cloud_connection_new">Новое облачное соединение</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Диск&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Ящик</string>
     <string name="cloud_get">Получить Облачный плагин</string>
@@ -500,6 +496,7 @@
     <string name="show_quick_access_pref">Быстрый доступ</string>
     <string name="directory">Директория</string>
 
+    <string name="show_bookmarks_pref">Закладки</string>
     <string name="cloud_error_plugin">Плагин Amaze Cloud не найден. Пожалуйста загрузите его из Play Маркета.</string>
     <string name="cloud_error_failed_restart">Не удалось установить соединение.        Пожалуйста откройте Amaze Cloud.</string>
     <string name="cloud_remove">Вы хотите удалить облачное соединение?</string>
