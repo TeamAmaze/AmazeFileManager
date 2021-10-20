@@ -576,7 +576,7 @@ address.\n\n
     <string name="update">تعديل </string>
 	<string name="scp_connection">وصلة SCP/SFTP </string>
     <string name="scp_port">المنفذ </string>
-    <string name="ssh_host_key_verification_prompt">لا يمكن تحديد صحة النظام الرئيسي \'\%1$s \'\. \n\n %2$s بصمة المفتاح هي %3$s. \n \npth \"\ نعم \\"لتأكيد الهوية ؛ خلاف ذلك ، برجاء النقر \\" لا \"\. </string>
+    <string name="ssh_host_key_verification_prompt">The authenticity of host \\'%1$s\\' can\\'t be established.\n\n%2$s key fingerprint is %3$s.\n\nPlease tap \\"Yes\\" to confirm identity; otherwise, please tap \\"No\\".</string>
     <string name="ssh_host_key_verification_prompt_title">التحقق من النظام الرئيسي </string>
     <string name="ssh_select_pem_button">مفتاح SSH الخاص </string>
     <string name="ssh_pem_key_parse_error">غير قادر على قراءة PEM المحدد : %s </string>
