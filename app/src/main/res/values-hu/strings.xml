@@ -97,7 +97,6 @@
     <string name="select_all">Összes kijelölése</string>
     <string name="delete">Törlés</string>
     <string name="set_as_home">Beállítás kezdőkönyvtárként</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -207,11 +206,8 @@
     <string name="unin_system_apk">Ez egy rendszeralkalmazás. Törlésével veszélyeztetheti a rendszer stabilitását.\nFolytatja?</string>
     <string name="warning">Figyelmeztetés</string>
     <string name="donate">Adományozás</string>
-    <string name="archive_preferences">Archívum beállításai</string>
     <string name="archive_extract_folder">Archívumok kibontási mappája</string>
-    <string name="zip_create_folder">Zip mappa létrehozása</string>
     <string name="archive_summary">Az archivált fájlok ebbe a mappába lesznek kicsomagolva. Az lesz az alapértelmezett könyvtár, amelyben az archívum jelen van</string>
-    <string name="zip_summary">Az új zip fájlokat ebbe a mappába hozza létre. Ez alapértelmezettként az a könyvtár, amelyben a fájlok vannak</string>
     <string name="open_as">Megnyitás mint</string>
     <string name="text">Szöveg</string>
     <string name="audio">Zene</string>
@@ -316,7 +312,6 @@
     <string name="report_bugs_summary">Hibák jelentése vagy új funkciók igénylése</string>
     <string name="translate_title">Fordítás</string>
     <string name="translate_summary">Fordítsa le az Amaze fájlkezelőjét a saját nyelvére</string>
-    <string name="easter_egg_title">Stúdió mód</string>
     <string name="paypal_copy_message">A Paypal id a vágólapra lett másolva</string>
     <string name="searching_devices">Eszközök keresése</string>
     <string name="use_custom_ip">Egyéni IP használata</string>
@@ -375,7 +370,6 @@
     </string>
     <string name="share_limit">Nem oszthat meg 100-nál több fájlt</string>
     <string name="otg_access">Válassza ki az OTG eszköz gyökerét</string>
-    <string name="opening">Megnyitás..</string>
     <string name="information">Információk</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Hozzáférés</string>
@@ -457,7 +451,6 @@
     <string name="cloud_connection">Felhő-kapcsolat</string>
     <string name="cloud_connection_new">Új felhő kapcsolat</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Felhő beépülő letöltése</string>
@@ -525,6 +518,7 @@
     <string name="show_quick_access_pref">Gyorselérés</string>
     <string name="directory">Könyvtár</string>
 
+    <string name="show_bookmarks_pref">Könyvjelzők</string>
     <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
         Kérjük, először nyissa meg az Amaze Cloud-ot.</string>
