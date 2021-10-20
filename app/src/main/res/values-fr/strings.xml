@@ -97,7 +97,6 @@
     <string name="select_all">Tout sélectionner</string>
     <string name="delete">Supprimer</string>
     <string name="set_as_home">Définir comme répertoire d\'accueil</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -207,11 +206,8 @@
     <string name="unin_system_apk">Ceci est une application système, sa suppression pourrait conduire à une instabilité du système.\nPoursuivre ?</string>
     <string name="warning">Attention</string>
     <string name="donate">Faire un don</string>
-    <string name="archive_preferences">Préférences d\'archivage</string>
     <string name="archive_extract_folder">Dossier d\'extraction de l\'archive</string>
-    <string name="zip_create_folder">Créer un dossier ZIP</string>
     <string name="archive_summary">Les fichiers d\'archive seront extraits dans ce dossier. La valeur par défaut est le répertoire dans lequel l\'archive est présente</string>
-    <string name="zip_summary">Les nouveaux fichiers zip seront créés dans ce dossier. La valeur par défaut est le répertoire dans lequel les fichiers sont présents</string>
     <string name="open_as">Ouvrir en tant que</string>
     <string name="text">Texte</string>
     <string name="audio">Audio</string>
@@ -317,7 +313,6 @@
     <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
     <string name="translate_title">Traduire</string>
     <string name="translate_summary">Traduire Amaze dans votre langue</string>
-    <string name="easter_egg_title">Mode Studio</string>
     <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
     <string name="searching_devices">Recherche d\'appareils</string>
     <string name="use_custom_ip">Utiliser une adresse IP modifiée</string>
@@ -356,7 +351,6 @@
     </string>
     <string name="share_limit">Impossible de partage plus de 100 fichiers</string>
     <string name="otg_access">Sélectionner le root du périphérique OTG</string>
-    <string name="opening">Ouverture..</string>
     <string name="information">Informations</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Accédé</string>
@@ -438,7 +432,6 @@
     <string name="cloud_connection">Connexion cloud</string>
     <string name="cloud_connection_new">Nouvelle connexion cloud</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Boîte</string>
     <string name="cloud_get">Téléchargez le plugin Cloud</string>
@@ -504,6 +497,7 @@
     <string name="show_quick_access_pref">Accès rapide</string>
     <string name="directory">Répertoires</string>
 
+    <string name="show_bookmarks_pref">Favoris</string>
     <string name="cloud_error_plugin">Le plugin Amaze Cloud est introuvable. Télécharger le sur le Play Store.</string>
     <string name="cloud_error_failed_restart">Échec de chargement de la connexion. Veuillez ouvrir Amaze Cloud à nouveau.</string>
     <string name="cloud_remove">Voulez-vous supprimer la connexion Cloud ?</string>
@@ -649,7 +643,6 @@
     <string name="app_ui_crash">L\'application/UI a planté</string>
     <string name="error_report_title">Rapport d\'erreur</string>
     <string name="crash_report_copied">Rapport de plantage copié dans le presse-papiers</string>
-
     <string name="disableIpcSignature">Désactiver la vérification de la signature IPC (Pour les anciens serveurs SMBv1 - RISQUÉ!)</string>
     <string name="cannot_delete_file">Impossible de supprimer le fichier</string>
     <string name="cannot_delete_file_with_reason">Impossible de supprimer le fichier - %s</string>
@@ -661,7 +654,6 @@
     <string name="clear_open_file">Vider le cache</string>
     <string name="clear_open_file_summary">Efface les applications d\'ouverture de fichiers sélectionnées par défaut</string>
     <string name="legacy_listing_title">Utiliser l\'ancien affichage pour root</string>
-    <string name="legacy_listing_summary">Si activé, utilise stat pour lister, sinon utilise ls</string>
     <string name="error_permission_denied">Permission refusée</string>
-</resources>
+    </resources>
 
