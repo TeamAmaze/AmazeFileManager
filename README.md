@@ -1,8 +1,6 @@
 ![CI](https://github.com/TeamAmaze/AmazeFileManager/workflows/Android%20Main%20CI/badge.svg?branch=master)
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/9ea2667dabaa4e8c98dbf0876ebacd3e)](https://app.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Grade_Settings)
 [![Codacy Badge](https://app.codacy.com/project/badge/Coverage/50d8e153feba47b9a8ff82ff57274c56)](https://www.codacy.com/gh/TeamAmaze/AmazeFileManager?utm_source=github.com&utm_medium=referral&utm_content=TeamAmaze/AmazeFileManager&utm_campaign=Badge_Coverage)
-[![Commits (since latest release)](https://img.shields.io/github/commits-since/TeamAmaze/AmazeFileManager/latest.svg "Commits since latest release")](https://github.com/TeamAmaze/AmazeFileManager/releases/latest)
-[![APK Downloads](https://img.shields.io/github/downloads/TeamAmaze/AmazeFileManager/total.svg?label=APK%20Downloads&logo=github)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![GitHub release](https://img.shields.io/github/release/TeamAmaze/AmazeFileManager.svg)](https://github.com/TeamAmaze/AmazeFileManager/releases)
 [![IzzyOnDroid](https://img.shields.io/endpoint?url=https://apt.izzysoft.de/fdroid/api/v1/shield/com.amaze.filemanager)](https://apt.izzysoft.de/fdroid/index/apk/com.amaze.filemanager)  
 [![Chat on Telegram](https://img.shields.io/badge/Telegram-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)](https://t.me/AmazeFileManager)
