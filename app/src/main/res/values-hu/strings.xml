@@ -97,6 +97,8 @@
     <string name="select_all">Összes kijelölése</string>
     <string name="delete">Törlés</string>
     <string name="set_as_home">Beállítás kezdőkönyvtárként</string>
+    <string name="operation_not_supported">A művelet nem támogatott</string>
+
     <!-- New -->
     <!-- Array -->
 
@@ -294,6 +296,7 @@
     <string name="ftp_status_not_running">Nem fut</string>
     <string name="ftp_no_wifi">Győződjön meg róla, hogy csatlakozik a Wi-Fi-hez</string>
     <string name="domain">Tartomány</string>
+    <string name="smb_share">Megosztás elérési útvonala</string>
     <string name="invalid">%s érvénytelen</string>
     <string name="ftp_notif_starting">FTP-kiszolgáló indítása</string>
     <string name="ftp_notif_starting_title">FTP-kiszolgáló</string>
@@ -437,6 +440,7 @@
     <string name="smb_launch_error">Át kell másolnia a fájlt a tárhelyre annak megnyitásához</string>
     <string name="error_file_not_found">Hiba: A fájl nem található</string>
     <string name="error_io">I/O hiba</string>
+    <string name="error_file_too_large">Hiba: A fájl túl nagy</string>
     <string name="medium_text">Közepes szöveg</string>
     <string name="permission_read">Elolvas</string>
     <string name="permission_write">Írás</string>
@@ -451,6 +455,7 @@
     <string name="cloud_connection">Felhő-kapcsolat</string>
     <string name="cloud_connection_new">Új felhő kapcsolat</string>
     <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Felhő beépülő letöltése</string>
@@ -518,7 +523,13 @@
     <string name="show_quick_access_pref">Gyorselérés</string>
     <string name="directory">Könyvtár</string>
 
+    <string name="sidebar_bookmarks_title">Könyvjelzők oldalsáv</string>
+    <string name="show_bookmarks_pref_title">Könyvjelzők megjelenítése</string>
     <string name="show_bookmarks_pref">Könyvjelzők</string>
+    <string name="create_bookmark">Könyvjelző létrehozása</string>
+    <string name="edit_bookmark">Könyvjelző szerkesztése</string>
+    <string name="question_delete_bookmark">Törli a könyvjelzőt?</string>
+
     <string name="cloud_error_plugin">Az Amaze Cloud bővítmény nem található. Kérjük, töltse le a Play Áruházból.</string>
     <string name="cloud_error_failed_restart">Nem sikerült betölteni a kapcsolatot.
         Kérjük, először nyissa meg az Amaze Cloud-ot.</string>
@@ -626,7 +637,93 @@
     <string name="unknown">ismeretlen</string>
     <string name="multiple_invalid_archive_entries">Néhány fájlt az archívumban nem lehet kibontani; lehet, hogy az archívum sérült vagy rosszindulatú forrásból származik.</string>
     <string name="saf_otg_explanation">Biztonsági okokból most az Android fájlrendszerébe kell lépnie. Kérjük, válassza ki az USB eszközt a bal oldali listából.</string>
+    <string name="donation_thanks">Köszönjük az adományt, ez motivál minket! (:</string>
+    <string name="enable_marquee_filename">Fényújság hatás engedélyezése a fájlnevekhez</string>
     <string name="archive_password_prompt">Írja be az archívum jelszavát:</string>
+    <string name="cannot_extract_archive">Nem lehet kibontani az archívumot \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Nem sikerült megnyitni az archívumot \"%s\". Vagy nem nyitható meg az archívum, vagy sérült.</string>
     <string name="close">Bezárás</string>
-    </resources>
+    <string name="bookmark_exists">Könyvjelző létezik</string>
+    <string name="hide_media">Elrejtés a médiaböngészőkből</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">LEHETSÉGES, HOGY VALAKI VALAMI ALJAS DOLGOT MŰVEL!\n\nMeglehet, hogy valaki éppen most hallgatja le Önt (man-in-the-middle támadás). Az is lehetséges, hogy a gazdakulcsot éppen most változtatták meg. A távoli állomás által küldött nyilvános kulcs ujjlenyomata nem egyezik az Amaze-ben tároltal.\n\n\nFolytathatja a gazdagép ujjlenyomatának frissítésével, vagy megszakíthatja az SSH-kapcsolat beállításainak frissítését.</string>
+    <string name="update_host_key">Gazdagép kulcs frissítése</string>
+    <string name="cancel_recommended">Mégse (ajánlott)</string>
+    <string name="failed_install_apk">Nem sikerült telepíteni</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Belső tároló</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">SD-kártya</string>
+    <string name="choose_folder">Válassza ezt a mappát</string>
+    <string name="some_files_failed_invalid_operation">Néhány fájl sikertelen volt az érvénytelen művelet miatt</string>
+    <string name="ftp_server_prompt_connect_to_network">Csatlakozzon a hálózathoz, vagy engedélyezze az AP-t</string>
+    <string name="ftp_server_open_settings">Beállítások megnyitása</string>
+    <string name="move">Áthelyezés</string>
+    <string name="select_save_location">Válassza ki a mentés helyét</string>
+    <string name="scp_default_path">Alapértelmezett hely (választható)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Sajnálom, ennek nem lett volna szabad megtörténnie.</string>
+    <string name="error_report_button_text">Hiba jelentése e-mailben</string>
+    <string name="error_report_button_telegram">Hiba jelentése telegramon keresztül</string>
+    <string name="copy_for_github">Formázott jelentés másolása</string>
+    <string name="error_report_open_issue_button_text">Jelentés a GitHub-on</string>
+    <string name="error_report_open_github_notice">Ellenőrizze, hogy nem létezik-e már egy olyan probléma, amely az Ön összeomlási problémáját tárgyalja.</string>
+    <string name="error_snackbar_message">Sajnálom, valami rosszul sült el.</string>
+    <string name="error_snackbar_action">Jelentés</string>
+    <string name="what_device_headline">Információ:</string>
+    <string name="what_happened_headline">Mi történt:</string>
+    <string name="info_labels">Mi:\\nKérés:\\nGMT idő:\\nCsomag:\\nVerzió:\\nOS verzió:\\nEszköz:\\nModell:\\nTermék:</string>
+    <string name="your_comment">Az Ön megjegyzése (angolul):</string>
+    <string name="error_details_headline">Részletek:</string>
+    <string name="app_ui_crash">Alkalmazás/felhasználói felület összeomlott</string>
+    <string name="error_report_title">Hibajelentés</string>
+    <string name="crash_report_copied">Hibajelentés a vágólapra másolva</string>
+    <string name="disableIpcSignature">IPC-aláírás ellenőrzés letiltása (Örökölt SMBv1-kiszolgálókhoz - UNSAFE!)</string>
+    <string name="cannot_delete_file">Nem lehet törölni a fájlt</string>
+    <string name="cannot_delete_file_with_reason">Nem lehet törölni a fájlt - %s </string>
+    <string name="cannot_rename_file">Nem lehet átnevezni a fájlt %s - %s</string>
+    <string name="cannot_read_directory">Nem lehet olvasni a könyvtárat %s - %s</string>
+    <string name="just_once">Csak egyszer</string>
+    <string name="always">Mindig</string>
+    <string name="choose_different_app">Válasszon más alkalmazást</string>
+    <string name="clear_open_file">Gyorsítótár törlése</string>
+    <string name="clear_open_file_summary">A kiválasztott alapértelmezett fájl megnyitási alkalmazások törlése</string>
+    <string name="ftp_readonly">Csak olvasási hozzáférés</string>
+    <string name="legacy_listing_title">Örökölt lista használata a gyökérhez</string>
+    <string name="legacy_listing_summary">Ha engedélyezve van, az örökölt módszer lesz használva a fájlok listázására</string>
+    <string name="error_unsupported_v5_rar">A(z) \"%s\" RAR egy nem támogatott RAR V5 archívum.</string>
+    <string name="ftp_prompt_restart_server">A módosítások érvénybe léptetéséhez újra kell indítania az FTP-kiszolgálót.</string>
+    <string name="error_permission_denied">Hozzáférés megtagadva</string>
+    <string name="error_archive_password_incorrect">Rossz archívum jelszó.</string>
+    <string name="error_archive_cannot_extract">Nem lehet kibontani az archívum bejegyzést \"%s\" - \"%s\".</string>
+    <string name="drag_and_drop_preference">Válassza a fogd és vidd beállítást (Kísérleti)</string>
+    <string name="drag_to_move_copy">Érintse meg és húzza a fájlok mozgatásához vagy másolásához</string>
+    <string name="drag_to_select">Érintse meg és húzza a fájlok kiválasztásához</string>
+    <string name="disable">Letiltás</string>
+    <string name="choose_operation">Válassza ki a végrehajtandó műveletet</string>
+    <string name="remember">Jegyezze meg a következő alkalomra</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">SAF-hozzáférés engedélyezése az FTP-kiszolgálóhoz</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Mivel ez az FTP-kiszolgáló első futtatása, és a készülék belső tárhelyét használja megosztott mappaként, kérjük, engedélyezze az Amaze számára, hogy a SAF segítségével hozzáférjen a tárhelyhez..\n\n
+
+Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem választ egy új helyet a megosztáshoz.</string>
+    <string name="android_data_prompt_saf_access">Az Android 10 bevezetése óta az Android korlátozásokat vezetett be bizonyos könyvtárakra, és azokat a tárhely hozzáférési keretrendszer segítségével lehet elérni.\n\nKérjük, engedélyezze az Amaze számára a könyvtár elérését a rendszer fájlkezelőjéből a \"Hozzáférés engedélyezése\" gomb megnyomásával.</string>
+    <string name="android_data_prompt_saf_access_title">SAF-hozzáférés engedélyezése</string>
+    <string name="ftp_preference_saf_filesystem_title">Örökölt fájlrendszer használata</string>
+    <string name="ftp_preference_saf_filesystem">Engedélyezze ezt az eszköz külső tárolójának újabb Android-verziókon való használatának támogatásához</string>
+    <string name="ftp_server_fallback_path_reset_prompt">Az FTP-kiszolgáló megosztott elérési útvonala vissza lett állítva a belső tárolóra, mivel a régi fájlrendszer implementációjára váltott. Kérjük, válasszon új elérési útvonalat a jobb felső sarokban található menü segítségével, ha szükséges.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Hiba a(z) \"%s\" URI olvasásra történő megnyitásakor.</string>
+    <string name="error_empty_archive">A(z) \"%s\" egy üres archívum.</string>
+    <string name="security_error">A fájlt nem lehet megnyitni ezzel az alkalmazással</string>
+    <string name="cloud_drive_tooltip">Hozzon létre egy Google Drive™ kapcsolatot a fájlok kezelésére az Amaze fájlkezelőn belül.</string>
+    <string name="signin_with_google_title">Hitelesítés a Google Drive™ használatához</string>
+    <string name="show_system_apps">Rendszeralkalmazások megjelenítése</string>
+    <string name="system_apps">Rendszeralkalmazások</string>
+    <string name="third_party_apps">Harmadik féltől származó alkalmazások</string>
+    <string name="select_inverse">Fordított kiválasztás</string>
+    <string name="select_by_type">Kiválasztás típus szerint</string>
+    <string name="select_by_date">Kiválasztás dátum szerint</string>
+    <string name="select_similar">Hasonló kiválasztása</string>
+</resources>
 
