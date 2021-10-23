@@ -42,6 +42,10 @@ android {
                               "room.expandProjection": "true"]
             }
         }
+
+        //For Dimezis/BlurView
+        renderscriptTargetApi 29 //must match target sdk and build tools
+        renderscriptSupportModeEnabled true
     }
 
     signingConfigs {
@@ -124,6 +128,7 @@ dependencies {
 
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation "com.google.android.material:material:$androidMaterialVersion"
     implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
     implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
@@ -131,6 +136,8 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
     implementation "com.android.billingclient:billing:$androidBillingVersion"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$androidXLifecycleVersion"
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$androidXLifecycleVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
@@ -250,6 +257,10 @@ dependencies {
     implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
+
+    //For blurring quickview background
+    implementation 'com.eightbitlab:blurview:1.6.6'
+    implementation 'com.eightbitlab:supportrenderscriptblur:1.0.2'
 }
 
 configurations.all {

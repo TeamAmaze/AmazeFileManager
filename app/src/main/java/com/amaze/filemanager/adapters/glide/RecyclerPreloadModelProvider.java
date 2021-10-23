@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.List;
 
 import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.GlideRequest;
+import com.amaze.filemanager.GlideRequests;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 import android.graphics.drawable.Drawable;
 
@@ -41,17 +41,18 @@ public class RecyclerPreloadModelProvider
     implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 
   private final List<IconDataParcelable> urisToLoad;
-  private final GlideRequest<Drawable> request;
+  private final GlideRequests requests;
+  private final RequestOptions cropOptions;
 
   public RecyclerPreloadModelProvider(
       @NonNull Fragment fragment, @NonNull List<IconDataParcelable> uris, boolean isCircled) {
     urisToLoad = uris;
-    GlideRequest<Drawable> incompleteRequest = GlideApp.with(fragment).asDrawable();
+    requests = GlideApp.with(fragment);
 
     if (isCircled) {
-      request = incompleteRequest.circleCrop();
+      cropOptions = new RequestOptions().circleCrop();
     } else {
-      request = incompleteRequest.centerCrop();
+      cropOptions = new RequestOptions().centerCrop();
     }
   }
 
@@ -66,14 +67,6 @@ public class RecyclerPreloadModelProvider
   @Override
   @Nullable
   public RequestBuilder<Drawable> getPreloadRequestBuilder(IconDataParcelable iconData) {
-    RequestBuilder<Drawable> requestBuilder;
-    if (iconData.type == IconDataParcelable.IMAGE_FROMFILE) {
-      requestBuilder = request.load(iconData.path);
-    } else if (iconData.type == IconDataParcelable.IMAGE_FROMCLOUD) {
-      requestBuilder = request.load(iconData.path).diskCacheStrategy(DiskCacheStrategy.NONE);
-    } else {
-      requestBuilder = request.load(iconData.image);
-    }
-    return requestBuilder;
+    return iconData.getPreloadRequestBuilder(requests).apply(cropOptions);
   }
 }
