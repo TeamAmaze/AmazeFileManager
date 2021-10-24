@@ -62,6 +62,7 @@ public class CloudStreamSourceTest {
 
   // File Test.txt is 20 characters length
   // And contains "This is a test file." phrase
+    
   @Before
   public void setUp() throws Exception {
     File testFile = createFile();
@@ -101,7 +102,7 @@ public class CloudStreamSourceTest {
 
   /**
    * Purpose: Throw an exception when a file does not exist Input: CloudStreamSource (FileName,
-   * FileLength, Null pointer) Expected: IOException is thrown
+   * FileLength, Null pointer) Expected: IOException is thrown.
    */
   @Test(expected = IOException.class)
   public void openNoFileException() throws IOException {
@@ -215,7 +216,7 @@ public class CloudStreamSourceTest {
 
   /**
    * Purpose: Throw an exception when a reading position in the file is incorrect Input:
-   * moveTo(wrongPosition) Expected: IllegalArgumentException is thrown
+   * moveTo(wrongPosition) Expected: IllegalArgumentException is thrown.
    */
   @Test(expected = IllegalArgumentException.class)
   public void moveToException() throws IllegalArgumentException, IOException {
@@ -225,7 +226,7 @@ public class CloudStreamSourceTest {
 
   /**
    * Purpose: Close file after successful reading Input: no Expected: Stream is closed and reading
-   * from the file is unavailable
+   * from the file is unavailable.
    */
   @Test
   public void close() {
@@ -255,7 +256,7 @@ public class CloudStreamSourceTest {
 
   /**
    * Purpose: Get available to read remain amount of text from a file Input: no Expected: return
-   * amount
+   * amount.
    */
   @Test
   public void available() throws IOException {
