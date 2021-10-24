@@ -379,11 +379,6 @@ public class MainFragment extends Fragment
         reloadListElements(
             true, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
       }
-      if (mainFragmentViewModel.getSelection()) {
-        for (Integer index : adapter.getCheckedItemsIndex()) {
-          adapter.toggleChecked(index, null);
-        }
-      }
     } else {
       loadlist(mainFragmentViewModel.getHome(), true, mainFragmentViewModel.getOpenMode());
     }
@@ -448,7 +443,7 @@ public class MainFragment extends Fragment
          * onCreateActionMode, but may be called multiple times if the mode is invalidated.
          */
         public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-          ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
+          ArrayList<LayoutElementParcelable> checkedItems = mainFragmentViewModel.getCheckedItems();
           actionModeView.setOnClickListener(
               v ->
                   SelectionPopupMenu.Companion.invokeSelectionDropdown(
@@ -484,7 +479,7 @@ public class MainFragment extends Fragment
               showOption(R.id.openwith, menu);
               showOption(R.id.share, menu);
 
-              if (adapter.getCheckedItems().get(0).isDirectory) {
+              if (mainFragmentViewModel.getCheckedItems().get(0).isDirectory) {
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
                 hideOption(R.id.openmulti, menu);
@@ -498,7 +493,7 @@ public class MainFragment extends Fragment
                 showOption(R.id.share, menu);
                 if (getMainActivity().mReturnIntent)
                   if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-                for (LayoutElementParcelable e : adapter.getCheckedItems()) {
+                for (LayoutElementParcelable e : mainFragmentViewModel.getCheckedItems()) {
                   if (e.isDirectory) {
                     hideOption(R.id.share, menu);
                     hideOption(R.id.openmulti, menu);
@@ -517,7 +512,7 @@ public class MainFragment extends Fragment
               showOption(R.id.openwith, menu);
               showOption(R.id.share, menu);
 
-              if (adapter.getCheckedItems().get(0).isDirectory) {
+              if (mainFragmentViewModel.getCheckedItems().get(0).isDirectory) {
                 hideOption(R.id.openwith, menu);
                 hideOption(R.id.share, menu);
                 hideOption(R.id.openmulti, menu);
@@ -533,7 +528,7 @@ public class MainFragment extends Fragment
               if (getMainActivity().mReturnIntent)
                 if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
               try {
-                for (LayoutElementParcelable e : adapter.getCheckedItems()) {
+                for (LayoutElementParcelable e : mainFragmentViewModel.getCheckedItems()) {
                   if (e.isDirectory) {
                     hideOption(R.id.share, menu);
                     hideOption(R.id.openmulti, menu);
@@ -559,7 +554,7 @@ public class MainFragment extends Fragment
         // called when the user selects a contextual menu item
         public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
           computeScroll();
-          ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
+          ArrayList<LayoutElementParcelable> checkedItems = mainFragmentViewModel.getCheckedItems();
           switch (item.getItemId()) {
             case R.id.openmulti:
               try {
@@ -1957,7 +1952,7 @@ public class MainFragment extends Fragment
       if (upDirection) {
         listView.smoothScrollToPosition(0);
       } else {
-        listView.smoothScrollToPosition(adapter.getItemsDigested().size());
+        listView.smoothScrollToPosition(mainFragmentViewModel.getAdapterListItems().size());
       }
     }
   }
