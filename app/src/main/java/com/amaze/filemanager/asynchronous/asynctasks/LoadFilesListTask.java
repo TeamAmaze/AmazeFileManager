@@ -151,7 +151,7 @@ public class LoadFilesListTask
       case SFTP:
         HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
 
-        list = new ArrayList<LayoutElementParcelable>();
+        list = new ArrayList();
 
         sftpHFile.forEachChildrenFile(
             context,
