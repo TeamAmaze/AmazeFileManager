@@ -24,6 +24,7 @@ import com.amaze.filemanager.filesystem.ssh.SshClientUtils
 import org.junit.Assert
 import org.junit.Test
 
+@Suppress("StringLiteralDuplication")
 class SshClientUtilTest {
     /**
      * Test [SshClientUtils.extractRemotePathFrom].
