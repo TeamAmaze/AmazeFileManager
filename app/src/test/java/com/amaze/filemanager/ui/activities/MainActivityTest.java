@@ -28,6 +28,12 @@ import static androidx.test.core.app.ActivityScenario.launch;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.doCallRealMethod;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.mockConstruction;
+import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
 import java.io.IOException;
@@ -39,19 +45,26 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.MockedConstruction;
 import org.robolectric.annotation.Config;
 import org.robolectric.annotation.LooperMode;
 import org.robolectric.shadows.ShadowLooper;
+import org.robolectric.shadows.ShadowSQLiteConnection;
 import org.robolectric.shadows.ShadowStorageManager;
+import org.robolectric.util.ReflectionHelpers;
 
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
 import com.amaze.filemanager.test.ShadowCryptUtil;
 import com.amaze.filemanager.test.TestUtils;
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.utils.SmbUtil;
 
 import android.os.Build;
+import android.os.Bundle;
 import android.os.storage.StorageManager;
 
 import androidx.lifecycle.Lifecycle;
@@ -80,6 +93,12 @@ import io.reactivex.schedulers.Schedulers;
 @LooperMode(LooperMode.Mode.PAUSED)
 public class MainActivityTest {
 
+  private static final String[] BUNDLE_KEYS = {
+    "address", "port", "keypairName", "name", "username", "password", "edit"
+  };
+
+  private MockedConstruction<SftpConnectDialog> mc;
+
   @Before
   public void setUp() {
     if (Build.VERSION.SDK_INT >= N) TestUtils.initializeInternalStorage();
@@ -87,6 +106,15 @@ public class MainActivityTest {
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     RxAndroidPlugins.reset();
     RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
+    ShadowSQLiteConnection.reset();
+
+    mc =
+        mockConstruction(
+            SftpConnectDialog.class,
+            (mock, context) -> {
+              doCallRealMethod().when(mock).setArguments(any());
+              when(mock.getArguments()).thenCallRealMethod();
+            });
   }
 
   @After
@@ -94,6 +122,56 @@ public class MainActivityTest {
     if (Build.VERSION.SDK_INT >= N)
       shadowOf(ApplicationProvider.getApplicationContext().getSystemService(StorageManager.class))
           .resetStorageVolumeList();
+
+    mc.close();
+  }
+
+  @Test
+  public void testInvokeSftpConnectionDialog() {
+
+    Bundle verify = new Bundle();
+    verify.putString("address", "127.0.0.1");
+    verify.putInt("port", 22);
+    verify.putString("name", "SCP/SFTP Connection");
+    verify.putString("username", "root");
+    verify.putBoolean("hasPassword", false);
+    verify.putBoolean("edit", true);
+    verify.putString("keypairName", "abcdefgh");
+
+    testOpenSftpConnectDialog("ssh://root@127.0.0.1:22", verify);
+  }
+
+  @Test
+  public void testInvokeSftpConnectionDialogWithPassword()
+      throws GeneralSecurityException, IOException {
+    String uri = "ssh://root:12345678@127.0.0.1:22";
+
+    Bundle verify = new Bundle();
+    verify.putString("address", "127.0.0.1");
+    verify.putInt("port", 22);
+    verify.putString("name", "SCP/SFTP Connection");
+    verify.putString("username", "root");
+    verify.putBoolean("hasPassword", true);
+    verify.putBoolean("edit", true);
+    verify.putString("password", "12345678");
+
+    testOpenSftpConnectDialog(uri, verify);
+  }
+
+  private void testOpenSftpConnectDialog(String uri, Bundle verify) {
+    MainActivity activity = mock(MainActivity.class);
+    UtilsHandler utilsHandler = mock(UtilsHandler.class);
+    when(utilsHandler.getSshAuthPrivateKeyName("ssh://root@127.0.0.1:22")).thenReturn("abcdefgh");
+    ReflectionHelpers.setField(activity, "utilsHandler", utilsHandler);
+    doCallRealMethod().when(activity).showSftpDialog(any(), any(), anyBoolean());
+
+    activity.showSftpDialog(
+        "SCP/SFTP Connection", SshClientUtils.encryptSshPathAsNecessary(uri), true);
+    assertEquals(1, mc.constructed().size());
+    SftpConnectDialog mocked = mc.constructed().get(0);
+    for (String key : BUNDLE_KEYS) {
+      assertEquals(verify.get(key), mocked.getArguments().get(key));
+    }
   }
 
   @Test

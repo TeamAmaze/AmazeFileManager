@@ -1288,22 +1288,22 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       }
     } else {
       popupMenu.getMenu().findItem(R.id.book).setVisible(false);
-    }
 
-    if (description.endsWith(fileExtensionZip)
-        || description.endsWith(fileExtensionJar)
-        || description.endsWith(fileExtensionApk)
-        || description.endsWith(fileExtensionApks)
-        || description.endsWith(fileExtensionRar)
-        || description.endsWith(fileExtensionTar)
-        || description.endsWith(fileExtensionGzipTarLong)
-        || description.endsWith(fileExtensionGzipTarShort)
-        || description.endsWith(fileExtensionBzip2TarLong)
-        || description.endsWith(fileExtensionBzip2TarShort)
-        || description.endsWith(fileExtensionXz)
-        || description.endsWith(fileExtensionLzma)
-        || description.endsWith(fileExtension7zip))
-      popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+      if (description.endsWith(fileExtensionZip)
+          || description.endsWith(fileExtensionJar)
+          || description.endsWith(fileExtensionApk)
+          || description.endsWith(fileExtensionApks)
+          || description.endsWith(fileExtensionRar)
+          || description.endsWith(fileExtensionTar)
+          || description.endsWith(fileExtensionGzipTarLong)
+          || description.endsWith(fileExtensionGzipTarShort)
+          || description.endsWith(fileExtensionBzip2TarLong)
+          || description.endsWith(fileExtensionBzip2TarShort)
+          || description.endsWith(fileExtensionXz)
+          || description.endsWith(fileExtensionLzma)
+          || description.endsWith(fileExtension7zip))
+        popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+    }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       if (description.endsWith(CryptUtil.CRYPT_EXTENSION))

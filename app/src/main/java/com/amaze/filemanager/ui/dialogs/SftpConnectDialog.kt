@@ -183,13 +183,15 @@ class SftpConnectDialog : DialogFragment() {
                 selectedParsedKeyPairName = requireArguments().getString(ARG_KEYPAIR_NAME)
                 selectPemBTN.text = selectedParsedKeyPairName
             }
-            oldPath = SshClientUtils.deriveSftpPathFrom(
-                requireArguments().getString(ARG_ADDRESS)!!,
-                requireArguments().getInt(ARG_PORT),
-                requireArguments().getString(ARG_DEFAULT_PATH, ""),
-                requireArguments().getString(ARG_USERNAME)!!,
-                requireArguments().getString(ARG_PASSWORD),
-                selectedParsedKeyPair
+            oldPath = SshClientUtils.encryptSshPathAsNecessary(
+                SshClientUtils.deriveSftpPathFrom(
+                    requireArguments().getString(ARG_ADDRESS)!!,
+                    requireArguments().getInt(ARG_PORT),
+                    requireArguments().getString(ARG_DEFAULT_PATH, ""),
+                    requireArguments().getString(ARG_USERNAME)!!,
+                    requireArguments().getString(ARG_PASSWORD),
+                    selectedParsedKeyPair
+                )
             )
         }
     }
@@ -201,13 +203,15 @@ class SftpConnectDialog : DialogFragment() {
             dialogBuilder
                 .negativeText(R.string.delete)
                 .onNegative { dialog: MaterialDialog, _: DialogAction? ->
-                    val path = SshClientUtils.deriveSftpPathFrom(
-                        hostname,
-                        port,
-                        defaultPath,
-                        username,
-                        requireArguments().getString(ARG_PASSWORD, null),
-                        selectedParsedKeyPair
+                    val path = SshClientUtils.encryptSshPathAsNecessary(
+                        SshClientUtils.deriveSftpPathFrom(
+                            hostname,
+                            port,
+                            defaultPath,
+                            username,
+                            requireArguments().getString(ARG_PASSWORD, null),
+                            selectedParsedKeyPair
+                        )
                     )
                     val i = DataUtils.getInstance().containsServer(
                         arrayOf(connectionName, path)
@@ -441,7 +445,11 @@ class SftpConnectDialog : DialogFragment() {
                 selectedParsedKeyPair
             )
         } else {
-            updateSshConnection(connectionName, hostKeyFingerprint, path, encryptedPath)
+            updateSshConnection(
+                connectionName,
+                hostKeyFingerprint,
+                encryptedPath
+            )
         }
     }
 
@@ -498,11 +506,10 @@ class SftpConnectDialog : DialogFragment() {
     private fun updateSshConnection(
         connectionName: String,
         hostKeyFingerprint: String,
-        path: String,
         encryptedPath: String
     ): Boolean {
         DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(oldPath))
-        DataUtils.getInstance().addServer(arrayOf(connectionName, path))
+        DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
         Collections.sort(DataUtils.getInstance().servers, BookSorter())
         (activity as MainActivity).drawer.refreshDrawer()
         AppConfig.getInstance().runInBackground {
