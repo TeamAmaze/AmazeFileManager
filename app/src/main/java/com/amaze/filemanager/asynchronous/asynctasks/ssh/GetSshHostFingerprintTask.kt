@@ -36,6 +36,7 @@ import net.schmizz.sshj.transport.verification.HostKeyVerifier
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.security.PublicKey
+import java.util.Collections
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 
@@ -72,11 +73,18 @@ class GetSshHostFingerprintTask(
         val latch = CountDownLatch(1)
         val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig()).also {
             it.connectTimeout = SSH_CONNECT_TIMEOUT
-            it.addHostKeyVerifier { _, _, key: PublicKey ->
-                holder.set(AsyncTaskResult(key))
-                latch.countDown()
-                true
-            }
+            it.addHostKeyVerifier(object : HostKeyVerifier {
+                override fun verify(hostname: String?, port: Int, key: PublicKey?): Boolean {
+                    holder.set(AsyncTaskResult(key))
+                    latch.countDown()
+                    return true
+                }
+
+                override fun findExistingAlgorithms(
+                    hostname: String?,
+                    port: Int
+                ): MutableList<String> = Collections.emptyList()
+            })
         }
         return runCatching {
             sshClient.connect(hostname, port)
