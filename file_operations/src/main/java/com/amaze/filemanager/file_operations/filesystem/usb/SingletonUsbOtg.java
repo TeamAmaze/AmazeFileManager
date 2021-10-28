@@ -21,11 +21,13 @@
 package com.amaze.filemanager.file_operations.filesystem.usb;
 
 import android.net.Uri;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class SingletonUsbOtg {
+  private static final String TAG = SingletonUsbOtg.class.getSimpleName();
   private static SingletonUsbOtg instance = null;
 
   public static SingletonUsbOtg getInstance() {
@@ -57,6 +59,10 @@ public class SingletonUsbOtg {
   }
 
   public @Nullable Uri getUsbOtgRoot() {
+    if(usbOtgRoot == null) {
+      Log.e(TAG, "Null Uri FOR USB root obtained, this is a bug!");
+    }
+
     return usbOtgRoot;
   }
 

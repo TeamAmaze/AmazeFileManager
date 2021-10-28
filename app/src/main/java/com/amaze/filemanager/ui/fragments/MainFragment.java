@@ -35,7 +35,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -173,18 +172,20 @@ public class MainFragment extends Fragment
           result -> {
             if (SDK_INT >= Q) {
               final Intent data = result.getData();
-              if(data == null) {
+              if (data == null) {
                 Log.e(TAG, "Null data for root uri, this is a critical!");
                 return;
               }
               final Uri uriRoot = data.getData();
-              if(uriRoot == null) {
+              if (uriRoot == null) {
                 Log.e(TAG, "Null data for root uri, this is a critical!");
                 return;
               }
               final int modeFlags =
                   Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
-              requireContext().getContentResolver().takePersistableUriPermission(uriRoot, modeFlags);
+              requireContext()
+                  .getContentResolver()
+                  .takePersistableUriPermission(uriRoot, modeFlags);
               SafRootHolder.setUriRoot(uriRoot);
               loadlist(data.getDataString(), false, OpenMode.DOCUMENT_FILE);
             }
