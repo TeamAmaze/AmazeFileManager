@@ -69,6 +69,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -86,7 +87,6 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
-/** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
 
   private MainActivity mainActivity;
@@ -435,10 +435,14 @@ public class MainActivityHelper {
     } else if (OpenMode.SFTP.equals(openMode)) {
       return SshClientUtils.checkFolder(path);
     } else if (OpenMode.DOCUMENT_FILE.equals(openMode)) {
-      DocumentFile d =
-          DocumentFile.fromTreeUri(AppConfig.getInstance(), SafRootHolder.getUriRoot());
-      if (d == null) return DOESNT_EXIST;
-      else {
+      final Uri safRoot = SafRootHolder.getUriRoot();
+      if (safRoot == null) {
+        return DOESNT_EXIST;
+      }
+      DocumentFile d = DocumentFile.fromTreeUri(AppConfig.getInstance(), safRoot);
+      if (d == null) {
+        return DOESNT_EXIST;
+      } else {
         return WRITABLE_OR_ON_SDCARD;
       }
     } else {

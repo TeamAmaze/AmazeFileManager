@@ -226,12 +226,12 @@ public class HybridFile {
 
   @Nullable
   public DocumentFile getDocumentFile(boolean createRecursive) {
+    final Uri safRoot = SafRootHolder.getUriRoot();
+    if (safRoot == null) {
+      return null;
+    }
     return OTGUtil.getDocumentFile(
-        path,
-        SafRootHolder.getUriRoot(),
-        AppConfig.getInstance(),
-        OpenMode.DOCUMENT_FILE,
-        createRecursive);
+        path, safRoot, AppConfig.getInstance(), OpenMode.DOCUMENT_FILE, createRecursive);
   }
 
   HybridFileParcelable generateBaseFileFromParent() {
@@ -362,6 +362,7 @@ public class HybridFile {
     return name;
   }
 
+  @Nullable
   public String getName(Context context) {
     switch (mode) {
       case SMB:
@@ -382,9 +383,16 @@ public class HybridFile {
         if (!Utils.isNullOrEmpty(name)) {
           return name;
         }
-        return OTGUtil.getDocumentFile(
-                path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
-            .getName();
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          return null;
+        }
+        final DocumentFile documentFile =
+            OTGUtil.getDocumentFile(path, safRoot, context, OpenMode.DOCUMENT_FILE, false);
+        if (documentFile == null) {
+          return null;
+        }
+        return documentFile.getName();
       default:
         if (path.isEmpty()) {
           return "";
@@ -652,9 +660,15 @@ public class HybridFile {
         size = FileUtils.otgFolderSize(path, context);
         break;
       case DOCUMENT_FILE:
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          return 0;
+        }
+
         final AtomicLong totalBytes = new AtomicLong(0);
+
         OTGUtil.getDocumentFiles(
-            SafRootHolder.getUriRoot(),
+            safRoot,
             path,
             context,
             OpenMode.DOCUMENT_FILE,
@@ -732,8 +746,11 @@ public class HybridFile {
         size = returnValue == null ? 0L : returnValue;
         break;
       case DOCUMENT_FILE:
-        size =
-            FileProperties.getDeviceStorageRemainingSpace(SafRootHolder.INSTANCE.getVolumeLabel());
+        final String volume = SafRootHolder.getVolumeLabel();
+        if (volume == null) {
+          return 0;
+        }
+        size = FileProperties.getDeviceStorageRemainingSpace(volume);
         break;
       case OTG:
         // TODO: Get free space from OTG when {@link DocumentFile} API adds support
@@ -869,8 +886,12 @@ public class HybridFile {
         OTGUtil.getDocumentFiles(path, context, onFileFound);
         break;
       case DOCUMENT_FILE:
-        OTGUtil.getDocumentFiles(
-            SafRootHolder.getUriRoot(), path, context, OpenMode.DOCUMENT_FILE, onFileFound);
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          return;
+        }
+
+        OTGUtil.getDocumentFiles(safRoot, path, context, OpenMode.DOCUMENT_FILE, onFileFound);
         break;
       case DROPBOX:
       case BOX:
@@ -948,9 +969,13 @@ public class HybridFile {
         arrayList = OTGUtil.getDocumentFilesList(path, context);
         break;
       case DOCUMENT_FILE:
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          return null;
+        }
         final ArrayList<HybridFileParcelable> hybridFileParcelables = new ArrayList<>();
         OTGUtil.getDocumentFiles(
-            SafRootHolder.getUriRoot(),
+            safRoot,
             path,
             context,
             OpenMode.DOCUMENT_FILE,
@@ -1252,10 +1277,13 @@ public class HybridFile {
       if (isOtgFile()) {
         exists = OTGUtil.getDocumentFile(path, context, false) != null;
       } else if (isDocumentFile()) {
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          return false;
+        }
+
         exists =
-            OTGUtil.getDocumentFile(
-                    path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
-                != null;
+            OTGUtil.getDocumentFile(path, safRoot, context, OpenMode.DOCUMENT_FILE, false) != null;
       } else return (exists());
     } catch (Exception e) {
       Log.i(getClass().getSimpleName(), "Failed to find file", e);
@@ -1331,13 +1359,13 @@ public class HybridFile {
       }
     } else if (isDocumentFile()) {
       if (!exists(context)) {
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          return;
+        }
         DocumentFile parentDirectory =
             OTGUtil.getDocumentFile(
-                getParent(context),
-                SafRootHolder.getUriRoot(),
-                context,
-                OpenMode.DOCUMENT_FILE,
-                true);
+                getParent(context), safRoot, context, OpenMode.DOCUMENT_FILE, true);
         if (parentDirectory.isDirectory()) {
           parentDirectory.createDirectory(getName(context));
         }

@@ -567,8 +567,12 @@ public class LoadFilesListTask
       return;
     }
 
-    OTGUtil.getDocumentFiles(
-        SafRootHolder.getUriRoot(), path, context, OpenMode.DOCUMENT_FILE, fileFound);
+    final Uri safRoot = SafRootHolder.getUriRoot();
+    if (safRoot == null) {
+      return;
+    }
+
+    OTGUtil.getDocumentFiles(safRoot, path, context, OpenMode.DOCUMENT_FILE, fileFound);
   }
 
   private void listCloud(

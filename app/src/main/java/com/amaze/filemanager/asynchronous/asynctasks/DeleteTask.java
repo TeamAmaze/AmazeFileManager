@@ -158,15 +158,24 @@ public class DeleteTask
       case OTG:
         DocumentFile documentFile =
             OTGUtil.getDocumentFile(file.getPath(), applicationContext, false);
+        if (documentFile == null) {
+          return false;
+        }
         return documentFile.delete();
       case DOCUMENT_FILE:
+        final Uri uriRoot = SafRootHolder.getUriRoot();
+        if (uriRoot == null) {
+          return false;
+        }
+
         documentFile =
             OTGUtil.getDocumentFile(
-                file.getPath(),
-                SafRootHolder.getUriRoot(),
-                applicationContext,
-                OpenMode.DOCUMENT_FILE,
-                false);
+                file.getPath(), uriRoot, applicationContext, OpenMode.DOCUMENT_FILE, false);
+
+        if (documentFile == null) {
+          return false;
+        }
+
         return documentFile.delete();
       case DROPBOX:
       case BOX:

@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -139,6 +140,8 @@ public class MainFragment extends Fragment
         ViewTreeObserver.OnGlobalLayoutListener,
         AdjustListViewForTv<ItemViewHolder> {
 
+  private static final String TAG = MainFragment.class.getSimpleName();
+
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -169,14 +172,21 @@ public class MainFragment extends Fragment
           new ActivityResultContracts.StartActivityForResult(),
           result -> {
             if (SDK_INT >= Q) {
-              getContext()
-                  .getContentResolver()
-                  .takePersistableUriPermission(
-                      result.getData().getData(),
-                      Intent.FLAG_GRANT_READ_URI_PERMISSION
-                          | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-              SafRootHolder.setUriRoot(result.getData().getData());
-              loadlist(result.getData().getDataString(), false, OpenMode.DOCUMENT_FILE);
+              final Intent data = result.getData();
+              if(data == null) {
+                Log.e(TAG, "Null data for root uri, this is a critical!");
+                return;
+              }
+              final Uri uriRoot = data.getData();
+              if(uriRoot == null) {
+                Log.e(TAG, "Null data for root uri, this is a critical!");
+                return;
+              }
+              final int modeFlags =
+                  Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION;
+              requireContext().getContentResolver().takePersistableUriPermission(uriRoot, modeFlags);
+              SafRootHolder.setUriRoot(uriRoot);
+              loadlist(data.getDataString(), false, OpenMode.DOCUMENT_FILE);
             }
           });
 
@@ -515,11 +525,15 @@ public class MainFragment extends Fragment
                     sharedPref);
                 break;
               case DOCUMENT_FILE:
+                final Uri safRoot = SafRootHolder.getUriRoot();
+                if (safRoot == null) {
+                  return;
+                }
                 FileUtils.openFile(
                     OTGUtil.getDocumentFile(
                         layoutElementParcelable.desc,
-                        SafRootHolder.getUriRoot(),
-                        getContext(),
+                        safRoot,
+                        requireContext(),
                         OpenMode.DOCUMENT_FILE,
                         false),
                     (MainActivity) getActivity(),

@@ -53,6 +53,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 
@@ -107,12 +108,17 @@ public class GenericCopyUtil {
       // initializing the input channels based on file types
       if (mSourceFile.isOtgFile() || mSourceFile.isDocumentFile()) {
         // source is in otg
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          throw new IOException("No saf root");
+        }
+
         ContentResolver contentResolver = mContext.getContentResolver();
         DocumentFile documentSourceFile =
             mSourceFile.isDocumentFile()
                 ? OTGUtil.getDocumentFile(
                     mSourceFile.getPath(),
-                    SafRootHolder.getUriRoot(),
+                    safRoot,
                     mContext,
                     mSourceFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
                     false)
@@ -171,13 +177,17 @@ public class GenericCopyUtil {
 
       // initializing the output channels based on file types
       if (mTargetFile.isOtgFile() || mTargetFile.isDocumentFile()) {
+        final Uri safRoot = SafRootHolder.getUriRoot();
+        if (safRoot == null) {
+          throw new IOException("No saf root");
+        }
         // target in OTG, obtain streams from DocumentFile Uri's
         ContentResolver contentResolver = mContext.getContentResolver();
         DocumentFile documentTargetFile =
             mTargetFile.isDocumentFile()
                 ? OTGUtil.getDocumentFile(
                     mTargetFile.getPath(),
-                    SafRootHolder.getUriRoot(),
+                    safRoot,
                     mContext,
                     mTargetFile.isOtgFile() ? OpenMode.OTG : OpenMode.DOCUMENT_FILE,
                     true)

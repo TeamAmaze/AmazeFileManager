@@ -48,6 +48,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
@@ -170,13 +171,14 @@ public class Operations {
             errorCallBack.exists(file);
             return null;
           }
+          final Uri safRoot = SafRootHolder.getUriRoot();
+          if (safRoot == null) {
+            errorCallBack.exists(file);
+            return null;
+          }
           safCreateDirectory.apply(
               OTGUtil.getDocumentFile(
-                  parentFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+                  parentFile.getPath(), safRoot, context, OpenMode.DOCUMENT_FILE, false));
           return null;
         } else if (file.isDropBoxFile()) {
           CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -381,13 +383,14 @@ public class Operations {
             errorCallBack.exists(file);
             return null;
           }
+          final Uri safRoot = SafRootHolder.getUriRoot();
+          if (safRoot == null) {
+            errorCallBack.exists(file);
+            return null;
+          }
           safCreateFile.apply(
               OTGUtil.getDocumentFile(
-                  parentFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+                  parentFile.getPath(), safRoot, context, OpenMode.DOCUMENT_FILE, false));
           return null;
         } else {
           if (file.isLocal() || file.isRoot()) {
@@ -576,13 +579,14 @@ public class Operations {
             errorCallBack.exists(newFile);
             return null;
           }
+          final Uri safRoot = SafRootHolder.getUriRoot();
+          if (safRoot == null) {
+            errorCallBack.exists(newFile);
+            return null;
+          }
           safRenameFile.apply(
               OTGUtil.getDocumentFile(
-                  oldFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+                  oldFile.getPath(), safRoot, context, OpenMode.DOCUMENT_FILE, false));
           return null;
         } else {
           File file = new File(oldFile.getPath());
@@ -652,13 +656,13 @@ public class Operations {
   private static boolean checkDocumentFileNewFileExists(HybridFile newFile, Context context) {
     boolean doesFileExist = false;
     try {
+      final Uri safRoot = SafRootHolder.getUriRoot();
+      if (safRoot == null) {
+        return false;
+      }
       doesFileExist =
           OTGUtil.getDocumentFile(
-                  newFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false)
+                  newFile.getPath(), safRoot, context, OpenMode.DOCUMENT_FILE, false)
               != null;
     } catch (Exception e) {
       Log.w(Operations.class.getSimpleName(), "Failed to find existing file", e);

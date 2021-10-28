@@ -21,12 +21,25 @@
 package com.amaze.filemanager.filesystem
 
 import android.net.Uri
+import android.util.Log
 
 object SafRootHolder {
+    private val TAG = SafRootHolder.javaClass.simpleName
+
     var uriRoot: Uri? = null
         @JvmStatic set
-        @JvmStatic get
+        @JvmStatic get() {
+            if (field == null) {
+                Log.e(TAG, "Null Uri Root obtained, this is a bug!")
+            }
+            return field
+        }
     var volumeLabel: String? = null
         @JvmStatic set
-        @JvmStatic get
+        @JvmStatic get() {
+            if (field == null) {
+                Log.e(TAG, "Null Uri Root obtained, this is a bug!")
+            }
+            return field
+        }
 }
