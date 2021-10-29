@@ -8,11 +8,6 @@ apply plugin: "com.starter.easylauncher"
 android {
     compileSdkVersion 29
 
-    dexOptions {
-        jumboMode = true
-        javaMaxHeapSize "4g"
-    }
-
     packagingOptions {
         exclude 'proguard-project.txt'
         exclude 'project.properties'
