@@ -31,6 +31,7 @@ import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.ShadowNativeOperations
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import org.junit.After
@@ -48,7 +49,7 @@ import java.io.InputStreamReader
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowMultiDex::class],
+    shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 /**
