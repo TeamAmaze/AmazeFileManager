@@ -71,6 +71,7 @@ public class DataUtils {
 
   private ArrayList<CloudStorage> accounts = new ArrayList<>(4);
 
+  /** List of checked items to persist when drag and drop from one tab to another */
   private ArrayList<LayoutElementParcelable> checkedItemsList;
 
   private DataChangeListener dataChangeListener;

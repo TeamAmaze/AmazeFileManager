@@ -138,7 +138,7 @@ class RecyclerAdapterDragListener(
             }
             DragEvent.ACTION_DROP -> {
                 if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                    var checkedItems: ArrayList<LayoutElementParcelable> = adapter.checkedItems
+                    var checkedItems: ArrayList<LayoutElementParcelable>? = adapter.checkedItems
                     var currentFileParcelable: HybridFileParcelable? = null
                     var isCurrentElementDirectory: Boolean? = null
                     var isEmptyArea: Boolean? = null
@@ -156,7 +156,7 @@ class RecyclerAdapterDragListener(
                                 // dropping in goback button
                                 // hack to get the parent path
                                 val hybridFileParcelable = mainFragment
-                                    .elementsList!!.get(1).generateBaseFile()
+                                    .elementsList!![1].generateBaseFile()
                                 val hybridFile = HybridFile(
                                     hybridFileParcelable.mode,
                                     hybridFileParcelable.getParent(mainFragment.context)
@@ -171,7 +171,7 @@ class RecyclerAdapterDragListener(
                             }
                         }
                     }
-                    if (checkedItems.size == 0) {
+                    if (checkedItems?.size == 0) {
                         // probably because we switched tabs and
                         // this adapter doesn't have any checked items, get from data utils
                         val dataUtils = DataUtils.getInstance()
@@ -183,8 +183,8 @@ class RecyclerAdapterDragListener(
                         )
                         checkedItems = dataUtils.checkedItemsList
                     }
-                    val arrayList = ArrayList<HybridFileParcelable>(checkedItems.size)
-                    checkedItems.forEach {
+                    val arrayList = ArrayList<HybridFileParcelable>()
+                    checkedItems?.forEach {
                         val file = it.generateBaseFile()
                         if (it.desc.equals(pasteLocation) ||
                             (

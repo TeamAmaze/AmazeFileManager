@@ -118,6 +118,7 @@ import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
+import com.amaze.filemanager.utils.ActionModeHelper;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
@@ -237,6 +238,7 @@ public class MainActivity extends PermissionsActivity
   private static final String KEY_OPERATED_ON_PATH = "oppathe1";
   private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
   private static final String KEY_OPERATION = "operation";
+  private static final String KEY_SELECTED_LIST_ITEM = "select_list_item";
 
   private AppBar appbar;
   private Drawer drawer;
@@ -294,6 +296,7 @@ public class MainActivity extends PermissionsActivity
 
   // the current visible tab, either 0 or 1
   public static int currentTab;
+  private boolean listItemSelected = false;
 
   public static Shell.Interactive shellInteractive;
   public static Handler handler;
@@ -304,6 +307,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
+  private ActionModeHelper actionModeHelper;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -323,6 +327,9 @@ public class MainActivity extends PermissionsActivity
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
+    if (savedInstanceState != null) {
+      listItemSelected = savedInstanceState.getBoolean(KEY_SELECTED_LIST_ITEM, false);
+    }
 
     initialisePreferences();
     initializeInteractiveShell();
@@ -337,6 +344,7 @@ public class MainActivity extends PermissionsActivity
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
+    actionModeHelper = new ActionModeHelper(MainActivity.this);
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -1231,6 +1239,7 @@ public class MainActivity extends PermissionsActivity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putInt(KEY_DRAWER_SELECTED, getDrawer().getDrawerSelectedItem());
+    outState.putBoolean(KEY_SELECTED_LIST_ITEM, listItemSelected);
     if (pasteHelper != null) {
       outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
     }
@@ -1812,6 +1821,10 @@ public class MainActivity extends PermissionsActivity
     return pasteHelper;
   }
 
+  public ActionModeHelper getActionModeHelper() {
+    return this.actionModeHelper;
+  }
+
   public void setPaste(PasteHelper p) {
     pasteHelper = p;
   }
@@ -2315,6 +2328,24 @@ public class MainActivity extends PermissionsActivity
         dialog.dismiss();
         break;
     }
+  }
+
+  /**
+   * Get whether list item is selected for action mode or not
+   *
+   * @return value
+   */
+  public boolean getListItemSelected() {
+    return this.listItemSelected;
+  }
+
+  /**
+   * Set list item selected value
+   *
+   * @param value value
+   */
+  public void setListItemSelected(boolean value) {
+    this.listItemSelected = value;
   }
 
   /**

@@ -54,7 +54,6 @@ class MainFragmentViewModel : ViewModel() {
     var dsort = 0
     var asc = 0
     var home: String? = null
-    var selection = false
     var results: Boolean = false
     lateinit var openMode: OpenMode
 

@@ -88,6 +88,7 @@ import android.widget.TextView;
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.view.ActionMode;
 import androidx.appcompat.view.ContextThemeWrapper;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -199,6 +200,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     if (!stoppedAnimation) mainFrag.stopAnimation();
+
     if (getItemsDigested().get(position).getChecked() == ListItem.CHECKED) {
       // if the view at position is checked, un-check it
       Log.d(
@@ -227,34 +229,39 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       } else {
         // TODO: we don't have the check icon object probably because of config change
       }
-      if (mainFrag.mActionMode == null
-          || (mainFrag.getMainFragmentViewModel() != null
-              && !mainFrag.getMainFragmentViewModel().getSelection())) {
-        // start actionmode if not already started
-        // null condition if there is config change
-        if (mainFrag.getMainFragmentViewModel() != null) {
-          mainFrag.getMainFragmentViewModel().setSelection(true);
-        }
-      }
     }
 
+    invalidateSelection();
     notifyItemChanged(position);
+  }
+
+  private void invalidateSelection() {
+    if (mainFrag.getMainFragmentViewModel() != null) {
+      mainFrag
+          .getMainActivity()
+          .setListItemSelected(mainFrag.getMainFragmentViewModel().getCheckedItems().size() != 0);
+    }
   }
 
   public void invalidateActionMode() {
     if (mainFrag.getMainFragmentViewModel() != null) {
       // we have the actionmode visible, invalidate it's views
-      if (mainFrag.getMainFragmentViewModel().getSelection() && getCheckedItems().size() != 0) {
-        if (mainFrag.mActionMode == null) {
-          mainFrag.mActionMode =
-              mainFrag.getMainActivity().startSupportActionMode(mainFrag.mActionModeCallback);
+      if (mainFrag.getMainActivity().getListItemSelected()) {
+        if (mainFrag.getMainActivity().getActionModeHelper().getActionMode() == null) {
+          ActionMode.Callback mActionModeCallback =
+              mainFrag.getMainActivity().getActionModeHelper().getMActionModeCallback();
+          mainFrag
+              .getMainActivity()
+              .getActionModeHelper()
+              .setActionMode(
+                  mainFrag.getMainActivity().startSupportActionMode(mActionModeCallback));
         } else {
-          mainFrag.mActionMode.invalidate();
+          mainFrag.getMainActivity().getActionModeHelper().getActionMode().invalidate();
         }
       } else {
-        if (mainFrag.mActionMode != null) {
-          mainFrag.mActionMode.finish();
-          mainFrag.mActionMode = null;
+        if (mainFrag.getMainActivity().getActionModeHelper().getActionMode() != null) {
+          mainFrag.getMainActivity().getActionModeHelper().getActionMode().finish();
+          mainFrag.getMainActivity().getActionModeHelper().setActionMode(null);
         }
       }
     }
@@ -262,7 +269,6 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   public void toggleChecked(boolean selectAll, String path) {
     int i = path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON) ? 0 : 1;
-
     for (; i < getItemsDigested().size(); i++) {
       ListItem item = getItemsDigested().get(i);
       if (selectAll && item.getChecked() != ListItem.CHECKED) {
@@ -273,6 +279,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(i);
       }
     }
+    invalidateSelection();
+    invalidateActionMode();
   }
 
   public void toggleInverse(String path) {
@@ -396,6 +404,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         notifyItemChanged(i);
       }
     }
+    invalidateSelection();
+    invalidateActionMode();
   }
 
   public ArrayList<LayoutElementParcelable> getCheckedItems() {
@@ -501,11 +511,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       preloader = null;
     }
 
-    if (getItemsDigested() != null
-        && mainFrag.getMainFragmentViewModel().getIconList() != null
-        && invalidate) {
+    if (getItemsDigested() != null && invalidate) {
       getItemsDigested().clear();
-      mainFrag.getMainFragmentViewModel().getIconList().clear();
+      if (mainFrag.getMainFragmentViewModel().getIconList() != null) {
+        mainFrag.getMainFragmentViewModel().getIconList().clear();
+      }
     }
 
     offset = 0;
