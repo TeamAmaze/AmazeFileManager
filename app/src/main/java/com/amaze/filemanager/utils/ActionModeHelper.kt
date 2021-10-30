@@ -42,7 +42,6 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
 import java.io.File
-import java.lang.Exception
 import java.util.ArrayList
 
 class ActionModeHelper(val mainActivity: MainActivity) {
@@ -118,17 +117,15 @@ class ActionModeHelper(val mainActivity: MainActivity) {
                 mainFragmentViewModel, adapter ->
                 val checkedItems: ArrayList<LayoutElementParcelable> =
                     mainFragmentViewModel.getCheckedItems()
-                actionModeView?.setOnClickListener(
-                    View.OnClickListener { v: View? ->
-                        invokeSelectionDropdown(
-                            adapter,
-                            actionModeView!!,
-                            mainFragmentViewModel.currentPath!!,
-                            mainActivity
-                        )
-                    }
-                )
-                val textView: TextView = actionModeView!!.findViewById<TextView>(R.id.item_count)
+                actionModeView?.setOnClickListener {
+                    invokeSelectionDropdown(
+                        adapter,
+                        actionModeView!!,
+                        mainFragmentViewModel.currentPath!!,
+                        mainActivity
+                    )
+                }
+                val textView: TextView = actionModeView!!.findViewById(R.id.item_count)
                 textView.text = checkedItems.size.toString()
                 hideOption(R.id.openmulti, menu)
                 menu.findItem(R.id.all)
@@ -167,22 +164,18 @@ class ActionModeHelper(val mainActivity: MainActivity) {
                             )
                         }
                     } else {
-                        try {
-                            showOption(R.id.share, menu)
-                            if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                                showOption(
-                                    R.id.openmulti,
-                                    menu
-                                )
+                        showOption(R.id.share, menu)
+                        if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+                            showOption(
+                                R.id.openmulti,
+                                menu
+                            )
+                        }
+                        for (e in mainFragmentViewModel.getCheckedItems()) {
+                            if (e.isDirectory) {
+                                hideOption(R.id.share, menu)
+                                hideOption(R.id.openmulti, menu)
                             }
-                            for (e in mainFragmentViewModel.getCheckedItems()) {
-                                if (e.isDirectory) {
-                                    hideOption(R.id.share, menu)
-                                    hideOption(R.id.openmulti, menu)
-                                }
-                            }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                         hideOption(R.id.openwith, menu)
                         hideOption(R.id.addshortcut, menu)
@@ -212,15 +205,11 @@ class ActionModeHelper(val mainActivity: MainActivity) {
                                 menu
                             )
                         }
-                        try {
-                            for (e in mainFragmentViewModel.getCheckedItems()) {
-                                if (e.isDirectory) {
-                                    hideOption(R.id.share, menu)
-                                    hideOption(R.id.openmulti, menu)
-                                }
+                        for (e in mainFragmentViewModel.getCheckedItems()) {
+                            if (e.isDirectory) {
+                                hideOption(R.id.share, menu)
+                                hideOption(R.id.openmulti, menu)
                             }
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
                         hideOption(R.id.openwith, menu)
                     }
@@ -242,27 +231,23 @@ class ActionModeHelper(val mainActivity: MainActivity) {
                 checkedItems ->
                 return when (item.itemId) {
                     R.id.openmulti -> {
-                        try {
-                            val intent_result = Intent(Intent.ACTION_SEND_MULTIPLE)
-                            val resulturis = ArrayList<Uri>()
-                            for (element in checkedItems) {
-                                val baseFile = element.generateBaseFile()
-                                val resultUri = Utils.getUriForBaseFile(mainActivity, baseFile)
-                                if (resultUri != null) {
-                                    resulturis.add(resultUri)
-                                }
+                        val intent_result = Intent(Intent.ACTION_SEND_MULTIPLE)
+                        val resulturis = ArrayList<Uri>()
+                        for (element in checkedItems) {
+                            val baseFile = element.generateBaseFile()
+                            val resultUri = Utils.getUriForBaseFile(mainActivity, baseFile)
+                            if (resultUri != null) {
+                                resulturis.add(resultUri)
                             }
-                            intent_result.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            mainActivity.setResult(FragmentActivity.RESULT_OK, intent_result)
-                            intent_result.putParcelableArrayListExtra(
-                                Intent.EXTRA_STREAM,
-                                resulturis
-                            )
-                            mainActivity.finish()
-                            // mode.finish();
-                        } catch (e: Exception) {
-                            e.printStackTrace()
                         }
+                        intent_result.flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                        mainActivity.setResult(FragmentActivity.RESULT_OK, intent_result)
+                        intent_result.putParcelableArrayListExtra(
+                            Intent.EXTRA_STREAM,
+                            resulturis
+                        )
+                        mainActivity.finish()
+                        // mode.finish();
                         true
                     }
                     R.id.about -> {
@@ -462,6 +447,9 @@ class ActionModeHelper(val mainActivity: MainActivity) {
         }
     }
 
+    /**
+     * Finishes the action mode
+     */
     fun disableActionMode() {
         mainActivity.listItemSelected = false
         actionMode?.finish()

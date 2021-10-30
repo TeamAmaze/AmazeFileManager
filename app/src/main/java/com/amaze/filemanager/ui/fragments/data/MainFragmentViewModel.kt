@@ -196,6 +196,9 @@ class MainFragmentViewModel : ViewModel() {
             CloudHandler.CLOUD_PREFIX_DROPBOX + "/" == currentPath
     }
 
+    /**
+     * Get checked items in adapter
+     */
     fun getCheckedItems(): ArrayList<LayoutElementParcelable> {
         val selected = ArrayList<LayoutElementParcelable>()
         for (i in adapterListItems!!.indices) {
