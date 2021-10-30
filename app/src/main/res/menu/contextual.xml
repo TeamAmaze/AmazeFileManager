@@ -48,17 +48,23 @@
         android:id="@+id/all"
         android:title="@string/select_all"
         android:icon="@drawable/ic_select_all_white_36dp"
-        app:showAsAction="ifRoom" />
+        app:showAsAction="always" />
     <item
         android:id="@+id/share"
-        android:title="@string/share" />
+        android:title="@string/share"
+        android:icon="@drawable/ic_baseline_share_36"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/compress"
         android:title="@string/compress" />
 
     <item
         android:id="@+id/openwith"
-        android:title="@string/open_with"/>
+        android:title="@string/open_with"
+        android:icon="@drawable/ic_baseline_open_in_new_36"
+        app:showAsAction="always"
+        />
     <item
         android:id="@+id/hide"
         android:title="@string/hide" />
@@ -70,5 +76,5 @@
         android:id="@+id/ex"
         android:title="@string/extract"
         android:visible="false"
-        app:showAsAction="always"/>
+        app:showAsAction="always" />
 </menu>

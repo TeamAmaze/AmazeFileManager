@@ -117,6 +117,7 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
 import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
+import com.amaze.filemanager.ui.views.appbar.BottomAppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.ActionModeHelper;
 import com.amaze.filemanager.utils.AppConstants;
@@ -308,6 +309,7 @@ public class MainActivity extends PermissionsActivity
 
   private PasteHelper pasteHelper;
   private ActionModeHelper actionModeHelper;
+  private BottomAppBar bottomAppBar;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -344,7 +346,8 @@ public class MainActivity extends PermissionsActivity
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
-    actionModeHelper = new ActionModeHelper(MainActivity.this);
+    actionModeHelper = new ActionModeHelper(this);
+    bottomAppBar = new BottomAppBar(this);
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -1823,6 +1826,10 @@ public class MainActivity extends PermissionsActivity
 
   public ActionModeHelper getActionModeHelper() {
     return this.actionModeHelper;
+  }
+
+  public BottomAppBar getBottomAppBar() {
+    return this.bottomAppBar;
   }
 
   public void setPaste(PasteHelper p) {

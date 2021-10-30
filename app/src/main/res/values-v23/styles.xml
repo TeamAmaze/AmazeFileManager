@@ -23,7 +23,7 @@
 
     <!-- appCompat -->
     <!-- light -->
-    <style name="appCompatLight" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="appCompatLight" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
@@ -32,7 +32,7 @@
         <item name="toolbar_theme">@style/overflow_light</item>
 
     </style>
-    <style name="overflow_light" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="overflow_light" parent="Theme.MaterialComponents.Light.DarkActionBar">
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>
@@ -48,7 +48,7 @@
     </style>
 
     <!-- dark -->
-    <style name="appCompatDark" parent="Theme.AppCompat.NoActionBar">
+    <style name="appCompatDark" parent="Theme.MaterialComponents.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
         <item name="windowActionModeOverlay">true</item>
@@ -56,7 +56,7 @@
         <item name="popup">@style/Theme.AppCompat</item>
         <item name="toolbar_theme">@style/overflow_dark</item>
     </style>
-    <style name="overflow_dark" parent="Theme.AppCompat">
+    <style name="overflow_dark" parent="Theme.MaterialComponents">
 
         <item name="android:textColorSecondary">#ffffff</item>
         <item name="android:textColorPrimary">#ffffff</item>

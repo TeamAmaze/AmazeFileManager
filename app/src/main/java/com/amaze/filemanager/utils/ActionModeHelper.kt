@@ -78,6 +78,7 @@ class ActionModeHelper(val mainActivity: MainActivity) {
             mode.customView = actionModeView
             mainActivity.setPagingEnabled(false)
             mainActivity.hideFab()
+            mainActivity.bottomAppBar.showBottomAppBar()
 
             // translates the drawable content down
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
@@ -436,6 +437,7 @@ class ActionModeHelper(val mainActivity: MainActivity) {
             // translates the drawer content up
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(false);
             mainActivity.showFab()
+            mainActivity.bottomAppBar.hideBottomAppBar()
 
             mainActivity.setPagingEnabled(true)
             safeLet(
