@@ -44,7 +44,7 @@ import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSel
 import java.io.File
 import java.util.ArrayList
 
-class ActionModeHelper(val mainActivity: MainActivity) {
+class MainActivityActionMode(val mainActivity: MainActivity) {
 
     var actionModeView: View? = null
     var actionMode: ActionMode? = null
@@ -58,15 +58,6 @@ class ActionModeHelper(val mainActivity: MainActivity) {
         private fun showOption(id: Int, menu: Menu) {
             val item = menu.findItem(id)
             item.isVisible = true
-        }
-
-        fun initMenu(menu: Menu?) {
-            /*
-          menu.findItem(R.id.cpy).setIcon(icons.getCopyDrawable());
-          menu.findItem(R.id.cut).setIcon(icons.getCutDrawable());
-          menu.findItem(R.id.delete).setIcon(icons.getDeleteDrawable());
-          menu.findItem(R.id.all).setIcon(icons.getAllDrawable());
-          */
         }
 
         // called when the action mode is created; startActionMode() was called
@@ -83,7 +74,6 @@ class ActionModeHelper(val mainActivity: MainActivity) {
 
             // assumes that you have "contexual.xml" menu resources
             inflater.inflate(R.menu.contextual, menu)
-            initMenu(menu)
             hideOption(R.id.addshortcut, menu)
             hideOption(R.id.share, menu)
             hideOption(R.id.openwith, menu)

@@ -412,8 +412,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     return mainFrag.getMainFragmentViewModel().getCheckedItems();
   }
 
+  @Nullable
   public ArrayList<ListItem> getItemsDigested() {
-    return mainFrag.getMainFragmentViewModel().getAdapterListItems();
+    return mainFrag.getMainFragmentViewModel() != null
+        ? mainFrag.getMainFragmentViewModel().getAdapterListItems()
+        : null;
   }
 
   public boolean areAllChecked(String path) {
