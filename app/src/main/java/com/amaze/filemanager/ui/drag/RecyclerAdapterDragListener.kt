@@ -33,6 +33,7 @@ import com.amaze.filemanager.ui.dialogs.DragAndDropDialog
 import com.amaze.filemanager.ui.fragments.MainFragment
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
+import com.amaze.filemanager.utils.safeLet
 import kotlin.collections.ArrayList
 
 class RecyclerAdapterDragListener(
@@ -64,11 +65,12 @@ class RecyclerAdapterDragListener(
                 true
             }
             DragEvent.ACTION_DRAG_ENTERED -> {
-                holder?.run {
-                    if (adapter.itemsDigested.size != 0 &&
-                        holder.adapterPosition < adapter.itemsDigested.size
+                safeLet(holder, adapter.itemsDigested) {
+                    holder, itemsDigested ->
+                    if (itemsDigested.size != 0 &&
+                        holder.adapterPosition < itemsDigested.size
                     ) {
-                        val listItem = (adapter.itemsDigested[holder.adapterPosition])
+                        val listItem = (itemsDigested[holder.adapterPosition])
                         if (dragAndDropPref == PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
                             if (listItem.specialType != RecyclerAdapter.TYPE_BACK &&
                                 listItem.shouldToggleDragChecked
@@ -96,11 +98,12 @@ class RecyclerAdapterDragListener(
                 true
             }
             DragEvent.ACTION_DRAG_EXITED -> {
-                holder?.run {
-                    if (adapter.itemsDigested.size != 0 &&
-                        holder.adapterPosition < adapter.itemsDigested.size
+                safeLet(holder, adapter.itemsDigested) {
+                    holder, itemsDigested ->
+                    if (itemsDigested.size != 0 &&
+                        holder.adapterPosition < itemsDigested.size
                     ) {
-                        val listItem = (adapter.itemsDigested[holder.adapterPosition])
+                        val listItem = (itemsDigested[holder.adapterPosition])
                         if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
                             val checkedItems:
                                 ArrayList<LayoutElementParcelable> = adapter.checkedItems
@@ -142,7 +145,7 @@ class RecyclerAdapterDragListener(
                     var currentFileParcelable: HybridFileParcelable? = null
                     var isCurrentElementDirectory: Boolean? = null
                     var isEmptyArea: Boolean? = null
-                    var pasteLocation: String? = if (adapter.itemsDigested.size == 0) {
+                    var pasteLocation: String? = if (adapter.itemsDigested?.size == 0) {
                         mainFragment.currentPath
                     } else {
                         if (holder == null || holder.adapterPosition == RecyclerView.NO_POSITION) {
@@ -150,24 +153,26 @@ class RecyclerAdapterDragListener(
                             isEmptyArea = true
                             mainFragment.currentPath
                         } else {
-                            if (adapter.itemsDigested[holder.adapterPosition].specialType
-                                == RecyclerAdapter.TYPE_BACK
-                            ) {
-                                // dropping in goback button
-                                // hack to get the parent path
-                                val hybridFileParcelable = mainFragment
-                                    .elementsList!![1].generateBaseFile()
-                                val hybridFile = HybridFile(
-                                    hybridFileParcelable.mode,
-                                    hybridFileParcelable.getParent(mainFragment.context)
-                                )
-                                hybridFile.getParent(mainFragment.context)
-                            } else {
-                                val currentElement = adapter
-                                    .itemsDigested[holder.adapterPosition].elem
-                                currentFileParcelable = currentElement.generateBaseFile()
-                                isCurrentElementDirectory = currentElement.isDirectory
-                                currentElement.desc
+                            adapter.itemsDigested?.let {
+                                itemsDigested ->
+                                if (itemsDigested[holder.adapterPosition].specialType
+                                    == RecyclerAdapter.TYPE_BACK
+                                ) {
+                                    // dropping in goback button
+                                    // hack to get the parent path
+                                    val hybridFileParcelable = mainFragment
+                                        .elementsList!![1].generateBaseFile()
+                                    val hybridFile = HybridFile(
+                                        hybridFileParcelable.mode,
+                                        hybridFileParcelable.getParent(mainFragment.context)
+                                    )
+                                    hybridFile.getParent(mainFragment.context)
+                                } else {
+                                    val currentElement = itemsDigested[holder.adapterPosition].elem
+                                    currentFileParcelable = currentElement.generateBaseFile()
+                                    isCurrentElementDirectory = currentElement.isDirectory
+                                    currentElement.desc
+                                }
                             }
                         }
                     }
