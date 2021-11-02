@@ -195,8 +195,8 @@ object OTGUtil {
     fun getMassStorageDevicesConnected(
         context: Context
     ): List<UsbOtgRepresentation> {
-        val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-        val devices = usbManager.deviceList
+        val usbManager = context.getSystemService(Context.USB_SERVICE) as? UsbManager
+        val devices = usbManager?.deviceList ?: mapOf()
         return devices.mapNotNullTo(
             ArrayList(),
             { entry ->
