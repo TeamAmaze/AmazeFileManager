@@ -249,7 +249,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       if (mainFrag.getMainActivity().getListItemSelected()) {
         if (mainFrag.getMainActivity().getActionModeHelper().getActionMode() == null) {
           ActionMode.Callback mActionModeCallback =
-              mainFrag.getMainActivity().getActionModeHelper().getMActionModeCallback();
+              mainFrag.getMainActivity().getActionModeHelper();
           mainFrag
               .getMainActivity()
               .getActionModeHelper()

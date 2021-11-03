@@ -344,7 +344,7 @@ public class MainActivity extends PermissionsActivity
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
-    mainActivityActionMode = new MainActivityActionMode(MainActivity.this);
+    mainActivityActionMode = new MainActivityActionMode(new WeakReference<>(MainActivity.this));
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
