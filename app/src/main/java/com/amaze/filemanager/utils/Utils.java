@@ -27,6 +27,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
@@ -34,6 +35,7 @@ import com.google.android.material.snackbar.Snackbar;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
@@ -59,7 +61,10 @@ import androidx.annotation.StringRes;
 import androidx.cardview.widget.CardView;
 import androidx.core.content.ContextCompat;
 import androidx.core.content.FileProvider;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.DrawableCompat;
+import androidx.core.graphics.drawable.IconCompat;
 
 /**
  * Contains useful functions and methods (NOTHING HERE DEALS WITH FILES)
@@ -406,5 +411,37 @@ public class Utils {
     view.setPivotY(pivot.y);
     view.setScaleX(scaleX);
     view.setScaleY(scaleY);
+  }
+
+  public static void addShortcut(
+      Context context, ComponentName componentName, LayoutElementParcelable path) {
+    // Adding shortcut for MainActivity
+    // on Home screen
+
+    if (!ShortcutManagerCompat.isRequestPinShortcutSupported(context)) {
+      Toast.makeText(
+              context,
+              context.getString(R.string.add_shortcut_not_supported_by_launcher),
+              Toast.LENGTH_SHORT)
+          .show();
+      return;
+    }
+
+    Intent shortcutIntent = new Intent(context, MainActivity.class);
+    shortcutIntent.putExtra("path", path.desc);
+    shortcutIntent.setAction(Intent.ACTION_MAIN);
+    shortcutIntent.setFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP);
+
+    // Using file path as shortcut id.
+    ShortcutInfoCompat info =
+        new ShortcutInfoCompat.Builder(context, path.desc)
+            .setActivity(componentName)
+            .setIcon(IconCompat.createWithResource(context, R.mipmap.ic_launcher))
+            .setIntent(shortcutIntent)
+            .setLongLabel(path.desc)
+            .setShortLabel(new File(path.desc).getName())
+            .build();
+
+    ShortcutManagerCompat.requestPinShortcut(context, info, null);
   }
 }
