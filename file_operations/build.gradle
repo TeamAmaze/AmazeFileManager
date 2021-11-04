@@ -10,6 +10,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
+		multiDexEnabled true
+
         externalNativeBuild {
             cmake {
                 cFlags '-std=c11'
