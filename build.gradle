@@ -7,7 +7,7 @@ buildscript {
         glideVersion = '4.11.0'
         sshjVersion = '0.26.0'
         jcifsVersion = '2.1.6'
-        fabSpeedDialVersion = '3.1.1'
+        fabSpeedDialVersion = '3.2.0'
         roomVersion = '2.2.5'
         bouncyCastleVersion = '1.68'
         awaitilityVersion = "3.1.6"

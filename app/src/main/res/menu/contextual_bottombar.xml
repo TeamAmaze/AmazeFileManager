@@ -20,32 +20,30 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/openmulti"
-        android:title="@string/select_intent"
-        android:visible="false"
-        app:showAsAction="never" />
+        android:id="@+id/cpy"
+        android:title="@string/copy"
+        android:icon="@drawable/ic_content_copy_white_24dp"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/openparent"
-        android:visible="false"
-        android:title="@string/open_parent"
-        app:showAsAction="never" />
+        android:id="@+id/delete"
+        android:title="@string/delete"
+        android:icon="@drawable/ic_delete_white_36dp"
+        app:showAsAction="always" />
 
     <item
-        android:id="@+id/hide"
-        android:title="@string/hide"
-        app:showAsAction="never" />
+        android:id="@+id/cut"
+        android:title="@string/cut"
+        android:icon="@drawable/ic_content_cut_white_36dp"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/addshortcut"
-        android:title="@string/add_shortcut"
-        app:showAsAction="never" />
+        android:id="@+id/all"
+        android:title="@string/select_all"
+        android:icon="@drawable/ic_select_all_white_36dp"
+        app:showAsAction="always" />
     <item
-        android:id="@+id/share"
-        android:title="@string/share"
-        app:showAsAction="never"
+        android:id="@+id/compress"
+        android:title="@string/compress"
+        android:icon="@drawable/ic_compressed_white_24dp"
+        app:showAsAction="always"
         />
-    <item
-        android:id="@+id/ex"
-        android:title="@string/extract"
-        android:visible="false"
-        app:showAsAction="never" />
 </menu>

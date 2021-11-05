@@ -11,9 +11,12 @@ class BottomAppBar(mainActivity: MainActivity) {
 
     init {
         bottomAppBar = mainActivity.findViewById(R.id.bottomAppBar)
-        bottomAppBar?.setOnMenuItemClickListener {
-            mainActivity.actionModeHelper.mActionModeCallback
-                .onActionItemClicked(mainActivity.actionModeHelper.actionMode, it)
+        mainActivity.actionModeHelper.actionMode?.let {
+            actionMode ->
+            bottomAppBar?.setOnMenuItemClickListener {
+                menuItem ->
+                mainActivity.actionModeHelper.onActionItemClicked(actionMode, menuItem)
+            }
         }
     }
 

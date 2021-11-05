@@ -71,6 +71,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             mode.customView = actionModeView
             mainActivity.setPagingEnabled(false)
             mainActivity.hideFab()
+            mainActivity.bottomAppBar.showBottomAppBar()
 
             // translates the drawable content down
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(true);
@@ -79,7 +80,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             inflater.inflate(R.menu.contextual, menu)
             hideOption(R.id.addshortcut, menu)
             hideOption(R.id.share, menu)
-            hideOption(R.id.openwith, menu)
+//            hideOption(R.id.openwith, menu)
             if (mainActivity.mReturnIntent) showOption(R.id.openmulti, menu)
             // hideOption(R.id.setringtone,menu);
             mode.title = mainActivity.resources.getString(R.string.select)
@@ -123,13 +124,13 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             val textView: TextView = actionModeView!!.findViewById(R.id.item_count)
             textView.text = checkedItems.size.toString()
             hideOption(R.id.openmulti, menu)
-            menu.findItem(R.id.all)
+            /*menu.findItem(R.id.all)
                 .setTitle(
                     if (checkedItems.size
                         == mainFragmentViewModel.folderCount +
                         mainFragmentViewModel.fileCount
                     ) R.string.deselect_all else R.string.select_all
-                )
+                )*/
             if (mainFragmentViewModel.openMode != OpenMode.FILE) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)
@@ -145,10 +146,10 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                 hideOption(R.id.openparent, menu)
                 if (checkedItems.size == 1) {
                     showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openwith, menu)
+//                    showOption(R.id.openwith, menu)
                     showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems().get(0).isDirectory) {
-                        hideOption(R.id.openwith, menu)
+                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
+//                        hideOption(R.id.openwith, menu)
                         hideOption(R.id.share, menu)
                         hideOption(R.id.openmulti, menu)
                     }
@@ -172,17 +173,17 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                             hideOption(R.id.openmulti, menu)
                         }
                     }
-                    hideOption(R.id.openwith, menu)
+//                    hideOption(R.id.openwith, menu)
                     hideOption(R.id.addshortcut, menu)
                 }
             } else {
                 if (checkedItems.size == 1) {
                     showOption(R.id.addshortcut, menu)
                     showOption(R.id.openparent, menu)
-                    showOption(R.id.openwith, menu)
+//                    showOption(R.id.openwith, menu)
                     showOption(R.id.share, menu)
                     if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
-                        hideOption(R.id.openwith, menu)
+//                        hideOption(R.id.openwith, menu)
                         hideOption(R.id.share, menu)
                         hideOption(R.id.openmulti, menu)
                     }
@@ -206,7 +207,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                             hideOption(R.id.openmulti, menu)
                         }
                     }
-                    hideOption(R.id.openwith, menu)
+//                    hideOption(R.id.openwith, menu)
                 }
             }
             if (mainFragmentViewModel.openMode != OpenMode.FILE) {
@@ -392,12 +393,12 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     mode.finish()
                     true
                 }
-                R.id.openwith -> {
+                /*R.id.openwith -> {
                     FileUtils.openFile(
                         File(checkedItems[0].desc), mainActivity, mainActivity.prefs
                     )
                     true
-                }
+                }*/
                 R.id.addshortcut -> {
                     Utils.addShortcut(
                         mainActivity, mainActivity.componentName,
@@ -422,6 +423,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             // translates the drawer content up
             // if (mainActivity.isDrawerLocked) mainActivity.translateDrawerList(false);
             mainActivity.showFab()
+            mainActivity.bottomAppBar.hideBottomAppBar()
 
             mainActivity.setPagingEnabled(true)
             safeLet(

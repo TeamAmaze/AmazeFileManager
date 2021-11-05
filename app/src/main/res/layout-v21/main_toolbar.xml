@@ -89,9 +89,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             style="@style/Widget.MaterialComponents.BottomAppBar.Colored"
-            app:menu="@menu/contextual"
+            app:menu="@menu/contextual_bottombar"
             android:visibility="gone"
             app:hideOnScroll="true"
+            app:labelVisibilityMode="labeled"
+            android:paddingStart="40dp"
+            android:paddingLeft="40dp"
+            android:paddingEnd="40dp"
+            android:paddingRight="40dp"
             />
 
         <com.amaze.filemanager.ui.views.drawer.GestureExclusionView
@@ -115,6 +120,8 @@
         android:id="@+id/navigation"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start"
+        app:itemShapeFillColor="@drawable/nav_view_item_shape"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>

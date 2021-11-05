@@ -97,6 +97,8 @@
         android:id="@+id/navigation"
         android:layout_width="@dimen/drawer_width"
         android:layout_height="match_parent"
-        android:layout_gravity="start"/>
+        android:layout_gravity="start"
+        app:itemShapeFillColor="@drawable/nav_view_item_shape"
+        />
 
 </androidx.drawerlayout.widget.DrawerLayout>

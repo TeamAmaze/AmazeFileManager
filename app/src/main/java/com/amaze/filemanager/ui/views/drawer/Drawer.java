@@ -637,6 +637,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
         imageView.setColorFilter(Color.WHITE);
       }
       item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
+      item.getActionView().setFocusable(false);
     }
   }
 
