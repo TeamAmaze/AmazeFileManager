@@ -249,7 +249,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       if (mainFrag.getMainActivity().getListItemSelected()) {
         if (mainFrag.getMainActivity().getActionModeHelper().getActionMode() == null) {
           ActionMode.Callback mActionModeCallback =
-              mainFrag.getMainActivity().getActionModeHelper().getMActionModeCallback();
+              mainFrag.getMainActivity().getActionModeHelper();
           mainFrag
               .getMainActivity()
               .getActionModeHelper()
@@ -412,8 +412,11 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     return mainFrag.getMainFragmentViewModel().getCheckedItems();
   }
 
+  @Nullable
   public ArrayList<ListItem> getItemsDigested() {
-    return mainFrag.getMainFragmentViewModel().getAdapterListItems();
+    return mainFrag.getMainFragmentViewModel() != null
+        ? mainFrag.getMainFragmentViewModel().getAdapterListItems()
+        : null;
   }
 
   public boolean areAllChecked(String path) {
@@ -533,11 +536,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     if (mainFrag.getMainFragmentViewModel() != null
         && mainFrag.getMainFragmentViewModel().isList()
-        && listItems.size() > 0) {
-      if (getItemsDigested() == null || invalidate) {
-        listItems.add(new ListItem(EMPTY_LAST_ITEM));
-        uris.add(null);
-      }
+        && listItems.size() > 0
+        && (getItemsDigested() == null || invalidate)) {
+      listItems.add(new ListItem(EMPTY_LAST_ITEM));
+      uris.add(null);
     }
 
     if (getItemsDigested() == null || invalidate) {

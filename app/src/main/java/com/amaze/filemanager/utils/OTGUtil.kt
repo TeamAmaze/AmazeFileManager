@@ -98,6 +98,7 @@ object OTGUtil {
         fileFound: OnFileFound
     ) {
         var rootUri = DocumentFile.fromTreeUri(context, rootUriString)
+
         val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
             path.substringAfter(rootUriString.toString())
                 .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
@@ -110,11 +111,16 @@ object OTGUtil {
             if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
-            rootUri = rootUri!!.findFile(part)
+            rootUri = rootUri?.findFile(part)
+        }
+
+        if (rootUri == null) {
+            Log.e(TAG, "Null DocumentFile listed!")
+            return
         }
 
         // we have the end point DocumentFile, list the files inside it and return
-        for (file in rootUri!!.listFiles()) {
+        for (file in rootUri.listFiles()) {
             if (file.exists()) {
                 var size: Long = 0
                 if (!file.isDirectory) size = file.length()
@@ -195,8 +201,8 @@ object OTGUtil {
     fun getMassStorageDevicesConnected(
         context: Context
     ): List<UsbOtgRepresentation> {
-        val usbManager = context.getSystemService(Context.USB_SERVICE) as UsbManager
-        val devices = usbManager.deviceList
+        val usbManager = context.getSystemService(Context.USB_SERVICE) as? UsbManager
+        val devices = usbManager?.deviceList ?: mapOf()
         return devices.mapNotNullTo(
             ArrayList(),
             { entry ->

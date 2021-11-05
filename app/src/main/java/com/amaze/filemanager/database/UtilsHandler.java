@@ -38,7 +38,6 @@ import com.amaze.filemanager.database.models.utilities.Hidden;
 import com.amaze.filemanager.database.models.utilities.History;
 import com.amaze.filemanager.database.models.utilities.SftpEntry;
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -302,7 +301,7 @@ public class UtilsHandler {
     ArrayList<String[]> retval = new ArrayList<String[]>();
     for (SftpEntry entry :
         utilitiesDatabase.sftpEntryDao().list().subscribeOn(Schedulers.io()).blockingGet()) {
-      String path = SshClientUtils.decryptSshPathAsNecessary(entry.path);
+      String path = entry.path;
 
       if (path == null) {
         Log.e("ERROR", "Error decrypting path: " + entry.path);
@@ -318,22 +317,17 @@ public class UtilsHandler {
   }
 
   public String getSshHostKey(String uri) {
-    uri = SshClientUtils.encryptSshPathAsNecessary(uri);
-    if (uri != null) {
-      try {
-        return utilitiesDatabase
-            .sftpEntryDao()
-            .getSshHostKey(uri)
-            .subscribeOn(Schedulers.io())
-            .blockingGet();
-      } catch (Exception e) {
-        // catch error to handle Single#onError for blockingGet
-        if (DEBUG) {
-          Log.e(getClass().getSimpleName(), "Error getting public key for URI [" + uri + "]", e);
-        }
-        return null;
+    try {
+      return utilitiesDatabase
+          .sftpEntryDao()
+          .getSshHostKey(uri)
+          .subscribeOn(Schedulers.io())
+          .blockingGet();
+    } catch (Exception e) {
+      // catch error to handle Single#onError for blockingGet
+      if (DEBUG) {
+        Log.e(getClass().getSimpleName(), "Error getting public key for URI [" + uri + "]", e);
       }
-    } else {
       return null;
     }
   }

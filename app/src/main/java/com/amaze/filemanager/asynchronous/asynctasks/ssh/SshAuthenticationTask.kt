@@ -79,7 +79,7 @@ class SshAuthenticationTask(
         }
         return runCatching {
             sshClient.connect(hostname, port)
-            if (password != null && "" != password) {
+            if (true == password?.isNotEmpty()) {
                 sshClient.authPassword(username, password)
                 AsyncTaskResult(sshClient)
             } else {
