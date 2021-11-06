@@ -26,6 +26,8 @@ import java.util.List;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.DonationViewHolder;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.databinding.AdapterDonationBinding;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -38,7 +40,6 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 
-import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -54,7 +55,6 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
   private BasicActivity activity;
   private List<String> skuList;
-  private LayoutInflater layoutInflater;
   private List<SkuDetails> skuDetails;
 
   // create new donations client
@@ -62,7 +62,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
   /** True if billing service is connected now. */
   private boolean isServiceConnected;
 
-  public Billing(BasicActivity activity) {
+  public Billing(@NonNull BasicActivity activity) {
     this.activity = activity;
 
     skuList = new ArrayList<>();
@@ -70,8 +70,6 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     skuList.add("donations_2");
     skuList.add("donations_3");
     skuList.add("donations_4");
-
-    layoutInflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
     billingClient =
         BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases().build();
@@ -128,7 +126,8 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
   @NonNull
   @Override
   public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View rootView = layoutInflater.inflate(R.layout.adapter_donation, parent, false);
+    View rootView =
+        AdapterDonationBinding.inflate(LayoutInflater.from(this.activity), parent, false).getRoot();
     return new DonationViewHolder(rootView);
   }
 
@@ -201,7 +200,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
           public void onBillingSetupFinished(BillingResult billingResponse) {
             Log.d(
                 Billing.this.getClass().getSimpleName(),
-                "Setup finished. Response code: " + billingResponse);
+                "Setup finished. Response code: " + billingResponse.getResponseCode());
 
             if (billingResponse.getResponseCode() == BillingClient.BillingResponseCode.OK) {
               isServiceConnected = true;
@@ -226,11 +225,22 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
   }
 
   private void showPaymentsDialog(final BasicActivity context) {
-    final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-    builder.title(R.string.donate);
-    builder.adapter(this, null);
-    builder.theme(context.getAppTheme().getMaterialDialogTheme());
-    builder.cancelListener(dialog -> purchaseProduct.purchaseCancel());
-    builder.show();
+    /*
+     * As of Billing library 4.0, all callbacks are running on background thread.
+     * Need to use AppConfig.runInApplicationThread() for UI interactions
+     *
+     *
+     */
+    AppConfig.getInstance()
+        .runInApplicationThread(
+            () -> {
+              final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+              builder.title(R.string.donate);
+              builder.adapter(this, null);
+              builder.theme(context.getAppTheme().getMaterialDialogTheme());
+              builder.cancelListener(dialog -> purchaseProduct.purchaseCancel());
+              builder.show();
+              return null;
+            });
   }
 }
