@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.DonationViewHolder;
 import com.amaze.filemanager.application.AppConfig;
@@ -52,6 +53,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     implements PurchasesUpdatedListener {
+
+  private static final String TAG = Billing.class.getSimpleName();
 
   private BasicActivity activity;
   private List<String> skuList;
@@ -101,9 +104,18 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
           billingClient.querySkuDetailsAsync(
               params.build(),
               (responseCode, skuDetailsList) -> {
-                // Successfully fetched product details
-                skuDetails = skuDetailsList;
-                popProductsList(responseCode, skuDetailsList);
+                if (skuDetailsList != null && skuDetailsList.size() > 0) {
+                  // Successfully fetched product details
+                  skuDetails = skuDetailsList;
+                  popProductsList(responseCode, skuDetailsList);
+                } else {
+                  AppConfig.toast(activity, R.string.error_fetching_google_play_product_list);
+                  if (BuildConfig.DEBUG) {
+                    Log.w(
+                        TAG,
+                        "Error fetching product list - looks like you are running a DEBUG build.");
+                  }
+                }
               });
         };
 
@@ -133,7 +145,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
 
   @Override
   public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-    if (holder instanceof DonationViewHolder) {
+    if (holder instanceof DonationViewHolder && skuDetails.size() > 0) {
       String titleRaw = skuDetails.get(position).getTitle();
       ((DonationViewHolder) holder)
           .TITLE.setText(titleRaw.subSequence(0, titleRaw.lastIndexOf("(")));
@@ -198,10 +210,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         new BillingClientStateListener() {
           @Override
           public void onBillingSetupFinished(BillingResult billingResponse) {
-            Log.d(
-                Billing.this.getClass().getSimpleName(),
-                "Setup finished. Response code: " + billingResponse.getResponseCode());
-
+            Log.d(TAG, "Setup finished. Response code: " + billingResponse.getResponseCode());
             if (billingResponse.getResponseCode() == BillingClient.BillingResponseCode.OK) {
               isServiceConnected = true;
               if (executeOnSuccess != null) {
