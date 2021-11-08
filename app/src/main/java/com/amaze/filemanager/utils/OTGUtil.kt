@@ -31,6 +31,7 @@ import android.provider.DocumentsContract
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
+import com.amaze.filemanager.exceptions.DocumentFileNotFoundException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation
@@ -115,8 +116,7 @@ object OTGUtil {
         }
 
         if (rootUri == null) {
-            Log.e(TAG, "Null DocumentFile listed!")
-            return
+            throw DocumentFileNotFoundException(rootUriString, path)
         }
 
         // we have the end point DocumentFile, list the files inside it and return
@@ -167,7 +167,8 @@ object OTGUtil {
         createRecursive: Boolean
     ): DocumentFile? {
         // start with root of SD card and then parse through document tree.
-        var retval = DocumentFile.fromTreeUri(context, rootUri)
+        var retval: DocumentFile? = DocumentFile.fromTreeUri(context, rootUri)
+            ?: throw DocumentFileNotFoundException(rootUri, path)
         val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
             path.substringAfter(rootUri.toString())
                 .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
