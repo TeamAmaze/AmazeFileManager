@@ -6,7 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: 'com.akaita.android.easylauncher'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     dexOptions {
         jumboMode = true
@@ -28,7 +28,7 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 100
+        versionCode 104
         versionName "3.6.6"
         multiDexEnabled true
 
