@@ -198,7 +198,8 @@ public class MainActivity extends PermissionsActivity
         SearchWorkerFragment.HelperCallbacks,
         CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>,
-        FolderChooserDialog.FolderCallback {
+        FolderChooserDialog.FolderCallback,
+        PermissionsActivity.OnPermissionGranted {
 
   private static final String TAG = TagsHelper.getTag(MainActivity.class);
 
@@ -469,43 +470,46 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
-  private void checkForExternalPermission() {
+  @Override
+  public void onPermissionGranted() {
+    drawer.refreshDrawer();
+    TabFragment tabFragment = getTabFragment();
+    boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
+    // reset home and current paths according to new storages
+    if (b) {
+      TabHandler tabHandler = TabHandler.getInstance();
+      tabHandler
+          .clear()
+          .subscribe(
+              () -> {
+                if (tabFragment != null) {
+                  tabFragment.refactorDrawerStorages(false);
+                  Fragment main = tabFragment.getFragmentAtIndex(0);
+                  if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                  Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                  if (main1 != null) ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                }
+                getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+              });
+    } else {
+      // just refresh list
+      if (tabFragment != null) {
+        Fragment main = tabFragment.getFragmentAtIndex(0);
+        if (main != null) ((MainFragment) main).updateList();
+        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+        if (main1 != null) ((MainFragment) main1).updateList();
+      }
+    }
+  }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkStoragePermission()) {
-      requestStoragePermission(
-          () -> {
-            drawer.refreshDrawer();
-            TabFragment tabFragment = getTabFragment();
-            boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
-            // reset home and current paths according to new storages
-            if (b) {
-              TabHandler tabHandler = TabHandler.getInstance();
-              tabHandler
-                  .clear()
-                  .subscribe(
-                      () -> {
-                        if (tabFragment != null) {
-                          tabFragment.refactorDrawerStorages(false);
-                          Fragment main = tabFragment.getFragmentAtIndex(0);
-                          if (main != null)
-                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                          Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                          if (main1 != null)
-                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
-                        }
-                        getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
-                      });
-            } else {
-              // just refresh list
-              if (tabFragment != null) {
-                Fragment main = tabFragment.getFragmentAtIndex(0);
-                if (main != null) ((MainFragment) main).updateList();
-                Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                if (main1 != null) ((MainFragment) main1).updateList();
-              }
-            }
-          },
-          true);
+  private void checkForExternalPermission() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if (!checkStoragePermission()) {
+        requestStoragePermission(this, true);
+      }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        requestAllFilesAccess(this);
+      }
     }
   }
 
