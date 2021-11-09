@@ -97,7 +97,6 @@
     <string name="select_all">Velja allt</string>
     <string name="delete">Eyða</string>
     <string name="set_as_home">Stilla sem upphafsstöðu</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -207,11 +206,8 @@
     <string name="unin_system_apk">Þetta er kerfisforrit, ef því er eytt gæti kerfið orðið óstöðugt.\nHalda áfram?</string>
     <string name="warning">Aðvörun</string>
     <string name="donate">Styrkja</string>
-    <string name="archive_preferences">Kjörstillingar safnskrár</string>
     <string name="archive_extract_folder">Mappa undir afþjöppun safnskrár</string>
-    <string name="zip_create_folder">Mappa til að útbúa í ZIP-skrár</string>
     <string name="archive_summary">Safnskrár verða afþjappaðar í þessa möppu. Sjálfgefið er að það sé mappan þar sem safnskráin er staðsett.</string>
-    <string name="zip_summary">Nýjar ZIP-safnskrár verða búnar til í þessari möppu. Sjálfgefið er að það sé mappan þar sem skrárnar eru staðsettar.</string>
     <string name="open_as">Opna sem</string>
     <string name="text">Texti</string>
     <string name="audio">Hljóð</string>
@@ -311,10 +307,11 @@
     <string name="primary_two_summary">Stilla lit á stærri viðmótshluta flipans til hægri</string>
     <string name="support_development">Styðja áframhaldandi þróun</string>
     <string name="report_bugs_title">Tilkynna villur</string>
+    <string name="source_title">Grunnkóði</string>
+    <string name="source_summary">Skoðaðu grunnkóðann okkar á GitHub</string>
     <string name="report_bugs_summary">Tilkynna villur eða biðja um nýja eiginleika</string>
     <string name="translate_title">Þýða</string>
     <string name="translate_summary">Þýða Amaze á tungumálið þitt</string>
-    <string name="easter_egg_title">Stúdíóhamur</string>
     <string name="paypal_copy_message">Paypal auðkenni afritað á klippispjald</string>
     <string name="searching_devices">Leita að tækjum...</string>
     <string name="use_custom_ip">Nota sérsniðið IP-vistfang</string>
@@ -373,7 +370,6 @@
     </string>
     <string name="share_limit">Get ekki deilt fleiri en 100 skrám</string>
     <string name="otg_access">Veldu rót OTG tækis</string>
-    <string name="opening">Opna...</string>
     <string name="information">Upplýsingar</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Síðast notað</string>
@@ -455,7 +451,6 @@
     <string name="cloud_connection">Skýjatenging</string>
     <string name="cloud_connection_new">Ný tenging við tölvuský</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Ná í Cloud-plugin skýjaviðbót</string>
@@ -522,6 +517,12 @@
     <string name="show_quick_access_pref_title">Sýna flýtiaðganga</string>
     <string name="show_quick_access_pref">Flýtiaðgangar</string>
     <string name="directory">Mappa</string>
+
+    <string name="show_bookmarks_pref_title">Sýna bókamerki</string>
+    <string name="show_bookmarks_pref">Bókamerki</string>
+    <string name="create_bookmark">Búa til bókamerki</string>
+    <string name="edit_bookmark">Breyta bókamerki</string>
+    <string name="question_delete_bookmark">Eyða bókamerki?</string>
 
     <string name="cloud_error_plugin">Amaze skýjaviðbótin (cloud plugin) fannst ekki. Náðu í hana úr Play Store safninu.</string>
     <string name="cloud_error_failed_restart">Mistókst að hlaða inn tengingunni.
@@ -645,5 +646,13 @@
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD-minniskort</string>
     <string name="choose_folder">Velja þessa möppu</string>
+    <string name="ftp_server_open_settings">Opna stillingar</string>
+    <string name="move">Færa</string>
+    <string name="error_report_open_issue_button_text">Tilkynna á GitHub</string>
+    <string name="error_details_headline">Nánar:</string>
+    <string name="just_once">Bara einu sinni</string>
+    <string name="always">Alltaf</string>
+    <string name="drag_to_select">Snertu og dragðu til að velja skrár</string>
+    <string name="disable">Gera óvirkt</string>
     </resources>
 

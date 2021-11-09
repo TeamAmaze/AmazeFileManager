@@ -315,7 +315,6 @@
     <string name="report_bugs_summary">Laporkan bug atau minta fitur baru</string>
     <string name="translate_title">Terjemahkan</string>
     <string name="translate_summary">Terjemahkan Amaze ke dalam bahasa Anda</string>
-    <string name="easter_egg_title">Mode Studio</string>
     <string name="paypal_copy_message">Id Paypal disalin ke papan klip</string>
     <string name="searching_devices">Mencari perangkat</string>
     <string name="use_custom_ip">Gunakan IP khusus</string>
@@ -373,7 +372,6 @@
     </string>
     <string name="share_limit">Tidak bisa membagikan lebih dari 100 berkas</string>
     <string name="otg_access">Pilih root dari perangkat OTG</string>
-    <string name="opening">Membuka..</string>
     <string name="information">Informasi</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Diakses</string>
@@ -523,6 +521,13 @@
     <string name="show_quick_access_pref_title">Tampilkan akses cepat</string>
     <string name="show_quick_access_pref">Akses cepat</string>
     <string name="directory">Direktori</string>
+
+    <string name="sidebar_bookmarks_title">Markah bilah samping</string>
+    <string name="show_bookmarks_pref_title">Tampilkan markah</string>
+    <string name="show_bookmarks_pref">Markah</string>
+    <string name="create_bookmark">Buat markah</string>
+    <string name="edit_bookmark">Sunting markah</string>
+    <string name="question_delete_bookmark">Hapus markah?</string>
 
     <string name="cloud_error_plugin">Plugin Amaze Cloud tidak ditemukan. Silakan unduh dari Play Store.</string>
     <string name="cloud_error_failed_restart">Gagal membuat koneksi.
@@ -698,5 +703,20 @@
     <string name="ftp_prompt_accept_first_start_saf_access">Karena ini adalah pertama kalinya Anda menjalankan server FTP, dan Anda menggunakan penyimpanan perangkat internal sebagai folder berbagi, silakan izinkan Amaze untuk mengakses penyimpanan menggunakan SAF.\n\n
 
 Anda hanya perlu melakukan ini sekali, sampai nanti jika Anda ingin memilih lokasi baru untuk berbagi.</string>
+    <string name="android_data_prompt_saf_access_title">Izinkan akses SAF</string>
+    <string name="ftp_preference_saf_filesystem_title">Gunakan sistem berkas lama</string>
+    <string name="ftp_preference_saf_filesystem">Aktifkan ini untuk mendukung penggunaan penyimpanan eksternal perangkat pada versi Android terbaru</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Galat membuka URI \"%s\" untuk dibaca.</string>
+    <string name="error_empty_archive">\"%s\" adalah arsip kosong.</string>
+    <string name="security_error">Berkas tidak bisa dibuka menggunakan aplikasi ini</string>
+    <string name="cloud_drive_tooltip">Sambungkan Google Drive™ untuk mengelola berkas dari dalam Amaze File Manager.</string>
+    <string name="signin_with_google_title">Otentikasi untuk menggunakan Google Drive™</string>
+    <string name="show_system_apps">Tampilkan apl sistem</string>
+    <string name="system_apps">Apl sistem</string>
+    <string name="third_party_apps">Apl pihak ketiga</string>
+    <string name="select_inverse">Pilih Kebalikannya</string>
+    <string name="select_by_type">Pilih berdasarkan tipe</string>
+    <string name="select_by_date">Pilih berdasarkan tanggal</string>
+    <string name="select_similar">Pilih berdasarkan kesamaan</string>
 </resources>
 

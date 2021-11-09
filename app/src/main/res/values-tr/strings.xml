@@ -97,7 +97,6 @@
     <string name="select_all">Tümünü seç</string>
     <string name="delete">Sil</string>
     <string name="set_as_home">Ana klasör olarak ayarla</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -208,11 +207,8 @@
 Devam etmek istiyor musunuz?\"</string>
     <string name="warning">Uyarı</string>
     <string name="donate">Bağış</string>
-    <string name="archive_preferences">Arşiv tercihleri</string>
     <string name="archive_extract_folder">Arşiv ayıklama klasörü</string>
-    <string name="zip_create_folder">Sıkıştırma klasörü</string>
     <string name="archive_summary">Arşiv dosyaları bu klasöre çıkartılacaktır</string>
-    <string name="zip_summary">Yeni sıkıştırılmış dosyalar bu klasörde olacak</string>
     <string name="open_as">Farklı aç</string>
     <string name="text">Metin</string>
     <string name="audio">Ses</string>
@@ -317,7 +313,6 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="report_bugs_summary">Hata bildirimi veya yeni özellik isteği yapın</string>
     <string name="translate_title">Çeviri</string>
     <string name="translate_summary">Amaze uygulamasını kendi dilinize çevirin</string>
-    <string name="easter_egg_title">Stüdyo Modu</string>
     <string name="paypal_copy_message">Paypal ID panoya kopyalandı</string>
     <string name="searching_devices">Cihazlar aranıyor</string>
     <string name="use_custom_ip">Özel IP kullan</string>
@@ -372,7 +367,6 @@ Devam etmek istiyor musunuz?\"</string>
     </string>
     <string name="share_limit">100 dosyadan fazlası paylaşılamaz</string>
     <string name="otg_access">OTG aygıt kökünü seçin</string>
-    <string name="opening">Açılıyor..</string>
     <string name="information">Bilgi</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Erişim Tarihi</string>
@@ -452,7 +446,6 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="cloud_connection">Bulut bağlantısı</string>
     <string name="cloud_connection_new">Yeni bulut bağlantısı</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Bulut eklentisi al</string>
@@ -520,6 +513,7 @@ Kaldırmak için boş bırakın.</string>
     <string name="show_quick_access_pref">Hızlı erişimler</string>
     <string name="directory">Dizin</string>
 
+    <string name="show_bookmarks_pref">Yer imleri</string>
     <string name="cloud_error_plugin">Amaze Cloud eklentisi bulunamadı. Play Store dan indirin.</string>
     <string name="cloud_error_failed_restart">Bağlantı yüklenemedi.
 Önce Amaze Cloud u açın.</string>
@@ -658,7 +652,6 @@ Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı aya
     <string name="app_ui_crash">Uygulama/Kullanıcı arayüzü çöktü</string>
     <string name="error_report_title">Hata raporu</string>
     <string name="crash_report_copied">Çökme raporu panoya kopyalandı</string>
-
     <string name="disableIpcSignature">IPC imzalama kontrolünü devre dışı bırakın (Eski SMBv1 sunucuları için - GÜVENLİ DEĞİL!)</string>
     <string name="cannot_delete_file">Dosya silinemiyor </string>
     <string name="cannot_delete_file_with_reason">Dosya silinemiyor - %s</string>
@@ -668,7 +661,6 @@ Ana bilgisayar parmak izini güncellemeye devam edebilir veya SSH bağlantı aya
     <string name="clear_open_file">Önbelleği temizle</string>
     <string name="clear_open_file_summary">Seçili varsayılan dosya açma uygulamalarını temizler</string>
     <string name="legacy_listing_title">Root için eski listeyi kullan</string>
-    <string name="legacy_listing_summary">Etkinleştirilirse, listeleme için stat kullanır, aksi takdirde ls kullanır</string>
     <string name="error_permission_denied">İzin reddedildi</string>
-</resources>
+    </resources>
 

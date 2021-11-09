@@ -94,7 +94,6 @@
     <string name="select_all">모두 선택</string>
     <string name="delete">삭제</string>
     <string name="set_as_home">홈 폴더로 설정</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -298,7 +297,6 @@
     <string name="bookmark_lost">북마크를 찾을 수 없어 재생성 합니다</string>
 
     <string name="share_limit">100 개 이상의 파일은 공유할 수 없습니다</string>
-    <string name="opening">여는 중</string>
     <string name="information">정보</string>
     <!-- reference to file accessed date -->
     <string name="accessed">접속됨</string>
@@ -385,6 +383,7 @@
     <string name="sidebar_quick_access_title">사이드바 quick access</string>
     <string name="show_quick_access_pref_title">Quick accesses 보기</string>
     <string name="show_quick_access_pref">Quick accesses</string>
+    <string name="show_bookmarks_pref">북마크</string>
     <string name="showHeaders">Headers 보기</string>
 	
 	<string name="item">아이템</string>

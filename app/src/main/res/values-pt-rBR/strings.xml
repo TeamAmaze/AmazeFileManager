@@ -97,7 +97,6 @@
     <string name="select_all">Selecionar tudo</string>
     <string name="delete">Excluir</string>
     <string name="set_as_home">Definir como pasta inicial</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -128,7 +127,7 @@
     <string name="searching">Procurando por %s</string>
     <string name="done">Concluído</string>
     <string name="set">Definir</string>
-    <string name="enablerootmde">Ative o modo Root</string>
+    <string name="enablerootmde">Ativar Modo Root</string>
     <string name="goback">Voltar</string>
     <string name="newfile">Novo arquivo</string>
     <string name="no_files">Nenhum arquivo</string>
@@ -207,11 +206,8 @@
     <string name="unin_system_apk">Este é um aplicativo de sistema e sua exclusão poderá deixar o sistema instável.\nContinuar?</string>
     <string name="warning">Aviso</string>
     <string name="donate">Doação</string>
-    <string name="archive_preferences">Preferências de pacotes</string>
     <string name="archive_extract_folder">Pasta de extração de arquivos</string>
-    <string name="zip_create_folder">Pasta de criação de arquivos Zip</string>
     <string name="archive_summary">Os arquivos do pacote serão extraídos nesta pasta. A pasta padrão é a de localização do arquivo.</string>
-    <string name="zip_summary">Novos arquivos zip serão criados nesta pasta. A pasta padrão é a de localização do arquivo.</string>
     <string name="open_as">Abrir como</string>
     <string name="text">Texto</string>
     <string name="audio">Áudio</string>
@@ -315,7 +311,6 @@
     <string name="report_bugs_summary">Comunique erros encontrados ou solicite novas funcionalidades</string>
     <string name="translate_title">Traduza</string>
     <string name="translate_summary">Traduza o Amaze para seu idioma</string>
-    <string name="easter_egg_title">Modo Studio</string>
     <string name="paypal_copy_message">ID do Paypal copiado para a área de transferência</string>
     <string name="searching_devices">Procurando dispositivos</string>
     <string name="use_custom_ip">Usar IP personalizado</string>
@@ -363,7 +358,6 @@
     </string>
     <string name="share_limit">Não é possível compartilhar mais que 100 arquivos</string>
     <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
-    <string name="opening">Abrindo...</string>
     <string name="information">Informação</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Acessado</string>
@@ -445,7 +439,6 @@
     <string name="cloud_connection">Conexão em nuvem</string>
     <string name="cloud_connection_new">Nova conexão em nuvem</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Obter plugin para nuvem</string>
@@ -511,6 +504,7 @@
     <string name="show_quick_access_pref">Acessos rápidos</string>
     <string name="directory">Pasta</string>
 
+    <string name="show_bookmarks_pref">Favoritos</string>
     <string name="cloud_error_plugin">O plugin Amaze Cloud não foi encontrado. Faça download a partir da Play Store.</string>
     <string name="cloud_error_failed_restart">Falha ao carregar a conexão. Por favor, abra o Amaze Cloud uma vez.</string>
     <string name="cloud_remove">Deseja remover a conexão com a nuvem?</string>
@@ -660,7 +654,6 @@
     <string name="app_ui_crash">Erro na App/UI</string>
     <string name="error_report_title">Erro no report</string>
     <string name="crash_report_copied">Report de erro copiado para a área de transferência</string>
-
     <string name="disableIpcSignature">Desative a verificação de assinatura IPC (Para servidores SMBv1 legados - INSEGURO!)</string>
     <string name="cannot_delete_file">Não foi possível deletar o arquivo</string>
     <string name="cannot_delete_file_with_reason">Não foi possível deletar o arquivo%s</string>
@@ -672,7 +665,6 @@
     <string name="clear_open_file">Limpar cache</string>
     <string name="clear_open_file_summary">Limpa os apps de abertura padrão selecionados</string>
     <string name="legacy_listing_title">Usar listagem legada para root</string>
-    <string name="legacy_listing_summary">Se habilitado, usa stat para listagem, senão usa ls</string>
     <string name="error_permission_denied">Permissão negada</string>
-</resources>
+    </resources>
 

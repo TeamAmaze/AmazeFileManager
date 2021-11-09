@@ -96,7 +96,6 @@
     <string name="select_all">Elekti ĉiujn</string>
     <string name="delete">Forigi</string>
     <string name="set_as_home">Agordi kiel ĉefpaĝo</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -205,11 +204,8 @@
     <string name="unin_system_apk">Ĉi tio estas a sistema aplikaĵo, forigante ĝin povus lasi vian sistemon malstabilita.\nFari?</string>
     <string name="warning">Avertu</string>
     <string name="donate">Doni</string>
-    <string name="archive_preferences">Agordoj de arkivo</string>
     <string name="archive_extract_folder">Dosierujo de arkiva malkompreso</string>
-    <string name="zip_create_folder">Krei Zip-an dosierujojn</string>
     <string name="archive_summary">Arkivaj dosieroj estos malkompresita en ĉi tion dosuerujon. Defaŭlta valuo estas dosierujo en kiu la arkivaĵo estas.</string>
-    <string name="zip_summary">Nova Zip-a dosierojn estos kreita en ĉi tion dosuerujon. Defaŭlta valuo estas dosierujo en kiu la dosiero estas.</string>
     <string name="open_as">Malfermi kiel</string>
     <string name="text">Teksto</string>
     <string name="audio">Sono</string>
@@ -312,7 +308,6 @@
     <string name="report_bugs_summary">Raporti cimojn aŭ peti novan funkcion</string>
     <string name="translate_title">Traduki</string>
     <string name="translate_summary">Traduki Amaze en via lingvo</string>
-    <string name="easter_egg_title">Studio Mode</string>
     <string name="paypal_copy_message">PayPal ID kopiita al poŝo</string>
     <string name="searching_devices">Serĉanta aparatojn</string>
     <string name="use_custom_ip">Uzi propan IP-adreson</string>
@@ -371,7 +366,6 @@
     </string>
     <string name="share_limit">Ne povas kunhavigin pli da 100 dosieroj</string>
     <string name="otg_access">Elekti la radikdosierujon de OTG device</string>
-    <string name="opening">Malfermante...</string>
     <string name="information">Informo</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Atinga dato</string>
@@ -453,7 +447,6 @@
     <string name="cloud_connection">Nuba konekto</string>
     <string name="cloud_connection_new">Nova nuba konekto</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Get nuba aldonaĵo</string>
