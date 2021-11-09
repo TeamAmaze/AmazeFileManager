@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.Q;
+
 import java.io.File;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -51,10 +54,12 @@ import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.cloudrail.si.interfaces.CloudStorage;
 
+import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
 import android.util.Log;
@@ -517,19 +522,37 @@ public class LoadFilesListTask
     }
 
     ArrayList<LayoutElementParcelable> recentFiles = new ArrayList<>(20);
-    final String[] projection = {MediaStore.Files.FileColumns.DATA};
+    final String[] projection = {
+      MediaStore.Files.FileColumns.DATA, MediaStore.Files.FileColumns.DATE_MODIFIED
+    };
     Calendar c = Calendar.getInstance();
     c.set(Calendar.DAY_OF_YEAR, c.get(Calendar.DAY_OF_YEAR) - 2);
     Date d = c.getTime();
-    Cursor cursor =
-        context
-            .getContentResolver()
-            .query(
-                MediaStore.Files.getContentUri("external"),
-                projection,
-                null,
-                null,
-                MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
+    Cursor cursor;
+    if (SDK_INT >= Q) {
+      Bundle queryArgs = new Bundle();
+      queryArgs.putInt(ContentResolver.QUERY_ARG_LIMIT, 20);
+      queryArgs.putStringArray(
+          ContentResolver.QUERY_ARG_SORT_COLUMNS,
+          new String[] {MediaStore.Files.FileColumns.DATE_MODIFIED});
+      queryArgs.putInt(
+          ContentResolver.QUERY_ARG_SORT_DIRECTION,
+          ContentResolver.QUERY_SORT_DIRECTION_DESCENDING);
+      cursor =
+          context
+              .getContentResolver()
+              .query(MediaStore.Files.getContentUri("external"), projection, queryArgs, null);
+    } else {
+      cursor =
+          context
+              .getContentResolver()
+              .query(
+                  MediaStore.Files.getContentUri("external"),
+                  projection,
+                  null,
+                  null,
+                  MediaStore.Files.FileColumns.DATE_MODIFIED + " DESC LIMIT 20");
+    }
     if (cursor == null) return recentFiles;
     if (cursor.getCount() > 0 && cursor.moveToFirst()) {
       do {
