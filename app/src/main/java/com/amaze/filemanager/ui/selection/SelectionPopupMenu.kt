@@ -64,8 +64,11 @@ class SelectionPopupMenu(
                     currentPath, currentContext
                 )
                 popupMenu.inflate(R.menu.selection_criteria)
-                if (recyclerAdapter.itemsDigested.size > SIMILARITY_THRESHOLD) {
-                    popupMenu.menu.findItem(R.id.select_similar).isVisible = false
+                recyclerAdapter.itemsDigested?.let {
+                    itemsDigested ->
+                    if (itemsDigested.size > SIMILARITY_THRESHOLD) {
+                        popupMenu.menu.findItem(R.id.select_similar).isVisible = false
+                    }
                 }
                 popupMenu.setOnMenuItemClickListener(popupMenu)
                 popupMenu.show()

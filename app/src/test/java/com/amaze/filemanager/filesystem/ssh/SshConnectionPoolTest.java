@@ -186,10 +186,13 @@ public class SshConnectionPoolTest {
     SSHClient mock = createSshServer("testuser", validPassword);
     saveSshConnectionSettings(hostKeyPair, "testuser", validPassword, null);
     assertNotNull(
-        SshConnectionPool.INSTANCE.getConnection("ssh://testuser:testpassword@127.0.0.1:22222"));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testpassword@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -223,10 +226,13 @@ public class SshConnectionPoolTest {
     SSHClient mock = createSshServer("testuser", validPassword);
     saveSshConnectionSettings(hostKeyPair, "testuser", validPassword, null);
     assertNotNull(
-        SshConnectionPool.INSTANCE.getConnection("ssh://testuser:testP@ssw0rd@127.0.0.1:22222"));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testP@ssw0rd@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -244,10 +250,13 @@ public class SshConnectionPoolTest {
     SSHClient mock = createSshServer("testuser", validPassword);
     saveSshConnectionSettings(hostKeyPair, "testuser", validPassword, null);
     assertNotNull(
-        SshConnectionPool.INSTANCE.getConnection("ssh://testuser:testP@##word@127.0.0.1:22222"));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testP@##word@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -265,10 +274,13 @@ public class SshConnectionPoolTest {
     SSHClient mock = createSshServer("testuser", validPassword);
     saveSshConnectionSettings(hostKeyPair, "testuser", validPassword, null);
     assertNotNull(
-        SshConnectionPool.INSTANCE.getConnection("ssh://testuser:testP@##word@127.0.0.1:22222"));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testP@##word@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -286,10 +298,13 @@ public class SshConnectionPoolTest {
     SSHClient mock = createSshServer("testuser", validPassword);
     saveSshConnectionSettings(hostKeyPair, "testuser", validPassword, null);
     assertNotNull(
-        SshConnectionPool.INSTANCE.getConnection("ssh://testuser:testP@##word@127.0.0.1:22222"));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testP@##word@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -309,10 +324,12 @@ public class SshConnectionPoolTest {
     saveSshConnectionSettings(hostKeyPair, validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://test@example.com:testP@ssw0rd@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://test@example.com:testP@ssw0rd@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -332,10 +349,12 @@ public class SshConnectionPoolTest {
     saveSshConnectionSettings(hostKeyPair, validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://test@example.com:testP@ssw0##$@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://test@example.com:testP@ssw0##$@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -355,10 +374,12 @@ public class SshConnectionPoolTest {
     saveSshConnectionSettings(hostKeyPair, validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://test@example.com:abcd-efgh@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://test@example.com:abcd-efgh@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -378,10 +399,12 @@ public class SshConnectionPoolTest {
     saveSshConnectionSettings(hostKeyPair, validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://test@example.com:---------------@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://test@example.com:---------------@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -401,10 +424,12 @@ public class SshConnectionPoolTest {
     saveSshConnectionSettings(hostKeyPair, validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://test@example.com:--agdiuhdpost15@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://test@example.com:--agdiuhdpost15@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
@@ -424,10 +449,12 @@ public class SshConnectionPoolTest {
     saveSshConnectionSettings(hostKeyPair, validUsername, validPassword, null);
     assertNotNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:22222")));
     assertNull(
         SshConnectionPool.INSTANCE.getConnection(
-            "ssh://invaliduser:invalidpassword@127.0.0.1:22222"));
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
         .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));

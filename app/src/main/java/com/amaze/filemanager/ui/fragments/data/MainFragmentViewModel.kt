@@ -23,6 +23,8 @@ package com.amaze.filemanager.ui.fragments.data
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.lifecycle.ViewModel
+import com.amaze.filemanager.adapters.RecyclerAdapter
+import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
@@ -38,6 +40,9 @@ class MainFragmentViewModel : ViewModel() {
     /** This is not an exact copy of the elements in the adapter  */
     var listElements: ArrayList<LayoutElementParcelable>? = null
 
+    var adapterListItems: ArrayList<RecyclerAdapter.ListItem>? = null
+    var iconList: ArrayList<IconDataParcelable>? = null
+
     var fileCount = 0
     var folderCount: Int = 0
     var columns: Int = 0
@@ -49,7 +54,6 @@ class MainFragmentViewModel : ViewModel() {
     var dsort = 0
     var asc = 0
     var home: String? = null
-    var selection = false
     var results: Boolean = false
     lateinit var openMode: OpenMode
 
@@ -190,5 +194,18 @@ class MainFragmentViewModel : ViewModel() {
             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_BOX + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_DROPBOX + "/" == currentPath
+    }
+
+    /**
+     * Get checked items in adapter
+     */
+    fun getCheckedItems(): ArrayList<LayoutElementParcelable> {
+        val selected = ArrayList<LayoutElementParcelable>()
+        adapterListItems?.forEach { item ->
+            if (item.checked == RecyclerAdapter.ListItem.CHECKED) {
+                selected.add(item.elem)
+            }
+        }
+        return selected
     }
 }

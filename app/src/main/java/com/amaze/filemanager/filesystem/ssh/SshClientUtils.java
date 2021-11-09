@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.util.List;
-import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -85,7 +84,7 @@ public abstract class SshClientUtils {
       final SSHClient _client = client;
       try {
         retval =
-            Single.fromCallable((Callable<T>) () -> template.execute(_client))
+            Single.fromCallable(() -> template.execute(_client))
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
       } catch (Exception e) {
@@ -181,7 +180,7 @@ public abstract class SshClientUtils {
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
       return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri)
+          ? SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri).replace("\n", "")
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
       Log.e(TAG, "Error encrypting path", e);
@@ -220,9 +219,15 @@ public abstract class SshClientUtils {
    */
   public static String extractBaseUriFrom(@NonNull String fullUri) {
     String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
-    return uriWithoutProtocol.indexOf('/') == -1
-        ? fullUri
-        : fullUri.substring(0, uriWithoutProtocol.indexOf('/') + SSH_URI_PREFIX.length());
+    String credentials = uriWithoutProtocol.substring(0, uriWithoutProtocol.lastIndexOf('@'));
+    String hostAndPath = uriWithoutProtocol.substring(uriWithoutProtocol.lastIndexOf('@') + 1);
+    if (hostAndPath.indexOf('/') == -1) {
+      return fullUri;
+    } else {
+      String host = hostAndPath.substring(0, hostAndPath.indexOf('/'));
+      return fullUri.substring(
+          0, SSH_URI_PREFIX.length() + credentials.length() + 1 + host.length());
+    }
   }
 
   /**
@@ -235,10 +240,8 @@ public abstract class SshClientUtils {
    * @return The remote path part of the full SSH URL
    */
   public static String extractRemotePathFrom(@NonNull String fullUri) {
-    String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
-    return uriWithoutProtocol.indexOf('/') == -1
-        ? "/"
-        : uriWithoutProtocol.substring(uriWithoutProtocol.indexOf('/'));
+    String hostPath = fullUri.substring(fullUri.lastIndexOf('@'));
+    return hostPath.indexOf('/') == -1 ? "/" : hostPath.substring(hostPath.indexOf('/'));
   }
 
   /**
