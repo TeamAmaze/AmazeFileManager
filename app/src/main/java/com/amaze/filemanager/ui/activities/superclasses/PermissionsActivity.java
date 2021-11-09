@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.activities.superclasses;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
@@ -33,6 +34,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Environment;
+import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,14 +46,20 @@ import androidx.core.app.ActivityCompat;
 public class PermissionsActivity extends ThemedActivity
     implements ActivityCompat.OnRequestPermissionsResultCallback {
 
-  public static final int PERMISSION_LENGTH = 2;
-  public static final int STORAGE_PERMISSION = 0, INSTALL_APK_PERMISSION = 1;
+  private static final String TAG = PermissionsActivity.class.getSimpleName();
 
-  private OnPermissionGranted[] permissionCallbacks = new OnPermissionGranted[PERMISSION_LENGTH];
+  public static final int PERMISSION_LENGTH = 3;
+  public static final int STORAGE_PERMISSION = 0,
+      INSTALL_APK_PERMISSION = 1,
+      ALL_FILES_PERMISSION = 2;
+
+  private final OnPermissionGranted[] permissionCallbacks =
+      new OnPermissionGranted[PERMISSION_LENGTH];
 
   @Override
   public void onRequestPermissionsResult(
       int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     if (requestCode == STORAGE_PERMISSION) {
       if (isGranted(grantResults)) {
         Utils.enableScreenRotation(this);
@@ -129,7 +139,7 @@ public class PermissionsActivity extends ThemedActivity
    * @param isInitialStart is the permission being requested for the first time in the application
    *     lifecycle
    */
-  public void requestPermission(
+  private void requestPermission(
       final String permission,
       final int code,
       @NonNull final MaterialDialog rationale,
@@ -162,6 +172,41 @@ public class PermissionsActivity extends ThemedActivity
                           android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
                           Uri.parse(String.format("package:%s", getPackageName())))))
           .show();
+    }
+  }
+
+  /**
+   * Request all files access on android 11+
+   *
+   * @param onPermissionGranted permission granted callback
+   */
+  public void requestAllFilesAccess(@NonNull final OnPermissionGranted onPermissionGranted) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+      final MaterialDialog materialDialog =
+          GeneralDialogCreation.showBasicDialog(
+              this,
+              R.string.grant_all_files_permission,
+              R.string.grantper,
+              R.string.grant,
+              R.string.cancel);
+      materialDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> finish());
+      materialDialog
+          .getActionButton(DialogAction.POSITIVE)
+          .setOnClickListener(
+              v -> {
+                Utils.disableScreenRotation(this);
+                permissionCallbacks[ALL_FILES_PERMISSION] = onPermissionGranted;
+                try {
+                  Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                  startActivity(intent);
+                } catch (Exception e) {
+                  Log.e(TAG, "Failed to initial activity to grant all files access", e);
+                  AppConfig.toast(this, getString(R.string.grantfailed));
+                }
+                materialDialog.dismiss();
+              });
+      materialDialog.setCancelable(false);
+      materialDialog.show();
     }
   }
 
