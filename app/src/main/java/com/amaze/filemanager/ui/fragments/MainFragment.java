@@ -54,7 +54,6 @@ import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
@@ -69,7 +68,6 @@ import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.ui.selection.SelectionPopupMenu;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
 import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
@@ -95,11 +93,9 @@ import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.DocumentsContract;
@@ -108,9 +104,6 @@ import android.text.format.Formatter;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
@@ -124,11 +117,9 @@ import androidx.activity.result.contract.ActivityResultContracts;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.view.ActionMode;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
@@ -148,8 +139,6 @@ public class MainFragment extends Fragment
         ViewTreeObserver.OnGlobalLayoutListener,
         AdjustListViewForTv<ItemViewHolder> {
 
-  public ActionMode mActionMode;
-
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -167,7 +156,6 @@ public class MainFragment extends Fragment
   private UtilitiesProvider utilsProvider;
   private HashMap<String, Bundle> scrolls = new HashMap<>();
   private View rootView;
-  private View actionModeView;
   private FastScroller fastScroller;
   private CustomFileObserver customFileObserver;
 
@@ -344,6 +332,8 @@ public class MainFragment extends Fragment
     setGridLayoutSpanSizeLookup(mLayoutManagerGrid);
     listView.setLayoutManager(mLayoutManagerGrid);
     listView.clearOnScrollListeners();
+    mainFragmentViewModel.setAdapterListItems(null);
+    mainFragmentViewModel.setIconList(null);
     adapter = null;
   }
 
@@ -358,6 +348,8 @@ public class MainFragment extends Fragment
     if (mLayoutManager == null) mLayoutManager = new CustomScrollLinearLayoutManager(getActivity());
     listView.setLayoutManager(mLayoutManager);
     listView.clearOnScrollListeners();
+    mainFragmentViewModel.setAdapterListItems(null);
+    mainFragmentViewModel.setIconList(null);
     adapter = null;
   }
 
@@ -379,362 +371,10 @@ public class MainFragment extends Fragment
         reloadListElements(
             true, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
       }
-      if (mainFragmentViewModel.getSelection()) {
-        for (Integer index : adapter.getCheckedItemsIndex()) {
-          adapter.toggleChecked(index, null);
-        }
-      }
     } else {
       loadlist(mainFragmentViewModel.getHome(), true, mainFragmentViewModel.getOpenMode());
     }
   }
-
-  public ActionMode.Callback mActionModeCallback =
-      new ActionMode.Callback() {
-        private void hideOption(int id, Menu menu) {
-          MenuItem item = menu.findItem(id);
-          item.setVisible(false);
-        }
-
-        private void showOption(int id, Menu menu) {
-          MenuItem item = menu.findItem(id);
-          item.setVisible(true);
-        }
-
-        void initMenu(Menu menu) {
-          /*
-          menu.findItem(R.id.cpy).setIcon(icons.getCopyDrawable());
-          menu.findItem(R.id.cut).setIcon(icons.getCutDrawable());
-          menu.findItem(R.id.delete).setIcon(icons.getDeleteDrawable());
-          menu.findItem(R.id.all).setIcon(icons.getAllDrawable());
-          */
-        }
-
-        // called when the action mode is created; startActionMode() was called
-        public boolean onCreateActionMode(ActionMode mode, Menu menu) {
-          // Inflate a menu resource providing context menu items
-          MenuInflater inflater = mode.getMenuInflater();
-          actionModeView = getActivity().getLayoutInflater().inflate(R.layout.actionmode, null);
-          mode.setCustomView(actionModeView);
-
-          getMainActivity().setPagingEnabled(false);
-          getMainActivity().hideFab();
-
-          // translates the drawable content down
-          // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(true);
-
-          // assumes that you have "contexual.xml" menu resources
-          inflater.inflate(R.menu.contextual, menu);
-          initMenu(menu);
-          hideOption(R.id.addshortcut, menu);
-          hideOption(R.id.share, menu);
-          hideOption(R.id.openwith, menu);
-          if (getMainActivity().mReturnIntent) showOption(R.id.openmulti, menu);
-          // hideOption(R.id.setringtone,menu);
-          mode.setTitle(getResources().getString(R.string.select));
-
-          getMainActivity()
-              .updateViews(new ColorDrawable(res.getColor(R.color.holo_dark_action_mode)));
-
-          // do not allow drawer to open when item gets selected
-          if (!getMainActivity().getDrawer().isLocked()) {
-            getMainActivity().getDrawer().lockIfNotOnTablet(DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-          }
-          return true;
-        }
-
-        /**
-         * the following method is called each time the action mode is shown. Always called after
-         * onCreateActionMode, but may be called multiple times if the mode is invalidated.
-         */
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu) {
-          ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
-          actionModeView.setOnClickListener(
-              v ->
-                  SelectionPopupMenu.Companion.invokeSelectionDropdown(
-                      adapter,
-                      actionModeView,
-                      mainFragmentViewModel.getCurrentPath(),
-                      getMainActivity()));
-          TextView textView = actionModeView.findViewById(R.id.item_count);
-          textView.setText(String.valueOf(checkedItems.size()));
-          hideOption(R.id.openmulti, menu);
-          menu.findItem(R.id.all)
-              .setTitle(
-                  checkedItems.size()
-                          == mainFragmentViewModel.getFolderCount()
-                              + mainFragmentViewModel.getFileCount()
-                      ? R.string.deselect_all
-                      : R.string.select_all);
-
-          if (mainFragmentViewModel.getOpenMode() != OpenMode.FILE) {
-            hideOption(R.id.addshortcut, menu);
-            hideOption(R.id.compress, menu);
-            return true;
-          }
-
-          if (getMainActivity().mReturnIntent && SDK_INT >= JELLY_BEAN) {
-            showOption(R.id.openmulti, menu);
-          }
-          // tv.setText(checkedItems.size());
-          if (!mainFragmentViewModel.getResults()) {
-            hideOption(R.id.openparent, menu);
-            if (checkedItems.size() == 1) {
-              showOption(R.id.addshortcut, menu);
-              showOption(R.id.openwith, menu);
-              showOption(R.id.share, menu);
-
-              if (adapter.getCheckedItems().get(0).isDirectory) {
-                hideOption(R.id.openwith, menu);
-                hideOption(R.id.share, menu);
-                hideOption(R.id.openmulti, menu);
-              }
-
-              if (getMainActivity().mReturnIntent)
-                if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-
-            } else {
-              try {
-                showOption(R.id.share, menu);
-                if (getMainActivity().mReturnIntent)
-                  if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-                for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                  if (e.isDirectory) {
-                    hideOption(R.id.share, menu);
-                    hideOption(R.id.openmulti, menu);
-                  }
-                }
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-              hideOption(R.id.openwith, menu);
-              hideOption(R.id.addshortcut, menu);
-            }
-          } else {
-            if (checkedItems.size() == 1) {
-              showOption(R.id.addshortcut, menu);
-              showOption(R.id.openparent, menu);
-              showOption(R.id.openwith, menu);
-              showOption(R.id.share, menu);
-
-              if (adapter.getCheckedItems().get(0).isDirectory) {
-                hideOption(R.id.openwith, menu);
-                hideOption(R.id.share, menu);
-                hideOption(R.id.openmulti, menu);
-              }
-              if (getMainActivity().mReturnIntent && SDK_INT >= JELLY_BEAN) {
-                showOption(R.id.openmulti, menu);
-              }
-
-            } else {
-              hideOption(R.id.openparent, menu);
-              hideOption(R.id.addshortcut, menu);
-
-              if (getMainActivity().mReturnIntent)
-                if (Build.VERSION.SDK_INT >= 16) showOption(R.id.openmulti, menu);
-              try {
-                for (LayoutElementParcelable e : adapter.getCheckedItems()) {
-                  if (e.isDirectory) {
-                    hideOption(R.id.share, menu);
-                    hideOption(R.id.openmulti, menu);
-                  }
-                }
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-
-              hideOption(R.id.openwith, menu);
-            }
-          }
-
-          if (mainFragmentViewModel.getOpenMode() != OpenMode.FILE) {
-            hideOption(R.id.addshortcut, menu);
-            hideOption(R.id.compress, menu);
-            hideOption(R.id.hide, menu);
-            hideOption(R.id.addshortcut, menu);
-          }
-          return true; // Return false if nothing is done
-        }
-
-        // called when the user selects a contextual menu item
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item) {
-          computeScroll();
-          ArrayList<LayoutElementParcelable> checkedItems = adapter.getCheckedItems();
-          switch (item.getItemId()) {
-            case R.id.openmulti:
-              try {
-
-                Intent intent_result = new Intent(Intent.ACTION_SEND_MULTIPLE);
-                ArrayList<Uri> resulturis = new ArrayList<>();
-
-                for (LayoutElementParcelable element : checkedItems) {
-                  HybridFileParcelable baseFile = element.generateBaseFile();
-                  Uri resultUri = Utils.getUriForBaseFile(requireContext(), baseFile);
-
-                  if (resultUri != null) {
-                    resulturis.add(resultUri);
-                  }
-                }
-
-                intent_result.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-                requireActivity().setResult(FragmentActivity.RESULT_OK, intent_result);
-                intent_result.putParcelableArrayListExtra(Intent.EXTRA_STREAM, resulturis);
-                requireActivity().finish();
-                // mode.finish();
-              } catch (Exception e) {
-                e.printStackTrace();
-              }
-              return true;
-            case R.id.about:
-              LayoutElementParcelable x = checkedItems.get(0);
-              GeneralDialogCreation.showPropertiesDialogWithPermissions(
-                  x.generateBaseFile(),
-                  x.permissions,
-                  requireMainActivity(),
-                  MainFragment.this,
-                  requireMainActivity().isRootExplorer(),
-                  utilsProvider.getAppTheme());
-              mode.finish();
-              return true;
-            case R.id.delete:
-              GeneralDialogCreation.deleteFilesDialog(
-                  requireContext(),
-                  requireMainActivity(),
-                  checkedItems,
-                  utilsProvider.getAppTheme());
-              return true;
-            case R.id.share:
-              ArrayList<File> arrayList = new ArrayList<>();
-              for (LayoutElementParcelable e : checkedItems) {
-                arrayList.add(new File(e.desc));
-              }
-              if (arrayList.size() > 100)
-                Toast.makeText(
-                        getActivity(),
-                        getResources().getString(R.string.share_limit),
-                        Toast.LENGTH_SHORT)
-                    .show();
-              else {
-
-                switch (mainFragmentViewModel.getListElements().get(0).getMode()) {
-                  case DROPBOX:
-                  case BOX:
-                  case GDRIVE:
-                  case ONEDRIVE:
-                    FileUtils.shareCloudFile(
-                        mainFragmentViewModel.getListElements().get(0).desc,
-                        mainFragmentViewModel.getListElements().get(0).getMode(),
-                        getContext());
-                    break;
-                  default:
-                    FileUtils.shareFiles(
-                        arrayList,
-                        getActivity(),
-                        utilsProvider.getAppTheme(),
-                        mainFragmentViewModel.getAccentColor());
-                    break;
-                }
-              }
-              return true;
-            case R.id.openparent:
-              loadlist(new File(checkedItems.get(0).desc).getParent(), false, OpenMode.FILE);
-              return true;
-            case R.id.all:
-              if (adapter.areAllChecked(mainFragmentViewModel.getCurrentPath())) {
-                adapter.toggleChecked(false, mainFragmentViewModel.getCurrentPath());
-                item.setTitle(R.string.select_all);
-              } else {
-                adapter.toggleChecked(true, mainFragmentViewModel.getCurrentPath());
-                item.setTitle(R.string.deselect_all);
-              }
-              mode.invalidate();
-
-              return true;
-            case R.id.rename:
-              final HybridFileParcelable f;
-              f = checkedItems.get(0).generateBaseFile();
-              rename(f);
-              mode.finish();
-              return true;
-            case R.id.hide:
-              for (int i1 = 0; i1 < checkedItems.size(); i1++) {
-                hide(checkedItems.get(i1).desc);
-              }
-              updateList();
-              mode.finish();
-              return true;
-            case R.id.ex:
-              getMainActivity().mainActivityHelper.extractFile(new File(checkedItems.get(0).desc));
-              mode.finish();
-              return true;
-            case R.id.cpy:
-            case R.id.cut:
-              {
-                HybridFileParcelable[] copies = new HybridFileParcelable[checkedItems.size()];
-                for (int i = 0; i < checkedItems.size(); i++) {
-                  copies[i] = checkedItems.get(i).generateBaseFile();
-                }
-                int op =
-                    item.getItemId() == R.id.cpy
-                        ? PasteHelper.OPERATION_COPY
-                        : PasteHelper.OPERATION_CUT;
-                // Making sure we don't cause an IllegalArgumentException
-                // when passing copies to PasteHelper
-                if (copies.length > 0) {
-                  PasteHelper pasteHelper = new PasteHelper(getMainActivity(), op, copies);
-                  requireMainActivity().setPaste(pasteHelper);
-                }
-                mode.finish();
-                return true;
-              }
-            case R.id.compress:
-              ArrayList<HybridFileParcelable> copies1 = new ArrayList<>();
-              for (int i4 = 0; i4 < checkedItems.size(); i4++) {
-                copies1.add(checkedItems.get(i4).generateBaseFile());
-              }
-              GeneralDialogCreation.showCompressDialog(
-                  requireMainActivity(), copies1, mainFragmentViewModel.getCurrentPath());
-              mode.finish();
-              return true;
-            case R.id.openwith:
-              FileUtils.openFile(
-                  new File(checkedItems.get(0).desc), requireMainActivity(), sharedPref);
-              return true;
-            case R.id.addshortcut:
-              addShortcut(checkedItems.get(0));
-              mode.finish();
-              return true;
-            default:
-              return false;
-          }
-        }
-
-        // called when the user exits the action mode
-        public void onDestroyActionMode(ActionMode mode) {
-          mActionMode = null;
-          mainFragmentViewModel.setSelection(false);
-
-          // translates the drawer content up
-          // if (getMainActivity().isDrawerLocked) getMainActivity().translateDrawerList(false);
-
-          getMainActivity().showFab();
-          if (!mainFragmentViewModel.getResults())
-            adapter.toggleChecked(false, mainFragmentViewModel.getCurrentPath());
-          else adapter.toggleChecked(false);
-          getMainActivity().setPagingEnabled(true);
-
-          getMainActivity()
-              .updateViews(
-                  new ColorDrawable(
-                      MainActivity.currentTab == 1
-                          ? mainFragmentViewModel.getPrimaryTwoColor()
-                          : mainFragmentViewModel.getPrimaryColor()));
-
-          if (getMainActivity().getDrawer().isLocked()) {
-            getMainActivity().getDrawer().unlockIfNotOnTablet();
-          }
-        }
-      };
 
   private BroadcastReceiver receiver2 =
       new BroadcastReceiver() {
@@ -802,11 +442,13 @@ public class MainFragment extends Fragment
       MainActivityHelper.SEARCH_TEXT = null;
     }
 
-    if (mainFragmentViewModel.getSelection()) {
+    if (getMainActivity().getListItemSelected()) {
       if (isBackButton) {
-        mainFragmentViewModel.setSelection(false);
-        if (mActionMode != null) mActionMode.finish();
-        mActionMode = null;
+        getMainActivity().setListItemSelected(false);
+        if (getMainActivity().getActionModeHelper().getActionMode() != null) {
+          getMainActivity().getActionModeHelper().getActionMode().finish();
+        }
+        getMainActivity().getActionModeHelper().setActionMode(null);
       } else {
         // the first {goback} item if back navigation is enabled
         adapter.toggleChecked(position, imageView);
@@ -960,7 +602,11 @@ public class MainFragment extends Fragment
       return;
     }
 
-    if (mActionMode != null) mActionMode.finish();
+    if (getMainActivity() != null
+        && getMainActivity().getActionModeHelper() != null
+        && getMainActivity().getActionModeHelper().getActionMode() != null) {
+      getMainActivity().getActionModeHelper().getActionMode().finish();
+    }
 
     mSwipeRefreshLayout.setRefreshing(true);
 
@@ -1371,7 +1017,7 @@ public class MainFragment extends Fragment
     if (!mainFragmentViewModel.getResults()) {
       if (!mainFragmentViewModel.getRetainSearchTask()) {
         // normal case
-        if (mainFragmentViewModel.getSelection()) {
+        if (getMainActivity().getListItemSelected()) {
           adapter.toggleChecked(false);
         } else {
           if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
@@ -1519,7 +1165,7 @@ public class MainFragment extends Fragment
     HybridFile currentFile =
         new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
     if (!mainFragmentViewModel.getResults()) {
-      if (mainFragmentViewModel.getSelection()) {
+      if (getMainActivity().getListItemSelected()) {
         adapter.toggleChecked(false);
       } else {
         if (mainFragmentViewModel.getOpenMode() == OpenMode.SMB) {
@@ -1738,7 +1384,7 @@ public class MainFragment extends Fragment
     }
   }
 
-  private void addShortcut(LayoutElementParcelable path) {
+  public void addShortcut(LayoutElementParcelable path) {
     // Adding shortcut for MainActivity
     // on Home screen
     final Context ctx = getContext();
@@ -1944,20 +1590,12 @@ public class MainFragment extends Fragment
     }
   }
 
-  public void disableActionMode() {
-    mainFragmentViewModel.setSelection(false);
-    if (this.mActionMode != null) {
-      this.mActionMode.finish();
-    }
-    this.mActionMode = null;
-  }
-
   public void smoothScrollListView(boolean upDirection) {
     if (listView != null) {
       if (upDirection) {
         listView.smoothScrollToPosition(0);
       } else {
-        listView.smoothScrollToPosition(adapter.getItemsDigested().size());
+        listView.smoothScrollToPosition(mainFragmentViewModel.getAdapterListItems().size());
       }
     }
   }
@@ -2009,9 +1647,11 @@ public class MainFragment extends Fragment
         mLayoutManagerGrid.setSpanCount(mainFragmentViewModel.getColumns());
       }
     }
-    if (!mainFragmentViewModel.isList()) {
+    // TODO: This trigger causes to lose selected items in case of grid view,
+    //  but is necessary to adjust columns for grid view when screen is rotated
+    /*if (!mainFragmentViewModel.isList()) {
       loadViews();
-    }
+    }*/
     if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
       mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
     } else {

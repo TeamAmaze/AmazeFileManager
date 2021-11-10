@@ -6,7 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     packagingOptions {
         exclude 'proguard-project.txt'
@@ -22,9 +22,9 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
-        targetSdkVersion 29
-        versionCode 99
-        versionName "3.7.0"
+        targetSdkVersion 30
+        versionCode 107
+        versionName "3.6.7"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true

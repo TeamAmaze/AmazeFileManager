@@ -97,6 +97,7 @@
     <string name="select_all">Seleziona tutto</string>
     <string name="delete">Elimina</string>
     <string name="set_as_home">Imposta come home</string>
+    <string name="operation_not_supported">Operazione non supportata</string>
 
     <!-- New -->
     <!-- Array -->
@@ -209,11 +210,8 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="unin_system_apk">Questa è un\'app di sistema, eliminarla potrebbe causare malfunzionamenti.\\nProcedere?</string>
     <string name="warning">Attenzione</string>
     <string name="donate">Fai una donazione</string>
-    <string name="archive_preferences">Preferenze archivio</string>
     <string name="archive_extract_folder">Cartella estrazione archivio</string>
-    <string name="zip_create_folder">Cartella creazione file ZIP</string>
     <string name="archive_summary">Gli archivi verranno estratti in questa cartella. Il valore predefinito è la cartella in cui l\'archivio è presente.</string>
-    <string name="zip_summary">I nuovi file ZIP verranno creati in questa cartella. Il valore predefinito è la cartella in cui i file sono presenti.</string>
     <string name="open_as">Apri come</string>
     <string name="text">Testo</string>
     <string name="audio">Audio</string>
@@ -302,6 +300,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="ftp_status_not_running">Non in esecuzione</string>
     <string name="ftp_no_wifi">Assicurati di essere connesso al Wi-Fi</string>
     <string name="domain">Dominio</string>
+    <string name="smb_share">Condividi il percorso</string>
     <string name="invalid">%s non valido</string>
     <string name="ftp_notif_starting">Server FTP in fase di avvio</string>
     <string name="ftp_notif_starting_title">Server FTP</string>
@@ -320,7 +319,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="report_bugs_summary">Segnala bug o richiedi nuove funzionalità</string>
     <string name="translate_title">Traduci</string>
     <string name="translate_summary">Traduci Amaze nella tua lingua</string>
-    <string name="easter_egg_title">Modalità studio</string>
     <string name="paypal_copy_message">ID PayPal copiato negli Appunti</string>
     <string name="searching_devices">Ricerca dispositivi in corso</string>
     <string name="use_custom_ip">Utilizza IP personalizzato</string>
@@ -330,7 +328,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
 <html><body> <h1>Come accedere alla cartella condivisa di Windows (smb) android</h1>\n\n <ul><li><b>Abilita condivisione File</b> \n</li> <p style="margin-left: 40px"> aprire il pannello di controllo, fare clic su Scegli Gruppo Home e opzioni in rete e Internet di condivisione e fare clic su Modifica impostazioni di condivisione avanzata. Abilitare la condivisione file e stampanti feature.\n\n</p> <li><b>impostazioni di condivisione di File aggiuntivi</b> \n</li> <p style="margin-left: 40px"> è possibile anche configurare l\'altro avanzate impostazioni condivisione qui. \n ad esempio, è possibile abilitare l\'accesso ai tuoi file senza una password se ti fidi di tutti i dispositivi sulla rete locale. Una volta che condivisione file e stampanti è attivata, si può aprire Esplora File o Esplora risorse di Windows, destro del mouse su una cartella che si desidera condividere e selezionare Proprietà. \n clicca sul pulsante Condividi e rendere la cartella disponibile sulla network.\n\n</p> <li><b>assicurarsi che entrambi i dispositivi siano sulla stessa Wifi</b> \n</li> <p style="margin-left: 40px"> questa caratteristica rende i file disponibili sulla rete locale, quindi il vostro PC e dispositivi mobili devono essere sulla stessa rete locale. Si can \' t accedere una cartella condivisa di Windows su Internet o quando lo smartphone è collegato ai suoi dati mobili — deve essere collegato a Wi-Fi.\n\n</p> <li><b>Trovare IP indirizzo</b> \n</li> <p style="margin-left: 40px"> Open Command Prompt. Digitare \"ipconfig\" e premere INVIO. Guardare per Default Gateway sotto la scheda di rete per l\'indirizzo IP del router. Cercare \"IPv4 Address\" sotto la stessa sezione di adattatore per trovare IP address.\n\n del computer</p> <b>invio dettagli nella finestra di dialogo smb</b> \n</ul></body></html>    </string>
     <string name="share_limit">Impossibile condividere più di 100 file</string>
     <string name="otg_access">Seleziona la radice del dispositivo OTG</string>
-    <string name="opening">Apertura in corso..</string>
     <string name="information">Informazioni</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Ultimo accesso</string>
@@ -398,6 +395,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="smb_launch_error">Sarà necessario copiare questo file nella memoria per aprirlo</string>
     <string name="error_file_not_found">Errore: File Non Trovato</string>
     <string name="error_io">Errore I/O</string>
+    <string name="error_file_too_large">Errore: file troppo grande</string>
     <string name="medium_text">Testo Medio</string>
     <string name="permission_read">Letto</string>
     <string name="permission_write">Scrittura</string>
@@ -412,7 +410,6 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="cloud_connection">Connessione cloud</string>
     <string name="cloud_connection_new">Nuova connessione Cloud</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Scarica Cloud plugin</string>
@@ -478,6 +475,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="show_quick_access_pref">Accessi rapidi</string>
     <string name="directory">Directory</string>
 
+    <string name="show_bookmarks_pref">Segnalibri</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin non trovato. Si prega di scaricarlo dal Play Store.</string>
     <string name="cloud_error_failed_restart">Impossibile caricare la connessione.         Si prega di aprire una volta Amaze Cloud.</string>
     <string name="cloud_remove">Si desidera rimuovere la connessione cloud?</string>
@@ -513,6 +511,7 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="preference_newstack_title">Apri file come nuova attività</string>
     <string name="preference_newstack_summary">Ti permette di aprire file in attività separate. Accedi ad esse dalle schermate di sistema recenti</string>
     <string name="developers">Sviluppatori</string>
+    <string name="no_bitcoin_app">Perfavore installa un\'applicazione per i bitcoin wallet</string>
     <string name="channel_name_normal">Notifiche di Amaze</string>
     <string name="channel_description_normal">Notifiche del file manager Amaze</string>
     <string name="channel_name_ftp">Server FTP di Amaze</string>
@@ -531,10 +530,55 @@ altrimenti verrà controllata solo l\'occorrenza.</string>
     <string name="ssh_authentication_failure_key">Accesso fallito: impossibile autenticarsi con username e chiave privata forniti</string>
     <string name="ssh_connect_failed">Impossibile connettersi a %1$s:%2$d:%3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">ATTENZIONE: L\'IDENTIFICATORE DELL\'HOST REMOTO È CAMBIATO!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">È POSSIBILE CHE QUALCUNO STIA FACENDO QUALCOSA DI CATTIVO!\n\nQualcuno esattamente ora, alla tua destra, ti potrebbe origliare (man-in-the-middle attack)! Potrebbe anche essere possibile che la chiave dell\'host sia cambiata. L\'impronta della chiave pubblica mandata dall\'host remoto non combacia con quella salvata in Amaze.\n\nPerfavore contatta il tuo amministratore di rete o crea una nuova connessione per continuare a connetterti al server.</string>
+    <string name="ssh_key_prompt_passphrase">Perfavore inserisci la chiave passphrase.</string>
+    <string name="add_shortcut_not_supported_by_launcher">La creazione di scorciatoie non è supportata dal tuo launcher.</string>
+    
+    <string name="select_color_config">Seleziona il colore di configurazione</string>
+    <string name="customize">Personalizza</string>
+    <string name="custom">Personalizzato</string>
+    <string name="preselected_configs_title">Configurazione preimpostata</string>
     <string name="orange">Arancione</string>
     <string name="blue">Blu</string>
     <string name="green">Verde</string>
+    <string name="password_no_match">La password non coincide</string>
+    <string name="deselect_all">Deseleziona tutto</string>
+    <string name="filename">Filename</string>
+    <string name="compress_file_suggest_zip_extension">È consigliato usare l\'estensione \".zip\".</string>
+    <string name="about_amaze">Material design file manager per Android</string>
+    <string name="license">Licenza</string>
+    <string name="libraries">Librerie</string>
+    <string name="password_repeat">Ripeti password</string>
+    <string name="create_file_suggest_txt_extension">È consigliato usare \".txt\"come estensione del file.</string>
+    <string name="ssh_select_pem">Seleziona una chiave privata per l\'autenticazione</string>
+    <string name="ssh_key_invalid_passphrase">key passphrase invalido.</string>
+    <string name="encryption_fail_copy">Fallito il caricamento della voce criptata nel database</string>
+    <string name="extracted">Estratto</string>
+    <string name="compressed">Compresso</string>
+    <string name="processed">Processato</string>
+    <string name="no_obtainable_info">Non ci sono informazioni di questo file</string>
+    <string name="reopen_from_source">Non si può, perfavore riapri dall\'ultima applicazione</string>
+    <string name="no_file_error">Qualcosa è andato storto, non c\'è niente da aprire</string>
+    <string name="file_read_only">Il file aperto è di tipo sola scrittura.</string>
     <string name="got_it">Ottenuto!</string>
+    <string name="encrypt_file_save_as">Salva il file criptato As&#8230;</string>
+    <string name="encrypt_folder_save_as">Salva la cartella criptata As&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">I file criptati devono usare l\'estensione \".aze\".</string>
+    <string name="saved_single_file">File salvato come \'%s\'.</string>
+    <string name="saved_multi_files">%d file salvato.</string>
+    <string name="create_hidden_file_warn">Il file creato verrà nascosto nella lista dei file.</string>
+    <string name="grant_apkinstall_permission">L\'app ha bisogno del permesso di installare app per continuare.</string>
+    <string name="time_remaining">Tempo rimanente</string>
+    <string name="transfer_rate">Velocità di trasferimento</string>
+    <string name="unknown">sconosciuto</string>
+    <string name="multiple_invalid_archive_entries">Alcuni file nell\'archivio non possono essere estratti; l\'archivio può essere danneggiato o provenire da sorgenti malintenzionate.</string>
+    <string name="saf_otg_explanation">Adesso per ragioni di sicurezza andrai al filesystem di Android. Perfavore seleziona il dispositivo USB dalla lista di sinistra.</string>
+    <string name="donation_thanks">Grazie per la donazione, ci mantiene morivati! (:</string>
+    <string name="archive_password_prompt">Perfavore inserici la password d\'archivio:</string>
+    <string name="cannot_extract_archive">Non posso estrarre l\'archivio \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Non posso aprire l\'archivio \"%s\". O non possiamo aprire l\'archivio, o l\'archivio è danneggiato.</string>
     <string name="close">Chiudi</string>
+    <string name="bookmark_exists">Il segnalibro esiste</string>
+    <string name="hide_media">Nascondi dai media del browser</string>
     </resources>
 

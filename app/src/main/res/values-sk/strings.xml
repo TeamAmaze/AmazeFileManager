@@ -95,7 +95,6 @@
     <string name="select_all">Vybrať všetko</string>
     <string name="delete">Vymazať</string>
     <string name="set_as_home">Nastaviť ako domovský</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -305,7 +304,6 @@
     <string name="report_bugs_summary">Nahlásiť chyby alebo požiadať o novú funkciu</string>
     <string name="translate_title">Preložiť</string>
     <string name="translate_summary">Preložiť Amaze do vašho jazyka</string>
-    <string name="easter_egg_title">Štúdiový režim</string>
     <string name="paypal_copy_message">Paypal id bol skopírovaný do schránky</string>
     <string name="searching_devices">Vyhľadávajú sa zariadenia...</string>
     <string name="use_custom_ip">Použiť inú IP</string>
@@ -350,7 +348,6 @@
         </html>    </string>
     <string name="share_limit">Nemôžete zdieľať viac ako 100 súborov</string>
     <string name="otg_access">Vyberte koreň OTG zariadenia</string>
-    <string name="opening">Otváranie...</string>
     <string name="information">Informácie</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Posledný prístup</string>
@@ -432,7 +429,6 @@
     <string name="cloud_connection">Cloudové pripojenie</string>
     <string name="cloud_connection_new">Nové cloudové pripojenie</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Získať Cloud plugin</string>
@@ -497,6 +493,7 @@
     <string name="show_quick_access_pref">Rýchly prístup</string>
     <string name="directory">Adresár</string>
 
+    <string name="show_bookmarks_pref">Záložky</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin nebol nájdený. Stiahnite si ho prosím z obchodu Play.</string>
     <string name="cloud_error_failed_restart">Spojenie sa nepodarilo nadviazať.  Prosím najprv otvorte Amaze Cloud.</string>
     <string name="cloud_remove">Chcete odstrániť pripojenie na cloud?</string>

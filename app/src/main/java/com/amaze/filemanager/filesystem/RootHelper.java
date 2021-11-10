@@ -24,11 +24,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
-import com.amaze.filemanager.utils.Utils;
 
 import androidx.documentfile.provider.DocumentFile;
 
@@ -111,43 +108,6 @@ public class RootHelper {
           return true;
         }
       }
-    }
-    return false;
-  }
-
-  /** Whether toTest file is directory or not */
-  public static boolean isDirectory(String toTest, int count) throws ShellNotRunningException {
-    File file = new File(toTest);
-    String name = file.getName();
-    String parentPath = file.getParent();
-    if (!Utils.isNullOrEmpty(parentPath)) {
-      List<String> resultLines =
-          ListFilesCommand.INSTANCE
-              .executeRootCommand(getCommandLineString(parentPath), true, false)
-              .getFirst();
-      for (String currentLine : resultLines) {
-        if (contains(currentLine.split(" "), name)) {
-          try {
-            HybridFileParcelable parsedFile = FileUtils.parseName(currentLine, true);
-            if (parsedFile.getPermission().trim().startsWith("d")) return true;
-            else if (parsedFile.getPermission().trim().startsWith("l")) {
-              if (count > 5) return file.isDirectory();
-              else return isDirectory(parsedFile.getLink().trim(), count + 1);
-            } else return file.isDirectory();
-          } catch (Exception e) {
-            e.printStackTrace();
-          }
-          break;
-        }
-      }
-    }
-    return file.isDirectory();
-  }
-
-  static boolean contains(String[] a, String name) {
-    for (String s : a) {
-      // Log.e("checking",s);
-      if (s.equals(name)) return true;
     }
     return false;
   }

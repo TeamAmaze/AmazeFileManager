@@ -21,6 +21,7 @@
 package com.amaze.filemanager.application;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.Callable;
 
 import org.acra.ACRA;
 import org.acra.annotation.AcraCore;
@@ -65,7 +66,7 @@ import jcifs.Config;
     reportSenderFactoryClasses = AcraReportSenderFactory.class)
 public class AppConfig extends GlideApplication {
 
-  public static final String TAG = AppConfig.class.getSimpleName();
+  private static final String TAG = AppConfig.class.getSimpleName();
 
   private UtilitiesProvider utilsProvider;
   private RequestQueue requestQueue;
@@ -175,12 +176,22 @@ public class AppConfig extends GlideApplication {
   }
 
   /**
-   * Run a runnable in the main application thread
+   * Run a {@link Runnable} in the main application thread
    *
-   * @param r Runnable to run
+   * @param r {@link Runnable} to run
    */
-  public void runInApplicationThread(Runnable r) {
+  public void runInApplicationThread(@NonNull Runnable r) {
     Completable.fromRunnable(r).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
+  }
+
+  /**
+   * Convenience method to run a {@link Callable} in the main application thread. Use when the
+   * callable's return value is not processed.
+   *
+   * @param c {@link Callable} to run
+   */
+  public void runInApplicationThread(@NonNull Callable<Void> c) {
+    Completable.fromCallable(c).subscribeOn(AndroidSchedulers.mainThread()).subscribe();
   }
 
   public static synchronized AppConfig getInstance() {

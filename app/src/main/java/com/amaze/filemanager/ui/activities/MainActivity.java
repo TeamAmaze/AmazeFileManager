@@ -121,6 +121,7 @@ import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.PreferenceUtils;
@@ -197,7 +198,8 @@ public class MainActivity extends PermissionsActivity
         SearchWorkerFragment.HelperCallbacks,
         CloudConnectionCallbacks,
         LoaderManager.LoaderCallbacks<Cursor>,
-        FolderChooserDialog.FolderCallback {
+        FolderChooserDialog.FolderCallback,
+        PermissionsActivity.OnPermissionGranted {
 
   private static final String TAG = TagsHelper.getTag(MainActivity.class);
 
@@ -237,6 +239,7 @@ public class MainActivity extends PermissionsActivity
   private static final String KEY_OPERATED_ON_PATH = "oppathe1";
   private static final String KEY_OPERATIONS_PATH_LIST = "oparraylist";
   private static final String KEY_OPERATION = "operation";
+  private static final String KEY_SELECTED_LIST_ITEM = "select_list_item";
 
   private AppBar appbar;
   private Drawer drawer;
@@ -294,6 +297,7 @@ public class MainActivity extends PermissionsActivity
 
   // the current visible tab, either 0 or 1
   public static int currentTab;
+  private boolean listItemSelected = false;
 
   public static Shell.Interactive shellInteractive;
   public static Handler handler;
@@ -304,6 +308,7 @@ public class MainActivity extends PermissionsActivity
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
   private PasteHelper pasteHelper;
+  private MainActivityActionMode mainActivityActionMode;
 
   private static final String DEFAULT_FALLBACK_STORAGE_PATH = "/storage/sdcard0";
   private static final String INTERNAL_SHARED_STORAGE = "Internal shared storage";
@@ -323,6 +328,9 @@ public class MainActivity extends PermissionsActivity
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
+    if (savedInstanceState != null) {
+      listItemSelected = savedInstanceState.getBoolean(KEY_SELECTED_LIST_ITEM, false);
+    }
 
     initialisePreferences();
     initializeInteractiveShell();
@@ -337,6 +345,7 @@ public class MainActivity extends PermissionsActivity
 
     initialiseFab(); // TODO: 7/12/2017 not init when actionIntent != null
     mainActivityHelper = new MainActivityHelper(this);
+    mainActivityActionMode = new MainActivityActionMode(new WeakReference<>(MainActivity.this));
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
 
@@ -461,43 +470,46 @@ public class MainActivity extends PermissionsActivity
     }
   }
 
-  private void checkForExternalPermission() {
+  @Override
+  public void onPermissionGranted() {
+    drawer.refreshDrawer();
+    TabFragment tabFragment = getTabFragment();
+    boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
+    // reset home and current paths according to new storages
+    if (b) {
+      TabHandler tabHandler = TabHandler.getInstance();
+      tabHandler
+          .clear()
+          .subscribe(
+              () -> {
+                if (tabFragment != null) {
+                  tabFragment.refactorDrawerStorages(false);
+                  Fragment main = tabFragment.getFragmentAtIndex(0);
+                  if (main != null) ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
+                  Fragment main1 = tabFragment.getFragmentAtIndex(1);
+                  if (main1 != null) ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
+                }
+                getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
+              });
+    } else {
+      // just refresh list
+      if (tabFragment != null) {
+        Fragment main = tabFragment.getFragmentAtIndex(0);
+        if (main != null) ((MainFragment) main).updateList();
+        Fragment main1 = tabFragment.getFragmentAtIndex(1);
+        if (main1 != null) ((MainFragment) main1).updateList();
+      }
+    }
+  }
 
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !checkStoragePermission()) {
-      requestStoragePermission(
-          () -> {
-            drawer.refreshDrawer();
-            TabFragment tabFragment = getTabFragment();
-            boolean b = getBoolean(PREFERENCE_NEED_TO_SET_HOME);
-            // reset home and current paths according to new storages
-            if (b) {
-              TabHandler tabHandler = TabHandler.getInstance();
-              tabHandler
-                  .clear()
-                  .subscribe(
-                      () -> {
-                        if (tabFragment != null) {
-                          tabFragment.refactorDrawerStorages(false);
-                          Fragment main = tabFragment.getFragmentAtIndex(0);
-                          if (main != null)
-                            ((MainFragment) main).updateTabWithDb(tabHandler.findTab(1));
-                          Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                          if (main1 != null)
-                            ((MainFragment) main1).updateTabWithDb(tabHandler.findTab(2));
-                        }
-                        getPrefs().edit().putBoolean(PREFERENCE_NEED_TO_SET_HOME, false).commit();
-                      });
-            } else {
-              // just refresh list
-              if (tabFragment != null) {
-                Fragment main = tabFragment.getFragmentAtIndex(0);
-                if (main != null) ((MainFragment) main).updateList();
-                Fragment main1 = tabFragment.getFragmentAtIndex(1);
-                if (main1 != null) ((MainFragment) main1).updateList();
-              }
-            }
-          },
-          true);
+  private void checkForExternalPermission() {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+      if (!checkStoragePermission()) {
+        requestStoragePermission(this, true);
+      }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+        requestAllFilesAccess(this);
+      }
     }
   }
 
@@ -1231,6 +1243,7 @@ public class MainActivity extends PermissionsActivity
   protected void onSaveInstanceState(Bundle outState) {
     super.onSaveInstanceState(outState);
     outState.putInt(KEY_DRAWER_SELECTED, getDrawer().getDrawerSelectedItem());
+    outState.putBoolean(KEY_SELECTED_LIST_ITEM, listItemSelected);
     if (pasteHelper != null) {
       outState.putParcelable(PASTEHELPER_BUNDLE, pasteHelper);
     }
@@ -1812,6 +1825,10 @@ public class MainActivity extends PermissionsActivity
     return pasteHelper;
   }
 
+  public MainActivityActionMode getActionModeHelper() {
+    return this.mainActivityActionMode;
+  }
+
   public void setPaste(PasteHelper p) {
     pasteHelper = p;
   }
@@ -1897,25 +1914,23 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-    Uri uri = Uri.parse(path);
-    String userinfo = uri.getUserInfo();
+    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(path);
+
     Bundle bundle = new Bundle();
     bundle.putString(ARG_NAME, name);
-    bundle.putString(ARG_ADDRESS, uri.getHost());
-    bundle.putInt(ARG_PORT, uri.getPort());
-    if (!TextUtils.isEmpty(uri.getPath())) {
-      bundle.putString(ARG_DEFAULT_PATH, uri.getPath());
+    bundle.putString(ARG_ADDRESS, connInfo.getHost());
+    bundle.putInt(ARG_PORT, connInfo.getPort());
+    if (!TextUtils.isEmpty(connInfo.getDefaultPath())) {
+      bundle.putString(ARG_DEFAULT_PATH, connInfo.getDefaultPath());
     }
-    bundle.putString(
-        ARG_USERNAME,
-        userinfo.indexOf(':') > 0 ? userinfo.substring(0, userinfo.indexOf(':')) : userinfo);
+    bundle.putString(ARG_USERNAME, connInfo.getUsername());
 
-    if (userinfo.indexOf(':') < 0) {
+    if (connInfo.getPassword() == null) {
       bundle.putBoolean(ARG_HAS_PASSWORD, false);
       bundle.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
     } else {
       bundle.putBoolean(ARG_HAS_PASSWORD, true);
-      bundle.putString(ARG_PASSWORD, userinfo.substring(userinfo.indexOf(':') + 1));
+      bundle.putString(ARG_PASSWORD, connInfo.getPassword());
     }
     bundle.putBoolean(ARG_EDIT, edit);
     sftpConnectDialog.setArguments(bundle);
@@ -2315,6 +2330,24 @@ public class MainActivity extends PermissionsActivity
         dialog.dismiss();
         break;
     }
+  }
+
+  /**
+   * Get whether list item is selected for action mode or not
+   *
+   * @return value
+   */
+  public boolean getListItemSelected() {
+    return this.listItemSelected;
+  }
+
+  /**
+   * Set list item selected value
+   *
+   * @param value value
+   */
+  public void setListItemSelected(boolean value) {
+    this.listItemSelected = value;
   }
 
   /**

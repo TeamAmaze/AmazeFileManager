@@ -253,7 +253,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
     if (mainFragment == null
         || mainFragment.getMainFragmentViewModel() == null
-        || mainFragment.getMainFragmentViewModel().getSelection()) {
+        || mainFragment.getMainActivity().getListItemSelected()) {
       return; // we do not want to update toolbar colors when ActionMode is activated
     }
 
@@ -476,7 +476,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
                 if (mViewPager.getCurrentItem() == 1) {
                   if (mainFragment != null) {
                     dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
-                    mainFragment.disableActionMode();
+                    mainActivity.getActionModeHelper().disableActionMode();
                   }
                   mViewPager.setCurrentItem(0, true);
                 }
@@ -488,7 +488,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
                 if (mViewPager.getCurrentItem() == 0) {
                   if (mainFragment != null) {
                     dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
-                    mainFragment.disableActionMode();
+                    mainActivity.getActionModeHelper().disableActionMode();
                   }
                   mViewPager.setCurrentItem(1, true);
                 }

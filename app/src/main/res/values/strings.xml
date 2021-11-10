@@ -730,5 +730,9 @@ You only need to do this once, until the next time you select a new location for
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
     <string name="select_similar">Select similar</string>
+    <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
+    <string name="grant_all_files_permission"><html><body>Amaze needs all files permission to continue.
+        \nOn next screen, please select <b>Amaze</b> and select <b>Allow access to manage all files</b> option.
+            \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
 </resources>
 

@@ -97,6 +97,7 @@
     <string name="select_all">すべて選択</string>
     <string name="delete">削除</string>
     <string name="set_as_home">ホームとして設定</string>
+    <string name="operation_not_supported">操作がサポートされていません</string>
 
     <!-- New -->
     <!-- Array -->
@@ -207,11 +208,8 @@
     <string name="unin_system_apk">これはシステムアプリです。削除するとシステムが不安定になる可能性があります。\\n続行しますか?</string>
     <string name="warning">警告</string>
     <string name="donate">寄付</string>
-    <string name="archive_preferences">アーカイブ設定</string>
     <string name="archive_extract_folder">アーカイブ抽出フォルダー</string>
-    <string name="zip_create_folder">Zip 作成フォルダー</string>
     <string name="archive_summary">アーカイブファイルは、このフォルダーに抽出されます。デフォルト値は、アーカイブが存在するディレクトリーです</string>
-    <string name="zip_summary">新しい zip ファイルがこのフォルダーに作成されます。デフォルト値は、ファイルが存在するディレクトリーです</string>
     <string name="open_as">...として開く</string>
     <string name="text">テキスト</string>
     <string name="audio">オーディオ</string>
@@ -298,6 +296,7 @@
     <string name="ftp_status_not_running">実行していません</string>
     <string name="ftp_no_wifi">Wi-Fi に接続していることを確認してください</string>
     <string name="domain">ドメイン</string>
+    <string name="smb_share">共有する場所</string>
     <string name="invalid">無効な %s</string>
     <string name="ftp_notif_starting">FTP サーバーは開始しています</string>
     <string name="ftp_notif_starting_title">FTP サーバー</string>
@@ -311,10 +310,11 @@
     <string name="primary_two_summary">右タブの大きな UI エレメントに色を設定します</string>
     <string name="support_development">開発をサポート</string>
     <string name="report_bugs_title">バグを報告</string>
+    <string name="source_title">ソースコード</string>
+    <string name="source_summary">GitHubでソースコードを見る</string>
     <string name="report_bugs_summary">バグを報告したり、新しい機能をリクエストします</string>
     <string name="translate_title">翻訳</string>
     <string name="translate_summary">Amaze をお使いの言語に翻訳します</string>
-    <string name="easter_egg_title">スタジオモード</string>
     <string name="paypal_copy_message">PayPal ID をクリップボードにコピーしました</string>
     <string name="searching_devices">デバイスの検索中</string>
     <string name="use_custom_ip">カスタム IP を使用する</string>
@@ -370,7 +370,6 @@ Wi-Fiに接続する必要があります。\n\n
 </html></string>
     <string name="share_limit">100 ファイル以上を共有することはできません</string>
     <string name="otg_access">OTG デバイスのルートを選択</string>
-    <string name="opening">開いています..</string>
     <string name="information">情報</string>
     <!-- reference to file accessed date -->
     <string name="accessed">アクセス</string>
@@ -438,6 +437,7 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="smb_launch_error">このファイルをストレージにコピーして開く必要があります</string>
     <string name="error_file_not_found">エラー: ファイルが見つかりません</string>
     <string name="error_io">I/O エラー</string>
+    <string name="error_file_too_large">エラー：ファイルが大きすぎます</string>
     <string name="medium_text">テキストサイズ中</string>
     <string name="permission_read">読み取り</string>
     <string name="permission_write">書込み</string>
@@ -452,7 +452,6 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="cloud_connection">クラウド接続</string>
     <string name="cloud_connection_new">新しいクラウド接続</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google ドライブ&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">クラウドプラグインを入手する</string>
@@ -519,6 +518,7 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="show_quick_access_pref">クイックアクセス</string>
     <string name="directory">フォルダ</string>
 
+    <string name="show_bookmarks_pref">ブックマーク</string>
     <string name="cloud_error_plugin">Amaze クラウドプラクインがありません。Play ストアでダウンロードしてください。</string>
     <string name="cloud_error_failed_restart">接続をロードできません。Amaze クラウドプラクインを一度起動してください。</string>
     <string name="cloud_remove">クラウド接続を削除する？</string>
@@ -640,6 +640,33 @@ Wi-Fiに接続する必要があります。\n\n
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD カード</string>
     <string name="choose_folder">このフォルダーを選択</string>
-    <string name="signin_with_google_title">サインインして、Googleドライブ™を使える</string>
-</resources>
+    <string name="ftp_server_prompt_connect_to_network">ネットワークに接続し、またはAPを有効にする</string>
+    <string name="ftp_server_open_settings">設定を開く</string>
+    <string name="move">移動する</string>
+    <string name="select_save_location">保存先を選ぶ</string>
+    <string name="scp_default_path">既定のパス（オプション）</string>
+
+    <string name="error_report_button_text">メールで報告</string>
+    <string name="error_report_button_telegram">Telegramで報告</string>
+    <string name="copy_for_github">フォーマットされたレポートをコピーする</string>
+    <string name="error_report_open_issue_button_text">GitHubで報告</string>
+    <string name="error_snackbar_message">すみません、何かが間違っていました。</string>
+    <string name="error_snackbar_action">報告する</string>
+    <string name="what_device_headline">情報：</string>
+    <string name="what_happened_headline">どうした？</string>
+    <string name="your_comment">コメント（英語でお願い）：</string>
+    <string name="error_details_headline">詳細：</string>
+    <string name="error_report_title">エラー報告</string>
+    <string name="crash_report_copied">クラッシュ報告がクリップボードにコピーしました</string>
+    <string name="cannot_delete_file">ファイルを削除できません</string>
+    <string name="cannot_delete_file_with_reason">ファイルを削除できません - %s </string>
+    <string name="cannot_rename_file">ファイル %s 名前を変更できません - %s</string>
+    <string name="just_once">一回だけ</string>
+    <string name="always">常に</string>
+    <string name="choose_different_app">別にAppを選ぶ</string>
+    <string name="clear_open_file">キャッシュ消去</string>
+    <string name="legacy_listing_title">Rootに古い設定を使用</string>
+    <string name="error_permission_denied">許可が拒否されました </string>
+    <string name="error_archive_password_incorrect">アーカイブのパスワードが違います。</string>
+    </resources>
 

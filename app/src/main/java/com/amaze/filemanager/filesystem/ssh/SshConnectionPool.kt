@@ -25,6 +25,7 @@ import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
+import com.amaze.filemanager.filesystem.files.CryptUtil
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import java.security.KeyPair
@@ -174,7 +175,7 @@ object SshConnectionPool {
         val utilsHandler = AppConfig.getInstance().utilsHandler
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
-        if (pem != null && !pem.isEmpty()) {
+        if (true == pem?.isNotEmpty()) {
             try {
                 val latch = CountDownLatch(1)
                 PemToKeyPairTask(
@@ -245,12 +246,12 @@ object SshConnectionPool {
      *
      * A design decision to keep database schema slim, by the way... -TranceLove
      */
-    internal class ConnectionInfo(url: String) {
+    class ConnectionInfo(url: String) {
         val host: String
         val port: Int
         val username: String
         val password: String?
-        protected var defaultPath: String? = null
+        var defaultPath: String? = null
 
         // FIXME: Crude assumption
         init {
@@ -269,9 +270,26 @@ object SshConnectionPool {
             val authString = url.substring(SSH_URI_PREFIX.length, url.lastIndexOf('@'))
             val userInfo = authString.split(":").toTypedArray()
             username = userInfo[0]
-            password = if (userInfo.size > 1) userInfo[1] else null
+            password = if (userInfo.size > 1) {
+                runCatching {
+                    CryptUtil.decryptPassword(AppConfig.getInstance(), userInfo[1])
+                }.getOrElse {
+                    /* Hack. It should only happen after creating new SSH connection settings
+                     * and plain text password is sent in.
+                     *
+                     * Possible to encrypt password there as alternate solution.
+                     */
+                    userInfo[1]
+                }
+            } else {
+                null
+            }
             if (port < 0) port = SSH_DEFAULT_PORT
             this.port = port
+        }
+
+        override fun toString(): String {
+            return "${SSH_URI_PREFIX}$username@$host:$port${defaultPath ?: ""}"
         }
     }
 

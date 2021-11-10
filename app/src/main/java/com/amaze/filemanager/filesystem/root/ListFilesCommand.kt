@@ -27,6 +27,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
@@ -230,7 +231,7 @@ object ListFilesCommand : IRootCommand() {
                         }
                     }
                 } else {
-                    RootHelper.isDirectory(this.link, 0).let {
+                    NativeOperations.isDirectory(this.link).let {
                         this.isDirectory = it
                     }
                 }

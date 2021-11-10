@@ -315,7 +315,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
     <string name="translate_title">Übersetzen</string>
     <string name="translate_summary">Übersetze Amaze in deine Sprache</string>
-    <string name="easter_egg_title">Studio-Modus</string>
     <string name="paypal_copy_message">PayPal ID in die Zwischenablage kopiert</string>
     <string name="searching_devices">Suche nach Geräten</string>
     <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
@@ -325,7 +324,6 @@ andernfalls wird nach Treffern gesucht.</string>
          <html><body> <h1>Wie freigegebenen Windows-Ordner Zugriff auf Android (Smb)</h1>\n\n <ul><li><b>File-Sharing aktivieren</b> \n</li> <p style="margin-left: 40px"> Öffnen Sie die Systemsteuerung, klicken Sie auf Wählen Sie Heimnetzgruppe und Freigabeoptionen unter Netzwerk und Internet, und klicken Sie auf erweiterte Freigabeeinstellungen ändern. Aktivieren Sie die Datei- und Druckerfreigabe feature.\n\n</p> <li><b>zusätzliche File-Sharing-Einstellungen</b> \n</li> <p style="margin-left: 40px"> kann auch die andere erweiterte Freigabe Einstellungen hier. \n z. B. konfigurieren möchten, könnten Sie Zugriff auf Ihre Dateien ohne Passwort aktivieren, vertraust du alle Geräte in Ihrem lokalen Netzwerk. Wenn Datei- und Druckerfreigabe aktiviert ist, können Sie Datei-Explorer oder Windows Explorer zu öffnen, rechtsklicken Sie einen Ordner, den Sie freigeben möchten, und wählen Sie Eigenschaften. \n Klicken Sie auf die Share-Taste und machen den Ordner finden Sie auf der network.\n\n</p> <li><b>stellen sicher, dass beide Geräte sind auf dem gleichen Wifi</b> \n</li> <p style="margin-left: 40px"> dieses Feature macht Dateien im lokalen Netzwerk verfügbar, so dass Ihr PC und mobilen Geräten im gleichen lokalen Netzwerk sein. Sie können \' t Zugriff auf einen freigegebenen Windows-Ordner über das Internet oder wenn Ihr Smartphone mit seiner mobilen Daten verbunden ist – es hat mit Wi-Fi.\n\n verbunden sein</p> <li><b>IP-Adresse suchen</b> \n</li> <p style="margin-left: 40px"> offenen Eingabeaufforderung. Geben Sie \"Ipconfig\" und drücken Sie die Eingabetaste. Suchen Sie nach Standard-Gateway unter Netzwerkadapter für die IP-Adresse Ihres Routers. Suchen Sie nach \"IPv4 Address\" unter den gleichen Adapter Abschnitt Ihres Computers IP-address.\n\n zu finden</p> <b>Enter Details im Dialogfeld Smb</b> \n</ul></body></html>    </string>
     <string name="share_limit">Es können nicht mehr als 100 Dateien geteilt werden</string>
     <string name="otg_access">Stammverzeichnis des OTG-Geräts wählen</string>
-    <string name="opening">Öffne..</string>
     <string name="information">Informationen</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Letzter Zugriff</string>
@@ -475,6 +473,13 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="show_quick_access_pref_title">Schnellzugriffe anzeigen</string>
     <string name="show_quick_access_pref">Schnellzugriff</string>
     <string name="directory">Verzeichnis</string>
+
+    <string name="sidebar_bookmarks_title">Lesezeichenleiste</string>
+    <string name="show_bookmarks_pref_title">Lesezeichen anzeigen</string>
+    <string name="show_bookmarks_pref">Lesezeichen</string>
+    <string name="create_bookmark">Lesezeichen erstellen</string>
+    <string name="edit_bookmark">Lesezeichen bearbeiten</string>
+    <string name="question_delete_bookmark">Leseueichen löschen?</string>
 
     <string name="cloud_error_plugin">Amaze Cloud Plugin konnte nicht gefunden werden. Bitte laden Sie es aus dem Play Store herunter.</string>
     <string name="cloud_error_failed_restart">Fehler beim Laden der Verbindung.
@@ -647,8 +652,19 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="choose_operation">Aktion für Durchführung auswählen</string>
     <string name="remember">Für nächstes mal merken</string>
     <string name="ftp_prompt_accept_first_start_saf_access_title">Für FTP-Server den Zugriff auf SAF gewähren</string>
-    <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).
+    <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).\n\n
 
 Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für die Datenfreigabe verwenden.</string>
+    <string name="error_empty_archive">\"%s\" ist ein leeres Archiv.</string>
+    <string name="security_error">Datei konnte mit dieser App nicht geöffnet werden </string>
+    <string name="cloud_drive_tooltip">Eine Verbindung mit Google Drive™ erstellen, um Dateien innerhalb Amaze File Manager zu verwalten.</string>
+    <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
+    <string name="show_system_apps">System-Apps anzeigen</string>
+    <string name="system_apps">System-Apps</string>
+    <string name="third_party_apps">Dritt-Anbieter-Apps</string>
+    <string name="select_inverse">Auswal umkehren</string>
+    <string name="select_by_type">Nach Typ auswählen</string>
+    <string name="select_by_date">Nach Datum auswählen</string>
+    <string name="select_similar">Ähnliche auswählen</string>
 </resources>
 

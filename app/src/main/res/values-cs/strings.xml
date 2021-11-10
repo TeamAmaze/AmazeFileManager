@@ -95,7 +95,6 @@
     <string name="select_all">Vybrat Vše</string>
     <string name="delete">Smazat</string>
     <string name="set_as_home">Nastavit jako domácí</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -305,7 +304,6 @@
     <string name="report_bugs_summary">Nahlásit chybu nebo požádat o nové funkce</string>
     <string name="translate_title">Přeložit</string>
     <string name="translate_summary">Přeložte Amaze do vašeho jazyka</string>
-    <string name="easter_egg_title">Studiový mód</string>
     <string name="paypal_copy_message">Paypal ID bylo zkopírováno do schránky</string>
     <string name="searching_devices">Vyhledávání zařízení</string>
     <string name="use_custom_ip">Použít vlastní IP</string>
@@ -350,7 +348,6 @@
         </html>    </string>
     <string name="share_limit">Nelze sdílet více než 100 souborů</string>
     <string name="otg_access">Vyberte kořenovou složku OTG zařízení</string>
-    <string name="opening">Otevírání..</string>
     <string name="information">Informace</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Poslední přístup</string>
@@ -432,7 +429,6 @@
     <string name="cloud_connection">Připojení ke cloudu</string>
     <string name="cloud_connection_new">Nové připojení ke cloudu</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Disk Google&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Získat Cloud plugin</string>
@@ -497,6 +493,7 @@
     <string name="show_quick_access_pref">Rychlý přístup</string>
     <string name="directory">Adresář</string>
 
+    <string name="show_bookmarks_pref">Záložky</string>
     <string name="cloud_error_plugin">Amaze Cloud plugin nebyl nalezen. Stáhněte si ho z Obchodu Play.</string>
     <string name="cloud_error_failed_restart">Nepodařilo se načíst připojení.         Prosím, otevřete jednou Amaze Cloud.</string>
     <string name="cloud_remove">Chcete odstranit připojení ke cloudu?</string>

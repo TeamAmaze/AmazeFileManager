@@ -45,6 +45,7 @@
     <string name="loading">Đang tải&#8230;</string>
     <string name="file_empty">Tệp rỗng</string>
     <string name="error">Lỗi</string>
+    <string name="search_results">Tìm kết quả của %s</string>
     <string name="rename">Đổi tên</string>
     <string name="save">Lưu</string>
     <string name="bookmarks_added">Bookmark đã được thêm vào</string>
@@ -53,6 +54,7 @@
     <string name="date">Ngày: </string>
     <string name="location">Vị trí: </string>
     <string name="size_capitalized">Kích thước</string>
+    <string name="size">kích thước thư mục</string>
     <string name="enterzipname">Nhập tên Zip</string>
     <string name="no_app_found">Không tìm thấy ứng dụng để mở tệp</string>
     <string name="copying">Đang sao chép</string>
@@ -79,6 +81,7 @@
     <string name="question_set_path_as_home">Bạn có muốn thiết lập đường dẫn hiện tại như nhà cho thẻ này?</string>
     <string name="directorysort">Chế độ sắp xếp danh mục</string>
     <string name="sort_by">Sắp xếp theo</string>
+    <string name="sort_only_this">Chỉ thư mục này</string>
     <string name="theme">Chủ đề</string>
     <string name="random">Giao diện ngẫu nhiên</string>
     <string name="random_summary">Thiết lập màu cơ bản ngẫu nhiên lúc khởi động</string>
@@ -94,6 +97,7 @@
     <string name="select_all">Chọn hết</string>
     <string name="delete">Xóa</string>
     <string name="set_as_home">Đặt như nhà</string>
+    <string name="operation_not_supported">Thao tác không hỗ trợ</string>
 
     <!-- New -->
     <!-- Array -->
@@ -103,6 +107,7 @@
     <string name="light">Material Sáng</string>
     <string name="dark">Material Tối</string>
     <string name="daytime">Daytime</string>
+    <string name="black">Đen (cho OLED)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Thư mục trên đầu</string>
@@ -121,12 +126,16 @@
     <string name="skip">Giữ</string>
     <string name="overwrite">Ghi đè</string>
     <string name="not_allowed">Không được cho chép</string>
+    <string name="searching">Đang tìm %s</string>
     <string name="done">Hoàn tất</string>
     <string name="set">Đặt</string>
     <string name="enablerootmde">Kích hoạt chế độ Root</string>
     <string name="goback">Quay lại</string>
     <string name="newfile">Tệp mới</string>
     <string name="no_files">Không có tệp</string>
+    <string name="used">không gian đã dùng</string>
+    <string name="used_by_others">được sử dụng bởi những mục khác</string>
+    <string name="free">không gian trống</string>
     <string name="listview">Chế độ xem danh sách</string>
     <string name="gridview">Chế độ xem lưới</string>
     <string name="permission">Cấp phép</string>
@@ -238,12 +247,14 @@
     <string name="anonymous">Ẩn danh</string>
     <string name="bluetooth">Bluetooth</string>
     <string name="folders">Thư mục</string>
+    <string name="folderfilecount">%1$d thư mục và %2$d tệp tin</string>
     <string name="videos">Video</string>
     <string name="apks">Các tệp Apk</string>
     <string name="documents">Tài liệu</string>
     <string name="images">Hình ảnh</string>
     <string name="clear">Xóa</string>
     <string name="md5">md5: </string>
+    <string name="total">Tổng cộng</string>
     <string name="calculating"> đang tính toán </string>
     <string name="sort">Sắp xếp</string>
     <string name="ascending">Tăng dần</string>
@@ -266,13 +277,13 @@
     <string name="cant_be_empty">%s không thể để trống</string>
     <string name="ip">Địa chỉ</string>
     <string name="connection_name">Tên kết nối</string>
-    <string name="no_device_found">Không tìm thấy thiết bị</string>
+    <string name="no_device_found">Không có thiết bị nào được tìm thấy</string>
     <string name="path">Đường dẫn</string>
-    <string name="rename_bookmark">Tùy chỉnh Bookmark</string>
+    <string name="rename_bookmark">Sửa Dấu trang</string>
     <string name="cut">Cắt</string>
     <string name="search">Tìm kiếm</string>
     <string name="invalid_name">Tên không hợp lệ</string>
-    <string name="search_hint">Gõ để tìm kiếm&#8230;</string>
+    <string name="search_hint">Nhập để tìm kiếm&#8230;</string>
     <string name="advanced_search">Tìm kiếm nâng cao</string>
     <string name="regular_expression">Cú pháp thường dùng</string>
     <string name="regular_expression_summary">Tìm kiếm dùng một dạng cú pháp BASH thường dùng</string>
@@ -285,10 +296,11 @@
     <string name="ftp_status_not_running">Chưa chạy</string>
     <string name="ftp_no_wifi">Hãy chắc rằng bạn đã kết nối đến Wi-Fi</string>
     <string name="domain">Tên miền</string>
+    <string name="smb_share">Chia sẻ đường dẫn</string>
     <string name="invalid">Không hợp lệ %s</string>
-    <string name="ftp_notif_starting">FTP Server đang bắt đầu</string>
-    <string name="ftp_notif_starting_title">FTP Server</string>
-    <string name="ftp_notif_title">Amaze FTP Server đang chạy</string>
+    <string name="ftp_notif_starting">Máy chủ FTP đang bắt đầu</string>
+    <string name="ftp_notif_starting_title">Máy chủ FTP</string>
+    <string name="ftp_notif_title">Máy chủ FTP Amaze đang chạy</string>
     <string name="ftp_notif_text">tại %s</string>
     <string name="ftp_notif_stop_server">Ngừng</string>
     <string name="ftp_port_edit_menu_title">Chọn công FTP</string>
@@ -298,18 +310,69 @@
     <string name="primary_two_summary">Đặt màu sắc cho các yếu tố UI lớn cho các thẻ bên phải</string>
     <string name="support_development">Ủng hộ phát triển</string>
     <string name="report_bugs_title">Báo lỗi</string>
+    <string name="source_title">Mã nguồn</string>
+    <string name="source_summary">Xem mã nguồn của chúng tôi trên GitHub</string>
     <string name="report_bugs_summary">Báo lỗi hoặc yêu cầu tính năng mới</string>
     <string name="translate_title">Dịch</string>
     <string name="translate_summary">Dịch Amaze sang ngôn ngữ của bạn</string>
-    <string name="easter_egg_title">Chế độ Studio</string>
     <string name="paypal_copy_message">Đã chép ID Paypal vào clipboard</string>
     <string name="searching_devices">Đang tìm kiếm thiết bị</string>
     <string name="use_custom_ip">Dùng IP tuỳ chỉnh</string>
     <string name="bookmark_lost">Không phát hiện dấu trang, đang tạo lại&#8230;</string>
 
+    <string name="smb_instructions">
+        <html>
+            <body>
+                <h1>Cách truy cập thư mục Windows được chia sẻ trên Android (SMB)</h1>\n\n
+                <ul>
+                    <li>
+                        <b>Cho phép Chia sẻ Tệp trên Windows</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Mở Control Panel, nhấp vào Choose HomeGroup and Sharing options dưới Network
+                        and Internet, và click \"Change Advanced Sharing Settings,\" bật tính năng \"File and
+                        Printer Sharing\".\n\n
+                    </p>
+
+                    <li>
+                        <b>Cài đặt Chia sẻ tệp Bổ sung</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                       Bạn cũng có thể muốn định cấu hình các cài đặt chia sẻ nâng cao khác tại đây. \n
+                       Ví dụ, bạn có thể cho phép truy cập vào các tệp của mình mà không cần mật khẩu nếu bạn tin tưởng tất cả
+                        các thiết bị trên mạng cục bộ của bạn. Sau khi bật tính năng File and Print Sharing, bạn có thể
+                        mở File Explorer hoặc Windows Explorer, nhấp chuột phải vào thư mục bạn muốn chia sẻ và
+                        chọn Properties. \n
+                        Nhấp vào nút Share và làm cho thư mục có sẵn trên mạng.\n\n
+                        </p>
+
+                    <li>
+                        <b>Đảm bảo cả hai thiết bị đều sử dụng cùng một Wifi</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Tính năng này làm cho các tệp có sẵn trên mạng cục bộ, vì vậy PC và thiết bị di động của bạn
+                        phải trên cùng một mạng cục bộ. Bạn không thể truy cập vào một thư mục Windows được chia sẻ
+                        qua Internet hoặc khi điện thoại thông minh của bạn được kết nối với dữ liệu di động - nó
+                        phải được kết nối với Wi-Fi.\n\n
+                    </p>
+
+                    <li>
+                        <b>Tìm địa chỉ IP</b>\n
+                    </li>
+                    <p style='margin-left: 40px'>
+                        Mở Command Prompt. Nhập \'ipconfig\' và nhấn Enter. Tìm kiếm Cổng mặc định
+                        dưới bộ điều hợp mạng của bạn cho địa chỉ IP của bộ định tuyến của bạn. Tìm
+                        \\\"Địa chỉ IPv4\\\" trong cùng một phần bộ điều hợp để tìm địa chỉ IP máy tính
+                        của bạn.\n\n
+                    </p>
+
+                    <b>Nhập chi tiết vào hộp thoại SMB</b>\n
+                </ul>
+            </body>
+        </html>
+    </string>
     <string name="share_limit">Không thể chia sẻ hơn 100 tập tin</string>
     <string name="otg_access">Chọn thư mục gốc của thiết bị OTG</string>
-    <string name="opening">Đang mở..</string>
     <string name="information">Thông tin</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Đã truy cập</string>
@@ -377,6 +440,7 @@
     <string name="smb_launch_error">Bạn sẽ cần chép tập tin này sang bộ nhớ để mở nó</string>
     <string name="error_file_not_found">Lỗi: Không tìm thấy tập tin</string>
     <string name="error_io">Lỗi I/O</string>
+    <string name="error_file_too_large">Lỗi: Tập tin quá lớn</string>
     <string name="medium_text">Cỡ chữ trung bình</string>
     <string name="permission_read">Đọc</string>
     <string name="permission_write">Ghi</string>
@@ -385,13 +449,271 @@
     <string name="permission_group">Nhóm</string>
     <string name="permission_other">Khác</string>
     <string name="clipboard_path_copy">Đường dẫn đã được sao chép đến clipboard</string>
+    <string name="service_timer">Thời gian đã trôi</string>
+    <string name="please_wait">Vui lòng đợi</string>
+
+    <string name="cloud_connection">Kết nối đám mây</string>
+    <string name="cloud_connection_new">Kết nối đám mây mới</string>
+    <string name="cloud_dropbox">Dropbox</string>
+    <string name="cloud_drive">Google Drive&#8482;</string>
+    <string name="cloud_onedrive">OneDrive</string>
+    <string name="cloud_box">Hộp</string>
+    <string name="cloud_get">Tải xuống plugin Đám mây</string>
+    <!-- Reference to 'email address can't be empty' or 'Invalid e-mail address' -->
+
+    <string name="no_applications">Không có ứng dụng nào</string>
+    <string name="ftp_path">Đường dẫn được chia sẻ</string>
+    <string name="ftp_path_hint">Đường dẫn đến thư mục gốc để chia sẻ</string>
+    <string name="change">Thay đổi</string>
+    <string name="unknown_error">Oops, đã xảy ra lỗi!</string>
+
+    <string name="ftp_path_change_success">Đường dẫn FTP đã thay đổi thành công</string>
+    <string name="ftp_path_change_error_invalid">Đường dẫn không hợp lệ</string>
+    <string name="ftp_status_no_connection">Không có kết nối</string>
+    <string name="ftp_status_secure_connection">Kết nối an toàn</string>
+    <string name="ftp_status_title">Trạng thái</string>
+    <string name="ftp_port">Cổng</string>
+    <string name="ftp_login">Đăng nhập</string>
+    <string name="field_empty">Trường không được để trống</string>
+    <string name="ftp_timeout">Thời gian chờ đã hết</string>
+    <string name="ftp_seconds">Giây</string>
+    <string name="intellihide_toolbar_title">Thanh công cụ Intellihide</string>
+    <string name="intellihide_toolbar_summary">Tự động ẩn thanh công cụ khi cuộn</string>
+    <string name="hash_sha256">SHA-256</string>
+    <!-- references 'name/size/location/hash' copied to clipboard -->
+    <string name="properties_copied_clipboard">đã chép vào bảng tạm</string>
+    <string name="contributors_1_summary">Dịch thuật</string>
+    <string name="contributors_2_summary">Biểu tượng và biểu ngữ</string>
+    <string name="contributors_3_summary">Công cụ Chủ đề</string>
+    <string name="contributors_4_summary">Đổ bóng sau FAB</string>
+    <string name="contributors_5_summary">Chuyển màu khi vuốt các tab</string>
     <string name="contributors_6_summary">Máy chủ FTP</string>
-    <string name="item">Mục</string>
+    <string name="contributors_7_summary">Kích hoạt một shell tương tác</string>
+    <string name="connection_exists">Kết nối đã tồn tại</string>
+
+    <string name="crypt_encrypting">Đang mã hóa</string>
+    <string name="crypt_decrypting">Đang giải mã</string>
+    <!-- references to 'Some files weren't successfully %s -->
+    <string name="crypt_encrypted">Đã mã hóa</string>
+    <string name="crypt_decrypted">Đã giải mã</string>
+    <string name="crypt_encrypt">Mã hóa</string>
+    <string name="crypt_decrypt">Giải mã</string>
+    <string name="operation_fail_following">Thao tác không thành công đối với các tệp sau</string>
+    <string name="crypt_pref_master_password_title">Mật khảu chính</string>
+    <string name="crypt_pref_master_password_summary">Đặt một mật khẩu chính để mã hóa.
+         Để trống để loại bỏ.</string>
+    <string name="crypt_pref_fingerprint_title">Dấu vân tay</string>
+    <string name="crypt_pref_fingerprint_summary">Sử dụng dấu vân tay để xác thực mã hóa</string>
+    <string name="crypt_fingerprint_no_permission">Thiếu quyền sử dụng dấu vân tay</string>
+    <string name="crypt_fingerprint_not_enrolled">Không có dấu vân tay nào được đăng ký</string>
+    <string name="crypt_fingerprint_no_security">Không có màn hình khóa bảo mật nào được tìm thấy</string>
+    <string name="crypt_warning_key">Hãy lưu ý, khi bạn thay đổi hình thức bảo mật của mình từ
+        Cài đặt hệ thống, bạn sẽ không thể giải mã nội dung này.</string>
+    <string name="warning_never_show">Đừng thông báo lại</string>
+    <string name="warning_confirm">Hiểu rồi!</string>
+    <string name="crypt_encryption_fail">Không mã hóa được</string>
+    <string name="crypt_decryption_fail">Không giải mã được</string>
+    <string name="crypt_decryption_fail_password">Sai mật khẩu!</string>
+    <string name="crypt_fingerprint_authenticate">Chạm vào cảm biến để tiếp tục</string>
+    <string name="authenticate_password">Nhập mật khẩu</string>
+
+    <string name="sidebar_preferences">Thanh bên</string>
+    <string name="sidebar_quick_access_title">Truy cập nhanh vào thanh bên</string>
+    <string name="show_quick_access_pref_title">Hiển thị các quyền truy cập nhanh</string>
+    <string name="show_quick_access_pref">Truy cập nhanh</string>
+    <string name="directory">Thư mục</string>
+
+    <string name="sidebar_bookmarks_title">Dấu trang thanh bên</string>
+    <string name="show_bookmarks_pref_title">Hiển thị dấu trang</string>
+    <string name="show_bookmarks_pref">Bookmark</string>
+    <string name="create_bookmark">Tạo dấu trang</string>
+    <string name="edit_bookmark">Sửa dấu trang</string>
+    <string name="question_delete_bookmark">Xoá dấu trang</string>
+
+    <string name="cloud_error_plugin">Không tìm thấy plugin Amaze Cloud. Vui lòng tải xuống từ Cửa hàng Play.</string>
+    <string name="cloud_error_failed_restart">Không thể tải kết nối.
+        Vui lòng mở Amaze Cloud một lần.</string>
+    <string name="cloud_remove">Bạn có muốn xóa kết nối đám mây không?</string>
+    <string name="cloud_fail_authenticate">Không thể xác thực</string>
+    <string name="cloud_share_copied">Đã sao chép liên kết có thể chia sẻ vào khay nhớ tạm</string>
+    <string name="copy_low_memory">Sắp hết bộ nhớ, vui lòng dọn một số RAM</string>
+    <string name="cloud_token_lost">Token bị mất, vui lòng đăng nhập lại</string>
+    <string name="monofont">Phông chữ Monospace</string>
+    <string name="showHeaders">Hiển thị tiêu đề</string>
+	
+	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->
+	<string name="no_items">Không có mục nào</string>
+	<string name="item">Mục</string>
 	<string name="items">Các mục</string>
 	
-	<string name="orange">Orange</string>
-    <string name="blue">Blue</string>
-    <string name="green">Green</string>
+	<string name="byte_singular">byte</string>
+	<string name="bytes">bytes</string>
+    <!-- end of plurals -->
+
+    <string name="no_name">Tập tin nên có tên</string>
+    <string name="add_item">Thêm mục</string>
+    <string name="failed_smb_decrypt_path">Không tải được kết nối SMB</string>
+    <string name="failed_cloud_new_connection">Không thêm được kết nối Đám mây mới</string>
+    <string name="failed_cloud_api_key">Không xác thực được plugin Cloud</string>
+
+    <string name="local_inet_addr_error">Lỗi khi lấy địa chỉ inet cục bộ</string>
+    <string name="intent_save_as">Lưu thành&#8230;</string>
+    <string name="go">Đi</string>
+    <string name="advanced">Nâng cao</string>
+    <string name="typeable_paths_title">Đường dẫn tùy chỉnh</string>
+    <string name="typeable_paths_summary">Nhấn và giữ thanh đường dẫn để nhập đường dẫn tùy chỉnh</string>
+    <string name="send_email_to">Gửi một e-mail đến</string>
+
+    <string name="text_editor">Cài đặt Trình soạn thảo văn bản</string>
+    <string name="preference_newstack_title">Mở tệp dưới dạng tác vụ mới</string>
+    <string name="preference_newstack_summary">Cho phép bạn mở các tệp trong các tác vụ riêng biệt. Truy cập chúng từ màn hình gần đây của hệ thống.</string>
+    <string name="developers">Những nhà phát triển</string>
+    <string name="no_bitcoin_app">Vui lòng cài đặt một ứng dụng Ví Bitcoin</string>
+    <string name="channel_name_normal">Thông báo từ Amaze</string>
+    <string name="channel_description_normal">Thông báo từ Amaze File Manager</string>
+    <string name="channel_name_ftp">Máy chủ FTP Amaze</string>
+    <string name="channel_description_ftp">Thông báo từ Máy chủ FTP Amaze File Manager </string>
+
+    <string name="processing">Đang xử lí&#8230;</string>
+    <string name="failed_no_connection">Không tải được tệp. Vui lòng kiểm tra kết nối của bạn.</string>
+
+    <string name="update">CẬP NHẬT</string>
+	<string name="scp_connection">Kết nối SCP/SFTP</string>
+    <string name="scp_port">Cổng</string>
+    <string name="ssh_host_key_verification_prompt">Tính xác thực của máy chủ \'%1$s\' không thể được thiết lập.\n\n%2$s dấu vân tay chính là %3$s.\n\nVui lòng nhấn \"Có\" để xác nhận danh tính; nếu không, vui lòng nhấn \"Không\".</string>
+    <string name="ssh_host_key_verification_prompt_title">Xác minh Máy chủ</string>
+    <string name="ssh_select_pem_button">Khóa cá nhân SSH</string>
+    <string name="ssh_pem_key_parse_error">Không thể đọc PEM đã chọn: %s</string>
+    <string name="password_unchanged">(không thay đổi)</string>
+    <string name="ssh_authentication_failure_password">Đăng nhập thất bại: Không thể xác thực với tên người dùng và mật khẩu được cung cấp.</string>
+    <string name="ssh_authentication_failure_key">Đăng nhập thất bại: Không thể xác thực với tên người dùng và khóa cá nhân được cung cấp.</string>
+    <string name="ssh_connect_failed">Không thể kết nối với %1$s:%2$d: %3$s</string>
+    <string name="ssh_connect_failed_host_key_changed_title">CẢNH BÁO: NHẬN DIỆN TRANG WEB TỪ XA ĐÃ THAY ĐỔI!</string>
+    <string name="ssh_connect_failed_host_key_changed_message">CÓ THỂ MỘT AI ĐÓ ĐANG LÀM GÌ ĐÓ BẨN THỈU!\n\nMột người nào đó có thể đang nghe trộm bạn ngay bây giờ (tấn công man-in-the-middle)! Cũng có thể là khóa máy chủ vừa được thay đổi. Tệp tham chiếu cho khóa công khai do máy chủ từ xa gửi không khớp với tệp được lưu trữ trong Amaze.\n\nVui lòng liên hệ với quản trị viên hệ thống của bạn hoặc thiết lập kết nối mới để tiếp tục kết nối với máy chủ.</string>
+    <string name="ssh_key_prompt_passphrase">Vui lòng nhập cụm mật khẩu chính.</string>
+    <string name="add_shortcut_not_supported_by_launcher">Tạo lối tắt không được hỗ trợ bởi trình khởi chạy của bạn.</string>
+    
+    <string name="select_color_config">Chọn cấu hình màu</string>
+    <string name="customize">Tùy chỉnh</string>
+    <string name="custom">Tùy chỉnh</string>
+    <string name="preselected_configs_title">Các cấu hình được chọn trước</string>
+    <string name="orange">Cam</string>
+    <string name="blue">Xanh dương</string>
+    <string name="green">Xanh lá cây</string>
+    <string name="password_no_match">Mật khẩu không khớp</string>
+    <string name="deselect_all">Bỏ chọn tất cả</string>
+    <string name="filename">Tên tập tin</string>
+    <string name="compress_file_suggest_zip_extension">Được khuyến khích nên sử dụng \".zip\" để làm phần mở rộng tệp.</string>
+    <string name="about_amaze">Trình quản lý tệp thiết kế nguyên vật liệu dành cho Android</string>
+    <string name="license">Giấy phép</string>
+    <string name="libraries">Thư viện</string>
+    <string name="password_repeat">Lặp lại mật khẩu</string>
+    <string name="create_file_suggest_txt_extension">Được khuyến khích nên sử dụng \".txt\" để làm phần mở rộng tệp.</string>
+    <string name="ssh_select_pem">Chọn khóa cá nhân để xác thực</string>
+    <string name="ssh_key_invalid_passphrase">Cụm mật khẩu không hợp lệ.</string>
+    <string name="encryption_fail_copy">Không cập nhật được mục nhập mã hóa trong cơ sở dữ liệu</string>
+    <string name="extracted">Đã giải nén</string>
+    <string name="compressed">Đã nén</string>
+    <string name="processed">Đã xử lí</string>
+    <string name="no_obtainable_info">Không có thông tin nào về tập tin này</string>
+    <string name="reopen_from_source">Không thể, vui lòng mở lại từ ứng dụng cuối cùng</string>
+    <string name="no_file_error">Đã xảy ra lỗi, không có gì để mở</string>
+    <string name="file_read_only">Tệp được mở là tệp chỉ đọc.</string>
+    <string name="got_it">Hiểu rồi!</string>
+    <string name="encrypt_file_save_as">Lưu tập tin đã mã hóa thành&#8230;</string>
+    <string name="encrypt_folder_save_as">Lưu thư mục đã mã hóa thành&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Các tệp được mã hóa phải sử dụng \".aze\" làm phần mở rộng tệp.</string>
+    <string name="cannot_overwrite">Không thể ghi đè tập tin</string>
+    <string name="saved_single_file">Tập tin được lưu thành \'%s\'.</string>
+    <string name="saved_multi_files">%d tập tin đã lưu.</string>
+    <string name="create_hidden_file_warn">Tệp đã tạo sẽ bị ẩn trong danh sách tệp.</string>
+    <string name="grant_apkinstall_permission">Ứng dụng cần quyền để tiếp tục cài đặt ứng dụng.</string>
+    <string name="time_remaining">Thời gian còn lại</string>
+    <string name="transfer_rate">Tốc độ truyền tải</string>
+    <string name="unknown">không xác định</string>
+    <string name="multiple_invalid_archive_entries">Không thể trích xuất một số tệp trong kho lưu trữ; kho lưu trữ có thể bị hỏng hoặc đến từ nguồn độc hại.</string>
+    <string name="saf_otg_explanation">Bây giờ bạn sẽ truy cập hệ thống tệp của Android vì lý do bảo mật. Vui lòng chọn thiết bị USB từ danh sách bên trái.</string>
+    <string name="donation_thanks">Cảm ơn bạn đã đóng góp, điều này giúp chúng tôi có động lực! (:</string>
+    <string name="enable_marquee_filename">Bật hiệu ứng marquee cho tên tệp</string>
+    <string name="archive_password_prompt">Vui lòng nhập mật khẩu lưu trữ:</string>
+    <string name="cannot_extract_archive">Không thể giải nén tệp lưu trữ \"%s\": %s</string>
+    <string name="archive_unsupported_or_corrupt">Không thể mở tệp lưu trữ \"%s\". Chúng tôi không thể mở tệp lưu trữ hoặc tệp lưu trữ đã bị hỏng.</string>
     <string name="close">Thoát</string>
+    <string name="bookmark_exists">Dấu trang tồn tại</string>
+    <string name="hide_media">Ẩn khỏi trình duyệt phương tiện</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">CÓ THỂ MỘT AI ĐÓ ĐANG LÀM GÌ ĐÓ BẨN THỈU!\n\nMột người nào đó có thể đang nghe trộm bạn ngay bây giờ (tấn công man-in-the-middle)! Cũng có thể là khóa máy chủ vừa được thay đổi. Vân tay cho khóa công khai do máy chủ từ xa gửi không khớp với vân tay được lưu trữ trong Amaze.\n\nBạn có thể tiếp tục cập nhật vân tay máy chủ hoặc hủy cập nhật cài đặt kết nối SSH.</string>
+    <string name="update_host_key">Cập nhật khóa máy chủ</string>
+    <string name="cancel_recommended">Hủy (Khuyến khích)</string>
+    <string name="failed_install_apk">Cài đặt thất bại</string>
+
+    <!-- from https://android.googlesource.com/platform/frameworks/base/+/master/core/res/res/values/strings.xml -->
+    <!-- Storage description for internal shared storage. [CHAR LIMIT=NONE] -->
+    <string name="storage_internal">Bộ nhớ Trong</string>
+    <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
+    <string name="storage_sd_card">Thẻ nhớ SD</string>
+    <string name="choose_folder">Chọn thư mục này</string>
+    <string name="some_files_failed_invalid_operation">Một số tệp không thành công do thao tác không hợp lệ</string>
+    <string name="ftp_server_prompt_connect_to_network">Kết nối với mạng hoặc bật AP</string>
+    <string name="ftp_server_open_settings">Mở cài đặt</string>
+    <string name="move">Di chuyển</string>
+    <string name="select_save_location">Chọn vị trí để lưu</string>
+    <string name="scp_default_path">Đường dẫn mặc định (Tùy chọn)</string>
+
+    <!-- error activity -->
+    <string name="sorry_string">Xin lỗi, điều đó không nên xảy ra.</string>
+    <string name="error_report_button_text">Báo cáo lỗi này qua e-mail</string>
+    <string name="error_report_button_telegram">Báo cáo lỗi này qua telegram</string>
+    <string name="copy_for_github">Sao chép báo cáo đã định dạng</string>
+    <string name="error_report_open_issue_button_text">Báo cáo trên GitHub</string>
+    <string name="error_report_open_github_notice">Vui lòng kiểm tra xem vấn đề thảo luận về sự cố của bạn đã tồn tại hay chưa.</string>
+    <string name="error_snackbar_message">Xin lỗi, đã xảy ra lỗi.</string>
+    <string name="error_snackbar_action">Báo cáo</string>
+    <string name="what_device_headline">Thông tin:</string>
+    <string name="what_happened_headline">Đã xảy ra:</string>
+    <string name="info_labels">Lỗi:\\nYêu cầu:\\nThời gian:\\nGói:\\nPhiên bản:\\nPhiên bản HĐH:\\nThiết bị:\\nMẫu:\\nSản phẩm:</string>
+    <string name="your_comment">Bình luận của bạn (trong Tiếng Anh):</string>
+    <string name="error_details_headline">Chi tiết:</string>
+    <string name="app_ui_crash">Ứng dụng/UI gặp sự cố</string>
+    <string name="error_report_title">Báo cáo lỗi</string>
+    <string name="crash_report_copied">Đã sao chép báo cáo sự cố vào khay nhớ tạm</string>
+    <string name="disableIpcSignature">Tắt kiểm tra ký IPC (Đối với máy chủ SMBv1 cũ - KHÔNG AN TOÀN!)</string>
+    <string name="cannot_delete_file">Không thể xóa tập tin</string>
+    <string name="cannot_delete_file_with_reason">Không thể xóa tập tin - %s </string>
+    <string name="cannot_rename_file">Không thể đổi tên tập tin %s - %s</string>
+    <string name="cannot_read_directory">Không thể đọc thư mục %s - %s</string>
+    <string name="just_once">Chỉ một lần</string>
+    <string name="always">Luôn luôn</string>
+    <string name="choose_different_app">Chọn ứng dụng khác</string>
+    <string name="clear_open_file">Dọn cache</string>
+    <string name="clear_open_file_summary">Xóa các ứng dụng mở tệp mặc định đã chọn</string>
+    <string name="ftp_readonly">Truy cập chỉ đọc</string>
+    <string name="legacy_listing_title">Sử dụng danh sách cũ cho root</string>
+    <string name="legacy_listing_summary">Nếu được bật, sẽ sử dụng phương pháp cũ để liệt kê các tệp</string>
+    <string name="error_unsupported_v5_rar">Lưu trữ RAR \"%s\" là lưu trữ RAR v5 không được hỗ trợ.</string>
+    <string name="ftp_prompt_restart_server">Bạn sẽ cần khởi động lại máy chủ FTP để các thay đổi có hiệu lực.</string>
+    <string name="error_permission_denied">Quyền bị từ chối</string>
+    <string name="error_archive_password_incorrect">Mật khẩu lưu trữ sai.</string>
+    <string name="error_archive_cannot_extract">Không thể giải nén mục nhập lưu trữ \"%s\" đến \"%s\".</string>
+    <string name="drag_and_drop_preference">Chọn tùy chọn kéo và thả (Thử nghiệm)</string>
+    <string name="drag_to_move_copy">Chạm và kéo để di chuyển hoặc sao chép tệp</string>
+    <string name="drag_to_select">Chạm và kéo để chọn tệp</string>
+    <string name="disable">Vô hiệu hóa</string>
+    <string name="choose_operation">Chọn thao tác để thực hiện</string>
+    <string name="remember">Nhớ cho lần sau</string>
+    <string name="ftp_prompt_accept_first_start_saf_access_title">Cấp quyền truy cập SAF cho máy chủ FTP</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Vì đây là lần đầu tiên bạn chạy máy chủ FTP và bạn đang sử dụng bộ nhớ trong của thiết bị làm thư mục chia sẻ, vui lòng cho phép Amaze truy cập bộ nhớ bằng SAF.\n\n
+
+Bạn chỉ cần làm điều này một lần cho đến lần tiếp theo bạn chọn một vị trí mới để chia sẻ.</string>
+    <string name="android_data_prompt_saf_access">Kể từ Android 10, Android đã áp đặt các hạn chế đối với một số thư mục nhất định và họ cần truy cập bằng Storage Access Framework.\n\nVui lòng cho phép Amaze truy cập vào thư mục từ trình quản lý tệp của hệ thống bằng cách nhấn vào \"Cho phép truy cập\".</string>
+    <string name="android_data_prompt_saf_access_title">Cấp quyền truy cập SAF</string>
+    <string name="ftp_preference_saf_filesystem_title">Sử dụng filesystem cũ</string>
+    <string name="ftp_preference_saf_filesystem">Bật tính năng này để được hỗ trợ sử dụng bộ nhớ ngoài của thiết bị trên các phiên bản Android mới hơn</string>
+    <string name="ftp_server_fallback_path_reset_prompt">Đường dẫn chia sẻ của máy chủ FTP đã được đặt lại thành bộ nhớ trong khi bạn đang chuyển về triển khai filesystem cũ. Vui lòng chọn một đường dẫn mới bằng cách sử dụng menu ở trên cùng bên phải nếu cần.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Lỗi khi mở URI \"%s\" để đọc.</string>
+    <string name="error_empty_archive">\"%s\" là một tệp lưu trữ trống.</string>
+    <string name="security_error">Tập tin không thể được mở bằng ứng dụng này</string>
+    <string name="cloud_drive_tooltip">Tạo một kết nối Google Drive™ để quản lý tệp từ trong Amaze File Manager.</string>
+    <string name="signin_with_google_title">Xác thực để sử dụng Google Drive™</string>
+    <string name="show_system_apps">Hiện ứng dụng hệ thống</string>
     </resources>
 

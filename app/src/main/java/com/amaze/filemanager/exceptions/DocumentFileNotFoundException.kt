@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,21 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ssh;
+package com.amaze.filemanager.exceptions
 
-import static org.junit.Assert.assertEquals;
+import android.net.Uri
 
-import org.junit.Test;
-
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-
-public class SshClientUtilTest {
-  @Test
-  public void testExtractRemotePathFromUri() {
-    assertEquals(
-        "/home/user/foo/bar",
-        SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/home/user/foo/bar"));
-    assertEquals("/", SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/"));
-    assertEquals("/", SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22"));
-  }
-}
+class DocumentFileNotFoundException(rootUri: Uri, path: String) :
+    RuntimeException("Root uri: %s and path %s".format(rootUri.path, path))

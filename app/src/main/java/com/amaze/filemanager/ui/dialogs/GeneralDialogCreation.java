@@ -1438,19 +1438,24 @@ public class GeneralDialogCreation {
     View customView =
         DialogSigninWithGoogleBinding.inflate(LayoutInflater.from(mainActivity)).getRoot();
     int accentColor = mainActivity.getAccent();
+
+    MaterialDialog dialog =
+        new MaterialDialog.Builder(mainActivity)
+            .customView(customView, false)
+            .title(R.string.signin_with_google_title)
+            .negativeText(android.R.string.cancel)
+            .negativeColor(accentColor)
+            .onNegative((dlg, which) -> dlg.dismiss())
+            .build();
+
     customView
         .findViewById(R.id.signin_with_google)
         .setOnClickListener(
             v -> {
               mainActivity.addConnection(OpenMode.GDRIVE);
+              dialog.dismiss();
             });
-    new MaterialDialog.Builder(mainActivity)
-        .customView(customView, false)
-        .title(R.string.signin_with_google_title)
-        .negativeText(android.R.string.cancel)
-        .negativeColor(accentColor)
-        .onNegative((dialog, which) -> dialog.dismiss())
-        .build()
-        .show();
+
+    dialog.show();
   }
 }

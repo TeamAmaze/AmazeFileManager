@@ -23,7 +23,7 @@
     tools:ignore="MissingTranslation"
     xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name">Amaze</string>
-    <string name="drawer_open">Odpri predal za krmarjenje</string>
+    <string name="drawer_open">Odpri navigacijsko okno</string>
     <string name="drawer_close">Zapri navigacijsko okno</string>
     <string name="icon">ikona</string>
     <string name="apps">Upravljalec aplikacij</string>
@@ -63,14 +63,18 @@
     <string name="folder">Mapa</string>
     <string name="newfolder">Nova mapa</string>
     <string name="entername">Vstavite ime</string>
+    <string name="extracting">Razširjanje</string>
+    <string name="stopping">Ustavljanje</string>
     <string name="open_with">Odpri z</string>
     <string name="share">Skupna raba</string>
     <string name="about">O nas</string>
     <string name="extract">Razširi</string>
+    <string name="compress">Stisni</string>
     <string name="yes">Da</string>
     <string name="no">Ne</string>
     <string name="dialog_delete_category_directories">Mape</string>
     <string name="dialog_delete_category_files">Datoteke</string>
+    <string name="dialog_delete_disclaimer">Če izbrišete spodnje elemente, jih trajno odstranite iz naprave in jih ni mogoče obnoviti.</string>
     <string name="dialog_delete_title">Potrdi</string>
     <string name="sort_by">Razvrsti po</string>
     <string name="theme">Tema</string>
@@ -84,7 +88,6 @@
     <string name="select_all">Izberi vse</string>
     <string name="delete">Izbriši</string>
     <string name="set_as_home">Nastavi kot doma</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -276,7 +279,6 @@
     <string name="use_custom_ip">Uporaba IP po meri</string>
     <string name="share_limit">Ne moremo deliti več kot 100 datotek</string>
     <string name="otg_access">Izberite koren OTG naprave</string>
-    <string name="opening">Odpiranje..</string>
     <string name="information">Podatki</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Zadnji dostop</string>
@@ -336,7 +338,6 @@
     <string name="cloud_connection">Povezava v oblak</string>
     <string name="cloud_connection_new">Nova povezava v oblak</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Dobi vtičnik za oblak</string>

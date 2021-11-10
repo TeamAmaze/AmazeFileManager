@@ -97,6 +97,7 @@
     <string name="select_all">Вибрати все</string>
     <string name="delete">Видалити</string>
     <string name="set_as_home">Зробити домашньою текою</string>
+    <string name="operation_not_supported">Операція не підтримується</string>
 
     <!-- New -->
     <!-- Array -->
@@ -208,11 +209,8 @@
 Ви хочете продовжити?</string>
     <string name="warning">Попередження</string>
     <string name="donate">Пожертвувати</string>
-    <string name="archive_preferences">Налаштування архівування</string>
     <string name="archive_extract_folder">Тека для розпаковування архівів</string>
-    <string name="zip_create_folder">Тека для нових архівів</string>
     <string name="archive_summary">Файли з архіву буде розпаковано до вказаної теки. За замовчуванням це тека та ж тека, де знаходиться архів</string>
-    <string name="zip_summary">Нові архіви буде створено у вказаній теці. За замовчуванням це та ж тека, у якій знаходяться файли</string>
     <string name="open_as">Відкрити як</string>
     <string name="text">Текст</string>
     <string name="audio">Аудіо</string>
@@ -298,6 +296,7 @@
     <string name="ftp_status_not_running">Не працює</string>
     <string name="ftp_no_wifi">Впевніться що ви підключені до Wi-Fi</string>
     <string name="domain">Домен</string>
+    <string name="smb_share">Поширити шлях</string>
     <string name="invalid">Неприпустимий %s</string>
     <string name="ftp_notif_starting">FTP Server запускається</string>
     <string name="ftp_notif_starting_title">FTP Сервер</string>
@@ -316,7 +315,6 @@
     <string name="report_bugs_summary">Повідомляти про помилки або запитати нову функцію</string>
     <string name="translate_title">Перекласти</string>
     <string name="translate_summary">Перекласти Amaze вашою мовою</string>
-    <string name="easter_egg_title">Режим Студії</string>
     <string name="paypal_copy_message">PayPal id скопійовано до буфера обміну</string>
     <string name="searching_devices">Пошук пристроїв</string>
     <string name="use_custom_ip">Використовувати користувацьку IP</string>
@@ -373,7 +371,6 @@
     </string>
     <string name="share_limit">Неможливо обмінюватися понад 100 файлами</string>
     <string name="otg_access">Виберіть кореневу папку OTG пристрою</string>
-    <string name="opening">Відкриття..</string>
     <string name="information">Інформація</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Доступно</string>
@@ -441,6 +438,7 @@
     <string name="smb_launch_error">Вам знадобиться скопіювати файл для зберігання даних, щоб відкрити його</string>
     <string name="error_file_not_found">Помилка: Файл не знайдено</string>
     <string name="error_io">Помилка вводу/виводу</string>
+    <string name="error_file_too_large">Помилка: Файл надто великий</string>
     <string name="medium_text">Середній текст</string>
     <string name="permission_read">Прочитати</string>
     <string name="permission_write">Записати</string>
@@ -521,6 +519,7 @@
     <string name="show_quick_access_pref">Швидкий доступ</string>
     <string name="directory">Каталог</string>
 
+    <string name="show_bookmarks_pref">Закладки</string>
     <string name="cloud_error_plugin">Плагін для цієї хмари не знайдено. Будь ласка, завантажити з Play Store.</string>
     <string name="cloud_error_failed_restart">Помилка завантаження. Будь ласка, выдкрийте Amaze Cloud. </string>
     <string name="cloud_remove">Ви хочете видалити підключення до хмари?</string>
@@ -605,16 +604,31 @@
     <string name="extracted">Видобувається</string>
     <string name="compressed">Стискається</string>
     <string name="processed">Оброблено</string>
+    <string name="no_obtainable_info">Немає інформації про цей файл</string>
+    <string name="reopen_from_source">Не вишло, будь ласка, відкрийте з останнього додатку</string>
+    <string name="no_file_error">Щось трапилось, тут нічого відкривати</string>
+    <string name="file_read_only">Файл відкрито лише для читання</string>
     <string name="got_it">Готово!</string>
+    <string name="encrypt_file_save_as">Збережено зашифрований файл як&#8230;</string>
+    <string name="encrypt_folder_save_as">Збережено зашифровану теку як&#8230;</string>
+    <string name="encrypt_file_must_end_with_aze">Зашифровані файли повинні використовувати \".aze\" як розширення.</string>
+    <string name="cannot_overwrite">Не вдалось перезаписати файл.</string>
     <string name="saved_single_file">Файл збережено як \'%s\'.</string>
     <string name="saved_multi_files">%dфайлів збережено.</string>
+    <string name="create_hidden_file_warn">Створений файл буде приховано у файловому списку.</string>
+    <string name="grant_apkinstall_permission">Додаток потребує дозволи щоб продовжити встановлення додатку.</string>
     <string name="donation_thanks">Дякую за вашу підтримку, це мотивує нас! (:</string>
     <string name="archive_password_prompt">Будь ласка, введіть пароль до архіву:</string>
     <string name="close">Закрити</string>
     <string name="ssh_connect_failed_host_key_changed_prompt">МОЖЛИВО, ЩО У ВАС НЕПРИЄМНОСТІ!\n\nХтось може підслуховувати вас прямо зараз (атака \"людина посередині\")! Також можливо, що ключ хосту щойно змінено. Відбиток пальця для відкритого ключа, надісланого віддаленим хостом, не відповідає такому, що зберігається у Amaze.\n\nВи можете продовжити оновлення відбитка хоста або скасувати оновлення налаштувань з’єднання SSH.</string>
+    <string name="failed_install_apk">Помилка інсталяції</string>
+
     <!-- Storage description for a generic SD card. [CHAR LIMIT=NONE] -->
     <string name="storage_sd_card">SD картка</string>
     <string name="ftp_server_open_settings">Відкрити налаштування</string>
+    <string name="move">Перемістити</string>
+    <string name="error_report_button_text">Повідомити про цю помилку через e-mail</string>
+    <string name="error_report_button_telegram">Повідомити про цю помилку через Telegram</string>
     <string name="copy_for_github">Скопіювати відформатований звіт</string>
     <string name="error_report_open_issue_button_text">Звітувати на GitHub</string>
     <string name="error_report_open_github_notice">Перевірте, чи вже існує тема, що обговорює вашу проблему.</string>
@@ -628,7 +642,6 @@
     <string name="app_ui_crash">Додаток / користувацький інтерфейс аварійно завершив роботу</string>
     <string name="error_report_title">Звіт про помилку</string>
     <string name="crash_report_copied">Звіт про збій скопійовано в буфер обміну</string>
-
     <string name="disableIpcSignature">Вимкнути перевірку підписання IPC (для застарілих серверів SMBv1 - НЕБЕЗПЕЧНО!)</string>
     <string name="cannot_delete_file">Не вдається видалити файл</string>
     <string name="cannot_delete_file_with_reason">Не вдається видалити файл - %s</string>
@@ -640,7 +653,8 @@
     <string name="clear_open_file">Очистити кеш</string>
     <string name="clear_open_file_summary">Очищає вибрані програми відкриття файлів за замовчуванням</string>
     <string name="legacy_listing_title">Використовуйте застарілий список для root</string>
-    <string name="legacy_listing_summary">Якщо ввімкнено, для переліку використовується stat, в іншому випадку використовується ls</string>
     <string name="error_permission_denied">Дозвіл відмовлено</string>
-</resources>
+    <string name="error_archive_password_incorrect">Не вірний пароль архіву.</string>
+    <string name="disable">Вимкнено</string>
+    </resources>
 
