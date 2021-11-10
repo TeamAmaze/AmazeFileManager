@@ -94,7 +94,6 @@
     <string name="select_all">Zaznacz wszystko</string>
     <string name="delete">Usuń</string>
     <string name="set_as_home"> Ustaw jako katalog główny</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -301,7 +300,6 @@
     <string name="report_bugs_summary">Umożliwia zgłoszenie błędu lub zaproponowanie nowej funkcjonalności</string>
     <string name="translate_title">Przetłumacz</string>
     <string name="translate_summary">Umożliwia przetłumaczenie aplikacji na dany język</string>
-    <string name="easter_egg_title">Tryb studio</string>
     <string name="paypal_copy_message">Skopiowano do schowka identyfikator Paypal</string>
     <string name="searching_devices">Szukanie urządzeń</string>
     <string name="use_custom_ip">Własne IP</string>
@@ -351,7 +349,6 @@ smb_instructions
 </string>
     <string name="share_limit">Nie możesz udostępnić więcej niż 100 plików</string>
     <string name="otg_access">Wybierz katalog główny urządzenia OTG</string>
-    <string name="opening">Otwieranie...</string>
     <string name="information">Informacja</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Uzyskano dostęp</string>
@@ -431,7 +428,6 @@ smb_instructions
     <string name="please_wait">Proszę czekać</string>
 
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="change">Zmień</string>
     <string name="unknown_error">Ups, coś poszło nie tak!</string>
@@ -460,6 +456,7 @@ smb_instructions
     <string name="crypt_pref_fingerprint_title">Odcisk palca</string>
     <string name="crypt_decryption_fail_password">Błędne hasło!</string>
     <string name="crypt_fingerprint_authenticate">Dotknij czujnika by kontynuować</string>
+    <string name="show_bookmarks_pref">Zakładki</string>
     <string name="showHeaders">Pokaż nagłówki</string>
 	
 	<!--FROM HERE ON STRINGS ARE EXCLUSIVELY USED IN plurals.xml-->

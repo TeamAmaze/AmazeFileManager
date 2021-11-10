@@ -94,7 +94,6 @@
     <string name="select_all">Valitse kaikki</string>
     <string name="delete">Poista</string>
     <string name="set_as_home">Aseta kotisivuksi</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -301,7 +300,6 @@
     <string name="report_bugs_summary">Raportoi bugeja tai pyydä uusia ominaisuuksia</string>
     <string name="translate_title">Käännä</string>
     <string name="translate_summary">Käännä Amaze omalle kielelle</string>
-    <string name="easter_egg_title">Studio-tila</string>
     <string name="paypal_copy_message">PayPal-tunnus kopioitu leikepöydälle</string>
     <string name="searching_devices">Etsitään laitteita</string>
     <string name="use_custom_ip">Käytä mukautettu IP-osoitetta</string>
@@ -360,7 +358,6 @@
     </string>
     <string name="share_limit">Ei voi jakaa yli 100 tiedostoa</string>
     <string name="otg_access">Valitse OTG-laitteen juurihakemisto</string>
-    <string name="opening">Avataan..</string>
     <string name="information">Tietoja</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Käytetty</string>
@@ -442,7 +439,6 @@
     <string name="cloud_connection">Pilvi yhteys</string>
     <string name="cloud_connection_new">Uusi Pilviyhteys</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Hae pilvi-lisäosa</string>
@@ -507,6 +503,7 @@
     <string name="show_quick_access_pref">Pikavalikko</string>
     <string name="directory">Hakemisto</string>
 
+    <string name="show_bookmarks_pref">Kirjanmerkit</string>
     <string name="cloud_error_plugin">Amaze laajennusta ei löytynyt, lataa Google Play Storesta.</string>
     <string name="cloud_error_failed_restart">Yhteys epäonnistui.  Avaa Amaze Cloud kerran.</string>
     <string name="cloud_remove">Haluatko poisaa pilvi-yhteyden?</string>

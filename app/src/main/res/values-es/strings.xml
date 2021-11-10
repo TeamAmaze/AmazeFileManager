@@ -52,10 +52,10 @@
     <string name="fileexist">Ya existe un archivo con el mismo nombre </string>
     <string name="name">Nombre</string>
     <string name="date">Fecha</string>
-    <string name="location">Ubicado en: </string>
+    <string name="location">Ubicación</string>
     <string name="size_capitalized">Tamaño</string>
     <string name="size">tamaño de la carpeta</string>
-    <string name="enterzipname">Introducir el nombre del ficero zip</string>
+    <string name="enterzipname">Introducir el nombre del fichero Zip</string>
     <string name="no_app_found">No se encontró una aplicación para abrir este archivo</string>
     <string name="copying">Copiando</string>
     <string name="moving">Moviendo</string>
@@ -92,11 +92,12 @@
     <string name="history">Historial</string>
     <string name="copy">Copiar</string>
     <string name="root_mode">Explorador Root</string>
-    <string name="root_mode_summary">Para el dispositivos rooteados solamente. Activar solo si esta seguro.</string>
+    <string name="root_mode_summary">Para el dispositivos rooteados solamente. Actívalo solo si estás. seguro.</string>
     <string name="root_failure">Acceso root no concedido</string>
     <string name="select_all">Seleccionar todo</string>
     <string name="delete">Borrar</string>
     <string name="set_as_home"> Establecer como directorio de inicio</string>
+    <string name="operation_not_supported">Operación no soportada</string>
 
     <!-- New -->
     <!-- Array -->
@@ -203,15 +204,12 @@
     <string name="japanese_translation_title">Japones</string>
     <string name="tamil_translation_title">Tamil</string>
 
-    <string name="zip_viewer">Visor de ZIP</string>
+    <string name="zip_viewer">Visor de archivos Zip</string>
     <string name="unin_system_apk">Esta es una aplicación del sistema, borrarla puede provocar inestabilidad en el sistema.\n¿Continuar?</string>
     <string name="warning">Precaución</string>
     <string name="donate">Donar</string>
-    <string name="archive_preferences">Preferencias de los archivos de empaquetado</string>
     <string name="archive_extract_folder">Carpeta donde extraer los archivos de empaquetado</string>
-    <string name="zip_create_folder">Carpeta para crear ZIPs</string>
     <string name="archive_summary">Del empaquetado (tar, zip, rar, 7z, etc.), los archivos, se extraerán en esta carpeta. El valor por defecto es el directorio donde se encuentre el empaquetado.</string>
-    <string name="zip_summary">Los nuevos archivos ZIP se crearán en esta carpeta. El valor por defecto es el directorio donde los ficheros se encuentran.</string>
     <string name="open_as">Abrir como</string>
     <string name="text">Texto</string>
     <string name="audio">Audio</string>
@@ -316,7 +314,6 @@
     <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
     <string name="translate_title">Traducir</string>
     <string name="translate_summary">Traducir Amaze a tu idioma</string>
-    <string name="easter_egg_title">Modo de estudio</string>
     <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
     <string name="searching_devices">Buscando dispositivos</string>
     <string name="use_custom_ip">Utilizar IP personalizada</string>
@@ -375,7 +372,6 @@
     </string>
     <string name="share_limit">No se pueden compartir más de 100 archivos</string>
     <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
-    <string name="opening">Abriendo…</string>
     <string name="information">Información</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Se ingresó</string>
@@ -457,7 +453,6 @@
     <string name="cloud_connection">Conexión a la nube</string>
     <string name="cloud_connection_new">Nueva conexión a la nube</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Obtener complemento para conectar a la nube</string>
@@ -525,6 +520,7 @@
     <string name="show_quick_access_pref">Accesos rapidos</string>
     <string name="directory">Directorio</string>
 
+    <string name="show_bookmarks_pref">Marcadores</string>
     <string name="cloud_error_plugin">La app "Amaze Cloud plug-in" no pudo ser encontrada. Por favor descargar del Play Store.</string>
     <string name="cloud_error_failed_restart">Falló al cargar la conexión.
        Por favor abra "Amaze Cloud pug-in" y reintente.</string>
@@ -671,7 +667,6 @@
     <string name="app_ui_crash">App/IU falló</string>
     <string name="error_report_title">Reportar error</string>
     <string name="crash_report_copied">Informe de fallos copiado al portapapeles</string>
-
     <string name="disableIpcSignature">Desactive la verificación de firma de IPC (para servidores SMBv1 heredados - ¡INSEGURO!) </string>
     <string name="cannot_delete_file">No se puede eliminar el archivo</string>
     <string name="cannot_delete_file_with_reason">No se puede eliminar el archivo - %s</string>
@@ -683,7 +678,10 @@
     <string name="clear_open_file">Borrar caché </string>
     <string name="clear_open_file_summary">Borra las aplicaciones predeterminadas seleccionadas de apertura de archivos. </string>
     <string name="legacy_listing_title">Usar listado heredado para root</string>
-    <string name="legacy_listing_summary">Si está habilitado, usa estadísticas para listar, de lo contrario usa ls</string>
     <string name="error_permission_denied">Permiso denegado</string>
-</resources>
+    <string name="remember">Recordar para la siguiente vez</string>
+    <string name="ftp_prompt_accept_first_start_saf_access">Dado que esta es la primera vez que ejecuta el servidor FTP y está utilizando el almacenamiento interno del dispositivo como carpeta compartida, permita que Amaze acceda al almacenamiento mediante SAF.\n\n
+
+Solo necesita hacer esto una vez, hasta la siguiente vez que seleccione una nueva ubicación para compartir.</string>
+    </resources>
 

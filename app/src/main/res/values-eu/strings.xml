@@ -97,7 +97,6 @@
     <string name="select_all">Hautatu dena</string>
     <string name="delete">Ezabatu</string>
     <string name="set_as_home">Ezarri etxeko karpeta bezala</string>
-
     <!-- New -->
     <!-- Array -->
 
@@ -207,11 +206,8 @@
     <string name="unin_system_apk">Sistemaren aplikazio bat da hau, ezabatzeak sistemaren ezegonkortasuna ekar lezake.\nJarraitu?</string>
     <string name="warning">Abisua</string>
     <string name="donate">Egin dohaintza</string>
-    <string name="archive_preferences">Artxiboen hobespenak</string>
     <string name="archive_extract_folder">Erauzitako artxiboen karpeta</string>
-    <string name="zip_create_folder">Zip fitxategiak sortzeko karpeta</string>
     <string name="archive_summary">Artxibo fitxategiak karpeta honetara erauziko dira. Lehenetsitako balioa artxiboaren karpeta bera da</string>
-    <string name="zip_summary">Zip fitxategi berriak karpeta honetan sortuko dira. Lehenetsitako balioa fitxategien karpeta bera da</string>
     <string name="open_as">Ireki honela</string>
     <string name="text">Testua</string>
     <string name="audio">Audioa</string>
@@ -314,7 +310,6 @@
     <string name="report_bugs_summary">Eman erroreen berri edo eskatu ezaugarri berri bat</string>
     <string name="translate_title">Itzuli</string>
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
-    <string name="easter_egg_title">Studio modua</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
     <string name="searching_devices">Gailuak bilatzen</string>
     <string name="use_custom_ip">Erabili IP pertsonalizatua</string>
@@ -373,7 +368,6 @@
     </string>
     <string name="share_limit">Ezin dira 100 fitxategi baino gehiago partekatu</string>
     <string name="otg_access">Hautatu OTG gailuaren erroa</string>
-    <string name="opening">Irekitzen...</string>
     <string name="information">Informazioa</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Atzituta</string>
@@ -455,7 +449,6 @@
     <string name="cloud_connection">Hodeiko konexioa</string>
     <string name="cloud_connection_new">Hodeiko konexio berria</string>
     <string name="cloud_dropbox">Dropbox</string>
-    <string name="cloud_drive">Google Drive&#8482;</string>
     <string name="cloud_onedrive">OneDrive</string>
     <string name="cloud_box">Box</string>
     <string name="cloud_get">Eskuratu hodeiko plugina</string>
@@ -523,6 +516,7 @@
     <string name="show_quick_access_pref">Sarbide azkarrak</string>
     <string name="directory">Direktorioa</string>
 
+    <string name="show_bookmarks_pref">Laster-markak</string>
     <string name="cloud_error_plugin">Ez da Amaze Cloud plugina aurkitu. Mesedez, deskargatu Play Store-tik.</string>
     <string name="cloud_error_failed_restart">Huts egin du konexioa kargatzean.
         Mesedez, ireki Amaze Cloud berriz.</string>
