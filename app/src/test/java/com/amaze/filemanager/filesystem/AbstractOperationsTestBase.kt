@@ -22,7 +22,9 @@ package com.amaze.filemanager.filesystem
 
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import android.os.Looper
 import android.os.storage.StorageManager
 import androidx.lifecycle.Lifecycle
@@ -122,8 +124,8 @@ abstract class AbstractOperationsTestBase {
                             MainActivity.TAG_INTENT_FILTER_FAILED_OPS
                         )
                         .run {
-                            Assert.assertTrue(this.size > 0)
-                            Assert.assertEquals(oldFilePath, this[0].path)
+                            Assert.assertTrue(this!!.size > 0)
+                            Assert.assertEquals(oldFilePath, this!![0].path)
                         }
                 }
             }
