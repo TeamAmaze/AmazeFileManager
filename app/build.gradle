@@ -32,7 +32,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += ["room.schemaLocation"  : "$projectDir/schemas".toString(),
+                arguments += ["room.schemaLocation"  : "$projectDir/src/test/resources/schemas".toString(),
                               "room.incremental"     : "true",
                               "room.expandProjection": "true"]
             }
