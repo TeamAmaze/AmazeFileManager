@@ -722,5 +722,8 @@
     <string name="select_by_date">בחירה לפי תאריך</string>
     <string name="select_similar">בחירת דומים</string>
     <string name="error_fetching_google_play_product_list">שגיאה במשיכת המוצר מ־Google Play.</string>
+    <string name="grant_all_files_permission"><html><body>ל־Amaze נדרשות כל הרשאות הקבצים כדי להמשיך.
+        \nבמסך הבא, נא לבחור ב־<b>Amaze</b> ואז באפשרות <b>לאפשר גישה לניהול כל הקבצים</b>.
+            \n\n<font color='#ff6347'><i>ביטול החלונית הזאת יסגור את היישומון.</i></font></body></html></string>
 </resources>
 
