@@ -8,14 +8,14 @@ buildscript {
         sshjVersion = '0.32.0'
         jcifsVersion = '2.1.6'
         fabSpeedDialVersion = '3.1.1'
-        roomVersion = '2.2.5'
+        roomVersion = '2.3.0'
         bouncyCastleVersion = '1.68'
         awaitilityVersion = "3.1.6"
-        androidMaterialVersion = "1.3.0"
-        androidXFragmentVersion = "1.3.0"
-        androidXAppCompatVersion = "1.2.0"
-        androidXTestVersion = "1.3.0"
-        androidXTestExtVersion = "1.1.2"
+        androidMaterialVersion = "1.4.0"
+        androidXFragmentVersion = "1.3.6"
+        androidXAppCompatVersion = "1.3.1"
+        androidXTestVersion = "1.4.0"
+        androidXTestExtVersion = "1.1.3"
         junitVersion = "4.13.2"
         slf4jVersion = "1.7.25"
         mockitoVersion = "3.9.0"
@@ -23,10 +23,11 @@ buildscript {
         androidBillingVersion = "4.0.0"
         junrarVersion = "7.4.0"
         zip4jVersion = "2.6.4"
-        espressoVersion = "3.3.0"
+        espressoVersion = "3.4.0"
         androidXPrefVersion = "1.1.1"
         materialDialogsVersion = "0.9.6.0"
         jacocoVersion = "0.8.7"
+        commonsCompressVersion = "1.20"
     }
     repositories {
         google()
@@ -35,9 +36,9 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:7.0.0'
+        classpath 'com.android.tools.build:gradle:7.0.2'
         classpath 'com.hiya:jacoco-android:0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
         classpath "com.project.starter:easylauncher:4.0.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
