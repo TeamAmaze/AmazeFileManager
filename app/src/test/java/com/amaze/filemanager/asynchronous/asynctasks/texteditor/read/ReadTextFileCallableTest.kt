@@ -22,7 +22,9 @@ package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read
 
 import android.content.Context
 import android.net.Uri
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.MAX_FILE_SIZE_CHARS
