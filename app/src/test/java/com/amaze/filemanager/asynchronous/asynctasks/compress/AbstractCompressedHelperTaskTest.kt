@@ -20,7 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
