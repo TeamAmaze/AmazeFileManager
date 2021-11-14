@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.activities.superclasses;
 
+import static android.os.Build.VERSION.SDK_INT;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -60,7 +62,7 @@ public class PermissionsActivity extends ThemedActivity
   public void onRequestPermissionsResult(
       int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
     super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-    if (requestCode == STORAGE_PERMISSION) {
+    if (requestCode == STORAGE_PERMISSION || requestCode == ALL_FILES_PERMISSION) {
       if (isGranted(grantResults)) {
         Utils.enableScreenRotation(this);
         permissionCallbacks[STORAGE_PERMISSION].onPermissionGranted();
@@ -181,7 +183,7 @@ public class PermissionsActivity extends ThemedActivity
    * @param onPermissionGranted permission granted callback
    */
   public void requestAllFilesAccess(@NonNull final OnPermissionGranted onPermissionGranted) {
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
+    if (SDK_INT >= Build.VERSION_CODES.R && !Environment.isExternalStorageManager()) {
       final MaterialDialog materialDialog =
           GeneralDialogCreation.showBasicDialog(
               this,
@@ -194,7 +196,6 @@ public class PermissionsActivity extends ThemedActivity
           .getActionButton(DialogAction.POSITIVE)
           .setOnClickListener(
               v -> {
-                Utils.disableScreenRotation(this);
                 permissionCallbacks[ALL_FILES_PERMISSION] = onPermissionGranted;
                 try {
                   Intent intent =
