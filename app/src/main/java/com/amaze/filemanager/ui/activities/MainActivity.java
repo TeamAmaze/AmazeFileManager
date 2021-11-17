@@ -1398,7 +1398,7 @@ public class MainActivity extends PermissionsActivity
 
   public void updatePaths(int pos) {
     TabFragment tabFragment = getTabFragment();
-    if (tabFragment != null) tabFragment.updatepaths(pos);
+    if (tabFragment != null) tabFragment.updatePaths(pos);
   }
 
   public void openCompressed(String path) {
@@ -1433,7 +1433,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void setPagingEnabled(boolean b) {
-    getTabFragment().mViewPager.setPagingEnabled(b);
+    getTabFragment().setPagingEnabled(b);
   }
 
   public File getUsbDrive() {
@@ -1731,7 +1731,7 @@ public class MainActivity extends PermissionsActivity
           if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
               if (getCurrentTab() == 0 && getFAB().isFocused()) {
-                getTabFragment().mViewPager.setCurrentItem(1);
+                getTabFragment().setCurrentItem(1);
               }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
               findViewById(R.id.content_frame).requestFocus();
