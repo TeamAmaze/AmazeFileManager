@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.compressed;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
+import static kotlin.io.ConstantsKt.DEFAULT_BUFFER_SIZE;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -30,11 +31,11 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.util.List;
 
-import org.apache.commons.compress.utils.IOUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 import org.robolectric.shadows.ShadowToast;
 
 import com.amaze.filemanager.R;
@@ -49,6 +50,8 @@ import android.os.Environment;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import kotlin.io.ByteStreamsKt;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
@@ -81,15 +84,18 @@ public class B0rkenZipTest {
 
   @Before
   public void setUp() throws Exception {
-    IOUtils.copy(
+    ByteStreamsKt.copyTo(
         getClass().getClassLoader().getResourceAsStream("zip-slip.zip"),
-        new FileOutputStream(zipfile1));
-    IOUtils.copy(
+        new FileOutputStream(zipfile1),
+        DEFAULT_BUFFER_SIZE);
+    ByteStreamsKt.copyTo(
         getClass().getClassLoader().getResourceAsStream("zip-slip-win.zip"),
-        new FileOutputStream(zipfile2));
-    IOUtils.copy(
+        new FileOutputStream(zipfile2),
+        DEFAULT_BUFFER_SIZE);
+    ByteStreamsKt.copyTo(
         getClass().getClassLoader().getResourceAsStream("test-slashprefix.zip"),
-        new FileOutputStream(zipfile3));
+        new FileOutputStream(zipfile3),
+        DEFAULT_BUFFER_SIZE);
   }
 
   @Test
@@ -146,6 +152,7 @@ public class B0rkenZipTest {
     List<CompressedObjectParcelable> result = task.execute().get().result;
     assertEquals(1, result.size());
     assertEquals("good.txt", result.get(0).path);
+    ShadowLooper.idleMainLooper();
     assertEquals(
         ApplicationProvider.getApplicationContext()
             .getString(R.string.multiple_invalid_archive_entries),
@@ -162,6 +169,7 @@ public class B0rkenZipTest {
             false,
             (data) -> {});
     List<CompressedObjectParcelable> result = task.execute().get().result;
+    ShadowLooper.idleMainLooper();
     assertEquals(1, result.size());
     assertEquals("good.txt", result.get(0).path);
     assertEquals(
