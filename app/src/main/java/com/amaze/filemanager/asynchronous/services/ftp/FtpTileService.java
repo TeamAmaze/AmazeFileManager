@@ -65,8 +65,7 @@ public class FtpTileService extends TileService {
                     new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(getPackageName()));
           } else {
             if (FtpService.isConnectedToWifi(getApplicationContext())
-                || FtpService.isConnectedToLocalNetwork(getApplicationContext())
-                || FtpService.isEnabledWifiHotspot(getApplicationContext())) {
+                || FtpService.isConnectedToLocalNetwork(getApplicationContext())) {
               Intent i = new Intent(FtpService.ACTION_START_FTPSERVER).setPackage(getPackageName());
               i.putExtra(FtpService.TAG_STARTED_BY_TILE, true);
               getApplicationContext().sendBroadcast(i);

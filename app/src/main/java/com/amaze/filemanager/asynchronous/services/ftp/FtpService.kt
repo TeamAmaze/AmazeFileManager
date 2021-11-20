@@ -37,6 +37,7 @@ import android.os.IBinder
 import android.os.SystemClock
 import android.provider.DocumentsContract
 import androidx.preference.PreferenceManager
+import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.files.CryptUtil
@@ -158,10 +159,11 @@ class FtpService : Service(), Runnable {
             if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
                 try {
                     val keyStore = KeyStore.getInstance("BKS")
-                    keyStore.load(resources.openRawResource(R.raw.key), KEYSTORE_PASSWORD)
+                    val keyStorePassword = BuildConfig.FTP_SERVER_KEYSTORE_PASSWORD.toCharArray()
+                    keyStore.load(resources.openRawResource(R.raw.key), keyStorePassword)
                     val keyManagerFactory = KeyManagerFactory
                         .getInstance(KeyManagerFactory.getDefaultAlgorithm())
-                    keyManagerFactory.init(keyStore, KEYSTORE_PASSWORD)
+                    keyManagerFactory.init(keyStore, keyStorePassword)
                     val trustManagerFactory = TrustManagerFactory
                         .getInstance(TrustManagerFactory.getDefaultAlgorithm())
                     trustManagerFactory.init(keyStore)
@@ -247,8 +249,6 @@ class FtpService : Service(), Runnable {
         const val KEY_PREFERENCE_SAF_FILESYSTEM = "ftp_saf_filesystem"
         const val INITIALS_HOST_FTP = "ftp://"
         const val INITIALS_HOST_SFTP = "ftps://"
-        private const val WIFI_AP_ADDRESS_PREFIX = "192.168.43."
-        private val KEYSTORE_PASSWORD = "vishal007".toCharArray()
 
         // RequestStartStopReceiver listens for these actions to start/stop this server
         const val ACTION_START_FTPSERVER =
@@ -297,7 +297,7 @@ class FtpService : Service(), Runnable {
             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
             var connected: Boolean
             if (SDK_INT >= M) {
-                return cm.activeNetwork?.let { activeNetwork ->
+                connected = cm.activeNetwork?.let { activeNetwork ->
                     cm.getNetworkCapabilities(activeNetwork)?.let { ni ->
                         ni.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) or
                             ni.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
@@ -312,13 +312,15 @@ class FtpService : Service(), Runnable {
                             ) != 0
                         )
                 } ?: false
-                if (!connected) {
-                    connected = runCatching {
-                        NetworkInterface.getNetworkInterfaces().toList().find { netInterface ->
-                            netInterface.displayName.startsWith("rndis")
-                        }
-                    }.getOrElse { null } != null
-                }
+            }
+
+            if (!connected) {
+                connected = runCatching {
+                    NetworkInterface.getNetworkInterfaces().toList().find { netInterface ->
+                        netInterface.displayName.startsWith("rndis") or
+                            netInterface.displayName.startsWith("wlan")
+                    }
+                }.getOrElse { null } != null
             }
 
             return connected
@@ -342,20 +344,11 @@ class FtpService : Service(), Runnable {
         }
 
         /**
-         * Is the device's wifi hotspot enabled?
-         */
-        @JvmStatic
-        fun isEnabledWifiHotspot(context: Context): Boolean {
-            val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-            return callIsWifiApEnabled(wm)
-        }
-
-        /**
          * Determine device's IP address
          */
         @JvmStatic
         fun getLocalInetAddress(context: Context): InetAddress? {
-            if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
+            if (!isConnectedToLocalNetwork(context)) {
                 return null
             }
             if (isConnectedToWifi(context)) {
@@ -366,16 +359,9 @@ class FtpService : Service(), Runnable {
             runCatching {
                 NetworkInterface.getNetworkInterfaces().iterator().forEach { netinterface ->
                     netinterface.inetAddresses.iterator().forEach { address ->
-                        if (address.hostAddress.startsWith(WIFI_AP_ADDRESS_PREFIX) &&
-                            isEnabledWifiHotspot(context)
-                        ) {
-                            return address
-                        }
-
                         // this is the condition that sometimes gives problems
                         if (!address.isLoopbackAddress &&
-                            !address.isLinkLocalAddress &&
-                            !isEnabledWifiHotspot(context)
+                            !address.isLinkLocalAddress
                         ) {
                             return address
                         }
@@ -407,14 +393,6 @@ class FtpService : Service(), Runnable {
 
         private fun getPort(preferences: SharedPreferences): Int {
             return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
-        }
-
-        private fun callIsWifiApEnabled(wifiManager: WifiManager): Boolean = runCatching {
-            val method = wifiManager.javaClass.getDeclaredMethod("isWifiApEnabled")
-            method.invoke(wifiManager) as Boolean
-        }.getOrElse {
-            it.printStackTrace()
-            false
         }
     }
 }
