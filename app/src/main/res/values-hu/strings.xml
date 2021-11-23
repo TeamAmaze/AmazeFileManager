@@ -725,5 +725,9 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="select_by_type">Kiválasztás típus szerint</string>
     <string name="select_by_date">Kiválasztás dátum szerint</string>
     <string name="select_similar">Hasonló kiválasztása</string>
+    <string name="error_fetching_google_play_product_list">Hiba történt a Google Play terméklista lekérésekor.</string>
+    <string name="grant_all_files_permission"><html><body>Az Amaze-nak minden fájlengedélyre szüksége van a folytatáshoz.
+        \nA következő képernyőn válassza az <b>Amaze</b> - <b>Hozzáférés engedélyezése az összes fájl kezeléséhez</b> opciót.
+            \n\n<font color='#ff6347'><i>A párbeszédpanel megszakításakor az alkalmazás kilép.</i></font></body></html></string>
 </resources>
 
