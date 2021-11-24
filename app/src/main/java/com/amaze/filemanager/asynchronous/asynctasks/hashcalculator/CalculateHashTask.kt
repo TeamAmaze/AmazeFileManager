@@ -47,6 +47,9 @@ class CalculateHashTask(
 
     private val task: Callable<Hash> = if (file.isSftp) {
         CalculateHashSftpCallback(file)
+    } else if (file.isFtp) {
+        // Don't do this. Especially when FTPClient requires thread safety.
+        DoNothingCalculateHashCallback()
     } else {
         CalculateHashCallback(file, context)
     }
@@ -72,8 +75,8 @@ class CalculateHashTask(
         val view = view.get()
         view ?: return
 
-        val md5Text = hashes?.md5 ?: context.getString(R.string.error)
-        val shaText = hashes?.sha ?: context.getString(R.string.error)
+        val md5Text = hashes?.md5 ?: context.getString(R.string.unavailable)
+        val shaText = hashes?.sha ?: context.getString(R.string.unavailable)
 
         val md5HashText = view.findViewById<TextView>(R.id.t9)
         val sha256Text = view.findViewById<TextView>(R.id.t10)

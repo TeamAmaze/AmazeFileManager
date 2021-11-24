@@ -242,7 +242,7 @@
     <string name="needs_access_summary">Bitte Stammverzeichnis von \t wählen</string>
     <string name="needs_access_summary1">\tto Schreibrechte eingeräumt</string>
     <string name="smb_connection">SMB Verbindung</string>
-    <string name="smb_server">IP-Adresse des Servers</string>
+    <string name="server_address">IP-Adresse des Servers</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
     <string name="anonymous">Unbekannt</string>

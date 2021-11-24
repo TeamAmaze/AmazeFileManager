@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:inputType="textUri"
-            android:hint="@string/smb_server"
+            android:hint="@string/server_address"
             android:id="@+id/ipET"
             android:layout_gravity="center_horizontal" />
     </com.google.android.material.textfield.TextInputLayout>

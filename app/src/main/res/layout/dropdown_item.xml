@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<androidx.appcompat.widget.AppCompatTextView
+    style="@style/Widget.AppCompat.TextView.SpinnerItem"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/textViewFtpProtocol"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:text="TextView"
+    android:textSize="18sp"
+    android:textColor="@android:color/black" />

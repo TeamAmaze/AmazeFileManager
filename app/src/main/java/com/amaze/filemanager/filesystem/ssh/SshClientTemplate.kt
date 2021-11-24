@@ -20,7 +20,8 @@
 
 package com.amaze.filemanager.filesystem.ssh
 
-import androidx.annotation.Nullable
+import com.amaze.filemanager.filesystem.ftp.NetCopyClient
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientTemplate
 import net.schmizz.sshj.SSHClient
 import java.io.IOException
 
@@ -28,17 +29,14 @@ import java.io.IOException
  * Template class for executing actions with [SSHClient] while leave the complexities of
  * handling connection setup/teardown to [SshClientUtils].
  */
-abstract class SshClientTemplate<T>
-/**
- * Constructor, with closeClientOnFinish set to true (that the connection must close after `
- * execute`.
- *
- * @param url SSH connection URL, in the form of `
- * ssh://<username>:<password>@<host>:<port>` or `
- * ssh://<username>@<host>:<port>`
- */
-@JvmOverloads
-constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolean = true) {
+abstract class SshClientTemplate<T>(url: String, closeClientOnFinish: Boolean = true) :
+    NetCopyClientTemplate<SSHClient, T>(url, closeClientOnFinish) {
+
+    @Throws(IOException::class)
+    final override fun execute(client: NetCopyClient<SSHClient>): T? {
+        val sshClient: SSHClient = client.getClientImpl()
+        return executeWithSSHClient(sshClient)
+    }
 
     /**
      * Implement logic here.
@@ -48,6 +46,5 @@ constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolea
      * @return Result of the execution of the type requested
      </T> */
     @Throws(IOException::class)
-    @Nullable
-    abstract fun execute(client: SSHClient): T
+    abstract fun executeWithSSHClient(client: SSHClient): T?
 }

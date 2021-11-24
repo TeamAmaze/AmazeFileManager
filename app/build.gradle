@@ -146,7 +146,6 @@ dependencies {
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
     testImplementation 'org.jsoup:jsoup:1.11.2'
-    testImplementation 'commons-net:commons-net:3.6'
     testImplementation "androidx.room:room-migration:$roomVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
@@ -176,11 +175,11 @@ dependencies {
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.4'
+    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.1'
 
     //implementation files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.4'
+    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.1'
 
     implementation 'org.greenrobot:eventbus:3.3.1'
 
@@ -200,6 +199,9 @@ dependencies {
 
     //smb
     implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
+
+    //FTP
+    implementation "commons-net:commons-net:$commonsNetVersion"
 
     implementation "org.bouncycastle:bcpkix-jdk15on:$bouncyCastleVersion"
     implementation "org.bouncycastle:bcprov-jdk15on:$bouncyCastleVersion"

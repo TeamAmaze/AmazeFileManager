@@ -244,6 +244,7 @@
     <string name="needs_access_summary1">\tto grant write access to operate </string>
     <string name="smb_connection">SMB Connection</string>
     <string name="smb_server">Server IP Address</string>
+    <string name="server_address">Server IP Address</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="anonymous">Anonymous</string>
@@ -782,5 +783,9 @@ You only need to do this once, until the next time you select a new location for
     <string name="error_cannot_get_package_info">Unable to get package info from file \"%s\". Either the specified file is not an APK, or the package file is corrupt.</string>
     <string name="preference_delete_confirmation">Delete confirmation</string>
     <string name="preference_delete_confirmation_summary">Ask for confirmation before deleting files. Disabling this is highly discouraged!</string>
+    <string name="protocol_ssh" translatable="false">SSH/SFTP</string>
+    <string name="protocol_ftp" translatable="false">FTP</string>
+    <string name="protocol_ftps">Secure FTP</string>
+    <string name="unavailable">Unavailable</string>
 </resources>
 

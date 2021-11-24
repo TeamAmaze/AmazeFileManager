@@ -30,6 +30,8 @@ public enum OpenMode {
   FILE,
   SMB,
   SFTP,
+  FTP,
+  NFS,
 
   /** Custom file types like apk/images/downloads (which don't have a defined path) */
   CUSTOM,
