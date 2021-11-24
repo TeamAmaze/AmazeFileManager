@@ -21,6 +21,9 @@
 package com.amaze.filemanager.ui.views.drawer;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.filesystem.ftp.FtpConnectionPool.FTPS_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.FtpConnectionPool.FTP_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.FtpConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
@@ -847,7 +850,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
           mainActivity.renameBookmark(title, path);
         } else if (path.startsWith("smb:/")) {
           mainActivity.showSMBDialog(title, path, true);
-        } else if (path.startsWith("ssh:/")) {
+        } else if (path.startsWith(SSH_URI_PREFIX)
+            || path.startsWith(FTP_URI_PREFIX)
+            || path.startsWith(FTPS_URI_PREFIX)) {
           mainActivity.showSftpDialog(title, path, true);
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
           GeneralDialogCreation.showCloudDialog(

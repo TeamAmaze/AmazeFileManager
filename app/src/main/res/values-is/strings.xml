@@ -238,7 +238,7 @@
     <string name="needs_access_summary">Veldu rótarmöppu fyrir \t</string>
     <string name="needs_access_summary1">\ttil að veita skrifaðgang fyrir vinnslu</string>
     <string name="smb_connection">SMB-tenging</string>
-    <string name="smb_server">IP-vistfang þjóns</string>
+    <string name="server_address">IP-vistfang þjóns</string>
     <string name="username">Notandanafn</string>
     <string name="password">Lykilorð</string>
     <string name="anonymous">Nafnlaus notandi</string>

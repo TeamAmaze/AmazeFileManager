@@ -160,9 +160,23 @@ public class LoadFilesListTask
         break;
       case SFTP:
         HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
-
-        list = new ArrayList();
-
+        list = new ArrayList<>();
+        sftpHFile.forEachChildrenFile(
+            context,
+            false,
+            file -> {
+              if (!(dataUtils.isFileHidden(file.getPath())
+                  || file.isHidden() && !showHiddenFiles)) {
+                LayoutElementParcelable elem = createListParcelables(file);
+                if (elem != null) {
+                  list.add(elem);
+                }
+              }
+            });
+        break;
+      case FTP:
+        sftpHFile = new HybridFile(OpenMode.FTP, path);
+        list = new ArrayList<>();
         sftpHFile.forEachChildrenFile(
             context,
             false,

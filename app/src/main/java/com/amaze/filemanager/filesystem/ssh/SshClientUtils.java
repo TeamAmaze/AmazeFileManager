@@ -20,14 +20,8 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
-import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
-import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
-
 import java.io.File;
 import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.KeyPair;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -35,16 +29,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.fileoperations.filesystem.FolderState;
 import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.SmbUtil;
 
 import android.content.ActivityNotFoundException;
-import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
@@ -54,8 +45,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileAttributes;
@@ -68,40 +57,6 @@ public abstract class SshClientUtils {
   private static final Logger LOG = LoggerFactory.getLogger(SshClientUtils.class);
 
   /**
-   * Execute the given SshClientTemplate.
-   *
-   * <p>This template pattern is borrowed from Spring Framework, to simplify code on operations
-   * using SftpClientTemplate.
-   *
-   * @param template {@link SshClientTemplate} to execute
-   * @param <T> Type of return value
-   * @return Template execution results
-   */
-  public static <T> T execute(@NonNull SshClientTemplate<T> template) {
-    SSHClient client = SshConnectionPool.INSTANCE.getConnection(extractBaseUriFrom(template.url));
-    if (client == null) {
-      client = SshConnectionPool.INSTANCE.getConnection(template.url);
-    }
-    T retval = null;
-    if (client != null) {
-      final SSHClient _client = client;
-      try {
-        retval =
-            Single.fromCallable(() -> template.execute(_client))
-                .subscribeOn(Schedulers.io())
-                .blockingGet();
-      } catch (Exception e) {
-        LOG.error("Error executing template method", e);
-      } finally {
-        if (template.closeClientOnFinish) {
-          tryDisconnect(client);
-        }
-      }
-    }
-    return retval;
-  }
-
-  /**
    * Execute the given template with SshClientTemplate.
    *
    * @param template {@link SshClientSessionTemplate} to execute
@@ -109,14 +64,14 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   public static <T> T execute(@NonNull final SshClientSessionTemplate<T> template) {
-    return execute(
+    return NetCopyClientUtils.INSTANCE.execute(
         new SshClientTemplate<T>(template.url, false) {
           @Override
-          public T execute(SSHClient client) {
+          public T executeWithSSHClient(@NonNull SSHClient sshClient) {
             Session session = null;
             T retval = null;
             try {
-              session = client.startSession();
+              session = sshClient.startSession();
               retval = template.execute(session);
             } catch (IOException e) {
               LOG.error("Error executing template method", e);
@@ -143,15 +98,15 @@ public abstract class SshClientUtils {
    */
   @Nullable
   public static <T> T execute(@NonNull final SFtpClientTemplate<T> template) {
-    final SshClientTemplate<T> sshClient =
+    final SshClientTemplate<T> ftpClientTemplate =
         new SshClientTemplate<T>(template.url, false) {
           @Override
           @Nullable
-          public T execute(SSHClient client) {
+          public T executeWithSSHClient(SSHClient sshClient) {
             SFTPClient sftpClient = null;
             T retval = null;
             try {
-              sftpClient = client.newSFTPClient();
+              sftpClient = sshClient.newSFTPClient();
               retval = template.execute(sftpClient);
             } catch (IOException e) {
               LOG.error("Error executing template method", e);
@@ -168,83 +123,7 @@ public abstract class SshClientUtils {
           }
         };
 
-    return execute(sshClient);
-  }
-
-  /**
-   * Convenience method to call {@link SmbUtil#getSmbEncryptedPath(Context, String)} if the given
-   * SSH URL contains the password (assuming the password is encrypted).
-   *
-   * @param fullUri SSH URL
-   * @return SSH URL with the password (if exists) encrypted
-   */
-  public static String encryptSshPathAsNecessary(@NonNull String fullUri) {
-    String uriWithoutProtocol =
-        fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
-    try {
-      return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri).replace("\n", "")
-          : fullUri;
-    } catch (IOException | GeneralSecurityException e) {
-      LOG.error("Error encrypting path", e);
-      return fullUri;
-    }
-  }
-
-  /**
-   * Convenience method to call {@link SmbUtil#getSmbDecryptedPath(Context, String)} if the given
-   * SSH URL contains the password (assuming the password is encrypted).
-   *
-   * @param fullUri SSH URL
-   * @return SSH URL with the password (if exists) decrypted
-   */
-  public static String decryptSshPathAsNecessary(@NonNull String fullUri) {
-    String uriWithoutProtocol =
-        fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
-    try {
-      return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri)
-          : fullUri;
-    } catch (IOException | GeneralSecurityException e) {
-      LOG.error("Error decrypting path", e);
-      return fullUri;
-    }
-  }
-
-  /**
-   * Convenience method to extract the Base URL from the given SSH URL.
-   *
-   * <p>For example, given <code>ssh://user:password@127.0.0.1:22/home/user/foo/bar</code>, this
-   * method returns <code>ssh://user:password@127.0.0.1:22</code>.
-   *
-   * @param fullUri Full SSH URL
-   * @return The remote path part of the full SSH URL
-   */
-  public static String extractBaseUriFrom(@NonNull String fullUri) {
-    String uriWithoutProtocol = fullUri.substring(SSH_URI_PREFIX.length());
-    String credentials = uriWithoutProtocol.substring(0, uriWithoutProtocol.lastIndexOf('@'));
-    String hostAndPath = uriWithoutProtocol.substring(uriWithoutProtocol.lastIndexOf('@') + 1);
-    if (hostAndPath.indexOf('/') == -1) {
-      return fullUri;
-    } else {
-      String host = hostAndPath.substring(0, hostAndPath.indexOf('/'));
-      return fullUri.substring(
-          0, SSH_URI_PREFIX.length() + credentials.length() + 1 + host.length());
-    }
-  }
-
-  /**
-   * Convenience method to extract the remote path from the given SSH URL.
-   *
-   * <p>For example, given <code>ssh://user:password@127.0.0.1:22/home/user/foo/bar</code>, this
-   * method returns <code>/home/user/foo/bar</code>.
-   *
-   * @param fullUri Full SSH URL
-   * @return The remote path part of the full SSH URL
-   */
-  public static String extractRemotePathFrom(@NonNull String fullUri) {
-    String hostPath = fullUri.substring(fullUri.lastIndexOf('@'));
-    return hostPath.indexOf('/') == -1 ? "/" : hostPath.substring(hostPath.indexOf('/'));
+    return NetCopyClientUtils.INSTANCE.execute(ftpClientTemplate);
   }
 
   /**
@@ -303,7 +182,9 @@ public abstract class SshClientUtils {
                     () -> {
                       try {
                         File file =
-                            new File(SshClientUtils.extractRemotePathFrom(baseFile.getPath()));
+                            new File(
+                                NetCopyClientUtils.INSTANCE.extractRemotePathFrom(
+                                    baseFile.getPath()));
                         Uri uri =
                             Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
@@ -331,22 +212,6 @@ public abstract class SshClientUtils {
         .start();
   }
 
-  // Decide the SSH URL depends on password/selected KeyPair
-  public static String deriveSftpPathFrom(
-      @NonNull String hostname,
-      int port,
-      @Nullable String defaultPath,
-      @NonNull String username,
-      @Nullable String password,
-      @Nullable KeyPair selectedParsedKeyPair) {
-    // FIXME: should be caller's responsibility
-    String pathSuffix = defaultPath;
-    if (pathSuffix == null) pathSuffix = "/";
-    return (selectedParsedKeyPair != null || password == null)
-        ? String.format("ssh://%s@%s:%d%s", username, hostname, port, pathSuffix)
-        : String.format("ssh://%s:%s@%s:%d%s", username, password, hostname, port, pathSuffix);
-  }
-
   public static boolean isDirectory(@NonNull SFTPClient client, @NonNull RemoteResourceInfo info)
       throws IOException {
     boolean isDirectory = info.isDirectory();
@@ -360,22 +225,5 @@ public abstract class SshClientUtils {
       }
     }
     return isDirectory;
-  }
-
-  public static @FolderState int checkFolder(@NonNull String path) {
-    return Single.fromCallable(
-            () ->
-                execute(
-                    new SFtpClientTemplate<Integer>(extractBaseUriFrom(path)) {
-                      @Override
-                      public @FolderState Integer execute(@NonNull SFTPClient client)
-                          throws IOException {
-                        return (client.statExistence(extractRemotePathFrom(path)) == null)
-                            ? WRITABLE_ON_REMOTE
-                            : DOESNT_EXIST;
-                      }
-                    }))
-        .subscribeOn(Schedulers.io())
-        .blockingGet();
   }
 }

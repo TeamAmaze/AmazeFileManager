@@ -244,6 +244,7 @@
     <string name="needs_access_summary1">\tto grant write access to operate </string>
     <string name="smb_connection">SMB Connection</string>
     <string name="smb_server">Server IP Address</string>
+    <string name="server_address">Server IP Address</string>
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="anonymous">Anonymous</string>
@@ -778,5 +779,9 @@ You only need to do this once, until the next time you select a new location for
     <string name="open_with_amaze">Open with Amaze</string>
     <string name="confirmation">Confirmation</string>
     <string name="open_file_confirmation">Are you sure you want to open following file?\n\nName:\n%s\n\nLocation:\n%s\n\nSize:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="protocol_ssh" translatable="false">SSH/SFTP</string>
+    <string name="protocol_ftp" translatable="false">FTP</string>
+    <string name="protocol_ftps">Secure FTP</string>
+    <string name="unavailable">Unavailable</string>
 </resources>
 

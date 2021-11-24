@@ -23,13 +23,11 @@ package com.amaze.filemanager.ui.dialogs;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -326,7 +324,7 @@ public class SmbConnectDialog extends DialogFragment {
                   conName.getText().toString(),
                   SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
                 };
-          } catch (GeneralSecurityException | IOException e) {
+          } catch (Exception e) {
             LOG.warn("failed to load smb dialog info", e);
             Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_LONG).show();
             return;

@@ -213,7 +213,7 @@
     <string name="databasereader">Bralnik zbirke podatkov</string>
     <string name="show_dividers">Prikaži delilnike</string>
     <string name="smb_connection">SMB povezava</string>
-    <string name="smb_server">IP naslov strežnika</string>
+    <string name="server_address">IP naslov strežnika</string>
     <string name="username">Uporabniško ime</string>
     <string name="password">Geslo</string>
     <string name="anonymous">Anonimni</string>

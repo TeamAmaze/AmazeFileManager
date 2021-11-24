@@ -68,9 +68,10 @@ public class GenericCopyUtil {
 
   private HybridFileParcelable mSourceFile;
   private HybridFile mTargetFile;
-  private Context mContext; // context needed to find the DocumentFile in otg/sd card
-  private DataUtils dataUtils = DataUtils.getInstance();
-  private ProgressHandler progressHandler;
+  private final Context mContext; // context needed to find the DocumentFile in otg/sd card
+  private final DataUtils dataUtils = DataUtils.getInstance();
+  private final ProgressHandler progressHandler;
+
   public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
 
   public static final int DEFAULT_BUFFER_SIZE = 8192;
@@ -124,7 +125,7 @@ public class GenericCopyUtil {
         bufferedInputStream =
             new BufferedInputStream(
                 contentResolver.openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
-      } else if (mSourceFile.isSmb() || mSourceFile.isSftp()) {
+      } else if (mSourceFile.isSmb() || mSourceFile.isSftp() || mSourceFile.isFtp()) {
         bufferedInputStream =
             new BufferedInputStream(mSourceFile.getInputStream(mContext), DEFAULT_TRANSFER_QUANTUM);
       } else if (mSourceFile.isDropBoxFile()
@@ -189,7 +190,7 @@ public class GenericCopyUtil {
         bufferedOutputStream =
             new BufferedOutputStream(
                 contentResolver.openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
-      } else if (mTargetFile.isSftp() || mTargetFile.isSmb()) {
+      } else if (mTargetFile.isFtp() || mTargetFile.isSftp() || mTargetFile.isSmb()) {
         bufferedOutputStream =
             new BufferedOutputStream(
                 mTargetFile.getOutputStream(mContext), DEFAULT_TRANSFER_QUANTUM);

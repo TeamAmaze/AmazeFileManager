@@ -31,6 +31,7 @@ buildscript {
         commonsCompressVersion = "1.20"
         libsuVersion = "3.2.1"
         mockkVersion = "1.12.2"
+        commonsNetVersion = "3.8.0"
     }
     repositories {
         google()
@@ -61,7 +62,7 @@ allprojects {
     }
     tasks.withType(Test) {
         maxParallelForks = 4
-        maxHeapSize = "4g"
+        maxHeapSize = "1024m"
         forkEvery = 4
         failFast = true
     }
@@ -161,6 +162,7 @@ subprojects {
         if (project.plugins.hasPlugin("jacoco-android")){
             android {
                 testOptions.unitTests.all {
+                    maxHeapSize = "1024m"
                     jacoco {
                         excludes = ['jdk.internal.*']
                     }

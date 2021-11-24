@@ -101,7 +101,7 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
-    androidTestImplementation 'commons-net:commons-net:3.6'
+    androidTestImplementation "commons-net:commons-net:$commonsNetVersion"
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     implementation fileTree(dir: "libs", include: ["*.jar"])

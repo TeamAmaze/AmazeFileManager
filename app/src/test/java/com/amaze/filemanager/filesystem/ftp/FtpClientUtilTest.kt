@@ -18,77 +18,76 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.ssh
+package com.amaze.filemanager.filesystem.ftp
 
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils
-import org.junit.Assert
+import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @Suppress("StringLiteralDuplication")
-class SshClientUtilTest {
+class FtpClientUtilTest {
     /**
-     * Test [SshClientUtils.extractRemotePathFrom].
+     * Test [NetCopyClientUtils.extractRemotePathFrom].
      */
     @Test
     fun testExtractRemotePathFromUri() {
-        Assert.assertEquals(
+        assertEquals(
             "/home/user/foo/bar",
-            SshClientUtils.extractRemotePathFrom(
+            NetCopyClientUtils.extractRemotePathFrom(
                 "ssh://user:password@127.0.0.1:22/home/user/foo/bar"
             )
         )
-        Assert.assertEquals(
+        assertEquals(
             "/",
-            SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/")
+            NetCopyClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22/")
         )
-        Assert.assertEquals(
+        assertEquals(
             "/",
-            SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22")
+            NetCopyClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22")
         )
-        Assert.assertEquals(
+        assertEquals(
             "/",
-            SshClientUtils.extractRemotePathFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
+            NetCopyClientUtils.extractRemotePathFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
         )
-        Assert.assertEquals(
+        assertEquals(
             "/root/.config",
-            SshClientUtils.extractRemotePathFrom(
+            NetCopyClientUtils.extractRemotePathFrom(
                 "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config"
             )
         )
     }
 
     /**
-     * Test [SshClientUtils.extractRemotePathFrom].
+     * Test [NetCopyClientUtils.extractRemotePathFrom].
      */
     @Test
     fun testExtractBaseUriFromUri() {
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root@127.0.0.1",
-            SshClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1")
         )
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root@127.0.0.1:2233",
-            SshClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1:2233")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1:2233")
         )
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root@127.0.0.1",
-            SshClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1/root/.config")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root@127.0.0.1/root/.config")
         )
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root:password@127.0.0.1",
-            SshClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1")
         )
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root:password@127.0.0.1:3456",
-            SshClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1:3456/root/.config")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root:password@127.0.0.1:3456/root/.config")
         )
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root:a8/875dbc-==@127.0.0.1:9899",
-            SshClientUtils.extractBaseUriFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
+            NetCopyClientUtils.extractBaseUriFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
         )
-        Assert.assertEquals(
+        assertEquals(
             "ssh://root:a8/875dbc-==@127.0.0.1:9899",
-            SshClientUtils.extractBaseUriFrom(
+            NetCopyClientUtils.extractBaseUriFrom(
                 "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config"
             )
         )
