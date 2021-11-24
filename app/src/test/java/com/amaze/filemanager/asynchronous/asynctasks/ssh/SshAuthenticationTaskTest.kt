@@ -24,14 +24,15 @@ import android.content.Context
 import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
-import android.os.Looper
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
+import com.amaze.filemanager.filesystem.ftp.FtpConnectionPool
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import io.reactivex.Single
 import io.reactivex.android.plugins.RxAndroidPlugins
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.SSHClient
@@ -43,12 +44,10 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
-import org.robolectric.Shadows
-import org.robolectric.android.util.concurrent.InlineExecutorService
 import org.robolectric.annotation.Config
-import org.robolectric.shadows.ShadowPausedAsyncTask
 import org.robolectric.shadows.ShadowToast
 import java.net.SocketException
+import java.util.concurrent.CountDownLatch
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
@@ -60,7 +59,6 @@ class SshAuthenticationTaskTest {
      */
     @Before
     fun setUp() {
-        ShadowPausedAsyncTask.overrideExecutor(InlineExecutorService())
         RxJavaPlugins.reset()
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxAndroidPlugins.reset()
@@ -81,18 +79,32 @@ class SshAuthenticationTaskTest {
             `when`(isAuthenticated).thenReturn(true)
         }
         prepareSshConnectionPool(sshClient)
-        val result = SshAuthenticationTask(
+        val task = SshAuthenticationTask(
             hostKey = "",
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
             password = "password"
-        ).execute().get()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-        assertNotNull(result.result)
-        assertTrue(result.result.isAuthenticated)
-        assertTrue(result.result.isConnected)
-        assertNull(result.exception)
+        )
+        val latch = CountDownLatch(1)
+        var e: Throwable? = null
+        var result: SSHClient? = null
+        Single.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                task.onFinish(it)
+                result = it
+                latch.countDown()
+            }, {
+                task.onError(it)
+                e = it
+                latch.countDown()
+            })
+        result?.run {
+            assertTrue(isAuthenticated)
+            assertTrue(isConnected)
+        } ?: fail("Null SSHClient")
     }
 
     /**
@@ -110,16 +122,31 @@ class SshAuthenticationTaskTest {
             `when`(isAuthenticated).thenReturn(true)
         }
         prepareSshConnectionPool(sshClient)
-        val result = SshAuthenticationTask(
+        val task = SshAuthenticationTask(
             hostKey = "",
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
             password = "password"
-        ).execute().get()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-        assertNull(result.result)
-        assertNotNull(result.exception)
+        )
+        val latch = CountDownLatch(1)
+        var e: Throwable? = null
+        var result: SSHClient? = null
+        Single.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                task.onFinish(it)
+                result = it
+                latch.countDown()
+            }, {
+                task.onError(it)
+                e = it
+                latch.countDown()
+            })
+        latch.await()
+        assertNull(result)
+        assertNotNull(e)
         assertNotNull(ShadowToast.getLatestToast())
         assertEquals(
             ApplicationProvider
@@ -144,18 +171,32 @@ class SshAuthenticationTaskTest {
             `when`(isAuthenticated).thenReturn(true)
         }
         prepareSshConnectionPool(sshClient)
-        val result = SshAuthenticationTask(
+        val task = SshAuthenticationTask(
             hostKey = "",
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
             privateKey = keyProvider.keyPair
-        ).execute().get()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-        assertNotNull(result.result)
-        assertTrue(result.result.isAuthenticated)
-        assertTrue(result.result.isConnected)
-        assertNull(result.exception)
+        )
+        val latch = CountDownLatch(1)
+        var e: Throwable? = null
+        var result: SSHClient? = null
+        Single.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                task.onFinish(it)
+                result = it
+                latch.countDown()
+            }, {
+                task.onError(it)
+                e = it
+                latch.countDown()
+            })
+        result?.run {
+            assertTrue(isAuthenticated)
+            assertTrue(isConnected)
+        } ?: fail("Null SSHClient")
     }
 
     /**
@@ -175,16 +216,31 @@ class SshAuthenticationTaskTest {
             `when`(isAuthenticated).thenReturn(true)
         }
         prepareSshConnectionPool(sshClient)
-        val result = SshAuthenticationTask(
+        val task = SshAuthenticationTask(
             hostKey = "",
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
             privateKey = keyProvider.keyPair
-        ).execute().get()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-        assertNull(result.result)
-        assertNotNull(result.exception)
+        )
+        val latch = CountDownLatch(1)
+        var e: Throwable? = null
+        var result: SSHClient? = null
+        Single.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                task.onFinish(it)
+                result = it
+                latch.countDown()
+            }, {
+                task.onError(it)
+                e = it
+                latch.countDown()
+            })
+        latch.await()
+        assertNull(result)
+        assertNotNull(e)
         assertNotNull(ShadowToast.getLatestToast())
         assertEquals(
             ApplicationProvider
@@ -210,16 +266,30 @@ class SshAuthenticationTaskTest {
             `when`(isAuthenticated).thenReturn(true)
         }
         prepareSshConnectionPool(sshClient)
-        val result = SshAuthenticationTask(
+        val task = SshAuthenticationTask(
             hostKey = "",
             hostname = "127.0.0.1",
             port = 22222,
             username = "user",
             password = "password"
-        ).execute().get()
-        Shadows.shadowOf(Looper.getMainLooper()).idle()
-        assertNull(result.result)
-        assertNotNull(result.exception)
+        )
+        val latch = CountDownLatch(1)
+        var e: Throwable? = null
+        var result: SSHClient? = null
+        Single.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                task.onFinish(it)
+                result = it
+                latch.countDown()
+            }, {
+                task.onError(it)
+                e = it
+                latch.countDown()
+            })
+        assertNull(result)
+        assertNotNull(e)
         assertNotNull(ShadowToast.getLatestToast())
         assertEquals(
             ApplicationProvider
@@ -240,18 +310,18 @@ class SshAuthenticationTaskTest {
          * was not working in the case of Operations.rename() due to the threading model
          * Robolectric imposed. So we are injecting the SSHClient here by force.
          */
-        SshConnectionPool::class.java.getDeclaredField("connections").run {
+        FtpConnectionPool::class.java.getDeclaredField("connections").run {
             this.isAccessible = true
             this.set(
-                SshConnectionPool,
+                FtpConnectionPool,
                 mutableMapOf(
                     Pair("ssh://user:password@127.0.0.1:22222", sshClient)
                 )
             )
         }
 
-        SshConnectionPool.sshClientFactory = object : SshConnectionPool.SSHClientFactory {
-            override fun create(config: net.schmizz.sshj.Config?): SSHClient = sshClient
+        FtpConnectionPool.sshClientFactory = object : FtpConnectionPool.SSHClientFactory {
+            override fun create(config: net.schmizz.sshj.Config): SSHClient = sshClient
         }
     }
 }

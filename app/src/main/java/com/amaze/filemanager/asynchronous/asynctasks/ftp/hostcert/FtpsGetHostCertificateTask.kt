@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,22 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.typeconverters;
+package com.amaze.filemanager.asynchronous.asynctasks.ftp.hostcert
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import android.content.Context
+import com.amaze.filemanager.asynchronous.asynctasks.ftp.AbstractGetHostInfoTask
+import org.json.JSONObject
+import java.lang.ref.WeakReference
 
-import androidx.room.TypeConverter;
+class FtpsGetHostCertificateTask(
+    private val host: String,
+    private val port: Int,
+    context: Context,
+    callback: (JSONObject) -> Unit
+) : AbstractGetHostInfoTask<JSONObject, FtpsGetHostCertificateTaskCallable>(host, port, callback) {
 
-/** {@link TypeConverter} for {@link OpenMode} objects to database columns. */
-public class OpenModeTypeConverter {
+    val ctx: WeakReference<Context> = WeakReference(context)
 
-  @TypeConverter
-  public static int fromOpenMode(OpenMode from) {
-    return from.ordinal();
-  }
-
-  @TypeConverter
-  public static OpenMode fromDatabaseValue(int from) {
-    return OpenMode.getOpenMode(from);
-  }
+    override fun getTask(): FtpsGetHostCertificateTaskCallable =
+        FtpsGetHostCertificateTaskCallable(host, port)
 }

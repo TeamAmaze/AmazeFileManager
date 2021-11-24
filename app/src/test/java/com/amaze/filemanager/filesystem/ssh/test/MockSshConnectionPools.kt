@@ -20,7 +20,9 @@
 
 package com.amaze.filemanager.filesystem.ssh.test
 
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
+import com.amaze.filemanager.filesystem.ftp.FtpConnectionPool
+import com.amaze.filemanager.filesystem.ftp.NetCopyClient
+import com.amaze.filemanager.filesystem.ftp.SSHClientImpl
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.sftp.FileAttributes
@@ -85,18 +87,21 @@ object MockSshConnectionPools {
          * was not working in the case of Operations.rename() due to the threading model
          * Robolectric imposed. So we are injecting the SSHClient here by force.
          */
-        SshConnectionPool::class.java.getDeclaredField("connections").run {
+        FtpConnectionPool::class.java.getDeclaredField("connections").run {
             this.isAccessible = true
             this.set(
-                SshConnectionPool,
+                FtpConnectionPool,
                 mutableMapOf(
-                    Pair<String, SSHClient>("ssh://user:password@127.0.0.1:22222", sshClient)
+                    Pair<String, NetCopyClient>(
+                        "ssh://user:password@127.0.0.1:22222",
+                        SSHClientImpl(sshClient)
+                    )
                 )
             )
         }
 
-        SshConnectionPool.sshClientFactory = object : SshConnectionPool.SSHClientFactory {
-            override fun create(config: Config?): SSHClient = sshClient
+        FtpConnectionPool.sshClientFactory = object : FtpConnectionPool.SSHClientFactory {
+            override fun create(config: Config): SSHClient = sshClient
         }
     }
 }

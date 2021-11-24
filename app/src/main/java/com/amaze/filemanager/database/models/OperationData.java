@@ -98,6 +98,7 @@ public class OperationData {
     this.sshKey = sshKey;
   }
 
+  @NonNull
   @Override
   public String toString() {
     StringBuilder sb =

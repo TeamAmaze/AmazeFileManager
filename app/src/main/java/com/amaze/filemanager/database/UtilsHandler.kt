@@ -187,7 +187,7 @@ class UtilsHandler(
         connectionName: String,
         oldConnectionName: String,
         path: String,
-        hostKey: String,
+        hostKey: String?,
         sshKeyName: String?,
         sshKey: String?
     ) {
@@ -341,11 +341,11 @@ class UtilsHandler(
     /**
      * Returns SSH host key of specified URI.
      */
-    fun getSshHostKey(uri: String): String? =
+    fun getRemoteHostKey(uri: String): String? =
         runCatching {
             utilitiesDatabase
                 .sftpEntryDao()
-                .getSshHostKey(uri)
+                .getRemoteHostKey(uri)
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
         }.onFailure {
@@ -442,7 +442,7 @@ class UtilsHandler(
                 .findByNameAndPath(oldName, oldPath)
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
-        } .onFailure {
+        }.onFailure {
             // catch error to handle Single#onError for blockingGet
             Log.e(TAG, it.message!!)
             return

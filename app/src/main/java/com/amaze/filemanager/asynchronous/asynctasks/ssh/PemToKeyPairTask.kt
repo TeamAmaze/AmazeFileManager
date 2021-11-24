@@ -60,7 +60,7 @@ import java.security.KeyPair
  *
  * @see PuTTYKeyFile
  *
- * @see com.amaze.filemanager.filesystem.ssh.SshConnectionPool.create
+ * @see com.amaze.filemanager.filesystem.ftp.FtpConnectionPool.create
  * @see net.schmizz.sshj.SSHClient.authPublickey
  */
 class PemToKeyPairTask(

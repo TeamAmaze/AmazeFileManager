@@ -23,13 +23,11 @@ package com.amaze.filemanager.ui.dialogs;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.utils.SmbUtil.PARAM_DISABLE_IPC_SIGNING_CHECK;
 
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
-import java.security.GeneralSecurityException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -327,7 +325,7 @@ public class SmbConnectDialog extends DialogFragment {
                   conName.getText().toString(),
                   SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
                 };
-          } catch (GeneralSecurityException | IOException e) {
+          } catch (Exception e) {
             e.printStackTrace();
             Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_LONG).show();
             return;

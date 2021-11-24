@@ -22,7 +22,10 @@ package com.amaze.filemanager.filesystem;
 
 import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DOCUMENT_FILE;
 
+import org.apache.commons.net.ftp.FTPFile;
+
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.ContentResolver;
@@ -69,6 +72,18 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
     setDirectory(smbFile.isDirectory());
     setDate(smbFile.lastModified());
     setSize(smbFile.isDirectory() ? 0 : smbFile.length());
+  }
+
+  public HybridFileParcelable(String path, FTPFile ftpFile) {
+    super(
+        OpenMode.FTP,
+        path + (ftpFile.getName().startsWith("/") ? ftpFile.getName() : "/" + ftpFile.getName()));
+    setName(ftpFile.getName());
+    setDirectory(ftpFile.getType() == FTPFile.DIRECTORY_TYPE);
+    setDate(ftpFile.getTimestamp().getTimeInMillis());
+    setSize(ftpFile.getSize());
+    setPermission(
+        Integer.toString(FilePermission.toMask(ExtensionsKt.toFilePermissions(ftpFile)), 8));
   }
 
   /** Constructor for sshj {@link RemoteResourceInfo}. */

@@ -32,11 +32,15 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
+import org.apache.commons.net.ftp.FTPClient;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
 import com.amaze.filemanager.filesystem.root.MakeFileCommand;
 import com.amaze.filemanager.filesystem.root.RenameFileCommand;
@@ -144,8 +148,14 @@ public class Operations {
           errorCallBack.exists(file);
           return null;
         }
-        if (file.isSftp()) {
+
+        if (file.isSftp() || file.isFtp()) {
           file.mkdir(context);
+          /*
+          FIXME: throw Exceptions from HybridFile.mkdir() so errorCallback can throw Exceptions
+           here
+           */
+          errorCallBack.done(file, true);
           return null;
         }
         if (file.isSmb()) {
@@ -158,14 +168,16 @@ public class Operations {
           }
           errorCallBack.done(file, file.exists());
           return null;
-        } else if (file.isOtgFile()) {
+        }
+        if (file.isOtgFile()) {
           if (checkOtgNewFileExists(file, context)) {
             errorCallBack.exists(file);
             return null;
           }
           safCreateDirectory.apply(OTGUtil.getDocumentFile(parentFile.getPath(), context, false));
           return null;
-        } else if (file.isDocumentFile()) {
+        }
+        if (file.isDocumentFile()) {
           if (checkDocumentFileNewFileExists(file, context)) {
             errorCallBack.exists(file);
             return null;
@@ -287,7 +299,7 @@ public class Operations {
           errorCallBack.exists(file);
           return null;
         }
-        if (file.isSftp()) {
+        if (file.isSftp() || file.isFtp()) {
           OutputStream out = file.getOutputStream(context);
           if (out == null) {
             errorCallBack.done(file, false);
@@ -492,8 +504,8 @@ public class Operations {
                 public Void execute(@NonNull SFTPClient client) {
                   try {
                     client.rename(
-                        SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
-                        SshClientUtils.extractRemotePathFrom(newFile.getPath()));
+                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(oldFile.getPath()),
+                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(newFile.getPath()));
                     errorCallBack.done(newFile, true);
                   } catch (IOException e) {
                     String errmsg =
@@ -517,6 +529,14 @@ public class Operations {
                             .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
                     errorCallBack.done(newFile, false);
                   }
+                  return null;
+                }
+              });
+        } else if (oldFile.isFtp()) {
+          NetCopyClientUtils.INSTANCE.execute(
+              new FtpClientTemplate<Void>(oldFile.getPath(), false) {
+                public Void executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
+                  ftpClient.rename(oldFile.getName(context), newFile.getName(context));
                   return null;
                 }
               });

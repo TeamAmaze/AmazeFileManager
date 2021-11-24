@@ -65,11 +65,11 @@ public class GenericCopyUtil {
 
   private HybridFileParcelable mSourceFile;
   private HybridFile mTargetFile;
-  private Context mContext; // context needed to find the DocumentFile in otg/sd card
-  private DataUtils dataUtils = DataUtils.getInstance();
-  private ProgressHandler progressHandler;
-  public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
+  private final Context mContext; // context needed to find the DocumentFile in otg/sd card
+  private final DataUtils dataUtils = DataUtils.getInstance();
+  private final ProgressHandler progressHandler;
 
+  public static final String PATH_FILE_DESCRIPTOR = "/proc/self/fd/";
   public static final int DEFAULT_BUFFER_SIZE = 8192;
 
   /*
@@ -79,6 +79,8 @@ public class GenericCopyUtil {
      effect on other functions
   */
   private static final int DEFAULT_TRANSFER_QUANTUM = 65536;
+
+  private static final String TAG = GenericCopyUtil.class.getSimpleName();
 
   public GenericCopyUtil(Context context, ProgressHandler progressHandler) {
     this.mContext = context;
@@ -121,7 +123,7 @@ public class GenericCopyUtil {
         bufferedInputStream =
             new BufferedInputStream(
                 contentResolver.openInputStream(documentSourceFile.getUri()), DEFAULT_BUFFER_SIZE);
-      } else if (mSourceFile.isSmb() || mSourceFile.isSftp()) {
+      } else if (mSourceFile.isSmb() || mSourceFile.isSftp() || mSourceFile.isFtp()) {
         bufferedInputStream =
             new BufferedInputStream(mSourceFile.getInputStream(mContext), DEFAULT_TRANSFER_QUANTUM);
       } else if (mSourceFile.isDropBoxFile()
@@ -186,7 +188,7 @@ public class GenericCopyUtil {
         bufferedOutputStream =
             new BufferedOutputStream(
                 contentResolver.openOutputStream(documentTargetFile.getUri()), DEFAULT_BUFFER_SIZE);
-      } else if (mTargetFile.isSftp() || mTargetFile.isSmb()) {
+      } else if (mTargetFile.isSftp() || mTargetFile.isSmb() || mTargetFile.isFtp()) {
         bufferedOutputStream =
             new BufferedOutputStream(
                 mTargetFile.getOutputStream(mContext), DEFAULT_TRANSFER_QUANTUM);
@@ -240,7 +242,7 @@ public class GenericCopyUtil {
       doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
       e.printStackTrace();
-      Log.d(getClass().getSimpleName(), "I/O Error!");
+      Log.d(TAG, "I/O Error!");
       throw new IOException();
     } catch (OutOfMemoryError e) {
       e.printStackTrace();

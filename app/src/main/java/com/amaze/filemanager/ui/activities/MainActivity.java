@@ -46,6 +46,7 @@ import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_KEYPAIR_NAM
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_NAME;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PASSWORD;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PORT;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PROTOCOL;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_USERNAME;
 import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
@@ -135,7 +136,7 @@ import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.filesystem.ftp.FtpConnectionPool;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.AlertDialog;
@@ -908,7 +909,7 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
-      SshConnectionPool.INSTANCE.shutdown();
+      FtpConnectionPool.INSTANCE.shutdown();
       finish();
       if (isRootExplorer()) {
         closeInteractiveShell();
@@ -1378,7 +1379,7 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-    SshConnectionPool.INSTANCE.shutdown();
+    FtpConnectionPool.INSTANCE.shutdown();
     if (drawer != null && drawer.getBilling() != null) {
       drawer.getBilling().destroyBillingInstance();
     }
@@ -1927,9 +1928,10 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(path);
+    FtpConnectionPool.ConnectionInfo connInfo = new FtpConnectionPool.ConnectionInfo(path);
 
     Bundle bundle = new Bundle();
+    bundle.putString(ARG_PROTOCOL, connInfo.getPrefix());
     bundle.putString(ARG_NAME, name);
     bundle.putString(ARG_ADDRESS, connInfo.getHost());
     bundle.putInt(ARG_PORT, connInfo.getPort());
@@ -1947,6 +1949,7 @@ public class MainActivity extends PermissionsActivity
     }
     bundle.putBoolean(ARG_EDIT, edit);
     sftpConnectDialog.setArguments(bundle);
+    sftpConnectDialog.setCancelable(true);
     sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
   }
 

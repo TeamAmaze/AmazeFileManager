@@ -23,11 +23,12 @@ package com.amaze.filemanager.filesystem.ssh;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
+import static com.amaze.filemanager.filesystem.ftp.FtpConnectionPool.SSH_URI_PREFIX;
 
 import java.io.IOException;
 import java.net.BindException;
 import java.nio.file.Paths;
-import java.util.Arrays;
+import java.util.Collections;
 
 import org.apache.sshd.common.config.keys.KeyUtils;
 import org.apache.sshd.common.file.FileSystemFactory;
@@ -42,12 +43,17 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.filesystem.ftp.FtpConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import io.reactivex.android.plugins.RxAndroidPlugins;
+import io.reactivex.plugins.RxJavaPlugins;
+import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
@@ -64,6 +70,11 @@ public abstract class AbstractSftpServerTest {
   @BeforeClass
   public static void bootstrap() throws Exception {
     hostKeyProvider = new TestKeyProvider();
+
+    RxJavaPlugins.reset();
+    RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
+    RxAndroidPlugins.reset();
+    RxAndroidPlugins.setInitMainThreadSchedulerHandler(scheduler -> Schedulers.trampoline());
   }
 
   @Before
@@ -78,7 +89,7 @@ public abstract class AbstractSftpServerTest {
 
   @After
   public void tearDown() throws IOException {
-    SshConnectionPool.INSTANCE.shutdown();
+    FtpConnectionPool.INSTANCE.shutdown();
     if (server != null && server.isOpen()) {
       server.stop(true);
     }
@@ -86,8 +97,8 @@ public abstract class AbstractSftpServerTest {
 
   protected final void prepareSshConnection() {
     String hostFingerprint = KeyUtils.getFingerPrint(hostKeyProvider.getKeyPair().getPublic());
-    SshConnectionPool.INSTANCE.getConnection(
-        "127.0.0.1", serverPort, hostFingerprint, "testuser", "testpassword", null);
+    FtpConnectionPool.INSTANCE.getConnection(
+        SSH_URI_PREFIX, "127.0.0.1", serverPort, hostFingerprint, "testuser", "testpassword", null);
   }
 
   protected final int createSshServer(FileSystemFactory fileSystemFactory, int startPort)
@@ -100,7 +111,7 @@ public abstract class AbstractSftpServerTest {
     server.setHost("127.0.0.1");
     server.setKeyPairProvider(hostKeyProvider);
     server.setCommandFactory(new ScpCommandFactory());
-    server.setSubsystemFactories(Arrays.asList(new SftpSubsystemFactory()));
+    server.setSubsystemFactories(Collections.singletonList(new SftpSubsystemFactory()));
     server.setPasswordAuthenticator(
         ((username, password, session) ->
             username.equals("testuser") && password.equals("testpassword")));

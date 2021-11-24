@@ -27,7 +27,6 @@ import static android.os.Build.VERSION_CODES.P;
 import static androidx.test.core.app.ActivityScenario.launch;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.fail;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doCallRealMethod;
@@ -36,10 +35,25 @@ import static org.mockito.Mockito.mockConstruction;
 import static org.mockito.Mockito.when;
 import static org.robolectric.Shadows.shadowOf;
 
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.storage.StorageManager;
+
+import androidx.lifecycle.Lifecycle;
+import androidx.test.core.app.ActivityScenario;
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
+import com.amaze.filemanager.test.ShadowPasswordUtil;
+import com.amaze.filemanager.test.TestUtils;
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
+import com.amaze.filemanager.utils.PasswordUtil;
+import com.amaze.filemanager.utils.SmbUtil;
 
 import org.junit.After;
 import org.junit.Before;
@@ -53,24 +67,10 @@ import org.robolectric.shadows.ShadowSQLiteConnection;
 import org.robolectric.shadows.ShadowStorageManager;
 import org.robolectric.util.ReflectionHelpers;
 
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
-import com.amaze.filemanager.test.ShadowPasswordUtil;
-import com.amaze.filemanager.test.TestUtils;
-import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
-import com.amaze.filemanager.utils.SmbUtil;
-
-import android.os.Build;
-import android.os.Bundle;
-import android.os.storage.StorageManager;
-
-import androidx.lifecycle.Lifecycle;
-import androidx.test.core.app.ActivityScenario;
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -127,7 +127,7 @@ public class MainActivityTest {
   }
 
   @Test
-  public void testInvokeSftpConnectionDialog() {
+  public void testInvokeSftpConnectionDialog() throws GeneralSecurityException, IOException {
 
     Bundle verify = new Bundle();
     verify.putString("address", "127.0.0.1");
@@ -144,7 +144,8 @@ public class MainActivityTest {
   @Test
   public void testInvokeSftpConnectionDialogWithPassword()
       throws GeneralSecurityException, IOException {
-    String uri = "ssh://root:12345678@127.0.0.1:22";
+    String uri =
+        NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary("ssh://root:12345678@127.0.0.1:22");
 
     Bundle verify = new Bundle();
     verify.putString("address", "127.0.0.1");
@@ -158,7 +159,8 @@ public class MainActivityTest {
     testOpenSftpConnectDialog(uri, verify);
   }
 
-  private void testOpenSftpConnectDialog(String uri, Bundle verify) {
+  private void testOpenSftpConnectDialog(String uri, Bundle verify)
+      throws GeneralSecurityException, IOException {
     MainActivity activity = mock(MainActivity.class);
     UtilsHandler utilsHandler = mock(UtilsHandler.class);
     when(utilsHandler.getSshAuthPrivateKeyName("ssh://root@127.0.0.1:22")).thenReturn("abcdefgh");
@@ -166,11 +168,21 @@ public class MainActivityTest {
     doCallRealMethod().when(activity).showSftpDialog(any(), any(), anyBoolean());
 
     activity.showSftpDialog(
-        "SCP/SFTP Connection", SshClientUtils.encryptSshPathAsNecessary(uri), true);
+        "SCP/SFTP Connection", NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(uri), true);
     assertEquals(1, mc.constructed().size());
     SftpConnectDialog mocked = mc.constructed().get(0);
     for (String key : BUNDLE_KEYS) {
-      assertEquals(verify.get(key), mocked.getArguments().get(key));
+      if (mocked.getArguments().get(key) != null) {
+        if (!key.equals("password")) {
+          assertEquals(verify.get(key), mocked.getArguments().get(key));
+        } else {
+          assertEquals(
+              verify.get(key),
+              PasswordUtil.INSTANCE.decryptPassword(
+                  ApplicationProvider.getApplicationContext(),
+                  (String) mocked.getArguments().get(key)));
+        }
+      }
     }
   }
 
@@ -223,8 +235,6 @@ public class MainActivityTest {
             String[] entry = verify.get(0);
             assertEquals(path, entry[1]);
 
-          } catch (GeneralSecurityException | IOException e) {
-            fail(e.getMessage());
           } finally {
             scenario.moveToState(Lifecycle.State.DESTROYED);
             scenario.close();

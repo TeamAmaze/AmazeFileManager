@@ -36,6 +36,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -261,7 +262,9 @@ public class CloudUtil {
                   @Override
                   public InputStream execute(final SFTPClient client) throws IOException {
                     final RemoteFile rf =
-                        client.open(SshClientUtils.extractRemotePathFrom(hybridFile.getPath()));
+                        client.open(
+                            NetCopyClientUtils.INSTANCE.extractRemotePathFrom(
+                                hybridFile.getPath()));
                     return rf.new RemoteFileInputStream() {
                       @Override
                       public void close() throws IOException {

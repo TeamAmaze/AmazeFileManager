@@ -23,6 +23,18 @@ package com.amaze.filemanager.database;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -118,7 +130,7 @@ public class UtilsHandlerTest {
   }
 
   private void performEncryptUriTest(@NonNull final String origPath) {
-    String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
+    String encryptedPath = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(origPath);
 
     utilsHandler.saveToDatabase(
         new OperationData(

@@ -75,7 +75,7 @@ public interface SftpEntryDao {
 
   @Query(
       "SELECT " + COLUMN_HOST_PUBKEY + " FROM " + TABLE_SFTP + " WHERE " + COLUMN_PATH + " = :uri")
-  Single<String> getSshHostKey(String uri);
+  Single<String> getRemoteHostKey(String uri);
 
   @Query(
       "SELECT "

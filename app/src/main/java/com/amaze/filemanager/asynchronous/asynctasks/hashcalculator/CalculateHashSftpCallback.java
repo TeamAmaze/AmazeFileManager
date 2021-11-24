@@ -20,18 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.hashcalculator;
 
-import java.io.IOException;
-import java.util.Objects;
-import java.util.concurrent.Callable;
+import androidx.annotation.WorkerThread;
 
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
-import androidx.annotation.WorkerThread;
-
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
+
+import java.io.IOException;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 
 public class CalculateHashSftpCallback implements Callable<Hash> {
   private final HybridFileParcelable file;
@@ -63,7 +64,7 @@ public class CalculateHashSftpCallback implements Callable<Hash> {
     return new SshClientSessionTemplate<String>(file.getPath()) {
       @Override
       public String execute(Session session) throws IOException {
-        String path = SshClientUtils.extractRemotePathFrom(file.getPath());
+        String path = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(file.getPath());
         String fullCommand = String.format(command, path);
         Session.Command cmd = session.exec(fullCommand);
         String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());

@@ -32,8 +32,8 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.filesystem.DeleteOperation.deleteFile
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation.isOnExtSdCard
+import com.amaze.filemanager.filesystem.ftp.FtpConnectionPool
 import com.amaze.filemanager.filesystem.smb.CifsContexts
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import com.amaze.filemanager.utils.OTGUtil
 import java.io.File
 import java.io.FileNotFoundException
@@ -156,7 +156,7 @@ object FileProperties {
     fun checkFolder(f: String?, context: Context): Int {
         if (f == null) return 0
         if (f.startsWith(CifsContexts.SMB_URI_PREFIX) ||
-            f.startsWith(SshConnectionPool.SSH_URI_PREFIX) ||
+            f.startsWith(FtpConnectionPool.SSH_URI_PREFIX) ||
             f.startsWith(OTGUtil.PREFIX_OTG) ||
             f.startsWith(CloudHandler.CLOUD_PREFIX_BOX) ||
             f.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE) ||

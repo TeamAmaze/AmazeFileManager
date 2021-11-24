@@ -40,7 +40,7 @@ import org.robolectric.shadows.ShadowSQLiteConnection;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.PasswordUtil;
 
@@ -95,7 +95,7 @@ public class ShadowPasswordUtilTest {
     utilsHandler.saveToDatabase(
         new OperationData(
             UtilsHandler.Operation.SFTP,
-            SshClientUtils.encryptSshPathAsNecessary(url),
+            NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(url),
             "Test",
             fingerprint,
             null,
@@ -107,7 +107,8 @@ public class ShadowPasswordUtilTest {
             () -> {
               assertEquals(
                   fingerprint,
-                  utilsHandler.getSshHostKey(SshClientUtils.encryptSshPathAsNecessary(url)));
+                  utilsHandler.getRemoteHostKey(
+                      NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(url)));
               utilitiesDatabase.close();
               return true;
             });

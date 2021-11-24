@@ -372,7 +372,7 @@ public class OperationsTest {
     assertTrue(assertFlag.get());
   }
 
-  private abstract class AbstractErrorCallback implements Operations.ErrorCallBack {
+  public abstract static class AbstractErrorCallback implements Operations.ErrorCallBack {
     @Override
     public void exists(HybridFile file) {}
 
