@@ -49,7 +49,7 @@ jobs:
       - name: Parse variables
         id: parse-vars
         run: |
-          echo '::set-output name=SHORT_SHA::${GITHUB_SHA::6}'
+          echo '::set-output name=SHORT_SHA::${ github.sha } | cut -c1-6'
           echo '::set-output name=VERSION_NAME::${GITHUB_REF##*/} | sed 's/release\///''
       - name: Publish on Telegram
         run: |
