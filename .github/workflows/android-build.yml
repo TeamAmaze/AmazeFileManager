@@ -46,10 +46,12 @@ jobs:
     name: Publish on Telegram
     runs-on: ubuntu-20.04
     needs: build
-    env:
-      VERSION_NAME: ${{ GITHUB_REF##*/ }} | sed 's/release\///'
-      COMMIT_COUNT: git rev-list --count HEAD
     steps:
+      - name: Parse variables
+        id: parse-vars
+        run: |
+          echo '::set-output name=COMMIT_COUNT::git rev-list --count HEAD'
+          echo '::set-output name=VERSION_NAME::${GITHUB_REF##*/} | sed 's/release\///''
       - name: Publish on Telegram
         run: |
           cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-${{ env.VERSION_NAME }}-${{ git rev-list --count HEAD }}.apk
