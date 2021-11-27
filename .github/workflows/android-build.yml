@@ -41,8 +41,14 @@ jobs:
           ./gradlew assembledebug --stacktrace
         env:
           TZ: UTC
+  publish:
+    name: Publish on Telegram
+    runs-on: ubuntu-20.04
+    steps:
       - name: Publish on Telegram
         run: |
-          cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk
-          cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk
-          echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument && curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/play/debug/amaze-play-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+          echo "SHORT_SHA=`echo ${ github.sha } | cut -c1-6`" >> $GITHUB_ENV
+          echo "VERSION_NAME=`echo ${GITHUB_REF##*/} | sed 's/release\///'`" >> $GITHUB_ENV
+          cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-${GITHUB_REF##*/}-${{SHORT_SHA}}.apk
+          cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-${GITHUB_REF##*/}-${{SHORT_SHA}}.apk
+          echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-${GITHUB_REF##*/}-${{SHORT_SHA}}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument && curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/play/debug/amaze-play-${GITHUB_REF##*/}-${{SHORT_SHA}}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
