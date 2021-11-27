@@ -53,4 +53,4 @@ jobs:
           path: app/build/outputs/apk/play/debug/app-play-debug.apk
       - name: Publish on Telegram (now on DM for testing)
         run: |
-          bash <(curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/play/debug/app-play-debug.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+          bash "$(curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument && curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/play/debug/app-play-debug.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)"
