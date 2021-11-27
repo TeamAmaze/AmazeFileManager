@@ -41,10 +41,8 @@ jobs:
           ./gradlew assembledebug --stacktrace
         env:
           TZ: UTC
-      - name: Copy and rename fdroid artifact
-        run: cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-debug-${{ env.GITHUB_REF }}-${{ github.sha }}.apk
-      - name: Copy and rename play artifact
-        run: cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-debug-${{ env.GITHUB_REF }}-${{ github.sha }}.apk
       - name: Publish on Telegram (now on DM for testing)
         run: |
-          echo $(curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-debug-${{ env.GITHUB_REF }}-${{ github.sha }}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument && curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/play/debug/amaze-play-debug-${{ env.GITHUB_REF }}-${{ github.sha }}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+          cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk
+          cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk
+          echo $(curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument && curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/play/debug/amaze-play-debug-${GITHUB_REF##*/}-${{ github.sha }}.apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
