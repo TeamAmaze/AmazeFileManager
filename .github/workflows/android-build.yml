@@ -43,7 +43,7 @@ jobs:
           TZ: UTC
       - name: Publish on Telegram
         env:
-          COMMIT_COUNT: $(echo git rev-list --count ${GITHUB_REF##*/})
+          COMMIT_COUNT: $(echo git rev-list --count $(echo ${GITHUB_REF##*/}))
           VERSION_NAME: $(echo {GITHUB_REF##*/} | sed 's/release\///' | sed 's/hotfix\///')
         run: |
           cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-${VERSION_NAME}-${COMMIT_COUNT}.apk
