@@ -41,14 +41,6 @@ jobs:
           ./gradlew assembledebug --stacktrace
         env:
           TZ: UTC
-
-  publish:
-    name: Publish on Telegram
-    runs-on: ubuntu-20.04
-    needs: build
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v2
       - name: Publish on Telegram
         run: |
           COMMIT_COUNT=$(echo git rev-list --count ${GITHUB_REF##*/})
