@@ -43,7 +43,7 @@ jobs:
           TZ: UTC
       - name: Publish on Telegram
         run: |
-          COMMIT_COUNT=$(echo ${ github.sha } | cut -c1-6)
+          COMMIT_COUNT=$(echo ${{ github.sha }} | cut -c1-6)
           VERSION_NAME=$(echo ${GITHUB_REF##*/} | sed 's/release\///' | sed 's/hotfix\///')
           cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
           cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
