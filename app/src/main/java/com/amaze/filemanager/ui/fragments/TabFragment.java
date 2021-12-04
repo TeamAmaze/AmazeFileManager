@@ -469,7 +469,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
                 if (viewPager.getCurrentItem() == 1) {
                   if (mainFragment != null) {
                     dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
-                    requireMainActivity().getActionModeHelper().disableActionMode();
+                    mainActivity.getActionModeHelper().disableActionMode();
                   }
                   viewPager.setCurrentItem(0, true);
                 }
@@ -481,7 +481,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
                 if (viewPager.getCurrentItem() == 0) {
                   if (mainFragment != null) {
                     dataUtils.setCheckedItemsList(mainFragment.adapter.getCheckedItems());
-                    requireMainActivity().getActionModeHelper().disableActionMode();
+                    mainActivity.getActionModeHelper().disableActionMode();
                   }
                   viewPager.setCurrentItem(1, true);
                 }
