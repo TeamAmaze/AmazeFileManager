@@ -392,6 +392,22 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             return null
         }
 
+        if (appDataParcelableList.size == 1) {
+
+            requireContext().startActivityCatchingSecurityException(
+                buildIntent(
+                    appDataParcelableList[0].openFileParcelable?.uri!!,
+                    appDataParcelableList[0].openFileParcelable?.mimeType!!,
+                    appDataParcelableList[0].openFileParcelable?.useNewStack!!,
+                    appDataParcelableList[0].openFileParcelable?.className,
+                    appDataParcelableList[0].openFileParcelable?.packageName
+                )
+            )
+
+            dismiss()
+            return null
+        }
+
         var lastAppData: AppDataParcelable? = if (!lastClassAndPackage.isNullOrEmpty()) {
             appDataParcelableList.find {
                 it.openFileParcelable?.className == lastClassAndPackage[0]
