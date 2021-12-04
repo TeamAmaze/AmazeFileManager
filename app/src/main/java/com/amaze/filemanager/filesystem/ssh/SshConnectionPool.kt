@@ -30,7 +30,6 @@ import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import java.security.KeyPair
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.atomic.AtomicReference
 
@@ -176,19 +175,11 @@ object SshConnectionPool {
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
         if (true == pem?.isNotEmpty()) {
-            try {
-                val latch = CountDownLatch(1)
+            keyPair.set(
                 PemToKeyPairTask(
                     pem
-                ) { result: KeyPair? ->
-                    keyPair.set(result)
-                    latch.countDown()
-                }
-                    .execute()
-                latch.await()
-            } catch (e: InterruptedException) {
-                throw RuntimeException("Error getting keypair from given PEM string", e)
-            }
+                ) { }.execute().get()
+            )
         }
         val hostKey = utilsHandler.getSshHostKey(url) ?: return null
         return create(
