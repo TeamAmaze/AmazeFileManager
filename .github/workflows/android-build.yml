@@ -43,7 +43,7 @@ jobs:
           ./gradlew assembledebug --stacktrace
         env:
           TZ: UTC
-      - name: Publish on Telegram
+      - name: Publish on Telegram - now on DM for testing
         run: |
           sudo apt update
           sudo apt install git
@@ -51,5 +51,5 @@ jobs:
           VERSION_NAME=$(echo ${GITHUB_REF##*/} | sed 's/release\///' | sed 's/hotfix\///')
           cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
           cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
-          echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
-          echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+          echo $(curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+          echo $(curl -v -F "chat_id=1418165684" -F document=@app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
