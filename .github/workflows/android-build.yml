@@ -45,8 +45,6 @@ jobs:
           TZ: UTC
       - name: Publish on Telegram - now on DM for testing
         run: |
-          sudo apt update
-          sudo apt install git
           COMMIT_COUNT=$(echo git rev-list --count ${GITHUB_REF##*/})
           VERSION_NAME=$(echo ${GITHUB_REF##*/} | sed 's/release\///' | sed 's/hotfix\///')
           cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
