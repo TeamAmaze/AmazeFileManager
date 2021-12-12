@@ -1,4 +1,4 @@
-name: Android Main CI
+name: Android12 Main CI
 
 on:
   push:
@@ -51,7 +51,7 @@ jobs:
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
           bash <(curl -Ls https://coverage.codacy.com/get.sh)
       - name: Publish on Telegram
-        run: |
+        run: |android 11
           COMMIT_COUNT=$(git rev-list --count ${GITHUB_REF})
           VERSION_NAME=$(echo ${GITHUB_REF##*/} | sed 's/release\///' | sed 's/hotfix\///')
           cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
