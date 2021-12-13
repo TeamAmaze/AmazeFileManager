@@ -56,7 +56,6 @@ import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.getLocalInetAddress
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isConnectedToLocalNetwork
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isConnectedToWifi
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isEnabledWifiHotspot
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isRunning
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
@@ -149,8 +148,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private fun ftpBtnOnClick() {
         if (!isRunning()) {
             if (isConnectedToWifi(requireContext()) ||
-                isConnectedToLocalNetwork(requireContext()) ||
-                isEnabledWifiHotspot(requireContext())
+                isConnectedToLocalNetwork(requireContext())
             ) {
                 startServer()
             } else {
@@ -391,18 +389,18 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     @Suppress("LabeledExpression")
     private fun createOpenDocumentTreeIntentCallback(callback: (directoryUri: Uri) -> Unit):
         ActivityResultLauncher<Intent> {
-            return registerForActivityResult(
-                ActivityResultContracts.StartActivityForResult()
-            ) {
-                if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
-                    val directoryUri = it.data?.data ?: return@registerForActivityResult
-                    requireContext().contentResolver.takePersistableUriPermission(
-                        directoryUri, GRANT_URI_RW_PERMISSION
-                    )
-                    callback.invoke(directoryUri)
-                }
+        return registerForActivityResult(
+            ActivityResultContracts.StartActivityForResult()
+        ) {
+            if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
+                val directoryUri = it.data?.data ?: return@registerForActivityResult
+                requireContext().contentResolver.takePersistableUriPermission(
+                    directoryUri, GRANT_URI_RW_PERMISSION
+                )
+                callback.invoke(directoryUri)
             }
         }
+    }
 
     /** Check URI access. Prompt user to DocumentsUI if necessary */
     private fun checkUriAccessIfNecessary(callback: () -> Unit) {
@@ -509,8 +507,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private fun updateStatus() {
         if (!isRunning()) {
             if (!isConnectedToWifi(requireContext()) &&
-                !isConnectedToLocalNetwork(requireContext()) &&
-                !isEnabledWifiHotspot(requireContext())
+                !isConnectedToLocalNetwork(requireContext())
             ) {
                 statusText.text = spannedStatusNoConnection
                 ftpBtn.isEnabled = false
