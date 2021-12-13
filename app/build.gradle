@@ -6,7 +6,7 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 31
 
     packagingOptions {
         exclude 'proguard-project.txt'
