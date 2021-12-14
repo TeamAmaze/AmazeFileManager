@@ -71,6 +71,7 @@ class ZipService : AbstractProgressiveService() {
     private var customBigContentViews: RemoteViews? = null
 
     override fun onCreate() {
+        super.onCreate()
         registerReceiver(receiver1, IntentFilter(KEY_COMPRESS_BROADCAST_CANCEL))
     }
 

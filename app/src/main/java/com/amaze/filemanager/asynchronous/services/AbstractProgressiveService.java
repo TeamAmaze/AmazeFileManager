@@ -35,7 +35,9 @@ import com.amaze.filemanager.utils.Utils;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
+import android.os.PowerManager;
 import android.text.format.Formatter;
 import android.widget.RemoteViews;
 
@@ -48,10 +50,19 @@ public abstract class AbstractProgressiveService extends Service
     implements ServiceWatcherUtil.ServiceStatusCallbacks {
 
   private boolean isNotificationTitleSet = false;
+  private PowerManager.WakeLock wakeLock;
 
   @Override
   public int onStartCommand(Intent intent, int flags, int startId) {
     return super.onStartCommand(intent, flags, startId);
+  }
+
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);
+    wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, getClass().getName());
+    wakeLock.setReferenceCounted(false);
   }
 
   protected abstract NotificationManager getNotificationManager();
@@ -118,6 +129,7 @@ public abstract class AbstractProgressiveService extends Service
     // remove the listener on destruction to prevent
     // implicit AbstractProgressiveService instance from leaking (as "this")
     getProgressHandler().setProgressListener(null);
+    wakeLock.release();
   }
 
   /**

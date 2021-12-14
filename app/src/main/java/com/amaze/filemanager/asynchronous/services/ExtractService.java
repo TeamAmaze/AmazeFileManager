@@ -88,6 +88,7 @@ public class ExtractService extends AbstractProgressiveService {
 
   @Override
   public void onCreate() {
+    super.onCreate();
     registerReceiver(receiver1, new IntentFilter(TAG_BROADCAST_EXTRACT_CANCEL));
     context = getApplicationContext();
   }
