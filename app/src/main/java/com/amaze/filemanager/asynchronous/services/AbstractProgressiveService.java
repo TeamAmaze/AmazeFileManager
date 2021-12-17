@@ -246,12 +246,11 @@ public abstract class AbstractProgressiveService extends Service
         Log.w(getClass().getSimpleName(), "Warning: This is not the first datapoint!");
         getDataPackages().clear();
       }
+      DatapointParcelable intent1 =
+              DatapointParcelable.Companion.buildDatapointParcelable(
+                      name, amountOfFiles, totalBytes, move);
+      putDataPackage(intent1);
     }
-
-    DatapointParcelable intent1 =
-        DatapointParcelable.Companion.buildDatapointParcelable(
-            name, amountOfFiles, totalBytes, move);
-    putDataPackage(intent1);
   }
 
   protected void addDatapoint(DatapointParcelable datapoint) {
