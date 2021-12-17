@@ -335,7 +335,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 appsRecyclerView.adapter = adapter
                 lastAppTitle.text = it.label
                 lastAppImage.setImageDrawable(
-                    (activity as MainActivity).packageManager.getApplicationIcon(it.packageName)
+                    requireActivity().packageManager.getApplicationIcon(it.packageName)
                 )
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->
