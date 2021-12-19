@@ -98,6 +98,9 @@
     <string name="delete">Delete</string>
     <string name="set_as_home">Set As Home</string>
     <string name="operation_not_supported">Operation not supported</string>
+    <string name="recycle">Recycle</string>
+    <string name="recycling">Recycling</string>
+    <string name="move_to_recycle_bin">Move items to recycle bin?</string>
 
     <!-- New -->
     <!-- Array -->

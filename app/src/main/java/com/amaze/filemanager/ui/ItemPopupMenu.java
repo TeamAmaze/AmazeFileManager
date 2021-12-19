@@ -33,6 +33,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.RecycleUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -153,10 +154,11 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         }
         return true;
       case R.id.delete:
-        ArrayList<LayoutElementParcelable> positions = new ArrayList<>();
-        positions.add(rowItem);
-        GeneralDialogCreation.deleteFilesDialog(
-            context, mainActivity, positions, utilitiesProvider.getAppTheme());
+        ArrayList<HybridFileParcelable> positions = new ArrayList<>();
+        positions.add(rowItem.generateBaseFile());
+
+        RecycleUtils.Companion.moveToRecycleBin(positions, context, mainActivity);
+
         return true;
       case R.id.open_with:
         boolean useNewStack =

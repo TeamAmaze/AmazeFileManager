@@ -38,6 +38,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.PasteHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
+import com.amaze.filemanager.filesystem.files.RecycleUtils.Companion.moveToRecycleBin
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
@@ -265,12 +266,17 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     true
                 }
                 R.id.delete -> {
-                    GeneralDialogCreation.deleteFilesDialog(
-                        mainActivity,
-                        mainActivity,
-                        checkedItems,
-                        mainActivity.utilsProvider.appTheme
+
+                    val items = ArrayList<HybridFileParcelable>()
+
+                    for (checkedItem in checkedItems)
+                        items.add(checkedItem.generateBaseFile())
+
+                    moveToRecycleBin(
+                        items,
+                        mainActivity
                     )
+
                     true
                 }
                 R.id.share -> {
@@ -288,7 +294,8 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                             mainFragmentViewModel ->
                             when (mainFragmentViewModel.listElements?.get(0)?.mode) {
                                 OpenMode.DROPBOX, OpenMode.BOX, OpenMode.GDRIVE,
-                                OpenMode.ONEDRIVE ->
+                                OpenMode.ONEDRIVE,
+                                ->
                                     mainFragmentViewModel.listElements?.also {
                                         FileUtils.shareCloudFile(
                                             it[0].desc,
