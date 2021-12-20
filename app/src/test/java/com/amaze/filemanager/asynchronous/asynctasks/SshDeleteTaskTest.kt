@@ -26,8 +26,8 @@ import net.schmizz.sshj.sftp.FileAttributes
 import net.schmizz.sshj.sftp.RemoteResourceInfo
 import net.schmizz.sshj.xfer.FilePermission
 import org.junit.Test
-import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.`when`
 
 class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
