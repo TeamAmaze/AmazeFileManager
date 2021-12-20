@@ -270,38 +270,38 @@ class SftpConnectDialog : DialogFragment() {
 
     private fun handleOnPositiveButton(edit: Boolean):
         MaterialDialog.SingleButtonCallback =
-            MaterialDialog.SingleButtonCallback { _, _ ->
-                createConnectionSettings().run {
-                    // Get original SSH host key
-                    AppConfig.getInstance().utilsHandler.getSshHostKey(
+        MaterialDialog.SingleButtonCallback { _, _ ->
+            createConnectionSettings().run {
+                // Get original SSH host key
+                AppConfig.getInstance().utilsHandler.getSshHostKey(
+                    SshClientUtils.deriveSftpPathFrom(
+                        hostname,
+                        port,
+                        defaultPath,
+                        username,
+                        arguments?.getString(ARG_PASSWORD, null),
+                        selectedParsedKeyPair
+                    )
+                )?.let { sshHostKey ->
+                    SshConnectionPool.removeConnection(
                         SshClientUtils.deriveSftpPathFrom(
                             hostname,
                             port,
                             defaultPath,
                             username,
-                            arguments?.getString(ARG_PASSWORD, null),
+                            password,
                             selectedParsedKeyPair
                         )
-                    )?.let { sshHostKey ->
-                        SshConnectionPool.removeConnection(
-                            SshClientUtils.deriveSftpPathFrom(
-                                hostname,
-                                port,
-                                defaultPath,
-                                username,
-                                password,
-                                selectedParsedKeyPair
-                            )
-                        ) {
-                            reconnectToServerToVerifyHostFingerprint(
-                                this,
-                                sshHostKey,
-                                edit
-                            )
-                        }
-                    } ?: firstConnectToServer(this, edit)
-                }
+                    ) {
+                        reconnectToServerToVerifyHostFingerprint(
+                            this,
+                            sshHostKey,
+                            edit
+                        )
+                    }
+                } ?: firstConnectToServer(this, edit)
             }
+        }
 
     private fun firstConnectToServer(
         connectionSettings: ConnectionSettings,
