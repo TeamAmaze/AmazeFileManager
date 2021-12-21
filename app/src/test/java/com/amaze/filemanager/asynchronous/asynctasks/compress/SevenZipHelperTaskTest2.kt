@@ -27,7 +27,7 @@ import org.junit.Test
 import java.io.File
 
 @Ignore("Test skipped due to problem at upstream library.")
-class SevenZipHelperTaskTest2 : AbstractCompressedHelperTaskTest() {
+class SevenZipHelperTaskTest2 : AbstractCompressedHelperTaskArchiveTest() {
 
     @Test
     override fun testRoot() {

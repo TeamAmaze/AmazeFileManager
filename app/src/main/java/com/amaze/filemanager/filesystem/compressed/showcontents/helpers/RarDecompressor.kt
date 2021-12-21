@@ -36,7 +36,7 @@ class RarDecompressor(context: Context) : Decompressor(context) {
         addGoBackItem: Boolean,
         onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
     ) =
-        RarHelperTask(filePath!!, path, addGoBackItem, onFinish)
+        RarHelperTask(filePath, path, addGoBackItem, onFinish)
 
     override fun realRelativeDirectory(dir: String): String {
         var dir = dir

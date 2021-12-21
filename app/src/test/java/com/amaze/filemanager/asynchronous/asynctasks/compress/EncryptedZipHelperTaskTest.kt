@@ -24,7 +24,7 @@ import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
-class EncryptedZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
+class EncryptedZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
     override fun createTask(relativePath: String): CompressedHelperTask = ZipHelperTask(
         ApplicationProvider.getApplicationContext(),
         File(

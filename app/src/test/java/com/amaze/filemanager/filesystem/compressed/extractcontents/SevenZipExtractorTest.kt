@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor
 
-class SevenZipExtractorTest : AbstractExtractorTest() {
+class SevenZipExtractorTest : AbstractArchiveExtractorTest() {
 
     override val archiveType: String = "7z"
 

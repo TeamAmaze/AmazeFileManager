@@ -34,7 +34,7 @@ import java.util.*
  */
 abstract class Decompressor(protected var context: Context) {
 
-    var filePath: String? = null
+    lateinit var filePath: String
 
     /**
      * Separator must be "/"
