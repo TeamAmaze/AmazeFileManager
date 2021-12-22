@@ -27,14 +27,13 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
@@ -57,8 +56,6 @@ import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
 import androidx.documentfile.provider.DocumentFile;
 
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.SFTPClient;
 
 public class Operations {
@@ -149,13 +146,7 @@ public class Operations {
           return null;
         }
         if (file.isSmb()) {
-          try {
-            file.getSmbFile(2000).mkdirs();
-          } catch (SmbException e) {
-            e.printStackTrace();
-            errorCallBack.done(file, false);
-            return null;
-          }
+          new AmazeFile(file.getPath()).mkdirs();
           errorCallBack.done(file, file.exists());
           return null;
         } else if (file.isOtgFile()) {
@@ -304,8 +295,8 @@ public class Operations {
         }
         if (file.isSmb()) {
           try {
-            file.getSmbFile(2000).createNewFile();
-          } catch (SmbException e) {
+            new AmazeFile(file.getPath()).createNewFile();
+          } catch (IOException e) {
             e.printStackTrace();
             errorCallBack.done(file, false);
             return null;
@@ -456,34 +447,15 @@ public class Operations {
         }
 
         if (oldFile.isSmb()) {
-          try {
-            SmbFile smbFile = oldFile.getSmbFile();
-            // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
-            SmbFile smbFile1 = new SmbFile(new URL(newFile.getPath()), smbFile.getContext());
-            if (newFile.exists()) {
-              errorCallBack.exists(newFile);
-              return null;
-            }
-            smbFile.renameTo(smbFile1);
-            if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
-          } catch (SmbException | MalformedURLException e) {
-            String errmsg =
-                context.getString(
-                    R.string.cannot_rename_file,
-                    HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
-                    e.getMessage());
-            try {
-              ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
-              failedOps.add(new HybridFileParcelable(oldFile.getSmbFile()));
-              context.sendBroadcast(
-                  new Intent(TAG_INTENT_FILTER_GENERAL)
-                      .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
-            } catch (SmbException exceptionThrownDuringBuildParcelable) {
-              Log.e(
-                  TAG, "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
-            }
-            Log.e(TAG, errmsg, e);
+          AmazeFile smbFile = new AmazeFile(oldFile.getPath());
+          // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
+          AmazeFile smbFile1 = new AmazeFile(newFile.getPath());
+          if (newFile.exists()) {
+            errorCallBack.exists(newFile);
+            return null;
           }
+          smbFile.renameTo(smbFile1);
+          if (!smbFile.exists() && smbFile1.exists()) errorCallBack.done(newFile, true);
           return null;
         } else if (oldFile.isSftp()) {
           SshClientUtils.execute(

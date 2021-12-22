@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem;
 
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.utils.SmbUtil.create;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -41,6 +42,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -55,7 +57,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
@@ -71,8 +72,6 @@ import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.SSHClient;
@@ -83,7 +82,12 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
-/** Hybrid file for handeling all types of files */
+/**
+ * Hybrid file for handeling all types of files
+ *
+ * <p>This is deprecated, please use AmazeFile instead
+ */
+@Deprecated
 public class HybridFile {
 
   protected static final String TAG = HybridFile.class.getSimpleName();
@@ -261,16 +265,7 @@ public class HybridFile {
 
         return returnValue == null ? 0L : returnValue;
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null) {
-          try {
-            return smbFile.lastModified();
-          } catch (SmbException e) {
-            Log.e(TAG, "Error getting last modified time for SMB [" + path + "]", e);
-            return 0;
-          }
-        }
-        break;
+        return new AmazeFile(path).lastModified();
       case FILE:
         return getFile().lastModified();
       case DOCUMENT_FILE:
@@ -289,14 +284,11 @@ public class HybridFile {
       case SFTP:
         return ((HybridFileParcelable) this).getSize();
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null)
-          try {
-            s = smbFile.length();
-          } catch (SmbException e) {
-            e.printStackTrace();
-          }
-        return s;
+        try {
+          return new AmazeFile(path).length();
+        } catch (IOException e) {
+          Log.e(TAG, "Error getting length for SMB file", e);
+        }
       case FILE:
         s = getFile().length();
         return s;
@@ -352,9 +344,7 @@ public class HybridFile {
     String name = null;
     switch (mode) {
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null) return smbFile.getName();
-        break;
+        return new AmazeFile(path).getName();
       default:
         StringBuilder builder = new StringBuilder(path);
         name = builder.substring(builder.lastIndexOf("/") + 1, builder.length());
@@ -365,11 +355,7 @@ public class HybridFile {
   public String getName(Context context) {
     switch (mode) {
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null) {
-          return smbFile.getName();
-        }
-        return null;
+        return new AmazeFile(path).getName();
       case FILE:
       case ROOT:
         return getFile().getName();
@@ -401,26 +387,6 @@ public class HybridFile {
     }
   }
 
-  public SmbFile getSmbFile(int timeout) {
-    try {
-      SmbFile smbFile = SmbUtil.create(path);
-      smbFile.setConnectTimeout(timeout);
-      return smbFile;
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
-
-  public SmbFile getSmbFile() {
-    try {
-      return SmbUtil.create(path);
-    } catch (MalformedURLException e) {
-      e.printStackTrace();
-      return null;
-    }
-  }
-
   public boolean isCustomPath() {
     return path.equals("0")
         || path.equals("1")
@@ -435,11 +401,7 @@ public class HybridFile {
   public String getParent(Context context) {
     switch (mode) {
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null) {
-          return smbFile.getParent();
-        }
-        return "";
+        return new AmazeFile(path).getParent();
       case FILE:
       case ROOT:
         return getFile().getParent();
@@ -475,14 +437,7 @@ public class HybridFile {
       case SFTP:
         return isDirectory(AppConfig.getInstance());
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        try {
-          isDirectory = smbFile != null && smbFile.isDirectory();
-        } catch (SmbException e) {
-          e.printStackTrace();
-          isDirectory = false;
-        }
-        break;
+        return new AmazeFile(path).isDirectory();
       case FILE:
         isDirectory = getFile().isDirectory();
         break;
@@ -534,17 +489,7 @@ public class HybridFile {
         //noinspection SimplifiableConditionalExpression
         return returnValue == null ? false : returnValue;
       case SMB:
-        try {
-          isDirectory =
-              Single.fromCallable(() -> getSmbFile().isDirectory())
-                  .subscribeOn(Schedulers.io())
-                  .blockingGet();
-        } catch (Exception e) {
-          isDirectory = false;
-          if (e.getCause() != null) e.getCause().printStackTrace();
-          else e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(path).isDirectory();
       case FILE:
         isDirectory = getFile().isDirectory();
         break;
@@ -600,9 +545,7 @@ public class HybridFile {
       case SFTP:
         return folderSize(AppConfig.getInstance());
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        size = smbFile != null ? FileUtils.folderSize(getSmbFile()) : 0;
-        break;
+        return FileUtils.folderSize(new AmazeFile(getPath()));
       case FILE:
         size = FileUtils.folderSize(getFile(), null);
         break;
@@ -638,9 +581,7 @@ public class HybridFile {
 
         return returnValue == null ? 0L : returnValue;
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        size = (smbFile != null) ? FileUtils.folderSize(smbFile) : 0L;
-        break;
+        return FileUtils.folderSize(new AmazeFile(getPath()));
       case FILE:
         size = FileUtils.folderSize(getFile(), null);
         break;
@@ -679,14 +620,7 @@ public class HybridFile {
     long size = 0L;
     switch (mode) {
       case SMB:
-        try {
-          SmbFile smbFile = getSmbFile();
-          size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
-        } catch (SmbException e) {
-          size = 0L;
-          e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(path).getUsableSpace();
       case FILE:
       case ROOT:
         size = getFile().getUsableSpace();
@@ -747,14 +681,7 @@ public class HybridFile {
     long size = 0l;
     switch (mode) {
       case SMB:
-        // TODO: Find total storage space of SMB when JCIFS adds support
-        try {
-          SmbFile smbFile = getSmbFile();
-          size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
-        } catch (SmbException e) {
-          e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(path).getTotalSpace();
       case FILE:
       case ROOT:
         size = getFile().getTotalSpace();
@@ -847,21 +774,19 @@ public class HybridFile {
         break;
       case SMB:
         try {
-          SmbFile smbFile = getSmbFile();
-          if (smbFile != null) {
-            for (SmbFile smbFile1 : smbFile.listFiles()) {
-              HybridFileParcelable baseFile;
-              try {
-                SmbFile sf = new SmbFile(smbFile1.getURL(), smbFile.getContext());
-                baseFile = new HybridFileParcelable(sf);
-              } catch (MalformedURLException shouldNeverHappen) {
-                shouldNeverHappen.printStackTrace();
-                baseFile = new HybridFileParcelable(smbFile1);
-              }
-              onFileFound.onFileFound(baseFile);
+          SmbFile smbFile = create(getPath());
+          for (SmbFile smbFile1 : smbFile.listFiles()) {
+            HybridFileParcelable baseFile;
+            try {
+              SmbFile sf = new SmbFile(smbFile1.getURL(), smbFile.getContext());
+              baseFile = new HybridFileParcelable(sf);
+            } catch (MalformedURLException shouldNeverHappen) {
+              shouldNeverHappen.printStackTrace();
+              baseFile = new HybridFileParcelable(smbFile1);
             }
+            onFileFound.onFileFound(baseFile);
           }
-        } catch (SmbException e) {
+        } catch (MalformedURLException | SmbException e) {
           e.printStackTrace();
         }
         break;
@@ -931,19 +856,17 @@ public class HybridFile {
                 });
         break;
       case SMB:
-        try {
-          SmbFile smbFile = getSmbFile();
-          if (smbFile != null) {
-            for (SmbFile smbFile1 : smbFile.listFiles()) {
-              HybridFileParcelable baseFile = new HybridFileParcelable(smbFile1);
-              arrayList.add(baseFile);
-            }
+        ArrayList<HybridFileParcelable> result = new ArrayList<>();
+        for (AmazeFile smbFile1 : new AmazeFile(getPath()).listFiles()) {
+          try {
+            HybridFileParcelable baseFile = new HybridFileParcelable(create(smbFile1.getPath()));
+            result.add(baseFile);
+          } catch (SmbException | MalformedURLException e) {
+            Log.e(TAG, "Error getting an SMB file", e);
+            return null;
           }
-        } catch (SmbException e) {
-          arrayList.clear();
-          e.printStackTrace();
         }
-        break;
+        return result;
       case OTG:
         arrayList = OTGUtil.getDocumentFilesList(path, context);
         break;
@@ -1022,12 +945,7 @@ public class HybridFile {
             }
           });
     } else if (isSmb()) {
-      try {
-        inputStream = getSmbFile().getInputStream();
-      } catch (IOException e) {
-        inputStream = null;
-        e.printStackTrace();
-      }
+      return new AmazeFile(getPath()).getInputStream();
     } else {
       try {
         inputStream = new FileInputStream(path);
@@ -1066,13 +984,7 @@ public class HybridFile {
                 });
         break;
       case SMB:
-        try {
-          inputStream = getSmbFile().getInputStream();
-        } catch (IOException e) {
-          inputStream = null;
-          e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(getPath()).getInputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile = getDocumentFile(false);
@@ -1156,13 +1068,7 @@ public class HybridFile {
               }
             });
       case SMB:
-        try {
-          outputStream = getSmbFile().getOutputStream();
-        } catch (IOException e) {
-          outputStream = null;
-          e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(path).getOutputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile = getDocumentFile(true);
@@ -1217,13 +1123,7 @@ public class HybridFile {
       //noinspection SimplifiableConditionalExpression
       exists = executionReturn == null ? false : executionReturn;
     } else if (isSmb()) {
-      try {
-        SmbFile smbFile = getSmbFile(2000);
-        exists = smbFile != null && smbFile.exists();
-      } catch (SmbException e) {
-        e.printStackTrace();
-        exists = false;
-      }
+      return new AmazeFile(path).exists();
     } else if (isDropBoxFile()) {
       CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
       exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
@@ -1284,18 +1184,7 @@ public class HybridFile {
 
   public boolean setLastModified(final long date) {
     if (isSmb()) {
-      try {
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null) {
-          smbFile.setLastModified(date);
-          return true;
-        } else {
-          return false;
-        }
-      } catch (SmbException e) {
-        e.printStackTrace();
-        return false;
-      }
+      return new AmazeFile(path).setLastModified(date);
     }
     File f = getFile();
     return f.setLastModified(date);
@@ -1317,11 +1206,7 @@ public class HybridFile {
             }
           });
     } else if (isSmb()) {
-      try {
-        getSmbFile().mkdirs();
-      } catch (SmbException e) {
-        e.printStackTrace();
-      }
+      new AmazeFile(path).mkdirs();
     } else if (isOtgFile()) {
       if (!exists(context)) {
         DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, true);
@@ -1389,12 +1274,7 @@ public class HybridFile {
               });
       return retval != null && retval;
     } else if (isSmb()) {
-      try {
-        getSmbFile().delete();
-      } catch (SmbException e) {
-        Log.e(TAG, "Error delete SMB file", e);
-        throw e;
-      }
+      return new AmazeFile(path).delete();
     } else {
       if (isRoot() && rootmode) {
         setMode(OpenMode.ROOT);

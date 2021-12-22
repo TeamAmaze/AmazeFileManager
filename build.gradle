@@ -28,6 +28,8 @@ buildscript {
         materialDialogsVersion = "0.9.6.0"
         jacocoVersion = "0.8.7"
         commonsCompressVersion = "1.20"
+        reactiveXVersion = "2.2.9"
+        reactiveXAndroidVersion = "2.1.1"
     }
     repositories {
         google()

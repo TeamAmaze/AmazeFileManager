@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem
 import android.content.Context
 import android.os.Build
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.utils.OTGUtil
 import jcifs.smb.SmbException
 import java.io.File
@@ -76,13 +77,7 @@ object MakeDirectoryOperation {
         var isSuccessful = true
         when (file.mode) {
             OpenMode.SMB ->
-                try {
-                    val smbFile = file.smbFile
-                    smbFile.mkdirs()
-                } catch (e: SmbException) {
-                    e.printStackTrace()
-                    isSuccessful = false
-                }
+                return AmazeFile(file.path).mkdirs()
             OpenMode.OTG -> {
                 val documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true)
                 isSuccessful = documentFile != null

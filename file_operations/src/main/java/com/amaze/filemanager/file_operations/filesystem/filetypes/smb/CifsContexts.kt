@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.smb
+package com.amaze.filemanager.file_operations.filesystem.filetypes.smb
 
 import android.net.Uri
 import android.text.TextUtils
@@ -32,7 +32,6 @@ import jcifs.context.SingletonContext
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-@Deprecated("Replaced with [com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts]")
 object CifsContexts {
 
     const val SMB_URI_PREFIX = "smb://"

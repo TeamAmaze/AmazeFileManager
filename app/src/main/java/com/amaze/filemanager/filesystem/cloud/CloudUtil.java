@@ -34,6 +34,7 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -277,13 +278,7 @@ public class CloudUtil {
                 });
         break;
       case SMB:
-        try {
-          inputStream = hybridFile.getSmbFile().getInputStream();
-        } catch (IOException e) {
-          inputStream = null;
-          e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(hybridFile.getPath()).getInputStream();
       case OTG:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile =

@@ -35,6 +35,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -84,7 +85,6 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
-import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -124,10 +124,10 @@ public class FileUtils {
     else return directory.folderSize(AppConfig.getInstance());
   }
 
-  public static long folderSize(SmbFile directory) {
+  public static long folderSize(AmazeFile directory) {
     long length = 0;
     try {
-      for (SmbFile file : directory.listFiles()) {
+      for (AmazeFile file : directory.listFiles()) {
 
         if (file.isFile()) length += file.length();
         else length += folderSize(file);
