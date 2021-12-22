@@ -31,6 +31,8 @@ buildscript {
         commonsCompressVersion = "1.20"
         libsuVersion = "3.2.1"
         mockkVersion = "1.12.2"
+        reactiveXVersion = "2.2.9"
+        reactiveXAndroidVersion = "2.1.1"
     }
     repositories {
         google()
