@@ -111,15 +111,15 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
         private fun newInstance(uri: Uri, mimeType: String, useNewStack: Boolean):
             OpenFileDialogFragment {
-                val args = Bundle()
+            val args = Bundle()
 
-                val fragment = OpenFileDialogFragment()
-                args.putParcelable(KEY_URI, uri)
-                args.putString(KEY_MIME_TYPE, mimeType)
-                args.putBoolean(KEY_USE_NEW_STACK, useNewStack)
-                fragment.arguments = args
-                return fragment
-            }
+            val fragment = OpenFileDialogFragment()
+            args.putParcelable(KEY_URI, uri)
+            args.putString(KEY_MIME_TYPE, mimeType)
+            args.putBoolean(KEY_USE_NEW_STACK, useNewStack)
+            fragment.arguments = args
+            return fragment
+        }
 
         private fun startActivity(context: Context, intent: Intent) {
             try {
