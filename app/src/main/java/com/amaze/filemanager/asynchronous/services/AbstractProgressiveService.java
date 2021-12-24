@@ -58,6 +58,7 @@ public abstract class AbstractProgressiveService extends Service
   }
 
   @Override
+  @CallSuper
   public void onCreate() {
     super.onCreate();
     final PowerManager powerManager = (PowerManager) getSystemService(Context.POWER_SERVICE);

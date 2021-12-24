@@ -82,7 +82,7 @@ class FtpService : Service(), Runnable {
     private var password: String? = null
     private var isPasswordProtected = false
     private var isStartedByTile = false
-    private var wakeLock: PowerManager.WakeLock? = null
+    private lateinit var wakeLock: PowerManager.WakeLock
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false)
@@ -110,7 +110,7 @@ class FtpService : Service(), Runnable {
 
         val powerManager = getSystemService(POWER_SERVICE) as PowerManager
         wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, javaClass.name)
-        wakeLock?.setReferenceCounted(false)
+        wakeLock.setReferenceCounted(false)
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -214,7 +214,7 @@ class FtpService : Service(), Runnable {
     }
 
     override fun onDestroy() {
-        wakeLock?.release()
+        wakeLock.release()
         serverThread?.interrupt().also {
             // wait 10 sec for server thread to finish
             serverThread!!.join(10000)
