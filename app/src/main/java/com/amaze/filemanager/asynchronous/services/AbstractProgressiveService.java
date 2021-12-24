@@ -119,6 +119,7 @@ public abstract class AbstractProgressiveService extends Service
     // remove the listener on destruction to prevent
     // implicit AbstractProgressiveService instance from leaking (as "this")
     getProgressHandler().setProgressListener(null);
+    clearDataPackages();
   }
 
   /**
@@ -243,12 +244,12 @@ public abstract class AbstractProgressiveService extends Service
   protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
     synchronized (getDataPackages()) {
       if (!getDataPackages().isEmpty()) {
-        Log.w(getClass().getSimpleName(), "Warning: This is not the first datapoint!");
+        Log.e(getClass().getSimpleName(), "Warning: This is not the first datapoint!");
         getDataPackages().clear();
       }
       DatapointParcelable intent1 =
-              DatapointParcelable.Companion.buildDatapointParcelable(
-                      name, amountOfFiles, totalBytes, move);
+          DatapointParcelable.Companion.buildDatapointParcelable(
+              name, amountOfFiles, totalBytes, move);
       putDataPackage(intent1);
     }
   }
