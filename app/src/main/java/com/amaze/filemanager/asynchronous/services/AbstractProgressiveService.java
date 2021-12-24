@@ -256,7 +256,7 @@ public abstract class AbstractProgressiveService extends Service
 
   protected void addDatapoint(DatapointParcelable datapoint) {
     if (getDataPackages().isEmpty()) {
-      throw new IllegalStateException("This is the first datapoint!");
+      Log.e(getClass().getSimpleName(), "Warning: This is the first datapoint!");
     }
 
     putDataPackage(datapoint);
