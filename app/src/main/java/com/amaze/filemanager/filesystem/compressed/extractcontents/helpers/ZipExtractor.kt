@@ -112,27 +112,28 @@ class ZipExtractor(
             // creating directory if not already exists
             MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }
-        val inputStream = BufferedInputStream(zipFile.getInputStream(entry))
-        FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
-            BufferedOutputStream(fileOutputStream).run {
-                var len: Int
-                val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
-                while (inputStream.read(buf).also { len = it } != -1) {
-                    if (!listener.isCancelled) {
-                        write(buf, 0, len)
-                        updatePosition.updatePosition(len.toLong())
-                    } else break
+        BufferedInputStream(zipFile.getInputStream(entry)).use { inputStream ->
+            FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
+                BufferedOutputStream(fileOutputStream).run {
+                    var len: Int
+                    val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
+                    while (inputStream.read(buf).also { len = it } != -1) {
+                        if (!listener.isCancelled) {
+                            write(buf, 0, len)
+                            updatePosition.updatePosition(len.toLong())
+                        } else break
+                    }
+                    close()
+                    outputFile.setLastModified(entry.lastModifiedTimeEpoch)
                 }
-                close()
-                outputFile.setLastModified(entry.lastModifiedTimeEpoch)
-            }
-        } ?: AppConfig.toast(
-            context,
-            context.getString(
-                R.string.error_archive_cannot_extract,
-                entry.fileName,
-                outputDir
+            } ?: AppConfig.toast(
+                context,
+                context.getString(
+                    R.string.error_archive_cannot_extract,
+                    entry.fileName,
+                    outputDir
+                )
             )
-        )
+        }
     }
 }
