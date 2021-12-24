@@ -626,9 +626,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
      * Go one level up in the archive hierarchy.
      */
     fun goBack() {
-        File(relativeDirectory).parent?.let { parent ->
-            changePath(parent)
-        }
+        val parent: String = File(relativeDirectory).parent ?: ""
+        changePath(parent)
     }
 
     private val isRootRelativePath: Boolean

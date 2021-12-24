@@ -111,15 +111,15 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
         private fun newInstance(uri: Uri, mimeType: String, useNewStack: Boolean):
             OpenFileDialogFragment {
-                val args = Bundle()
+            val args = Bundle()
 
-                val fragment = OpenFileDialogFragment()
-                args.putParcelable(KEY_URI, uri)
-                args.putString(KEY_MIME_TYPE, mimeType)
-                args.putBoolean(KEY_USE_NEW_STACK, useNewStack)
-                fragment.arguments = args
-                return fragment
-            }
+            val fragment = OpenFileDialogFragment()
+            args.putParcelable(KEY_URI, uri)
+            args.putString(KEY_MIME_TYPE, mimeType)
+            args.putBoolean(KEY_USE_NEW_STACK, useNewStack)
+            fragment.arguments = args
+            return fragment
+        }
 
         private fun startActivity(context: Context, intent: Intent) {
             try {
@@ -335,7 +335,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 appsRecyclerView.adapter = adapter
                 lastAppTitle.text = it.label
                 lastAppImage.setImageDrawable(
-                    (activity as MainActivity).packageManager.getApplicationIcon(it.packageName)
+                    requireActivity().packageManager.getApplicationIcon(it.packageName)
                 )
                 justOnceButton.setTextColor((activity as ThemedActivity).accent)
                 justOnceButton.setOnClickListener { _ ->
@@ -388,6 +388,22 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         if (appDataParcelableList.size == 0) {
             AppConfig.toast(requireContext(), requireContext().getString(R.string.no_app_found))
             FileUtils.openWith(uri, activity as PreferenceActivity, useNewStack!!)
+            dismiss()
+            return null
+        }
+
+        if (appDataParcelableList.size == 1) {
+
+            requireContext().startActivityCatchingSecurityException(
+                buildIntent(
+                    appDataParcelableList[0].openFileParcelable?.uri!!,
+                    appDataParcelableList[0].openFileParcelable?.mimeType!!,
+                    appDataParcelableList[0].openFileParcelable?.useNewStack!!,
+                    appDataParcelableList[0].openFileParcelable?.className,
+                    appDataParcelableList[0].openFileParcelable?.packageName
+                )
+            )
+
             dismiss()
             return null
         }
