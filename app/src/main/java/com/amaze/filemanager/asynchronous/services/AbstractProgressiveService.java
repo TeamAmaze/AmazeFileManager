@@ -241,22 +241,21 @@ public abstract class AbstractProgressiveService extends Service
     }
   }
 
-  protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
-    synchronized (getDataPackages()) {
-      if (!getDataPackages().isEmpty()) {
-        Log.e(getClass().getSimpleName(), "Warning: This is not the first datapoint!");
-        getDataPackages().clear();
-      }
-      DatapointParcelable intent1 =
-          DatapointParcelable.Companion.buildDatapointParcelable(
-              name, amountOfFiles, totalBytes, move);
-      putDataPackage(intent1);
+  protected synchronized void addFirstDatapoint(
+      String name, int amountOfFiles, long totalBytes, boolean move) {
+    if (!getDataPackages().isEmpty()) {
+      Log.e(getClass().getSimpleName(), "This is not the first datapoint!");
+      getDataPackages().clear();
     }
+    DatapointParcelable intent1 =
+        DatapointParcelable.Companion.buildDatapointParcelable(
+            name, amountOfFiles, totalBytes, move);
+    putDataPackage(intent1);
   }
 
-  protected void addDatapoint(DatapointParcelable datapoint) {
+  protected synchronized void addDatapoint(DatapointParcelable datapoint) {
     if (getDataPackages().isEmpty()) {
-      Log.e(getClass().getSimpleName(), "Warning: This is the first datapoint!");
+      Log.e(getClass().getSimpleName(), "This is the first datapoint!");
     }
 
     putDataPackage(datapoint);
