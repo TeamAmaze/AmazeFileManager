@@ -223,6 +223,10 @@ public class HybridFile {
     return mode == OpenMode.GDRIVE;
   }
 
+  public boolean isUnknownFile() {
+    return mode == OpenMode.UNKNOWN;
+  }
+
   @Nullable
   public File getFile() {
     return new File(path);
@@ -265,9 +269,8 @@ public class HybridFile {
 
         return returnValue == null ? 0L : returnValue;
       case SMB:
-        return new AmazeFile(path).lastModified();
       case FILE:
-        return getFile().lastModified();
+        return new AmazeFile(path).lastModified();
       case DOCUMENT_FILE:
         return getDocumentFile(false).lastModified();
       case ROOT:
@@ -284,14 +287,12 @@ public class HybridFile {
       case SFTP:
         return ((HybridFileParcelable) this).getSize();
       case SMB:
+      case FILE:
         try {
           return new AmazeFile(path).length();
         } catch (IOException e) {
-          Log.e(TAG, "Error getting length for SMB file", e);
+          Log.e(TAG, "Error getting length for file", e);
         }
-      case FILE:
-        s = getFile().length();
-        return s;
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getSize();
@@ -344,6 +345,7 @@ public class HybridFile {
     String name = null;
     switch (mode) {
       case SMB:
+      case FILE:
         return new AmazeFile(path).getName();
       default:
         StringBuilder builder = new StringBuilder(path);
@@ -355,8 +357,8 @@ public class HybridFile {
   public String getName(Context context) {
     switch (mode) {
       case SMB:
-        return new AmazeFile(path).getName();
       case FILE:
+        return new AmazeFile(path).getName();
       case ROOT:
         return getFile().getName();
       case OTG:
@@ -401,10 +403,9 @@ public class HybridFile {
   public String getParent(Context context) {
     switch (mode) {
       case SMB:
-        return new AmazeFile(path).getParent();
       case FILE:
       case ROOT:
-        return getFile().getParent();
+        return new AmazeFile(path).getParent();
       case SFTP:
       default:
         if (path.length() == getName(context).length()) {
@@ -437,10 +438,8 @@ public class HybridFile {
       case SFTP:
         return isDirectory(AppConfig.getInstance());
       case SMB:
-        return new AmazeFile(path).isDirectory();
       case FILE:
-        isDirectory = getFile().isDirectory();
-        break;
+        return new AmazeFile(path).isDirectory();
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
@@ -489,10 +488,8 @@ public class HybridFile {
         //noinspection SimplifiableConditionalExpression
         return returnValue == null ? false : returnValue;
       case SMB:
-        return new AmazeFile(path).isDirectory();
       case FILE:
-        isDirectory = getFile().isDirectory();
-        break;
+        return new AmazeFile(path).isDirectory();
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
@@ -545,10 +542,8 @@ public class HybridFile {
       case SFTP:
         return folderSize(AppConfig.getInstance());
       case SMB:
-        return FileUtils.folderSize(new AmazeFile(getPath()));
       case FILE:
-        size = FileUtils.folderSize(getFile(), null);
-        break;
+        return FileUtils.folderSize(new AmazeFile(getPath()));
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) size = baseFile.getSize();
@@ -581,10 +576,8 @@ public class HybridFile {
 
         return returnValue == null ? 0L : returnValue;
       case SMB:
-        return FileUtils.folderSize(new AmazeFile(getPath()));
       case FILE:
-        size = FileUtils.folderSize(getFile(), null);
-        break;
+        return FileUtils.folderSize(new AmazeFile(getPath()));
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) size = baseFile.getSize();
@@ -620,11 +613,9 @@ public class HybridFile {
     long size = 0L;
     switch (mode) {
       case SMB:
-        return new AmazeFile(path).getUsableSpace();
       case FILE:
       case ROOT:
-        size = getFile().getUsableSpace();
-        break;
+        return new AmazeFile(path).getUsableSpace();
       case DROPBOX:
       case BOX:
       case GDRIVE:
@@ -681,11 +672,9 @@ public class HybridFile {
     long size = 0l;
     switch (mode) {
       case SMB:
-        return new AmazeFile(path).getTotalSpace();
       case FILE:
       case ROOT:
-        size = getFile().getTotalSpace();
-        break;
+        return new AmazeFile(path).getTotalSpace();
       case DROPBOX:
       case BOX:
       case ONEDRIVE:
@@ -918,45 +907,6 @@ public class HybridFile {
     return String.format("%s://%s%s", scheme, host, path);
   }
 
-  /**
-   * Handles getting input stream for various {@link OpenMode}
-   *
-   * @deprecated use {@link #getInputStream(Context)} which allows handling content resolver
-   */
-  @Nullable
-  public InputStream getInputStream() {
-    InputStream inputStream;
-    if (isSftp()) {
-      return SshClientUtils.execute(
-          new SFtpClientTemplate<InputStream>(path) {
-            @Override
-            public InputStream execute(SFTPClient client) throws IOException {
-              final RemoteFile rf = client.open(SshClientUtils.extractRemotePathFrom(path));
-              return rf.new RemoteFileInputStream() {
-                @Override
-                public void close() throws IOException {
-                  try {
-                    super.close();
-                  } finally {
-                    rf.close();
-                  }
-                }
-              };
-            }
-          });
-    } else if (isSmb()) {
-      return new AmazeFile(getPath()).getInputStream();
-    } else {
-      try {
-        inputStream = new FileInputStream(path);
-      } catch (FileNotFoundException e) {
-        inputStream = null;
-        e.printStackTrace();
-      }
-    }
-    return inputStream;
-  }
-
   @Nullable
   public InputStream getInputStream(Context context) {
     InputStream inputStream;
@@ -984,6 +934,7 @@ public class HybridFile {
                 });
         break;
       case SMB:
+      case FILE:
         return new AmazeFile(getPath()).getInputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
@@ -1068,6 +1019,7 @@ public class HybridFile {
               }
             });
       case SMB:
+      case FILE:
         return new AmazeFile(path).getOutputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
@@ -1122,7 +1074,7 @@ public class HybridFile {
 
       //noinspection SimplifiableConditionalExpression
       exists = executionReturn == null ? false : executionReturn;
-    } else if (isSmb()) {
+    } else if (isSmb() || isLocal()) {
       return new AmazeFile(path).exists();
     } else if (isDropBoxFile()) {
       CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
@@ -1136,8 +1088,6 @@ public class HybridFile {
     } else if (isOneDriveFile()) {
       CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
       exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
-    } else if (isLocal()) {
-      exists = getFile().exists();
     } else if (isRoot()) {
       return RootHelper.fileExists(path);
     }
@@ -1183,7 +1133,7 @@ public class HybridFile {
   }
 
   public boolean setLastModified(final long date) {
-    if (isSmb()) {
+    if (isSmb() || isLocal()) {
       return new AmazeFile(path).setLastModified(date);
     }
     File f = getFile();
@@ -1205,7 +1155,7 @@ public class HybridFile {
               return null;
             }
           });
-    } else if (isSmb()) {
+    } else if (isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile()) {
       new AmazeFile(path).mkdirs();
     } else if (isOtgFile()) {
       if (!exists(context)) {
@@ -1255,33 +1205,33 @@ public class HybridFile {
       } catch (Exception e) {
         e.printStackTrace();
       }
-    } else MakeDirectoryOperation.mkdir(getFile(), context);
+    } else {
+      throw new IllegalStateException();
+    }
   }
 
   public boolean delete(Context context, boolean rootmode)
       throws ShellNotRunningException, SmbException {
     if (isSftp()) {
       Boolean retval =
-          SshClientUtils.<Boolean>execute(
-              new SFtpClientTemplate(path) {
-                @Override
-                public Boolean execute(@NonNull SFTPClient client) throws IOException {
-                  String _path = SshClientUtils.extractRemotePathFrom(path);
-                  if (isDirectory(AppConfig.getInstance())) client.rmdir(_path);
-                  else client.rm(_path);
-                  return client.statExistence(_path) == null;
-                }
-              });
+              SshClientUtils.<Boolean>execute(
+                      new SFtpClientTemplate(path) {
+                        @Override
+                        public Boolean execute(@NonNull SFTPClient client) throws IOException {
+                          String _path = SshClientUtils.extractRemotePathFrom(path);
+                          if (isDirectory(AppConfig.getInstance())) client.rmdir(_path);
+                          else client.rm(_path);
+                          return client.statExistence(_path) == null;
+                        }
+                      });
       return retval != null && retval;
-    } else if (isSmb()) {
+    } else if (isSmb() || isLocal() || (isRoot() && !rootmode)) {
       return new AmazeFile(path).delete();
+    } else if (isRoot() && rootmode) {
+      setMode(OpenMode.ROOT);
+      DeleteFileCommand.INSTANCE.deleteFile(getPath());
     } else {
-      if (isRoot() && rootmode) {
-        setMode(OpenMode.ROOT);
-        DeleteFileCommand.INSTANCE.deleteFile(getPath());
-      } else {
-        DeleteOperation.deleteFile(getFile(), context);
-      }
+      DeleteOperation.deleteFile(getFile(), context);
     }
     return !exists();
   }

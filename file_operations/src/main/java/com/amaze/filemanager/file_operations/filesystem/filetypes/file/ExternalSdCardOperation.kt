@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem
+package com.amaze.filemanager.file_operations.filesystem.filetypes.file
 
 import android.annotation.TargetApi
 import android.content.Context
@@ -26,17 +26,13 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
-import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem
-import com.amaze.filemanager.file_operations.filesystem.filetypes.file.UriForSafPersistance
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import java.io.File
 import java.io.IOException
 import java.util.*
 
-@Deprecated("Use [com.amaze.filemanager.file_operations.filesystem.filetypes.file.ExternalSdCardOperation]")
 object ExternalSdCardOperation {
-    val LOG = "ExternalSdCardOperation"
+    val TAG = ExternalSdCardOperation::class.java.simpleName
 
     /**
      * Get a DocumentFile corresponding to the given file (for writing on ExtSdCard on Android 5). If
@@ -48,11 +44,12 @@ object ExternalSdCardOperation {
      */
     @JvmStatic
     fun getDocumentFile(
-        file: File,
+        file: AmazeFile,
         isDirectory: Boolean,
-        context: Context
+        context: Context,
+        preferenceUri: String?
     ): DocumentFile? {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return DocumentFile.fromFile(file)
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return DocumentFile.fromFile(File(file.path))
         val baseFolder = getExtSdCardFolder(file, context)
         var originalDirectory = false
         if (baseFolder == null) {
@@ -70,7 +67,6 @@ object ExternalSdCardOperation {
             return null
         }
 
-        val preferenceUri = UriForSafPersistance.get(context)
         var treeUri: Uri? = null
         if (preferenceUri != null) {
             treeUri = Uri.parse(preferenceUri)
@@ -118,7 +114,7 @@ object ExternalSdCardOperation {
             if (file != null && file != context.getExternalFilesDir("external")) {
                 val index = file.absolutePath.lastIndexOf("/Android/data")
                 if (index < 0) {
-                    Log.w(LOG, "Unexpected external file dir: " + file.absolutePath)
+                    Log.w(TAG, "Unexpected external file dir: " + file.absolutePath)
                 } else {
                     var path = file.absolutePath.substring(0, index)
                     try {
@@ -142,7 +138,7 @@ object ExternalSdCardOperation {
             if (file != null) {
                 val index = file.absolutePath.lastIndexOf("/Android/data")
                 if (index < 0) {
-                    Log.w(LOG, "Unexpected external file dir: " + file.absolutePath)
+                    Log.w(TAG, "Unexpected external file dir: " + file.absolutePath)
                 } else {
                     var path = file.absolutePath.substring(0, index)
                     try {
@@ -167,7 +163,7 @@ object ExternalSdCardOperation {
      */
     @JvmStatic
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    public fun getExtSdCardFolder(file: File, context: Context): String? {
+    public fun getExtSdCardFolder(file: AmazeFile, context: Context): String? {
         val extSdPaths = getExtSdCardPaths(context)
         try {
             for (i in extSdPaths.indices) {
@@ -189,7 +185,7 @@ object ExternalSdCardOperation {
      */
     @JvmStatic
     @TargetApi(Build.VERSION_CODES.KITKAT)
-    fun isOnExtSdCard(file: File, c: Context): Boolean {
+    fun isOnExtSdCard(file: AmazeFile, c: Context): Boolean {
         return getExtSdCardFolder(file, c) != null
     }
 }

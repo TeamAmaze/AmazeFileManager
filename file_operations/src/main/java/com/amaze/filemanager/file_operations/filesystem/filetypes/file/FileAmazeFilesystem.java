@@ -1,0 +1,385 @@
+package com.amaze.filemanager.file_operations.filesystem.filetypes.file;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
+import android.preference.PreferenceManager;
+import android.provider.MediaStore;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
+
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.concurrent.Callable;
+
+/**
+ * This is in in essence calls to UnixFilesystem, but that class is not public
+ * so all calls must go through java.io.File
+ */
+public class FileAmazeFilesystem extends AmazeFileSystem {
+  public static final FileAmazeFilesystem INSTANCE = new FileAmazeFilesystem();
+
+  public static final String TAG = FileAmazeFilesystem.class.getSimpleName();
+
+  @Override
+  public boolean isPathOfThisFilesystem(@NonNull String path) {
+    return path.charAt(0) == getSeparator();
+  }
+
+  @Override
+  public char getSeparator() {
+    return File.separatorChar;
+  }
+
+  @Override
+  public char getPathSeparator() {
+    return File.pathSeparatorChar;
+  }
+
+  @NonNull
+  @Override
+  public String normalize(@NonNull String path) {
+    return new File(path).getPath();
+  }
+
+  @Override
+  public int prefixLength(@NonNull String path) {
+    if (path.length() == 0) return 0;
+    return (path.charAt(0) == '/') ? 1 : 0;
+  }
+
+  @NonNull
+  @Override
+  public String resolve(String parent, String child) {
+    return new File(parent, child).getPath();
+  }
+
+  @NonNull
+  @Override
+  public String getDefaultParent() {
+    return new File(new File(""), "").getPath();
+  }
+
+  @NonNull
+  @Override
+  public String fromURIPath(@NonNull String path) {
+    return new File(path).getPath();
+  }
+
+  @Override
+  public boolean isAbsolute(AmazeFile f) {
+    return new File(f.getPath()).isAbsolute();
+  }
+
+  @NonNull
+  @Override
+  public String resolve(AmazeFile f) {
+    return new File(f.getPath()).getAbsolutePath();
+  }
+
+  @NonNull
+  @Override
+  public String canonicalize(String path) throws IOException {
+    return new File(path).getCanonicalPath();
+  }
+
+  @Override
+  public int getBooleanAttributes(AmazeFile f) {
+    File file = new File(f.getPath());
+    int r = 0;
+
+    if (file.exists()) {
+      r |= BA_EXISTS;
+
+      if (file.isFile()) {
+        r |= BA_REGULAR;
+      }
+
+      if (file.isDirectory()) {
+        r |= BA_DIRECTORY;
+      }
+
+      if (file.isHidden()) {
+        r |= BA_HIDDEN;
+      }
+    }
+
+    return r;
+  }
+
+  @Override
+  public boolean checkAccess(AmazeFile f, int access) {
+    switch (access) {
+      case ACCESS_EXECUTE:
+        return new File(f.getPath()).canExecute();
+      case ACCESS_WRITE:
+        return new File(f.getPath()).canWrite();
+      case ACCESS_READ:
+        return new File(f.getPath()).canRead();
+      case ACCESS_CHECK_EXISTS:
+        return new File(f.getPath()).exists();
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  @Override
+  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
+    switch (access) {
+      case ACCESS_EXECUTE:
+        return new File(f.getPath()).setExecutable(enable, owneronly);
+      case ACCESS_WRITE:
+        return new File(f.getPath()).setWritable(enable, owneronly);
+      case ACCESS_READ:
+        return new File(f.getPath()).setReadable(enable, owneronly);
+      case ACCESS_CHECK_EXISTS:
+        throw new IllegalArgumentException("This properties cannot be set!");
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  @Override
+  public long getLastModifiedTime(AmazeFile f) {
+    return new File(f.getPath()).lastModified();
+  }
+
+  @Override
+  public long getLength(AmazeFile f) throws IOException {
+    return new File(f.getPath()).length();
+  }
+
+  @Override
+  public boolean createFileExclusively(String pathname) throws IOException {
+    return new File(pathname).createNewFile();
+  }
+
+  @Override
+  public boolean delete(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    if(f.isDirectory()) {
+      AmazeFile[] children = f.listFiles();
+      if(children != null) {
+        for (AmazeFile child : children) {
+          delete(child, contextProvider);
+        }
+      }
+
+      // Try the normal way
+      if (new File(f.getPath()).delete()) {
+        return true;
+      }
+
+      final Context context = contextProvider.getContext();
+
+      // Try with Storage Access Framework.
+      if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        DocumentFile document = ExternalSdCardOperation.getDocumentFile(f, true, context, UriForSafPersistance.get(context));
+        if (document != null && document.delete()) {
+          return true;
+        }
+      }
+
+      // Try the Kitkat workaround.
+      if (context != null && Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+        ContentResolver resolver = context.getContentResolver();
+        ContentValues values = new ContentValues();
+        values.put(MediaStore.MediaColumns.DATA, f.getAbsolutePath());
+        resolver.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+        // Delete the created entry, such that content provider will delete the file.
+        resolver.delete(
+                MediaStore.Files.getContentUri("external"),
+                MediaStore.MediaColumns.DATA + "=?", new String[]{ f.getAbsolutePath() }
+        );
+      }
+
+      return !f.exists();
+    }
+
+    if (new File(f.getPath()).delete()) {
+      return true;
+    }
+
+    final Context context = contextProvider.getContext();
+
+    // Try with Storage Access Framework.
+    if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            ExternalSdCardOperation.isOnExtSdCard(f, context)
+    ) {
+      DocumentFile document = ExternalSdCardOperation.getDocumentFile(f, false, context, UriForSafPersistance.get(context));
+      if(document == null) {
+        return true;
+      }
+
+      if(document.delete()) {
+        return true;
+      }
+    }
+
+    // Try the Kitkat workaround.
+    if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+      ContentResolver resolver = context.getContentResolver();
+      try {
+        Uri uri = MediaStoreHack.getUriFromFile(f.getAbsolutePath(), context);
+        if (uri == null) {
+          return false;
+        }
+        resolver.delete(uri, null, null);
+        return !f.exists();
+      } catch (SecurityException e) {
+        Log.e(TAG, "Security exception when checking for file " + f.getAbsolutePath(), e);
+      }
+    }
+
+    return false;
+  }
+
+  @Nullable
+  @Override
+  public String[] list(AmazeFile f) {
+    return new File(f.getPath()).list();
+  }
+
+  @Nullable
+  @Override
+  public InputStream getInputStream(AmazeFile f) {
+    try {
+      return new FileInputStream(f.getPath());
+    } catch (FileNotFoundException e) {
+      Log.e(TAG, "Cannot find file", e);
+      return null;
+    }
+  }
+
+  @Nullable
+  @Override
+  public OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    try {
+      if (f.canWrite()) {
+        return new FileOutputStream(f.getPath());
+      } else {
+        final Context context = contextProvider.getContext();
+        if(context == null) {
+          return null;
+        }
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+          // Storage Access Framework
+          DocumentFile targetDocument = ExternalSdCardOperation.getDocumentFile(f, false, context, UriForSafPersistance.get(context));
+
+          if (targetDocument == null){
+            return null;
+          }
+
+          return context.getContentResolver().openOutputStream(targetDocument.getUri());
+        } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+          // Workaround for Kitkat ext SD card
+          return MediaStoreHack.getOutputStream(context, f.getPath());
+        }
+      }
+
+      return null;
+    } catch (FileNotFoundException e) {
+      Log.e(TAG, "Cannot find file", e);
+      return null;
+    }
+  }
+
+  @Override
+  public boolean createDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    if(new File(f.getPath()).mkdir()) {
+      return true;
+    }
+
+    final Context context = contextProvider.getContext();
+
+    // Try with Storage Access Framework.
+    if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            ExternalSdCardOperation.isOnExtSdCard(f, context)) {
+      String preferenceUri = UriForSafPersistance.get(context);
+
+      DocumentFile document = ExternalSdCardOperation.getDocumentFile(f, true, context, preferenceUri);
+      if(document == null) {
+        return false;
+      }
+      // getDocumentFile implicitly creates the directory.
+      return document.exists();
+    }
+
+    // Try the Kitkat workaround.
+    if (context != null && Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
+      try {
+        return MediaStoreHack.mkdir(context, f);
+      } catch (IOException e) {
+        return false;
+      }
+    }
+
+    return false;
+  }
+
+  @Override
+  public boolean rename(AmazeFile f1, AmazeFile f2) {
+    return new File(f1.getPath()).renameTo(new File(f2.getPath()));
+  }
+
+  @Override
+  public boolean setLastModifiedTime(AmazeFile f, long time) {
+    return new File(f.getPath()).setLastModified(time);
+  }
+
+  @Override
+  public boolean setReadOnly(AmazeFile f) {
+    return new File(f.getPath()).setReadOnly();
+  }
+
+  @Override
+  public AmazeFile[] listRoots() {
+    File[] roots = File.listRoots();
+    AmazeFile[] amazeRoots = new AmazeFile[roots.length];
+
+    for (int i = 0; i < roots.length; i++) {
+      amazeRoots[i] = new AmazeFile(roots[i].getPath());
+    }
+
+    return amazeRoots;
+  }
+
+  @Override
+  public long getSpace(AmazeFile f, int t) {
+    switch (t) {
+      case SPACE_TOTAL:
+        return new File(f.getPath()).getTotalSpace();
+      case SPACE_FREE:
+        return new File(f.getPath()).getFreeSpace();
+      case SPACE_USABLE:
+        return new File(f.getPath()).getUsableSpace();
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  @Override
+  public int compare(AmazeFile f1, AmazeFile f2) {
+    return new File(f1.getPath()).compareTo(new File(f2.getPath()));
+  }
+
+  @Override
+  public int hashCode(AmazeFile f) {
+    return new File(f.getPath()).hashCode();
+  }
+}

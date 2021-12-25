@@ -31,6 +31,7 @@ import java.util.regex.Pattern;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 
 import android.net.Uri;
 import android.text.TextUtils;
@@ -285,7 +286,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   }
 
   @Override
-  public boolean delete(AmazeFile f) {
+  public boolean delete(AmazeFile f,  @NonNull ContextProvider contextProvider) {
     try {
       create(f.getPath()).delete();
       return true;
@@ -326,7 +327,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
 
   @Nullable
   @Override
-  public OutputStream getOutputStream(AmazeFile f) {
+  public OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       return create(f.getPath()).getOutputStream();
     } catch (IOException e) {
@@ -336,7 +337,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   }
 
   @Override
-  public boolean createDirectory(AmazeFile f) {
+  public boolean createDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       create(f.getPath()).mkdir();
       return true;

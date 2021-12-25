@@ -75,13 +75,12 @@ object MakeDirectoryOperation {
     fun mkdirs(context: Context, file: HybridFile): Boolean {
         var isSuccessful = true
         when (file.mode) {
-            OpenMode.SMB ->
+            OpenMode.SMB, OpenMode.FILE ->
                 return AmazeFile(file.path).mkdirs()
             OpenMode.OTG -> {
                 val documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true)
                 isSuccessful = documentFile != null
             }
-            OpenMode.FILE -> isSuccessful = mkdir(File(file.getPath()), context)
             else -> isSuccessful = true
         }
         return isSuccessful

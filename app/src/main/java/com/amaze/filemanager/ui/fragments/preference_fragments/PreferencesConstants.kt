@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
+
 object PreferencesConstants {
     // appearance_prefs.xml
     const val FRAGMENT_THEME = "theme"
