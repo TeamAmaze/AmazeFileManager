@@ -18,17 +18,9 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem;
+package com.amaze.filemanager.file_operations.filesystem.filetypes.file;
 
 /** Created by Arpit on 29-06-2015. */
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.Locale;
-
-import com.amaze.filemanager.R;
 
 import android.content.ContentResolver;
 import android.content.ContentValues;
@@ -41,6 +33,16 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.amaze.filemanager.file_operations.R;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Locale;
 
 import kotlin.Deprecated;
 
@@ -59,9 +61,6 @@ import kotlin.Deprecated;
  *
  * @author Jared Rummler <jared.rummler@gmail.com>
  */
-@Deprecated(
-  message = "Use [com.amaze.filemanager.file_operations.filesystem.filetypes.file.MediaStoreHack]"
-)
 public class MediaStoreHack {
   private static final String TAG = "MediaStoreHack";
 
@@ -265,11 +264,11 @@ public class MediaStoreHack {
     return temporaryTrack;
   }
 
-  public static boolean mkdir(final Context context, final File file) throws IOException {
+  public static boolean mkdir(final Context context, final AmazeFile file) throws IOException {
     if (file.exists()) {
       return file.isDirectory();
     }
-    final File tmpFile = new File(file, ".MediaWriteTemp");
+    final File tmpFile = new File(new File(file.getPath()), ".MediaWriteTemp");
     final int albumId = getTemporaryAlbumId(context);
     if (albumId == 0) {
       throw new IOException("Failed to create temporary album id.");

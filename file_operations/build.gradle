@@ -45,6 +45,10 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.documentfile:documentfile:1.0.1'
+    implementation "androidx.preference:preference:$androidXPrefVersion"
+    implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
+
     implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
 
     implementation "com.github.junrar:junrar:$junrarVersion"

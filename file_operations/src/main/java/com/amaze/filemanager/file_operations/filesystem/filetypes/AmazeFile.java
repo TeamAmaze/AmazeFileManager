@@ -25,6 +25,7 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -32,9 +33,13 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Callable;
+import java.util.function.Supplier;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem;
 
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -127,6 +132,8 @@ import kotlin.NotImplementedError;
 public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
 
   public static final String TAG = AmazeFile.class.getSimpleName();
+
+  private static ContextProvider contextProvider;
 
   /** The FileSystem object representing the platform's local file system. */
   private AmazeFileSystem fs;
@@ -410,6 +417,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   private void loadFilesystem(String path) {
     if (SmbAmazeFileSystem.INSTANCE.isPathOfThisFilesystem(path)) {
       fs = SmbAmazeFileSystem.INSTANCE;
+    } else if (FileAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
+      fs = FileAmazeFilesystem.INSTANCE;
     }
   }
 
@@ -800,8 +809,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   }
 
   /**
-   * Deletes the file or directory denoted by this abstract pathname. If this pathname denotes a
-   * directory, then the directory must be empty in order to be deleted.
+   * Deletes the file or directory denoted by this abstract pathname.
    *
    * <p>Note that the {@link java.nio.file.Files} class defines the {@link
    * java.nio.file.Files#delete(Path) delete} method to throw an {@link IOException} when a file
@@ -815,7 +823,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.delete(this);
+    return fs.delete(this, contextProvider);
   }
 
   // Android-added: Additional information about Android behaviour.
@@ -1015,7 +1023,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
 
   @NonNull
   public OutputStream getOutputStream() {
-    return fs.getOutputStream(this);
+    return fs.getOutputStream(this, contextProvider);
   }
 
   /**
@@ -1028,7 +1036,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.createDirectory(this);
+    return fs.createDirectory(this, contextProvider);
   }
 
   /**

@@ -88,7 +88,6 @@ public class PreferencesConstants {
   // START random preferences
   public static final String PREFERENCE_DIRECTORY_SORT_MODE = "dirontop";
   public static final String PREFERENCE_DRAWER_HEADER_PATH = "drawer_header_path";
-  public static final String PREFERENCE_URI = "URI";
   public static final String PREFERENCE_HIDEMODE = "hidemode";
   public static final String PREFERENCE_VIEW = "view";
   public static final String PREFERENCE_NEED_TO_SET_HOME = "needtosethome";

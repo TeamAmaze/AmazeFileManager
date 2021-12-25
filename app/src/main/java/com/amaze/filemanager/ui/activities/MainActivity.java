@@ -85,6 +85,7 @@ import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.file.UriForSafPersistance;
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
@@ -1493,11 +1494,9 @@ public class MainActivity extends PermissionsActivity
         // Get Uri from Storage Access Framework.
         treeUri = intent.getData();
         // Persist URI - this is required for verification of writability.
-        if (treeUri != null)
-          getPrefs()
-              .edit()
-              .putString(PreferencesConstants.PREFERENCE_URI, treeUri.toString())
-              .apply();
+        if (treeUri != null) {
+          UriForSafPersistance.INSTANCE.persist(getApplicationContext(), treeUri);
+        }
       } else {
         // If not confirmed SAF, or if still not writable, then revert settings.
         /* DialogUtil.displayError(getActivity(), R.string.message_dialog_cannot_write_to_folder_saf, false, currentFolder);

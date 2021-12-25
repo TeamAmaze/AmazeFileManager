@@ -20,10 +20,14 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes;
 
+import android.content.Context;
+
+import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.annotation.Native;
+import java.util.concurrent.Callable;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -148,7 +152,7 @@ public abstract class AmazeFileSystem {
    * Delete the file or directory denoted by the given abstract pathname, returning <code>true
    * </code> if and only if the operation succeeds.
    */
-  public abstract boolean delete(AmazeFile f);
+  public abstract boolean delete(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
    * List the elements of the directory denoted by the given abstract pathname. Return an array of
@@ -162,13 +166,13 @@ public abstract class AmazeFileSystem {
   public abstract InputStream getInputStream(AmazeFile f);
 
   @Nullable
-  public abstract OutputStream getOutputStream(AmazeFile f);
+  public abstract OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
    * Create a new directory denoted by the given abstract pathname, returning <code>true</code> if
    * and only if the operation succeeds.
    */
-  public abstract boolean createDirectory(AmazeFile f);
+  public abstract boolean createDirectory(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
    * Rename the file or directory denoted by the first abstract pathname to the second abstract
