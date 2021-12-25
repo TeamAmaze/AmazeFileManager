@@ -25,7 +25,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.ref.WeakReference;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
@@ -33,13 +32,11 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.Callable;
-import java.util.function.Supplier;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem;
 
-import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.Log;
@@ -419,6 +416,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       fs = SmbAmazeFileSystem.INSTANCE;
     } else if (FileAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
       fs = FileAmazeFilesystem.INSTANCE;
+    } else if (DropboxAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
+      fs = DropboxAmazeFilesystem.INSTANCE;
     }
   }
 

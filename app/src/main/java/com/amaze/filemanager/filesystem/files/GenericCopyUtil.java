@@ -130,7 +130,7 @@ public class GenericCopyUtil {
           || mSourceFile.isOneDriveFile()) {
         OpenMode openMode = mSourceFile.getMode();
 
-        CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+        CloudStorage cloudStorage = dataUtils.getAccount(openMode).getAccount();
         bufferedInputStream =
             new BufferedInputStream(
                 cloudStorage.download(CloudUtil.stripPath(openMode, mSourceFile.getPath())));
@@ -273,7 +273,7 @@ public class GenericCopyUtil {
       throws IOException {
     DataUtils dataUtils = DataUtils.getInstance();
     // API doesn't support output stream, we'll upload the file directly
-    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+    CloudStorage cloudStorage = dataUtils.getAccount(openMode).getAccount();
 
     if (mSourceFile.getMode() == openMode) {
       // we're in the same provider, use api method

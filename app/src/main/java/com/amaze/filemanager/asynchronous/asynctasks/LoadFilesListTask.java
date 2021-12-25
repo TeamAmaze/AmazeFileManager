@@ -225,7 +225,7 @@ public class LoadFilesListTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        CloudStorage cloudStorage = dataUtils.getAccount(openmode);
+        CloudStorage cloudStorage = dataUtils.getAccount(openmode).getAccount();
         list = new ArrayList<>();
 
         try {

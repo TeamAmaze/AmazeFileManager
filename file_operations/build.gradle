@@ -61,6 +61,7 @@ dependencies {
         }
     }
 
+    //File
     implementation 'androidx.documentfile:documentfile:1.0.1'
     implementation "androidx.preference:preference:$androidXPrefVersion"
     implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
@@ -79,6 +80,9 @@ dependencies {
 
     //smb
     implementation "eu.agno3.jcifs:jcifs-ng:$jcifsVersion"
+
+    //Cloud
+    implementation "com.cloudrail:cloudrail-si-android:$cloudRailVersion"
 
     implementation 'androidx.multidex:multidex:2.0.1'//Multiple dex files
 

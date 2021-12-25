@@ -196,7 +196,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
-    implementation 'com.cloudrail:cloudrail-si-android:2.22.4'
+    implementation "com.cloudrail:cloudrail-si-android:$cloudRailVersion"
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 

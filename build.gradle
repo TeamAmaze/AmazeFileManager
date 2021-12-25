@@ -33,6 +33,7 @@ buildscript {
         mockkVersion = "1.12.2"
         reactiveXVersion = "2.2.9"
         reactiveXAndroidVersion = "2.1.1"
+        cloudRailVersion = "2.22.4"
     }
     repositories {
         google()

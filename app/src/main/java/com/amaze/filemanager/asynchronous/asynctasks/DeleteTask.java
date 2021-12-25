@@ -172,7 +172,7 @@ public class DeleteTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        CloudStorage cloudStorage = dataUtils.getAccount(file.getMode());
+        CloudStorage cloudStorage = dataUtils.getAccount(file.getMode()).getAccount();
         try {
           cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
           return true;

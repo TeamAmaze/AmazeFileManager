@@ -2105,7 +2105,7 @@ public class MainActivity extends PermissionsActivity
   @Override
   public void deleteConnection(OpenMode service) {
     cloudHandler.clear(service);
-    dataUtils.removeAccount(service);
+    dataUtils.getAccount(service).removeAccount();
 
     runOnUiThread(drawer::refreshDrawer);
   }

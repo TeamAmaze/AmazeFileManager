@@ -36,6 +36,7 @@ import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -334,7 +335,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     ArrayList<String[]> accountAuthenticationList = new ArrayList<>();
 
     if (CloudSheetFragment.isCloudProviderAvailable(mainActivity)) {
-      for (CloudStorage cloudStorage : dataUtils.getAccounts()) {
+      for (Account account : Account.Companion.getAccounts()) {
+        CloudStorage cloudStorage = account.getAccount();
         @DrawableRes int deleteIcon = R.drawable.ic_delete_grey_24dp;
 
         if (cloudStorage instanceof Dropbox) {
@@ -727,7 +729,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
           FileUtils.checkForPath(mainActivity, meta.path, mainActivity.isRootExplorer());
         }
 
-        if (dataUtils.getAccounts().size() > 0
+        if (Account.Companion.getAccounts().size() > 0
             && (meta.path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)
                 || meta.path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)
                 || meta.path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)

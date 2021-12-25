@@ -197,7 +197,7 @@ public abstract class FileUtil {
                     case GDRIVE:
                       OpenMode mode = hFile.getMode();
 
-                      CloudStorage cloudStorage = dataUtils.getAccount(mode);
+                      CloudStorage cloudStorage = dataUtils.getAccount(mode).getAccount();
                       String path = CloudUtil.stripPath(mode, finalFilePath);
                       cloudStorage.upload(path, bufferedInputStream, documentFile.length(), true);
                       retval.add(path);
