@@ -166,7 +166,7 @@ public class FileUtils {
 
     DataUtils dataUtils = DataUtils.getInstance();
     long length = 0;
-    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+    CloudStorage cloudStorage = dataUtils.getAccount(openMode).getAccount();
     for (CloudMetaData metaData :
         cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
 
@@ -328,7 +328,7 @@ public class FileUtils {
       @Override
       protected String doInBackground(String... params) {
         String shareFilePath = params[0];
-        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
+        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode).getAccount();
         return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
       }
 

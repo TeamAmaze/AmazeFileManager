@@ -128,7 +128,7 @@ public class MoveFiles extends AsyncTask<ArrayList<String>, String, Boolean> {
           case GDRIVE:
             DataUtils dataUtils = DataUtils.getInstance();
 
-            CloudStorage cloudStorage = dataUtils.getAccount(mode);
+            CloudStorage cloudStorage = dataUtils.getAccount(mode).getAccount();
             if (baseFile.getMode() == mode) {
               // source and target both in same filesystem, use API method
               try {
