@@ -33,7 +33,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAmazeFilesystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAmazeFilesystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem;
 
@@ -416,7 +420,13 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       fs = SmbAmazeFileSystem.INSTANCE;
     } else if (FileAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
       fs = FileAmazeFilesystem.INSTANCE;
+    } else if (BoxAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
+      fs = DropboxAmazeFilesystem.INSTANCE;
     } else if (DropboxAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
+      fs = DropboxAmazeFilesystem.INSTANCE;
+    } else if (GoogledriveAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
+      fs = DropboxAmazeFilesystem.INSTANCE;
+    } else if (OnedriveAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
       fs = DropboxAmazeFilesystem.INSTANCE;
     }
   }

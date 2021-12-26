@@ -2,6 +2,4 @@ package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedriv
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
 
-object OnedriveAccount: Account() {
-
-}
+object OnedriveAccount: Account()

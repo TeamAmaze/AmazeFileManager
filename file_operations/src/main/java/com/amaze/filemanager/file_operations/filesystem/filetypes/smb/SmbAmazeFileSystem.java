@@ -405,14 +405,4 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
         throw new IllegalStateException();
     }
   }
-
-  @Override
-  public int compare(AmazeFile f1, AmazeFile f2) {
-    return f1.getPath().compareTo(f2.getPath());
-  }
-
-  @Override
-  public int hashCode(AmazeFile f) {
-    return basicUnixHashCode(f.getPath());
-  }
 }
