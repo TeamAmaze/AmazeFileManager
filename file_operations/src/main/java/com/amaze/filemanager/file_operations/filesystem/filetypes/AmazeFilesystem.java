@@ -28,15 +28,28 @@ import java.lang.annotation.Native;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem;
+
 public abstract class AmazeFilesystem {
+
+  public static final char STANDARD_SEPARATOR = '/';
 
   /* -- Normalization and construction -- */
 
+  /**
+   * filesystem prefix
+   */
+  public abstract String getPrefix();
+
   /** Is the path of this filesystem? */
-  public abstract boolean isPathOfThisFilesystem(@NonNull String path);
+  public boolean isPathOfThisFilesystem(@NonNull String path) {
+    return path.startsWith(getPrefix());
+  }
 
   /** Return the local filesystem's name-separator character. */
-  public abstract char getSeparator();
+  public char getSeparator() {
+    return STANDARD_SEPARATOR;
+  }
 
   /**
    * Convert the given pathname string to normal form. If the string is already in normal form then
@@ -49,7 +62,9 @@ public abstract class AmazeFilesystem {
    * Compute the length of this pathname string's prefix. The pathname string must be in normal
    * form.
    */
-  public abstract int prefixLength(@NonNull String path);
+  public int prefixLength(@NonNull String path) {
+    return getPrefix().length();
+  }
 
   /**
    * Resolve the child pathname string against the parent. Both strings must be in normal form, and

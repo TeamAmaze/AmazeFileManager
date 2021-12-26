@@ -44,20 +44,16 @@ import kotlin.NotImplementedError;
 public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   public static final String TAG = CloudAmazeFilesystem.class.getSimpleName();
 
-  public static final char SEPARATOR = '/';
-
-  public abstract String getPrefix();
-
   public abstract Account getAccount();
 
   @Override
-  public boolean isPathOfThisFilesystem(@NonNull String path) {
-    return path.startsWith(getPrefix());
-  }
+  public int prefixLength(@NonNull String path) {
+    if (path.length() == 0) {
+      throw new IllegalArgumentException(
+              "This should never happen, all paths must start with OTG prefix");
+    }
 
-  @Override
-  public char getSeparator() {
-    return SEPARATOR;
+    return super.prefixLength(path);
   }
 
   @NonNull
@@ -71,11 +67,6 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
       canonical = path + "/";
     }
     return canonical.substring(0, canonical.length() - 1);
-  }
-
-  @Override
-  public int prefixLength(@NonNull String path) {
-    return getPrefix().length();
   }
 
   @NonNull

@@ -55,7 +55,6 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
   public static final String TAG = SmbAmazeFilesystem.class.getSimpleName();
 
   public static final String PREFIX = SMB_URI_PREFIX;
-  public static final char SEPARATOR = '/';
   public static final String PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck";
 
   private static final Pattern IPv4_PATTERN =
@@ -68,13 +67,8 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
   private SmbAmazeFilesystem() {}
 
   @Override
-  public boolean isPathOfThisFilesystem(@NonNull String path) {
-    return path.startsWith(SmbAmazeFilesystem.PREFIX);
-  }
-
-  @Override
-  public char getSeparator() {
-    return SEPARATOR;
+  public String getPrefix() {
+    return PREFIX;
   }
 
   @NonNull
@@ -219,8 +213,8 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
 
   public static SmbFile create(String path) throws MalformedURLException {
     String processedPath;
-    if (!path.endsWith(SEPARATOR + "")) {
-      processedPath = path + SEPARATOR;
+    if (!path.endsWith(STANDARD_SEPARATOR + "")) {
+      processedPath = path + STANDARD_SEPARATOR;
     } else {
       processedPath = path;
     }
