@@ -60,11 +60,6 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
     return SEPARATOR;
   }
 
-  @Override
-  public char getPathSeparator() {
-    return 0;
-  }
-
   @NonNull
   @Override
   public String normalize(@NonNull String path) {

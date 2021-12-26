@@ -38,9 +38,6 @@ public abstract class AmazeFileSystem {
   /** Return the local filesystem's name-separator character. */
   public abstract char getSeparator();
 
-  /** Return the local filesystem's path-separator character. */
-  public abstract char getPathSeparator();
-
   /**
    * Convert the given pathname string to normal form. If the string is already in normal form then
    * it is simply returned.

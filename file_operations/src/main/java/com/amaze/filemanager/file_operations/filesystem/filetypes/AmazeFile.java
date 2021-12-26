@@ -166,23 +166,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    */
   public final String separator;
 
-  /**
-   * The system-dependent path-separator character. This field is initialized to contain the first
-   * character of the value of the system property <code>path.separator</code>. This character is
-   * used to separate filenames in a sequence of files given as a <em>path list</em>. On UNIX
-   * systems, this character is <code>':'</code>; on Microsoft Windows systems it is <code>';'
-   * </code>.
-   *
-   * @see java.lang.System#getProperty(java.lang.String)
-   */
-  public final char pathSeparatorChar;
-
-  /**
-   * The system-dependent path-separator character, represented as a string for convenience. This
-   * string contains a single character, namely <code>{@link #pathSeparatorChar}</code>.
-   */
-  public final String pathSeparator;
-
   /** Enum type that indicates the status of a file path. */
   private enum PathStatus {
     INVALID,
@@ -215,8 +198,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     loadFilesystem(pathname);
     separatorChar = fs.getSeparator();
     separator = "" + separatorChar;
-    pathSeparatorChar = fs.getPathSeparator();
-    pathSeparator = "" + pathSeparatorChar;
     this.path = pathname;
     this.prefixLength = prefixLength;
   }
@@ -230,8 +211,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     loadFilesystem(parent.path);
     separatorChar = fs.getSeparator();
     separator = "" + separatorChar;
-    pathSeparatorChar = fs.getPathSeparator();
-    pathSeparator = "" + pathSeparatorChar;
     this.path = fs.resolve(parent.path, child);
     this.prefixLength = parent.prefixLength;
   }
@@ -247,8 +226,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     loadFilesystem(pathname);
     separatorChar = fs.getSeparator();
     separator = "" + separatorChar;
-    pathSeparatorChar = fs.getPathSeparator();
-    pathSeparator = "" + pathSeparatorChar;
     this.path = fs.normalize(pathname);
     this.prefixLength = fs.prefixLength(this.path);
   }
@@ -286,16 +263,12 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       loadFilesystem(parent);
       separatorChar = fs.getSeparator();
       separator = "" + separatorChar;
-      pathSeparatorChar = fs.getPathSeparator();
-      pathSeparator = "" + pathSeparatorChar;
       this.path = fs.resolve(fs.normalize(parent), fs.normalize(child));
       // END Android-changed: b/25859957, app-compat; don't substitute empty parent.
     } else {
       loadFilesystem(child);
       separatorChar = fs.getSeparator();
       separator = "" + separatorChar;
-      pathSeparatorChar = fs.getPathSeparator();
-      pathSeparator = "" + pathSeparatorChar;
       this.path = fs.normalize(child);
     }
     this.prefixLength = fs.prefixLength(this.path);
@@ -326,8 +299,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       loadFilesystem(parent.getPath());
       separatorChar = fs.getSeparator();
       separator = "" + separatorChar;
-      pathSeparatorChar = fs.getPathSeparator();
-      pathSeparator = "" + pathSeparatorChar;
 
       if (parent.path.equals("")) {
         this.path = fs.resolve(fs.getDefaultParent(), fs.normalize(child));
@@ -338,8 +309,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       loadFilesystem(child);
       separatorChar = fs.getSeparator();
       separator = "" + separatorChar;
-      pathSeparatorChar = fs.getPathSeparator();
-      pathSeparator = "" + pathSeparatorChar;
       this.path = fs.normalize(child);
     }
     this.prefixLength = fs.prefixLength(this.path);

@@ -63,11 +63,6 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
     return File.separatorChar;
   }
 
-  @Override
-  public char getPathSeparator() {
-    return File.pathSeparatorChar;
-  }
-
   @NonNull
   @Override
   public String normalize(@NonNull String path) {

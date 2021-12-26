@@ -76,12 +76,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   public char getSeparator() {
     return SEPARATOR;
   }
-
-  @Override
-  public char getPathSeparator() {
-    return 0;
-  }
-
+  
   @NonNull
   @Override
   public String normalize(@NonNull String pathname) {
