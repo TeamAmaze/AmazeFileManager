@@ -92,12 +92,6 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
     return new File(new File(""), "").getPath();
   }
 
-  @NonNull
-  @Override
-  public String fromURIPath(@NonNull String path) {
-    return new File(path).getPath();
-  }
-
   @Override
   public boolean isAbsolute(AmazeFile f) {
     return new File(f.getPath()).isAbsolute();
