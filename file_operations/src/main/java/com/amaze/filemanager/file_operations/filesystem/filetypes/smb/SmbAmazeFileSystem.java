@@ -98,7 +98,8 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   @Override
   public int prefixLength(@NonNull String path) {
     if (path.length() == 0) {
-      throw new IllegalArgumentException("This should never happen, all paths must start with SMB prefix");
+      throw new IllegalArgumentException(
+          "This should never happen, all paths must start with SMB prefix");
     }
 
     Matcher matcherMetadata = METADATA_PATTERN.matcher(path);
@@ -286,7 +287,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   }
 
   @Override
-  public boolean delete(AmazeFile f,  @NonNull ContextProvider contextProvider) {
+  public boolean delete(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       create(f.getPath()).delete();
       return true;

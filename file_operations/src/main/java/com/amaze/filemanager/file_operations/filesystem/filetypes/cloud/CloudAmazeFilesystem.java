@@ -1,28 +1,44 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.List;
+import java.util.Objects;
+
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.CloudMetaData;
+import com.cloudrail.si.types.SpaceAllocation;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAccount;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.CloudMetaData;
-import com.cloudrail.si.types.SpaceAllocation;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.util.List;
-import java.util.Objects;
-
-import jcifs.smb.SmbException;
 import kotlin.NotImplementedError;
 
 public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
@@ -87,7 +103,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
 
   @Override
   public boolean isAbsolute(AmazeFile f) {
-    return true; //We don't accept relative paths for cloud
+    return true; // We don't accept relative paths for cloud
   }
 
   @NonNull
@@ -122,7 +138,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
         r |= BA_DIRECTORY;
       }
 
-      //No way to know if its hidden
+      // No way to know if its hidden
     }
 
     return r;
@@ -185,7 +201,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
     account.delete(noPrefixPath);
-    return true;// This seems to never fail
+    return true; // This seems to never fail
   }
 
   @Nullable
@@ -224,7 +240,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
     account.createFolder(noPrefixPath);
-    return true;// This seems to never fail
+    return true; // This seems to never fail
   }
 
   @Override
@@ -232,7 +248,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     account.move(removePrefix(f1.getPath()), removePrefix(f2.getPath()));
-    return true;// This seems to never fail
+    return true; // This seems to never fail
   }
 
   @Override
@@ -242,7 +258,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
     final String noPrefixPath = removePrefix(f.getPath());
     // TODO check that this actually returns seconds since epoch
     account.getMetadata(noPrefixPath).setContentModifiedAt(time);
-    return true;// This seems to never fail
+    return true; // This seems to never fail
   }
 
   @Override
@@ -252,7 +268,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
 
   @Override
   public AmazeFile[] listRoots() {
-    return new AmazeFile[] { new AmazeFile(getPrefix() + "/") };
+    return new AmazeFile[] {new AmazeFile(getPrefix() + "/")};
   }
 
   @Override
@@ -272,5 +288,4 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
         throw new IllegalStateException();
     }
   }
-
 }

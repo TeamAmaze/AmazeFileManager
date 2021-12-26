@@ -49,7 +49,9 @@ object ExternalSdCardOperation {
         context: Context,
         preferenceUri: String?
     ): DocumentFile? {
-        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) return DocumentFile.fromFile(File(file.path))
+        if (Build.VERSION.SDK_INT <= Build.VERSION_CODES.KITKAT) {
+            return DocumentFile.fromFile(File(file.path))
+        }
         val baseFolder = getExtSdCardFolder(file, context)
         var originalDirectory = false
         if (baseFolder == null) {
