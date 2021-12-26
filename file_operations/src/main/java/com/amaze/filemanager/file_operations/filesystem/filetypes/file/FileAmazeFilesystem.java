@@ -59,6 +59,11 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
+  public String getPrefix() {
+    return null;
+  }
+
+  @Override
   public char getSeparator() {
     return File.separatorChar;
   }
