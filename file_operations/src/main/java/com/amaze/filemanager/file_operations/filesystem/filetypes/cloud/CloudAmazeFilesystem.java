@@ -28,7 +28,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
@@ -41,7 +41,7 @@ import androidx.annotation.Nullable;
 
 import kotlin.NotImplementedError;
 
-public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
+public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   public static final String TAG = CloudAmazeFilesystem.class.getSimpleName();
 
   public static final char SEPARATOR = '/';

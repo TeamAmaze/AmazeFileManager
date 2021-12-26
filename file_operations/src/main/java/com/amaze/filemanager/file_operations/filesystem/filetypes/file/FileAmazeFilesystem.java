@@ -29,7 +29,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 
 import android.content.ContentResolver;
@@ -48,7 +48,7 @@ import androidx.documentfile.provider.DocumentFile;
  * This is in in essence calls to UnixFilesystem, but that class is not public so all calls must go
  * through java.io.File
  */
-public class FileAmazeFilesystem extends AmazeFileSystem {
+public class FileAmazeFilesystem extends AmazeFilesystem {
   public static final FileAmazeFilesystem INSTANCE = new FileAmazeFilesystem();
 
   public static final String TAG = FileAmazeFilesystem.class.getSimpleName();

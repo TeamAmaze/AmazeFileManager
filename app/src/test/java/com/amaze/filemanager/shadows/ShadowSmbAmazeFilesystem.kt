@@ -1,14 +1,13 @@
 package com.amaze.filemanager.shadows
 
 import org.robolectric.annotation.Implements
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem
 import jcifs.context.SingletonContext
 import jcifs.smb.SmbFile
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.robolectric.annotation.Implementation
 
-@Implements(SmbAmazeFileSystem::class)
+@Implements(SmbAmazeFilesystem::class)
 @Suppress
 class ShadowSmbAmazeFilesystem {
 
@@ -16,7 +15,7 @@ class ShadowSmbAmazeFilesystem {
         /**
          * Shadows SmbAmazeFileSystem.create()
          *
-         * @see SmbAmazeFileSystem.create
+         * @see SmbAmazeFilesystem.create
          */
         @JvmStatic
         @Implementation

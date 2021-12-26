@@ -28,7 +28,7 @@ import java.lang.annotation.Native;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public abstract class AmazeFileSystem {
+public abstract class AmazeFilesystem {
 
   /* -- Normalization and construction -- */
 

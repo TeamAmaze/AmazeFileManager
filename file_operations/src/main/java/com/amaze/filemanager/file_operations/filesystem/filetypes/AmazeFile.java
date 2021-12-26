@@ -25,8 +25,6 @@ import java.io.FileFilter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.security.SecureRandom;
 import java.util.ArrayList;
@@ -38,7 +36,7 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -47,7 +45,6 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import kotlin.Deprecated;
 import kotlin.NotImplementedError;
 
 // Android-added: Info about UTF-8 usage in filenames.
@@ -136,7 +133,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   private static ContextProvider contextProvider;
 
   /** The FileSystem object representing the platform's local file system. */
-  private AmazeFileSystem fs;
+  private AmazeFilesystem fs;
 
   /**
    * This abstract pathname's normalized pathname string. A normalized pathname string uses the
@@ -315,8 +312,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   }
 
   private void loadFilesystem(String path) {
-    if (SmbAmazeFileSystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = SmbAmazeFileSystem.INSTANCE;
+    if (SmbAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
+      fs = SmbAmazeFilesystem.INSTANCE;
     } else if (FileAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
       fs = FileAmazeFilesystem.INSTANCE;
     } else if (BoxAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
@@ -515,7 +512,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFileSystem.ACCESS_READ);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_READ);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -531,7 +528,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFileSystem.ACCESS_WRITE);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_WRITE);
   }
 
   /**
@@ -546,7 +543,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     }
 
     // Android-changed: b/25878034 work around SELinux stat64 denial.
-    return fs.checkAccess(this, AmazeFileSystem.ACCESS_CHECK_EXISTS);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_CHECK_EXISTS);
   }
 
   /**
@@ -564,7 +561,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return ((fs.getBooleanAttributes(this) & AmazeFileSystem.BA_DIRECTORY) != 0);
+    return ((fs.getBooleanAttributes(this) & AmazeFilesystem.BA_DIRECTORY) != 0);
   }
 
   /**
@@ -585,7 +582,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return ((fs.getBooleanAttributes(this) & AmazeFileSystem.BA_REGULAR) != 0);
+    return ((fs.getBooleanAttributes(this) & AmazeFilesystem.BA_REGULAR) != 0);
   }
 
   /**
@@ -601,7 +598,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return ((fs.getBooleanAttributes(this) & AmazeFileSystem.BA_HIDDEN) != 0);
+    return ((fs.getBooleanAttributes(this) & AmazeFilesystem.BA_HIDDEN) != 0);
   }
 
   /**
@@ -1016,7 +1013,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.setPermission(this, AmazeFileSystem.ACCESS_WRITE, writable, ownerOnly);
+    return fs.setPermission(this, AmazeFilesystem.ACCESS_WRITE, writable, ownerOnly);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -1064,7 +1061,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.setPermission(this, AmazeFileSystem.ACCESS_READ, readable, ownerOnly);
+    return fs.setPermission(this, AmazeFilesystem.ACCESS_READ, readable, ownerOnly);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -1113,7 +1110,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.setPermission(this, AmazeFileSystem.ACCESS_EXECUTE, executable, ownerOnly);
+    return fs.setPermission(this, AmazeFilesystem.ACCESS_EXECUTE, executable, ownerOnly);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -1150,7 +1147,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFileSystem.ACCESS_EXECUTE);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_EXECUTE);
   }
 
   /* -- Filesystem interface -- */
@@ -1177,7 +1174,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       return 0L;
     }
     try {
-      return fs.getSpace(this, AmazeFileSystem.SPACE_TOTAL);
+      return fs.getSpace(this, AmazeFilesystem.SPACE_TOTAL);
     } catch (NotImplementedError e) {
       Log.w(TAG, "Call to unimplemented fuction", e);
       return -1;
@@ -1202,7 +1199,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return 0L;
     }
-    return fs.getSpace(this, AmazeFileSystem.SPACE_FREE);
+    return fs.getSpace(this, AmazeFilesystem.SPACE_FREE);
   }
 
   // Android-added: Replaced generic platform info with Android specific one.
@@ -1233,7 +1230,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       return 0L;
     }
     try {
-      return fs.getSpace(this, AmazeFileSystem.SPACE_USABLE);
+      return fs.getSpace(this, AmazeFilesystem.SPACE_USABLE);
     } catch (NotImplementedError e) {
       Log.w(TAG, "Call to unimplemented fuction", e);
       return -1;
@@ -1334,7 +1331,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     AmazeFile f;
     do {
       f = TempDirectory.generateFile(prefix, suffix != null ? suffix : ".tmp", tmpdir);
-    } while ((fs.getBooleanAttributes(f) & AmazeFileSystem.BA_EXISTS) != 0);
+    } while ((fs.getBooleanAttributes(f) & AmazeFilesystem.BA_EXISTS) != 0);
 
     if (!fs.createFileExclusively(f.getPath()))
       throw new IOException("Unable to create temporary file");

@@ -30,7 +30,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 
 import android.net.Uri;
@@ -51,8 +51,8 @@ import kotlin.NotImplementedError;
  * "smb://<user>:<password>@<ip>/?disableIpcSigningCheck=true" or
  * "smb://<ip>/?disableIpcSigningCheck=true" Relative paths are not supported
  */
-public class SmbAmazeFileSystem extends AmazeFileSystem {
-  public static final String TAG = SmbAmazeFileSystem.class.getSimpleName();
+public class SmbAmazeFilesystem extends AmazeFilesystem {
+  public static final String TAG = SmbAmazeFilesystem.class.getSimpleName();
 
   public static final String PREFIX = SMB_URI_PREFIX;
   public static final char SEPARATOR = '/';
@@ -63,20 +63,20 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
   private static final Pattern METADATA_PATTERN =
       Pattern.compile("([?][a-zA-Z]+=(\")?[a-zA-Z]+(\")?)+");
 
-  public static final SmbAmazeFileSystem INSTANCE = new SmbAmazeFileSystem();
+  public static final SmbAmazeFilesystem INSTANCE = new SmbAmazeFilesystem();
 
-  private SmbAmazeFileSystem() {}
+  private SmbAmazeFilesystem() {}
 
   @Override
   public boolean isPathOfThisFilesystem(@NonNull String path) {
-    return path.startsWith(SmbAmazeFileSystem.PREFIX);
+    return path.startsWith(SmbAmazeFilesystem.PREFIX);
   }
 
   @Override
   public char getSeparator() {
     return SEPARATOR;
   }
-  
+
   @NonNull
   @Override
   public String normalize(@NonNull String pathname) {
@@ -298,7 +298,7 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     final String prefix = f.getPath().substring(0, prefixLength(f.getPath()));
 
     for (int i = 0; i < list.length; i++) {
-      list[i] = SmbAmazeFileSystem.INSTANCE.normalize(prefix + getSeparator() + list[i]);
+      list[i] = SmbAmazeFilesystem.INSTANCE.normalize(prefix + getSeparator() + list[i]);
     }
 
     return list;
