@@ -340,7 +340,16 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   @NonNull
   public String getName() {
     int index = path.lastIndexOf(separatorChar);
-    if (index < prefixLength) return path.substring(prefixLength);
+    if (index < prefixLength) {
+      return path.substring(prefixLength);
+    }
+    if(path.endsWith("/"))  {
+      int newIndex = path.substring(0, path.length()-2).lastIndexOf(separatorChar);
+      if (newIndex < prefixLength) {
+        return path.substring(prefixLength);
+      }
+      return path.substring(newIndex + 1);
+    }
     return path.substring(index + 1);
   }
 

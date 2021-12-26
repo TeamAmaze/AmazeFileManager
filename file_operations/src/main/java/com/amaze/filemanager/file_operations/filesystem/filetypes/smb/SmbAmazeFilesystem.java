@@ -82,7 +82,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
       Log.e(TAG, "Error getting SMB file canonical path", e);
       canonical = pathname.substring(0, prefixLength(pathname)) + "/";
     }
-    return canonical.substring(0, canonical.length() - 1);
+    return canonical;
   }
 
   @Override
