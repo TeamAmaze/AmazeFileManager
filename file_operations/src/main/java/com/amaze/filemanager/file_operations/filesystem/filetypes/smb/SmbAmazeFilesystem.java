@@ -40,6 +40,7 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import jcifs.CIFSContext;
 import jcifs.SmbConstants;
 import jcifs.smb.NtlmPasswordAuthenticator;
 import jcifs.smb.SmbException;
@@ -222,10 +223,19 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     boolean disableIpcSigningCheck =
         Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK));
     String userInfo = uri.getUserInfo();
-    return new SmbFile(
-        path.indexOf('?') < 0 ? path : path.substring(0, path.indexOf('?')),
-        CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-            .withCredentials(createFrom(userInfo)));
+
+    final String noExtraInfoPath;
+    if (path.contains("?")) {
+      noExtraInfoPath = path.substring(0, path.indexOf('?'));
+    } else {
+      noExtraInfoPath = path;
+    }
+
+    final CIFSContext context = CifsContexts
+            .createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
+            .withCredentials(createFrom(userInfo));
+
+    return new SmbFile(noExtraInfoPath, context);
   }
 
   /**
