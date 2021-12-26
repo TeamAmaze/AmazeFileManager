@@ -345,75 +345,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     this.prefixLength = fs.prefixLength(this.path);
   }
 
-  /**
-   * Creates a new <tt>AmazeFile</tt> instance by converting the given <tt>file:</tt> URI into an
-   * abstract pathname.
-   *
-   * <p>The exact form of a <tt>file:</tt> URI is system-dependent, hence the transformation
-   * performed by this constructor is also system-dependent.
-   *
-   * <p>For a given abstract pathname <i>f</i> it is guaranteed that
-   *
-   * <blockquote>
-   *
-   * <tt> new AmazeFile(</tt><i>&nbsp;f</i><tt>.{@link #toURI()
-   * toURI}()).equals(</tt><i>&nbsp;f</i><tt>.{@link #getAbsoluteFile() getAbsoluteFile}()) </tt>
-   *
-   * </blockquote>
-   *
-   * so long as the original abstract pathname, the URI, and the new abstract pathname are all
-   * created in (possibly different invocations of) the same Java virtual machine. This relationship
-   * typically does not hold, however, when a <tt>file:</tt> URI that is created in a virtual
-   * machine on one operating system is converted into an abstract pathname in a virtual machine on
-   * a different operating system.
-   *
-   * @param uri An absolute, hierarchical URI with a scheme equal to <tt>"file"</tt>, a non-empty
-   *     path component, and undefined authority, query, and fragment components
-   * @throws IllegalArgumentException If the preconditions on the parameter do not hold
-   * @see #toURI()
-   * @see java.net.URI
-   */
-  public AmazeFile(@NonNull URI uri) {
-    // Check our many preconditions
-    if (!uri.isAbsolute()) {
-      throw new IllegalArgumentException("URI is not absolute");
-    }
-    if (uri.isOpaque()) {
-      throw new IllegalArgumentException("URI is not hierarchical");
-    }
-    String scheme = uri.getScheme();
-    if ((scheme == null) || !scheme.equalsIgnoreCase("file")) {
-      throw new IllegalArgumentException("URI scheme is not \"file\"");
-    }
-    if (uri.getAuthority() != null) {
-      throw new IllegalArgumentException("URI has an authority component");
-    }
-    if (uri.getFragment() != null) {
-      throw new IllegalArgumentException("URI has a fragment component");
-    }
-    if (uri.getQuery() != null) {
-      throw new IllegalArgumentException("URI has a query component");
-    }
-    String p = uri.getPath();
-    if (p.equals("")) {
-      throw new IllegalArgumentException("URI path component is empty");
-    }
-
-    loadFilesystem(uri.toString());
-    separatorChar = fs.getSeparator();
-    separator = "" + separatorChar;
-    pathSeparatorChar = fs.getPathSeparator();
-    pathSeparator = "" + pathSeparatorChar;
-
-    // Okay, now initialize
-    p = fs.fromURIPath(p);
-    if (File.separatorChar != '/') {
-      p = p.replace('/', File.separatorChar);
-    }
-    this.path = fs.normalize(p);
-    this.prefixLength = fs.prefixLength(this.path);
-  }
-
   private void loadFilesystem(String path) {
     if (SmbAmazeFileSystem.INSTANCE.isPathOfThisFilesystem(path)) {
       fs = SmbAmazeFileSystem.INSTANCE;
@@ -599,55 +530,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (!p.startsWith("/")) p = "/" + p;
     if (!p.endsWith("/") && isDirectory) p = p + "/";
     return p;
-  }
-
-  /**
-   * Constructs a <tt>file:</tt> URI that represents this abstract pathname.
-   *
-   * <p>The exact form of the URI is system-dependent. If it can be determined that the file denoted
-   * by this abstract pathname is a directory, then the resulting URI will end with a slash.
-   *
-   * <p>For a given abstract pathname <i>f</i>, it is guaranteed that
-   *
-   * <blockquote>
-   *
-   * <tt> new {@link #AmazeFile(java.net.URI)
-   * File}(</tt><i>&nbsp;f</i><tt>.toURI()).equals(</tt><i>&nbsp;f</i><tt>.{@link #getAbsoluteFile()
-   * getAbsoluteFile}()) </tt>
-   *
-   * </blockquote>
-   *
-   * so long as the original abstract pathname, the URI, and the new abstract pathname are all
-   * created in (possibly different invocations of) the same Java virtual machine. Due to the
-   * system-dependent nature of abstract pathnames, however, this relationship typically does not
-   * hold when a <tt>file:</tt> URI that is created in a virtual machine on one operating system is
-   * converted into an abstract pathname in a virtual machine on a different operating system.
-   *
-   * <p>Note that when this abstract pathname represents a UNC pathname then all components of the
-   * UNC (including the server name component) are encoded in the {@code URI} path. The authority
-   * component is undefined, meaning that it is represented as {@code null}. The {@link Path} class
-   * defines the {@link Path#toUri toUri} method to encode the server name in the authority
-   * component of the resulting {@code URI}. The {@link #toPath toPath} method may be used to obtain
-   * a {@code Path} representing this abstract pathname.
-   *
-   * @return An absolute, hierarchical URI with a scheme equal to <tt>"file"</tt>, a path
-   *     representing this abstract pathname, and undefined authority, query, and fragment
-   *     components
-   * @see #AmazeFile(java.net.URI)
-   * @see java.net.URI
-   * @see java.net.URI#toURL()
-   */
-  @Deprecated(message = "Left for reference, do not use")
-  @NonNull
-  public URI toURI() {
-    try {
-      AmazeFile f = getAbsoluteFile();
-      String sp = slashify(f.getPath(), f.isDirectory());
-      if (sp.startsWith("//")) sp = "//" + sp;
-      return new URI("file", null, sp, null);
-    } catch (URISyntaxException x) {
-      throw new RuntimeException(x); // Can't happen
-    }
   }
 
   /* -- Attribute accessors -- */

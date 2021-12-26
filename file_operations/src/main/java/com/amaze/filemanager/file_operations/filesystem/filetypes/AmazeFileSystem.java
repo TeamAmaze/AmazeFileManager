@@ -68,14 +68,6 @@ public abstract class AmazeFileSystem {
   @NonNull
   public abstract String getDefaultParent();
 
-  /**
-   * Post-process the given URI path string if necessary. This is used on win32, e.g., to transform
-   * "/c:/foo" into "c:/foo". The path string still has slash separators; code in the File class
-   * will translate them after this method returns.
-   */
-  @NonNull
-  public abstract String fromURIPath(@NonNull String path);
-
   /* -- Path operations -- */
 
   /** Tell whether or not the given abstract pathname is absolute. */

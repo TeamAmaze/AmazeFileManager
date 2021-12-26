@@ -95,12 +95,6 @@ public abstract class CloudAmazeFilesystem extends AmazeFileSystem {
     return getPrefix() + "/";
   }
 
-  @NonNull
-  @Override
-  public String fromURIPath(@NonNull String path) {
-    throw new NotImplementedError();
-  }
-
   @Override
   public boolean isAbsolute(AmazeFile f) {
     return true; // We don't accept relative paths for cloud

@@ -129,12 +129,6 @@ public class SmbAmazeFileSystem extends AmazeFileSystem {
     throw new IllegalStateException("There is no default SMB path");
   }
 
-  @NonNull
-  @Override
-  public String fromURIPath(@NonNull String path) {
-    throw new NotImplementedError();
-  }
-
   @Override
   public boolean isAbsolute(AmazeFile f) {
     return f.getPath().startsWith(PREFIX);
