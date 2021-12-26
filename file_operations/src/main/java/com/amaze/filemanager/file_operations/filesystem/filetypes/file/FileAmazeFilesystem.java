@@ -1,21 +1,24 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.file;
-
-import android.content.ContentResolver;
-import android.content.ContentValues;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Build;
-import android.preference.PreferenceManager;
-import android.provider.MediaStore;
-import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
-
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,11 +27,26 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.concurrent.Callable;
+
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFileSystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
+
+import android.content.ContentResolver;
+import android.content.ContentValues;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
+import android.provider.MediaStore;
+import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
 
 /**
- * This is in in essence calls to UnixFilesystem, but that class is not public
- * so all calls must go through java.io.File
+ * This is in in essence calls to UnixFilesystem, but that class is not public so all calls must go
+ * through java.io.File
  */
 public class FileAmazeFilesystem extends AmazeFileSystem {
   public static final FileAmazeFilesystem INSTANCE = new FileAmazeFilesystem();
@@ -170,9 +188,9 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
 
   @Override
   public boolean delete(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    if(f.isDirectory()) {
+    if (f.isDirectory()) {
       AmazeFile[] children = f.listFiles();
-      if(children != null) {
+      if (children != null) {
         for (AmazeFile child : children) {
           delete(child, contextProvider);
         }
@@ -187,7 +205,9 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
 
       // Try with Storage Access Framework.
       if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        DocumentFile document = ExternalSdCardOperation.getDocumentFile(f, true, context, UriForSafPersistance.get(context));
+        DocumentFile document =
+            ExternalSdCardOperation.getDocumentFile(
+                f, true, context, UriForSafPersistance.get(context));
         if (document != null && document.delete()) {
           return true;
         }
@@ -202,9 +222,9 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
 
         // Delete the created entry, such that content provider will delete the file.
         resolver.delete(
-                MediaStore.Files.getContentUri("external"),
-                MediaStore.MediaColumns.DATA + "=?", new String[]{ f.getAbsolutePath() }
-        );
+            MediaStore.Files.getContentUri("external"),
+            MediaStore.MediaColumns.DATA + "=?",
+            new String[] {f.getAbsolutePath()});
       }
 
       return !f.exists();
@@ -217,15 +237,17 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
     final Context context = contextProvider.getContext();
 
     // Try with Storage Access Framework.
-    if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-            ExternalSdCardOperation.isOnExtSdCard(f, context)
-    ) {
-      DocumentFile document = ExternalSdCardOperation.getDocumentFile(f, false, context, UriForSafPersistance.get(context));
-      if(document == null) {
+    if (context != null
+        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+        && ExternalSdCardOperation.isOnExtSdCard(f, context)) {
+      DocumentFile document =
+          ExternalSdCardOperation.getDocumentFile(
+              f, false, context, UriForSafPersistance.get(context));
+      if (document == null) {
         return true;
       }
 
-      if(document.delete()) {
+      if (document.delete()) {
         return true;
       }
     }
@@ -273,15 +295,17 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
         return new FileOutputStream(f.getPath());
       } else {
         final Context context = contextProvider.getContext();
-        if(context == null) {
+        if (context == null) {
           return null;
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
           // Storage Access Framework
-          DocumentFile targetDocument = ExternalSdCardOperation.getDocumentFile(f, false, context, UriForSafPersistance.get(context));
+          DocumentFile targetDocument =
+              ExternalSdCardOperation.getDocumentFile(
+                  f, false, context, UriForSafPersistance.get(context));
 
-          if (targetDocument == null){
+          if (targetDocument == null) {
             return null;
           }
 
@@ -301,19 +325,21 @@ public class FileAmazeFilesystem extends AmazeFileSystem {
 
   @Override
   public boolean createDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    if(new File(f.getPath()).mkdir()) {
+    if (new File(f.getPath()).mkdir()) {
       return true;
     }
 
     final Context context = contextProvider.getContext();
 
     // Try with Storage Access Framework.
-    if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
-            ExternalSdCardOperation.isOnExtSdCard(f, context)) {
+    if (context != null
+        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+        && ExternalSdCardOperation.isOnExtSdCard(f, context)) {
       String preferenceUri = UriForSafPersistance.get(context);
 
-      DocumentFile document = ExternalSdCardOperation.getDocumentFile(f, true, context, preferenceUri);
-      if(document == null) {
+      DocumentFile document =
+          ExternalSdCardOperation.getDocumentFile(f, true, context, preferenceUri);
+      if (document == null) {
         return false;
       }
       // getDocumentFile implicitly creates the directory.
