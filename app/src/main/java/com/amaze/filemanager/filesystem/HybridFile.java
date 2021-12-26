@@ -292,6 +292,10 @@ public class HybridFile {
         return ((HybridFileParcelable) this).getSize();
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         try {
           return new AmazeFile(path).length();
         } catch (IOException e) {
@@ -306,26 +310,6 @@ public class HybridFile {
         break;
       case OTG:
         s = OTGUtil.getDocumentFile(path, context, false).length();
-        break;
-      case DROPBOX:
-        s = DropboxAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path))
-                .getSize();
-        break;
-      case BOX:
-        s = BoxAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path))
-                .getSize();
-        break;
-      case ONEDRIVE:
-        s = OnedriveAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path))
-                .getSize();
-        break;
-      case GDRIVE:
-        s = GoogledriveAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                .getSize();
         break;
       default:
         break;
@@ -354,6 +338,10 @@ public class HybridFile {
     switch (mode) {
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return new AmazeFile(path).getName();
       case ROOT:
         return getFile().getName();
@@ -401,6 +389,10 @@ public class HybridFile {
       case SMB:
       case FILE:
       case ROOT:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return new AmazeFile(path).getParent();
       case SFTP:
       default:
@@ -435,6 +427,10 @@ public class HybridFile {
         return isDirectory(AppConfig.getInstance());
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return new AmazeFile(path).isDirectory();
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
@@ -485,6 +481,10 @@ public class HybridFile {
         return returnValue == null ? false : returnValue;
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return new AmazeFile(path).isDirectory();
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
@@ -494,26 +494,6 @@ public class HybridFile {
         break;
       case OTG:
         isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
-        break;
-      case DROPBOX:
-        isDirectory = DropboxAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path))
-                .getFolder();
-        break;
-      case BOX:
-        isDirectory = BoxAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path))
-                .getFolder();
-        break;
-      case GDRIVE:
-        isDirectory = GoogledriveAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                .getFolder();
-        break;
-      case ONEDRIVE:
-        isDirectory = OnedriveAccount.INSTANCE.getAccount()
-                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path))
-                .getFolder();
         break;
       default:
         isDirectory = getFile().isDirectory();
@@ -565,6 +545,10 @@ public class HybridFile {
         return returnValue == null ? 0L : returnValue;
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return FileUtils.folderSize(new AmazeFile(getPath()));
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
@@ -582,14 +566,6 @@ public class HybridFile {
             OpenMode.DOCUMENT_FILE,
             file -> totalBytes.addAndGet(FileUtils.getBaseFileSize(file, context)));
         break;
-      case DROPBOX:
-      case BOX:
-      case GDRIVE:
-      case ONEDRIVE:
-        size =
-            FileUtils.folderSizeCloud(
-                mode, dataUtils.getAccount(mode).getAccount().getMetadata(CloudUtil.stripPath(mode, path)));
-        break;
       default:
         return 0l;
     }
@@ -603,14 +579,11 @@ public class HybridFile {
       case SMB:
       case FILE:
       case ROOT:
-        return new AmazeFile(path).getUsableSpace();
       case DROPBOX:
       case BOX:
-      case GDRIVE:
       case ONEDRIVE:
-        SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAccount().getAllocation();
-        size = spaceAllocation.getTotal() - spaceAllocation.getUsed();
-        break;
+      case GDRIVE:
+        return new AmazeFile(path).getUsableSpace();
       case SFTP:
         final Long returnValue =
             SshClientUtils.<Long>execute(
@@ -662,14 +635,11 @@ public class HybridFile {
       case SMB:
       case FILE:
       case ROOT:
-        return new AmazeFile(path).getTotalSpace();
       case DROPBOX:
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        SpaceAllocation spaceAllocation = dataUtils.getAccount(mode).getAccount().getAllocation();
-        size = spaceAllocation.getTotal();
-        break;
+        return new AmazeFile(path).getTotalSpace();
       case SFTP:
         final Long returnValue =
             SshClientUtils.<Long>execute(
@@ -833,6 +803,10 @@ public class HybridFile {
                 });
         break;
       case SMB:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         ArrayList<HybridFileParcelable> result = new ArrayList<>();
         for (AmazeFile smbFile1 : new AmazeFile(getPath()).listFiles()) {
           try {
@@ -856,17 +830,6 @@ public class HybridFile {
             OpenMode.DOCUMENT_FILE,
             file -> hybridFileParcelables.add(file));
         arrayList = hybridFileParcelables;
-        break;
-      case DROPBOX:
-      case BOX:
-      case GDRIVE:
-      case ONEDRIVE:
-        try {
-          arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(mode).getAccount(), mode);
-        } catch (CloudPluginException e) {
-          e.printStackTrace();
-          arrayList = new ArrayList<>();
-        }
         break;
       default:
         arrayList = RootHelper.getFilesList(path, isRoot, true);
@@ -923,6 +886,10 @@ public class HybridFile {
         break;
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return new AmazeFile(getPath()).getInputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
@@ -943,23 +910,6 @@ public class HybridFile {
           e.printStackTrace();
           inputStream = null;
         }
-        break;
-      case DROPBOX:
-        CloudStorage cloudStorageDropbox = DropboxAccount.INSTANCE.getAccount();
-        Log.d(getClass().getSimpleName(), CloudUtil.stripPath(OpenMode.DROPBOX, path));
-        inputStream = cloudStorageDropbox.download(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-        break;
-      case BOX:
-        CloudStorage cloudStorageBox = BoxAccount.INSTANCE.getAccount();
-        inputStream = cloudStorageBox.download(CloudUtil.stripPath(OpenMode.BOX, path));
-        break;
-      case GDRIVE:
-        CloudStorage cloudStorageGDrive = GoogledriveAccount.INSTANCE.getAccount();
-        inputStream = cloudStorageGDrive.download(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-        break;
-      case ONEDRIVE:
-        CloudStorage cloudStorageOneDrive = OnedriveAccount.INSTANCE.getAccount();
-        inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
         break;
       default:
         try {
@@ -1008,6 +958,10 @@ public class HybridFile {
             });
       case SMB:
       case FILE:
+      case DROPBOX:
+      case BOX:
+      case ONEDRIVE:
+      case GDRIVE:
         return new AmazeFile(path).getOutputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
@@ -1062,20 +1016,8 @@ public class HybridFile {
 
       //noinspection SimplifiableConditionalExpression
       exists = executionReturn == null ? false : executionReturn;
-    } else if (isSmb() || isLocal()) {
+    } else if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile() || isOneDriveFile()) {
       return new AmazeFile(path).exists();
-    } else if (isDropBoxFile()) {
-      CloudStorage cloudStorageDropbox = DropboxAccount.INSTANCE.getAccount();
-      exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-    } else if (isBoxFile()) {
-      CloudStorage cloudStorageBox = BoxAccount.INSTANCE.getAccount();
-      exists = cloudStorageBox.exists(CloudUtil.stripPath(OpenMode.BOX, path));
-    } else if (isGoogleDriveFile()) {
-      CloudStorage cloudStorageGoogleDrive = GoogledriveAccount.INSTANCE.getAccount();
-      exists = cloudStorageGoogleDrive.exists(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-    } else if (isOneDriveFile()) {
-      CloudStorage cloudStorageOneDrive = OnedriveAccount.INSTANCE.getAccount();
-      exists = cloudStorageOneDrive.exists(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
     } else if (isRoot()) {
       return RootHelper.fileExists(path);
     }
@@ -1121,7 +1063,7 @@ public class HybridFile {
   }
 
   public boolean setLastModified(final long date) {
-    if (isSmb() || isLocal()) {
+    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
       return new AmazeFile(path).setLastModified(date);
     }
     File f = getFile();
@@ -1143,7 +1085,7 @@ public class HybridFile {
               return null;
             }
           });
-    } else if (isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile()) {
+    } else if (isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
       new AmazeFile(path).mkdirs();
     } else if (isOtgFile()) {
       if (!exists(context)) {
@@ -1165,34 +1107,6 @@ public class HybridFile {
           parentDirectory.createDirectory(getName(context));
         }
       }
-    } else if (isDropBoxFile()) {
-      CloudStorage cloudStorageDropbox = DropboxAccount.INSTANCE.getAccount();
-      try {
-        cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if (isBoxFile()) {
-      CloudStorage cloudStorageBox = BoxAccount.INSTANCE.getAccount();
-      try {
-        cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if (isOneDriveFile()) {
-      CloudStorage cloudStorageOneDrive = OnedriveAccount.INSTANCE.getAccount();
-      try {
-        cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if (isGoogleDriveFile()) {
-      CloudStorage cloudStorageGdrive = GoogledriveAccount.INSTANCE.getAccount();
-      try {
-        cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
     } else {
       throw new IllegalStateException();
     }
@@ -1213,7 +1127,7 @@ public class HybridFile {
                         }
                       });
       return retval != null && retval;
-    } else if (isSmb() || isLocal() || (isRoot() && !rootmode)) {
+    } else if (isSmb() || isLocal() || (isRoot() && !rootmode) || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
       return new AmazeFile(path).delete();
     } else if (isRoot() && rootmode) {
       setMode(OpenMode.ROOT);

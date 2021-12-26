@@ -87,7 +87,7 @@ public abstract class AmazeFileSystem {
 
   /**
    * Resolve the given abstract pathname into absolute form. Invoked by the getAbsolutePath and
-   * getCanonicalPath methods in the F class.
+   * getCanonicalPath methods in the {@link AmazeFile} class.
    */
   @NonNull
   public abstract String resolve(AmazeFile f);
@@ -192,25 +192,33 @@ public abstract class AmazeFileSystem {
    */
   public abstract boolean setReadOnly(AmazeFile f);
 
+  protected final String removePrefix(@NonNull String path) {
+    return path.substring(prefixLength(path));
+  }
+
   /* -- Filesystem interface -- */
 
   /** List the available filesystem roots. */
   public abstract AmazeFile[] listRoots();
 
   /* -- Disk usage -- */
-  @Native public static final int SPACE_TOTAL = 0;
-  @Native public static final int SPACE_FREE = 1;
-  @Native public static final int SPACE_USABLE = 2;
+  public static final int SPACE_TOTAL = 0;
+  public static final int SPACE_FREE = 1;
+  public static final int SPACE_USABLE = 2;
 
   public abstract long getSpace(AmazeFile f, int t);
 
   /* -- Basic infrastructure -- */
 
   /** Compare two abstract pathnames lexicographically. */
-  public abstract int compare(AmazeFile f1, AmazeFile f2);
+  public int compare(AmazeFile f1, AmazeFile f2) {
+    return f1.getPath().compareTo(f2.getPath());
+  }
 
   /** Compute the hash code of an abstract pathname. */
-  public abstract int hashCode(AmazeFile f);
+  public int hashCode(AmazeFile f) {
+    return basicUnixHashCode(f.getPath());
+  }
 
   // Flags for enabling/disabling performance optimizations for file
   // name canonicalization
