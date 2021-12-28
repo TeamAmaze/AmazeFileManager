@@ -41,6 +41,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.RecycleUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -555,6 +556,15 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               mainActivity.finish();
             }),
         R.drawable.ic_settings_white_24dp,
+        null);
+
+    addNewItem(
+        menu,
+        LASTGROUP,
+        order++,
+        R.string.recycle_bin,
+        new MenuMetadata(RecycleUtils.Companion.getRecycleBinPath()),
+        R.drawable.ic_restore,
         null);
 
     for (int i = 0; i < navView.getMenu().size(); i++) {

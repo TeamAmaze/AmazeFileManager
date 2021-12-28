@@ -157,7 +157,10 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         ArrayList<HybridFileParcelable> positions = new ArrayList<>();
         positions.add(rowItem.generateBaseFile());
 
-        RecycleUtils.Companion.moveToRecycleBin(positions, context, mainActivity);
+        if (positions.get(0).getPath().contains(RecycleUtils.Companion.getRecycleBinPath()))
+          GeneralDialogCreation.deleteFilesDialog(
+              context, mainActivity, positions, utilitiesProvider.getAppTheme());
+        else RecycleUtils.Companion.moveToRecycleBin(positions, context, mainActivity);
 
         return true;
       case R.id.open_with:

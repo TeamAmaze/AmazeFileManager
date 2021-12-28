@@ -91,7 +91,7 @@ class RecycleUtils {
             moveToRecycleBin(positions, mainActivity.applicationContext, mainActivity)
         }
 
-        private fun getRecycleBinPath(): String {
+        fun getRecycleBinPath(): String {
             var s = Environment.getExternalStorageDirectory()
                 .toString() + File.separator + ".AmazeFileManager"
 

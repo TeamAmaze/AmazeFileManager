@@ -42,7 +42,6 @@ import com.afollestad.materialdialogs.Theme;
 import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.HiddenAdapter;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
 import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
@@ -205,7 +204,7 @@ public class GeneralDialogCreation {
   public static void deleteFilesDialog(
       @NonNull final Context context,
       @NonNull final MainActivity mainActivity,
-      @NonNull final List<LayoutElementParcelable> positions,
+      @NonNull final ArrayList<HybridFileParcelable> positions,
       @NonNull AppTheme appTheme) {
 
     final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
@@ -260,22 +259,22 @@ public class GeneralDialogCreation {
       protected Void doInBackground(Void... params) {
 
         for (int i = 0; i < positions.size(); i++) {
-          final LayoutElementParcelable layoutElement = positions.get(i);
-          itemsToDelete.add(layoutElement.generateBaseFile());
+          final HybridFileParcelable fileParcelable = positions.get(i);
+          itemsToDelete.add(fileParcelable);
 
           // Build list of directories to delete.
-          if (layoutElement.isDirectory) {
+          if (fileParcelable.isDirectory()) {
             // Don't add newline between category and list.
             if (counterDirectories != 0) {
               directories.append("\n");
             }
 
-            long sizeDirectory = layoutElement.generateBaseFile().folderSize(context);
+            long sizeDirectory = fileParcelable.folderSize(context);
 
             directories
                 .append(++counterDirectories)
                 .append(". ")
-                .append(layoutElement.title)
+                .append(fileParcelable.getName())
                 .append(" (")
                 .append(Formatter.formatFileSize(context, sizeDirectory))
                 .append(")");
@@ -290,11 +289,11 @@ public class GeneralDialogCreation {
             files
                 .append(++counterFiles)
                 .append(". ")
-                .append(layoutElement.title)
+                .append(fileParcelable.getName())
                 .append(" (")
-                .append(layoutElement.size)
+                .append(Formatter.formatFileSize(context, fileParcelable.getSize()))
                 .append(")");
-            sizeTotal += layoutElement.longSize;
+            sizeTotal += fileParcelable.getSize();
           }
 
           publishProgress(sizeTotal, counterFiles, counterDirectories, files, directories);

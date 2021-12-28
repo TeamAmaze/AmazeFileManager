@@ -38,6 +38,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.PasteHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
+import com.amaze.filemanager.filesystem.files.RecycleUtils.Companion.getRecycleBinPath
 import com.amaze.filemanager.filesystem.files.RecycleUtils.Companion.moveToRecycleBin
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
@@ -272,10 +273,18 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     for (checkedItem in checkedItems)
                         items.add(checkedItem.generateBaseFile())
 
-                    moveToRecycleBin(
-                        items,
-                        mainActivity
-                    )
+                    if (items[0].path.contains(getRecycleBinPath()))
+                        GeneralDialogCreation.deleteFilesDialog(
+                            mainActivity,
+                            mainActivity,
+                            items,
+                            mainActivity.utilsProvider.appTheme
+                        )
+                    else
+                        moveToRecycleBin(
+                            items,
+                            mainActivity
+                        )
 
                     true
                 }
