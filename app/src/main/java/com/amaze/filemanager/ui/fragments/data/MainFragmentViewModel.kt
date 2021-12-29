@@ -29,6 +29,7 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
+import com.amaze.filemanager.filesystem.files.RecycleUtils
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.DataUtils
 import java.util.*
@@ -194,6 +195,13 @@ class MainFragmentViewModel : ViewModel() {
             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_BOX + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_DROPBOX + "/" == currentPath
+    }
+
+    /**
+     * Check if current path is on the recycle bin
+     */
+    fun getIsOnRecycleBin(): Boolean {
+        return currentPath?.contains(RecycleUtils.getRecycleBinPath()) == true
     }
 
     /**

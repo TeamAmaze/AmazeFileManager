@@ -132,90 +132,101 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainFragmentViewModel.fileCount
                     ) R.string.deselect_all else R.string.select_all
                 )
-            if (mainFragmentViewModel.openMode != OpenMode.FILE) {
-                hideOption(R.id.addshortcut, menu)
-                hideOption(R.id.compress, menu)
-                return true
-            }
-            if (mainActivity.mReturnIntent &&
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-            ) {
-                showOption(R.id.openmulti, menu)
-            }
-            // tv.setText(checkedItems.size());
-            if (!mainFragmentViewModel.results) {
-                hideOption(R.id.openparent, menu)
-                if (checkedItems.size == 1) {
-                    showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openwith, menu)
-                    showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems().get(0).isDirectory) {
-                        hideOption(R.id.openwith, menu)
-                        hideOption(R.id.share, menu)
-                        hideOption(R.id.openmulti, menu)
-                    }
-                    if (mainActivity.mReturnIntent) {
-                        if (Build.VERSION.SDK_INT >= 16) showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
-                } else {
-                    showOption(R.id.share, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                        showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
-                    for (e in mainFragmentViewModel.getCheckedItems()) {
-                        if (e.isDirectory) {
-                            hideOption(R.id.share, menu)
-                            hideOption(R.id.openmulti, menu)
-                        }
-                    }
-                    hideOption(R.id.openwith, menu)
-                    hideOption(R.id.addshortcut, menu)
-                }
-            } else {
-                if (checkedItems.size == 1) {
-                    showOption(R.id.addshortcut, menu)
-                    showOption(R.id.openparent, menu)
-                    showOption(R.id.openwith, menu)
-                    showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
-                        hideOption(R.id.openwith, menu)
-                        hideOption(R.id.share, menu)
-                        hideOption(R.id.openmulti, menu)
-                    }
-                    if (mainActivity.mReturnIntent &&
-                        Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
-                    ) {
-                        showOption(R.id.openmulti, menu)
-                    }
-                } else {
-                    hideOption(R.id.openparent, menu)
-                    hideOption(R.id.addshortcut, menu)
-                    if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
-                        showOption(
-                            R.id.openmulti,
-                            menu
-                        )
-                    }
-                    for (e in mainFragmentViewModel.getCheckedItems()) {
-                        if (e.isDirectory) {
-                            hideOption(R.id.share, menu)
-                            hideOption(R.id.openmulti, menu)
-                        }
-                    }
-                    hideOption(R.id.openwith, menu)
-                }
-            }
-            if (mainFragmentViewModel.openMode != OpenMode.FILE) {
-                hideOption(R.id.addshortcut, menu)
+
+            if (mainFragmentViewModel.getIsOnRecycleBin()) {
+
+                hideOption(R.id.cpy, menu)
+                hideOption(R.id.cut, menu)
+                hideOption(R.id.share, menu)
                 hideOption(R.id.compress, menu)
                 hideOption(R.id.hide, menu)
                 hideOption(R.id.addshortcut, menu)
+            } else {
+                if (mainFragmentViewModel.openMode != OpenMode.FILE) {
+                    hideOption(R.id.addshortcut, menu)
+                    hideOption(R.id.compress, menu)
+                    return true
+                }
+                if (mainActivity.mReturnIntent &&
+                    Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                ) {
+                    showOption(R.id.openmulti, menu)
+                }
+                // tv.setText(checkedItems.size());
+                if (!mainFragmentViewModel.results) {
+                    hideOption(R.id.openparent, menu)
+                    if (checkedItems.size == 1) {
+                        showOption(R.id.addshortcut, menu)
+                        showOption(R.id.openwith, menu)
+                        showOption(R.id.share, menu)
+                        if (mainFragmentViewModel.getCheckedItems().get(0).isDirectory) {
+                            hideOption(R.id.openwith, menu)
+                            hideOption(R.id.share, menu)
+                            hideOption(R.id.openmulti, menu)
+                        }
+                        if (mainActivity.mReturnIntent) {
+                            if (Build.VERSION.SDK_INT >= 16) showOption(
+                                R.id.openmulti,
+                                menu
+                            )
+                        }
+                    } else {
+                        showOption(R.id.share, menu)
+                        if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+                            showOption(
+                                R.id.openmulti,
+                                menu
+                            )
+                        }
+                        for (e in mainFragmentViewModel.getCheckedItems()) {
+                            if (e.isDirectory) {
+                                hideOption(R.id.share, menu)
+                                hideOption(R.id.openmulti, menu)
+                            }
+                        }
+                        hideOption(R.id.openwith, menu)
+                        hideOption(R.id.addshortcut, menu)
+                    }
+                } else {
+                    if (checkedItems.size == 1) {
+                        showOption(R.id.addshortcut, menu)
+                        showOption(R.id.openparent, menu)
+                        showOption(R.id.openwith, menu)
+                        showOption(R.id.share, menu)
+                        if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
+                            hideOption(R.id.openwith, menu)
+                            hideOption(R.id.share, menu)
+                            hideOption(R.id.openmulti, menu)
+                        }
+                        if (mainActivity.mReturnIntent &&
+                            Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN
+                        ) {
+                            showOption(R.id.openmulti, menu)
+                        }
+                    } else {
+                        hideOption(R.id.openparent, menu)
+                        hideOption(R.id.addshortcut, menu)
+                        if (mainActivity.mReturnIntent && Build.VERSION.SDK_INT >= 16) {
+                            showOption(
+                                R.id.openmulti,
+                                menu
+                            )
+                        }
+                        for (e in mainFragmentViewModel.getCheckedItems()) {
+                            if (e.isDirectory) {
+                                hideOption(R.id.share, menu)
+                                hideOption(R.id.openmulti, menu)
+                            }
+                        }
+                        hideOption(R.id.openwith, menu)
+                    }
+                }
+                if (mainFragmentViewModel.openMode != OpenMode.FILE) {
+                    hideOption(R.id.addshortcut, menu)
+                    hideOption(R.id.compress, menu)
+                    hideOption(R.id.hide, menu)
+                    hideOption(R.id.addshortcut, menu)
+                }
             }
         }
         return true // Return false if nothing is done

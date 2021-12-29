@@ -44,6 +44,7 @@ import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.RecycleUtils;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.colors.ColorUtils;
@@ -1296,38 +1297,55 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     popupMenu.inflate(R.menu.item_extras);
     String description = rowItem.desc.toLowerCase();
 
-    if (rowItem.isDirectory) {
+    if (rowItem.generateBaseFile().getPath().contains(RecycleUtils.Companion.getRecycleBinPath())) {
+
       popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+
+      popupMenu.getMenu().findItem(R.id.cut).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.cpy).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.rename).setVisible(false);
+
+      popupMenu.getMenu().findItem(R.id.encrypt).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.decrypt).setVisible(false);
+
       popupMenu.getMenu().findItem(R.id.share).setVisible(false);
-
-      if (mainFrag.getMainActivity().mReturnIntent) {
-        popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
-      }
-    } else {
       popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+      popupMenu.getMenu().findItem(R.id.ex).setVisible(false);
 
-      if (description.endsWith(fileExtensionZip)
-          || description.endsWith(fileExtensionJar)
-          || description.endsWith(fileExtensionApk)
-          || description.endsWith(fileExtensionApks)
-          || description.endsWith(fileExtensionRar)
-          || description.endsWith(fileExtensionTar)
-          || description.endsWith(fileExtensionGzipTarLong)
-          || description.endsWith(fileExtensionGzipTarShort)
-          || description.endsWith(fileExtensionBzip2TarLong)
-          || description.endsWith(fileExtensionBzip2TarShort)
-          || description.endsWith(fileExtensionXz)
-          || description.endsWith(fileExtensionLzma)
-          || description.endsWith(fileExtension7zip))
-        popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+    } else {
+
+      if (rowItem.isDirectory) {
+        popupMenu.getMenu().findItem(R.id.open_with).setVisible(false);
+        popupMenu.getMenu().findItem(R.id.share).setVisible(false);
+
+        if (mainFrag.getMainActivity().mReturnIntent) {
+          popupMenu.getMenu().findItem(R.id.return_select).setVisible(true);
+        }
+      } else {
+        popupMenu.getMenu().findItem(R.id.book).setVisible(false);
+
+        if (description.endsWith(fileExtensionZip)
+            || description.endsWith(fileExtensionJar)
+            || description.endsWith(fileExtensionApk)
+            || description.endsWith(fileExtensionApks)
+            || description.endsWith(fileExtensionRar)
+            || description.endsWith(fileExtensionTar)
+            || description.endsWith(fileExtensionGzipTarLong)
+            || description.endsWith(fileExtensionGzipTarShort)
+            || description.endsWith(fileExtensionBzip2TarLong)
+            || description.endsWith(fileExtensionBzip2TarShort)
+            || description.endsWith(fileExtensionXz)
+            || description.endsWith(fileExtensionLzma)
+            || description.endsWith(fileExtension7zip))
+          popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
+      }
+
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+        if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+          popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
+        else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+      }
     }
-
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
-        popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-      else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
-    }
-
     popupMenu.show();
   }
 

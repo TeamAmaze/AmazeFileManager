@@ -95,6 +95,7 @@ import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.RecycleUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -995,9 +996,35 @@ public class MainActivity extends PermissionsActivity
       } else {
         s.setTitle(getResources().getString(R.string.listview));
       }
+
+      appbar.getBottomBar().setClickListener();
+
+      search.setVisible(true);
+
+      if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
+      menu.findItem(R.id.search).setVisible(true);
+      menu.findItem(R.id.home).setVisible(true);
+      menu.findItem(R.id.history).setVisible(true);
+      menu.findItem(R.id.sethome).setVisible(true);
+      menu.findItem(R.id.sort).setVisible(true);
+      menu.findItem(R.id.hiddenitems).setVisible(true);
+      menu.findItem(R.id.view).setVisible(true);
+      menu.findItem(R.id.extract).setVisible(false);
+      invalidatePasteSnackbar(true);
+      findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
+
       try {
         executeWithMainFragment(
             mainFragment -> {
+              if (mainFragment
+                  .getCurrentPath()
+                  .contains(RecycleUtils.Companion.getRecycleBinPath())) {
+
+                menu.findItem(R.id.history).setVisible(false);
+                menu.findItem(R.id.sethome).setVisible(false);
+                menu.findItem(R.id.hiddenitems).setVisible(false);
+              }
+
               if (mainFragment.getMainFragmentViewModel().isList()) {
                 s.setTitle(R.string.gridview);
               } else {
@@ -1019,20 +1046,6 @@ public class MainActivity extends PermissionsActivity
         e.printStackTrace();
       }
 
-      appbar.getBottomBar().setClickListener();
-
-      search.setVisible(true);
-      if (indicator_layout != null) indicator_layout.setVisibility(View.VISIBLE);
-      menu.findItem(R.id.search).setVisible(true);
-      menu.findItem(R.id.home).setVisible(true);
-      menu.findItem(R.id.history).setVisible(true);
-      menu.findItem(R.id.sethome).setVisible(true);
-      menu.findItem(R.id.sort).setVisible(true);
-      menu.findItem(R.id.hiddenitems).setVisible(true);
-      menu.findItem(R.id.view).setVisible(true);
-      menu.findItem(R.id.extract).setVisible(false);
-      invalidatePasteSnackbar(true);
-      findViewById(R.id.buttonbarframe).setVisibility(View.VISIBLE);
     } else if (fragment instanceof AppsListFragment
         || fragment instanceof ProcessViewerFragment
         || fragment instanceof FtpServerFragment) {
