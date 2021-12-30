@@ -343,8 +343,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (index < prefixLength) {
       return path.substring(prefixLength);
     }
-    if(path.endsWith("/"))  {
-      int newIndex = path.substring(0, path.length()-2).lastIndexOf(separatorChar);
+    if (path.endsWith("/")) {
+      int newIndex = path.substring(0, path.length() - 2).lastIndexOf(separatorChar);
       if (newIndex < prefixLength) {
         return path.substring(prefixLength);
       }
@@ -373,8 +373,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       }
       return null;
     }
-    if(path.endsWith("/"))  {
-      int newIndex = path.substring(0, path.length()-2).lastIndexOf(separatorChar);
+    if (path.endsWith("/")) {
+      int newIndex = path.substring(0, path.length() - 2).lastIndexOf(separatorChar);
       if (newIndex < prefixLength) {
         if ((prefixLength > 0) && (path.length() > prefixLength)) {
           return path.substring(0, prefixLength);

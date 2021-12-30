@@ -61,6 +61,7 @@ import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
 import androidx.annotation.RequiresApi;
+import androidx.annotation.WorkerThread;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -146,6 +147,7 @@ public class CryptUtil {
    * @param targetPath the directory in which file is to be decrypted the source's parent in normal
    *     case
    */
+  @WorkerThread
   public CryptUtil(
       Context context,
       HybridFileParcelable baseFile,
@@ -173,6 +175,7 @@ public class CryptUtil {
    * @param sourceFile the source file to decrypt
    * @param targetDirectory the target directory inside which we're going to decrypt
    */
+  @WorkerThread
   private void decrypt(
       final Context context, HybridFileParcelable sourceFile, HybridFile targetDirectory)
       throws GeneralSecurityException, IOException {

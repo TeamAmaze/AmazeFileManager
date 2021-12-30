@@ -58,6 +58,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
+import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 
 /** Base class to handle file copy. */
@@ -94,6 +95,7 @@ public class GenericCopyUtil {
    *     even on low memory but don't map the whole file to memory but parts of it, and transfer
    *     each part instead.
    */
+  @WorkerThread
   private void startCopy(
       boolean lowOnMemory, @NonNull OnLowMemory onLowMemory, @NonNull UpdatePosition updatePosition)
       throws IOException {
@@ -296,6 +298,7 @@ public class GenericCopyUtil {
    * @param sourceFile the source file, which is to be copied
    * @param targetFile the target file
    */
+  @WorkerThread
   public void copy(
       HybridFileParcelable sourceFile,
       HybridFile targetFile,

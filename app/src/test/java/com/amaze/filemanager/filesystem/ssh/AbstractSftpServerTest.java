@@ -45,9 +45,11 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.filesystem.ssh.test.TestKeyProvider;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
+import android.content.Context;
 import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
@@ -59,6 +61,7 @@ public abstract class AbstractSftpServerTest {
 
   protected static TestKeyProvider hostKeyProvider;
 
+  protected Context context;
   protected int serverPort;
 
   @BeforeClass
@@ -68,6 +71,7 @@ public abstract class AbstractSftpServerTest {
 
   @Before
   public void setUp() throws IOException {
+    context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     serverPort =
         createSshServer(
             new VirtualFileSystemFactory(

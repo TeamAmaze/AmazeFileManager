@@ -46,14 +46,13 @@ import androidx.test.platform.app.InstrumentationRegistry;
 public class UtilsHandlerTest {
 
   private UtilitiesDatabase utilitiesDatabase;
-
   private UtilsHandler utilsHandler;
+  private Context context;
 
   @Before
   public void setUp() {
-    Context ctx = InstrumentationRegistry.getInstrumentation().getTargetContext();
-    utilitiesDatabase = UtilitiesDatabase.initialize(ctx);
-    utilsHandler = new UtilsHandler(ctx, utilitiesDatabase);
+    utilitiesDatabase = UtilitiesDatabase.initialize(context);
+    utilsHandler = new UtilsHandler(context, utilitiesDatabase);
     utilitiesDatabase.getOpenHelper().getWritableDatabase().execSQL("DELETE FROM sftp;");
     utilitiesDatabase.getOpenHelper().getWritableDatabase().execSQL("DELETE FROM bookmarks;");
   }
@@ -113,7 +112,7 @@ public class UtilsHandlerTest {
   }
 
   private void performEncryptUriTest(@NonNull final String origPath) {
-    String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
+    String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(context, origPath);
 
     utilsHandler.saveToDatabase(
         new OperationData(

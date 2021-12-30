@@ -38,7 +38,7 @@ class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
      */
     @Test
     fun testDeleteSshFileOk() {
-        MockSshConnectionPools.prepareCanDeleteScenario()
+        MockSshConnectionPools.prepareCanDeleteScenario(context)
         doTestDeleteFileOk(createSshHybridFileParcelable())
     }
 
@@ -49,7 +49,7 @@ class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
      */
     @Test
     fun testDeleteSshFileAccessDenied() {
-        MockSshConnectionPools.prepareCannotDeleteScenario()
+        MockSshConnectionPools.prepareCannotDeleteScenario(context)
         doTestDeleteFileAccessDenied(createSshHybridFileParcelable())
     }
 

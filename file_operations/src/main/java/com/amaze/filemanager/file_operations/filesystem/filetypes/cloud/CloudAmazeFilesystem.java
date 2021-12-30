@@ -50,7 +50,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   public int prefixLength(@NonNull String path) {
     if (path.length() == 0) {
       throw new IllegalArgumentException(
-              "This should never happen, all paths must start with OTG prefix");
+          "This should never happen, all paths must start with OTG prefix");
     }
 
     return super.prefixLength(path);

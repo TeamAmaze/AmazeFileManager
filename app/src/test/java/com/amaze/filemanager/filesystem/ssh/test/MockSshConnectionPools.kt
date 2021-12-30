@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ssh.test
 
+import android.content.Context
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
@@ -37,17 +38,17 @@ object MockSshConnectionPools {
 
     private val userKeyPair = TestUtils.createKeyPair()
 
-    fun prepareCanDeleteScenario() {
-        doPrepareSSHClientInternal(true)
+    fun prepareCanDeleteScenario(context: Context) {
+        doPrepareSSHClientInternal(context, true)
     }
 
-    fun prepareCannotDeleteScenario() {
-        doPrepareSSHClientInternal(false)
+    fun prepareCannotDeleteScenario(context: Context) {
+        doPrepareSSHClientInternal(context,false)
     }
 
     // Yes, idiot hardcoded paths. Shall expand as more test cases arrive.
-    private fun doPrepareSSHClientInternal(canDelete: Boolean) {
-        TestUtils.saveSshConnectionSettings(hostKeyPair, "user", "password", userKeyPair.private)
+    private fun doPrepareSSHClientInternal(context: Context, canDelete: Boolean) {
+        TestUtils.saveSshConnectionSettings(context, hostKeyPair, "user", "password", userKeyPair.private)
 
         val fileAttributes = mock(FileAttributes::class.java).apply {
             `when`(type).thenReturn(FileMode.Type.DIRECTORY)

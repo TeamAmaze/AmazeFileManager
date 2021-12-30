@@ -231,8 +231,8 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
       noExtraInfoPath = path;
     }
 
-    final CIFSContext context = CifsContexts
-            .createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
+    final CIFSContext context =
+        CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
             .withCredentials(createFrom(userInfo));
 
     return new SmbFile(noExtraInfoPath, context);

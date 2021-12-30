@@ -38,6 +38,7 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
+import android.content.Context;
 import android.os.Looper;
 
 import androidx.annotation.NonNull;
@@ -59,6 +60,7 @@ public abstract class TestUtils {
   }
 
   public static void saveSshConnectionSettings(
+          @NonNull Context context,
       @NonNull KeyPair hostKeyPair,
       @NonNull String validUsername,
       @Nullable String validPassword,
@@ -89,7 +91,7 @@ public abstract class TestUtils {
       utilsHandler.saveToDatabase(
           new OperationData(
               UtilsHandler.Operation.SFTP,
-              SshClientUtils.encryptSshPathAsNecessary(fullUri.toString()),
+              SshClientUtils.encryptSshPathAsNecessary(context, fullUri.toString()),
               "Test",
               SecurityUtils.getFingerprint(hostKeyPair.getPublic()),
               null,
@@ -98,7 +100,7 @@ public abstract class TestUtils {
       utilsHandler.saveToDatabase(
           new OperationData(
               UtilsHandler.Operation.SFTP,
-              SshClientUtils.encryptSshPathAsNecessary(fullUri.toString()),
+              SshClientUtils.encryptSshPathAsNecessary(context, fullUri.toString()),
               "Test",
               SecurityUtils.getFingerprint(hostKeyPair.getPublic()),
               "id_rsa",

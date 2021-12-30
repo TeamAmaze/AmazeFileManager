@@ -33,7 +33,7 @@ class SshOperationsTest : AbstractOperationsTestBase() {
      */
     @Test
     fun testRenameFileAccessDenied() {
-        MockSshConnectionPools.prepareCannotDeleteScenario()
+        MockSshConnectionPools.prepareCannotDeleteScenario(context)
         super.testRenameFileAccessDenied(
             OpenMode.SFTP,
             "ssh://user:password@127.0.0.1:22222/tmp/old.file",

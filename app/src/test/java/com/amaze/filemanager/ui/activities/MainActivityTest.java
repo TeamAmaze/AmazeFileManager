@@ -63,6 +63,7 @@ import com.amaze.filemanager.test.TestUtils;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.utils.SmbUtil;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
@@ -71,6 +72,7 @@ import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -98,9 +100,11 @@ public class MainActivityTest {
   };
 
   private MockedConstruction<SftpConnectDialog> mc;
+  private static Context context;
 
   @Before
   public void setUp() {
+    context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     if (Build.VERSION.SDK_INT >= N) TestUtils.initializeInternalStorage();
     RxJavaPlugins.reset();
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
@@ -166,7 +170,7 @@ public class MainActivityTest {
     doCallRealMethod().when(activity).showSftpDialog(any(), any(), anyBoolean());
 
     activity.showSftpDialog(
-        "SCP/SFTP Connection", SshClientUtils.encryptSshPathAsNecessary(uri), true);
+        "SCP/SFTP Connection", SshClientUtils.encryptSshPathAsNecessary(context, uri), true);
     assertEquals(1, mc.constructed().size());
     SftpConnectDialog mocked = mc.constructed().get(0);
     for (String key : BUNDLE_KEYS) {

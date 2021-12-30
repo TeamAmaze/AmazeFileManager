@@ -67,7 +67,7 @@ import org.robolectric.shadows.ShadowToast
 )
 abstract class AbstractDeleteTaskTestBase {
 
-    private lateinit var ctx: Context
+    protected lateinit var context: Context
 
     /**
      * Test case setup.
@@ -76,7 +76,7 @@ abstract class AbstractDeleteTaskTestBase {
      */
     @Before
     fun setUp() {
-        ctx = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
         RxJavaPlugins.reset()
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxAndroidPlugins.reset()
@@ -92,7 +92,7 @@ abstract class AbstractDeleteTaskTestBase {
     }
 
     protected fun doTestDeleteFileOk(file: HybridFileParcelable) {
-        val task = DeleteTask(ctx)
+        val task = DeleteTask(context)
         val result = task.doInBackground(arrayListOf(file))
         assertTrue(result.result)
         assertNull(result.exception)
@@ -100,7 +100,7 @@ abstract class AbstractDeleteTaskTestBase {
         task.onPostExecute(result)
         shadowOf(Looper.getMainLooper()).idle()
         assertNotNull(ShadowToast.getLatestToast())
-        assertEquals(ctx.getString(R.string.done), ShadowToast.getTextOfLatestToast())
+        assertEquals(context.getString(R.string.done), ShadowToast.getTextOfLatestToast())
     }
 
     protected fun doTestDeleteFileAccessDenied(file: HybridFileParcelable) {
@@ -111,7 +111,7 @@ abstract class AbstractDeleteTaskTestBase {
             shadowOf(Looper.getMainLooper()).idle()
         }.moveToState(Lifecycle.State.STARTED).onActivity { activity ->
 
-            val task = DeleteTask(ctx)
+            val task = DeleteTask(context)
             val result = task.doInBackground(ArrayList(listOf(file)))
             if (result.result != null) {
                 assertFalse(result.result)
@@ -138,7 +138,7 @@ abstract class AbstractDeleteTaskTestBase {
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                shadowOf(ctx.getSystemService(StorageManager::class.java))
+                shadowOf(context.getSystemService(StorageManager::class.java))
                     .resetStorageVolumeList()
         }
     }

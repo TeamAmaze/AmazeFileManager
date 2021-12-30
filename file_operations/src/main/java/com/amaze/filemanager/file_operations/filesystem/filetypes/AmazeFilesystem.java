@@ -28,17 +28,13 @@ import java.lang.annotation.Native;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem;
-
 public abstract class AmazeFilesystem {
 
   public static final char STANDARD_SEPARATOR = '/';
 
   /* -- Normalization and construction -- */
 
-  /**
-   * filesystem prefix
-   */
+  /** filesystem prefix */
   public abstract String getPrefix();
 
   /** Is the path of this filesystem? */

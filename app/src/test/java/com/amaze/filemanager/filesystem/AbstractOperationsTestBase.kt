@@ -67,7 +67,7 @@ import org.robolectric.shadows.ShadowSQLiteConnection
 )
 abstract class AbstractOperationsTestBase {
 
-    protected lateinit var ctx: Context
+    protected lateinit var context: Context
 
     protected val blankCallback = object : Operations.ErrorCallBack {
         override fun exists(file: HybridFile?) = Unit
@@ -84,7 +84,7 @@ abstract class AbstractOperationsTestBase {
      */
     @Before
     fun setUp() {
-        ctx = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
         ShadowPausedAsyncTask.overrideExecutor(InlineExecutorService())
         RxJavaPlugins.reset()
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
@@ -136,7 +136,7 @@ abstract class AbstractOperationsTestBase {
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
-                Shadows.shadowOf(ctx.getSystemService(StorageManager::class.java))
+                Shadows.shadowOf(context.getSystemService(StorageManager::class.java))
                     .resetStorageVolumeList()
         }
     }

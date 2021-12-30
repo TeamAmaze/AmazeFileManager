@@ -24,41 +24,29 @@ import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOE
 import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.security.KeyPair;
-import java.util.List;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.FolderState;
-import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.utils.SmbUtil;
-
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 
-import io.reactivex.Single;
-import io.reactivex.schedulers.Schedulers;
+import com.amaze.filemanager.file_operations.filesystem.FolderState;
+import com.amaze.filemanager.utils.SmbUtil;
+
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
+
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.security.KeyPair;
+
+import io.reactivex.Single;
+import io.reactivex.schedulers.Schedulers;
 
 public abstract class SshClientUtils {
 
@@ -74,6 +62,7 @@ public abstract class SshClientUtils {
    * @param <T> Type of return value
    * @return Template execution results
    */
+  @WorkerThread
   public static <T> T execute(@NonNull SshClientTemplate<T> template) {
     SSHClient client = SshConnectionPool.INSTANCE.getConnection(extractBaseUriFrom(template.url));
     if (client == null) {
@@ -81,12 +70,8 @@ public abstract class SshClientUtils {
     }
     T retval = null;
     if (client != null) {
-      final SSHClient _client = client;
       try {
-        retval =
-            Single.fromCallable(() -> template.execute(_client))
-                .subscribeOn(Schedulers.io())
-                .blockingGet();
+        retval = template.execute(client);
       } catch (Exception e) {
         Log.e(TAG, "Error executing template method", e);
       } finally {
@@ -105,11 +90,12 @@ public abstract class SshClientUtils {
    * @param <T> Type of return value
    * @return Template execution results
    */
+  @WorkerThread
   public static <T> T execute(@NonNull final SshClientSessionTemplate<T> template) {
     return execute(
         new SshClientTemplate<T>(template.url, false) {
           @Override
-          public T execute(SSHClient client) {
+          public T execute(@NonNull SSHClient client) {
             Session session = null;
             T retval = null;
             try {
@@ -139,6 +125,7 @@ public abstract class SshClientUtils {
    * @return Template execution results
    */
   @Nullable
+  @WorkerThread
   public static <T> T execute(@NonNull final SFtpClientTemplate<T> template) {
     final SshClientTemplate<T> sshClient =
         new SshClientTemplate<T>(template.url, false) {
@@ -175,12 +162,12 @@ public abstract class SshClientUtils {
    * @param fullUri SSH URL
    * @return SSH URL with the password (if exists) encrypted
    */
-  public static String encryptSshPathAsNecessary(@NonNull String fullUri) {
+  public static String encryptSshPathAsNecessary(@NonNull Context context, @NonNull String fullUri) {
     String uriWithoutProtocol =
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
       return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri).replace("\n", "")
+          ? SmbUtil.getSmbEncryptedPath(context, fullUri).replace("\n", "")
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
       Log.e(TAG, "Error encrypting path", e);
@@ -195,12 +182,12 @@ public abstract class SshClientUtils {
    * @param fullUri SSH URL
    * @return SSH URL with the password (if exists) decrypted
    */
-  public static String decryptSshPathAsNecessary(@NonNull String fullUri) {
+  public static String decryptSshPathAsNecessary(@NonNull Context context, @NonNull String fullUri) {
     String uriWithoutProtocol =
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
       return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri)
+          ? SmbUtil.getSmbDecryptedPath(context, fullUri)
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
       Log.e(TAG, "Error decrypting path", e);
@@ -260,47 +247,6 @@ public abstract class SshClientUtils {
     }
   }
 
-  public static void launchSftp(final HybridFileParcelable baseFile, final MainActivity activity) {
-    final CloudStreamer streamer = CloudStreamer.getInstance();
-
-    new Thread(
-            () -> {
-              try {
-                streamer.setStreamSrc(
-                    baseFile.getInputStream(activity),
-                    baseFile.getName(activity),
-                    baseFile.length(activity));
-                activity.runOnUiThread(
-                    () -> {
-                      try {
-                        File file =
-                            new File(SshClientUtils.extractRemotePathFrom(baseFile.getPath()));
-                        Uri uri =
-                            Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
-                        Intent i = new Intent(Intent.ACTION_VIEW);
-                        i.setDataAndType(
-                            uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-                        PackageManager packageManager = activity.getPackageManager();
-                        List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
-                        if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
-                        else
-                          Toast.makeText(
-                                  activity,
-                                  activity.getResources().getString(R.string.smb_launch_error),
-                                  Toast.LENGTH_SHORT)
-                              .show();
-                      } catch (ActivityNotFoundException e) {
-                        e.printStackTrace();
-                      }
-                    });
-              } catch (Exception e) {
-
-                e.printStackTrace();
-              }
-            })
-        .start();
-  }
-
   // Decide the SSH URL depends on password/selected KeyPair
   public static String deriveSftpPathFrom(
       @NonNull String hostname,
@@ -332,6 +278,7 @@ public abstract class SshClientUtils {
     return isDirectory;
   }
 
+  @WorkerThread
   public static @FolderState int checkFolder(@NonNull String path) {
     return Single.fromCallable(
             () ->

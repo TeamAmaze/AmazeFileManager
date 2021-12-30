@@ -184,6 +184,7 @@ class SftpConnectDialog : DialogFragment() {
                 selectPemBTN.text = selectedParsedKeyPairName
             }
             oldPath = SshClientUtils.encryptSshPathAsNecessary(
+                    requireContext(),
                 SshClientUtils.deriveSftpPathFrom(
                     requireArguments().getString(ARG_ADDRESS)!!,
                     requireArguments().getInt(ARG_PORT),
@@ -204,6 +205,7 @@ class SftpConnectDialog : DialogFragment() {
                 .negativeText(R.string.delete)
                 .onNegative { dialog: MaterialDialog, _: DialogAction? ->
                     val path = SshClientUtils.encryptSshPathAsNecessary(
+                            requireContext(),
                         SshClientUtils.deriveSftpPathFrom(
                             hostname,
                             port,
@@ -434,7 +436,7 @@ class SftpConnectDialog : DialogFragment() {
             password,
             selectedParsedKeyPair
         )
-        val encryptedPath = SshClientUtils.encryptSshPathAsNecessary(path)
+        val encryptedPath = SshClientUtils.encryptSshPathAsNecessary(requireContext(), path)
         return if (!isEdit) {
             saveSshConnection(
                 connectionSettings,

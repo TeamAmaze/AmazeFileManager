@@ -26,6 +26,8 @@ import static android.os.Build.VERSION_CODES.P;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import android.content.Context;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.util.concurrent.TimeUnit;
@@ -46,6 +48,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.platform.app.InstrumentationRegistry;
 
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
@@ -57,8 +60,11 @@ import io.reactivex.schedulers.Schedulers;
     sdk = {JELLY_BEAN, KITKAT, P})
 public class ShadowCryptUtilTest {
 
+  private static Context context;
+
   @Before
   public void setUp() {
+    context = InstrumentationRegistry.getInstrumentation().getTargetContext();
     RxJavaPlugins.reset();
     RxJavaPlugins.setIoSchedulerHandler(scheduler -> Schedulers.trampoline());
     RxAndroidPlugins.reset();
@@ -92,7 +98,7 @@ public class ShadowCryptUtilTest {
     utilsHandler.saveToDatabase(
         new OperationData(
             UtilsHandler.Operation.SFTP,
-            SshClientUtils.encryptSshPathAsNecessary(url),
+            SshClientUtils.encryptSshPathAsNecessary(context, url),
             "Test",
             fingerprint,
             null,
@@ -104,7 +110,7 @@ public class ShadowCryptUtilTest {
             () -> {
               assertEquals(
                   fingerprint,
-                  utilsHandler.getSshHostKey(SshClientUtils.encryptSshPathAsNecessary(url)));
+                  utilsHandler.getSshHostKey(SshClientUtils.encryptSshPathAsNecessary(context, url)));
               utilitiesDatabase.close();
               return true;
             });

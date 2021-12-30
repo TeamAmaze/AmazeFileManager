@@ -26,6 +26,8 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
 import com.amaze.filemanager.filesystem.files.CryptUtil
+import io.reactivex.Completable
+import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import java.security.KeyPair
@@ -155,15 +157,14 @@ object SshConnectionPool {
      * @see MainActivity.exit
      */
     fun shutdown() {
-        AppConfig.getInstance()
-            .runInBackground {
-                if (!connections.isEmpty()) {
-                    for (connection in connections.values) {
-                        SshClientUtils.tryDisconnect(connection)
-                    }
-                    connections.clear()
+        Completable.fromRunnable {
+            if (connections.isNotEmpty()) {
+                for (connection in connections.values) {
+                    SshClientUtils.tryDisconnect(connection)
                 }
+                connections.clear()
             }
+        }.subscribeOn(Schedulers.io()).subscribe()
     }
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or

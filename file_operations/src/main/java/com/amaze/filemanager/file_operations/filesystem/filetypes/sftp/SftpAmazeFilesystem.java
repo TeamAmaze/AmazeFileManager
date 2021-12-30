@@ -18,7 +18,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.file_operations.filesystem.filetypes.otg;
+package com.amaze.filemanager.file_operations.filesystem.filetypes.sftp;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -31,24 +31,14 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvide
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class OtgAmazeFilesystem extends AmazeFilesystem {
-  public static final String TAG = OtgAmazeFilesystem.class.getSimpleName();
+public class SftpAmazeFilesystem extends AmazeFilesystem {
+  private static final String TAG = SftpAmazeFilesystem.class.getSimpleName();
 
-  public static final String PREFIX = "otg:/";
+  public static final String PREFIX = "ssh:/";
 
   @Override
   public String getPrefix() {
     return PREFIX;
-  }
-
-  @Override
-  public int prefixLength(@NonNull String path) {
-    if (path.length() == 0) {
-      throw new IllegalArgumentException(
-          "This should never happen, all paths must start with OTG prefix");
-    }
-
-    return super.prefixLength(path);
   }
 
   @NonNull
@@ -71,7 +61,7 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public boolean isAbsolute(AmazeFile f) {
-    return true; // Relative paths are not supported
+    return false;
   }
 
   @NonNull
@@ -122,18 +112,21 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Nullable
+  @org.jetbrains.annotations.Nullable
   @Override
   public String[] list(AmazeFile f) {
     return new String[0];
   }
 
   @Nullable
+  @org.jetbrains.annotations.Nullable
   @Override
   public InputStream getInputStream(AmazeFile f) {
     return null;
   }
 
   @Nullable
+  @org.jetbrains.annotations.Nullable
   @Override
   public OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return null;

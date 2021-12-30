@@ -50,7 +50,7 @@ import org.robolectric.annotation.LooperMode
 )
 class SshHybridFileTest {
 
-    private var ctx: Context? = null
+    private lateinit var context: Context
 
     private val path: String = "ssh://user:password@127.0.0.1:22222/test.file"
 
@@ -61,7 +61,7 @@ class SshHybridFileTest {
      */
     @Before
     fun setUp() {
-        ctx = ApplicationProvider.getApplicationContext()
+        context = ApplicationProvider.getApplicationContext()
         RxJavaPlugins.reset()
         RxJavaPlugins.setIoSchedulerHandler { Schedulers.trampoline() }
         RxAndroidPlugins.reset()
@@ -73,8 +73,8 @@ class SshHybridFileTest {
      */
     @Test
     fun testCanDelete() {
-        MockSshConnectionPools.prepareCanDeleteScenario()
-        assertTrue(HybridFile(OpenMode.SFTP, path).delete(ctx!!, false))
+        MockSshConnectionPools.prepareCanDeleteScenario(context)
+        assertTrue(HybridFile(OpenMode.SFTP, path).delete(context, false))
     }
 
     /**
@@ -82,7 +82,7 @@ class SshHybridFileTest {
      */
     @Test
     fun testCannotDelete() {
-        MockSshConnectionPools.prepareCannotDeleteScenario()
-        assertFalse(HybridFile(OpenMode.SFTP, path).delete(ctx!!, false))
+        MockSshConnectionPools.prepareCannotDeleteScenario(context)
+        assertFalse(HybridFile(OpenMode.SFTP, path).delete(context, false))
     }
 }

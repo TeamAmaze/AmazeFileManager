@@ -73,6 +73,7 @@ import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.WorkerThread;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
@@ -255,6 +256,7 @@ public class HybridFile {
     return null;
   }
 
+  @WorkerThread
   public long lastModified() {
     switch (mode) {
       case SFTP:
@@ -420,6 +422,7 @@ public class HybridFile {
    *
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
+  @WorkerThread
   public boolean isDirectory() {
     boolean isDirectory;
     switch (mode) {
@@ -449,6 +452,7 @@ public class HybridFile {
     return isDirectory;
   }
 
+  @WorkerThread
   public boolean isDirectory(Context context) {
     boolean isDirectory;
     switch (mode) {
@@ -523,6 +527,7 @@ public class HybridFile {
   }
 
   /** Helper method to get length of folder in an otg */
+  @WorkerThread
   public long folderSize(Context context) {
 
     long size = 0l;
@@ -573,6 +578,7 @@ public class HybridFile {
   }
 
   /** Gets usable i.e. free space of a device */
+  @WorkerThread
   public long getUsableSpace() {
     long size = 0L;
     switch (mode) {
@@ -629,6 +635,7 @@ public class HybridFile {
   }
 
   /** Gets total size of the disk */
+  @WorkerThread
   public long getTotal(Context context) {
     long size = 0l;
     switch (mode) {
@@ -686,6 +693,7 @@ public class HybridFile {
   }
 
   /** Helper method to list children of this file */
+  @WorkerThread
   public void forEachChildrenFile(Context context, boolean isRoot, OnFileFound onFileFound) {
     switch (mode) {
       case SFTP:
@@ -772,6 +780,7 @@ public class HybridFile {
    *
    * @deprecated use forEachChildrenFile()
    */
+  @WorkerThread
   public ArrayList<HybridFileParcelable> listFiles(Context context, boolean isRoot) {
     ArrayList<HybridFileParcelable> arrayList = new ArrayList<>();
     switch (mode) {
@@ -859,6 +868,7 @@ public class HybridFile {
   }
 
   @Nullable
+  @WorkerThread
   public InputStream getInputStream(Context context) {
     InputStream inputStream;
 
@@ -924,6 +934,7 @@ public class HybridFile {
   }
 
   @Nullable
+  @WorkerThread
   public OutputStream getOutputStream(Context context) {
     OutputStream outputStream;
     switch (mode) {
@@ -994,6 +1005,7 @@ public class HybridFile {
     return outputStream;
   }
 
+  @WorkerThread
   public boolean exists() {
     boolean exists = false;
     if (isSftp()) {
@@ -1070,6 +1082,7 @@ public class HybridFile {
     return f.setLastModified(date);
   }
 
+  @WorkerThread
   public void mkdir(Context context) {
     if (isSftp()) {
       SshClientUtils.execute(
@@ -1112,6 +1125,7 @@ public class HybridFile {
     }
   }
 
+  @WorkerThread
   public boolean delete(Context context, boolean rootmode)
       throws ShellNotRunningException, SmbException {
     if (isSftp()) {

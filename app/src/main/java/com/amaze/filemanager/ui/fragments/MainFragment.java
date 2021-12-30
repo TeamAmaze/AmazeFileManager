@@ -62,6 +62,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ssh.LaunchSftp;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -504,7 +505,7 @@ public class MainFragment extends Fragment
                         getResources().getString(R.string.please_wait),
                         Toast.LENGTH_LONG)
                     .show();
-                SshClientUtils.launchSftp(
+                LaunchSftp.launchSftp(
                     layoutElementParcelable.generateBaseFile(), getMainActivity());
                 break;
               case OTG:
