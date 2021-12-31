@@ -32,6 +32,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.amaze.filemanager.file_operations.filesystem.FolderState;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.sftp.templates.SFtpClientTemplate;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.sftp.templates.SshClientSessionTemplate;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.sftp.templates.SshClientTemplate;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.utils.SmbUtil;
 

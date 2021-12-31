@@ -30,7 +30,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
-import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.sftp.templates.SshClientSessionTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
 import android.content.Context;
