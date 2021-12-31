@@ -23,13 +23,15 @@ package com.amaze.filemanager.filesystem.ssh
 import android.os.AsyncTask
 import android.util.Log
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.fromTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.pem.PemToKeyPairTask
 import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
+import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.ExecutionException
@@ -176,11 +178,9 @@ object SshConnectionPool {
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
         if (true == pem?.isNotEmpty()) {
-            keyPair.set(
-                PemToKeyPairTask(
-                    pem
-                ) { }.execute().get()
-            )
+            fromTask(PemToKeyPairTask(WeakReference(AppConfig.getInstance()), pem) {
+                keyPair.set(it)
+            })
         }
         val hostKey = utilsHandler.getSshHostKey(url) ?: return null
         return create(

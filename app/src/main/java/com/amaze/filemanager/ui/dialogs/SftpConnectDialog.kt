@@ -43,8 +43,9 @@ import com.afollestad.materialdialogs.internal.MDButton
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
+import com.amaze.filemanager.asynchronous.asynctasks.fromTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.pem.PemToKeyPairTask
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.databinding.SftpDialogBinding
@@ -402,7 +403,7 @@ class SftpConnectDialog : DialogFragment() {
                 runCatching {
                     requireContext().contentResolver.openInputStream(this)?.let {
                         selectedKeyContent ->
-                        PemToKeyPairTask(selectedKeyContent) { result: KeyPair? ->
+                        fromTask(PemToKeyPairTask(WeakReference(requireContext()), selectedKeyContent) { result: KeyPair? ->
                             selectedParsedKeyPair = result
                             selectedParsedKeyPairName = this
                                 .lastPathSegment!!
@@ -414,7 +415,7 @@ class SftpConnectDialog : DialogFragment() {
                                 .getActionButton(DialogAction.POSITIVE)
                             okBTN.isEnabled = okBTN.isEnabled || true
                             binding.selectPemBTN.text = selectedParsedKeyPairName
-                        }.execute()
+                        })
                     }
                 }.onFailure {
                     Log.e(TAG, "Error reading PEM key", it)
