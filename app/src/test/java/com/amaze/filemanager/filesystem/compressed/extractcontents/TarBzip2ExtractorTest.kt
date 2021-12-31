@@ -20,11 +20,11 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarBzip2Extractor
 
-class Bzip2ExtractorTest : AbstractCompressedFileExtractorTest() {
+open class TarBzip2ExtractorTest : AbstractArchiveExtractorTest() {
 
-    override fun extractorClass(): Class<out Extractor> = Bzip2Extractor::class.java
+    override val archiveType: String = "tar.bz2"
 
-    override val archiveType: String = "bz2"
+    override fun extractorClass(): Class<out Extractor?> = TarBzip2Extractor::class.java
 }

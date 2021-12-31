@@ -18,18 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks.compress
+package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
-import android.os.Environment
-import androidx.test.core.app.ApplicationProvider
-import java.io.File
+import android.content.Context
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
 
-class LzmaHelperTaskTest : AbstractCompressedHelperTaskTest() {
-    override fun createTask(relativePath: String): CompressedHelperTask = LzmaHelperTask(
-        ApplicationProvider.getApplicationContext(),
-        File(Environment.getExternalStorageDirectory(), "test-archive.tar.lzma").absolutePath,
-        relativePath,
-        false,
-        emptyCallback
-    )
+class TarBzip2Extractor(
+    context: Context,
+    filePath: String,
+    outputPath: String,
+    listener: OnUpdate,
+    updatePosition: UpdatePosition
+) : AbstractCompressedTarArchiveExtractor(
+    context, filePath, outputPath, listener, updatePosition
+) {
+
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
+        BZip2CompressorInputStream::class.java
 }

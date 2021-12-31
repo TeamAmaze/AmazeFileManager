@@ -99,7 +99,7 @@ abstract class AbstractCommonsArchiveExtractor(
             return
         }
         val outputFile = File(outputDir, entry.name)
-        if (!outputFile.parentFile.exists()) {
+        if (false == outputFile.parentFile?.exists()) {
             MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }
         FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->

@@ -27,7 +27,7 @@ import org.junit.Assert.*
 import org.junit.Test
 import java.io.File
 
-class RarHelperTaskTest : AbstractCompressedHelperTaskTest() {
+class RarHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
 
     /**
      * Test multi volume RAR (v4).

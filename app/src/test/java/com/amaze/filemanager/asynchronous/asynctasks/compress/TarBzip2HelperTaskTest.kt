@@ -18,13 +18,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.extractcontents
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor
+import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
+import java.io.File
 
-class Bzip2ExtractorTest : AbstractCompressedFileExtractorTest() {
+class TarBzip2HelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
 
-    override fun extractorClass(): Class<out Extractor> = Bzip2Extractor::class.java
-
-    override val archiveType: String = "bz2"
+    override fun createTask(relativePath: String): CompressedHelperTask = TarBzip2HelperTask(
+        ApplicationProvider.getApplicationContext(),
+        File(
+            Environment.getExternalStorageDirectory(),
+            "test-archive.tar.bz2"
+        ).absolutePath,
+        relativePath,
+        false,
+        emptyCallback
+    )
 }

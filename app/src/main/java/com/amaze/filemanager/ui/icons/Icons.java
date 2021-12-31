@@ -112,6 +112,7 @@ public class Icons {
         "application/mac-binhex40",
         "application/rar",
         "application/zip",
+        "application/gzip",
         "application/java-archive",
         "application/x-apple-diskimage",
         "application/x-debian-package",
