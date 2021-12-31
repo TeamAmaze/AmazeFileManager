@@ -20,10 +20,14 @@
 
 package com.amaze.filemanager.database.typeconverters;
 
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
+
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.StringWrapper;
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
 
 import android.content.Context;
 
@@ -33,8 +37,8 @@ import androidx.room.TypeConverter;
  * {@link TypeConverter} for password strings encrypted by {@link CryptUtil}.
  *
  * @see StringWrapper
- * @see EncryptDecrypt#encryptPassword(Context, String, String)
- * @see EncryptDecrypt#decryptPassword(Context, String, String)
+ * @see AmazeSpecificEncryptDecrypt#encryptPassword(Context, String)
+ * @see AmazeSpecificEncryptDecrypt#decryptPassword(Context, String)
  */
 public class EncryptedStringTypeConverter {
 
@@ -44,7 +48,7 @@ public class EncryptedStringTypeConverter {
   public static StringWrapper toPassword(String encryptedStringEntryInDb) {
     try {
       return new StringWrapper(
-              EncryptDecrypt.decryptPassword(AppConfig.getInstance(), CryptUtil.IV, encryptedStringEntryInDb));
+              AmazeSpecificEncryptDecrypt.decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb));
     } catch (Exception e) {
       android.util.Log.e(TAG, "Error decrypting password", e);
       return new StringWrapper(encryptedStringEntryInDb);
@@ -54,7 +58,7 @@ public class EncryptedStringTypeConverter {
   @TypeConverter
   public static String fromPassword(StringWrapper unencryptedPasswordString) {
     try {
-      return EncryptDecrypt.encryptPassword(AppConfig.getInstance(), CryptUtil.IV, unencryptedPasswordString.value);
+      return AmazeSpecificEncryptDecrypt.encryptPassword(AppConfig.getInstance(), unencryptedPasswordString.value);
     } catch (Exception e) {
       android.util.Log.e(TAG, "Error encrypting password", e);
       return unencryptedPasswordString.value;

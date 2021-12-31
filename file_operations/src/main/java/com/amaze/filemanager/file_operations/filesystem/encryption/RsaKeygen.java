@@ -1,16 +1,13 @@
-package com.amaze.filemanager.filesystem.files;
+package com.amaze.filemanager.file_operations.filesystem.encryption;
 
-import static com.amaze.filemanager.filesystem.files.EncryptDecrypt.ALGO_RSA;
-import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
-import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
-import static com.amaze.filemanager.filesystem.files.CryptUtil.PREFERENCE_KEY;
-
+import static com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt.ALGO_RSA;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
 import android.security.KeyPairGeneratorSpec;
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
@@ -35,12 +32,20 @@ import javax.security.auth.x500.X500Principal;
 /** Class responsible for generating key for API lower than M */
 public class RsaKeygen {
 
-  private Context context;
+  public static final String PREFERENCE_KEY = "aes_key";
+  @NonNull
+  private final Context context;
+  @NonNull
+  private final String keyStoreName;
+  @NonNull
+  private final String keyAlias;
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-  RsaKeygen(Context context) {
+  public RsaKeygen(@NonNull Context context, @NonNull String keyStoreName, @NonNull String keyAlias) {
 
     this.context = context;
+    this.keyStoreName = keyStoreName;
+    this.keyAlias = keyAlias;
 
     try {
       generateKeyPair(context);
@@ -54,21 +59,21 @@ public class RsaKeygen {
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
   private void generateKeyPair(Context context) throws GeneralSecurityException, IOException {
 
-    KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
+    KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
 
-    if (!keyStore.containsAlias(KEY_ALIAS_AMAZE)) {
+    if (!keyStore.containsAlias(keyAlias)) {
       // generate a RSA key pair to encrypt/decrypt AES key from preferences
       Calendar start = Calendar.getInstance();
       Calendar end = Calendar.getInstance();
       end.add(Calendar.YEAR, 30);
 
-      KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", KEY_STORE_ANDROID);
+      KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", keyStoreName);
 
       KeyPairGeneratorSpec spec =
               new KeyPairGeneratorSpec.Builder(context)
-                      .setAlias(KEY_ALIAS_AMAZE)
-                      .setSubject(new X500Principal("CN=" + KEY_ALIAS_AMAZE))
+                      .setAlias(keyAlias)
+                      .setSubject(new X500Principal("CN=" + keyAlias))
                       .setSerialNumber(BigInteger.TEN)
                       .setStartDate(start.getTime())
                       .setEndDate(end.getTime())
@@ -100,11 +105,10 @@ public class RsaKeygen {
 
   /** Encrypts randomly generated AES key using RSA public key */
   private byte[] encryptAESKey(byte[] secretKey) throws GeneralSecurityException, IOException {
-
-    KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
+    KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
     KeyStore.PrivateKeyEntry keyEntry =
-            (KeyStore.PrivateKeyEntry) keyStore.getEntry(KEY_ALIAS_AMAZE, null);
+            (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
     Cipher cipher = Cipher.getInstance(ALGO_RSA, "AndroidOpenSSL");
     cipher.init(Cipher.ENCRYPT_MODE, keyEntry.getCertificate().getPublicKey());
 
@@ -136,10 +140,10 @@ public class RsaKeygen {
   /** Decrypts AES decoded key from preference using RSA private key */
   private byte[] decryptAESKey(byte[] encodedBytes) throws GeneralSecurityException, IOException {
 
-    KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
+    KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
     KeyStore.PrivateKeyEntry keyEntry =
-            (KeyStore.PrivateKeyEntry) keyStore.getEntry(KEY_ALIAS_AMAZE, null);
+            (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
     Cipher cipher = Cipher.getInstance(ALGO_RSA, "AndroidOpenSSL");
     cipher.init(Cipher.DECRYPT_MODE, keyEntry.getPrivateKey());
 

@@ -1914,7 +1914,7 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(CryptUtil.IV, path);
+    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(path);
 
     Bundle bundle = new Bundle();
     bundle.putString(ARG_NAME, name);

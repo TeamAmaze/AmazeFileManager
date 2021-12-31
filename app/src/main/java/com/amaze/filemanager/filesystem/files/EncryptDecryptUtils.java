@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.filesystem.files;
 
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
+
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -30,6 +33,7 @@ import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -43,6 +47,7 @@ import android.content.SharedPreferences;
 import android.os.Build;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -78,6 +83,7 @@ public class EncryptDecryptUtils {
     ServiceWatcherUtil.runService(c, intent);
   }
 
+  @RequiresApi(api = Build.VERSION_CODES.M)
   public static void decryptFile(
       Context c,
       final MainActivity mainActivity,
@@ -167,12 +173,11 @@ public class EncryptDecryptUtils {
               mainActivity,
               decryptIntent,
               utilsProvider.getAppTheme(),
-              EncryptDecrypt.decryptPassword(
-                  c,
-                  CryptUtil.IV,
-                  preferences1.getString(
+                  AmazeSpecificEncryptDecrypt.decryptPassword(
+                  c,preferences1.getString(
                       PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                      PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)),
+                      PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
+              ),
               decryptButtonCallbackInterface);
         } catch (GeneralSecurityException | IOException e) {
           e.printStackTrace();

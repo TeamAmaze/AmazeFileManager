@@ -21,6 +21,8 @@
 package com.amaze.filemanager.ui.dialogs;
 
 import static android.os.Build.VERSION_CODES.M;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
 import static com.amaze.filemanager.filesystem.files.FileUtils.toHybridFileArrayList;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
@@ -58,8 +60,9 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
@@ -976,7 +979,7 @@ public class GeneralDialogCreation {
     FingerprintManager manager =
         (FingerprintManager) c.getSystemService(Context.FINGERPRINT_SERVICE);
     FingerprintManager.CryptoObject object =
-        new FingerprintManager.CryptoObject(EncryptDecrypt.initCipher(c, CryptUtil.IV));
+        new FingerprintManager.CryptoObject(AmazeSpecificEncryptDecrypt.initCipher(c));
 
     FingerprintHandler handler =
         new FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface);

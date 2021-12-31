@@ -35,6 +35,8 @@ import javax.crypto.spec.IvParameterSpec;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
+import com.amaze.filemanager.file_operations.filesystem.encryption.RsaKeygen;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
@@ -76,7 +78,6 @@ public class CryptUtil {
 
   public static final String KEY_STORE_ANDROID = "AndroidKeyStore";
   public static final String KEY_ALIAS_AMAZE = "AmazeKey";
-  public static final String PREFERENCE_KEY = "aes_key";
   // TODO: Generate a random IV every time, and keep track of it (in database against encrypted
   // files)
   public static final String IV =
@@ -295,7 +296,7 @@ public class CryptUtil {
 
     GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
 
-    cipher.init(Cipher.ENCRYPT_MODE, EncryptDecrypt.getSecretKey(), gcmParameterSpec);
+    cipher.init(Cipher.ENCRYPT_MODE, AmazeSpecificEncryptDecrypt.getSecretKey(), gcmParameterSpec);
 
     byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
     int count;
@@ -331,7 +332,7 @@ public class CryptUtil {
     Cipher cipher = Cipher.getInstance(EncryptDecrypt.ALGO_AES);
     GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, IV.getBytes());
 
-    cipher.init(Cipher.DECRYPT_MODE, EncryptDecrypt.getSecretKey(), gcmParameterSpec);
+    cipher.init(Cipher.DECRYPT_MODE, AmazeSpecificEncryptDecrypt.getSecretKey(), gcmParameterSpec);
     CipherInputStream cipherInputStream = new CipherInputStream(inputStream, cipher);
 
     byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
@@ -360,7 +361,7 @@ public class CryptUtil {
       throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(EncryptDecrypt.ALGO_AES);
-    RsaKeygen keygen = new RsaKeygen(context);
+    RsaKeygen keygen = new RsaKeygen(context, KEY_STORE_ANDROID, KEY_ALIAS_AMAZE);
 
     IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
     cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
@@ -391,7 +392,7 @@ public class CryptUtil {
       throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(EncryptDecrypt.ALGO_AES);
-    RsaKeygen keygen = new RsaKeygen(context);
+    RsaKeygen keygen = new RsaKeygen(context, KEY_STORE_ANDROID, KEY_ALIAS_AMAZE);
 
     IvParameterSpec ivParameterSpec = new IvParameterSpec(IV.getBytes());
     cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);

@@ -849,7 +849,7 @@ public class HybridFile {
 
   public static String parseAndFormatUriForDisplay(@NonNull String uriString) {
     if (uriString.startsWith(SSH_URI_PREFIX)) {
-      SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(CryptUtil.IV, uriString);
+      SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(uriString);
       return connInfo.toString();
     } else {
       Uri uri = Uri.parse(uriString);

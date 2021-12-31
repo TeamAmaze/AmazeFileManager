@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.filesystem.files;
 
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Before;
@@ -27,6 +29,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
 
 import android.content.Context;
 
@@ -51,7 +54,7 @@ public class CryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws Exception {
     String password = "hackme";
-    String encrypted = EncryptDecrypt.encryptPassword(context, CryptUtil.IV, password);
-    assertEquals(password, EncryptDecrypt.decryptPassword(context, CryptUtil.IV, encrypted));
+    String encrypted = AmazeSpecificEncryptDecrypt.encryptPassword(context, password);
+    assertEquals(password, AmazeSpecificEncryptDecrypt.decryptPassword(context, encrypted));
   }
 }

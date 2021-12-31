@@ -23,6 +23,8 @@ package com.amaze.filemanager.test;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
@@ -42,8 +44,9 @@ import org.robolectric.shadows.ShadowSQLiteConnection;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
@@ -80,9 +83,9 @@ public class ShadowCryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
-    String encrypted = EncryptDecrypt.encryptPassword(ApplicationProvider.getApplicationContext(), CryptUtil.IV, text);
+    String encrypted = AmazeSpecificEncryptDecrypt.encryptPassword(ApplicationProvider.getApplicationContext(), text);
     assertEquals(
-        text, EncryptDecrypt.decryptPassword(ApplicationProvider.getApplicationContext(), CryptUtil.IV, encrypted));
+        text, AmazeSpecificEncryptDecrypt.decryptPassword(ApplicationProvider.getApplicationContext(), encrypted));
   }
 
   @Test

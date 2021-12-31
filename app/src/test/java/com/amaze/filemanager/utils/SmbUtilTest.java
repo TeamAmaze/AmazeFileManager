@@ -37,7 +37,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.shadows.ShadowSmbAmazeFilesystem;
 import com.amaze.filemanager.shadows.ShadowSmbUtil;
 import com.amaze.filemanager.test.ShadowCryptUtil;
@@ -57,12 +56,12 @@ public class SmbUtilTest {
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String path = "smb://root:toor@127.0.0.1";
     String encrypted =
-        SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), CryptUtil.IV, path);
+        SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path);
     assertNotEquals(path, encrypted);
     assertTrue(encrypted.startsWith("smb://root:"));
     assertTrue(encrypted.endsWith("@127.0.0.1"));
     String decrypted =
-        SmbUtil.getSmbDecryptedPath(ApplicationProvider.getApplicationContext(), CryptUtil.IV, encrypted);
+        SmbUtil.getSmbDecryptedPath(ApplicationProvider.getApplicationContext(), encrypted);
     assertEquals(path, decrypted);
   }
 
@@ -70,7 +69,7 @@ public class SmbUtilTest {
   public void testEncryptWithoutCredentials() throws GeneralSecurityException, IOException {
     String path = "smb://127.0.0.1";
     assertEquals(
-        path, SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), CryptUtil.IV, path));
+        path, SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path));
   }
 
   @Test
@@ -78,7 +77,7 @@ public class SmbUtilTest {
   public void testEncryptWithoutPassword() throws GeneralSecurityException, IOException {
     String path = "smb://toor@127.0.0.1";
     assertEquals(
-        path, SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), CryptUtil.IV, path));
+        path, SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path));
   }
 
   @Test

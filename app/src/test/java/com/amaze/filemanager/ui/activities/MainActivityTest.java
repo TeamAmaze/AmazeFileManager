@@ -55,7 +55,6 @@ import org.robolectric.util.ReflectionHelpers;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
@@ -198,14 +197,14 @@ public class MainActivityTest {
                 false,
                 oldName,
                 path,
-                SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), CryptUtil.IV, path),
+                SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
                 null,
                 null);
             activity.addConnection(
                 true,
                 newName,
                 path,
-                SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), CryptUtil.IV, path),
+                SmbUtil.getSmbEncryptedPath(ApplicationProvider.getApplicationContext(), path),
                 oldName,
                 path);
 

@@ -61,7 +61,8 @@ import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverAct
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
 import com.amaze.filemanager.databinding.FragmentFtpBinding
 import com.amaze.filemanager.filesystem.files.CryptUtil
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.theme.AppTheme
@@ -718,10 +719,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             val encryptedPassword = mainActivity.prefs.getString(
                 FtpService.KEY_PREFERENCE_PASSWORD, ""
             )
-            if (encryptedPassword == "") {
+            if (encryptedPassword == null || encryptedPassword == "") {
                 ""
             } else {
-                EncryptDecrypt.decryptPassword(requireContext(), CryptUtil.IV, encryptedPassword)
+                AmazeSpecificEncryptDecrypt.decryptPassword(requireContext(), encryptedPassword)
             }
         }.onFailure {
             it.printStackTrace()
@@ -787,7 +788,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 .edit()
                 .putString(
                     FtpService.KEY_PREFERENCE_PASSWORD,
-                        EncryptDecrypt.encryptPassword(context, CryptUtil.IV, password)
+                        AmazeSpecificEncryptDecrypt.encryptPassword(requireContext(), password)
                 )
                 .apply()
         } catch (e: GeneralSecurityException) {

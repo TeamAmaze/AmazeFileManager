@@ -22,15 +22,17 @@ package com.amaze.filemanager.utils;
 
 import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
 import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts;
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt;
 
 import android.content.Context;
 import android.net.Uri;
@@ -60,7 +62,7 @@ public class SmbUtil {
   }
 
   /** Parse path to decrypt smb password */
-  public static String getSmbDecryptedPath(Context context, String iv, String path)
+  public static String getSmbDecryptedPath(Context context, String path)
       throws GeneralSecurityException, IOException {
     if (!(path.contains(":") && path.contains("@"))) {
       // smb path doesn't have any credentials
@@ -73,7 +75,7 @@ public class SmbUtil {
     String encryptedPassword = path.substring(path.indexOf(":", 4) + 1, path.lastIndexOf("@"));
 
     if (!TextUtils.isEmpty(encryptedPassword)) {
-      String decryptedPassword = EncryptDecrypt.decryptPassword(context, iv, encryptedPassword);
+      String decryptedPassword = AmazeSpecificEncryptDecrypt.decryptPassword(context, encryptedPassword);
       buffer.append(decryptedPassword);
     }
     buffer.append(path.substring(path.lastIndexOf("@")));
@@ -82,7 +84,7 @@ public class SmbUtil {
   }
 
   /** Parse path to encrypt smb password */
-  public static String getSmbEncryptedPath(Context context, String iv, String path)
+  public static String getSmbEncryptedPath(Context context, String path)
       throws GeneralSecurityException, IOException {
     if (!(path.contains(":") && path.contains("@"))) {
       // smb path doesn't have any credentials
@@ -94,7 +96,7 @@ public class SmbUtil {
     String decryptedPassword = path.substring(path.indexOf(":", 4) + 1, path.lastIndexOf("@"));
 
     if (!TextUtils.isEmpty(decryptedPassword)) {
-      String encryptPassword = EncryptDecrypt.encryptPassword(context, iv, decryptedPassword);
+      String encryptPassword = AmazeSpecificEncryptDecrypt.encryptPassword(context, decryptedPassword);
       buffer.append(encryptPassword);
     }
     buffer.append(path.substring(path.lastIndexOf("@")));

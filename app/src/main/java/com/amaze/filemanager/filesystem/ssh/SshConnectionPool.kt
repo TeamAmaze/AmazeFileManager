@@ -25,7 +25,7 @@ import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
@@ -171,7 +171,7 @@ object SshConnectionPool {
     // key-based authentication
     @Suppress("TooGenericExceptionThrown")
     private fun create(iv: String, url: String): SSHClient? {
-        val connInfo = ConnectionInfo(iv, url)
+        val connInfo = ConnectionInfo(url)
         val utilsHandler = AppConfig.getInstance().utilsHandler
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
@@ -238,7 +238,7 @@ object SshConnectionPool {
      *
      * A design decision to keep database schema slim, by the way... -TranceLove
      */
-    class ConnectionInfo(iv: String, url: String) {
+    class ConnectionInfo(url: String) {
         val host: String
         val port: Int
         val username: String
@@ -264,7 +264,7 @@ object SshConnectionPool {
             username = userInfo[0]
             password = if (userInfo.size > 1) {
                 runCatching {
-                    EncryptDecrypt.decryptPassword(AppConfig.getInstance(), iv, userInfo[1])
+                    AmazeSpecificEncryptDecrypt.decryptPassword(AppConfig.getInstance(), userInfo[1])
                 }.getOrElse {
                     /* Hack. It should only happen after creating new SSH connection settings
                      * and plain text password is sent in.

@@ -1,7 +1,4 @@
-package com.amaze.filemanager.filesystem.files;
-
-import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
-import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
+package com.amaze.filemanager.file_operations.filesystem.encryption;
 
 import android.content.Context;
 import android.os.Build;
@@ -9,6 +6,8 @@ import android.security.keystore.KeyGenParameterSpec;
 import android.security.keystore.KeyProperties;
 import android.util.Base64;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
@@ -27,12 +26,14 @@ public class EncryptDecrypt {
 
   /** Helper method to encrypt plain text password */
   @RequiresApi(api = Build.VERSION_CODES.M)
-  private static String aesEncryptPassword(String iv, String plainTextPassword)
+  @NonNull
+  private static String aesEncryptPassword(@NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String plainTextPassword)
           throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv.getBytes());
-    cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
+    Key secretKey = EncryptDecrypt.getSecretKey(keyStoreName, keyAlias);
+    cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
     byte[] encodedBytes = cipher.doFinal(plainTextPassword.getBytes());
 
     return Base64.encodeToString(encodedBytes, Base64.DEFAULT);
@@ -40,12 +41,14 @@ public class EncryptDecrypt {
 
   /** Helper method to decrypt cipher text password */
   @RequiresApi(api = Build.VERSION_CODES.M)
-  private static String aesDecryptPassword(String iv, String cipherPassword)
+  @NonNull
+  private static String aesDecryptPassword(@NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String cipherPassword)
           throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv.getBytes());
-    cipher.init(Cipher.DECRYPT_MODE, getSecretKey(), gcmParameterSpec);
+    Key secretKey = EncryptDecrypt.getSecretKey(keyStoreName, keyAlias);
+    cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
     byte[] decryptedBytes = cipher.doFinal(Base64.decode(cipherPassword, Base64.DEFAULT));
 
     return new String(decryptedBytes);
@@ -56,18 +59,18 @@ public class EncryptDecrypt {
    * generate a new one
    */
   @RequiresApi(api = Build.VERSION_CODES.M)
-  public static Key getSecretKey() throws GeneralSecurityException, IOException {
-
-    KeyStore keyStore = KeyStore.getInstance(KEY_STORE_ANDROID);
+  @NonNull
+  public static Key getSecretKey(@NonNull String keyStoreName, @NonNull String keyAlias) throws GeneralSecurityException, IOException {
+    KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
 
-    if (!keyStore.containsAlias(KEY_ALIAS_AMAZE)) {
+    if (!keyStore.containsAlias(keyAlias)) {
       KeyGenerator keyGenerator =
-              KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, KEY_STORE_ANDROID);
+              KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, keyStoreName);
 
       KeyGenParameterSpec.Builder builder =
               new KeyGenParameterSpec.Builder(
-                      KEY_ALIAS_AMAZE, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT);
+                      keyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT);
       builder.setBlockModes(KeyProperties.BLOCK_MODE_GCM);
       builder.setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE);
       builder.setRandomizedEncryptionRequired(false);
@@ -75,17 +78,17 @@ public class EncryptDecrypt {
       keyGenerator.init(builder.build());
       return keyGenerator.generateKey();
     } else {
-      return keyStore.getKey(KEY_ALIAS_AMAZE, null);
+      return keyStore.getKey(keyAlias, null);
     }
   }
 
-
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-  private static String rsaEncryptPassword(Context context, String iv, String password)
+  @NonNull
+  private static String rsaEncryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String password)
           throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
-    RsaKeygen keygen = new RsaKeygen(context);
+    RsaKeygen keygen = new RsaKeygen(context, keyStoreName, keyAlias);
 
     IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
     cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
@@ -94,11 +97,12 @@ public class EncryptDecrypt {
   }
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-  private static String rsaDecryptPassword(Context context, String iv, String cipherText)
+  @NonNull
+  private static String rsaDecryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String cipherText)
           throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
-    RsaKeygen keygen = new RsaKeygen(context);
+    RsaKeygen keygen = new RsaKeygen(context, keyStoreName, keyAlias);
     IvParameterSpec ivParameterSpec = new IvParameterSpec(iv.getBytes());
     cipher.init(Cipher.DECRYPT_MODE, keygen.getSecretKey(), ivParameterSpec);
     byte[] decryptedBytes = cipher.doFinal(Base64.decode(cipherText, Base64.DEFAULT));
@@ -107,23 +111,25 @@ public class EncryptDecrypt {
   }
 
   /** Method handles encryption of plain text on various APIs */
-  public static String encryptPassword(Context context, String iv, String plainText)
+  @NonNull
+  public static String encryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String plainText)
           throws GeneralSecurityException, IOException {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      return aesEncryptPassword(iv, plainText);
+      return aesEncryptPassword(iv, keyStoreName, keyAlias, plainText);
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
 
-      return rsaEncryptPassword(context, iv, plainText);
+      return rsaEncryptPassword(context, iv, keyStoreName, keyAlias, plainText);
     } else return plainText;
   }
 
   /** Method handles decryption of cipher text on various APIs */
-  public static String decryptPassword(Context context, String iv, String cipherText)
+  @NonNull
+  public static String decryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String cipherText)
           throws GeneralSecurityException, IOException {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-      return aesDecryptPassword(iv, cipherText);
+      return aesDecryptPassword(iv, keyStoreName, keyAlias, cipherText);
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      return rsaDecryptPassword(context, iv, cipherText);
+      return rsaDecryptPassword(context, iv, keyStoreName, keyAlias, cipherText);
     } else return cipherText;
   }
 
@@ -131,19 +137,23 @@ public class EncryptDecrypt {
    * Method initializes a Cipher to be used by {@link
    * android.hardware.fingerprint.FingerprintManager}
    */
-  public static Cipher initCipher(Context context, String iv) throws GeneralSecurityException, IOException {
-    Cipher cipher = null;
-
+  @Nullable
+  public static Cipher initCipher(Context context, String iv, String keyStoreName, String keyAlias) throws GeneralSecurityException, IOException {
+    Cipher cipher;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       cipher = Cipher.getInstance(ALGO_AES);
       GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv.getBytes());
-      cipher.init(Cipher.ENCRYPT_MODE, getSecretKey(), gcmParameterSpec);
+      Key secretKey = EncryptDecrypt.getSecretKey(keyStoreName, keyAlias);
+      cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
       cipher = Cipher.getInstance(ALGO_AES);
-      RsaKeygen keygen = new RsaKeygen(context);
+      RsaKeygen keygen = new RsaKeygen(context, keyStoreName, keyAlias);
 
       cipher.init(Cipher.ENCRYPT_MODE, keygen.getSecretKey());
+    } else {
+      cipher = null;
     }
+
     return cipher;
   }
 }

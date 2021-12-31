@@ -21,6 +21,8 @@
 package com.amaze.filemanager.ui.fragments.preference_fragments;
 
 import static com.amaze.filemanager.R.string.feedback;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_ALIAS_AMAZE;
+import static com.amaze.filemanager.filesystem.files.CryptUtil.KEY_STORE_ANDROID;
 import static com.amaze.filemanager.ui.activities.PreferencesActivity.START_PREFERENCE;
 import static com.amaze.filemanager.utils.Utils.EMAIL_SUPPORT;
 
@@ -32,8 +34,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
+import com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
@@ -318,7 +321,7 @@ public class PrefFrag extends PreferenceFragmentCompat
               PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
 
             // password is set, try to decrypt
-            decryptedPassword = EncryptDecrypt.decryptPassword(getActivity(), CryptUtil.IV, preferencePassword);
+            decryptedPassword = AmazeSpecificEncryptDecrypt.decryptPassword(getActivity(), preferencePassword);
           } else {
             // no password set in preferences, just leave the field empty
             decryptedPassword = "";
@@ -351,8 +354,8 @@ public class PrefFrag extends PreferenceFragmentCompat
                       .edit()
                       .putString(
                           PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                          EncryptDecrypt.encryptPassword(
-                              getActivity(), CryptUtil.IV, dialog.getInputEditText().getText().toString()))
+                              AmazeSpecificEncryptDecrypt.encryptPassword(
+                              getActivity(), dialog.getInputEditText().getText().toString()))
                       .apply();
                 } else {
                   // empty password, remove the preference
