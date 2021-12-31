@@ -266,8 +266,10 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                                     }
                         }
                         compressedFile.deleteOnExit()
-                        requireContext().contentResolver.openInputStream(pathUri)
-                            ?.copyTo(FileOutputStream(compressedFile), DEFAULT_BUFFER_SIZE)
+                        FileOutputStream(compressedFile).use { outputStream ->
+                            requireContext().contentResolver.openInputStream(pathUri)
+                                ?.use { it.copyTo(outputStream, DEFAULT_BUFFER_SIZE) }
+                        }
                         isCachedCompressedFile = true
                     } catch (e: IOException) {
                         Log.e(TAG, "Error opening URI $pathUri for reading", e)
