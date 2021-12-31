@@ -33,6 +33,7 @@ import java.security.GeneralSecurityException;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
@@ -326,7 +327,7 @@ public class SmbConnectDialog extends DialogFragment {
             s =
                 new String[] {
                   conName.getText().toString(),
-                  SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
+                  SmbUtil.getSmbEncryptedPath(getActivity(), CryptUtil.IV, smbFile.getPath())
                 };
           } catch (GeneralSecurityException | IOException e) {
             e.printStackTrace();

@@ -32,6 +32,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
 import com.amaze.filemanager.file_operations.filesystem.FolderState;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.utils.SmbUtil;
 
 import net.schmizz.sshj.SSHClient;
@@ -156,7 +157,7 @@ public abstract class SshClientUtils {
   }
 
   /**
-   * Convenience method to call {@link SmbUtil#getSmbEncryptedPath(Context, String)} if the given
+   * Convenience method to call {@link SmbUtil#getSmbEncryptedPath(Context, String, String)} if the given
    * SSH URL contains the password (assuming the password is encrypted).
    *
    * @param fullUri SSH URL
@@ -167,7 +168,7 @@ public abstract class SshClientUtils {
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
       return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbEncryptedPath(context, fullUri).replace("\n", "")
+          ? SmbUtil.getSmbEncryptedPath(context, CryptUtil.IV, fullUri).replace("\n", "")
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
       Log.e(TAG, "Error encrypting path", e);
@@ -176,7 +177,7 @@ public abstract class SshClientUtils {
   }
 
   /**
-   * Convenience method to call {@link SmbUtil#getSmbDecryptedPath(Context, String)} if the given
+   * Convenience method to call {@link SmbUtil#getSmbDecryptedPath(Context, String, String)} if the given
    * SSH URL contains the password (assuming the password is encrypted).
    *
    * @param fullUri SSH URL
@@ -187,7 +188,7 @@ public abstract class SshClientUtils {
         fullUri.substring(SSH_URI_PREFIX.length(), fullUri.lastIndexOf('@'));
     try {
       return (uriWithoutProtocol.lastIndexOf(':') > 0)
-          ? SmbUtil.getSmbDecryptedPath(context, fullUri)
+          ? SmbUtil.getSmbDecryptedPath(context, CryptUtil.IV, fullUri)
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
       Log.e(TAG, "Error decrypting path", e);

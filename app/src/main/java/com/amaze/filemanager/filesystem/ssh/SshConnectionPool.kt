@@ -26,6 +26,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
 import com.amaze.filemanager.filesystem.files.CryptUtil
+import com.amaze.filemanager.filesystem.files.EncryptDecrypt
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
@@ -264,7 +265,7 @@ object SshConnectionPool {
             username = userInfo[0]
             password = if (userInfo.size > 1) {
                 runCatching {
-                    CryptUtil.decryptPassword(AppConfig.getInstance(), userInfo[1])
+                    EncryptDecrypt.decryptPassword(AppConfig.getInstance(), CryptUtil.IV, userInfo[1])
                 }.getOrElse {
                     /* Hack. It should only happen after creating new SSH connection settings
                      * and plain text password is sent in.

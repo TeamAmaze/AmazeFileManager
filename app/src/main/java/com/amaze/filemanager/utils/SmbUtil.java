@@ -29,7 +29,8 @@ import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 
 import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.filesystem.smb.CifsContexts;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts;
+import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
 
 import android.content.Context;
 import android.net.Uri;
@@ -46,8 +47,6 @@ import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 
 /**
- * Created by Vishal on 30-05-2017.
- *
  * <p>Class provides various utility methods for SMB client
  */
 public class SmbUtil {
@@ -61,7 +60,7 @@ public class SmbUtil {
   }
 
   /** Parse path to decrypt smb password */
-  public static String getSmbDecryptedPath(Context context, String path)
+  public static String getSmbDecryptedPath(Context context, String iv, String path)
       throws GeneralSecurityException, IOException {
     if (!(path.contains(":") && path.contains("@"))) {
       // smb path doesn't have any credentials
@@ -74,7 +73,7 @@ public class SmbUtil {
     String encryptedPassword = path.substring(path.indexOf(":", 4) + 1, path.lastIndexOf("@"));
 
     if (!TextUtils.isEmpty(encryptedPassword)) {
-      String decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
+      String decryptedPassword = EncryptDecrypt.decryptPassword(context, iv, encryptedPassword);
       buffer.append(decryptedPassword);
     }
     buffer.append(path.substring(path.lastIndexOf("@")));
@@ -83,7 +82,7 @@ public class SmbUtil {
   }
 
   /** Parse path to encrypt smb password */
-  public static String getSmbEncryptedPath(Context context, String path)
+  public static String getSmbEncryptedPath(Context context, String iv, String path)
       throws GeneralSecurityException, IOException {
     if (!(path.contains(":") && path.contains("@"))) {
       // smb path doesn't have any credentials
@@ -95,7 +94,7 @@ public class SmbUtil {
     String decryptedPassword = path.substring(path.indexOf(":", 4) + 1, path.lastIndexOf("@"));
 
     if (!TextUtils.isEmpty(decryptedPassword)) {
-      String encryptPassword = CryptUtil.encryptPassword(context, decryptedPassword);
+      String encryptPassword = EncryptDecrypt.encryptPassword(context, iv, decryptedPassword);
       buffer.append(encryptPassword);
     }
     buffer.append(path.substring(path.lastIndexOf("@")));

@@ -61,6 +61,7 @@ import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverAct
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
 import com.amaze.filemanager.databinding.FragmentFtpBinding
 import com.amaze.filemanager.filesystem.files.CryptUtil
+import com.amaze.filemanager.filesystem.files.EncryptDecrypt
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.theme.AppTheme
@@ -720,7 +721,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             if (encryptedPassword == "") {
                 ""
             } else {
-                CryptUtil.decryptPassword(requireContext(), encryptedPassword)
+                EncryptDecrypt.decryptPassword(requireContext(), CryptUtil.IV, encryptedPassword)
             }
         }.onFailure {
             it.printStackTrace()
@@ -786,7 +787,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 .edit()
                 .putString(
                     FtpService.KEY_PREFERENCE_PASSWORD,
-                    CryptUtil.encryptPassword(context, password)
+                        EncryptDecrypt.encryptPassword(context, CryptUtil.IV, password)
                 )
                 .apply()
         } catch (e: GeneralSecurityException) {

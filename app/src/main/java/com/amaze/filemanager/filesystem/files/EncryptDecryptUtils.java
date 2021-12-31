@@ -167,8 +167,9 @@ public class EncryptDecryptUtils {
               mainActivity,
               decryptIntent,
               utilsProvider.getAppTheme(),
-              CryptUtil.decryptPassword(
+              EncryptDecrypt.decryptPassword(
                   c,
+                  CryptUtil.IV,
                   preferences1.getString(
                       PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
                       PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)),

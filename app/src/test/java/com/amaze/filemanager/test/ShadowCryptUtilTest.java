@@ -43,6 +43,7 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
@@ -79,9 +80,9 @@ public class ShadowCryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
-    String encrypted = CryptUtil.encryptPassword(ApplicationProvider.getApplicationContext(), text);
+    String encrypted = EncryptDecrypt.encryptPassword(ApplicationProvider.getApplicationContext(), CryptUtil.IV, text);
     assertEquals(
-        text, CryptUtil.decryptPassword(ApplicationProvider.getApplicationContext(), encrypted));
+        text, EncryptDecrypt.decryptPassword(ApplicationProvider.getApplicationContext(), CryptUtil.IV, encrypted));
   }
 
   @Test

@@ -38,6 +38,7 @@ import com.amaze.filemanager.database.models.utilities.Hidden;
 import com.amaze.filemanager.database.models.utilities.History;
 import com.amaze.filemanager.database.models.utilities.SftpEntry;
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory;
@@ -53,7 +54,7 @@ import androidx.annotation.NonNull;
 import io.reactivex.schedulers.Schedulers;
 
 /**
- * Created by Vishal on 29-05-2017. Class handles database with tables having list of various
+ * Class handles database with tables having list of various
  * utilities like history, hidden files, list paths, grid paths, bookmarks, SMB entry
  *
  * <p>Try to use these functions from a background thread
@@ -281,7 +282,7 @@ public class UtilsHandler {
         utilitiesDatabase.smbEntryDao().list().subscribeOn(Schedulers.io()).blockingGet()) {
 
       try {
-        String path = SmbUtil.getSmbDecryptedPath(context, entry.path);
+        String path = SmbUtil.getSmbDecryptedPath(context, CryptUtil.IV, entry.path);
         retval.add(new String[] {entry.name, path});
       } catch (GeneralSecurityException | IOException e) {
         e.printStackTrace();
@@ -382,7 +383,7 @@ public class UtilsHandler {
       utilitiesDatabase.smbEntryDao().deleteByName(name).subscribeOn(Schedulers.io()).subscribe();
     else {
       try {
-        path = SmbUtil.getSmbEncryptedPath(context, path);
+        path = SmbUtil.getSmbEncryptedPath(context, CryptUtil.IV, path);
       } catch (GeneralSecurityException | IOException e) {
         Log.e(TAG, "Error encrypting path", e);
       }
@@ -427,8 +428,8 @@ public class UtilsHandler {
 
   public void renameSMB(String oldName, String oldPath, String newName, String newPath) {
     try {
-      oldPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), oldPath);
-      newPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), newPath);
+      oldPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), CryptUtil.IV, oldPath);
+      newPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), CryptUtil.IV, newPath);
     } catch (GeneralSecurityException | IOException e) {
       Log.e(TAG, "Error encrypting SMB path", e);
     }

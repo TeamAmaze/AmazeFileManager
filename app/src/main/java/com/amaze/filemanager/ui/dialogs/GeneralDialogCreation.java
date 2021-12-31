@@ -59,6 +59,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
@@ -975,7 +976,7 @@ public class GeneralDialogCreation {
     FingerprintManager manager =
         (FingerprintManager) c.getSystemService(Context.FINGERPRINT_SERVICE);
     FingerprintManager.CryptoObject object =
-        new FingerprintManager.CryptoObject(CryptUtil.initCipher(c));
+        new FingerprintManager.CryptoObject(EncryptDecrypt.initCipher(c, CryptUtil.IV));
 
     FingerprintHandler handler =
         new FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface);

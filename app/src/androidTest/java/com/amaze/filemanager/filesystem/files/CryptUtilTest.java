@@ -51,7 +51,7 @@ public class CryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws Exception {
     String password = "hackme";
-    String encrypted = CryptUtil.encryptPassword(context, password);
-    assertEquals(password, CryptUtil.decryptPassword(context, encrypted));
+    String encrypted = EncryptDecrypt.encryptPassword(context, CryptUtil.IV, password);
+    assertEquals(password, EncryptDecrypt.decryptPassword(context, CryptUtil.IV, encrypted));
   }
 }

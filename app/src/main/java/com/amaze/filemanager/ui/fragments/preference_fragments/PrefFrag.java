@@ -33,6 +33,7 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.EncryptDecrypt;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
@@ -317,7 +318,7 @@ public class PrefFrag extends PreferenceFragmentCompat
               PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)) {
 
             // password is set, try to decrypt
-            decryptedPassword = CryptUtil.decryptPassword(getActivity(), preferencePassword);
+            decryptedPassword = EncryptDecrypt.decryptPassword(getActivity(), CryptUtil.IV, preferencePassword);
           } else {
             // no password set in preferences, just leave the field empty
             decryptedPassword = "";
@@ -350,8 +351,8 @@ public class PrefFrag extends PreferenceFragmentCompat
                       .edit()
                       .putString(
                           PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                          CryptUtil.encryptPassword(
-                              getActivity(), dialog.getInputEditText().getText().toString()))
+                          EncryptDecrypt.encryptPassword(
+                              getActivity(), CryptUtil.IV, dialog.getInputEditText().getText().toString()))
                       .apply();
                 } else {
                   // empty password, remove the preference
