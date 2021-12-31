@@ -24,10 +24,11 @@ import android.os.AsyncTask
 import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.fromTask
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.auth.SshAuthenticationTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.pem.PemToKeyPairTask
 import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt
 import io.reactivex.Completable
+import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
@@ -171,16 +172,14 @@ object SshConnectionPool {
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
-    @Suppress("TooGenericExceptionThrown")
     private fun create(iv: String, url: String): SSHClient? {
         val connInfo = ConnectionInfo(url)
         val utilsHandler = AppConfig.getInstance().utilsHandler
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
         if (true == pem?.isNotEmpty()) {
-            fromTask(PemToKeyPairTask(WeakReference(AppConfig.getInstance()), pem) {
-                keyPair.set(it)
-            })
+            val task = fromTask(PemToKeyPairTask(WeakReference(AppConfig.getInstance()), pem))
+            keyPair.set(task.blockingFirst())
         }
         val hostKey = utilsHandler.getSshHostKey(url) ?: return null
         return create(
@@ -202,23 +201,16 @@ object SshConnectionPool {
         password: String?,
         keyPair: KeyPair?
     ): SSHClient? {
-        return try {
-            val taskResult = SshAuthenticationTask(
-                hostname = host,
-                port = port,
-                hostKey = hostKey,
-                username = username,
-                password = password,
-                privateKey = keyPair
-            ).execute().get()
-            taskResult.result
-        } catch (e: InterruptedException) {
-            // FIXME: proper handling
-            throw RuntimeException(e)
-        } catch (e: ExecutionException) {
-            // FIXME: proper handling
-            throw RuntimeException(e)
-        }
+        val task = SshAuthenticationTask(
+                WeakReference(AppConfig.getInstance()),
+                host,
+                port, hostKey,
+                username,
+                password,
+                keyPair
+        )
+        val taskResult = fromTask(task)
+        return taskResult.blockingFirst()
     }
 
     private fun validate(client: SSHClient): Boolean {

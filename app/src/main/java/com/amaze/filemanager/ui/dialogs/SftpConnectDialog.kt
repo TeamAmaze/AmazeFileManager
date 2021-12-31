@@ -403,19 +403,19 @@ class SftpConnectDialog : DialogFragment() {
                 runCatching {
                     requireContext().contentResolver.openInputStream(this)?.let {
                         selectedKeyContent ->
-                        fromTask(PemToKeyPairTask(WeakReference(requireContext()), selectedKeyContent) { result: KeyPair? ->
-                            selectedParsedKeyPair = result
-                            selectedParsedKeyPairName = this
+                        val task = PemToKeyPairTask(WeakReference(requireContext()), selectedKeyContent)
+                        val flowable = fromTask(task)
+                        selectedParsedKeyPair = flowable.blockingFirst()
+                        selectedParsedKeyPairName = this
                                 .lastPathSegment!!
                                 .substring(
-                                    this.lastPathSegment!!
-                                        .indexOf('/') + 1
+                                        this.lastPathSegment!!
+                                                .indexOf('/') + 1
                                 )
-                            val okBTN = (dialog as MaterialDialog)
+                        val okBTN = (dialog as MaterialDialog)
                                 .getActionButton(DialogAction.POSITIVE)
-                            okBTN.isEnabled = okBTN.isEnabled || true
-                            binding.selectPemBTN.text = selectedParsedKeyPairName
-                        })
+                        okBTN.isEnabled = okBTN.isEnabled || true
+                        binding.selectPemBTN.text = selectedParsedKeyPairName
                     }
                 }.onFailure {
                     Log.e(TAG, "Error reading PEM key", it)

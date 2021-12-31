@@ -30,14 +30,13 @@ import java.security.KeyPair
 class PemToKeyPairTask(
         private val appContextWR: WeakReference<Context>,
         private val pemFile: ByteArray,
-        private val passwordFinder: PasswordFinder?,
-        private val callback: AsyncTaskResult.Callback<KeyPair?>?
+        passwordFinder: PasswordFinder?
 ): Task<KeyPair, PemToKeyPairCallable> {
 
-    constructor(appContextWR: WeakReference<Context>, pemFile: InputStream, callback: AsyncTaskResult.Callback<KeyPair?>?) :
-            this(appContextWR, IOUtils.readFully(pemFile).toByteArray(), null, callback)
-    constructor(appContextWR: WeakReference<Context>, pemContent: String, callback: AsyncTaskResult.Callback<KeyPair?>?) :
-            this(appContextWR, pemContent.toByteArray(), null, callback)
+    constructor(appContextWR: WeakReference<Context>, pemFile: InputStream) :
+            this(appContextWR, IOUtils.readFully(pemFile).toByteArray(), null)
+    constructor(appContextWR: WeakReference<Context>, pemContent: String) :
+            this(appContextWR, pemContent.toByteArray(), null)
 
     private val task: PemToKeyPairCallable
 
@@ -80,13 +79,12 @@ class PemToKeyPairTask(
                         }
                     }
                     dialog.dismiss()
-                    fromTask(PemToKeyPairTask(appContextWR, pemFile, passwordFinder, callback))
+                    fromTask(PemToKeyPairTask(appContextWR, pemFile, passwordFinder))
                 }
                 .negativeText(R.string.cancel)
                 .onNegative { dialog: MaterialDialog, which: DialogAction? ->
                     dialog.dismiss()
                     toastOnParseError(result)
-                    callback?.onResult(null)
                 }
         val dialog = builder.show()
         WarnableTextInputValidator(
@@ -111,7 +109,7 @@ class PemToKeyPairTask(
     }
 
     override fun onFinish(value: KeyPair) {
-        callback?.onResult(value)
+
     }
 
     private fun toastOnParseError(result: IOException) {

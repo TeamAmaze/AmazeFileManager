@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks
 
+import android.annotation.SuppressLint
 import androidx.annotation.MainThread
 import io.reactivex.Flowable
 import io.reactivex.android.schedulers.AndroidSchedulers
@@ -51,9 +52,13 @@ interface Task<V, T : Callable<V>> {
 /**
  * This creates and starts a [Flowable] from a [Task].
  */
-fun <V, T : Callable<V>> fromTask(task: Task<V, T>): Disposable {
-    return Flowable.fromCallable(task.getTask())
-        .subscribeOn(Schedulers.io())
-        .observeOn(AndroidSchedulers.mainThread())
-        .subscribe(task::onFinish, task::onError)
+@SuppressLint("CheckResult")
+fun <V, T : Callable<V>> fromTask(task: Task<V, T>): Flowable<V> {
+    val flowable = Flowable.fromCallable(task.getTask())
+
+    flowable.subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(task::onFinish, task::onError)
+
+    return flowable
 }
