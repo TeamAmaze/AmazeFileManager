@@ -41,6 +41,7 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.G
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -262,7 +263,7 @@ public class CloudUtil {
       case SFTP:
         inputStream =
             SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(hybridFile.getPath(), false) {
+                new SFtpClientTemplate<InputStream>(CryptUtil.IV, hybridFile.getPath(), false) {
                   @Override
                   public InputStream execute(final SFTPClient client) throws IOException {
                     final RemoteFile rf =

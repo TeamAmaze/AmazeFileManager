@@ -95,6 +95,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -1913,7 +1914,7 @@ public class MainActivity extends PermissionsActivity
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(path);
+    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(CryptUtil.IV, path);
 
     Bundle bundle = new Bundle();
     bundle.putString(ARG_NAME, name);

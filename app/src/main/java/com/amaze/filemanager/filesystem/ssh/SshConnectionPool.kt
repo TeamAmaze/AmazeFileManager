@@ -25,7 +25,6 @@ import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
-import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.files.EncryptDecrypt
 import io.reactivex.Completable
 import io.reactivex.schedulers.Schedulers
@@ -85,10 +84,10 @@ object SshConnectionPool {
      * @return [SSHClient] connection, already opened and authenticated
      * @throws IOException IOExceptions that occur during connection setup
      */
-    fun getConnection(url: String): SSHClient? {
+    fun getConnection(iv: String, url: String): SSHClient? {
         var client = connections[url]
         if (client == null) {
-            client = create(url)
+            client = create(iv, url)
             if (client != null) {
                 connections[url] = client
             }
@@ -97,7 +96,7 @@ object SshConnectionPool {
                 Log.d(TAG, "Connection no longer usable. Reconnecting...")
                 expire(client)
                 connections.remove(url)
-                client = create(url)
+                client = create(iv, url)
                 if (client != null) {
                     connections[url] = client
                 }
@@ -171,8 +170,8 @@ object SshConnectionPool {
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
     @Suppress("TooGenericExceptionThrown")
-    private fun create(url: String): SSHClient? {
-        val connInfo = ConnectionInfo(url)
+    private fun create(iv: String, url: String): SSHClient? {
+        val connInfo = ConnectionInfo(iv, url)
         val utilsHandler = AppConfig.getInstance().utilsHandler
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
@@ -239,7 +238,7 @@ object SshConnectionPool {
      *
      * A design decision to keep database schema slim, by the way... -TranceLove
      */
-    class ConnectionInfo(url: String) {
+    class ConnectionInfo(iv: String, url: String) {
         val host: String
         val port: Int
         val username: String
@@ -265,7 +264,7 @@ object SshConnectionPool {
             username = userInfo[0]
             password = if (userInfo.size > 1) {
                 runCatching {
-                    EncryptDecrypt.decryptPassword(AppConfig.getInstance(), CryptUtil.IV, userInfo[1])
+                    EncryptDecrypt.decryptPassword(AppConfig.getInstance(), iv, userInfo[1])
                 }.getOrElse {
                     /* Hack. It should only happen after creating new SSH connection settings
                      * and plain text password is sent in.

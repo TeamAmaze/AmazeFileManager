@@ -49,6 +49,7 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.G
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
@@ -262,7 +263,7 @@ public class HybridFile {
       case SFTP:
         final Long returnValue =
             SshClientUtils.execute(
-                new SFtpClientTemplate<Long>(path) {
+                new SFtpClientTemplate<Long>(CryptUtil.IV, path) {
                   @Override
                   public Long execute(@NonNull SFTPClient client) throws IOException {
                     return client.mtime(SshClientUtils.extractRemotePathFrom(path));
@@ -459,7 +460,7 @@ public class HybridFile {
       case SFTP:
         final Boolean returnValue =
             SshClientUtils.<Boolean>execute(
-                new SFtpClientTemplate<Boolean>(path) {
+                new SFtpClientTemplate<Boolean>(CryptUtil.IV, path) {
                   @Override
                   public Boolean execute(SFTPClient client) {
                     try {
@@ -536,7 +537,7 @@ public class HybridFile {
       case SFTP:
         final Long returnValue =
             SshClientUtils.<Long>execute(
-                new SFtpClientTemplate<Long>(path) {
+                new SFtpClientTemplate<Long>(CryptUtil.IV, path) {
                   @Override
                   public Long execute(SFTPClient client) throws IOException {
                     return client.size(SshClientUtils.extractRemotePathFrom(path));
@@ -593,7 +594,7 @@ public class HybridFile {
       case SFTP:
         final Long returnValue =
             SshClientUtils.<Long>execute(
-                new SFtpClientTemplate<Long>(path) {
+                new SFtpClientTemplate<Long>(CryptUtil.IV, path) {
                   @Override
                   public Long execute(@NonNull SFTPClient client) throws IOException {
                     try {
@@ -650,7 +651,7 @@ public class HybridFile {
       case SFTP:
         final Long returnValue =
             SshClientUtils.<Long>execute(
-                new SFtpClientTemplate<Long>(path) {
+                new SFtpClientTemplate<Long>(CryptUtil.IV, path) {
                   @Override
                   public Long execute(@NonNull SFTPClient client) throws IOException {
                     try {
@@ -698,7 +699,7 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         SshClientUtils.<Boolean>execute(
-            new SFtpClientTemplate<Boolean>(path) {
+            new SFtpClientTemplate<Boolean>(CryptUtil.IV, path) {
               @Override
               public Boolean execute(SFTPClient client) {
                 try {
@@ -787,7 +788,7 @@ public class HybridFile {
       case SFTP:
         arrayList =
             SshClientUtils.execute(
-                new SFtpClientTemplate<ArrayList<HybridFileParcelable>>(path) {
+                new SFtpClientTemplate<ArrayList<HybridFileParcelable>>(CryptUtil.IV, path) {
                   @Override
                   public ArrayList<HybridFileParcelable> execute(SFTPClient client) {
                     ArrayList<HybridFileParcelable> retval = new ArrayList<>();
@@ -854,7 +855,7 @@ public class HybridFile {
 
   public static String parseAndFormatUriForDisplay(@NonNull String uriString) {
     if (uriString.startsWith(SSH_URI_PREFIX)) {
-      SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(uriString);
+      SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(CryptUtil.IV, uriString);
       return connInfo.toString();
     } else {
       Uri uri = Uri.parse(uriString);
@@ -876,7 +877,7 @@ public class HybridFile {
       case SFTP:
         inputStream =
             SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(path, false) {
+                new SFtpClientTemplate<InputStream>(CryptUtil.IV, path, false) {
                   @Override
                   public InputStream execute(final SFTPClient client) throws IOException {
                     final RemoteFile rf = client.open(SshClientUtils.extractRemotePathFrom(path));
@@ -940,7 +941,7 @@ public class HybridFile {
     switch (mode) {
       case SFTP:
         return SshClientUtils.execute(
-            new SshClientTemplate<OutputStream>(path, false) {
+            new SshClientTemplate<OutputStream>(CryptUtil.IV, path, false) {
               @Override
               public OutputStream execute(final SSHClient ssh) throws IOException {
                 final SFTPClient client = ssh.newSFTPClient();
@@ -1011,7 +1012,7 @@ public class HybridFile {
     if (isSftp()) {
       final Boolean executionReturn =
           SshClientUtils.<Boolean>execute(
-              new SFtpClientTemplate<Boolean>(path) {
+              new SFtpClientTemplate<Boolean>(CryptUtil.IV, path) {
                 @Override
                 public Boolean execute(SFTPClient client) throws IOException {
                   try {
@@ -1086,7 +1087,7 @@ public class HybridFile {
   public void mkdir(Context context) {
     if (isSftp()) {
       SshClientUtils.execute(
-          new SFtpClientTemplate<Void>(path) {
+          new SFtpClientTemplate<Void>(CryptUtil.IV, path) {
             @Override
             public Void execute(@NonNull SFTPClient client) {
               try {
@@ -1131,7 +1132,7 @@ public class HybridFile {
     if (isSftp()) {
       Boolean retval =
               SshClientUtils.<Boolean>execute(
-                      new SFtpClientTemplate(path) {
+                      new SFtpClientTemplate(CryptUtil.IV, path) {
                         @Override
                         public Boolean execute(@NonNull SFTPClient client) throws IOException {
                           String _path = SshClientUtils.extractRemotePathFrom(path);

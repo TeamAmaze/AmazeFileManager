@@ -27,6 +27,7 @@ import java.security.NoSuchAlgorithmException;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
@@ -75,7 +76,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
       if (file.isSftp()) {
         md5 =
             SshClientUtils.execute(
-                new SshClientSessionTemplate<String>(file.getPath()) {
+                new SshClientSessionTemplate<String>(CryptUtil.IV, file.getPath()) {
                   @Override
                   public String execute(Session session) throws IOException {
                     Session.Command cmd =
@@ -94,7 +95,7 @@ public class GenerateHashesTask extends AsyncTask<Void, String, String[]> {
                 });
         sha256 =
             SshClientUtils.execute(
-                new SshClientSessionTemplate<String>(file.getPath()) {
+                new SshClientSessionTemplate<String>(CryptUtil.IV, file.getPath()) {
                   @Override
                   public String execute(Session session) throws IOException {
                     Session.Command cmd =

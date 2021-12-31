@@ -434,7 +434,7 @@ public class MainActivityHelper {
     if (OpenMode.SMB.equals(openMode)) {
       return SmbUtil.checkFolder(path);
     } else if (OpenMode.SFTP.equals(openMode)) {
-      return SshClientUtils.checkFolder(path);
+      return SshClientUtils.checkFolder(CryptUtil.IV, path);
     } else if (OpenMode.DOCUMENT_FILE.equals(openMode)) {
       DocumentFile d =
           DocumentFile.fromTreeUri(AppConfig.getInstance(), SafRootHolder.getUriRoot());

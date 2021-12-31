@@ -112,21 +112,18 @@ public class SftpAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Nullable
-  @org.jetbrains.annotations.Nullable
   @Override
   public String[] list(AmazeFile f) {
     return new String[0];
   }
 
   @Nullable
-  @org.jetbrains.annotations.Nullable
   @Override
   public InputStream getInputStream(AmazeFile f) {
     return null;
   }
 
   @Nullable
-  @org.jetbrains.annotations.Nullable
   @Override
   public OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return null;

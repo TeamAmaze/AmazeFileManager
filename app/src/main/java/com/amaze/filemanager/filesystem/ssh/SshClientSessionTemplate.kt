@@ -31,7 +31,7 @@ abstract class SshClientSessionTemplate <T>
  * ssh://<username>:<password>@<host>:<port>` or `
  * ssh://<username>@<host>:<port>`
  */
-(@JvmField val url: String) {
+(@JvmField val iv: String, @JvmField val url: String) {
 
     /**
      * Implement logic here.

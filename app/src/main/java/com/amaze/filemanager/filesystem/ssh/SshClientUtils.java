@@ -65,9 +65,9 @@ public abstract class SshClientUtils {
    */
   @WorkerThread
   public static <T> T execute(@NonNull SshClientTemplate<T> template) {
-    SSHClient client = SshConnectionPool.INSTANCE.getConnection(extractBaseUriFrom(template.url));
+    SSHClient client = SshConnectionPool.INSTANCE.getConnection(template.iv, extractBaseUriFrom(template.url));
     if (client == null) {
-      client = SshConnectionPool.INSTANCE.getConnection(template.url);
+      client = SshConnectionPool.INSTANCE.getConnection(template.iv, template.url);
     }
     T retval = null;
     if (client != null) {
@@ -94,7 +94,7 @@ public abstract class SshClientUtils {
   @WorkerThread
   public static <T> T execute(@NonNull final SshClientSessionTemplate<T> template) {
     return execute(
-        new SshClientTemplate<T>(template.url, false) {
+        new SshClientTemplate<T>(template.iv, template.url, false) {
           @Override
           public T execute(@NonNull SSHClient client) {
             Session session = null;
@@ -129,7 +129,7 @@ public abstract class SshClientUtils {
   @WorkerThread
   public static <T> T execute(@NonNull final SFtpClientTemplate<T> template) {
     final SshClientTemplate<T> sshClient =
-        new SshClientTemplate<T>(template.url, false) {
+        new SshClientTemplate<T>(template.iv, template.url, false) {
           @Override
           @Nullable
           public T execute(SSHClient client) {
@@ -280,11 +280,11 @@ public abstract class SshClientUtils {
   }
 
   @WorkerThread
-  public static @FolderState int checkFolder(@NonNull String path) {
+  public static @FolderState int checkFolder(@NonNull String iv, @NonNull String path) {
     return Single.fromCallable(
             () ->
                 execute(
-                    new SFtpClientTemplate<Integer>(extractBaseUriFrom(path)) {
+                    new SFtpClientTemplate<Integer>(iv, extractBaseUriFrom(path)) {
                       @Override
                       public @FolderState Integer execute(@NonNull SFTPClient client)
                           throws IOException {

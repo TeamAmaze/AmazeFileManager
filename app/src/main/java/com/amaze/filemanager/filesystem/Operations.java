@@ -40,6 +40,7 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
 import com.amaze.filemanager.filesystem.root.MakeFileCommand;
@@ -476,7 +477,7 @@ public class Operations {
           }
         } else if (oldFile.isSftp()) {
           SshClientUtils.execute(
-              new SFtpClientTemplate<Void>(oldFile.getPath()) {
+              new SFtpClientTemplate<Void>(CryptUtil.IV, oldFile.getPath()) {
                 @Override
                 public Void execute(@NonNull SFTPClient client) {
                   try {

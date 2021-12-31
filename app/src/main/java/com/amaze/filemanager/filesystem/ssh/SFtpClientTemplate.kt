@@ -35,7 +35,7 @@ abstract class SFtpClientTemplate <T>
  * ssh://<username>:<password>@<host>:<port>` or `
  * ssh://<username>@<host>:<port>`
  */ @JvmOverloads
-constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolean = true) {
+constructor(@JvmField val iv: String, @JvmField val url: String, @JvmField val closeClientOnFinish: Boolean = true) {
 
     /**
      * Implement logic here.
