@@ -10,13 +10,9 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.asynchronous.asynctasks.Task
 import com.amaze.filemanager.asynchronous.asynctasks.fromTask
-import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable
-import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileTask
 import com.amaze.filemanager.exceptions.SshKeyInvalidPassphrase
-import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator
 import net.schmizz.sshj.common.IOUtils

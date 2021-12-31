@@ -28,14 +28,12 @@ import com.amaze.filemanager.asynchronous.asynctasks.ssh.auth.SshAuthenticationT
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.pem.PemToKeyPairTask
 import com.amaze.filemanager.filesystem.files.AmazeSpecificEncryptDecrypt
 import io.reactivex.Completable
-import io.reactivex.Flowable
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.ExecutionException
 import java.util.concurrent.atomic.AtomicReference
 
 /**
@@ -90,7 +88,7 @@ object SshConnectionPool {
     fun getConnection(iv: String, url: String): SSHClient? {
         var client = connections[url]
         if (client == null) {
-            client = create(iv, url)
+            client = create(url)
             if (client != null) {
                 connections[url] = client
             }
@@ -99,7 +97,7 @@ object SshConnectionPool {
                 Log.d(TAG, "Connection no longer usable. Reconnecting...")
                 expire(client)
                 connections.remove(url)
-                client = create(iv, url)
+                client = create(url)
                 if (client != null) {
                     connections[url] = client
                 }
@@ -172,7 +170,7 @@ object SshConnectionPool {
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication
-    private fun create(iv: String, url: String): SSHClient? {
+    private fun create(url: String): SSHClient? {
         val connInfo = ConnectionInfo(url)
         val utilsHandler = AppConfig.getInstance().utilsHandler
         val pem = utilsHandler.getSshAuthPrivateKey(url)

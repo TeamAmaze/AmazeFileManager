@@ -1,10 +1,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh.pem
 
-import android.content.Context
-import android.os.AsyncTask
 import androidx.annotation.WorkerThread
-import com.amaze.filemanager.R
-import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.SshKeyInvalidPassphrase
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider
@@ -17,7 +13,6 @@ import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
 import java.io.IOException
 import java.io.InputStream
 import java.io.StringReader
-import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.util.concurrent.Callable
 

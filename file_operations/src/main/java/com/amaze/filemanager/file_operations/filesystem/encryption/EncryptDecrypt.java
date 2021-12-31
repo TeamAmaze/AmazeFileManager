@@ -1,14 +1,24 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.file_operations.filesystem.encryption;
-
-import android.content.Context;
-import android.os.Build;
-import android.security.keystore.KeyGenParameterSpec;
-import android.security.keystore.KeyProperties;
-import android.util.Base64;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 
 import java.io.IOException;
 import java.security.GeneralSecurityException;
@@ -20,6 +30,16 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 
+import android.content.Context;
+import android.os.Build;
+import android.security.keystore.KeyGenParameterSpec;
+import android.security.keystore.KeyProperties;
+import android.util.Base64;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+
 public class EncryptDecrypt {
   public static final String ALGO_AES = "AES/GCM/NoPadding";
   public static final String ALGO_RSA = "RSA/ECB/PKCS1Padding";
@@ -27,8 +47,12 @@ public class EncryptDecrypt {
   /** Helper method to encrypt plain text password */
   @RequiresApi(api = Build.VERSION_CODES.M)
   @NonNull
-  private static String aesEncryptPassword(@NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String plainTextPassword)
-          throws GeneralSecurityException, IOException {
+  private static String aesEncryptPassword(
+      @NonNull String iv,
+      @NonNull String keyStoreName,
+      @NonNull String keyAlias,
+      @NonNull String plainTextPassword)
+      throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv.getBytes());
@@ -42,8 +66,12 @@ public class EncryptDecrypt {
   /** Helper method to decrypt cipher text password */
   @RequiresApi(api = Build.VERSION_CODES.M)
   @NonNull
-  private static String aesDecryptPassword(@NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String cipherPassword)
-          throws GeneralSecurityException, IOException {
+  private static String aesDecryptPassword(
+      @NonNull String iv,
+      @NonNull String keyStoreName,
+      @NonNull String keyAlias,
+      @NonNull String cipherPassword)
+      throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(128, iv.getBytes());
@@ -60,17 +88,18 @@ public class EncryptDecrypt {
    */
   @RequiresApi(api = Build.VERSION_CODES.M)
   @NonNull
-  public static Key getSecretKey(@NonNull String keyStoreName, @NonNull String keyAlias) throws GeneralSecurityException, IOException {
+  public static Key getSecretKey(@NonNull String keyStoreName, @NonNull String keyAlias)
+      throws GeneralSecurityException, IOException {
     KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
 
     if (!keyStore.containsAlias(keyAlias)) {
       KeyGenerator keyGenerator =
-              KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, keyStoreName);
+          KeyGenerator.getInstance(KeyProperties.KEY_ALGORITHM_AES, keyStoreName);
 
       KeyGenParameterSpec.Builder builder =
-              new KeyGenParameterSpec.Builder(
-                      keyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT);
+          new KeyGenParameterSpec.Builder(
+              keyAlias, KeyProperties.PURPOSE_ENCRYPT | KeyProperties.PURPOSE_DECRYPT);
       builder.setBlockModes(KeyProperties.BLOCK_MODE_GCM);
       builder.setEncryptionPaddings(KeyProperties.ENCRYPTION_PADDING_NONE);
       builder.setRandomizedEncryptionRequired(false);
@@ -84,8 +113,13 @@ public class EncryptDecrypt {
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
   @NonNull
-  private static String rsaEncryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String password)
-          throws GeneralSecurityException, IOException {
+  private static String rsaEncryptPassword(
+      @NonNull Context context,
+      @NonNull String iv,
+      @NonNull String keyStoreName,
+      @NonNull String keyAlias,
+      @NonNull String password)
+      throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     RsaKeygen keygen = new RsaKeygen(context, keyStoreName, keyAlias);
@@ -98,8 +132,13 @@ public class EncryptDecrypt {
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
   @NonNull
-  private static String rsaDecryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String cipherText)
-          throws GeneralSecurityException, IOException {
+  private static String rsaDecryptPassword(
+      @NonNull Context context,
+      @NonNull String iv,
+      @NonNull String keyStoreName,
+      @NonNull String keyAlias,
+      @NonNull String cipherText)
+      throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     RsaKeygen keygen = new RsaKeygen(context, keyStoreName, keyAlias);
@@ -112,8 +151,13 @@ public class EncryptDecrypt {
 
   /** Method handles encryption of plain text on various APIs */
   @NonNull
-  public static String encryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String plainText)
-          throws GeneralSecurityException, IOException {
+  public static String encryptPassword(
+      @NonNull Context context,
+      @NonNull String iv,
+      @NonNull String keyStoreName,
+      @NonNull String keyAlias,
+      @NonNull String plainText)
+      throws GeneralSecurityException, IOException {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       return aesEncryptPassword(iv, keyStoreName, keyAlias, plainText);
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -124,8 +168,13 @@ public class EncryptDecrypt {
 
   /** Method handles decryption of cipher text on various APIs */
   @NonNull
-  public static String decryptPassword(@NonNull Context context, @NonNull String iv, @NonNull String keyStoreName, @NonNull String keyAlias, @NonNull String cipherText)
-          throws GeneralSecurityException, IOException {
+  public static String decryptPassword(
+      @NonNull Context context,
+      @NonNull String iv,
+      @NonNull String keyStoreName,
+      @NonNull String keyAlias,
+      @NonNull String cipherText)
+      throws GeneralSecurityException, IOException {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       return aesDecryptPassword(iv, keyStoreName, keyAlias, cipherText);
     } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
@@ -138,7 +187,8 @@ public class EncryptDecrypt {
    * android.hardware.fingerprint.FingerprintManager}
    */
   @Nullable
-  public static Cipher initCipher(Context context, String iv, String keyStoreName, String keyAlias) throws GeneralSecurityException, IOException {
+  public static Cipher initCipher(Context context, String iv, String keyStoreName, String keyAlias)
+      throws GeneralSecurityException, IOException {
     Cipher cipher;
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
       cipher = Cipher.getInstance(ALGO_AES);

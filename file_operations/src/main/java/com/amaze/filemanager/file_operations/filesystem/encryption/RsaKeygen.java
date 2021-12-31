@@ -1,15 +1,26 @@
+/*
+ * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.file_operations.filesystem.encryption;
 
 import static com.amaze.filemanager.file_operations.filesystem.encryption.EncryptDecrypt.ALGO_RSA;
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.os.Build;
-import android.security.KeyPairGeneratorSpec;
-import android.util.Base64;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
-import androidx.preference.PreferenceManager;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -29,19 +40,27 @@ import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.SecretKeySpec;
 import javax.security.auth.x500.X500Principal;
 
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.Build;
+import android.security.KeyPairGeneratorSpec;
+import android.util.Base64;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.preference.PreferenceManager;
+
 /** Class responsible for generating key for API lower than M */
 public class RsaKeygen {
 
   public static final String PREFERENCE_KEY = "aes_key";
-  @NonNull
-  private final Context context;
-  @NonNull
-  private final String keyStoreName;
-  @NonNull
-  private final String keyAlias;
+  @NonNull private final Context context;
+  @NonNull private final String keyStoreName;
+  @NonNull private final String keyAlias;
 
   @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN_MR2)
-  public RsaKeygen(@NonNull Context context, @NonNull String keyStoreName, @NonNull String keyAlias) {
+  public RsaKeygen(
+      @NonNull Context context, @NonNull String keyStoreName, @NonNull String keyAlias) {
 
     this.context = context;
     this.keyStoreName = keyStoreName;
@@ -71,13 +90,13 @@ public class RsaKeygen {
       KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA", keyStoreName);
 
       KeyPairGeneratorSpec spec =
-              new KeyPairGeneratorSpec.Builder(context)
-                      .setAlias(keyAlias)
-                      .setSubject(new X500Principal("CN=" + keyAlias))
-                      .setSerialNumber(BigInteger.TEN)
-                      .setStartDate(start.getTime())
-                      .setEndDate(end.getTime())
-                      .build();
+          new KeyPairGeneratorSpec.Builder(context)
+              .setAlias(keyAlias)
+              .setSubject(new X500Principal("CN=" + keyAlias))
+              .setSerialNumber(BigInteger.TEN)
+              .setStartDate(start.getTime())
+              .setEndDate(end.getTime())
+              .build();
 
       keyPairGenerator.initialize(spec);
       keyPairGenerator.generateKeyPair();
@@ -108,7 +127,7 @@ public class RsaKeygen {
     KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
     KeyStore.PrivateKeyEntry keyEntry =
-            (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
+        (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
     Cipher cipher = Cipher.getInstance(ALGO_RSA, "AndroidOpenSSL");
     cipher.init(Cipher.ENCRYPT_MODE, keyEntry.getCertificate().getPublicKey());
 
@@ -128,8 +147,7 @@ public class RsaKeygen {
     String encodedString = preferences.getString(PREFERENCE_KEY, null);
     if (encodedString != null) {
 
-      return new SecretKeySpec(
-              decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)), "AES");
+      return new SecretKeySpec(decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)), "AES");
     } else {
       generateKeyPair(context);
       setKeyPreference();
@@ -143,7 +161,7 @@ public class RsaKeygen {
     KeyStore keyStore = KeyStore.getInstance(keyStoreName);
     keyStore.load(null);
     KeyStore.PrivateKeyEntry keyEntry =
-            (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
+        (KeyStore.PrivateKeyEntry) keyStore.getEntry(keyAlias, null);
     Cipher cipher = Cipher.getInstance(ALGO_RSA, "AndroidOpenSSL");
     cipher.init(Cipher.DECRYPT_MODE, keyEntry.getPrivateKey());
 

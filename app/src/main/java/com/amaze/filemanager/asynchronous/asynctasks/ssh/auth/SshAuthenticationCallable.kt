@@ -1,8 +1,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh.auth
 
-import android.os.AsyncTask
 import androidx.annotation.WorkerThread
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import net.schmizz.sshj.SSHClient
