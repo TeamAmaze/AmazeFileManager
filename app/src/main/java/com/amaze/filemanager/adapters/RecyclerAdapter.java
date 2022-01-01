@@ -1312,6 +1312,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       popupMenu.getMenu().findItem(R.id.book).setVisible(false);
       popupMenu.getMenu().findItem(R.id.ex).setVisible(false);
 
+      popupMenu.getMenu().findItem(R.id.restore).setVisible(true);
+
     } else {
 
       if (rowItem.isDirectory) {

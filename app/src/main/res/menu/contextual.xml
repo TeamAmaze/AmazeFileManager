@@ -36,6 +36,11 @@
         app:showAsAction="always" />
 
     <item
+        android:id="@+id/restore"
+        android:title="@string/restore"
+        android:visible="false"
+        />
+    <item
         android:id="@+id/openparent"
         android:visible="false"
         android:title="@string/open_parent" />

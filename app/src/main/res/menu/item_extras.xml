@@ -26,6 +26,11 @@
         android:title="@string/delete"
         />
     <item
+        android:id="@+id/restore"
+        android:title="@string/restore"
+        android:visible="false"
+        />
+    <item
         android:id="@+id/rename"
         android:title="@string/rename" />
     <item

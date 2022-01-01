@@ -163,6 +163,13 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         else RecycleUtils.Companion.moveToRecycleBin(positions, context, mainActivity);
 
         return true;
+      case R.id.restore:
+        ArrayList<HybridFileParcelable> list = new ArrayList<>();
+        list.add(rowItem.generateBaseFile());
+
+        RecycleUtils.Companion.restoreFromRecycleBin(list, context, mainActivity);
+
+        return true;
       case R.id.open_with:
         boolean useNewStack =
             sharedPrefs.getBoolean(PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK, false);

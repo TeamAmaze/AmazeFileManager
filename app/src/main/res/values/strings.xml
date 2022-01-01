@@ -102,6 +102,8 @@
     <string name="recycle_bin">Recycle Bin</string>
     <string name="recycling">Recycling</string>
     <string name="move_to_recycle_bin">Move items to recycle bin?</string>
+    <string name="restore">Restore</string>
+    <string name="restoring">Restoring</string>
 
     <!-- New -->
     <!-- Array -->

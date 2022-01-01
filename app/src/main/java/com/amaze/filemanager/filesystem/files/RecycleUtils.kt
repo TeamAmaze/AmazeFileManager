@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem.files
 
 import android.content.Context
 import android.os.AsyncTask
+import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import com.amaze.filemanager.R
@@ -44,10 +45,11 @@ class RecycleUtils {
 
     companion object {
 
-        private const val RECYCLE_ARRAY = "RecycleArray"
+        private const val RECYCLE_META_DATA_FILE_NAME = ".recycle_meta_data.json"
+        private const val RECYCLE_ARRAY = "recycle_array"
         private const val RECYCLE_PATH = "path"
         private const val RECYCLE_NAME = "name"
-        private const val RECYCLE_DELETED_DATE = "deletedDate"
+        private const val RECYCLE_DELETED_DATE = "deleted_date"
 
         fun moveToRecycleBin(
             positions: ArrayList<HybridFileParcelable>,
@@ -91,6 +93,74 @@ class RecycleUtils {
             moveToRecycleBin(positions, mainActivity.applicationContext, mainActivity)
         }
 
+        fun restoreFromRecycleBin(
+            positions: ArrayList<HybridFileParcelable>,
+            mainActivity: MainActivity,
+        ) {
+            restoreFromRecycleBin(positions, mainActivity.applicationContext, mainActivity)
+        }
+
+        fun restoreFromRecycleBin(
+            positions: ArrayList<HybridFileParcelable>,
+            context: Context,
+            mainActivity: MainActivity,
+        ) {
+
+            val jsonObject = loadMetaDataJSONFile()
+
+            val jsonArray =
+                if (jsonObject.has(RECYCLE_ARRAY)) jsonObject.getJSONArray(
+                    RECYCLE_ARRAY
+                ) else JSONArray()
+
+            for (item in positions) {
+
+                for (i in 0 until jsonArray.length() - 1) {
+
+                    val o = jsonArray.getJSONObject(i)
+
+                    if (o.getString(RECYCLE_NAME).equals(item.name)) {
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.restoring),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        PrepareCopyTask(
+                            o.getString(RECYCLE_PATH).replace(item.name, ""),
+                            true,
+                            mainActivity,
+                            mainActivity.isRootExplorer,
+                            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+                        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
+
+                        removeJSONObjectAndWrite(jsonArray, i)
+                    }
+                }
+            }
+        }
+
+        private fun removeJSONObjectAndWrite(jsonArray: JSONArray, i: Int) {
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+
+                jsonArray.remove(i)
+
+                writeMetaDataJSONFile(JSONObject().put(RECYCLE_ARRAY, jsonArray))
+            } else
+                run {
+
+                    val newArray = JSONArray()
+
+                    for (j in 0 until jsonArray.length())
+                        if (j != i)
+                            newArray.put(jsonArray[j])
+
+                    writeMetaDataJSONFile(JSONObject().put(RECYCLE_ARRAY, newArray))
+                }
+        }
+
         fun getRecycleBinPath(): String {
             var s = Environment.getExternalStorageDirectory()
                 .toString() + File.separator + ".AmazeFileManager"
@@ -110,7 +180,7 @@ class RecycleUtils {
 
             if (!File(s).exists()) File(s).mkdirs()
 
-            s += "/.MetaData.json"
+            s += File.separator + RECYCLE_META_DATA_FILE_NAME
 
             DataUtils.getInstance().addHiddenFile(s)
 
@@ -131,7 +201,7 @@ class RecycleUtils {
                 recycleObject.put(RECYCLE_PATH, item.path)
                 recycleObject.put(RECYCLE_NAME, item.name)
                 recycleObject.put(RECYCLE_DELETED_DATE, Calendar.getInstance().timeInMillis)
-                jsonArray.put(recycleObject.toString())
+                jsonArray.put(recycleObject)
             }
 
             jsonObject.put(RECYCLE_ARRAY, jsonArray)

@@ -40,6 +40,7 @@ import com.amaze.filemanager.filesystem.PasteHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.filesystem.files.RecycleUtils.Companion.getRecycleBinPath
 import com.amaze.filemanager.filesystem.files.RecycleUtils.Companion.moveToRecycleBin
+import com.amaze.filemanager.filesystem.files.RecycleUtils.Companion.restoreFromRecycleBin
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.selection.SelectionPopupMenu.Companion.invokeSelectionDropdown
@@ -135,6 +136,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
 
             if (mainFragmentViewModel.getIsOnRecycleBin()) {
 
+                showOption(R.id.restore, menu)
                 hideOption(R.id.cpy, menu)
                 hideOption(R.id.cut, menu)
                 hideOption(R.id.share, menu)
@@ -297,6 +299,19 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                             mainActivity
                         )
 
+                    true
+                }
+                R.id.restore -> {
+
+                    val items = ArrayList<HybridFileParcelable>()
+
+                    for (checkedItem in checkedItems)
+                        items.add(checkedItem.generateBaseFile())
+
+                    restoreFromRecycleBin(
+                        items,
+                        mainActivity
+                    )
                     true
                 }
                 R.id.share -> {
