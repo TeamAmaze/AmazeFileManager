@@ -135,6 +135,8 @@ public class PrepareCopyTask
     HybridFile destination = new HybridFile(openMode, path);
     destination.generateMode(context.get());
 
+    if (!destination.exists()) destination.mkdir(context.get());
+
     if (move
         && destination.getMode() == openMode
         && MoveFiles.getOperationSupportedFileSystem().contains(openMode)) {

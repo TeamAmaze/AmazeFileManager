@@ -22,19 +22,19 @@ package com.amaze.filemanager.filesystem.files
 
 import android.content.Context
 import android.os.AsyncTask
-import android.os.Build
 import android.os.Environment
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
+import com.amaze.filemanager.database.models.utilities.RecycleItem
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.RecyclePromptDialog
 import com.amaze.filemanager.utils.DataUtils
-import org.json.JSONArray
-import org.json.JSONObject
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.io.*
-import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * This class contains the code for the implementation of recycle bin
@@ -46,10 +46,6 @@ class RecycleUtils {
     companion object {
 
         private const val RECYCLE_META_DATA_FILE_NAME = ".recycle_meta_data.json"
-        private const val RECYCLE_ARRAY = "recycle_array"
-        private const val RECYCLE_PATH = "path"
-        private const val RECYCLE_NAME = "name"
-        private const val RECYCLE_DELETED_DATE = "deleted_date"
 
         fun moveToRecycleBin(
             positions: ArrayList<HybridFileParcelable>,
@@ -106,20 +102,15 @@ class RecycleUtils {
             mainActivity: MainActivity,
         ) {
 
-            val jsonObject = loadMetaDataJSONFile()
-
-            val jsonArray =
-                if (jsonObject.has(RECYCLE_ARRAY)) jsonObject.getJSONArray(
-                    RECYCLE_ARRAY
-                ) else JSONArray()
+            val list = loadMetaDataJSONFile()
 
             for (item in positions) {
 
-                for (i in 0 until jsonArray.length() - 1) {
+                if (list.size == 1) {
 
-                    val o = jsonArray.getJSONObject(i)
+                    val o = list[0]
 
-                    if (o.getString(RECYCLE_NAME).equals(item.name)) {
+                    if (o.name.equals(item.name)) {
 
                         Toast.makeText(
                             context,
@@ -128,37 +119,45 @@ class RecycleUtils {
                         ).show()
 
                         PrepareCopyTask(
-                            o.getString(RECYCLE_PATH).replace(item.name, ""),
+                            o.path?.replace(item.name, ""),
                             true,
                             mainActivity,
                             mainActivity.isRootExplorer,
                             mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
                         ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
 
-                        removeJSONObjectAndWrite(jsonArray, i)
+                        list.removeAt(0)
+
+                        writeMetaDataJSONFile(list)
+                    }
+                }
+
+                for (i in 0 until list.size - 1) {
+
+                    val o = list[i]
+
+                    if (o.name.equals(item.name)) {
+
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.restoring),
+                            Toast.LENGTH_LONG
+                        ).show()
+
+                        PrepareCopyTask(
+                            o.path?.replace(item.name, ""),
+                            true,
+                            mainActivity,
+                            mainActivity.isRootExplorer,
+                            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+                        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
+
+                        list.removeAt(i)
+
+                        writeMetaDataJSONFile(list)
                     }
                 }
             }
-        }
-
-        private fun removeJSONObjectAndWrite(jsonArray: JSONArray, i: Int) {
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-
-                jsonArray.remove(i)
-
-                writeMetaDataJSONFile(JSONObject().put(RECYCLE_ARRAY, jsonArray))
-            } else
-                run {
-
-                    val newArray = JSONArray()
-
-                    for (j in 0 until jsonArray.length())
-                        if (j != i)
-                            newArray.put(jsonArray[j])
-
-                    writeMetaDataJSONFile(JSONObject().put(RECYCLE_ARRAY, newArray))
-                }
         }
 
         fun getRecycleBinPath(): String {
@@ -189,34 +188,30 @@ class RecycleUtils {
 
         private fun addRecycledFile(positions: ArrayList<HybridFileParcelable>) {
 
-            val jsonObject = loadMetaDataJSONFile()
-
-            val jsonArray =
-                if (jsonObject.has(RECYCLE_ARRAY)) jsonObject.getJSONArray(
-                    RECYCLE_ARRAY
-                ) else JSONArray()
+            val list = loadMetaDataJSONFile()
 
             for (item in positions) {
-                val recycleObject = JSONObject()
-                recycleObject.put(RECYCLE_PATH, item.path)
-                recycleObject.put(RECYCLE_NAME, item.name)
-                recycleObject.put(RECYCLE_DELETED_DATE, Calendar.getInstance().timeInMillis)
-                jsonArray.put(recycleObject)
+                list.add(
+                    RecycleItem(
+                        item.path,
+                        item.name,
+                        item.date
+                    )
+                )
             }
 
-            jsonObject.put(RECYCLE_ARRAY, jsonArray)
-
-            writeMetaDataJSONFile(jsonObject)
+            writeMetaDataJSONFile(list)
         }
 
-        private fun writeMetaDataJSONFile(jsonObject: JSONObject) {
+        private fun writeMetaDataJSONFile(list: ArrayList<RecycleItem>) {
 
             val bufferedWriter = BufferedWriter(FileWriter(File(getRecycleMetaDataFilePath())))
-            bufferedWriter.write(jsonObject.toString())
+            val type = object : TypeToken<ArrayList<RecycleItem>?>() {}.type
+            bufferedWriter.write(Gson().toJson(list, type))
             bufferedWriter.close()
         }
 
-        private fun loadMetaDataJSONFile(): JSONObject {
+        private fun loadMetaDataJSONFile(): ArrayList<RecycleItem> {
 
             val stringBuilder = StringBuilder("")
 
@@ -239,9 +234,13 @@ class RecycleUtils {
             val s = stringBuilder.toString()
 
             return if (s == "") {
-                JSONObject()
+                ArrayList()
             } else {
-                JSONObject(s)
+
+                Gson().fromJson(
+                    s,
+                    object : TypeToken<ArrayList<RecycleItem>?>() {}.type
+                )
             }
         }
     }

@@ -119,6 +119,8 @@ dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'com.readystatesoftware.systembartint:systembartint:1.0.3'
 
+    implementation 'com.google.code.gson:gson:2.8.9'
+
     implementation 'androidx.vectordrawable:vectordrawable-animated:1.1.0'
     implementation 'androidx.legacy:legacy-support-v13:1.0.0'
     implementation "com.google.android.material:material:$androidMaterialVersion"
