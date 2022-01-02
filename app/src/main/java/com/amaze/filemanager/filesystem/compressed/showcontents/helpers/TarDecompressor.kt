@@ -34,5 +34,5 @@ class TarDecompressor(context: Context) : Decompressor(context) {
         addGoBackItem: Boolean,
         onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
     ) =
-        TarHelperTask(context, filePath!!, path, addGoBackItem, onFinish)
+        TarHelperTask(context, filePath, path, addGoBackItem, onFinish)
 }

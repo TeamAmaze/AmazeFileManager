@@ -34,5 +34,5 @@ class ZipDecompressor(context: Context) : Decompressor(context) {
         addGoBackItem: Boolean,
         onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
     ) =
-        ZipHelperTask(context, filePath!!, path, addGoBackItem, onFinish)
+        ZipHelperTask(context, filePath, path, addGoBackItem, onFinish)
 }

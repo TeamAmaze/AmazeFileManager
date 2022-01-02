@@ -24,8 +24,8 @@ import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
-class TarGzHelperTaskTest : AbstractCompressedHelperTaskTest() {
-    override fun createTask(relativePath: String): CompressedHelperTask = GzipHelperTask(
+class TarGzHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+    override fun createTask(relativePath: String): CompressedHelperTask = TarGzHelperTask(
         ApplicationProvider.getApplicationContext(),
         File(Environment.getExternalStorageDirectory(), "test-archive.tar.gz").absolutePath,
         relativePath,

@@ -37,22 +37,23 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.LzmaExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarBzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor;
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.XzExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarGzExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarLzmaExtractor;
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarXzExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.Bzip2Decompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.GzipDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.LzmaDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.RarDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.SevenZipDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarBzip2Decompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarDecompressor;
-import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.XzDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarGzDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarLzmaDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.TarXzDecompressor;
+import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.UnknownCompressedFileDecompressor;
 import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecompressor;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 
@@ -123,12 +124,12 @@ public class CompressedHelperTest {
     result =
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), GzipExtractor.class);
+    assertEquals(result.getClass(), TarGzExtractor.class);
     file = new File("/test/test.tgz"); // .tgz used by GzipExtractor
     result =
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), GzipExtractor.class);
+    assertEquals(result.getClass(), TarGzExtractor.class);
     file = new File("/test/test.rar"); // .rar used by RarExtractor
     result =
         CompressedHelper.getExtractorInstance(
@@ -138,12 +139,12 @@ public class CompressedHelperTest {
     result =
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), Bzip2Extractor.class);
+    assertEquals(result.getClass(), TarBzip2Extractor.class);
     file = new File("/test/test.tbz"); // .rar used by RarExtractor
     result =
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), Bzip2Extractor.class);
+    assertEquals(result.getClass(), TarBzip2Extractor.class);
     file = new File("/test/test.7z");
     result =
         CompressedHelper.getExtractorInstance(
@@ -153,12 +154,12 @@ public class CompressedHelperTest {
     result =
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), XzExtractor.class);
+    assertEquals(result.getClass(), TarXzExtractor.class);
     file = new File("/test/test.tar.lzma");
     result =
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), LzmaExtractor.class);
+    assertEquals(result.getClass(), TarLzmaExtractor.class);
   }
 
   /**
@@ -181,28 +182,40 @@ public class CompressedHelperTest {
     assertEquals(result.getClass(), TarDecompressor.class);
     file = new File("/test/test.tar.gz"); // .tar.gz used by GzipDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), GzipDecompressor.class);
+    assertEquals(result.getClass(), TarGzDecompressor.class);
     file = new File("/test/test.tgz"); // .tar.gz used by GzipDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), GzipDecompressor.class);
+    assertEquals(result.getClass(), TarGzDecompressor.class);
     file = new File("/test/test.rar"); // .rar used by RarDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
     assertEquals(result.getClass(), RarDecompressor.class);
-    file = new File("/test/test.tar.bz2"); // .rar used by RarDecompressor
+    file = new File("/test/test.tar.bz2"); // .tar.bz2 used by TarBzip2Decompressor
     result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), Bzip2Decompressor.class);
-    file = new File("/test/test.tbz"); // .rar used by RarDecompressor
+    assertEquals(result.getClass(), TarBzip2Decompressor.class);
+    file = new File("/test/test.tbz"); // .tbz used by TarBzip2Decompressor
     result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), Bzip2Decompressor.class);
+    assertEquals(result.getClass(), TarBzip2Decompressor.class);
     file = new File("/test/test.7z"); // Can't use 7zip
     result = CompressedHelper.getCompressorInstance(context, file);
     assertEquals(result.getClass(), SevenZipDecompressor.class);
-    file = new File("/test/test.tar.xz"); // .rar used by RarDecompressor
+    file = new File("/test/test.tar.xz"); // .tar.xz used by TarXzDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), XzDecompressor.class);
-    file = new File("/test/test.tar.lzma"); // .rar used by RarDecompressor
+    assertEquals(result.getClass(), TarXzDecompressor.class);
+    file = new File("/test/test.tar.lzma"); // .tar.lzma used by TarLzmaDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), LzmaDecompressor.class);
+    assertEquals(result.getClass(), TarLzmaDecompressor.class);
+    file = new File("/test/test.txt.gz"); // .gz used by UnknownCompressedFileDecompressor
+    result = CompressedHelper.getCompressorInstance(context, file);
+    assertEquals(result.getClass(), UnknownCompressedFileDecompressor.class);
+    file = new File("/test/test.txt.bz2"); // .bz2 used by UnknownCompressedFileDecompressor
+    result = CompressedHelper.getCompressorInstance(context, file);
+    assertEquals(result.getClass(), UnknownCompressedFileDecompressor.class);
+    file = new File("/test/test.txt.lzma"); // .lzma used by UnknownCompressedFileDecompressor
+    result = CompressedHelper.getCompressorInstance(context, file);
+    assertEquals(result.getClass(), UnknownCompressedFileDecompressor.class);
+    file = new File("/test/test.txt.xz"); // .xz used by UnknownCompressedFileDecompressor
+    result = CompressedHelper.getCompressorInstance(context, file);
+    assertEquals(result.getClass(), UnknownCompressedFileDecompressor.class);
   }
 
   /** isFileExtractable() fuction test extension check */
@@ -220,6 +233,10 @@ public class CompressedHelperTest {
     assertTrue(CompressedHelper.isFileExtractable("/test/test.jar"));
     assertTrue(CompressedHelper.isFileExtractable("/test/test.apk"));
     assertTrue(CompressedHelper.isFileExtractable("/test/test.7z"));
+    assertTrue(CompressedHelper.isFileExtractable("/test/test.txt.gz"));
+    assertTrue(CompressedHelper.isFileExtractable("/test/test.txt.bz2"));
+    assertTrue(CompressedHelper.isFileExtractable("/test/test.txt.lzma"));
+    assertTrue(CompressedHelper.isFileExtractable("/test/test.txt.xz"));
 
     // extension not in code. So, it return false
     assertFalse(CompressedHelper.isFileExtractable("/test/test.z"));
@@ -242,6 +259,11 @@ public class CompressedHelperTest {
     assertEquals("test", CompressedHelper.getFileName("test.jar"));
     assertEquals("test", CompressedHelper.getFileName("test.apk"));
     assertEquals("test", CompressedHelper.getFileName("test.7z"));
+
+    assertEquals("test.txt", CompressedHelper.getFileName("test.txt.gz"));
+    assertEquals("test.txt", CompressedHelper.getFileName("test.txt.bz2"));
+    assertEquals("test.txt", CompressedHelper.getFileName("test.txt.lzma"));
+    assertEquals("test.txt", CompressedHelper.getFileName("test.txt.xz"));
 
     // no extension(directory)
     assertEquals("test", CompressedHelper.getFileName("test"));

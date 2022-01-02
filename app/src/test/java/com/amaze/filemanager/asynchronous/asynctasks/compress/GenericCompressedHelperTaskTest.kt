@@ -20,23 +20,34 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import org.apache.commons.compress.compressors.CompressorInputStream
-import org.apache.commons.compress.compressors.bzip2.BZip2CompressorInputStream
-import java.util.*
+import android.os.Environment
+import org.junit.Assert
+import org.junit.Test
+import java.io.File
 
-class Bzip2HelperTask(
-    context: Context,
-    filePath: String,
-    relativePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-) :
-    AbstractCompressedTarArchiveHelperTask(context, filePath, relativePath, goBack, l) {
+class GenericCompressedHelperTaskTest : AbstractCompressedHelperTaskTest() {
 
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        BZip2CompressorInputStream::class.java
+    /**
+     * Test file decompression.
+     */
+    @Test
+    fun testExtract() {
+        listOf("lzma", "gz", "xz", "bz2").forEach { ext ->
+            doTestExtract(
+                UnknownCompressedFileHelperTask(
+                    File(
+                        Environment.getExternalStorageDirectory(),
+                        "test.txt.$ext"
+                    ).absolutePath,
+                    false, emptyCallback
+                )
+            )
+        }
+    }
+
+    private fun doTestExtract(task: CompressedHelperTask) {
+        val result = task.doInBackground()
+        Assert.assertEquals(1, result.result.size.toLong())
+        Assert.assertEquals("test.txt", result.result[0].name)
+    }
 }

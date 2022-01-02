@@ -24,7 +24,7 @@ import android.os.Environment
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import java.io.File
 
-class ListEncryptedSevenZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
+class ListEncryptedSevenZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
     override fun createTask(relativePath: String): CompressedHelperTask {
         File(
             Environment.getExternalStorageDirectory(),

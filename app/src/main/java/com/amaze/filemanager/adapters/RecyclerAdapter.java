@@ -1316,9 +1316,13 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           || description.endsWith(fileExtensionGzipTarShort)
           || description.endsWith(fileExtensionBzip2TarLong)
           || description.endsWith(fileExtensionBzip2TarShort)
-          || description.endsWith(fileExtensionXz)
+          || description.endsWith(fileExtensionTarXz)
+          || description.endsWith(fileExtensionTarLzma)
+          || description.endsWith(fileExtension7zip)
+          || description.endsWith(fileExtensionGz)
+          || description.endsWith(fileExtensionBzip2)
           || description.endsWith(fileExtensionLzma)
-          || description.endsWith(fileExtension7zip))
+          || description.endsWith(fileExtensionXz))
         popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
     }
 

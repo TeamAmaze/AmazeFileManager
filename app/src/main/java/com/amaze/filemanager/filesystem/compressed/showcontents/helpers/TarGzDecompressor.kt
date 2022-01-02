@@ -18,13 +18,21 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.extractcontents
+package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor
+import android.content.Context
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
+import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
+import com.amaze.filemanager.asynchronous.asynctasks.compress.TarGzHelperTask
+import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
+import com.amaze.filemanager.utils.OnAsyncTaskFinished
+import java.util.*
 
-class Bzip2ExtractorTest : AbstractCompressedFileExtractorTest() {
-
-    override fun extractorClass(): Class<out Extractor> = Bzip2Extractor::class.java
-
-    override val archiveType: String = "bz2"
+class TarGzDecompressor(context: Context) : Decompressor(context) {
+    override fun changePath(
+        path: String,
+        addGoBackItem: Boolean,
+        onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+    ) =
+        TarGzHelperTask(context, filePath, path, addGoBackItem, onFinish)
 }

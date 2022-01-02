@@ -30,7 +30,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
-class RarExtractorTest : AbstractExtractorTest() {
+class RarExtractorTest : AbstractArchiveExtractorTest() {
 
     override val archiveType: String = "rar"
 
