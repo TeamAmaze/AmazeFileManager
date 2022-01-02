@@ -27,7 +27,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
-class ZipHelperTaskTest : AbstractCompressedHelperTaskTest() {
+class ZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
 
     /**
      * Verification on logic in [ZipHelperTask] assigning zip entry path.

@@ -24,14 +24,10 @@ import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
-class Bzip2HelperTaskTest : AbstractCompressedHelperTaskTest() {
-
-    override fun createTask(relativePath: String): CompressedHelperTask = Bzip2HelperTask(
+class TarLzmaHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+    override fun createTask(relativePath: String): CompressedHelperTask = TarLzmaHelperTask(
         ApplicationProvider.getApplicationContext(),
-        File(
-            Environment.getExternalStorageDirectory(),
-            "test-archive.tar.bz2"
-        ).absolutePath,
+        File(Environment.getExternalStorageDirectory(), "test-archive.tar.lzma").absolutePath,
         relativePath,
         false,
         emptyCallback

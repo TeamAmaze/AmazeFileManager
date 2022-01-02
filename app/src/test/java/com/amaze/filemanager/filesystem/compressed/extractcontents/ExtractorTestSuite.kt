@@ -26,15 +26,19 @@ import org.junit.runners.Suite.SuiteClasses
 
 @RunWith(Suite::class)
 @SuiteClasses(
+    GzipExtractorTest::class,
+    Bzip2ExtractorTest::class,
+    LzmaExtractorTest::class,
+    XzExtractorTest::class,
     TarGzExtractorTest::class,
     TgzExtractorTest::class,
     ZipExtractorTest::class,
     TarExtractorTest::class,
     RarExtractorTest::class,
-    Bzip2ExtractorTest::class,
-    Bzip2ExtractorTest2::class,
-    LzmaExtractorTest::class,
-    XzExtractorTest::class,
+    TarBzip2ExtractorTest::class,
+    TarBzip2ExtractorTest2::class,
+    TarLzmaExtractorTest::class,
+    TarXzExtractorTest::class,
     SevenZipExtractorTest::class,
     PasswordProtectedRarTest::class,
     PasswordProtectedZipTest::class,

@@ -18,25 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks.compress
+package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import org.apache.commons.compress.compressors.CompressorInputStream
-import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
-import java.util.*
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream
 
-class GzipHelperTask(
+class TarLzmaExtractor(
     context: Context,
     filePath: String,
-    relativePath: String,
-    goBack: Boolean,
-    l: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-) :
-    AbstractCompressedTarArchiveHelperTask(context, filePath, relativePath, goBack, l) {
+    outputPath: String,
+    listener: OnUpdate,
+    updatePosition: UpdatePosition
+) : AbstractCompressedTarArchiveExtractor(
+    context, filePath, outputPath, listener, updatePosition
+) {
 
     override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        GzipCompressorInputStream::class.java
+        LZMACompressorInputStream::class.java
 }

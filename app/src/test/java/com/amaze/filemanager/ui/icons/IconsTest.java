@@ -62,5 +62,8 @@ public class IconsTest {
     assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.lzma", false));
     assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.xz", false));
     assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.bz2", false));
+    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.bz2", false));
+    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.gz", false));
+    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.gz", false));
   }
 }

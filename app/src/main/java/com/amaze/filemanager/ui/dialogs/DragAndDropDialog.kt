@@ -90,13 +90,13 @@ class DragAndDropDialog : DialogFragment() {
         }
         private fun newInstance(pasteLocation: String, files: ArrayList<HybridFileParcelable>):
             DragAndDropDialog {
-                val dragAndDropDialog = DragAndDropDialog()
-                val args = Bundle()
-                args.putString(KEY_PASTE_LOCATION, pasteLocation)
-                args.putParcelableArrayList(KEY_FILES, files)
-                dragAndDropDialog.arguments = args
-                return dragAndDropDialog
-            }
+            val dragAndDropDialog = DragAndDropDialog()
+            val args = Bundle()
+            args.putString(KEY_PASTE_LOCATION, pasteLocation)
+            args.putParcelableArrayList(KEY_FILES, files)
+            dragAndDropDialog.arguments = args
+            return dragAndDropDialog
+        }
 
         private fun startCopyOrMoveTask(
             pasteLocation: String,
