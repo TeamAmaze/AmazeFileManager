@@ -192,7 +192,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
     implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
 
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.3.1'
 
     implementation 'com.android.volley:volley:1.2.1'
 
