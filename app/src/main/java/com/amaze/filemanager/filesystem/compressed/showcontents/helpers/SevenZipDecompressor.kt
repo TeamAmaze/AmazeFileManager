@@ -34,5 +34,5 @@ class SevenZipDecompressor(context: Context) : Decompressor(context) {
         addGoBackItem: Boolean,
         onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
     ) =
-        SevenZipHelperTask(filePath!!, path, addGoBackItem, onFinish)
+        SevenZipHelperTask(filePath, path, addGoBackItem, onFinish)
 }

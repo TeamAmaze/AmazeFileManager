@@ -25,10 +25,10 @@ import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import org.apache.commons.compress.compressors.CompressorInputStream
-import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream
 import java.util.*
 
-class XzHelperTask(
+class TarLzmaHelperTask(
     context: Context,
     filePath: String,
     relativePath: String,
@@ -38,5 +38,5 @@ class XzHelperTask(
     AbstractCompressedTarArchiveHelperTask(context, filePath, relativePath, goBack, l) {
 
     override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        XZCompressorInputStream::class.java
+        LZMACompressorInputStream::class.java
 }

@@ -26,7 +26,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 
-class XzHelperTaskTest2 : AbstractCompressedHelperTaskTest() {
+class TarXzHelperTaskTest2 : AbstractCompressedHelperTaskArchiveTest() {
     @Test
     override fun testRoot() {
         val task = createTask("")
@@ -54,7 +54,7 @@ class XzHelperTaskTest2 : AbstractCompressedHelperTaskTest() {
         assertEquals(6, result.result[0].size)
     }
 
-    override fun createTask(relativePath: String): CompressedHelperTask = XzHelperTask(
+    override fun createTask(relativePath: String): CompressedHelperTask = TarXzHelperTask(
         ApplicationProvider.getApplicationContext(),
         File(Environment.getExternalStorageDirectory(), "compress.tar.xz").absolutePath,
         relativePath,

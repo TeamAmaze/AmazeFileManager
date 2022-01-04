@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor
 
-class TarExtractorTest : AbstractExtractorTest() {
+class TarExtractorTest : AbstractArchiveExtractorTest() {
 
     override val archiveType: String = "tar"
 

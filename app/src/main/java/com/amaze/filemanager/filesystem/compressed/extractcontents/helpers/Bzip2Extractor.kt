@@ -31,10 +31,11 @@ class Bzip2Extractor(
     outputPath: String,
     listener: OnUpdate,
     updatePosition: UpdatePosition
-) : AbstractCompressedTarArchiveExtractor(
-    context, filePath, outputPath, listener, updatePosition
+) : AbstractCommonsCompressedFileExtractor(
+    context,
+    filePath, outputPath, listener, updatePosition
 ) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        BZip2CompressorInputStream::class.java
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> {
+        return BZip2CompressorInputStream::class.java
+    }
 }

@@ -20,11 +20,11 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor
+import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarGzExtractor
 
-open class TarGzExtractorTest : AbstractExtractorTest() {
+open class TarGzExtractorTest : AbstractArchiveExtractorTest() {
 
     override val archiveType: String = "tar.gz"
 
-    override fun extractorClass(): Class<out Extractor?> = GzipExtractor::class.java
+    override fun extractorClass(): Class<out Extractor?> = TarGzExtractor::class.java
 }

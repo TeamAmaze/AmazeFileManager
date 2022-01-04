@@ -31,10 +31,11 @@ class XzExtractor(
     outputPath: String,
     listener: OnUpdate,
     updatePosition: UpdatePosition
-) : AbstractCompressedTarArchiveExtractor(
-    context, filePath, outputPath, listener, updatePosition
+) : AbstractCommonsCompressedFileExtractor(
+    context,
+    filePath, outputPath, listener, updatePosition
 ) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        XZCompressorInputStream::class.java
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> {
+        return XZCompressorInputStream::class.java
+    }
 }

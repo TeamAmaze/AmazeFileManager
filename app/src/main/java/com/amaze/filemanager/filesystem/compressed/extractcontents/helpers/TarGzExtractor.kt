@@ -18,13 +18,23 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.extractcontents
+package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor
+import android.content.Context
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.compressors.gzip.GzipCompressorInputStream
 
-class Bzip2ExtractorTest : AbstractCompressedFileExtractorTest() {
+class TarGzExtractor(
+    context: Context,
+    filePath: String,
+    outputPath: String,
+    listener: OnUpdate,
+    updatePosition: UpdatePosition
+) : AbstractCompressedTarArchiveExtractor(
+    context, filePath, outputPath, listener, updatePosition
+) {
 
-    override fun extractorClass(): Class<out Extractor> = Bzip2Extractor::class.java
-
-    override val archiveType: String = "bz2"
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
+        GzipCompressorInputStream::class.java
 }

@@ -18,21 +18,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.asynchronous.asynctasks.compress.GzipHelperTask
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import java.util.*
+import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
+import java.io.File
 
-class GzipDecompressor(context: Context) : Decompressor(context) {
-    override fun changePath(
-        path: String,
-        addGoBackItem: Boolean,
-        onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
-    ) =
-        GzipHelperTask(context, filePath!!, path, addGoBackItem, onFinish)
+class TarXzHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+    override fun createTask(relativePath: String): CompressedHelperTask = TarXzHelperTask(
+        ApplicationProvider.getApplicationContext(),
+        File(Environment.getExternalStorageDirectory(), "test-archive.tar.xz").absolutePath,
+        relativePath,
+        false,
+        emptyCallback
+    )
 }
