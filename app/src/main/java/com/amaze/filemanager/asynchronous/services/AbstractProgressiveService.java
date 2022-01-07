@@ -144,7 +144,7 @@ public abstract class AbstractProgressiveService extends Service
    * @param move if the files are to be moved
    */
   public final void publishResults(long speed, boolean isComplete, boolean move) {
-    if (!getProgressHandler().protected synchronized void addFirstDatapoingetCancelled()) {
+    if (!getProgressHandler().getCancelled()) {
       String fileName = getProgressHandler().getFileName();
       long totalSize = getProgressHandler().getTotalSize();
       long writtenSize = getProgressHandler().getWrittenSize();
@@ -254,8 +254,7 @@ public abstract class AbstractProgressiveService extends Service
     }
   }
 
-  protected void addFirstDatapoint(
-      String name, int amountOfFiles, long totalBytes, boolean move) {
+  protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
     if (!getDataPackages().isEmpty()) {
       Log.e(getClass().getSimpleName(), "This is not the first datapoint!");
       getDataPackages().clear();
