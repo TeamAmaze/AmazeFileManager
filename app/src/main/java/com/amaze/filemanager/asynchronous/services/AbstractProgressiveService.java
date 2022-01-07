@@ -39,6 +39,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 import android.text.format.Formatter;
+import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.CallSuper;
@@ -131,6 +132,7 @@ public abstract class AbstractProgressiveService extends Service
     // implicit AbstractProgressiveService instance from leaking (as "this")
     getProgressHandler().setProgressListener(null);
     wakeLock.release();
+    clearDataPackages();
   }
 
   /**
@@ -254,9 +256,9 @@ public abstract class AbstractProgressiveService extends Service
 
   protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
     if (!getDataPackages().isEmpty()) {
-      throw new IllegalStateException("This is not the first datapoint!");
+      Log.e(getClass().getSimpleName(), "This is not the first datapoint!");
+      getDataPackages().clear();
     }
-
     DatapointParcelable intent1 =
         DatapointParcelable.Companion.buildDatapointParcelable(
             name, amountOfFiles, totalBytes, move);
@@ -265,7 +267,7 @@ public abstract class AbstractProgressiveService extends Service
 
   protected void addDatapoint(DatapointParcelable datapoint) {
     if (getDataPackages().isEmpty()) {
-      throw new IllegalStateException("This is the first datapoint!");
+      Log.e(getClass().getSimpleName(), "This is the first datapoint!");
     }
 
     putDataPackage(datapoint);
