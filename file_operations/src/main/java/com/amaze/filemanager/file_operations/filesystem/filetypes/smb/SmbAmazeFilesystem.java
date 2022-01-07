@@ -65,6 +65,10 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
 
   public static final SmbAmazeFilesystem INSTANCE = new SmbAmazeFilesystem();
 
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
+
   private SmbAmazeFilesystem() {}
 
   @Override

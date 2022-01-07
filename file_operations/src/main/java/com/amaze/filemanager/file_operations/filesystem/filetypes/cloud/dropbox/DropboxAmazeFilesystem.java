@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem;
 
@@ -29,6 +30,10 @@ public final class DropboxAmazeFilesystem extends CloudAmazeFilesystem {
   public static final String PREFIX = "dropbox:/";
 
   public static final DropboxAmazeFilesystem INSTANCE = new DropboxAmazeFilesystem();
+
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
 
   private DropboxAmazeFilesystem() {}
 

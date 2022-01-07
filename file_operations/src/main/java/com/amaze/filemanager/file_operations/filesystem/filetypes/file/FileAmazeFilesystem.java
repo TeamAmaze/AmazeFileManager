@@ -53,6 +53,12 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
 
   public static final String TAG = FileAmazeFilesystem.class.getSimpleName();
 
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
+
+  private FileAmazeFilesystem() { }
+
   @Override
   public boolean isPathOfThisFilesystem(@NonNull String path) {
     return path.charAt(0) == getSeparator();

@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem;
 
@@ -29,6 +30,10 @@ public final class OnedriveAmazeFilesystem extends CloudAmazeFilesystem {
   public static final String PREFIX = "onedrive:/";
 
   public static final OnedriveAmazeFilesystem INSTANCE = new OnedriveAmazeFilesystem();
+
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
 
   private OnedriveAmazeFilesystem() {}
 

@@ -30,6 +30,7 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAmazeFilesystem;
@@ -134,6 +135,12 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
 
   /** The FileSystem object representing the platform's local file system. */
   private AmazeFilesystem fs;
+
+  private static final List<AmazeFilesystem> filesystems = new ArrayList<>();
+
+  public static void addFilesystem(AmazeFilesystem amazeFilesystem) {
+    filesystems.add(amazeFilesystem);
+  }
 
   /**
    * This abstract pathname's normalized pathname string. A normalized pathname string uses the
@@ -312,18 +319,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   }
 
   private void loadFilesystem(String path) {
-    if (SmbAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = SmbAmazeFilesystem.INSTANCE;
-    } else if (FileAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = FileAmazeFilesystem.INSTANCE;
-    } else if (BoxAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = DropboxAmazeFilesystem.INSTANCE;
-    } else if (DropboxAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = DropboxAmazeFilesystem.INSTANCE;
-    } else if (GoogledriveAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = DropboxAmazeFilesystem.INSTANCE;
-    } else if (OnedriveAmazeFilesystem.INSTANCE.isPathOfThisFilesystem(path)) {
-      fs = DropboxAmazeFilesystem.INSTANCE;
+    for (AmazeFilesystem filesystem :
+            filesystems) {
+      if(filesystem.isPathOfThisFilesystem(path)) {
+        fs = filesystem;
+      }
     }
   }
 

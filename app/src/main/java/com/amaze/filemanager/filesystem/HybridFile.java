@@ -258,20 +258,6 @@ public class HybridFile {
   public long lastModified() {
     switch (mode) {
       case SFTP:
-        final Long returnValue =
-            SshClientUtils.execute(
-                new SFtpClientTemplate<Long>(path) {
-                  @Override
-                  public Long execute(@NonNull SFTPClient client) throws IOException {
-                    return client.mtime(SshClientUtils.extractRemotePathFrom(path));
-                  }
-                });
-
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining last modification time over SFTP");
-        }
-
-        return returnValue == null ? 0L : returnValue;
       case SMB:
       case FILE:
         return new AmazeFile(path).lastModified();
@@ -289,7 +275,6 @@ public class HybridFile {
     long s = 0L;
     switch (mode) {
       case SFTP:
-        return ((HybridFileParcelable) this).getSize();
       case SMB:
       case FILE:
       case DROPBOX:
@@ -324,6 +309,7 @@ public class HybridFile {
   public String getSimpleName() {
     String name = null;
     switch (mode) {
+      case SFTP:
       case SMB:
       case FILE:
         return new AmazeFile(path).getName();
@@ -529,20 +515,6 @@ public class HybridFile {
 
     switch (mode) {
       case SFTP:
-        final Long returnValue =
-            SshClientUtils.<Long>execute(
-                new SFtpClientTemplate<Long>(path) {
-                  @Override
-                  public Long execute(SFTPClient client) throws IOException {
-                    return client.size(SshClientUtils.extractRemotePathFrom(path));
-                  }
-                });
-
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining size of folder over SFTP");
-        }
-
-        return returnValue == null ? 0L : returnValue;
       case SMB:
       case FILE:
       case DROPBOX:
@@ -583,40 +555,8 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        return new AmazeFile(path).getUsableSpace();
       case SFTP:
-        final Long returnValue =
-            SshClientUtils.<Long>execute(
-                new SFtpClientTemplate<Long>(path) {
-                  @Override
-                  public Long execute(@NonNull SFTPClient client) throws IOException {
-                    try {
-                      Statvfs.Response response =
-                          new Statvfs.Response(
-                              path,
-                              client
-                                  .getSFTPEngine()
-                                  .request(
-                                      Statvfs.request(
-                                          client, SshClientUtils.extractRemotePathFrom(path)))
-                                  .retrieve());
-                      return response.diskFreeSpace();
-                    } catch (SFTPException e) {
-                      Log.e(TAG, "Error querying server", e);
-                      return 0L;
-                    } catch (Buffer.BufferException e) {
-                      Log.e(TAG, "Error parsing reply", e);
-                      return 0L;
-                    }
-                  }
-                });
-
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining usable space over SFTP");
-        }
-
-        size = returnValue == null ? 0L : returnValue;
-        break;
+        return new AmazeFile(path).getUsableSpace();
       case DOCUMENT_FILE:
         size =
             FileProperties.getDeviceStorageRemainingSpace(SafRootHolder.INSTANCE.getVolumeLabel());
@@ -639,40 +579,8 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        return new AmazeFile(path).getTotalSpace();
       case SFTP:
-        final Long returnValue =
-            SshClientUtils.<Long>execute(
-                new SFtpClientTemplate<Long>(path) {
-                  @Override
-                  public Long execute(@NonNull SFTPClient client) throws IOException {
-                    try {
-                      Statvfs.Response response =
-                          new Statvfs.Response(
-                              path,
-                              client
-                                  .getSFTPEngine()
-                                  .request(
-                                      Statvfs.request(
-                                          client, SshClientUtils.extractRemotePathFrom(path)))
-                                  .retrieve());
-                      return response.diskSize();
-                    } catch (SFTPException e) {
-                      Log.e(TAG, "Error querying server", e);
-                      return 0L;
-                    } catch (Buffer.BufferException e) {
-                      Log.e(TAG, "Error parsing reply", e);
-                      return 0L;
-                    }
-                  }
-                });
-
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining total space over SFTP");
-        }
-
-        size = returnValue == null ? 0L : returnValue;
-        break;
+        return new AmazeFile(path).getTotalSpace();
       case OTG:
         // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
         DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
@@ -864,26 +772,6 @@ public class HybridFile {
 
     switch (mode) {
       case SFTP:
-        inputStream =
-            SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(path, false) {
-                  @Override
-                  public InputStream execute(final SFTPClient client) throws IOException {
-                    final RemoteFile rf = client.open(SshClientUtils.extractRemotePathFrom(path));
-                    return rf.new RemoteFileInputStream() {
-                      @Override
-                      public void close() throws IOException {
-                        try {
-                          super.close();
-                        } finally {
-                          rf.close();
-                          client.close();
-                        }
-                      }
-                    };
-                  }
-                });
-        break;
       case SMB:
       case FILE:
       case DROPBOX:
@@ -928,34 +816,6 @@ public class HybridFile {
     OutputStream outputStream;
     switch (mode) {
       case SFTP:
-        return SshClientUtils.execute(
-            new SshClientTemplate<OutputStream>(path, false) {
-              @Override
-              public OutputStream execute(final SSHClient ssh) throws IOException {
-                final SFTPClient client = ssh.newSFTPClient();
-                final RemoteFile rf =
-                    client.open(
-                        SshClientUtils.extractRemotePathFrom(path),
-                        EnumSet.of(
-                            net.schmizz.sshj.sftp.OpenMode.WRITE,
-                            net.schmizz.sshj.sftp.OpenMode.CREAT));
-                return rf.new RemoteFileOutputStream() {
-                  @Override
-                  public void close() throws IOException {
-                    try {
-                      super.close();
-                    } finally {
-                      try {
-                        rf.close();
-                        client.close();
-                      } catch (Exception e) {
-                        Log.w(TAG, "Error closing stream", e);
-                      }
-                    }
-                  }
-                };
-              }
-            });
       case SMB:
       case FILE:
       case DROPBOX:
@@ -1063,7 +923,7 @@ public class HybridFile {
   }
 
   public boolean setLastModified(final long date) {
-    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
+    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isSftp()) {
       return new AmazeFile(path).setLastModified(date);
     }
     File f = getFile();
@@ -1071,21 +931,7 @@ public class HybridFile {
   }
 
   public void mkdir(Context context) {
-    if (isSftp()) {
-      SshClientUtils.execute(
-          new SFtpClientTemplate<Void>(path) {
-            @Override
-            public Void execute(@NonNull SFTPClient client) {
-              try {
-                client.mkdir(SshClientUtils.extractRemotePathFrom(path));
-              } catch (IOException e) {
-                Log.e(TAG, "Error making directory over SFTP", e);
-              }
-              // FIXME: anything better than throwing a null to make Rx happy?
-              return null;
-            }
-          });
-    } else if (isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
+    if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
       new AmazeFile(path).mkdirs();
     } else if (isOtgFile()) {
       if (!exists(context)) {
@@ -1114,20 +960,7 @@ public class HybridFile {
 
   public boolean delete(Context context, boolean rootmode)
       throws ShellNotRunningException, SmbException {
-    if (isSftp()) {
-      Boolean retval =
-              SshClientUtils.<Boolean>execute(
-                      new SFtpClientTemplate(path) {
-                        @Override
-                        public Boolean execute(@NonNull SFTPClient client) throws IOException {
-                          String _path = SshClientUtils.extractRemotePathFrom(path);
-                          if (isDirectory(AppConfig.getInstance())) client.rmdir(_path);
-                          else client.rm(_path);
-                          return client.statExistence(_path) == null;
-                        }
-                      });
-      return retval != null && retval;
-    } else if (isSmb() || isLocal() || (isRoot() && !rootmode) || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
+    if (isSftp() || isSmb() || isLocal() || (isRoot() && !rootmode) || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
       return new AmazeFile(path).delete();
     } else if (isRoot() && rootmode) {
       setMode(OpenMode.ROOT);

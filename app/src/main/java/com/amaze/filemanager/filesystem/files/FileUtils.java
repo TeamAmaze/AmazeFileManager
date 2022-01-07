@@ -46,6 +46,16 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicLong;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -127,6 +137,19 @@ public class FileUtils {
   }
 
   public static long folderSize(AmazeFile directory) {
+    long naiveSize;
+
+    try {
+      naiveSize = directory.length();
+    } catch (IOException e) {
+      Log.e(TAG, "Unexpected error getting size from AmazeFile", e);
+      naiveSize = 0;
+    }
+
+    if(naiveSize != 0) {
+      return naiveSize;
+    }
+
     long length = 0;
     try {
       for (AmazeFile file : directory.listFiles()) {
@@ -353,7 +376,7 @@ public class FileUtils {
     new AsyncTask<String, Void, String>() {
       @Override
       protected String doInBackground(String... params) {
-        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
+        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode).getAccount();
         StringBuilder links = new StringBuilder();
         links.append(cloudStorage.createShareLink(CloudUtil.stripPath(openMode, params[0])));
         for (int i = 1; i < params.length; i++) {

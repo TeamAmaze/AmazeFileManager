@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem;
 
@@ -29,6 +30,10 @@ public final class BoxAmazeFilesystem extends CloudAmazeFilesystem {
   public static final String PREFIX = "box:/";
 
   public static final BoxAmazeFilesystem INSTANCE = new BoxAmazeFilesystem();
+
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
 
   private BoxAmazeFilesystem() {}
 

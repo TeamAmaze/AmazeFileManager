@@ -135,7 +135,9 @@ public abstract class AmazeFilesystem {
 
   /**
    * Return the length in bytes of the file denoted by the given abstract pathname, or zero if it
-   * does not exist, is a directory, or some other I/O error occurs.
+   * does not exist, or some other I/O error occurs.
+   *
+   * Note: for directories, this *could* return the size
    */
   public abstract long getLength(AmazeFile f) throws IOException;
 

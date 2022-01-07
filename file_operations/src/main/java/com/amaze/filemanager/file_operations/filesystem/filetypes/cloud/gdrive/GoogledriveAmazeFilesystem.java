@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem;
 
@@ -29,6 +30,10 @@ public final class GoogledriveAmazeFilesystem extends CloudAmazeFilesystem {
   public static final String PREFIX = "gdrive:/";
 
   public static final GoogledriveAmazeFilesystem INSTANCE = new GoogledriveAmazeFilesystem();
+
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
 
   private GoogledriveAmazeFilesystem() {}
 
