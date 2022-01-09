@@ -557,13 +557,11 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case SFTP:
+        case OTG:
         return new AmazeFile(path).getUsableSpace();
       case DOCUMENT_FILE:
         size =
             FileProperties.getDeviceStorageRemainingSpace(SafRootHolder.INSTANCE.getVolumeLabel());
-        break;
-      case OTG:
-        // TODO: Get free space from OTG when {@link DocumentFile} API adds support
         break;
     }
     return size;
@@ -581,12 +579,8 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case SFTP:
-        return new AmazeFile(path).getTotalSpace();
-      case OTG:
-        // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
-        DocumentFile documentFile = OTGUtil.getDocumentFile(path, context, false);
-        size = documentFile.length();
-        break;
+        case OTG:
+        return new AmazeFile(path).getTotalSpace(() -> context);
       case DOCUMENT_FILE:
         size = getDocumentFile(false).length();
         break;

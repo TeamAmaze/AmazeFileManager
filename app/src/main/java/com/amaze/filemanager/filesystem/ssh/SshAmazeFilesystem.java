@@ -406,7 +406,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return new AmazeFile[] { new AmazeFile(getDefaultParent()) };
   }
 
-  public long getTotalSpace(AmazeFile f) {
+  public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final Long returnValue =
             SshClientUtils.<Long>execute(
                     new SFtpClientTemplate<Long>(f.getPath()) {

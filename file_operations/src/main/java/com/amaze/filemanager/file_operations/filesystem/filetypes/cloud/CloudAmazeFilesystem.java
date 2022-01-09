@@ -267,7 +267,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getTotalSpace(AmazeFile f) {
+  public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     SpaceAllocation spaceAllocation = account.getAllocation();

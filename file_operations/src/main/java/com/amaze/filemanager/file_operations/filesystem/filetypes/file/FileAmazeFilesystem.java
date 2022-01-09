@@ -378,7 +378,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
     return amazeRoots;
   }
 
-  public long getTotalSpace(AmazeFile f) {
+  public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).getTotalSpace();
   }
   public long getFreeSpace(AmazeFile f) {

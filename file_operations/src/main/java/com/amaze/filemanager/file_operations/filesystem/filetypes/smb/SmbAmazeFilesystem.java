@@ -412,7 +412,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     throw new NotImplementedError();
   }
 
-  public long getTotalSpace(AmazeFile f) {
+  public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {
     // TODO: Find total storage space of SMB when JCIFS adds support
     throw new NotImplementedError();
   }

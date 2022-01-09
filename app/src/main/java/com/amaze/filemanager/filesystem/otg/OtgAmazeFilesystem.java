@@ -233,16 +233,24 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
     return new AmazeFile[0];
   }
 
-  public long getTotalSpace(AmazeFile f) {
-    return 0; //TODO
+  @Override
+  public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    // TODO: Find total storage space of OTG when {@link DocumentFile} API adds support
+    DocumentFile documentFile = OTGUtil.getDocumentFile(f.getPath(), context, false);
+    return documentFile.length();
   }
 
+  @Override
   public long getFreeSpace(AmazeFile f) {
     return 0; //TODO
   }
 
+  @Override
   public long getUsableSpace(AmazeFile f) {
-    return 0; //TODO
+    // TODO: Get free space from OTG when {@link DocumentFile} API adds support
+    return 0;
   }
 
 

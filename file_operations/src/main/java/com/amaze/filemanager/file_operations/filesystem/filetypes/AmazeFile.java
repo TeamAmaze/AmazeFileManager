@@ -1188,12 +1188,12 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return The size, in bytes, of the partition or <tt>0L</tt> if this abstract pathname does not
    *     name a partition If there is no way to determine, total space is -1
    */
-  public long getTotalSpace() {
+  public long getTotalSpace(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return 0L;
     }
     try {
-      return fs.getSpace(this, AmazeFilesystem.SPACE_TOTAL);
+      return fs.getTotalSpace(this, contextProvider);
     } catch (NotImplementedError e) {
       Log.w(TAG, "Call to unimplemented fuction", e);
       return -1;
@@ -1218,7 +1218,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return 0L;
     }
-    return fs.getSpace(this, AmazeFilesystem.SPACE_FREE);
+    return fs.getFreeSpace(this);
   }
 
   // Android-added: Replaced generic platform info with Android specific one.
@@ -1249,7 +1249,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       return 0L;
     }
     try {
-      return fs.getSpace(this, AmazeFilesystem.SPACE_USABLE);
+      return fs.getUsableSpace(this);
     } catch (NotImplementedError e) {
       Log.w(TAG, "Call to unimplemented fuction", e);
       return -1;

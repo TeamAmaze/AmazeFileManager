@@ -269,25 +269,7 @@ public abstract class AmazeFilesystem {
   /** List the available filesystem roots. */
   public abstract AmazeFile[] listRoots();
 
-  /* -- Disk usage -- */
-  public static final int SPACE_TOTAL = 0;
-  public static final int SPACE_FREE = 1;
-  public static final int SPACE_USABLE = 2;
-
-  public long getSpace(AmazeFile f, int t) {
-    switch (t) {
-      case SPACE_TOTAL:
-        return getTotalSpace(f);
-      case SPACE_FREE:
-        return getFreeSpace(f);
-      case SPACE_USABLE:
-        return getUsableSpace(f);
-      default:
-        throw new IllegalStateException();
-    }
-  }
-
-  public abstract long getTotalSpace(AmazeFile f);
+  public abstract long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   public abstract long getFreeSpace(AmazeFile f);
 
