@@ -115,61 +115,54 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
     return new File(path).getCanonicalPath();
   }
 
-  @Override
-  public int getBooleanAttributes(AmazeFile f) {
-    File file = new File(f.getPath());
-    int r = 0;
-
-    if (file.exists()) {
-      r |= BA_EXISTS;
-
-      if (file.isFile()) {
-        r |= BA_REGULAR;
-      }
-
-      if (file.isDirectory()) {
-        r |= BA_DIRECTORY;
-      }
-
-      if (file.isHidden()) {
-        r |= BA_HIDDEN;
-      }
-    }
-
-    return r;
+  public boolean exists(AmazeFile f) {
+    return f.exists();
   }
 
-  @Override
-  public boolean checkAccess(AmazeFile f, int access) {
-    switch (access) {
-      case ACCESS_EXECUTE:
-        return new File(f.getPath()).canExecute();
-      case ACCESS_WRITE:
-        return new File(f.getPath()).canWrite();
-      case ACCESS_READ:
-        return new File(f.getPath()).canRead();
-      case ACCESS_CHECK_EXISTS:
-        return new File(f.getPath()).exists();
-      default:
-        throw new IllegalStateException();
-    }
+  public boolean isFile(AmazeFile f) {
+    return f.isFile();
   }
 
-  @Override
-  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
-    switch (access) {
-      case ACCESS_EXECUTE:
-        return new File(f.getPath()).setExecutable(enable, owneronly);
-      case ACCESS_WRITE:
-        return new File(f.getPath()).setWritable(enable, owneronly);
-      case ACCESS_READ:
-        return new File(f.getPath()).setReadable(enable, owneronly);
-      case ACCESS_CHECK_EXISTS:
-        throw new IllegalArgumentException("This properties cannot be set!");
-      default:
-        throw new IllegalStateException();
-    }
+  public boolean isDirectory(AmazeFile f) {
+    return f.isDirectory();
   }
+
+  public boolean isHidden(AmazeFile f) {
+    return f.isHidden();
+  }
+
+  public boolean canExecute(AmazeFile f){
+    return new File(f.getPath()).canExecute();
+  }
+
+  public boolean canWrite(AmazeFile f){
+    return new File(f.getPath()).canWrite();
+  }
+
+  public boolean canRead(AmazeFile f){
+    return new File(f.getPath()).canRead();
+  }
+
+  public boolean canAccess(AmazeFile f){
+    return new File(f.getPath()).exists();
+  }
+
+  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
+    return new File(f.getPath()).setExecutable(enable, owneronly);
+  }
+
+  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly) {
+    return new File(f.getPath()).setWritable(enable, owneronly);
+  }
+
+  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
+    return new File(f.getPath()).setReadable(enable, owneronly);
+  }
+
+  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new IllegalArgumentException("This properties cannot be set!");
+  }
+
 
   @Override
   public long getLastModifiedTime(AmazeFile f) {
@@ -385,18 +378,14 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
     return amazeRoots;
   }
 
-  @Override
-  public long getSpace(AmazeFile f, int t) {
-    switch (t) {
-      case SPACE_TOTAL:
-        return new File(f.getPath()).getTotalSpace();
-      case SPACE_FREE:
-        return new File(f.getPath()).getFreeSpace();
-      case SPACE_USABLE:
-        return new File(f.getPath()).getUsableSpace();
-      default:
-        throw new IllegalStateException();
-    }
+  public long getTotalSpace(AmazeFile f) {
+    return new File(f.getPath()).getTotalSpace();
+  }
+  public long getFreeSpace(AmazeFile f) {
+    return new File(f.getPath()).getFreeSpace();
+  }
+  public long getUsableSpace(AmazeFile f) {
+    return new File(f.getPath()).getUsableSpace();
   }
 
   @Override

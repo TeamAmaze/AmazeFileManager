@@ -144,60 +144,89 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     return create(path).getCanonicalPath();
   }
 
-  @Override
-  public int getBooleanAttributes(AmazeFile f) {
+  public boolean exists(AmazeFile f) {
     try {
-      SmbFile smbFile = create(f.getPath());
-      int r = 0;
-
-      if (smbFile.exists()) {
-        r |= BA_EXISTS;
-
-        if (smbFile.getType() == SmbConstants.TYPE_FILESYSTEM) {
-          r |= BA_REGULAR;
-        }
-
-        if (smbFile.isDirectory()) {
-          r |= BA_DIRECTORY;
-        }
-
-        if (smbFile.isHidden()) {
-          r |= BA_HIDDEN;
-        }
-      }
-
-      return r;
+    SmbFile smbFile = create(f.getPath());
+    return smbFile.exists();
     } catch (MalformedURLException | SmbException e) {
       Log.e(TAG, "Failed to get attributes for SMB file", e);
-      return 0;
+      return false;
     }
   }
 
-  @Override
-  public boolean checkAccess(AmazeFile f, int access) {
+  public boolean isFile(AmazeFile f) {
     try {
-      switch (access) {
-        case ACCESS_EXECUTE:
-          throw new NotImplementedError();
-        case ACCESS_WRITE:
-          return create(f.getPath()).canWrite();
-        case ACCESS_READ:
-          return create(f.getPath()).canRead();
-        case ACCESS_CHECK_EXISTS:
-          SmbFile file = create(f.getPath());
-          file.setConnectTimeout(2000);
-          return file.exists();
-        default:
-          throw new IllegalStateException();
-      }
+      SmbFile smbFile = create(f.getPath());
+      return smbFile.getType() == SmbConstants.TYPE_FILESYSTEM;
+    } catch (MalformedURLException | SmbException e) {
+      Log.e(TAG, "Failed to get attributes for SMB file", e);
+      return false;
+    }
+  }
+
+  public boolean isDirectory(AmazeFile f) {
+    try {
+      SmbFile smbFile = create(f.getPath());
+      return smbFile.isDirectory();
+    } catch (MalformedURLException | SmbException e) {
+      Log.e(TAG, "Failed to get attributes for SMB file", e);
+      return false;
+    }
+  }
+
+  public boolean isHidden(AmazeFile f) {
+    try {
+      SmbFile smbFile = create(f.getPath());
+      return smbFile.isHidden();
+    } catch (MalformedURLException | SmbException e) {
+      Log.e(TAG, "Failed to get attributes for SMB file", e);
+      return false;
+    }
+  }
+
+  public boolean canExecute(AmazeFile f) {
+    throw new NotImplementedError();
+  }
+
+  public boolean canWrite(AmazeFile f) {
+    try {
+      return create(f.getPath()).canWrite();
     } catch (MalformedURLException | SmbException e) {
       Log.e(TAG, "Error getting SMB file to check access", e);
       return false;
     }
   }
 
-  @Override
-  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
+  public boolean canRead(AmazeFile f) {
+    try {
+      return create(f.getPath()).canRead();
+    } catch (MalformedURLException | SmbException e) {
+      Log.e(TAG, "Error getting SMB file to check access", e);
+      return false;
+    }
+  }
+
+  public boolean canAccess(AmazeFile f) {
+    try {
+      SmbFile file = create(f.getPath());
+      file.setConnectTimeout(2000);
+      return file.exists();
+    } catch (MalformedURLException | SmbException e) {
+      Log.e(TAG, "Error getting SMB file to check access", e);
+      return false;
+    }
+  }
+
+  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly){
+    throw new NotImplementedError();
+  }
+  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly){
+    throw new NotImplementedError();
+  }
+  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly){
+    throw new NotImplementedError();
+  }
+  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly){
     throw new NotImplementedError();
   }
 
@@ -383,24 +412,22 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     throw new NotImplementedError();
   }
 
-  @Override
-  public long getSpace(AmazeFile f, int t) {
-    switch (t) {
-      case SPACE_TOTAL:
-        // TODO: Find total storage space of SMB when JCIFS adds support
-        throw new NotImplementedError();
-      case SPACE_FREE:
-        try {
-          return create(f.getPath()).getDiskFreeSpace();
-        } catch (SmbException | MalformedURLException e) {
-          Log.e(TAG, "Error getting SMB file to read free volume space", e);
-          return 0;
-        }
-      case SPACE_USABLE:
-        // TODO: Find total storage space of SMB when JCIFS adds support
-        throw new NotImplementedError();
-      default:
-        throw new IllegalStateException();
+  public long getTotalSpace(AmazeFile f) {
+    // TODO: Find total storage space of SMB when JCIFS adds support
+    throw new NotImplementedError();
+  }
+
+  public long getFreeSpace(AmazeFile f) {
+    try {
+      return create(f.getPath()).getDiskFreeSpace();
+    } catch (SmbException | MalformedURLException e) {
+      Log.e(TAG, "Error getting SMB file to read free volume space", e);
+      return 0;
     }
+  }
+
+  public long getUsableSpace(AmazeFile f) {
+    // TODO: Find total storage space of SMB when JCIFS adds support
+    throw new NotImplementedError();
   }
 }

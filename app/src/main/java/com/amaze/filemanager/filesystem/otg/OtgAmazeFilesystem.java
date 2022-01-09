@@ -83,19 +83,43 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
     return null;
   }
 
-  @Override
-  public int getBooleanAttributes(AmazeFile f) {
-    return 0;
+  public boolean exists(AmazeFile f) {
+    return false;//TODO
+  }
+  public boolean isFile(AmazeFile f) {
+    return false;//TODO
+  }
+  public boolean isDirectory(AmazeFile f) {
+    return false;//TODO
+  }
+  public boolean isHidden(AmazeFile f) {
+    return false;//TODO
   }
 
-  @Override
-  public boolean checkAccess(AmazeFile f, int access) {
-    return false;
+  public boolean canExecute(AmazeFile f) {
+    return false; //TODO
+  }
+  public boolean canWrite(AmazeFile f) {
+    return false; //TODO
+  }
+  public boolean canRead(AmazeFile f) {
+    return false; //TODO
+  }
+  public boolean canAccess(AmazeFile f) {
+    return false; //TODO
   }
 
-  @Override
-  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
-    return false;
+  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
+    return false; //TODO
+  }
+  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly) {
+    return false; //TODO
+  }
+  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
+    return false; //TODO
+  }
+  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
+    return false; //TODO
   }
 
   @Override
@@ -209,9 +233,16 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
     return new AmazeFile[0];
   }
 
-  @Override
-  public long getSpace(AmazeFile f, int t) {
-    return 0;
+  public long getTotalSpace(AmazeFile f) {
+    return 0; //TODO
+  }
+
+  public long getFreeSpace(AmazeFile f) {
+    return 0; //TODO
+  }
+
+  public long getUsableSpace(AmazeFile f) {
+    return 0; //TODO
   }
 
 

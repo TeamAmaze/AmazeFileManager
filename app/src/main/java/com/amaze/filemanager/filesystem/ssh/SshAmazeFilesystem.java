@@ -103,47 +103,81 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return returnValue;
   }
 
-  @Override
-  public int getBooleanAttributes(AmazeFile f) {
-    final SFtpClientTemplate<Integer> template = new SFtpClientTemplate<Integer>(f.getPath()) {
+  public boolean exists(AmazeFile f) {
+    final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
       @Override
-      public Integer execute(@NonNull SFTPClient client) throws IOException {
-        Integer r = 0;
-
-        if (client.statExistence(f.getPath()) != null) {
-          r |= BA_EXISTS;
-
-          if (client.lstat(f.getPath()).getType() == REGULAR) {
-            r |= BA_REGULAR;
-          }
-
-          if (client.lstat(f.getPath()).getType() == DIRECTORY) {
-            r |= BA_DIRECTORY;
-          }
-
-          //Assume its not hidden
-        }
-
-        return r;
+      public Boolean execute(@NonNull SFTPClient client) throws IOException {
+        return client.statExistence(f.getPath()) != null;
       }
     };
 
-    final Integer returnValue = SshClientUtils.execute(template);
+    final Boolean returnValue = SshClientUtils.execute(template);
 
     if(returnValue == null) {
-      return 0;
+      return false;
     }
 
     return returnValue;
   }
+  public boolean isFile(AmazeFile f) {
+    final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
+      @Override
+      public Boolean execute(@NonNull SFTPClient client) throws IOException {
+        return client.lstat(f.getPath()).getType() == REGULAR;
+      }
+    };
 
-  @Override
-  public boolean checkAccess(AmazeFile f, int access) {
+    final Boolean returnValue = SshClientUtils.execute(template);
+
+    if(returnValue == null) {
+      return false;
+    }
+
+    return returnValue;
+  }
+  public boolean isDirectory(AmazeFile f) {
+    final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
+      @Override
+      public Boolean execute(@NonNull SFTPClient client) throws IOException {
+        return client.lstat(f.getPath()).getType() == DIRECTORY;
+      }
+    };
+
+    final Boolean returnValue = SshClientUtils.execute(template);
+
+    if(returnValue == null) {
+      return false;
+    }
+
+    return returnValue;
+  }
+  public boolean isHidden(AmazeFile f) {
+    return false; //Assume its not hidden
+  }
+
+  public boolean canExecute(AmazeFile f) {
+    throw new NotImplementedError();
+  }
+  public boolean canWrite(AmazeFile f) {
+    throw new NotImplementedError();
+  }
+  public boolean canRead(AmazeFile f) {
+    throw new NotImplementedError();
+  }
+  public boolean canAccess(AmazeFile f) {
     throw new NotImplementedError();
   }
 
-  @Override
-  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
+  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new NotImplementedError();
+  }
+  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new NotImplementedError();
+  }
+  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new NotImplementedError();
+  }
+  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
     throw new NotImplementedError();
   }
 
@@ -372,83 +406,77 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return new AmazeFile[] { new AmazeFile(getDefaultParent()) };
   }
 
-  @Override
-  public long getSpace(AmazeFile f, int t) {
-    switch (t) {
-      case SPACE_TOTAL: {
-        final Long returnValue =
-                SshClientUtils.<Long>execute(
-                        new SFtpClientTemplate<Long>(f.getPath()) {
-                          @Override
-                          public Long execute(@NonNull SFTPClient client) throws IOException {
-                            try {
-                              Statvfs.Response response =
-                                      new Statvfs.Response(
-                                              f.getPath(),
-                                              client
-                                                      .getSFTPEngine()
-                                                      .request(
-                                                              Statvfs.request(
-                                                                      client, SshClientUtils.extractRemotePathFrom(f.getPath())))
-                                                      .retrieve());
-                              return response.diskSize();
-                            } catch (SFTPException e) {
-                              Log.e(TAG, "Error querying SFTP server", e);
-                              return 0L;
-                            } catch (Buffer.BufferException e) {
-                              Log.e(TAG, "Error parsing SFTP reply", e);
-                              return 0L;
-                            }
-                          }
-                        });
+  public long getTotalSpace(AmazeFile f) {
+    final Long returnValue =
+            SshClientUtils.<Long>execute(
+                    new SFtpClientTemplate<Long>(f.getPath()) {
+                      @Override
+                      public Long execute(@NonNull SFTPClient client) throws IOException {
+                        try {
+                          Statvfs.Response response =
+                                  new Statvfs.Response(
+                                          f.getPath(),
+                                          client
+                                                  .getSFTPEngine()
+                                                  .request(
+                                                          Statvfs.request(
+                                                                  client, SshClientUtils.extractRemotePathFrom(f.getPath())))
+                                                  .retrieve());
+                          return response.diskSize();
+                        } catch (SFTPException e) {
+                          Log.e(TAG, "Error querying SFTP server", e);
+                          return 0L;
+                        } catch (Buffer.BufferException e) {
+                          Log.e(TAG, "Error parsing SFTP reply", e);
+                          return 0L;
+                        }
+                      }
+                    });
 
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining total space over SFTP");
+    if (returnValue == null) {
+      Log.e(TAG, "Error obtaining total space over SFTP");
 
-          return 0;
-        }
-
-        return returnValue;
-      }
-      case SPACE_FREE: {
-        final Long returnValue =
-                SshClientUtils.<Long>execute(
-                        new SFtpClientTemplate<Long>(f.getPath()) {
-                          @Override
-                          public Long execute(@NonNull SFTPClient client) throws IOException {
-                            try {
-                              Statvfs.Response response =
-                                      new Statvfs.Response(
-                                              f.getPath(),
-                                              client
-                                                      .getSFTPEngine()
-                                                      .request(
-                                                              Statvfs.request(
-                                                                      client, SshClientUtils.extractRemotePathFrom(f.getPath())))
-                                                      .retrieve());
-                              return response.diskFreeSpace();
-                            } catch (SFTPException e) {
-                              Log.e(TAG, "Error querying server", e);
-                              return 0L;
-                            } catch (Buffer.BufferException e) {
-                              Log.e(TAG, "Error parsing reply", e);
-                              return 0L;
-                            }
-                          }
-                        });
-
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining usable space over SFTP");
-          return 0;
-        }
-
-        return returnValue;
-      }
-      case SPACE_USABLE:
-        // TODO: Find total storage space of SFTP support is added
-        throw new NotImplementedError();
-      default:
-        throw new IllegalStateException();
+      return 0;
     }
+
+    return returnValue;
+  }
+  public long getFreeSpace(AmazeFile f) {
+    final Long returnValue =
+            SshClientUtils.<Long>execute(
+                    new SFtpClientTemplate<Long>(f.getPath()) {
+                      @Override
+                      public Long execute(@NonNull SFTPClient client) throws IOException {
+                        try {
+                          Statvfs.Response response =
+                                  new Statvfs.Response(
+                                          f.getPath(),
+                                          client
+                                                  .getSFTPEngine()
+                                                  .request(
+                                                          Statvfs.request(
+                                                                  client, SshClientUtils.extractRemotePathFrom(f.getPath())))
+                                                  .retrieve());
+                          return response.diskFreeSpace();
+                        } catch (SFTPException e) {
+                          Log.e(TAG, "Error querying server", e);
+                          return 0L;
+                        } catch (Buffer.BufferException e) {
+                          Log.e(TAG, "Error parsing reply", e);
+                          return 0L;
+                        }
+                      }
+                    });
+
+    if (returnValue == null) {
+      Log.e(TAG, "Error obtaining usable space over SFTP");
+      return 0;
+    }
+
+    return returnValue;
+  }
+  public long getUsableSpace(AmazeFile f) {
+    // TODO: Find total storage space of SFTP support is added
+    throw new NotImplementedError();
   }
 }

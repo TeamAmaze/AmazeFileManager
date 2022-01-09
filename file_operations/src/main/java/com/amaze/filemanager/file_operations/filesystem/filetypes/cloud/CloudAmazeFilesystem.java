@@ -102,49 +102,64 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
     return getPrefix() + new File(removePrefix(path)).getCanonicalPath();
   }
 
-  public final int getBooleanAttributes(AmazeFile f) {
+  public boolean exists(AmazeFile f) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
     final CloudMetaData metadata = getAccount().getAccount().getMetadata(noPrefixPath);
-    int r = 0;
-
-    if (account.exists(noPrefixPath)) {
-      r |= BA_EXISTS;
-
-      r |= BA_REGULAR; // all files are regular (probably)
-
-      if (metadata.getFolder()) {
-        r |= BA_DIRECTORY;
-      }
-
-      // No way to know if its hidden
-    }
-
-    return r;
+    return account.exists(noPrefixPath);
   }
 
-  public final boolean checkAccess(AmazeFile f, int access) {
-    switch (access) {
-      case ACCESS_EXECUTE:
-        return false; // You aren't executing anything at the cloud
-      case ACCESS_WRITE:
-        return true; // Probably, can't check
-      case ACCESS_READ:
-        return true; // Probably, can't check
-      case ACCESS_CHECK_EXISTS:
-        final CloudStorage account = getAccount().getAccount();
-        Objects.requireNonNull(account);
-        final String noPrefixPath = removePrefix(f.getPath());
+  public boolean isFile(AmazeFile f) {
+    return true; // all files are regular (probably)
+  }
 
-        return account.exists(noPrefixPath);
-      default:
-        throw new IllegalStateException();
-    }
+  public boolean isDirectory(AmazeFile f) {
+    final CloudStorage account = getAccount().getAccount();
+    Objects.requireNonNull(account);
+    final String noPrefixPath = removePrefix(f.getPath());
+    final CloudMetaData metadata = getAccount().getAccount().getMetadata(noPrefixPath);
+    return metadata.getFolder();
+  }
+
+  public boolean isHidden(AmazeFile f) {
+    return false; // No way to know if its hidden
+  }
+
+  public boolean canExecute(AmazeFile f) {
+    return false; // You aren't executing anything at the cloud
+  }
+  public boolean canWrite(AmazeFile f) {
+    return true; // Probably, can't check
+  }
+  public boolean canRead(AmazeFile f) {
+    return true; // Probably, can't check
+  }
+  public boolean canAccess(AmazeFile f) {
+    final CloudStorage account = getAccount().getAccount();
+    Objects.requireNonNull(account);
+    final String noPrefixPath = removePrefix(f.getPath());
+
+    return account.exists(noPrefixPath);
   }
 
   @Override
-  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
+  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new NotImplementedError();
+  }
+
+  @Override
+  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new NotImplementedError();
+  }
+
+  @Override
+  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
+    throw new NotImplementedError();
+  }
+
+  @Override
+  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
     throw new NotImplementedError();
   }
 
@@ -252,20 +267,26 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getSpace(AmazeFile f, int t) {
+  public long getTotalSpace(AmazeFile f) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     SpaceAllocation spaceAllocation = account.getAllocation();
+    return spaceAllocation.getTotal();
+  }
 
-    switch (t) {
-      case SPACE_TOTAL:
-        return spaceAllocation.getTotal();
-      case SPACE_FREE:
-      case SPACE_USABLE:
-        // The assumption is made that all free space is usable
-        return spaceAllocation.getTotal() - spaceAllocation.getUsed();
-      default:
-        throw new IllegalStateException();
-    }
+  @Override
+  public long getFreeSpace(AmazeFile f) {
+    final CloudStorage account = getAccount().getAccount();
+    Objects.requireNonNull(account);
+    SpaceAllocation spaceAllocation = account.getAllocation();
+    return spaceAllocation.getTotal() - spaceAllocation.getUsed();
+  }
+
+  @Override
+  public long getUsableSpace(AmazeFile f) {
+    final CloudStorage account = getAccount().getAccount();
+    Objects.requireNonNull(account);
+    SpaceAllocation spaceAllocation = account.getAllocation();
+    return spaceAllocation.getTotal() - spaceAllocation.getUsed();
   }
 }

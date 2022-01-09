@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -107,7 +108,34 @@ public abstract class AmazeFilesystem {
    * Return the simple boolean attributes for the file or directory denoted by the given abstract
    * pathname, or zero if it does not exist or some other I/O error occurs.
    */
-  public abstract int getBooleanAttributes(AmazeFile f);
+  public int getBooleanAttributes(AmazeFile f) {
+    File file = new File(f.getPath());
+    int r = 0;
+
+    if (exists(f)) {
+      r |= BA_EXISTS;
+
+      if (isFile(f)) {
+        r |= BA_REGULAR;
+      }
+
+      if (isDirectory(f)) {
+        r |= BA_DIRECTORY;
+      }
+
+      if (isHidden(f)) {
+        r |= BA_HIDDEN;
+      }
+    }
+
+    return r;
+  }
+
+  public abstract boolean exists(AmazeFile f);
+  public abstract boolean isFile(AmazeFile f);
+  public abstract boolean isDirectory(AmazeFile f);
+  public abstract boolean isHidden(AmazeFile f);
+
 
   @Native public static final int ACCESS_READ = 0x04;
   @Native public static final int ACCESS_WRITE = 0x02;
@@ -120,12 +148,49 @@ public abstract class AmazeFilesystem {
    * this process. The second argument specifies which access, ACCESS_READ, ACCESS_WRITE or
    * ACCESS_EXECUTE, to check. Return false if access is denied or an I/O error occurs
    */
-  public abstract boolean checkAccess(AmazeFile f, int access);
+  public boolean checkAccess(AmazeFile f, int access) {
+    switch (access) {
+      case ACCESS_EXECUTE:
+        return canExecute(f);
+      case ACCESS_WRITE:
+        return canWrite(f);
+      case ACCESS_READ:
+        return canRead(f);
+      case ACCESS_CHECK_EXISTS:
+        return canAccess(f);
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  public abstract boolean canExecute(AmazeFile f);
+  public abstract boolean canWrite(AmazeFile f);
+  public abstract boolean canRead(AmazeFile f);
+  public abstract boolean canAccess(AmazeFile f);
+
   /**
    * Set on or off the access permission (to owner only or to all) to the file or directory denoted
    * by the given abstract pathname, based on the parameters enable, access and oweronly.
    */
-  public abstract boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly);
+  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
+    switch (access) {
+      case ACCESS_EXECUTE:
+        return setExecutable(f, enable, owneronly);
+      case ACCESS_WRITE:
+        return setWritable(f, enable, owneronly);
+      case ACCESS_READ:
+        return setReadable(f, enable, owneronly);
+      case ACCESS_CHECK_EXISTS:
+        return setCheckExists(f, enable, owneronly);
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  public abstract boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly);
+  public abstract boolean setWritable(AmazeFile f, boolean enable, boolean owneronly);
+  public abstract boolean setReadable(AmazeFile f, boolean enable, boolean owneronly);
+  public abstract boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly);
 
   /**
    * Return the time at which the file or directory denoted by the given abstract pathname was last
@@ -209,7 +274,24 @@ public abstract class AmazeFilesystem {
   public static final int SPACE_FREE = 1;
   public static final int SPACE_USABLE = 2;
 
-  public abstract long getSpace(AmazeFile f, int t);
+  public long getSpace(AmazeFile f, int t) {
+    switch (t) {
+      case SPACE_TOTAL:
+        return getTotalSpace(f);
+      case SPACE_FREE:
+        return getFreeSpace(f);
+      case SPACE_USABLE:
+        return getUsableSpace(f);
+      default:
+        throw new IllegalStateException();
+    }
+  }
+
+  public abstract long getTotalSpace(AmazeFile f);
+
+  public abstract long getFreeSpace(AmazeFile f);
+
+  public abstract long getUsableSpace(AmazeFile f);
 
   /* -- Basic infrastructure -- */
 
