@@ -32,7 +32,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.amaze.filemanager.R;
@@ -43,6 +42,7 @@ import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAccount;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
@@ -281,8 +281,14 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
+        case OTG:
         try {
-          return new AmazeFile(path).length();
+          return new AmazeFile(path).length(new ContextProvider() {
+            @Override
+            public Context getContext() {
+              return context;
+            }
+          });
         } catch (IOException e) {
           Log.e(TAG, "Error getting length for file", e);
         }
@@ -292,9 +298,6 @@ public class HybridFile {
         break;
       case DOCUMENT_FILE:
         s = getDocumentFile(false).length();
-        break;
-      case OTG:
-        s = OTGUtil.getDocumentFile(path, context, false).length();
         break;
       default:
         break;
@@ -521,13 +524,11 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
+      case OTG:
         return FileUtils.folderSize(new AmazeFile(getPath()));
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) size = baseFile.getSize();
-        break;
-      case OTG:
-        size = FileUtils.otgFolderSize(path, context);
         break;
       case DOCUMENT_FILE:
         final AtomicLong totalBytes = new AtomicLong(0);
@@ -778,20 +779,16 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        return new AmazeFile(getPath()).getInputStream();
+        case OTG:
+        return new AmazeFile(getPath()).getInputStream(new ContextProvider() {
+          @Override
+          public Context getContext() {
+            return context;
+          }
+        });
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile = getDocumentFile(false);
-        try {
-          inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-          inputStream = null;
-        }
-        break;
-      case OTG:
-        contentResolver = context.getContentResolver();
-        documentSourceFile = OTGUtil.getDocumentFile(path, context, false);
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
@@ -822,20 +819,11 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
+        case OTG:
         return new AmazeFile(path).getOutputStream();
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile = getDocumentFile(true);
-        try {
-          outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-          outputStream = null;
-        }
-        break;
-      case OTG:
-        contentResolver = context.getContentResolver();
-        documentSourceFile = OTGUtil.getDocumentFile(path, context, true);
         try {
           outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
@@ -857,6 +845,7 @@ public class HybridFile {
   public boolean exists() {
     boolean exists = false;
     if (isSftp()) {
+      // TODO use Amaze file
       final Boolean executionReturn =
           SshClientUtils.<Boolean>execute(
               new SFtpClientTemplate<Boolean>(path) {
@@ -923,7 +912,7 @@ public class HybridFile {
   }
 
   public boolean setLastModified(final long date) {
-    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isSftp()) {
+    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isSftp() || isOtgFile()) {
       return new AmazeFile(path).setLastModified(date);
     }
     File f = getFile();
@@ -931,15 +920,8 @@ public class HybridFile {
   }
 
   public void mkdir(Context context) {
-    if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
+    if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isOtgFile()) {
       new AmazeFile(path).mkdirs();
-    } else if (isOtgFile()) {
-      if (!exists(context)) {
-        DocumentFile parentDirectory = OTGUtil.getDocumentFile(getParent(context), context, true);
-        if (parentDirectory.isDirectory()) {
-          parentDirectory.createDirectory(getName(context));
-        }
-      }
     } else if (isDocumentFile()) {
       if (!exists(context)) {
         DocumentFile parentDirectory =

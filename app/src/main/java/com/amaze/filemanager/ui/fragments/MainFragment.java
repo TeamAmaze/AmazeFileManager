@@ -53,6 +53,7 @@ import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileProperties;
@@ -1281,8 +1282,18 @@ public class MainFragment extends Fragment
                 aMFile.getPath(),
                 "",
                 "",
-                Formatter.formatFileSize(getContext(), aMFile.length()),
-                aMFile.length(),
+                Formatter.formatFileSize(getContext(), aMFile.length(new ContextProvider() {
+                  @Override
+                  public Context getContext() {
+                    return requireContext();// TODO fix retaining instance of MainFragment
+                  }
+                })),
+                aMFile.length(new ContextProvider() {
+                  @Override
+                  public Context getContext() {
+                    return requireContext();// TODO fix retaining instance of MainFragment
+                  }
+                }),
                 false,
                 aMFile.lastModified() + "",
                 false,

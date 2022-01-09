@@ -177,7 +177,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getLength(AmazeFile f) throws IOException {
+  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException {
     return new File(f.getPath()).length();
   }
 
@@ -278,7 +278,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public InputStream getInputStream(AmazeFile f) {
+  public InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       return new FileInputStream(f.getPath());
     } catch (FileNotFoundException e) {

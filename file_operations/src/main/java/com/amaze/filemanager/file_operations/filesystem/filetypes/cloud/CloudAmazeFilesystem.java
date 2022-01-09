@@ -158,7 +158,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getLength(AmazeFile f) throws IOException {
+  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException {
     if (f.isDirectory()) {
       return 0;
     }
@@ -201,7 +201,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public InputStream getInputStream(AmazeFile f) {
+  public InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());

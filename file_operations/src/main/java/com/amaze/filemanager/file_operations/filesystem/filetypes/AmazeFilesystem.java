@@ -139,7 +139,7 @@ public abstract class AmazeFilesystem {
    *
    * Note: for directories, this *could* return the size
    */
-  public abstract long getLength(AmazeFile f) throws IOException;
+  public abstract long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException;
 
   /* -- File operations -- */
 
@@ -165,7 +165,7 @@ public abstract class AmazeFilesystem {
   public abstract String[] list(AmazeFile f);
 
   @Nullable
-  public abstract InputStream getInputStream(AmazeFile f);
+  public abstract InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   @Nullable
   public abstract OutputStream getOutputStream(

@@ -35,6 +35,7 @@ import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAccount;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
@@ -260,6 +261,7 @@ public class CloudUtil {
 
     switch (hybridFile.getMode()) {
       case SFTP:
+        //TODO repace with AmazeFile's
         inputStream =
             SshClientUtils.execute(
                 new SFtpClientTemplate<InputStream>(hybridFile.getPath(), false) {
@@ -282,7 +284,7 @@ public class CloudUtil {
                 });
         break;
       case SMB:
-        return new AmazeFile(hybridFile.getPath()).getInputStream();
+        return new AmazeFile(hybridFile.getPath()).getInputStream(() -> context);
       case OTG:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile =

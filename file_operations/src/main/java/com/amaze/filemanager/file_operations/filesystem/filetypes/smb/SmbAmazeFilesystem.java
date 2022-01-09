@@ -212,7 +212,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getLength(AmazeFile f) throws SmbException, MalformedURLException {
+  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws SmbException, MalformedURLException {
     return create(f.getPath()).length();
   }
 
@@ -314,7 +314,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public InputStream getInputStream(AmazeFile f) {
+  public InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       return create(f.getPath()).getInputStream();
     } catch (IOException e) {

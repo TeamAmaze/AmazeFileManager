@@ -62,6 +62,7 @@ import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -140,7 +141,12 @@ public class FileUtils {
     long naiveSize;
 
     try {
-      naiveSize = directory.length();
+      naiveSize = directory.length(new ContextProvider() {
+        @Override
+        public Context getContext() {
+          return null;// TODO fix null
+        }
+      });
     } catch (IOException e) {
       Log.e(TAG, "Unexpected error getting size from AmazeFile", e);
       naiveSize = 0;
@@ -154,7 +160,12 @@ public class FileUtils {
     try {
       for (AmazeFile file : directory.listFiles()) {
 
-        if (file.isFile()) length += file.length();
+        if (file.isFile()) length += file.length(new ContextProvider() {
+          @Override
+          public Context getContext() {
+            return null;// TODO fix null
+          }
+        });
         else length += folderSize(file);
       }
     } catch (Exception e) {

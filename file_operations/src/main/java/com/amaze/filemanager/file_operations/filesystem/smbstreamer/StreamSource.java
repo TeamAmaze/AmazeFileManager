@@ -25,9 +25,13 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStream;
 
+import android.content.Context;
 import android.webkit.MimeTypeMap;
+
+import org.jetbrains.annotations.Nullable;
 
 public class StreamSource extends RandomAccessStream {
 
@@ -65,7 +69,7 @@ public class StreamSource extends RandomAccessStream {
    */
   public void open() throws IOException {
     try {
-      input = file.getInputStream(); // new SmbFileInputStream(file, bufferSize, 1);
+      input = file.getInputStream(() -> null); // new SmbFileInputStream(file, bufferSize, 1);
       if (fp > 0) input.skip(fp);
     } catch (Exception e) {
       throw new IOException(e);

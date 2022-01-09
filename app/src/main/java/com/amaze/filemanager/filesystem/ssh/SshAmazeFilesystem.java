@@ -167,7 +167,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getLength(AmazeFile f) throws IOException {
+  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException {
     if(f.isDirectory()) {
       final Long returnValue =
               SshClientUtils.<Long>execute(
@@ -259,7 +259,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public InputStream getInputStream(AmazeFile f) {
+  public InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return SshClientUtils.execute(
             new SFtpClientTemplate<InputStream>(f.getPath(), false) {
               @Override

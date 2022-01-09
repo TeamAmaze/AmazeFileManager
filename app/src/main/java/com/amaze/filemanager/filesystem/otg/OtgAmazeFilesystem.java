@@ -1,4 +1,8 @@
-package com.amaze.filemanager.file_operations.filesystem.filetypes.otg;
+package com.amaze.filemanager.filesystem.otg;
+
+import android.content.ContentResolver;
+import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -7,16 +11,27 @@ import androidx.documentfile.provider.DocumentFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem;
+import com.amaze.filemanager.utils.OTGUtil;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import kotlin.NotImplementedError;
+
 public class OtgAmazeFilesystem extends AmazeFilesystem {
   public static final String TAG = OtgAmazeFilesystem.class.getSimpleName();
 
+  public static final OtgAmazeFilesystem INSTANCE = new OtgAmazeFilesystem();
+
   public static final String PREFIX = "otg:/";
+
+  static {
+    AmazeFile.addFilesystem(INSTANCE);
+  }
+
+  private OtgAmazeFilesystem() {}
 
   @Override
   public String getPrefix() {
@@ -48,7 +63,7 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
   @NonNull
   @Override
   public String getDefaultParent() {
-    return null;
+    return PREFIX + getSeparator();
   }
 
   @Override
@@ -89,8 +104,15 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getLength(AmazeFile f) throws IOException {
-    return 0;
+  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException {
+    @Nullable
+    final Context context = contextProvider.getContext();
+
+    if(context == null) {
+      throw new IOException("Error obtaining context for OTG");
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false).length();
   }
 
   @Override
@@ -111,18 +133,59 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public InputStream getInputStream(AmazeFile f) {
-    return null;
+  public InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    ContentResolver contentResolver = context.getContentResolver();
+    DocumentFile documentSourceFile = OTGUtil.getDocumentFile(f.getPath(), context, false);
+    try {
+      return contentResolver.openInputStream(documentSourceFile.getUri());
+    } catch (FileNotFoundException e) {
+      Log.e(TAG, "Error obtaining input stream for OTG", e);
+      return null;
+    }
   }
 
   @Nullable
   @Override
   public OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    return null;
+    @Nullable
+            final Context context = contextProvider.getContext();
+    ContentResolver contentResolver = context.getContentResolver();
+    DocumentFile documentSourceFile = OTGUtil.getDocumentFile(f.getPath(), context, true);
+    try {
+      return contentResolver.openOutputStream(documentSourceFile.getUri());
+    } catch (FileNotFoundException e) {
+      Log.e(TAG, "Error output stream for OTG", e);
+      return null;
+    }
   }
 
   @Override
   public boolean createDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    if(f.exists()) {
+      return true;
+    }
+
+    @Nullable
+            final Context context = contextProvider.getContext();
+    if(context == null) {
+      return false;
+    }
+
+    final String parent = f.getParent();
+    if(parent == null) {
+      return false;
+    }
+
+    DocumentFile parentDirectory = OTGUtil.getDocumentFile(parent, context, true);
+
+
+    if (parentDirectory.isDirectory()) {
+      parentDirectory.createDirectory(f.getName());
+      return true;
+    }
+
     return false;
   }
 
@@ -133,7 +196,7 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public boolean setLastModifiedTime(AmazeFile f, long time) {
-    return false;
+    throw new NotImplementedError();
   }
 
   @Override

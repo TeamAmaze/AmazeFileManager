@@ -653,11 +653,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     if the file does not exist. Some operating systems may return <code>0L</code> for pathnames
    *     denoting system-dependent entities such as devices or pipes.
    */
-  public long length() throws IOException {
+  public long length(@NonNull ContextProvider contextProvider) throws IOException {
     if (isInvalid()) {
       return 0L;
     }
-    return fs.getLength(this);
+    return fs.getLength(this, contextProvider);
   }
 
   /* -- File operations -- */
@@ -892,8 +892,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   }
 
   @NonNull
-  public InputStream getInputStream() {
-    return fs.getInputStream(this);
+  public InputStream getInputStream(@NonNull ContextProvider contextProvider) {
+    return fs.getInputStream(this, contextProvider);
   }
 
   @NonNull
