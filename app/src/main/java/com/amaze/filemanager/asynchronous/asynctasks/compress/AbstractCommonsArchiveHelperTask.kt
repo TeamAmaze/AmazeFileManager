@@ -58,39 +58,39 @@ abstract class AbstractCommonsArchiveHelperTask(
     @Throws(ArchiveException::class)
     @Suppress("LabeledExpression")
     public override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
-        var tarInputStream: ArchiveInputStream?
         try {
-            tarInputStream = createFrom(FileInputStream(filePath))
-            var entry: ArchiveEntry?
-            while (tarInputStream.nextEntry.also { entry = it } != null) {
-                entry?.run {
-                    var name = name
-                    if (!CompressedHelper.isEntryPathValid(name)) {
-                        AppConfig.toast(
-                            context.get(),
-                            context.get()!!.getString(R.string.multiple_invalid_archive_entries)
-                        )
-                        return@run
-                    }
-                    if (name.endsWith(CompressedHelper.SEPARATOR)) {
-                        name = name.substring(0, name.length - 1)
-                    }
-                    val isInBaseDir =
-                        (relativePath == "" && !name.contains(CompressedHelper.SEPARATOR))
-                    val isInRelativeDir = (
-                        name.contains(CompressedHelper.SEPARATOR) &&
-                            name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
-                            == relativePath
-                        )
-                    if (isInBaseDir || isInRelativeDir) {
-                        elements.add(
-                            CompressedObjectParcelable(
-                                name,
-                                lastModifiedDate.time,
-                                size,
-                                isDirectory
+            createFrom(FileInputStream(filePath)).use { tarInputStream ->
+                var entry: ArchiveEntry?
+                while (tarInputStream.nextEntry.also { entry = it } != null) {
+                    entry?.run {
+                        var name = name
+                        if (!CompressedHelper.isEntryPathValid(name)) {
+                            AppConfig.toast(
+                                context.get(),
+                                context.get()!!.getString(R.string.multiple_invalid_archive_entries)
                             )
-                        )
+                            return@run
+                        }
+                        if (name.endsWith(CompressedHelper.SEPARATOR)) {
+                            name = name.substring(0, name.length - 1)
+                        }
+                        val isInBaseDir =
+                            (relativePath == "" && !name.contains(CompressedHelper.SEPARATOR))
+                        val isInRelativeDir = (
+                            name.contains(CompressedHelper.SEPARATOR) &&
+                                name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
+                                == relativePath
+                            )
+                        if (isInBaseDir || isInRelativeDir) {
+                            elements.add(
+                                CompressedObjectParcelable(
+                                    name,
+                                    lastModifiedDate.time,
+                                    size,
+                                    isDirectory
+                                )
+                            )
+                        }
                     }
                 }
             }
