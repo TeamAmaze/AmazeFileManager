@@ -715,5 +715,15 @@ Bạn chỉ cần làm điều này một lần cho đến lần tiếp theo b�
     <string name="cloud_drive_tooltip">Tạo một kết nối Google Drive™ để quản lý tệp từ trong Amaze File Manager.</string>
     <string name="signin_with_google_title">Xác thực để sử dụng Google Drive™</string>
     <string name="show_system_apps">Hiện ứng dụng hệ thống</string>
-    </resources>
+    <string name="system_apps">Ứng dụng hệ thống</string>
+    <string name="third_party_apps">Ứng dụng bên thứ ba</string>
+    <string name="select_inverse">Chọn ngược lại</string>
+    <string name="select_by_type">Chọn theo loại</string>
+    <string name="select_by_date">Chọn theo ngày</string>
+    <string name="select_similar">Chọn tương tự</string>
+    <string name="error_fetching_google_play_product_list">Lỗi khi lấy danh sách sản phẩm từ Google Play.</string>
+    <string name="grant_all_files_permission"><html><body>Amaze cần quyền truy cập tất cả tệp để tiếp tục.
+        \nỞ màn hình tiếp theo, vui lòng chọn <b>Amaze</b> và chọn tuỳ chọn <b>Cho phép quản lý tất cả tệp</b>.
+            \n\n<font color='#ff6347'><i>Việc huỷ hộp thoại này sẽ thoát ứng dụng.</i></font></body></html></string>
+</resources>
 
