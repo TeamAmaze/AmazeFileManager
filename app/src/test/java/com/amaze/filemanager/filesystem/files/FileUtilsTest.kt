@@ -30,6 +30,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.annotation.LooperMode
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
@@ -366,6 +367,10 @@ class FileUtilsTest {
      */
     @Test
     fun testParseStringForHybridFileParcelable() {
+
+        val systemTz = TimeZone.getDefault()
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
+
         // ls
         val a = "-rwxr-x---   1 root   shell    29431 2009-01-01 08:00 init.rc"
         val b = "lrw-r--r--   1 root   root        15 2009-01-01 08:00 product -> /system/product"
@@ -400,5 +405,7 @@ class FileUtilsTest {
         assertNotEquals(result1.date, result2.date)
         assertEquals(result1.name, result2.name)
         assertEquals(result1.path, result2.path)
+
+        TimeZone.setDefault(systemTz)
     }
 }
