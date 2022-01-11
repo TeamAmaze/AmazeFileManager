@@ -21,6 +21,7 @@
 package com.amaze.filemanager.adapters.holders
 
 import android.content.Context
+import android.graphics.Typeface
 import android.view.View
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -45,15 +46,31 @@ class SpecialViewHolder(
         const val HEADER_FILES = 0
         const val HEADER_FOLDERS = 1
         const val HEADER_SYSTEM_APP = 2
-        const val HEADER_THIRD_PARTY_APP = 3
+        const val HEADER_USER_APP = 3
     }
 
     init {
         when (type) {
-            HEADER_FILES -> txtTitle.setText(R.string.files)
-            HEADER_FOLDERS -> txtTitle.setText(R.string.folders)
-            HEADER_SYSTEM_APP -> txtTitle.setText(R.string.system_apps)
-            HEADER_THIRD_PARTY_APP -> txtTitle.setText(R.string.third_party_apps)
+            HEADER_FILES -> {
+
+                txtTitle.setTypeface(null, Typeface.BOLD)
+                txtTitle.setText(R.string.files)
+            }
+            HEADER_FOLDERS -> {
+
+                txtTitle.setTypeface(null, Typeface.BOLD)
+                txtTitle.setText(R.string.folders)
+            }
+            HEADER_SYSTEM_APP -> {
+
+                txtTitle.setTypeface(null, Typeface.BOLD)
+                txtTitle.setText(R.string.system_apps)
+            }
+            HEADER_USER_APP -> {
+
+                txtTitle.setTypeface(null, Typeface.BOLD)
+                txtTitle.setText(R.string.third_party_apps)
+            }
             else -> throw IllegalStateException(": $type")
         }
 

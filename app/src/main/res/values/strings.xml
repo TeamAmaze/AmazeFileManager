@@ -116,7 +116,7 @@
     <string name="none_on_top">None On Top</string>
     <!--SortBy-->
     <string name="sort_name">Name</string>
-    <string name="lastModified">Last Modified</string>
+    <string name="lastModified">Last Updated</string>
     <string name="sort_size">Size</string>
     <!--ListMode-->
     <!--Folder-->
