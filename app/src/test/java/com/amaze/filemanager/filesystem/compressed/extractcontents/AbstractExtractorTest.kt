@@ -27,9 +27,7 @@ import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
-import org.junit.After
-import org.junit.Before
-import org.junit.Test
+import org.junit.*
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowEnvironment
@@ -39,6 +37,7 @@ import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
+import java.util.*
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
@@ -46,6 +45,8 @@ abstract class AbstractExtractorTest {
 
     protected abstract fun extractorClass(): Class<out Extractor>
     protected abstract val archiveType: String
+
+    private lateinit var systemTz: TimeZone
 
     /**
      * Test setup, copy archives to storage space
@@ -55,6 +56,8 @@ abstract class AbstractExtractorTest {
     fun setUp() {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED)
         copyArchivesToStorage()
+        systemTz = TimeZone.getDefault()
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
     /**
@@ -70,6 +73,7 @@ abstract class AbstractExtractorTest {
                 .map { obj: Path -> obj.toFile() }
                 .forEach { obj: File -> obj.delete() }
         }
+        TimeZone.setDefault(systemTz)
     }
 
     /**
