@@ -110,7 +110,6 @@
     <string name="none_on_top">Ништа на врху</string>
     <!--SortBy-->
     <string name="sort_name">Имену</string>
-    <string name="lastModified">Датуму измене</string>
     <string name="sort_size">Величини</string>
     <!--ListMode-->
     <!--Folder-->
@@ -300,7 +299,6 @@
     <string name="report_bugs_summary">Пријавите грешке или затражите нову функционалност</string>
     <string name="translate_title">Преведите</string>
     <string name="translate_summary">Преведите Амејз на ваш језик</string>
-    <string name="easter_egg_title">Студијски режим</string>
     <string name="paypal_copy_message">Пејпел ИД копиран на клипборд</string>
     <string name="searching_devices">Тражим уређаје</string>
     <string name="use_custom_ip">Користите прилагођену ИП</string>
@@ -308,7 +306,6 @@
 
     <string name="share_limit">Не могу да делим више од 100 фајлова</string>
     <string name="otg_access">Изаберите корен ОТГ уређаја</string>
-    <string name="opening">Отварам..</string>
     <string name="information">Информације</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Приступ</string>

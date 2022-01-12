@@ -69,7 +69,7 @@ class SpecialViewHolder(
             HEADER_USER_APP -> {
 
                 txtTitle.setTypeface(null, Typeface.BOLD)
-                txtTitle.setText(R.string.third_party_apps)
+                txtTitle.setText(R.string.user_apps)
             }
             else -> throw IllegalStateException(": $type")
         }

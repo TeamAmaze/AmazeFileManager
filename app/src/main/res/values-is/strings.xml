@@ -113,7 +113,6 @@
     <string name="none_on_top">Ekkert efst</string>
     <!--SortBy-->
     <string name="sort_name">Heiti</string>
-    <string name="lastModified">Síðast breytt</string>
     <string name="sort_size">Stærð</string>
     <!--ListMode-->
     <!--Folder-->

@@ -109,7 +109,6 @@
     <string name="none_on_top">우선시하지 않음</string>
     <!--SortBy-->
     <string name="sort_name">이름</string>
-    <string name="lastModified">최종 수정일</string>
     <string name="sort_size">크기</string>
     <!--ListMode-->
     <!--Folder-->

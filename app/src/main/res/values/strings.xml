@@ -116,7 +116,7 @@
     <string name="none_on_top">None On Top</string>
     <!--SortBy-->
     <string name="sort_name">Name</string>
-    <string name="lastModified">Last Updated</string>
+    <string name="last_Updated">Last Updated</string>
     <string name="sort_size">Size</string>
     <!--ListMode-->
     <!--Folder-->
@@ -725,7 +725,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="signin_with_google_title">Authenticate to use Google Drive™</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="system_apps">System apps</string>
-    <string name="third_party_apps">User Apps</string>
+    <string name="user_apps">User Apps</string>
     <string name="select_inverse">Select Inverse</string>
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
