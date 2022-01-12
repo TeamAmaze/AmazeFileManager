@@ -39,5 +39,3 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew assembledebug --stacktrace
-        env:
-          TZ: UTC
