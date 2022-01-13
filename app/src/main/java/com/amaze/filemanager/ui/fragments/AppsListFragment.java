@@ -81,7 +81,7 @@ public class AppsListFragment extends Fragment
   private View rootView;
   private AppsAdapterPreloadModel modelProvider;
   private LinearLayoutManager linearLayoutManager;
-  private RecyclerViewPreloader preloader;
+  private RecyclerViewPreloader<String> preloader;
   private List<AppDataParcelable> appDataParcelableList;
   private FastScroller fastScroller;
   private boolean showSystemApps = false;
