@@ -93,7 +93,7 @@
     <string name="foldersOnTop">Папки на върха</string>
     <!--SortBy-->
     <string name="sort_name">Име</string>
-    <string name="lastModified">Последно променени</string>
+    <string name="last_Updated">Последно променени</string>
     <string name="sort_size">Размер</string>
     <!--ListMode-->
     <!--Folder-->
@@ -264,7 +264,6 @@
     <string name="paypal_copy_message">PayPal id копиран в клипборда</string>
     <string name="searching_devices">Търсене на устройства</string>
     <string name="share_limit">Не може да споделяте повече от 100 файла</string>
-    <string name="opening">Отваряне..</string>
     <string name="information">Информация</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Достъпен</string>

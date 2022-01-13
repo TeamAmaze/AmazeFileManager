@@ -115,7 +115,6 @@
     <string name="none_on_top">لا شيء في أعلى </string>
     <!--SortBy-->
     <string name="sort_name">الاسم </string>
-    <string name="lastModified">آخر تعديل </string>
     <string name="sort_size">الحجم </string>
     <!--ListMode-->
     <!--Folder-->
@@ -702,7 +701,6 @@
     <string name="signin_with_google_title">المصادقة لاستخدام Google Drive™</string>
     <string name="show_system_apps">عرض تطبيقات النظام</string>
     <string name="system_apps">System apps</string>
-    <string name="third_party_apps">Third party apps</string>
     <string name="select_inverse">Select Inverse</string>
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>

@@ -134,7 +134,7 @@ class AppsRecyclerAdapter(
                     if (viewType == TYPE_HEADER_SYSTEM)
                         SpecialViewHolder.HEADER_SYSTEM_APP
                     else
-                        SpecialViewHolder.HEADER_THIRD_PARTY_APP
+                        SpecialViewHolder.HEADER_USER_APP
                 )
             }
             EMPTY_LAST_ITEM -> {

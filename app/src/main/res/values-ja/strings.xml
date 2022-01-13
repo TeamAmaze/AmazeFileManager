@@ -115,7 +115,6 @@
     <string name="none_on_top">トップなし</string>
     <!--SortBy-->
     <string name="sort_name">名前</string>
-    <string name="lastModified">最終更新</string>
     <string name="sort_size">サイズ</string>
     <!--ListMode-->
     <!--Folder-->

@@ -84,7 +84,7 @@ public class AppsListFragment extends Fragment
   private RecyclerViewPreloader<String> preloader;
   private List<AppDataParcelable> appDataParcelableList;
   private FastScroller fastScroller;
-  private boolean showSystemApps = true;
+  private boolean showSystemApps = false;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -139,7 +139,7 @@ public class AppsListFragment extends Fragment
   @Override
   public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
     requireActivity().getMenuInflater().inflate(R.menu.app_menu, menu);
-    menu.findItem(R.id.checkbox_system_apps).setChecked(true);
+    menu.findItem(R.id.checkbox_system_apps).setChecked(false);
     super.onCreateOptionsMenu(menu, inflater);
   }
 

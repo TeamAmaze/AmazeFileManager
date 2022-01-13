@@ -113,7 +113,6 @@
     <string name="none_on_top">Üst yok</string>
     <!--SortBy-->
     <string name="sort_name">Ad</string>
-    <string name="lastModified">Son değiştirilme</string>
     <string name="sort_size">Boyut</string>
     <!--ListMode-->
     <!--Folder-->
