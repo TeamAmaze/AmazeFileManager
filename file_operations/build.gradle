@@ -43,6 +43,10 @@ android {
             version '3.10.2'
         }
     }
+
+    kotlinOptions {
+        useIR = true
+    }
 }
 
 dependencies {
