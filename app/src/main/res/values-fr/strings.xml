@@ -113,7 +113,6 @@
     <string name="none_on_top">Aucun en haut</string>
     <!--SortBy-->
     <string name="sort_name">Nom</string>
-    <string name="lastModified">Dernière modification</string>
     <string name="sort_size">Taille</string>
     <!--ListMode-->
     <!--Folder-->

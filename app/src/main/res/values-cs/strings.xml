@@ -110,7 +110,6 @@
     <string name="none_on_top">Nic na vrcholu</string>
     <!--SortBy-->
     <string name="sort_name">Jméno</string>
-    <string name="lastModified">Naposledy upraveno</string>
     <string name="sort_size">Rozměry</string>
     <!--ListMode-->
     <!--Folder-->

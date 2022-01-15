@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments;
 
-import com.amaze.filemanager.asynchronous.asynctasks.SearchAsyncTask;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchAsyncTask;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 

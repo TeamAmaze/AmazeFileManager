@@ -110,7 +110,6 @@
     <string name="none_on_top">Nada no início</string>
     <!--SortBy-->
     <string name="sort_name">Nome</string>
-    <string name="lastModified">Última modificação</string>
     <string name="sort_size">Tamanho</string>
     <!--ListMode-->
     <!--Folder-->
@@ -299,7 +298,6 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="report_bugs_summary">Reporte de erros e novas funcionalidades</string>
     <string name="translate_title">Tradução</string>
     <string name="translate_summary">Traduza o Amaze para o seu idioma</string>
-    <string name="easter_egg_title">Modo estúdio</string>
     <string name="paypal_copy_message">ID Paypal copiada para a área de transferência</string>
     <string name="searching_devices">A pesquisar por dispositivos</string>
     <string name="use_custom_ip">Utilizar IP personalizado</string>
@@ -307,7 +305,6 @@ Se inativa, será procurada qualquer correspondência.</string>
 
     <string name="share_limit">Não é possível partilhar mais de 100 ficheiros.</string>
     <string name="otg_access">Selecione a raiz do dispositivo OTG</string>
-    <string name="opening">A abrir...</string>
     <string name="information">Informações</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Acedido</string>

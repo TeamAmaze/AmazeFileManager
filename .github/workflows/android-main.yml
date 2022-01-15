@@ -40,12 +40,8 @@ jobs:
       - name: Build with Gradle
         run: |
           ./gradlew assembledebug
-        env:
-          TZ: UTC
       - name: Run test cases
         run: ./gradlew jacocoTestPlayDebugUnitTestReport
-        env:
-          TZ: UTC
       - name: Publish test cases
         run: |
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}

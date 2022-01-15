@@ -115,7 +115,6 @@
     <string name="none_on_top">檔案與資料夾混合顯示</string>
     <!--SortBy-->
     <string name="sort_name">名稱</string>
-    <string name="lastModified">最後修改時間</string>
     <string name="sort_size">大小</string>
     <!--ListMode-->
     <!--Folder-->

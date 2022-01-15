@@ -45,6 +45,8 @@ import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SortSearchResultTask;
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
@@ -139,6 +141,7 @@ public class MainFragment extends Fragment
         ViewTreeObserver.OnGlobalLayoutListener,
         AdjustListViewForTv<ItemViewHolder> {
 
+  private static final String TAG = MainFragment.class.getSimpleName();
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -1462,38 +1465,23 @@ public class MainFragment extends Fragment
   }
 
   public void onSearchCompleted(final String query) {
-    if (!mainFragmentViewModel.getResults() && mainFragmentViewModel.getListElements() != null) {
+    final ArrayList<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
+    if (elements == null) {
+      Log.e(TAG, "No search results, cannot sort!");
+    }
+    if (!mainFragmentViewModel.getResults()) {
       // no results were found
       mainFragmentViewModel.getListElements().clear();
     }
-    new AsyncTask<Void, Void, Void>() {
-      @Override
-      protected Void doInBackground(Void... params) {
-        Collections.sort(
-            mainFragmentViewModel.getListElements(),
+    TaskKt.fromTask(
+        new SortSearchResultTask(
+            elements,
             new FileListSorter(
                 mainFragmentViewModel.getDsort(),
                 mainFragmentViewModel.getSortby(),
-                mainFragmentViewModel.getAsc()));
-        return null;
-      }
-
-      @Override
-      public void onPostExecute(Void c) {
-        reloadListElements(
-            true,
-            true,
-            !mainFragmentViewModel
-                .isList()); // TODO: 7/7/2017 this is really inneffient, use RecycleAdapter's
-        // createHeaders()
-        getMainActivity().getAppbar().getBottomBar().setPathText("");
-        getMainActivity()
-            .getAppbar()
-            .getBottomBar()
-            .setFullPathText(getString(R.string.search_results, query));
-        mainFragmentViewModel.setResults(false);
-      }
-    }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                mainFragmentViewModel.getAsc()),
+            this,
+            query));
   }
 
   public static void launchSMB(final HybridFileParcelable baseFile, final Activity activity) {

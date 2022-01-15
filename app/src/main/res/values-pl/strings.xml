@@ -109,7 +109,6 @@
     <string name="none_on_top">Nic na górze</string>
     <!--SortBy-->
     <string name="sort_name">Nazwa</string>
-    <string name="lastModified">Data modyfikacji</string>
     <string name="sort_size">Rozmiar</string>
     <!--ListMode-->
     <!--Folder-->

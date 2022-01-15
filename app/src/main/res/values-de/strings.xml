@@ -115,7 +115,6 @@
     <string name="none_on_top">Nichts davon oben</string>
     <!--SortBy-->
     <string name="sort_name">Name: </string>
-    <string name="lastModified">Änderungsdatum</string>
     <string name="sort_size">Größe</string>
     <!--ListMode-->
     <!--Folder-->
@@ -661,7 +660,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
     <string name="show_system_apps">System-Apps anzeigen</string>
     <string name="system_apps">System-Apps</string>
-    <string name="third_party_apps">Dritt-Anbieter-Apps</string>
     <string name="select_inverse">Auswal umkehren</string>
     <string name="select_by_type">Nach Typ auswählen</string>
     <string name="select_by_date">Nach Datum auswählen</string>
