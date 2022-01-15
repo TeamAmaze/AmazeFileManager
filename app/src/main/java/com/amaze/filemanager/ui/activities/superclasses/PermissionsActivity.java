@@ -197,7 +197,9 @@ public class PermissionsActivity extends ThemedActivity
                 Utils.disableScreenRotation(this);
                 permissionCallbacks[ALL_FILES_PERMISSION] = onPermissionGranted;
                 try {
-                  Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                  Intent intent =
+                      new Intent(Settings.ACTION_MANAGE_APP_ALL_FILES_ACCESS_PERMISSION)
+                          .setData(Uri.parse("package:" + getPackageName()));
                   startActivity(intent);
                 } catch (Exception e) {
                   Log.e(TAG, "Failed to initial activity to grant all files access", e);

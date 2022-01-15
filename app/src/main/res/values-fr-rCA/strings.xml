@@ -106,7 +106,6 @@
   <string name="none_on_top">Aucun en haut</string>
   <!--SortBy-->
   <string name="sort_name">Nom: </string>
-  <string name="lastModified">Dernière modification</string>
   <string name="sort_size">Taille</string>
     <!--ListMode-->
     <!--Folder-->
@@ -300,7 +299,6 @@
   <string name="report_bugs_summary">Signaler un bug ou demander une nouvelle fonctionnalité</string>
   <string name="translate_title">Traduire</string>
   <string name="translate_summary">Traduire Amaze dans votre langue</string>
-  <string name="easter_egg_title">Mode Studio</string>
   <string name="paypal_copy_message">Id Paypal copié dans le presse-papiers</string>
   <string name="searching_devices">Recherche d\'appareils</string>
   <string name="use_custom_ip">Utiliser une adresse IP modifiée</string>
@@ -338,7 +336,6 @@
     </string>
   <string name="share_limit">Impossible de partage plus de 100 fichiers</string>
   <string name="otg_access">Sélectionnez le root du périphérique OTG</string>
-  <string name="opening">Ouverture..</string>
   <string name="information">Détails</string>
   <!-- reference to file accessed date -->
   <string name="accessed">Accédé</string>

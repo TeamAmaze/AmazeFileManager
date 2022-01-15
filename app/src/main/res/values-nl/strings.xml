@@ -110,7 +110,6 @@
     <string name="none_on_top">Geen bovenaan</string>
     <!--SortBy-->
     <string name="sort_name">Naam</string>
-    <string name="lastModified">Laatst gewijzigd</string>
     <string name="sort_size">Grootte</string>
     <!--ListMode-->
     <!--Folder-->
@@ -301,14 +300,12 @@ Anders wordt er naar een voorval gezocht.</string>
     <string name="report_bugs_summary">Meld een bug of verzoek nieuwe functies</string>
     <string name="translate_title">Vertalen</string>
     <string name="translate_summary">Amaze vertalen in uw eigen taal</string>
-    <string name="easter_egg_title">Studiomodus</string>
     <string name="paypal_copy_message">PayPal Id gekopieerd naar klembord</string>
     <string name="searching_devices">Zoeken naar apparaten</string>
     <string name="use_custom_ip">Gebruik aangepast IP</string>
     <string name="bookmark_lost">Bladwijzer niet gevonden, opnieuw aan het maken&#8230;</string>
 
     <string name="share_limit">Kan niet meer dan 100 bestanden delen</string>
-    <string name="opening">Openen..</string>
     <string name="information">Informatie</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Geopend</string>

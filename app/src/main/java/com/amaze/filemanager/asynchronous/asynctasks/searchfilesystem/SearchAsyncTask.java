@@ -18,13 +18,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.asynchronous.asynctasks;
+package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem;
 
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
 import java.lang.ref.WeakReference;
 import java.util.regex.Pattern;
 
+import com.amaze.filemanager.asynchronous.asynctasks.StatefulAsyncTask;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;

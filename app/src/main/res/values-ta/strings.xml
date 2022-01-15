@@ -110,7 +110,6 @@
     <string name="none_on_top">மேலே எதுவுமில்லை</string>
     <!--SortBy-->
     <string name="sort_name">பெயர்</string>
-    <string name="lastModified">கடைசியாக மாற்றியது</string>
     <string name="sort_size">அளவீடு</string>
     <!--ListMode-->
     <!--Folder-->
@@ -302,7 +301,6 @@
     <string name="report_bugs_summary">பிழைகளை அறிவி அல்லது புதிய அம்சத்திற்கு வேண்டுகோள்விடுக்க</string>
     <string name="translate_title">மொழிபெயர்ப்பு</string>
     <string name="translate_summary">அமெஸ்ஸை உன் மொழிக்கு மாற்று</string>
-    <string name="easter_egg_title">ஸ்டூடியோ முறை</string>
     <string name="paypal_copy_message">பேபால் ஐடி பிடிப்புபலகைக்கு நகலெடுக்கப்பட்டது</string>
     <string name="searching_devices">சாதனத்தை தேடுகிறது</string>
     <string name="use_custom_ip">பயனர் ஐபியை பயன்படுத்து</string>
@@ -310,8 +308,7 @@
 
     <string name="share_limit">100 கோப்புகளுக்கு மேல் பகிரமுடியாது</string>
     <string name="otg_access">OTG சாதனத்தின் ரூட் தேர்வு</string>
-    <string name="opening">திறத்தல்
-</string>
+
     <string name="information">தகவல்</string>
     <!-- reference to file accessed date -->
     <string name="accessed">அனுகியது</string>
