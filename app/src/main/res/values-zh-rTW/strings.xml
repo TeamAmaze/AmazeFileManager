@@ -698,6 +698,6 @@
     <string name="signin_with_google_title">登入以使用 Google雲端硬碟&#8482;</string>
     <string name="show_system_apps">顯示系統應用程式</string>
     <string name="system_apps">系統應用程式</string>
-    <string name="third_party_apps">第三方應用程式</string>
+    <string name="user_apps">第三方應用程式</string>
     </resources>
 
