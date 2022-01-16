@@ -115,6 +115,7 @@
     <string name="none_on_top">Non mettere nulla per primo</string>
     <!--SortBy-->
     <string name="sort_name">Nome</string>
+    <string name="lastModified">Ultima modifica</string>
     <string name="sort_size">Dimensioni</string>
     <!--ListMode-->
     <!--Folder-->

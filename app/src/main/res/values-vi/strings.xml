@@ -115,6 +115,7 @@
     <string name="none_on_top">Không ở trên đầu</string>
     <!--SortBy-->
     <string name="sort_name">Tên</string>
+    <string name="lastModified">Lần chỉnh sửa cuối</string>
     <string name="sort_size">Kích thuớc</string>
     <!--ListMode-->
     <!--Folder-->

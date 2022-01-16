@@ -110,6 +110,7 @@
     <string name="none_on_top">Κανένα στην κορυφή</string>
     <!--SortBy-->
     <string name="sort_name">Όνομα</string>
+    <string name="lastModified">Τροποποίηση</string>
     <string name="sort_size">Μέγεθος</string>
     <!--ListMode-->
     <!--Folder-->

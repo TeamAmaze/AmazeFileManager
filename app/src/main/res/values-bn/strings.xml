@@ -197,6 +197,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="sort_name">নাম</string>
 
+    <string name="lastModified">সর্বশেষ পরিবর্তিত হয়েছে</string>
 
     <string name="sort_size">আকার</string>
 

@@ -113,6 +113,7 @@
     <string name="none_on_top">Bat ere ez gainean</string>
     <!--SortBy-->
     <string name="sort_name">Izena</string>
+    <string name="lastModified">Azken aldaketa</string>
     <string name="sort_size">Tamaina</string>
     <!--ListMode-->
     <!--Folder-->

@@ -114,6 +114,7 @@
     <string name="none_on_top">Bat ere ez gainean</string>
     <!--SortBy-->
     <string name="sort_name">Izena</string>
+    <string name="lastModified">Azken aldaketa</string>
     <string name="sort_size">Tamaina</string>
     <!--ListMode-->
     <!--Folder-->
@@ -309,6 +310,7 @@
     <string name="report_bugs_summary">Eman erroreen berri edo eskatu ezaugarri berri bat</string>
     <string name="translate_title">Itzuli</string>
     <string name="translate_summary">Itzuli Amaze zure hizkuntzara</string>
+  <string name="easter_egg_title">Studio modua</string>
     <string name="paypal_copy_message">Paypal id-a arbelera kopiatu da</string>
     <string name="searching_devices">Gailuak bilatzen</string>
     <string name="use_custom_ip">Erabili IP pertsonalizatua</string>
@@ -367,6 +369,7 @@
     </string>
     <string name="share_limit">Ezin dira 100 fitxategi baino gehiago partekatu</string>
     <string name="otg_access">Hautatu OTG gailuaren erroa</string>
+    <string name="opening">Irekitzen...</string>
     <string name="information">Informazioa</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Atzituta</string>

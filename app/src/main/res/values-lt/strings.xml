@@ -102,6 +102,7 @@
   <string name="none_on_top">Nieko viršuje</string>
   <!--SortBy-->
   <string name="sort_name">Pavadinimas</string>
+  <string name="lastModified">Paskiausiai pakeista</string>
   <string name="sort_size">Dydis</string>
     <!--ListMode-->
     <!--Folder-->
