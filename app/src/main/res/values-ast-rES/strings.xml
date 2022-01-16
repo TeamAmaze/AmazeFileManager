@@ -110,6 +110,7 @@
     <string name="none_on_top">Nada no cimero</string>
     <!--SortBy-->
     <string name="sort_name">Nome</string>
+    <string name="lastModified">Modificación cabera</string>
     <string name="sort_size">Tamañu</string>
     <!--ListMode-->
     <!--Folder-->

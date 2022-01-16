@@ -110,6 +110,7 @@
     <string name="none_on_top">Nič na vrchole</string>
     <!--SortBy-->
     <string name="sort_name">Meno</string>
+    <string name="lastModified">Naposledy zmenené</string>
     <string name="sort_size">Veľkosť</string>
     <!--ListMode-->
     <!--Folder-->

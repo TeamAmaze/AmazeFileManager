@@ -103,6 +103,7 @@
     <string name="none_on_top">Brez prilog na vrhu</string>
     <!--SortBy-->
     <string name="sort_name">Ime</string>
+    <string name="lastModified">Zadnje spremembe</string>
     <string name="sort_size">Velikost</string>
     <!--ListMode-->
     <!--Folder-->

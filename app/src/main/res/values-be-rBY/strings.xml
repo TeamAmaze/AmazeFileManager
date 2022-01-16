@@ -106,7 +106,7 @@
   <string name="none_on_top">Нічога наверсе</string>
   <!--SortBy-->
   <string name="sort_name">Імя</string>
-  <string name="last_Updated">Апошняе змяненне</string>
+  <string name="lastModified">Апошняе змяненне</string>
   <string name="sort_size">Памер</string>
     <!--ListMode-->
     <!--Folder-->
@@ -297,6 +297,7 @@
   <string name="report_bugs_summary">Паведамляць пра памылкі ці спытаць новую функцыю</string>
   <string name="translate_title">Перакласці</string>
   <string name="translate_summary">Перавесці Amaze вашай мовай</string>
+  <string name="easter_egg_title">Рэжым Студыі</string>
   <string name="paypal_copy_message">PayPal id скапіявана ў буфер абмену</string>
   <string name="searching_devices">Пошук прылад</string>
   <string name="use_custom_ip">Выкарыстоўваць карыстацкую IP</string>
@@ -352,6 +353,7 @@
     </string>
   <string name="share_limit">Немагчыма абменьвацца больш за 100 файлаў</string>
   <string name="otg_access">Выберыце каранёвую тэчку OTG прылады</string>
+  <string name="opening">Адкрыццё..</string>
   <string name="information">Інфармацыя</string>
   <!-- reference to file accessed date -->
   <string name="accessed">Даступна</string>

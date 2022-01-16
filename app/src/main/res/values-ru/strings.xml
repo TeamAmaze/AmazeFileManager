@@ -110,6 +110,7 @@
     <string name="none_on_top">Ни один на вершине</string>
     <!--SortBy-->
     <string name="sort_name">Имя</string>
+    <string name="lastModified">Дата последнего изменения</string>
     <string name="sort_size">Размер</string>
     <!--ListMode-->
     <!--Folder-->

@@ -105,6 +105,7 @@
   <string name="none_on_top">Ninguno encima</string>
   <!--SortBy-->
   <string name="sort_name">Nombre </string>
+  <string name="lastModified">Última modificación</string>
   <string name="sort_size">Tamaño</string>
     <!--ListMode-->
     <!--Folder-->
@@ -290,12 +291,14 @@
   <string name="report_bugs_summary">Informar errores o solicitar nuevas características</string>
   <string name="translate_title">Traducir</string>
   <string name="translate_summary">Asombro</string>
+  <string name="easter_egg_title">Modo de estudio</string>
   <string name="paypal_copy_message">Id de Paypal copiado al portapapeles</string>
   <string name="searching_devices">Buscando dispositivos</string>
   <string name="use_custom_ip">Utilizar IP personalizada</string>
   <string name="bookmark_lost">Marcador no encontrado, recreando&#8230;</string>
   <string name="share_limit">No se pueden compartir más de 100 archivos</string>
   <string name="otg_access">Seleccione la raíz del dispositivo OTG</string>
+  <string name="opening">Abriendo...</string>
   <string name="information">Información</string>
   <!-- reference to file accessed date -->
   <string name="accessed">Accedido</string>

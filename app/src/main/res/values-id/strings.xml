@@ -115,6 +115,7 @@
     <string name="none_on_top">Tidak Ada yang di Atas</string>
     <!--SortBy-->
     <string name="sort_name">Nama</string>
+    <string name="lastModified">Terakhir Diubah</string>
     <string name="sort_size">Ukuran</string>
     <!--ListMode-->
     <!--Folder-->
@@ -712,6 +713,7 @@ Anda hanya perlu melakukan ini sekali, sampai nanti jika Anda ingin memilih loka
     <string name="signin_with_google_title">Otentikasi untuk menggunakan Google Drive™</string>
     <string name="show_system_apps">Tampilkan apl sistem</string>
     <string name="system_apps">Apl sistem</string>
+    <string name="third_party_apps">Apl pihak ketiga</string>
     <string name="select_inverse">Pilih Kebalikannya</string>
     <string name="select_by_type">Pilih berdasarkan tipe</string>
     <string name="select_by_date">Pilih berdasarkan tanggal</string>

@@ -115,6 +115,7 @@
     <string name="none_on_top">Ні один на вершині</string>
     <!--SortBy-->
     <string name="sort_name">Ім\'я</string>
+    <string name="lastModified">Дата останнього зміни</string>
     <string name="sort_size">Розмір</string>
     <!--ListMode-->
     <!--Folder-->

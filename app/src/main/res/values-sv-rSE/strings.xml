@@ -106,6 +106,7 @@
     <string name="none_on_top">Ingen överst</string>
     <!--SortBy-->
     <string name="sort_name">Namn</string>
+    <string name="lastModified">Senast modifierad</string>
     <string name="sort_size">Storlek</string>
     <!--ListMode-->
     <!--Folder-->
@@ -298,6 +299,7 @@ kommer annars att söka efter förekomster.</string>
     <string name="report_bugs_summary">Rapportera buggar eller föreslå nya funktioner</string>
     <string name="translate_title">Översätt</string>
     <string name="translate_summary">Översätt Amaze till ditt språk</string>
+  <string name="easter_egg_title">Studioläge</string>
     <string name="paypal_copy_message">Paypal-ID kopierat till utklipp</string>
     <string name="searching_devices">Söker efter enheter</string>
     <string name="use_custom_ip">Använd anpassat IP</string>
@@ -305,6 +307,7 @@ kommer annars att söka efter förekomster.</string>
 
     <string name="share_limit">Kan inte dela mer än 100 filer</string>
     <string name="otg_access">Välj roten på OTG-enheten</string>
+    <string name="opening">Öppnar..</string>
     <string name="information">Information</string>
     <!-- reference to file accessed date -->
     <string name="accessed">Tillträde lyckades</string>
