@@ -713,10 +713,10 @@ Anda hanya perlu melakukan ini sekali, sampai nanti jika Anda ingin memilih loka
     <string name="signin_with_google_title">Otentikasi untuk menggunakan Google Drive™</string>
     <string name="show_system_apps">Tampilkan apl sistem</string>
     <string name="system_apps">Apl sistem</string>
-    <string name="third_party_apps">Apl pihak ketiga</string>
     <string name="select_inverse">Pilih Kebalikannya</string>
     <string name="select_by_type">Pilih berdasarkan tipe</string>
     <string name="select_by_date">Pilih berdasarkan tanggal</string>
     <string name="select_similar">Pilih berdasarkan kesamaan</string>
+    <string name="user_apps">Apl pihak ketiga</string>
 </resources>
 

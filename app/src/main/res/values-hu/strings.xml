@@ -720,10 +720,10 @@ Ezt csak egyszer kell megtennie, egészen addig, amíg legközelebb ki nem vála
     <string name="signin_with_google_title">Hitelesítés a Google Drive™ használatához</string>
     <string name="show_system_apps">Rendszeralkalmazások megjelenítése</string>
     <string name="system_apps">Rendszeralkalmazások</string>
-    <string name="third_party_apps">Harmadik féltől származó alkalmazások</string>
     <string name="select_inverse">Fordított kiválasztás</string>
     <string name="select_by_type">Kiválasztás típus szerint</string>
     <string name="select_by_date">Kiválasztás dátum szerint</string>
     <string name="select_similar">Hasonló kiválasztása</string>
+    <string name="user_apps">Harmadik féltől származó alkalmazások</string>
 </resources>
 

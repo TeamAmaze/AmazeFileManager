@@ -116,7 +116,7 @@
     <string name="none_on_top">None On Top</string>
     <!--SortBy-->
     <string name="sort_name">Name</string>
-    <string name="lastModified">Last Updated</string>
+    <string name="lastModified">Last Modified</string>
     <string name="sort_size">Size</string>
     <!--ListMode-->
     <!--Folder-->
@@ -725,7 +725,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="signin_with_google_title">Authenticate to use Google Drive™</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="system_apps">System apps</string>
-    <string name="third_party_apps">User Apps</string>
     <string name="select_inverse">Select Inverse</string>
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
@@ -734,5 +733,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
         \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
         \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
+    <string name="user_apps">User apps</string>
 </resources>
 
