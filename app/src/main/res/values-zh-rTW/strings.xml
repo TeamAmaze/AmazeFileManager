@@ -607,7 +607,14 @@
     <string name="got_it">明白！</string>
     <string name="encrypt_file_save_as">儲存加密檔案為……</string>
     <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
-    <string name="encrypt_file_must_end_with_aze">加密檔案必須以 .aze為檔案擴展名稱。</string>
+    <string name="encrypt_option_use_aze">使用 Amaze加密格式</string>
+    <string name="encrypt_option_use_aescrypt_title">關於 Amaze加密格式</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>剔取這個選項，Amaze會沿用原有的方法對檔案進行加密。此加密方式適合只會在這機器上使用的檔案。</p>
+        <p>跟 AESCrypt格式不同，使用 Amaze自有方式加密的檔案只能在此機器上進行解密。而且你絕不可以從此機器上移除 Amaze 檔案管理員，否則你將無法對檔案進行解密。</p>
+    ]]></string>
+    <string name="encrypt_file_must_end_with_aze">加密檔案必須以“.aze”為檔案擴展名稱。</string>
+    <string name="encrypt_file_must_end_with_aes">加密檔案必須以“.aes”為檔案擴展名稱。</string>
     <string name="cannot_overwrite">不能覆蓋原有檔案。</string>
     <string name="saved_single_file">檔案 \'%s\'已儲存。</string>
     <string name="saved_multi_files">儲存了 %d 個檔案。</string>
@@ -698,5 +705,5 @@
     <string name="show_system_apps">顯示系統應用程式</string>
     <string name="system_apps">系統應用程式</string>
     <string name="user_apps">第三方應用程式</string>
-    </resources>
+</resources>
 

@@ -27,8 +27,8 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ServiceTestRule
-import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.utils.ObtainableServiceBinder
+import com.amaze.filemanager.utils.PasswordUtil
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
@@ -139,7 +139,7 @@ class FtpServiceEspressoTest {
             .putString(FtpService.KEY_PREFERENCE_USERNAME, "amazeftp")
             .putString(
                 FtpService.KEY_PREFERENCE_PASSWORD,
-                CryptUtil.encryptPassword(
+                PasswordUtil.encryptPassword(
                     ApplicationProvider.getApplicationContext(),
                     "passw0rD"
                 )

@@ -20,26 +20,6 @@
 
 package com.amaze.filemanager.ui;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.PasteHelper;
-import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
-import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.DataUtils;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -53,6 +33,28 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.PasteHelper;
+import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.dialogs.EncryptAuthenticateDialog;
+import com.amaze.filemanager.ui.dialogs.EncryptWithPresetPasswordSaveAsDialog;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.utils.DataUtils;
+
+import java.io.File;
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+import java.util.ArrayList;
 
 /**
  * This class contains the functionality of the PopupMenu for each file in the MainFragment
@@ -178,84 +180,47 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         encryptIntent.putExtra(EncryptService.TAG_OPEN_MODE, rowItem.getMode().ordinal());
         encryptIntent.putExtra(EncryptService.TAG_SOURCE, rowItem.generateBaseFile());
 
-        final SharedPreferences preferences =
-            PreferenceManager.getDefaultSharedPreferences(context);
-
         final EncryptDecryptUtils.EncryptButtonCallbackInterface
-            encryptButtonCallbackInterfaceAuthenticate =
-                new EncryptDecryptUtils.EncryptButtonCallbackInterface() {
-                  @Override
-                  public void onButtonPressed(Intent intent) {}
-
-                  @Override
-                  public void onButtonPressed(Intent intent, String password)
-                      throws GeneralSecurityException, IOException {
-                    EncryptDecryptUtils.startEncryption(
-                        context, rowItem.generateBaseFile().getPath(), password, intent);
-                  }
-                };
-
-        EncryptDecryptUtils.EncryptButtonCallbackInterface encryptButtonCallbackInterface =
+          encryptButtonCallbackInterfaceAuthenticate =
             new EncryptDecryptUtils.EncryptButtonCallbackInterface() {
-
               @Override
-              public void onButtonPressed(Intent intent)
+              public void onButtonPressed(Intent intent, String password)
                   throws GeneralSecurityException, IOException {
-                // check if a master password or fingerprint is set
-                if (!preferences
-                    .getString(
-                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
-                    .equals("")) {
-                  GeneralDialogCreation.showEncryptWithPresetPasswordSaveAsDialog(
-                      context,
-                      mainActivity,
-                      PreferencesConstants.ENCRYPT_PASSWORD_MASTER,
-                      encryptIntent);
-                } else if (preferences.getBoolean(
-                    PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
-                    PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
-                  GeneralDialogCreation.showEncryptWithPresetPasswordSaveAsDialog(
-                      context,
-                      mainActivity,
-                      PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT,
-                      encryptIntent);
-                } else {
-                  // let's ask a password from user
-                  GeneralDialogCreation.showEncryptAuthenticateDialog(
-                      context,
-                      encryptIntent,
-                      mainActivity,
-                      utilitiesProvider.getAppTheme(),
-                      encryptButtonCallbackInterfaceAuthenticate);
-                }
+                EncryptDecryptUtils.startEncryption(
+                    context, rowItem.generateBaseFile().getPath(), password, intent);
               }
-
-              @Override
-              public void onButtonPressed(Intent intent, String password) {}
             };
 
-        if (preferences.getBoolean(
-            PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER,
-            PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT)) {
-          // let's skip warning dialog call
-          try {
-            encryptButtonCallbackInterface.onButtonPressed(encryptIntent);
-          } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
-            Toast.makeText(
-                    context,
-                    mainFragment.getString(R.string.crypt_encryption_fail),
-                    Toast.LENGTH_LONG)
-                .show();
-          }
-        } else {
+        final SharedPreferences preferences =
+          PreferenceManager.getDefaultSharedPreferences(context);
 
-          GeneralDialogCreation.showEncryptWarningDialog(
-              encryptIntent,
-              mainFragment,
-              utilitiesProvider.getAppTheme(),
-              encryptButtonCallbackInterface);
+        if (!preferences.getString(
+              PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+              PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)
+          .equals("")) {
+          EncryptWithPresetPasswordSaveAsDialog.show(
+                  context,
+                  encryptIntent,
+                  mainActivity,
+                  PreferencesConstants.ENCRYPT_PASSWORD_MASTER,
+                  encryptButtonCallbackInterfaceAuthenticate);
+        } else if (preferences.getBoolean(
+              PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT,
+              PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT)) {
+          EncryptWithPresetPasswordSaveAsDialog.show(
+                  context,
+                  encryptIntent,
+                  mainActivity,
+                  PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT,
+                  encryptButtonCallbackInterfaceAuthenticate);
+        } else {
+          EncryptAuthenticateDialog.show(
+                  context,
+                  encryptIntent,
+                  mainActivity,
+                  utilitiesProvider.getAppTheme(),
+                  encryptButtonCallbackInterfaceAuthenticate
+          );
         }
         return true;
       case R.id.decrypt:

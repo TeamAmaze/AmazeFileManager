@@ -390,7 +390,7 @@ public class MainActivityHelper {
                     // update the database entry to reflect rename for encrypted file
                     if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                       try {
-                        CryptHandler cryptHandler = CryptHandler.getInstance();
+                        CryptHandler cryptHandler = CryptHandler.INSTANCE;
                         EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
                         EncryptedEntry newEntry = new EncryptedEntry();
                         newEntry.setId(oldEntry.getId());

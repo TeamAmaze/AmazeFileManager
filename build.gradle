@@ -30,6 +30,7 @@ buildscript {
         jacocoVersion = "0.8.7"
         commonsCompressVersion = "1.20"
         libsuVersion = "3.2.1"
+        mockkVersion = "1.12.2"
     }
     repositories {
         google()

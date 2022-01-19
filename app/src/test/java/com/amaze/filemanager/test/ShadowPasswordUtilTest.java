@@ -40,9 +40,9 @@ import org.robolectric.shadows.ShadowSQLiteConnection;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.utils.PasswordUtil;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -53,9 +53,9 @@ import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    shadows = {ShadowMultiDex.class, ShadowPasswordUtil.class},
     sdk = {JELLY_BEAN, KITKAT, P})
-public class ShadowCryptUtilTest {
+public class ShadowPasswordUtilTest {
 
   @Before
   public void setUp() {
@@ -73,9 +73,12 @@ public class ShadowCryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
-    String encrypted = CryptUtil.encryptPassword(ApplicationProvider.getApplicationContext(), text);
+    String encrypted =
+        PasswordUtil.INSTANCE.encryptPassword(ApplicationProvider.getApplicationContext(), text);
     assertEquals(
-        text, CryptUtil.decryptPassword(ApplicationProvider.getApplicationContext(), encrypted));
+        text,
+        PasswordUtil.INSTANCE.decryptPassword(
+            ApplicationProvider.getApplicationContext(), encrypted));
   }
 
   @Test

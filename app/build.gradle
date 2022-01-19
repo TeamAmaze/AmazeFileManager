@@ -148,6 +148,7 @@ dependencies {
     testImplementation 'org.jsoup:jsoup:1.11.2'
     testImplementation 'commons-net:commons-net:3.6'
     testImplementation "androidx.room:room-migration:$roomVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic

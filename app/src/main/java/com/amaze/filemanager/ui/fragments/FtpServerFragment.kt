@@ -75,12 +75,12 @@ import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isRu
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverActions
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
 import com.amaze.filemanager.databinding.FragmentFtpBinding
-import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.OneCharacterCharSequence
+import com.amaze.filemanager.utils.PasswordUtil
 import com.amaze.filemanager.utils.Utils
 import com.google.android.material.snackbar.BaseTransientBottomBar
 import com.google.android.material.snackbar.Snackbar
@@ -729,13 +729,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     // can't decrypt the password saved in preferences, remove the preference altogether
     private val passwordFromPreferences: String?
         get() = runCatching {
-            val encryptedPassword = mainActivity.prefs.getString(
+            val encryptedPassword: String = mainActivity.prefs.getString(
                 FtpService.KEY_PREFERENCE_PASSWORD, ""
-            )
+            )!!
             if (encryptedPassword == "") {
                 ""
             } else {
-                CryptUtil.decryptPassword(requireContext(), encryptedPassword)
+                PasswordUtil.decryptPassword(requireContext(), encryptedPassword)
             }
         }.onFailure {
             it.printStackTrace()
@@ -800,14 +800,16 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private fun setFTPPassword(password: String) {
         try {
-            mainActivity
-                .prefs
-                .edit()
-                .putString(
-                    FtpService.KEY_PREFERENCE_PASSWORD,
-                    CryptUtil.encryptPassword(context, password)
-                )
-                .apply()
+            context?.run {
+                mainActivity
+                    .prefs
+                    .edit()
+                    .putString(
+                        FtpService.KEY_PREFERENCE_PASSWORD,
+                        PasswordUtil.encryptPassword(this, password)
+                    )
+                    .apply()
+            }
         } catch (e: GeneralSecurityException) {
             e.printStackTrace()
             Toast.makeText(context, resources.getString(R.string.error), Toast.LENGTH_LONG)

@@ -473,7 +473,8 @@ public class MainFragment extends Fragment
         if (layoutElementParcelable.isDirectory) {
           computeScroll();
           loadlist(path, false, mainFragmentViewModel.getOpenMode());
-        } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)) {
+        } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)
+            || layoutElementParcelable.desc.endsWith(CryptUtil.AESCRYPT_EXTENSION)) {
           // decrypt the file
           mainFragmentViewModel.setEncryptOpen(true);
           mainFragmentViewModel.initEncryptBaseFile(
@@ -482,7 +483,8 @@ public class MainFragment extends Fragment
                   + layoutElementParcelable
                       .generateBaseFile()
                       .getName(getMainActivity())
-                      .replace(CryptUtil.CRYPT_EXTENSION, ""));
+                      .replace(CryptUtil.CRYPT_EXTENSION, "")
+                      .replace(CryptUtil.AESCRYPT_EXTENSION, ""));
 
           EncryptDecryptUtils.decryptFile(
               getContext(),

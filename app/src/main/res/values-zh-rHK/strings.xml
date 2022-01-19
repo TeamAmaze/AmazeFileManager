@@ -563,7 +563,13 @@
     <string name="got_it">明白了！</string>
     <string name="encrypt_file_save_as">將加密檔案儲存為&#8230;</string>
     <string name="encrypt_folder_save_as">將加密檔案夾儲存為&#8230;</string>
+    <string name="encrypt_option_use_aze">使用 Amaze加密格式</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>剔咗呢個剔，Amaze會用番原有嘅方法去加密檔案。呢個方法適合一啲只會喺呢部機上使用嘅檔案。</p>
+        <p>同 AESCrypt格式唔同，經 Amaze自有方法加密嘅檔案只能喺番呢部機上解密。而且你唔可以剷走 Amaze架，否則就算你記得個密碼，個檔案都救唔番架啦。</p>
+    ]]></string>
     <string name="encrypt_file_must_end_with_aze">加密檔案一定要用“.aze”做檔案擴展名稱。</string>
+    <string name="encrypt_file_must_end_with_aes">加密檔案一定要用“.aes”做檔案擴展名稱。</string>
     <string name="cannot_overwrite">覆寫唔到個檔案。</string>
     <string name="saved_single_file">檔案儲存為 \'%s\'.</string>
     <string name="saved_multi_files">儲存咗%d 個檔案。</string>

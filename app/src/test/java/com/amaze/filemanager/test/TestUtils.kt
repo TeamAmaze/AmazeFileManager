@@ -27,7 +27,9 @@ import android.os.Parcel
 import android.os.UserHandle
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
+import androidx.annotation.StringRes
 import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import org.robolectric.Shadows
 import java.lang.reflect.Field
@@ -58,6 +60,13 @@ fun supportedArchiveExtensions(): List<String> {
         it != "tar"
     }
 }
+
+/**
+ * Helper method to get specified string from resources.
+ *
+ * @param id String resource ID
+ */
+fun getString(@StringRes id: Int) = AppConfig.getInstance().getString(id)
 
 object TestUtils {
     /**
