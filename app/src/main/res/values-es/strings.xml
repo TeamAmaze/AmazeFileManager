@@ -683,5 +683,7 @@
     <string name="ftp_prompt_accept_first_start_saf_access">Dado que esta es la primera vez que ejecuta el servidor FTP y está utilizando el almacenamiento interno del dispositivo como carpeta compartida, permita que Amaze acceda al almacenamiento mediante SAF.\n\n
 
 Solo necesita hacer esto una vez, hasta la siguiente vez que seleccione una nueva ubicación para compartir.</string>
-    </resources>
+    <string name="quick_desc">Archivos accedidos recientemente por Amaze</string>
+    <string name="recent_desc">Archivos creados o modificados recientemente</string>
+</resources>
 

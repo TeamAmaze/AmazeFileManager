@@ -666,5 +666,7 @@
     <string name="clear_open_file_summary">Limpa os apps de abertura padrão selecionados</string>
     <string name="legacy_listing_title">Usar listagem legada para root</string>
     <string name="error_permission_denied">Permissão negada</string>
-    </resources>
+    <string name="quick_desc">Arquivos recentemente acessados pelo Amaze</string>
+    <string name="recent_desc">Arquivos criados ou modificados recentemente</string>
+</resources>
 

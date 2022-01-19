@@ -390,5 +390,7 @@ Se inativa, será procurada qualquer correspondência.</string>
     <string name="blue">Azul</string>
     <string name="green">Verde</string>
     <string name="close">Fechar</string>
-    </resources>
+    <string name="quick_desc">Ficheiros acedidos recentemente pelo Amaze</string>
+    <string name="recent_desc">Ficheiros recentemente criados ou modificados</string>
+</resources>
 
