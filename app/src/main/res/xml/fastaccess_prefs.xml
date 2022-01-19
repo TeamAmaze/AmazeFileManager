@@ -1,13 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
+        android:summary="@string/quick_desc"
         app:defaultValue="true"
         app:key="fastaccess"
-        app:title="@string/quick"/>
+        app:title="@string/quick" />
     <SwitchPreference
+        android:summary="@string/recent_desc"
         app:defaultValue="true"
         app:key="recent"
-        app:title="@string/recent"/>
+        app:title="@string/recent" />
     <SwitchPreference
         app:defaultValue="true"
         app:key="image"
