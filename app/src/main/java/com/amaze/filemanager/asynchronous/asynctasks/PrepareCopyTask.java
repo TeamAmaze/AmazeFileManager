@@ -91,6 +91,8 @@ public class PrepareCopyTask
   private static final int DO_NOT_REPLACE = 0;
   private static final int REPLACE = 1;
 
+  private OnTaskCompleted listener = null;
+
   @IntDef({UNKNOWN, DO_NOT_REPLACE, REPLACE})
   @interface DialogState {}
 
@@ -103,6 +105,24 @@ public class PrepareCopyTask
     this.rootMode = rootMode;
 
     this.path = path;
+  }
+
+  public PrepareCopyTask(
+      String path,
+      Boolean move,
+      MainActivity con,
+      boolean rootMode,
+      OpenMode openMode,
+      OnTaskCompleted listener) {
+    this.move = move;
+    mainActivity = new WeakReference<>(con);
+    context = new WeakReference<>(con);
+    this.openMode = openMode;
+    this.rootMode = rootMode;
+
+    this.path = path;
+
+    this.listener = listener;
   }
 
   @Override
@@ -195,6 +215,14 @@ public class PrepareCopyTask
     }
 
     dialog.dismiss();
+
+    if (listener != null) {
+      listener.onTaskCompleted(copyFolder.filesToCopy);
+    }
+  }
+
+  public interface OnTaskCompleted {
+    void onTaskCompleted(ArrayList<HybridFileParcelable> hybridFileParcelable);
   }
 
   private void startService(

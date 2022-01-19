@@ -65,10 +65,11 @@ class RecycleUtils {
                         true,
                         mainActivity,
                         mainActivity.isRootExplorer,
-                        mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+                        mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
+                        PrepareCopyTask.OnTaskCompleted {
+                            addRecycledFile(it)
+                        }
                     ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
-
-                    addRecycledFile(positions)
                 },
                 deleteCallback = {
                     Toast.makeText(
