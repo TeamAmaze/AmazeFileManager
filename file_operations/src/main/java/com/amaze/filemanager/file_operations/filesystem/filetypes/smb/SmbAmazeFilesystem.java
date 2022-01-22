@@ -146,8 +146,8 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
 
   public boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
-    SmbFile smbFile = create(f.getPath());
-    return smbFile.exists();
+      SmbFile smbFile = create(f.getPath());
+      return smbFile.exists();
     } catch (MalformedURLException | SmbException e) {
       Log.e(TAG, "Failed to get attributes for SMB file", e);
       return false;
@@ -217,13 +217,15 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     }
   }
 
-  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly){
+  public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
     throw new NotImplementedError();
   }
-  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly){
+
+  public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly) {
     throw new NotImplementedError();
   }
-  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly){
+
+  public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
     throw new NotImplementedError();
   }
 
@@ -238,7 +240,8 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws SmbException, MalformedURLException {
+  public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider)
+      throws SmbException, MalformedURLException {
     return create(f.getPath()).length();
   }
 
@@ -261,8 +264,8 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
       noExtraInfoPath = path;
     }
 
-    final CIFSContext context = CifsContexts
-            .createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
+    final CIFSContext context =
+        CifsContexts.createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
             .withCredentials(createFrom(userInfo));
 
     return new SmbFile(noExtraInfoPath, context);

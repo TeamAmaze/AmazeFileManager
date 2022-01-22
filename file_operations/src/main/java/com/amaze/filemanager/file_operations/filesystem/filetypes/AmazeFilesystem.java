@@ -35,9 +35,7 @@ public abstract class AmazeFilesystem {
 
   /* -- Normalization and construction -- */
 
-  /**
-   * filesystem prefix
-   */
+  /** filesystem prefix */
   public abstract String getPrefix();
 
   /** Is the path of this filesystem? */
@@ -130,10 +128,12 @@ public abstract class AmazeFilesystem {
   }
 
   public abstract boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider);
-  public abstract boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider);
-  public abstract boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider);
-  public abstract boolean isHidden(AmazeFile f);
 
+  public abstract boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider);
+
+  public abstract boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider);
+
+  public abstract boolean isHidden(AmazeFile f);
 
   @Native public static final int ACCESS_READ = 0x04;
   @Native public static final int ACCESS_WRITE = 0x02;
@@ -162,8 +162,11 @@ public abstract class AmazeFilesystem {
   }
 
   public abstract boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider);
+
   public abstract boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider);
+
   public abstract boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider);
+
   public abstract boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
@@ -184,7 +187,9 @@ public abstract class AmazeFilesystem {
   }
 
   public abstract boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly);
+
   public abstract boolean setWritable(AmazeFile f, boolean enable, boolean owneronly);
+
   public abstract boolean setReadable(AmazeFile f, boolean enable, boolean owneronly);
 
   /**
@@ -197,9 +202,10 @@ public abstract class AmazeFilesystem {
    * Return the length in bytes of the file denoted by the given abstract pathname, or zero if it
    * does not exist, or some other I/O error occurs.
    *
-   * Note: for directories, this *could* return the size
+   * <p>Note: for directories, this *could* return the size
    */
-  public abstract long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException;
+  public abstract long getLength(AmazeFile f, @NonNull ContextProvider contextProvider)
+      throws IOException;
 
   /* -- File operations -- */
 
@@ -241,7 +247,8 @@ public abstract class AmazeFilesystem {
    * Rename the file or directory denoted by the first abstract pathname to the second abstract
    * pathname, returning <code>true</code> if and only if the operation succeeds.
    */
-  public abstract boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider);
+  public abstract boolean rename(
+      AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider);
 
   /**
    * Set the last-modified time of the file or directory denoted by the given abstract pathname,

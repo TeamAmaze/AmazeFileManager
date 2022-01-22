@@ -25,13 +25,9 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStream;
 
-import android.content.Context;
 import android.webkit.MimeTypeMap;
-
-import org.jetbrains.annotations.Nullable;
 
 public class StreamSource extends RandomAccessStream {
 

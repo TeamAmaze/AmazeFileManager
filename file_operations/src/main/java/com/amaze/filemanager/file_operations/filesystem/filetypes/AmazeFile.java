@@ -30,14 +30,6 @@ import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
-
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAmazeFilesystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAmazeFilesystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAmazeFilesystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -317,9 +309,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   }
 
   private void loadFilesystem(String path) {
-    for (AmazeFilesystem filesystem :
-            filesystems) {
-      if(filesystem.isPathOfThisFilesystem(path)) {
+    for (AmazeFilesystem filesystem : filesystems) {
+      if (filesystem.isPathOfThisFilesystem(path)) {
         fs = filesystem;
       }
     }
@@ -341,8 +332,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (index < prefixLength) {
       return path.substring(prefixLength);
     }
-    if(path.endsWith("/"))  {
-      int newIndex = path.substring(0, path.length()-2).lastIndexOf(separatorChar);
+    if (path.endsWith("/")) {
+      int newIndex = path.substring(0, path.length() - 2).lastIndexOf(separatorChar);
       if (newIndex < prefixLength) {
         return path.substring(prefixLength);
       }
@@ -371,8 +362,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
       }
       return null;
     }
-    if(path.endsWith("/"))  {
-      int newIndex = path.substring(0, path.length()-2).lastIndexOf(separatorChar);
+    if (path.endsWith("/")) {
+      int newIndex = path.substring(0, path.length() - 2).lastIndexOf(separatorChar);
       if (newIndex < prefixLength) {
         if ((prefixLength > 0) && (path.length() > prefixLength)) {
           return path.substring(0, prefixLength);
@@ -852,7 +843,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see java.nio.file.Files#newDirectoryStream(Path,String)
    */
   @Nullable
-  public AmazeFile[] listFiles(AmazeFilenameFilter filter, @NonNull ContextProvider contextProvider) {
+  public AmazeFile[] listFiles(
+      AmazeFilenameFilter filter, @NonNull ContextProvider contextProvider) {
     String ss[] = list(contextProvider);
     if (ss == null) return null;
     ArrayList<AmazeFile> files = new ArrayList<>();
@@ -935,7 +927,9 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     }
 
     AmazeFile parent = canonFile.getParentFile();
-    return (parent != null && (parent.mkdirs(contextProvider) || parent.exists(contextProvider)) && canonFile.mkdir(contextProvider));
+    return (parent != null
+        && (parent.mkdirs(contextProvider) || parent.exists(contextProvider))
+        && canonFile.mkdir(contextProvider));
   }
 
   // Android-changed: Replaced generic platform info with Android specific one.
@@ -1335,8 +1329,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @throws IOException If a file could not be created
    */
   @NonNull
-  public AmazeFile createTempFile(@NonNull ContextProvider contextProvider,
-      @NonNull String prefix, @Nullable String suffix, @Nullable AmazeFile directory)
+  public AmazeFile createTempFile(
+      @NonNull ContextProvider contextProvider,
+      @NonNull String prefix,
+      @Nullable String suffix,
+      @Nullable AmazeFile directory)
       throws IOException {
     if (prefix.length() < 3) {
       throw new IllegalArgumentException("Prefix string too short");
@@ -1381,7 +1378,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see java.nio.file.Files#createTempDirectory(String,FileAttribute[])
    */
   @NonNull
-  public AmazeFile createTempFile(@NonNull ContextProvider contextProvider, String prefix, String suffix) throws IOException {
+  public AmazeFile createTempFile(
+      @NonNull ContextProvider contextProvider, String prefix, String suffix) throws IOException {
     return createTempFile(contextProvider, prefix, suffix, null);
   }
 

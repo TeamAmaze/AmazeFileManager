@@ -50,7 +50,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   public int prefixLength(@NonNull String path) {
     if (path.length() == 0) {
       throw new IllegalArgumentException(
-              "This should never happen, all paths must start with OTG prefix");
+          "This should never happen, all paths must start with OTG prefix");
     }
 
     return super.prefixLength(path);
@@ -129,12 +129,15 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return false; // You aren't executing anything at the cloud
   }
+
   public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return true; // Probably, can't check
   }
+
   public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return true; // Probably, can't check
   }
+
   public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);

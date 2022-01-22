@@ -57,7 +57,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
     AmazeFile.addFilesystem(INSTANCE);
   }
 
-  private FileAmazeFilesystem() { }
+  private FileAmazeFilesystem() {}
 
   @Override
   public boolean isPathOfThisFilesystem(@NonNull String path) {
@@ -131,19 +131,19 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
     return new File(f.getPath()).isHidden();
   }
 
-  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider){
+  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).canExecute();
   }
 
-  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider){
+  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).canWrite();
   }
 
-  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider){
+  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).canRead();
   }
 
-  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider){
+  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).exists();
   }
 
@@ -158,7 +158,6 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
   public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
     return new File(f.getPath()).setReadable(enable, owneronly);
   }
-
 
   @Override
   public long getLastModifiedTime(AmazeFile f) {
@@ -377,9 +376,11 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
   public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).getTotalSpace();
   }
+
   public long getFreeSpace(AmazeFile f) {
     return new File(f.getPath()).getFreeSpace();
   }
+
   public long getUsableSpace(AmazeFile f) {
     return new File(f.getPath()).getUsableSpace();
   }
