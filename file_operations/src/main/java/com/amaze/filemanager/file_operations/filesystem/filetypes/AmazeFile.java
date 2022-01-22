@@ -520,7 +520,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_READ, contextProvider);
+    return fs.canRead(this, contextProvider);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -536,7 +536,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_WRITE, contextProvider);
+    return fs.canWrite(this, contextProvider);
   }
 
   /**
@@ -551,7 +551,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     }
 
     // Android-changed: b/25878034 work around SELinux stat64 denial.
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_CHECK_EXISTS, contextProvider);
+    return fs.canAccess(this, contextProvider);
   }
 
   /**
@@ -1024,7 +1024,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.setPermission(this, AmazeFilesystem.ACCESS_WRITE, writable, ownerOnly);
+    return fs.setWritable(this, writable, ownerOnly);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -1072,7 +1072,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.setPermission(this, AmazeFilesystem.ACCESS_READ, readable, ownerOnly);
+    return fs.setReadable(this, readable, ownerOnly);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -1121,7 +1121,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.setPermission(this, AmazeFilesystem.ACCESS_EXECUTE, executable, ownerOnly);
+    return fs.setExecutable(this, executable, ownerOnly);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -1158,7 +1158,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_EXECUTE, contextProvider);
+    return fs.canExecute(this, contextProvider);
   }
 
   /* -- Filesystem interface -- */

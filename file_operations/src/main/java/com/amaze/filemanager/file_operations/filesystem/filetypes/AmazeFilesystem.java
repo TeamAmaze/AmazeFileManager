@@ -135,61 +135,48 @@ public abstract class AmazeFilesystem {
 
   public abstract boolean isHidden(AmazeFile f);
 
-  @Native public static final int ACCESS_READ = 0x04;
-  @Native public static final int ACCESS_WRITE = 0x02;
-  @Native public static final int ACCESS_EXECUTE = 0x01;
-  // Android-added: b/25878034, to support F.exists() reimplementation.
-  public static final int ACCESS_CHECK_EXISTS = 0x08;
+  /**
+   * Check whether the file or directory denoted by the given abstract pathname may be accessed by
+   * this process. Return false if access is denied or an I/O error occurs
+   */
+  public abstract boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
    * Check whether the file or directory denoted by the given abstract pathname may be accessed by
-   * this process. The second argument specifies which access, ACCESS_READ, ACCESS_WRITE or
-   * ACCESS_EXECUTE, to check. Return false if access is denied or an I/O error occurs
+   * this process. Return false if access is denied or an I/O error occurs
    */
-  public boolean checkAccess(AmazeFile f, int access, @NonNull ContextProvider contextProvider) {
-    switch (access) {
-      case ACCESS_EXECUTE:
-        return canExecute(f, contextProvider);
-      case ACCESS_WRITE:
-        return canWrite(f, contextProvider);
-      case ACCESS_READ:
-        return canRead(f, contextProvider);
-      case ACCESS_CHECK_EXISTS:
-        return canAccess(f, contextProvider);
-      default:
-        throw new IllegalStateException();
-    }
-  }
-
-  public abstract boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider);
-
   public abstract boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider);
 
+  /**
+   * Check whether the file or directory denoted by the given abstract pathname may be accessed by
+   * this process. Return false if access is denied or an I/O error occurs
+   */
   public abstract boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider);
 
+  /**
+   * Check whether the file or directory denoted by the given abstract pathname may be accessed by
+   * this process. Return false if access is denied or an I/O error occurs
+   *
+   * Android-added: b/25878034, to support F.exists() reimplementation.
+   */
   public abstract boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
    * Set on or off the access permission (to owner only or to all) to the file or directory denoted
    * by the given abstract pathname, based on the parameters enable, access and oweronly.
    */
-  public boolean setPermission(AmazeFile f, int access, boolean enable, boolean owneronly) {
-    switch (access) {
-      case ACCESS_EXECUTE:
-        return setExecutable(f, enable, owneronly);
-      case ACCESS_WRITE:
-        return setWritable(f, enable, owneronly);
-      case ACCESS_READ:
-        return setReadable(f, enable, owneronly);
-      default:
-        throw new IllegalStateException();
-    }
-  }
-
   public abstract boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly);
 
+  /**
+   * Set on or off the access permission (to owner only or to all) to the file or directory denoted
+   * by the given abstract pathname, based on the parameters enable, access and oweronly.
+   */
   public abstract boolean setWritable(AmazeFile f, boolean enable, boolean owneronly);
 
+  /**
+   * Set on or off the access permission (to owner only or to all) to the file or directory denoted
+   * by the given abstract pathname, based on the parameters enable, access and oweronly.
+   */
   public abstract boolean setReadable(AmazeFile f, boolean enable, boolean owneronly);
 
   /**
