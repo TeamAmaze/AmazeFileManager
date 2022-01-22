@@ -131,8 +131,6 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
 
   public static final String TAG = AmazeFile.class.getSimpleName();
 
-  private static ContextProvider contextProvider;
-
   /** The FileSystem object representing the platform's local file system. */
   private AmazeFilesystem fs;
 
@@ -527,11 +525,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the file specified by this abstract pathname exists
    *     <em>and</em> can be read by the application; <code>false</code> otherwise
    */
-  public boolean canRead() {
+  public boolean canRead(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_READ);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_READ, contextProvider);
   }
 
   // Android-changed. Removed javadoc comment about special privileges
@@ -543,11 +541,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     this abstract pathname <em>and</em> the application is allowed to write to the file; <code>
    *     false</code> otherwise.
    */
-  public boolean canWrite() {
+  public boolean canWrite(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_WRITE);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_WRITE, contextProvider);
   }
 
   /**
@@ -556,13 +554,13 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the file or directory denoted by this abstract
    *     pathname exists; <code>false</code> otherwise
    */
-  public boolean exists() {
+  public boolean exists(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
 
     // Android-changed: b/25878034 work around SELinux stat64 denial.
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_CHECK_EXISTS);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_CHECK_EXISTS, contextProvider);
   }
 
   /**
@@ -576,11 +574,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the file denoted by this abstract pathname exists
    *     <em>and</em> is a directory; <code>false</code> otherwise
    */
-  public boolean isDirectory() {
+  public boolean isDirectory(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
-    return ((fs.getBooleanAttributes(this) & AmazeFilesystem.BA_DIRECTORY) != 0);
+    return ((fs.getBooleanAttributes(this, contextProvider) & AmazeFilesystem.BA_DIRECTORY) != 0);
   }
 
   /**
@@ -597,11 +595,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the file denoted by this abstract pathname exists
    *     <em>and</em> is a normal file; <code>false</code> otherwise
    */
-  public boolean isFile() {
+  public boolean isFile(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
-    return ((fs.getBooleanAttributes(this) & AmazeFilesystem.BA_REGULAR) != 0);
+    return ((fs.getBooleanAttributes(this, contextProvider) & AmazeFilesystem.BA_REGULAR) != 0);
   }
 
   /**
@@ -613,11 +611,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the file denoted by this abstract pathname is hidden
    *     according to the conventions of the underlying platform
    */
-  public boolean isHidden() {
+  public boolean isHidden(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
-    return ((fs.getBooleanAttributes(this) & AmazeFilesystem.BA_HIDDEN) != 0);
+    return ((fs.getBooleanAttributes(this, contextProvider) & AmazeFilesystem.BA_HIDDEN) != 0);
   }
 
   /**
@@ -694,7 +692,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the file or directory is successfully deleted; <code>
    *     false</code> otherwise
    */
-  public boolean delete() {
+  public boolean delete(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
@@ -760,11 +758,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     if this abstract pathname does not denote a directory, or if an I/O error occurs.
    */
   @Nullable
-  public String[] list() {
+  public String[] list(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return null;
     }
-    return fs.list(this);
+    return fs.list(this, contextProvider);
   }
 
   /**
@@ -785,8 +783,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see java.nio.file.Files#newDirectoryStream(Path,String)
    */
   @Nullable
-  public String[] list(AmazeFilenameFilter filter) {
-    String names[] = list();
+  public String[] list(AmazeFilenameFilter filter, @NonNull ContextProvider contextProvider) {
+    String names[] = list(contextProvider);
     if ((names == null) || (filter == null)) {
       return names;
     }
@@ -825,8 +823,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    *     error occurs.
    */
   @Nullable
-  public AmazeFile[] listFiles() {
-    String[] ss = list();
+  public AmazeFile[] listFiles(@NonNull ContextProvider contextProvider) {
+    String[] ss = list(contextProvider);
     if (ss == null) return null;
     int n = ss.length;
     AmazeFile[] fs = new AmazeFile[n];
@@ -854,8 +852,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see java.nio.file.Files#newDirectoryStream(Path,String)
    */
   @Nullable
-  public AmazeFile[] listFiles(AmazeFilenameFilter filter) {
-    String ss[] = list();
+  public AmazeFile[] listFiles(AmazeFilenameFilter filter, @NonNull ContextProvider contextProvider) {
+    String ss[] = list(contextProvider);
     if (ss == null) return null;
     ArrayList<AmazeFile> files = new ArrayList<>();
     for (String s : ss)
@@ -880,8 +878,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see java.nio.file.Files#newDirectoryStream(Path,java.nio.file.DirectoryStream.Filter)
    */
   @Nullable
-  public AmazeFile[] listFiles(AmazeFileFilter filter) {
-    String ss[] = list();
+  public AmazeFile[] listFiles(AmazeFileFilter filter, @NonNull ContextProvider contextProvider) {
+    String ss[] = list(contextProvider);
     if (ss == null) return null;
     ArrayList<AmazeFile> files = new ArrayList<>();
     for (String s : ss) {
@@ -897,7 +895,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
   }
 
   @NonNull
-  public OutputStream getOutputStream() {
+  public OutputStream getOutputStream(@NonNull ContextProvider contextProvider) {
     return fs.getOutputStream(this, contextProvider);
   }
 
@@ -907,7 +905,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the directory was created; <code>false</code>
    *     otherwise
    */
-  public boolean mkdir() {
+  public boolean mkdir(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
@@ -922,11 +920,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the directory was created, along with all necessary
    *     parent directories; <code>false</code> otherwise
    */
-  public boolean mkdirs() {
-    if (exists()) {
+  public boolean mkdirs(@NonNull ContextProvider contextProvider) {
+    if (exists(contextProvider)) {
       return false;
     }
-    if (mkdir()) {
+    if (mkdir(contextProvider)) {
       return true;
     }
     AmazeFile canonFile = null;
@@ -937,7 +935,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     }
 
     AmazeFile parent = canonFile.getParentFile();
-    return (parent != null && (parent.mkdirs() || parent.exists()) && canonFile.mkdir());
+    return (parent != null && (parent.mkdirs(contextProvider) || parent.exists(contextProvider)) && canonFile.mkdir(contextProvider));
   }
 
   // Android-changed: Replaced generic platform info with Android specific one.
@@ -963,11 +961,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @param dest The new abstract pathname for the named file
    * @return <code>true</code> if and only if the renaming succeeded; <code>false</code> otherwise
    */
-  public boolean renameTo(@NonNull AmazeFile dest) {
+  public boolean renameTo(@NonNull AmazeFile dest, @NonNull ContextProvider contextProvider) {
     if (this.isInvalid() || dest.isInvalid()) {
       return false;
     }
-    return fs.rename(this, dest);
+    return fs.rename(this, dest, contextProvider);
   }
 
   /**
@@ -1162,11 +1160,11 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @return <code>true</code> if and only if the abstract pathname exists <em>and</em> the
    *     application is allowed to execute the file
    */
-  public boolean canExecute() {
+  public boolean canExecute(@NonNull ContextProvider contextProvider) {
     if (isInvalid()) {
       return false;
     }
-    return fs.checkAccess(this, AmazeFilesystem.ACCESS_EXECUTE);
+    return fs.checkAccess(this, AmazeFilesystem.ACCESS_EXECUTE, contextProvider);
   }
 
   /* -- Filesystem interface -- */
@@ -1337,7 +1335,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @throws IOException If a file could not be created
    */
   @NonNull
-  public AmazeFile createTempFile(
+  public AmazeFile createTempFile(@NonNull ContextProvider contextProvider,
       @NonNull String prefix, @Nullable String suffix, @Nullable AmazeFile directory)
       throws IOException {
     if (prefix.length() < 3) {
@@ -1350,7 +1348,7 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
     AmazeFile f;
     do {
       f = TempDirectory.generateFile(prefix, suffix != null ? suffix : ".tmp", tmpdir);
-    } while ((fs.getBooleanAttributes(f) & AmazeFilesystem.BA_EXISTS) != 0);
+    } while ((fs.getBooleanAttributes(f, contextProvider) & AmazeFilesystem.BA_EXISTS) != 0);
 
     if (!fs.createFileExclusively(f.getPath()))
       throw new IOException("Unable to create temporary file");
@@ -1383,8 +1381,8 @@ public class AmazeFile implements Parcelable, Comparable<AmazeFile> {
    * @see java.nio.file.Files#createTempDirectory(String,FileAttribute[])
    */
   @NonNull
-  public AmazeFile createTempFile(String prefix, String suffix) throws IOException {
-    return createTempFile(prefix, suffix, null);
+  public AmazeFile createTempFile(@NonNull ContextProvider contextProvider, String prefix, String suffix) throws IOException {
+    return createTempFile(contextProvider, prefix, suffix, null);
   }
 
   /* -- Basic infrastructure -- */

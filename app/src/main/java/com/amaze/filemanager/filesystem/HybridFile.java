@@ -281,14 +281,9 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        case OTG:
+      case OTG:
         try {
-          return new AmazeFile(path).length(new ContextProvider() {
-            @Override
-            public Context getContext() {
-              return context;
-            }
-          });
+          return new AmazeFile(path).length(() -> context);
         } catch (IOException e) {
           Log.e(TAG, "Error getting length for file", e);
         }
@@ -331,14 +326,10 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
+      case OTG:
         return new AmazeFile(path).getName();
       case ROOT:
         return getFile().getName();
-      case OTG:
-        if (!Utils.isNullOrEmpty(name)) {
-          return name;
-        }
-        return OTGUtil.getDocumentFile(path, context, false).getName();
       case DOCUMENT_FILE:
         if (!Utils.isNullOrEmpty(name)) {
           return name;
@@ -382,8 +373,9 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        return new AmazeFile(path).getParent();
       case SFTP:
+      case OTG:
+        return new AmazeFile(path).getParent();
       default:
         if (path.length() == getName(context).length()) {
           return null;
@@ -394,14 +386,6 @@ public class HybridFile {
 
         return path.substring(start, end);
     }
-  }
-
-  public String getParentName() {
-    StringBuilder builder = new StringBuilder(path);
-    StringBuilder parentPath =
-        new StringBuilder(builder.substring(0, builder.length() - (getSimpleName().length() + 1)));
-    String parentName = parentPath.substring(parentPath.lastIndexOf("/") + 1, parentPath.length());
-    return parentName;
   }
 
   /**
@@ -420,16 +404,10 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        return new AmazeFile(path).isDirectory();
+      case OTG:
+        return new AmazeFile(path).isDirectory(() -> null);
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
-        break;
-      case DOCUMENT_FILE:
-        return getDocumentFile(false).isDirectory();
-      case OTG:
-        // TODO: support for this method in OTG on-the-fly
-        // you need to manually call {@link RootHelper#getDocumentFile() method
-        isDirectory = false;
         break;
       default:
         isDirectory = getFile().isDirectory();
@@ -474,15 +452,13 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        return new AmazeFile(path).isDirectory();
+      case OTG:
+        return new AmazeFile(path).isDirectory(() -> context);
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
       case DOCUMENT_FILE:
         isDirectory = getDocumentFile(false).isDirectory();
-        break;
-      case OTG:
-        isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
         break;
       default:
         isDirectory = getFile().isDirectory();
@@ -500,7 +476,7 @@ public class HybridFile {
         return folderSize(AppConfig.getInstance());
       case SMB:
       case FILE:
-        return FileUtils.folderSize(new AmazeFile(getPath()));
+        return FileUtils.folderSize(new AmazeFile(getPath()), () -> null);
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) size = baseFile.getSize();
@@ -525,7 +501,7 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case OTG:
-        return FileUtils.folderSize(new AmazeFile(getPath()));
+        return FileUtils.folderSize(new AmazeFile(getPath()), () -> context);
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) size = baseFile.getSize();
@@ -710,8 +686,9 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
+      case OTG:
         ArrayList<HybridFileParcelable> result = new ArrayList<>();
-        for (AmazeFile smbFile1 : new AmazeFile(getPath()).listFiles()) {
+        for (AmazeFile smbFile1 : new AmazeFile(getPath()).listFiles(() -> context)) {
           try {
             HybridFileParcelable baseFile = new HybridFileParcelable(create(smbFile1.getPath()));
             result.add(baseFile);
@@ -721,9 +698,6 @@ public class HybridFile {
           }
         }
         return result;
-      case OTG:
-        arrayList = OTGUtil.getDocumentFilesList(path, context);
-        break;
       case DOCUMENT_FILE:
         final ArrayList<HybridFileParcelable> hybridFileParcelables = new ArrayList<>();
         OTGUtil.getDocumentFiles(
@@ -774,12 +748,7 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
         case OTG:
-        return new AmazeFile(getPath()).getInputStream(new ContextProvider() {
-          @Override
-          public Context getContext() {
-            return context;
-          }
-        });
+        return new AmazeFile(getPath()).getInputStream(() -> context);
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile = getDocumentFile(false);
@@ -813,8 +782,8 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        case OTG:
-        return new AmazeFile(path).getOutputStream();
+      case OTG:
+        return new AmazeFile(path).getOutputStream(() -> context);
       case DOCUMENT_FILE:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile = getDocumentFile(true);
@@ -860,7 +829,7 @@ public class HybridFile {
       //noinspection SimplifiableConditionalExpression
       exists = executionReturn == null ? false : executionReturn;
     } else if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile() || isOneDriveFile()) {
-      return new AmazeFile(path).exists();
+      return new AmazeFile(path).exists(() -> null);
     } else if (isRoot()) {
       return RootHelper.fileExists(path);
     }
@@ -872,14 +841,17 @@ public class HybridFile {
   public boolean exists(Context context) {
     boolean exists = false;
     try {
-      if (isOtgFile()) {
-        exists = OTGUtil.getDocumentFile(path, context, false) != null;
+      if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile()
+              || isOneDriveFile() || isOtgFile() || isSftp()) {
+        return new AmazeFile(path).exists(() -> context);
       } else if (isDocumentFile()) {
         exists =
             OTGUtil.getDocumentFile(
                     path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
                 != null;
-      } else return (exists());
+      } else {
+        return (exists());
+      }
     } catch (Exception e) {
       Log.i(getClass().getSimpleName(), "Failed to find file", e);
     }
@@ -915,7 +887,7 @@ public class HybridFile {
 
   public void mkdir(Context context) {
     if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isOtgFile()) {
-      new AmazeFile(path).mkdirs();
+      new AmazeFile(path).mkdirs(() -> context);
     } else if (isDocumentFile()) {
       if (!exists(context)) {
         DocumentFile parentDirectory =
@@ -936,8 +908,9 @@ public class HybridFile {
 
   public boolean delete(Context context, boolean rootmode)
       throws ShellNotRunningException, SmbException {
-    if (isSftp() || isSmb() || isLocal() || (isRoot() && !rootmode) || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()) {
-      return new AmazeFile(path).delete();
+    if (isSftp() || isSmb() || isLocal() || (isRoot() && !rootmode) || isOneDriveFile()
+            || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isOtgFile()) {
+      return new AmazeFile(path).delete(() -> context);
     } else if (isRoot() && rootmode) {
       setMode(OpenMode.ROOT);
       DeleteFileCommand.INSTANCE.deleteFile(getPath());

@@ -151,7 +151,7 @@ public class Operations {
           return null;
         }
         if (file.isSmb()) {
-          new AmazeFile(file.getPath()).mkdirs();
+          new AmazeFile(file.getPath()).mkdirs(() -> context);
           errorCallBack.done(file, file.exists());
           return null;
         } else if (file.isOtgFile()) {
@@ -459,8 +459,8 @@ public class Operations {
             errorCallBack.exists(newFile);
             return null;
           }
-          smbFile.renameTo(smbFile1);
-          if (!smbFile.exists() && smbFile1.exists()) {
+          smbFile.renameTo(smbFile1, () -> context);
+          if (!smbFile.exists(() -> context) && smbFile1.exists(() -> context)) {
             errorCallBack.done(newFile, true);
             return null;
           } else {

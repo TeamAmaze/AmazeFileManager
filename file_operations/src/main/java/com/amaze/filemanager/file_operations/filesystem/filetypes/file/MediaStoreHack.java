@@ -262,8 +262,8 @@ public class MediaStoreHack {
   }
 
   public static boolean mkdir(final Context context, final AmazeFile file) throws IOException {
-    if (file.exists()) {
-      return file.isDirectory();
+    if (file.exists(() -> context)) {
+      return file.isDirectory(() -> context);
     }
     final File tmpFile = new File(new File(file.getPath()), ".MediaWriteTemp");
     final int albumId = getTemporaryAlbumId(context);
@@ -284,7 +284,7 @@ public class MediaStoreHack {
     } finally {
       delete(context, tmpFile);
     }
-    return file.exists();
+    return file.exists(() -> context);
   }
 
   public static boolean mkfile(final Context context, final File file) {

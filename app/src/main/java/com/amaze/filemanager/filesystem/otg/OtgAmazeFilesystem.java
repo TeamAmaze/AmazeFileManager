@@ -13,10 +13,12 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesyste
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.utils.OTGUtil;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 
 import kotlin.NotImplementedError;
 
@@ -51,13 +53,17 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
   @NonNull
   @Override
   public String normalize(@NonNull String path) {
-    return null;
+    return simpleUnixNormalize(path);
   }
 
   @NonNull
   @Override
   public String resolve(String parent, String child) {
-    return null;
+    final String prefix = parent.substring(0, prefixLength(parent));
+    final String simplePathParent = parent.substring(prefixLength(parent));
+    final String simplePathChild = child.substring(prefixLength(child));
+
+    return prefix + basicUnixResolve(simplePathParent, simplePathChild);
   }
 
   @NonNull
@@ -74,52 +80,79 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
   @NonNull
   @Override
   public String resolve(AmazeFile f) {
-    return null;
+    return f.getPath();
   }
 
   @NonNull
   @Override
   public String canonicalize(String path) throws IOException {
-    return null;
+    return normalize(path);
   }
 
-  public boolean exists(AmazeFile f) {
-    return false;//TODO
+  public boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    if(context == null) {
+      return false;
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false) != null;
   }
-  public boolean isFile(AmazeFile f) {
-    return false;//TODO
+  public boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    if(context == null) {
+      return false;
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false).isFile();
   }
-  public boolean isDirectory(AmazeFile f) {
-    return false;//TODO
+  public boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    if(context == null) {
+      return false;
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false).isDirectory();
   }
   public boolean isHidden(AmazeFile f) {
-    return false;//TODO
+    return false;// There doesn't seem to be hidden files for OTG
   }
 
-  public boolean canExecute(AmazeFile f) {
-    return false; //TODO
+  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    throw new NotImplementedError(); // No way to check
   }
-  public boolean canWrite(AmazeFile f) {
-    return false; //TODO
+  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    if(context == null) {
+      return false;
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false).canWrite();
   }
-  public boolean canRead(AmazeFile f) {
-    return false; //TODO
+  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    if(context == null) {
+      return false;
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false).canRead();
   }
-  public boolean canAccess(AmazeFile f) {
-    return false; //TODO
+  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    return exists(f, contextProvider); //If the system says it exists, we can access it
   }
 
   public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
-    return false; //TODO
+    return false; //TODO find way to set
   }
   public boolean setWritable(AmazeFile f, boolean enable, boolean owneronly) {
-    return false; //TODO
+    return false; //TODO find way to set
   }
   public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
-    return false; //TODO
-  }
-  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
-    return false; //TODO
+    return false; //TODO find way to set
   }
 
   @Override
@@ -146,13 +179,31 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public boolean delete(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    return false;
+    @Nullable
+    final Context context = contextProvider.getContext();
+
+    if(context == null) {
+      return false;
+    }
+
+    return OTGUtil.getDocumentFile(f.getPath(), context, false).delete();
   }
 
   @Nullable
   @Override
-  public String[] list(AmazeFile f) {
-    return new String[0];
+  public String[] list(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    @Nullable final Context context = contextProvider.getContext();
+    if(context == null) {
+      return null;
+    }
+
+    ArrayList<String> list = new ArrayList<>();
+    DocumentFile rootUri = OTGUtil.getDocumentFile(f.getPath(), context, false);
+    for (DocumentFile file : rootUri.listFiles()) {
+      list.add(file.getUri().getPath());
+    }
+
+    return list.toArray(new String[0]);
   }
 
   @Nullable
@@ -187,7 +238,7 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public boolean createDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    if(f.exists()) {
+    if(f.exists(contextProvider)) {
       return true;
     }
 
@@ -214,8 +265,12 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean rename(AmazeFile f1, AmazeFile f2) {
-    return false;
+  public boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider) {
+    @Nullable
+    final Context context = contextProvider.getContext();
+    ContentResolver contentResolver = context.getContentResolver();
+    DocumentFile documentSourceFile = OTGUtil.getDocumentFile(f1.getPath(), context, true);
+    return documentSourceFile.renameTo(f2.getPath());
   }
 
   @Override
@@ -230,7 +285,14 @@ public class OtgAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public AmazeFile[] listRoots() {
-    return new AmazeFile[0];
+    File[] roots = File.listRoots();
+    AmazeFile[] amazeRoots = new AmazeFile[roots.length];
+
+    for (int i = 0; i < roots.length; i++) {
+      amazeRoots[i] = new AmazeFile(roots[i].getPath());
+    }
+
+    return new AmazeFile[] { new AmazeFile(getDefaultParent()) };
   }
 
   @Override

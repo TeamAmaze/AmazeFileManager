@@ -24,6 +24,7 @@ import android.content.Context
 import android.os.Build
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
 import com.amaze.filemanager.utils.OTGUtil
 import java.io.File
 import java.io.IOException
@@ -76,7 +77,9 @@ object MakeDirectoryOperation {
         var isSuccessful = true
         when (file.mode) {
             OpenMode.SMB, OpenMode.FILE ->
-                return AmazeFile(file.path).mkdirs()
+                return AmazeFile(file.path).mkdirs(object : ContextProvider {
+                    override fun getContext() = context
+                })
             OpenMode.OTG -> {
                 val documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true)
                 isSuccessful = documentFile != null

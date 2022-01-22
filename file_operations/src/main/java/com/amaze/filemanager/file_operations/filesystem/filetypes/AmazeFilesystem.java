@@ -29,8 +29,6 @@ import java.lang.annotation.Native;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem;
-
 public abstract class AmazeFilesystem {
 
   public static final char STANDARD_SEPARATOR = '/';
@@ -108,18 +106,18 @@ public abstract class AmazeFilesystem {
    * Return the simple boolean attributes for the file or directory denoted by the given abstract
    * pathname, or zero if it does not exist or some other I/O error occurs.
    */
-  public int getBooleanAttributes(AmazeFile f) {
+  public int getBooleanAttributes(AmazeFile f, @NonNull ContextProvider contextProvider) {
     File file = new File(f.getPath());
     int r = 0;
 
-    if (exists(f)) {
+    if (exists(f, contextProvider)) {
       r |= BA_EXISTS;
 
-      if (isFile(f)) {
+      if (isFile(f, contextProvider)) {
         r |= BA_REGULAR;
       }
 
-      if (isDirectory(f)) {
+      if (isDirectory(f, contextProvider)) {
         r |= BA_DIRECTORY;
       }
 
@@ -131,9 +129,9 @@ public abstract class AmazeFilesystem {
     return r;
   }
 
-  public abstract boolean exists(AmazeFile f);
-  public abstract boolean isFile(AmazeFile f);
-  public abstract boolean isDirectory(AmazeFile f);
+  public abstract boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider);
+  public abstract boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider);
+  public abstract boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider);
   public abstract boolean isHidden(AmazeFile f);
 
 
@@ -148,25 +146,25 @@ public abstract class AmazeFilesystem {
    * this process. The second argument specifies which access, ACCESS_READ, ACCESS_WRITE or
    * ACCESS_EXECUTE, to check. Return false if access is denied or an I/O error occurs
    */
-  public boolean checkAccess(AmazeFile f, int access) {
+  public boolean checkAccess(AmazeFile f, int access, @NonNull ContextProvider contextProvider) {
     switch (access) {
       case ACCESS_EXECUTE:
-        return canExecute(f);
+        return canExecute(f, contextProvider);
       case ACCESS_WRITE:
-        return canWrite(f);
+        return canWrite(f, contextProvider);
       case ACCESS_READ:
-        return canRead(f);
+        return canRead(f, contextProvider);
       case ACCESS_CHECK_EXISTS:
-        return canAccess(f);
+        return canAccess(f, contextProvider);
       default:
         throw new IllegalStateException();
     }
   }
 
-  public abstract boolean canExecute(AmazeFile f);
-  public abstract boolean canWrite(AmazeFile f);
-  public abstract boolean canRead(AmazeFile f);
-  public abstract boolean canAccess(AmazeFile f);
+  public abstract boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider);
+  public abstract boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider);
+  public abstract boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider);
+  public abstract boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   /**
    * Set on or off the access permission (to owner only or to all) to the file or directory denoted
@@ -180,8 +178,6 @@ public abstract class AmazeFilesystem {
         return setWritable(f, enable, owneronly);
       case ACCESS_READ:
         return setReadable(f, enable, owneronly);
-      case ACCESS_CHECK_EXISTS:
-        return setCheckExists(f, enable, owneronly);
       default:
         throw new IllegalStateException();
     }
@@ -190,7 +186,6 @@ public abstract class AmazeFilesystem {
   public abstract boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly);
   public abstract boolean setWritable(AmazeFile f, boolean enable, boolean owneronly);
   public abstract boolean setReadable(AmazeFile f, boolean enable, boolean owneronly);
-  public abstract boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly);
 
   /**
    * Return the time at which the file or directory denoted by the given abstract pathname was last
@@ -227,7 +222,7 @@ public abstract class AmazeFilesystem {
    * .
    */
   @Nullable
-  public abstract String[] list(AmazeFile f);
+  public abstract String[] list(AmazeFile f, @NonNull ContextProvider contextProvider);
 
   @Nullable
   public abstract InputStream getInputStream(AmazeFile f, @NonNull ContextProvider contextProvider);
@@ -246,7 +241,7 @@ public abstract class AmazeFilesystem {
    * Rename the file or directory denoted by the first abstract pathname to the second abstract
    * pathname, returning <code>true</code> if and only if the operation succeeds.
    */
-  public abstract boolean rename(AmazeFile f1, AmazeFile f2);
+  public abstract boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider);
 
   /**
    * Set the last-modified time of the file or directory denoted by the given abstract pathname,

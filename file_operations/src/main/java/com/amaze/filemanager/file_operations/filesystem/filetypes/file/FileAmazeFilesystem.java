@@ -115,35 +115,35 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
     return new File(path).getCanonicalPath();
   }
 
-  public boolean exists(AmazeFile f) {
-    return f.exists();
+  public boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    return f.exists(contextProvider);
   }
 
-  public boolean isFile(AmazeFile f) {
-    return f.isFile();
+  public boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    return new File(f.getPath()).isFile();
   }
 
-  public boolean isDirectory(AmazeFile f) {
-    return f.isDirectory();
+  public boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
+    return new File(f.getPath()).isDirectory();
   }
 
   public boolean isHidden(AmazeFile f) {
-    return f.isHidden();
+    return new File(f.getPath()).isHidden();
   }
 
-  public boolean canExecute(AmazeFile f){
+  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider){
     return new File(f.getPath()).canExecute();
   }
 
-  public boolean canWrite(AmazeFile f){
+  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider){
     return new File(f.getPath()).canWrite();
   }
 
-  public boolean canRead(AmazeFile f){
+  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider){
     return new File(f.getPath()).canRead();
   }
 
-  public boolean canAccess(AmazeFile f){
+  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider){
     return new File(f.getPath()).exists();
   }
 
@@ -157,10 +157,6 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
 
   public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
     return new File(f.getPath()).setReadable(enable, owneronly);
-  }
-
-  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
-    throw new IllegalArgumentException("This properties cannot be set!");
   }
 
 
@@ -181,8 +177,8 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public boolean delete(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    if (f.isDirectory()) {
-      AmazeFile[] children = f.listFiles();
+    if (f.isDirectory(contextProvider)) {
+      AmazeFile[] children = f.listFiles(contextProvider);
       if (children != null) {
         for (AmazeFile child : children) {
           delete(child, contextProvider);
@@ -220,7 +216,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
             new String[] {f.getAbsolutePath()});
       }
 
-      return !f.exists();
+      return !f.exists(contextProvider);
     }
 
     if (new File(f.getPath()).delete()) {
@@ -254,7 +250,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
           return false;
         }
         resolver.delete(uri, null, null);
-        return !f.exists();
+        return !f.exists(contextProvider);
       } catch (SecurityException e) {
         Log.e(TAG, "Security exception when checking for file " + f.getAbsolutePath(), e);
       }
@@ -265,7 +261,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public String[] list(AmazeFile f) {
+  public String[] list(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return new File(f.getPath()).list();
   }
 
@@ -284,7 +280,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
   @Override
   public OutputStream getOutputStream(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
-      if (f.canWrite()) {
+      if (f.canWrite(contextProvider)) {
         return new FileOutputStream(f.getPath());
       } else {
         final Context context = contextProvider.getContext();
@@ -352,7 +348,7 @@ public class FileAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean rename(AmazeFile f1, AmazeFile f2) {
+  public boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider) {
     return new File(f1.getPath()).renameTo(new File(f2.getPath()));
   }
 

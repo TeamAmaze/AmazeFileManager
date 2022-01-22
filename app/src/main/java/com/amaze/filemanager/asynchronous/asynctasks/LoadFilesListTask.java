@@ -141,7 +141,7 @@ public class LoadFilesListTask
           hFile.setPath(hFile.getPath() + "/");
         }
         try {
-          AmazeFile[] smbFile = new AmazeFile(hFile.getPath()).listFiles();
+          AmazeFile[] smbFile = new AmazeFile(hFile.getPath()).listFiles(() -> context);
           list = mainFragment.addToSmb(smbFile, path, showHiddenFiles);
           openmode = OpenMode.SMB;
         } catch (SmbAuthException e) {

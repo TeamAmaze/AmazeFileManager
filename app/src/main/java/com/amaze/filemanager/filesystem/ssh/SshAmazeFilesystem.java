@@ -8,15 +8,12 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
-import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -26,15 +23,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.List;
 
-import jcifs.SmbConstants;
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 import kotlin.NotImplementedError;
 
 public class SshAmazeFilesystem extends AmazeFilesystem {
@@ -103,7 +96,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return returnValue;
   }
 
-  public boolean exists(AmazeFile f) {
+  public boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
       @Override
       public Boolean execute(@NonNull SFTPClient client) throws IOException {
@@ -119,7 +112,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
     return returnValue;
   }
-  public boolean isFile(AmazeFile f) {
+  public boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
       @Override
       public Boolean execute(@NonNull SFTPClient client) throws IOException {
@@ -135,7 +128,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
     return returnValue;
   }
-  public boolean isDirectory(AmazeFile f) {
+  public boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
       @Override
       public Boolean execute(@NonNull SFTPClient client) throws IOException {
@@ -155,16 +148,16 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return false; //Assume its not hidden
   }
 
-  public boolean canExecute(AmazeFile f) {
+  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider) {
     throw new NotImplementedError();
   }
-  public boolean canWrite(AmazeFile f) {
+  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider) {
     throw new NotImplementedError();
   }
-  public boolean canRead(AmazeFile f) {
+  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider) {
     throw new NotImplementedError();
   }
-  public boolean canAccess(AmazeFile f) {
+  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
     throw new NotImplementedError();
   }
 
@@ -175,9 +168,6 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     throw new NotImplementedError();
   }
   public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly) {
-    throw new NotImplementedError();
-  }
-  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
     throw new NotImplementedError();
   }
 
@@ -202,7 +192,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException {
-    if(f.isDirectory()) {
+    if(f.isDirectory(contextProvider)) {
       final Long returnValue =
               SshClientUtils.<Long>execute(
                       new SFtpClientTemplate<Long>(f.getPath()) {
@@ -248,7 +238,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
                       @Override
                       public Boolean execute(@NonNull SFTPClient client) throws IOException {
                         String _path = SshClientUtils.extractRemotePathFrom(f.getPath());
-                        if (f.isDirectory()) {
+                        if (f.isDirectory(contextProvider)) {
                           client.rmdir(_path);
                         } else {
                           client.rm(_path);
@@ -261,7 +251,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public String[] list(AmazeFile f) {
+  public String[] list(AmazeFile f, @NonNull ContextProvider contextProvider) {
     List<String> fileNameList = SshClientUtils.execute(
             new SFtpClientTemplate<List<String>>(f.getPath()) {
               @Override
@@ -366,7 +356,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean rename(AmazeFile f1, AmazeFile f2) {
+  public boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider) {
     Boolean retval =
             SshClientUtils.<Boolean>execute(
                     new SFtpClientTemplate(f1.getPath()) {

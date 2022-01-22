@@ -102,7 +102,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
     return getPrefix() + new File(removePrefix(path)).getCanonicalPath();
   }
 
-  public boolean exists(AmazeFile f) {
+  public boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
@@ -110,11 +110,11 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
     return account.exists(noPrefixPath);
   }
 
-  public boolean isFile(AmazeFile f) {
+  public boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return true; // all files are regular (probably)
   }
 
-  public boolean isDirectory(AmazeFile f) {
+  public boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
@@ -126,16 +126,16 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
     return false; // No way to know if its hidden
   }
 
-  public boolean canExecute(AmazeFile f) {
+  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return false; // You aren't executing anything at the cloud
   }
-  public boolean canWrite(AmazeFile f) {
+  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return true; // Probably, can't check
   }
-  public boolean canRead(AmazeFile f) {
+  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider) {
     return true; // Probably, can't check
   }
-  public boolean canAccess(AmazeFile f) {
+  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
@@ -159,11 +159,6 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly) {
-    throw new NotImplementedError();
-  }
-
-  @Override
   public long getLastModifiedTime(AmazeFile f) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
@@ -174,7 +169,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
 
   @Override
   public long getLength(AmazeFile f, @NonNull ContextProvider contextProvider) throws IOException {
-    if (f.isDirectory()) {
+    if (f.isDirectory(contextProvider)) {
       return 0;
     }
 
@@ -201,7 +196,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
 
   @Nullable
   @Override
-  public String[] list(AmazeFile f) {
+  public String[] list(AmazeFile f, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     final String noPrefixPath = removePrefix(f.getPath());
@@ -239,7 +234,7 @@ public abstract class CloudAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean rename(AmazeFile f1, AmazeFile f2) {
+  public boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider) {
     final CloudStorage account = getAccount().getAccount();
     Objects.requireNonNull(account);
     account.move(removePrefix(f1.getPath()), removePrefix(f2.getPath()));

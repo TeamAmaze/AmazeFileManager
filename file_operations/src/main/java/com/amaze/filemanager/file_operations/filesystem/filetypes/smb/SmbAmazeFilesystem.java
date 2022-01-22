@@ -144,7 +144,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     return create(path).getCanonicalPath();
   }
 
-  public boolean exists(AmazeFile f) {
+  public boolean exists(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
     SmbFile smbFile = create(f.getPath());
     return smbFile.exists();
@@ -154,7 +154,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     }
   }
 
-  public boolean isFile(AmazeFile f) {
+  public boolean isFile(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       SmbFile smbFile = create(f.getPath());
       return smbFile.getType() == SmbConstants.TYPE_FILESYSTEM;
@@ -164,7 +164,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     }
   }
 
-  public boolean isDirectory(AmazeFile f) {
+  public boolean isDirectory(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       SmbFile smbFile = create(f.getPath());
       return smbFile.isDirectory();
@@ -184,11 +184,11 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     }
   }
 
-  public boolean canExecute(AmazeFile f) {
+  public boolean canExecute(AmazeFile f, @NonNull ContextProvider contextProvider) {
     throw new NotImplementedError();
   }
 
-  public boolean canWrite(AmazeFile f) {
+  public boolean canWrite(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       return create(f.getPath()).canWrite();
     } catch (MalformedURLException | SmbException e) {
@@ -197,7 +197,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     }
   }
 
-  public boolean canRead(AmazeFile f) {
+  public boolean canRead(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       return create(f.getPath()).canRead();
     } catch (MalformedURLException | SmbException e) {
@@ -206,7 +206,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     }
   }
 
-  public boolean canAccess(AmazeFile f) {
+  public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
     try {
       SmbFile file = create(f.getPath());
       file.setConnectTimeout(2000);
@@ -224,9 +224,6 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
     throw new NotImplementedError();
   }
   public boolean setReadable(AmazeFile f, boolean enable, boolean owneronly){
-    throw new NotImplementedError();
-  }
-  public boolean setCheckExists(AmazeFile f, boolean enable, boolean owneronly){
     throw new NotImplementedError();
   }
 
@@ -324,7 +321,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public String[] list(AmazeFile f) {
+  public String[] list(AmazeFile f, @NonNull ContextProvider contextProvider) {
     String[] list;
     try {
       list = create(f.getPath()).list();
@@ -375,7 +372,7 @@ public class SmbAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean rename(AmazeFile f1, AmazeFile f2) {
+  public boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider) {
     try {
       create(f1.getPath()).renameTo(create(f2.getPath()));
       return true;

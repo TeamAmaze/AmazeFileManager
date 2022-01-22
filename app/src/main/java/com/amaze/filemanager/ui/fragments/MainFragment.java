@@ -1234,22 +1234,22 @@ public class MainFragment extends Fragment
       mainFragmentViewModel.getSearchHelper().clear();
     }
     for (AmazeFile aMFile : mFile) {
-      if (!aMFile.isDirectory() && !aMFile.isFile()) {
+      if (!aMFile.isDirectory(this::requireContext) && !aMFile.isFile(this::requireContext)) {
         continue;
       }
-      if ((DataUtils.getInstance().isFileHidden(aMFile.getPath()) || aMFile.isHidden())
+      if ((DataUtils.getInstance().isFileHidden(aMFile.getPath()) || aMFile.isHidden(this::requireContext))
           && !showHiddenFiles) {
         continue;
       }
       String name = aMFile.getName();
       name =
-          (aMFile.isDirectory() && name.endsWith("/"))
+          (aMFile.isDirectory(this::requireContext) && name.endsWith("/"))
               ? name.substring(0, name.length() - 1)
               : name;
       if (path.equals(mainFragmentViewModel.getSmbPath())) {
         if (name.endsWith("$")) continue;
       }
-      if (aMFile.isDirectory()) {
+      if (aMFile.isDirectory(this::requireContext)) {
         mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
 
         Uri.Builder aMFilePathBuilder = Uri.parse(aMFile.getPath()).buildUpon();

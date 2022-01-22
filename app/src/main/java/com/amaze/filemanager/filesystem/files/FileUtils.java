@@ -137,16 +137,11 @@ public class FileUtils {
     else return directory.folderSize(AppConfig.getInstance());
   }
 
-  public static long folderSize(AmazeFile directory) {
+  public static long folderSize(AmazeFile directory, @NonNull ContextProvider contextProvider) {
     long naiveSize;
 
     try {
-      naiveSize = directory.length(new ContextProvider() {
-        @Override
-        public Context getContext() {
-          return null;// TODO fix null
-        }
-      });
+      naiveSize = directory.length(contextProvider);
     } catch (IOException e) {
       Log.e(TAG, "Unexpected error getting size from AmazeFile", e);
       naiveSize = 0;
@@ -158,15 +153,10 @@ public class FileUtils {
 
     long length = 0;
     try {
-      for (AmazeFile file : directory.listFiles()) {
+      for (AmazeFile file : directory.listFiles(contextProvider)) {
 
-        if (file.isFile()) length += file.length(new ContextProvider() {
-          @Override
-          public Context getContext() {
-            return null;// TODO fix null
-          }
-        });
-        else length += folderSize(file);
+        if (file.isFile(contextProvider)) length += file.length(contextProvider);
+        else length += folderSize(file, contextProvider);
       }
     } catch (Exception e) {
       e.printStackTrace();
