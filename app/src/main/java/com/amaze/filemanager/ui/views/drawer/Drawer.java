@@ -420,7 +420,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     Boolean[] quickAccessPref =
         TinyDB.getBooleanArray(
-            mainActivity.getPrefs(), QuickAccessesPrefsFragment.KEY, QuickAccessesPrefsFragment.Companion.getDEFAULT());
+            mainActivity.getPrefs(),
+            QuickAccessesPrefsFragment.KEY,
+            QuickAccessesPrefsFragment.Companion.getDEFAULT());
 
     if (mainActivity.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES)) {
       if (quickAccessPref[0]) {

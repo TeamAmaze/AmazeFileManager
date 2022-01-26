@@ -60,11 +60,12 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.bookmarks_prefs, rootKey)
 
-        findPreference<Preference>("add_bookmarks")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            showCreateDialog()
+        findPreference<Preference>("add_bookmarks")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                showCreateDialog()
 
-            true
-        }
+                true
+            }
 
         bookmarksList = findPreference("bookmarks_list")
         reload()
@@ -99,40 +100,40 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         val txtShortcutPath = dialogBinding.text2
 
         val dialog = MaterialDialog.Builder(requireActivity())
-                .title(R.string.create_bookmark)
-                .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
-                .positiveColor(fabSkin)
-                .positiveText(R.string.create)
-                .negativeColor(fabSkin)
-                .negativeText(android.R.string.cancel)
-                .customView(v, false)
-                .build()
+            .title(R.string.create_bookmark)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .positiveColor(fabSkin)
+            .positiveText(R.string.create)
+            .negativeColor(fabSkin)
+            .negativeText(android.R.string.cancel)
+            .customView(v, false)
+            .build()
         dialog.getActionButton(DialogAction.POSITIVE).isEnabled = false
         disableButtonIfTitleEmpty(txtShortcutName, dialog)
         disableButtonIfNotPath(txtShortcutPath, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener {
-                    val p = PathSwitchPreference(getActivity())
-                    p.title = txtShortcutName.text
-                    p.summary = txtShortcutPath.text
-                    p.onDelete = itemOnDeleteListener
-                    p.onEdit = itemOnEditListener
-                    position[p] = dataUtils.books.size
-                    bookmarksList!!.addPreference(p)
-                    val values = arrayOf(
-                            txtShortcutName.text.toString(),
-                            txtShortcutPath.text.toString()
+            .setOnClickListener {
+                val p = PathSwitchPreference(getActivity())
+                p.title = txtShortcutName.text
+                p.summary = txtShortcutPath.text
+                p.onDelete = itemOnDeleteListener
+                p.onEdit = itemOnEditListener
+                position[p] = dataUtils.books.size
+                bookmarksList!!.addPreference(p)
+                val values = arrayOf(
+                    txtShortcutName.text.toString(),
+                    txtShortcutPath.text.toString()
+                )
+                dataUtils.addBook(values)
+                utilsHandler.saveToDatabase(
+                    OperationData(
+                        UtilsHandler.Operation.BOOKMARKS,
+                        txtShortcutName.text.toString(),
+                        txtShortcutPath.text.toString()
                     )
-                    dataUtils.addBook(values)
-                    utilsHandler.saveToDatabase(
-                            OperationData(
-                                    UtilsHandler.Operation.BOOKMARKS,
-                                    txtShortcutName.text.toString(),
-                                    txtShortcutPath.text.toString()
-                            )
-                    )
-                    dialog.dismiss()
-                }
+                )
+                dialog.dismiss()
+            }
         dialog.show()
     }
 
@@ -150,42 +151,42 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         editText2.setText(p.summary)
 
         val dialog = MaterialDialog.Builder(activity)
-                .title(R.string.edit_bookmark)
-                .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
-                .positiveColor(fabSkin)
-                .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
-                .negativeColor(fabSkin)
-                .negativeText(android.R.string.cancel)
-                .customView(v, false)
-                .build()
+            .title(R.string.edit_bookmark)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .positiveColor(fabSkin)
+            .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
+            .negativeColor(fabSkin)
+            .negativeText(android.R.string.cancel)
+            .customView(v, false)
+            .build()
         dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-                FileUtils.isPathAccessible(editText2.text.toString(), activity.prefs)
+            FileUtils.isPathAccessible(editText2.text.toString(), activity.prefs)
         disableButtonIfTitleEmpty(editText1, dialog)
         disableButtonIfNotPath(editText2, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener {
-                    val oldName = p.title.toString()
-                    val oldPath = p.summary.toString()
-                    dataUtils.removeBook(position[p]!!)
-                    position.remove(p)
-                    bookmarksList!!.removePreference(p)
-                    p.title = editText1.text
-                    p.summary = editText2.text
-                    position[p] = position.size
-                    bookmarksList!!.addPreference(p)
-                    val values = arrayOf(editText1.text.toString(), editText2.text.toString())
-                    dataUtils.addBook(values)
-                    AppConfig.getInstance()
-                            .runInBackground {
-                                utilsHandler.renameBookmark(
-                                        oldName,
-                                        oldPath,
-                                        editText1.text.toString(),
-                                        editText2.text.toString()
-                                )
-                            }
-                    dialog.dismiss()
-                }
+            .setOnClickListener {
+                val oldName = p.title.toString()
+                val oldPath = p.summary.toString()
+                dataUtils.removeBook(position[p]!!)
+                position.remove(p)
+                bookmarksList!!.removePreference(p)
+                p.title = editText1.text
+                p.summary = editText2.text
+                position[p] = position.size
+                bookmarksList!!.addPreference(p)
+                val values = arrayOf(editText1.text.toString(), editText2.text.toString())
+                dataUtils.addBook(values)
+                AppConfig.getInstance()
+                    .runInBackground {
+                        utilsHandler.renameBookmark(
+                            oldName,
+                            oldPath,
+                            editText1.text.toString(),
+                            editText2.text.toString()
+                        )
+                    }
+                dialog.dismiss()
+            }
         dialog.show()
     }
 
@@ -194,46 +195,46 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         val utilsHandler = AppConfig.getInstance().utilsHandler
 
         val dialog = MaterialDialog.Builder(activity)
-                .title(R.string.question_delete_bookmark)
-                .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
-                .positiveColor(fabSkin)
-                .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
-                .negativeColor(fabSkin)
-                .negativeText(android.R.string.cancel)
-                .build()
+            .title(R.string.question_delete_bookmark)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .positiveColor(fabSkin)
+            .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
+            .negativeColor(fabSkin)
+            .negativeText(android.R.string.cancel)
+            .build()
         dialog.getActionButton(DialogAction.POSITIVE)
-                .setOnClickListener {
-                    dataUtils.removeBook(position[p]!!)
-                    utilsHandler.removeFromDatabase(
-                            OperationData(
-                                    UtilsHandler.Operation.BOOKMARKS,
-                                    p.title.toString(),
-                                    p.summary.toString()
-                            )
+            .setOnClickListener {
+                dataUtils.removeBook(position[p]!!)
+                utilsHandler.removeFromDatabase(
+                    OperationData(
+                        UtilsHandler.Operation.BOOKMARKS,
+                        p.title.toString(),
+                        p.summary.toString()
                     )
-                    bookmarksList!!.removePreference(p)
-                    position.remove(p)
-                    dialog.dismiss()
-                }
+                )
+                bookmarksList!!.removePreference(p)
+                position.remove(p)
+                dialog.dismiss()
+            }
         dialog.show()
     }
 
     private fun disableButtonIfNotPath(path: EditText, dialog: MaterialDialog) {
         path.addTextChangedListener(
-                object : SimpleTextWatcher() {
-                    override fun afterTextChanged(s: Editable) {
-                        dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-                                FileUtils.isPathAccessible(s.toString(), activity.prefs)
-                    }
-                })
+            object : SimpleTextWatcher() {
+                override fun afterTextChanged(s: Editable) {
+                    dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
+                        FileUtils.isPathAccessible(s.toString(), activity.prefs)
+                }
+            })
     }
 
     private fun disableButtonIfTitleEmpty(title: EditText, dialog: MaterialDialog) {
         title.addTextChangedListener(
-                object : SimpleTextWatcher() {
-                    override fun afterTextChanged(s: Editable) {
-                        dialog.getActionButton(DialogAction.POSITIVE).isEnabled = title.length() > 0
-                    }
-                })
+            object : SimpleTextWatcher() {
+                override fun afterTextChanged(s: Editable) {
+                    dialog.getActionButton(DialogAction.POSITIVE).isEnabled = title.length() > 0
+                }
+            })
     }
 }

@@ -36,10 +36,10 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
 import com.amaze.filemanager.ui.fragments.preference_fragments.BasePrefsFragment
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.ui.fragments.preference_fragments.PrefsFragment
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.PreferenceUtils
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.Utils
 import com.readystatesoftware.systembartint.SystemBarTintManager
 import java.io.File
@@ -62,12 +62,16 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
-        supportActionBar?.displayOptions = ActionBar.DISPLAY_HOME_AS_UP or ActionBar.DISPLAY_SHOW_TITLE
+        supportActionBar?.displayOptions =
+            ActionBar.DISPLAY_HOME_AS_UP or ActionBar.DISPLAY_SHOW_TITLE
         initStatusBarResources(layout)
 
         if (savedInstanceState == null) {
             val fragment = PrefsFragment()
-            supportFragmentManager.beginTransaction().replace(R.id.preferences_container, fragment).commit()
+            supportFragmentManager
+                .beginTransaction()
+                .replace(R.id.preferences_container, fragment)
+                .commit()
         }
     }
 
@@ -106,10 +110,10 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
     fun pushFragment(fragment: BasePrefsFragment) {
         supportFragmentManager.commit {
             setCustomAnimations(
-                    R.anim.slide_in,
-                    android.R.anim.fade_out,
-                    android.R.anim.fade_in,
-                    R.anim.slide_out,
+                R.anim.slide_in,
+                android.R.anim.fade_out,
+                android.R.anim.fade_in,
+                R.anim.slide_out,
             )
 
             replace(R.id.preferences_container, fragment)
@@ -119,12 +123,14 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
     }
 
     fun invalidateNavBar() {
-        val primaryColor = ColorPreferenceHelper.getPrimary(currentColorPreference, MainActivity.currentTab)
+        val primaryColor = ColorPreferenceHelper
+            .getPrimary(currentColorPreference, MainActivity.currentTab)
         if (Build.VERSION.SDK_INT == 20 || Build.VERSION.SDK_INT == 19) {
             val tintManager = SystemBarTintManager(this)
             tintManager.isStatusBarTintEnabled = true
             tintManager.setStatusBarTintColor(primaryColor)
-            val p = findViewById<View>(R.id.activity_preferences).layoutParams as ViewGroup.MarginLayoutParams
+            val p = findViewById<View>(R.id.activity_preferences).layoutParams
+                as ViewGroup.MarginLayoutParams
             val config = tintManager.config
             p.setMargins(0, config.statusBarHeight, 0, 0)
         } else if (Build.VERSION.SDK_INT >= 21) {

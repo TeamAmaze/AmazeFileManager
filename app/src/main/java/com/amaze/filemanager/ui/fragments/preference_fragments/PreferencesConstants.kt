@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
 object PreferencesConstants {
@@ -85,7 +86,7 @@ object PreferencesConstants {
     const val PREFERENCE_CRYPT_WARNING_REMEMBER_DEFAULT = false
 
     // others
-    const val PREFERENCE_CURRENT_TAB = "";
+    const val PREFERENCE_CURRENT_TAB = ""
     const val PREFERENCE_BOOKMARKS_ADDED = "books_added"
     const val PREFERENCE_DIRECTORY_SORT_MODE = "dirontop"
     const val PREFERENCE_DRAWER_HEADER_PATH = "drawer_header_path"

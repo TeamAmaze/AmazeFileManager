@@ -48,8 +48,8 @@ class ColorPrefsFragment : BasePrefsFragment() {
         }
 
         val colorPickerPref = activity.prefs.getInt(
-                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-                ColorPickerDialog.NO_DATA
+            PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+            ColorPickerDialog.NO_DATA
         )
 
         val skin = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN)!!
@@ -72,7 +72,7 @@ class ColorPrefsFragment : BasePrefsFragment() {
 
     override fun onDisplayPreferenceDialog(preference: Preference) {
         if (preference.key == PreferencesConstants.PRESELECTED_CONFIGS) {
-            showPreselectedColorsConfigDialog();
+            showPreselectedColorsConfigDialog()
         } else {
             super.onDisplayPreferenceDialog(preference)
         }
@@ -80,14 +80,14 @@ class ColorPrefsFragment : BasePrefsFragment() {
 
     private fun showPreselectedColorsConfigDialog() {
         val dialog = ColorPickerDialog.newInstance(
-                PreferencesConstants.PRESELECTED_CONFIGS,
-                activity.currentColorPreference,
-                activity.appTheme
+            PreferencesConstants.PRESELECTED_CONFIGS,
+            activity.currentColorPreference,
+            activity.appTheme
         )
         dialog.setListener {
             val colorPickerPref = activity.prefs.getInt(
-                    PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-                    ColorPickerDialog.NO_DATA
+                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+                ColorPickerDialog.NO_DATA
             )
             if (colorPickerPref == ColorPickerDialog.RANDOM_INDEX) {
                 AppConfig.toast(getActivity(), R.string.set_random)
@@ -111,9 +111,9 @@ class ColorPrefsFragment : BasePrefsFragment() {
         }
 
         val adapter = ColorAdapter(
-                activity,
-                ColorPreference.availableColors,
-                currentColor
+            activity,
+            ColorPreference.availableColors,
+            currentColor
         ) { selectedColor: Int ->
             @ColorInt var primaryFirst = currentColorPreference.primaryFirstTab
             @ColorInt var primarySecond = currentColorPreference.primarySecondTab
@@ -126,11 +126,11 @@ class ColorPrefsFragment : BasePrefsFragment() {
                 PreferencesConstants.PREFERENCE_ICON_SKIN -> iconSkin = selectedColor
             }
             activity
-                    .colorPreference
-                    .saveColorPreferences(
-                            activity.prefs,
-                            UserColorPreferences(primaryFirst, primarySecond, accent, iconSkin)
-                    )
+                .colorPreference
+                .saveColorPreferences(
+                    activity.prefs,
+                    UserColorPreferences(primaryFirst, primarySecond, accent, iconSkin)
+                )
             dialog?.dismiss()
             activity.recreate()
         }
@@ -143,19 +143,19 @@ class ColorPrefsFragment : BasePrefsFragment() {
         val fabSkin = activity.accent
 
         dialog = MaterialDialog.Builder(activity)
-                .positiveText(com.amaze.filemanager.R.string.cancel)
-                .title(com.amaze.filemanager.R.string.choose_color)
-                .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
-                .autoDismiss(true)
-                .positiveColor(fabSkin)
-                .neutralColor(fabSkin)
-                .neutralText(com.amaze.filemanager.R.string.default_string)
-                .onNeutral { _, _ ->
-                    activity
-                            .colorPreference
-                            .saveColorPreferences(activity.prefs, currentColorPreference)
-                    activity.recreate()
-                }.customView(v, false)
-                .show()
+            .positiveText(com.amaze.filemanager.R.string.cancel)
+            .title(com.amaze.filemanager.R.string.choose_color)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .autoDismiss(true)
+            .positiveColor(fabSkin)
+            .neutralColor(fabSkin)
+            .neutralText(com.amaze.filemanager.R.string.default_string)
+            .onNeutral { _, _ ->
+                activity
+                    .colorPreference
+                    .saveColorPreferences(activity.prefs, currentColorPreference)
+                activity.recreate()
+            }.customView(v, false)
+            .show()
     }
 }

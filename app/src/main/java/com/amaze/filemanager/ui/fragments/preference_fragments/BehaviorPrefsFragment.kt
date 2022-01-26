@@ -35,24 +35,28 @@ class BehaviorPrefsFragment : BasePrefsFragment(), FolderChooserDialog.FolderCal
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.behavior_prefs, rootKey)
 
-        findPreference<Preference>("clear_open_file")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            clearPreferences(activity.prefs)
-            AppConfig.toast(getActivity(), activity.getString(R.string.done))
-            true
-        }
+        findPreference<Preference>("clear_open_file")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                clearPreferences(activity.prefs)
+                AppConfig.toast(getActivity(), activity.getString(R.string.done))
+                true
+            }
 
-        findPreference<Preference>(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)!!
+            .onPreferenceClickListener = Preference.OnPreferenceClickListener {
             FolderChooserDialog.Builder(activity)
-                    .tag(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)
-                    .goUpLabel(getString(R.string.folder_go_up_one_level))
-                    .chooseButton(R.string.choose_folder)
-                    .cancelButton(R.string.cancel)
-                    .initialPath(
-                            activity.prefs.getString(
-                                    PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
-                                    Environment.getExternalStorageDirectory().path))
-                    .build()
-                    .show(activity)
+                .tag(PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH)
+                .goUpLabel(getString(R.string.folder_go_up_one_level))
+                .chooseButton(R.string.choose_folder)
+                .cancelButton(R.string.cancel)
+                .initialPath(
+                    activity.prefs.getString(
+                        PreferencesConstants.PREFERENCE_ZIP_EXTRACT_PATH,
+                        Environment.getExternalStorageDirectory().path
+                    )
+                )
+                .build()
+                .show(activity)
             true
         }
     }
