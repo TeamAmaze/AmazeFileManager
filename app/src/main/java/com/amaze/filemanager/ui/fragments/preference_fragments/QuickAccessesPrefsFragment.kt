@@ -20,52 +20,41 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
 import androidx.preference.SwitchPreference
 import com.amaze.filemanager.R
 import com.amaze.filemanager.utils.TinyDB
-import java.util.*
 
-/** @author Emmanuel on 17/4/2017, at 23:17.
- */
-class QuickAccessPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener {
+class QuickAccessesPrefsFragment : BasePrefsFragment() {
+    override val title = R.string.show_quick_access_pref
 
     companion object {
         const val KEY = "quick access array"
         val KEYS = arrayOf(
-            "fastaccess", "recent", "image", "video", "audio", "documents", "apks"
+                "fastaccess", "recent", "image", "video", "audio", "documents", "apks"
         )
         val DEFAULT = arrayOf(true, true, true, true, true, true, true)
-        private var prefPos: Map<String, Int> = HashMap()
 
-        init {
-            prefPos = KEYS.withIndex().associate {
-                Pair(it.value, it.index)
-            }
+        val prefPos: Map<String, Int> = KEYS.withIndex().associate {
+            Pair(it.value, it.index)
         }
     }
-
-    private var preferences: SharedPreferences? = null
-    private var currentValue: Array<Boolean>? = null
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.quickaccess_prefs, rootKey)
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.fastaccess_prefs)
-        preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        currentValue = TinyDB.getBooleanArray(preferences!!, KEY, DEFAULT)
-        for (i in 0 until preferenceScreen.preferenceCount) {
-            preferenceScreen.getPreference(i).onPreferenceClickListener = this
+        val currentValue = TinyDB.getBooleanArray(activity.prefs, KEY, DEFAULT)!!
+
+        val onChange = Preference.OnPreferenceClickListener {
+            currentValue[prefPos[it.key]!!] = (it as SwitchPreference).isChecked
+            TinyDB.putBooleanArray(activity.prefs, KEY, currentValue!!)
+
+            true
         }
-    }
 
-    override fun onPreferenceClick(preference: Preference): Boolean {
-        currentValue!![prefPos[preference.key]!!] = (preference as SwitchPreference).isChecked
-        TinyDB.putBooleanArray(preferences!!, KEY, currentValue!!)
-        return true
+        for (k in KEYS) {
+            findPreference<Preference>(k)!!.onPreferenceClickListener = onChange
+        }
     }
 }

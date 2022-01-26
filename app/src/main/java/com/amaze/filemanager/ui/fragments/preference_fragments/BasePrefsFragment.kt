@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,16 +20,28 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
-import com.amaze.filemanager.R
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
+import com.amaze.filemanager.ui.activities.PreferencesActivity
+import java.io.File
 
-/** @author Emmanuel on 8/5/2017, at 11:30.
- */
-class AdvancedSearchPref : PreferenceFragmentCompat() {
+abstract class BasePrefsFragment : PreferenceFragmentCompat(), FolderChooserDialog.FolderCallback {
+    protected val activity: PreferencesActivity
+        get() = requireActivity() as PreferencesActivity
 
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.advancedsearch_prefs)
+    abstract val title: Int
+
+    override fun onResume() {
+        super.onResume()
+
+        activity.supportActionBar?.title = getString(title)
+    }
+
+    override fun onFolderSelection(dialog: FolderChooserDialog, folder: File) {
+        dialog.dismiss()
+    }
+
+    override fun onFolderChooserDismissed(dialog: FolderChooserDialog) {
+        dialog.dismiss()
     }
 }

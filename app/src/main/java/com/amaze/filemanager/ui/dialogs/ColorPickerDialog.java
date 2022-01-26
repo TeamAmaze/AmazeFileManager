@@ -284,6 +284,18 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
     }
   }
 
+  public static int getTitle(int i) {
+    if (i == RANDOM_INDEX) {
+      return R.string.random;
+    } else if (i == CUSTOM_INDEX) {
+      return R.string.custom;
+    } else if (i >= 0 && i < COLORS.length) {
+      return COLORS[i].first;
+    } else {
+      return COLORS[0].first;
+    }
+  }
+
   private int getColor(int i, int pos) {
     return Utils.getColor(getContext(), COLORS[i].second[pos]);
   }

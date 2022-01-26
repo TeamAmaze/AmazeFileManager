@@ -32,9 +32,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -45,7 +43,6 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.ColorInt;
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
@@ -83,27 +80,6 @@ public class ThemedActivity extends PreferenceActivity {
     }
 
     setTheme();
-  }
-
-  @Override
-  public void onConfigurationChanged(@NonNull Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-
-    if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
-      getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
-      restartPC(this);
-    }
-  }
-
-  public static void restartPC(final Activity activity) {
-    if (activity == null) return;
-
-    final int enter_anim = android.R.anim.fade_in;
-    final int exit_anim = android.R.anim.fade_out;
-    activity.overridePendingTransition(enter_anim, exit_anim);
-    activity.finish();
-    activity.overridePendingTransition(enter_anim, exit_anim);
-    activity.startActivity(activity.getIntent());
   }
 
   /**

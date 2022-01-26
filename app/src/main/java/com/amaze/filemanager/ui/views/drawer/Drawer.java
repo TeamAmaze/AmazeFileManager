@@ -49,7 +49,7 @@ import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.fragments.preference_fragments.QuickAccessPref;
+import com.amaze.filemanager.ui.fragments.preference_fragments.QuickAccessesPrefsFragment;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.BookSorter;
@@ -420,7 +420,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     Boolean[] quickAccessPref =
         TinyDB.getBooleanArray(
-            mainActivity.getPrefs(), QuickAccessPref.KEY, QuickAccessPref.Companion.getDEFAULT());
+            mainActivity.getPrefs(), QuickAccessesPrefsFragment.KEY, QuickAccessesPrefsFragment.Companion.getDEFAULT());
 
     if (mainActivity.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES)) {
       if (quickAccessPref[0]) {
