@@ -32,7 +32,7 @@ class QuickAccessesPrefsFragment : BasePrefsFragment() {
     companion object {
         const val KEY = "quick access array"
         val KEYS = arrayOf(
-                "fastaccess", "recent", "image", "video", "audio", "documents", "apks"
+            "fastaccess", "recent", "image", "video", "audio", "documents", "apks"
         )
         val DEFAULT = arrayOf(true, true, true, true, true, true, true)
 

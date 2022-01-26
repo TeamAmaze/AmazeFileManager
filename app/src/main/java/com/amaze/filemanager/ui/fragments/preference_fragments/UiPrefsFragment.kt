@@ -33,15 +33,17 @@ class UiPrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.ui_prefs, rootKey)
 
-        findPreference<Preference>("sidebar_bookmarks")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            activity.pushFragment(BookmarksPrefsFragment())
-            true
-        }
+        findPreference<Preference>("sidebar_bookmarks")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(BookmarksPrefsFragment())
+                true
+            }
 
-        findPreference<Preference>("sidebar_quick_access")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            activity.pushFragment(QuickAccessesPrefsFragment())
-            true
-        }
+        findPreference<Preference>("sidebar_quick_access")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(QuickAccessesPrefsFragment())
+                true
+            }
 
         val dragToMoveArray = resources.getStringArray(R.array.dragAndDropPreference)
         dragAndDropPref = findPreference(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE)
@@ -49,30 +51,38 @@ class UiPrefsFragment : BasePrefsFragment() {
         dragAndDropPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val dragDialogBuilder = MaterialDialog.Builder(activity)
             dragDialogBuilder.theme(
-                    activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext()))
+                activity.utilsProvider.appTheme.getMaterialDialogTheme(requireContext())
+            )
             dragDialogBuilder.title(R.string.drag_and_drop_preference)
             val currentDragPreference: Int = activity.prefs.getInt(
-                    PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
-                    PreferencesConstants.PREFERENCE_DRAG_DEFAULT)
+                PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+                PreferencesConstants.PREFERENCE_DRAG_DEFAULT
+            )
             dragDialogBuilder
-                    .items(*dragToMoveArray)
-                    .itemsCallbackSingleChoice(currentDragPreference)
-                    { dialog, _, which, _ ->
-                        val editor = activity.prefs.edit()
-                        editor.putInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which)
-                        editor.putString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null)
-                        editor.apply()
-                        dialog.dismiss()
-                        updateDragAndDropPreferenceSummary()
-                        true
-                    }
+                .items(*dragToMoveArray)
+                .itemsCallbackSingleChoice(currentDragPreference) { dialog, _, which, _ ->
+                    val editor = activity.prefs.edit()
+                    editor.putInt(
+                        PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, which
+                    )
+                    editor.putString(
+                        PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, null
+                    )
+                    editor.apply()
+                    dialog.dismiss()
+                    updateDragAndDropPreferenceSummary()
+                    true
+                }
             dragDialogBuilder.build().show()
             true
         }
     }
 
     private fun updateDragAndDropPreferenceSummary() {
-        val value = activity.prefs.getInt(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE, PreferencesConstants.PREFERENCE_DRAG_DEFAULT)
+        val value = activity.prefs.getInt(
+            PreferencesConstants.PREFERENCE_DRAG_AND_DROP_PREFERENCE,
+            PreferencesConstants.PREFERENCE_DRAG_DEFAULT
+        )
         val dragToMoveArray = resources.getStringArray(R.array.dragAndDropPreference)
         dragAndDropPref?.summary = dragToMoveArray[value]
     }

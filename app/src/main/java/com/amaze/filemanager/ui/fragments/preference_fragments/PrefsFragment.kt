@@ -35,46 +35,57 @@ class PrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        findPreference<Preference>("appearance")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            activity.pushFragment(AppearancePrefsFragment())
-            true
-        }
+        findPreference<Preference>("appearance")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(AppearancePrefsFragment())
+                true
+            }
 
-        findPreference<Preference>("ui")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            activity.pushFragment(UiPrefsFragment())
-            true
-        }
+        findPreference<Preference>("ui")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(UiPrefsFragment())
+                true
+            }
 
-        findPreference<Preference>("behavior")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            activity.pushFragment(BehaviorPrefsFragment())
-            true
-        }
+        findPreference<Preference>("behavior")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(BehaviorPrefsFragment())
+                true
+            }
 
-        findPreference<Preference>("security")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            activity.pushFragment(SecurityPrefsFragment())
-            true
-        }
+        findPreference<Preference>("security")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                activity.pushFragment(SecurityPrefsFragment())
+                true
+            }
 
-        findPreference<Preference>("about")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            startActivity(Intent(activity, AboutActivity::class.java))
-            false
-        }
+        findPreference<Preference>("about")!!.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                startActivity(Intent(activity, AboutActivity::class.java))
+                false
+            }
 
-        findPreference<Preference>("feedback")!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>("feedback")!!
+            .onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val emailIntent = Utils.buildEmailIntent(null, Utils.EMAIL_SUPPORT)
 
-            val packageManager = activity.packageManager
-            val activities: List<*> = packageManager.queryIntentActivities(emailIntent, PackageManager.MATCH_DEFAULT_ONLY)
-            val isIntentSafe = activities.isNotEmpty()
+            val activities = activity.packageManager.queryIntentActivities(
+                emailIntent, PackageManager.MATCH_DEFAULT_ONLY
+            )
 
-            if (isIntentSafe) {
-                startActivity(Intent.createChooser(emailIntent, resources.getString(R.string.feedback)))
+            if (activities.isNotEmpty()) {
+                startActivity(
+                    Intent.createChooser(
+                        emailIntent, resources.getString(R.string.feedback)
+                    )
+                )
             } else {
                 Toast.makeText(
-                        getActivity(),
-                        resources.getString(R.string.send_email_to) + " " + Utils.EMAIL_SUPPORT,
-                        Toast.LENGTH_LONG)
-                        .show()
+                    getActivity(),
+                    resources.getString(R.string.send_email_to) + " " + Utils.EMAIL_SUPPORT,
+                    Toast.LENGTH_LONG
+                )
+                    .show()
             }
 
             false

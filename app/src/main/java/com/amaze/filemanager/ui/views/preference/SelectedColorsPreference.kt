@@ -30,8 +30,8 @@ import androidx.preference.DialogPreference
 import androidx.preference.PreferenceViewHolder
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog
-import com.amaze.filemanager.ui.views.CircularColorsView
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.views.CircularColorsView
 
 /**
  * This is the external notification that shows some text and a CircularColorsView.
@@ -66,8 +66,8 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
 
     override fun getSummary(): CharSequence {
         val colorPickerPref = sharedPreferences.getInt(
-                PreferencesConstants.PREFERENCE_COLOR_CONFIG,
-                ColorPickerDialog.NO_DATA
+            PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+            ColorPickerDialog.NO_DATA
         )
         return context.getString(ColorPickerDialog.getTitle(colorPickerPref))
     }
