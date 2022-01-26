@@ -30,6 +30,7 @@ import android.view.ViewGroup
 import android.view.WindowManager
 import androidx.appcompat.app.ActionBar
 import androidx.appcompat.widget.Toolbar
+import androidx.fragment.app.FragmentTransaction
 import androidx.fragment.app.commit
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
@@ -107,12 +108,7 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
 
     fun pushFragment(fragment: BasePrefsFragment) {
         supportFragmentManager.commit {
-            setCustomAnimations(
-                R.anim.slide_in,
-                android.R.anim.fade_out,
-                android.R.anim.fade_in,
-                R.anim.slide_out,
-            )
+            setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
 
             replace(R.id.preferences_container, fragment)
             supportActionBar?.title = getString(fragment.title)
