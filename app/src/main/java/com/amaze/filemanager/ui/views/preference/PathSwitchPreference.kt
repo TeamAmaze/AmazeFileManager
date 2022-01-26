@@ -33,32 +33,21 @@ class PathSwitchPreference(context: Context?) : Preference(context) {
     var lastItemClicked = -1
         private set
 
+    var onEdit: (PathSwitchPreference) -> Unit = {}
+    var onDelete: (PathSwitchPreference) -> Unit = {}
+
     init {
         widgetLayoutResource = R.layout.namepathswitch_preference
     }
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
-        holder?.itemView.let { view ->
-            setListener(view, R.id.edit, EDIT)
-            setListener(view, R.id.delete, DELETE)
-            view?.setOnClickListener(null)
+        holder?.itemView?.let { view ->
+            view.findViewById<View>(R.id.edit).setOnClickListener { onEdit(this) }
+            view.findViewById<View>(R.id.delete).setOnClickListener { onDelete(this) }
+            view.setOnClickListener(null)
         }
 
         // Keep this before things that need changing what's on screen
         super.onBindViewHolder(holder)
-    }
-
-    private fun setListener(v: View?, @IdRes id: Int, elem: Int): View.OnClickListener {
-        val l = View.OnClickListener {
-            lastItemClicked = elem
-            onPreferenceClickListener.onPreferenceClick(this)
-        }
-        v?.findViewById<View>(id)?.setOnClickListener(l)
-        return l
-    }
-
-    companion object {
-        const val EDIT = 0
-        const val DELETE = 1
     }
 }

@@ -57,9 +57,9 @@ public class PreferenceActivity extends BasicActivity {
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-
     sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+
+    super.onCreate(savedInstanceState);
   }
 
   public SharedPreferences getPrefs() {

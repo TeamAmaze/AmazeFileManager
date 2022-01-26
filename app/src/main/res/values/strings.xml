@@ -740,6 +740,13 @@ You only need to do this once, until the next time you select a new location for
         \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
         \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
     <string name="user_apps">User apps</string>
+    <string name="appearance">Appearance</string>
+    <string name="behavior">Behavior</string>
+    <string name="appearance_summary">Customize the theme, colors and appearance of the file manager</string>
+    <string name="ui_summary">Control what information to show, customize the sidebar, and toggle UI preferences</string>
+    <string name="behavior_summary">Modify behaviors such as advanced search and whether to open files as a new task</string>
+    <string name="security_summary">Set up password and encryption</string>
+
     <string name="quick_desc">Files recently accessed through Amaze</string>
     <string name="recent_desc">Recently created or modified files</string>
 </resources>

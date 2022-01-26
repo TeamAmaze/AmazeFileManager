@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        app:key="theme"
+        app:title="@string/theme" />
+
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="true"
+        app:key="circularimages"
+        app:summary="@string/circular_images"
+        app:title="@string/circular_icons" />
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="true"
+        app:key="intelliHideToolbar"
+        app:summary="@string/intellihide_toolbar_summary"
+        app:title="@string/intellihide_toolbar_title" />
+    <Preference
+        app:key="columns"
+        app:title="@string/gridcolumnno" />
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="true"
+        app:key="showDividers"
+        app:title="@string/show_dividers" />
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="true"
+        app:key="showHeaders"
+        app:title="@string/showHeaders" />
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="true"
+        app:key="enableMarqueeFilename"
+        app:title="@string/enable_marquee_filename" />
+    <PreferenceCategory android:title="@string/color_title">
+        <Preference
+            app:key="selectcolorconfig"
+            app:summary="@string/color_summary"
+            app:title="@string/select_color_config" />
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            app:defaultValue="true"
+            app:key="coloriseIcons"
+            app:summary="@string/colorize_summary"
+            app:title="@string/colorize" />
+        <com.amaze.filemanager.ui.views.preference.CheckBox
+            app:defaultValue="false"
+            app:enabled="false"
+            app:key="colorednavigation"
+            app:summary="@string/colored_navigvation_sum"
+            app:title="@string/colored_navigation" />
+    </PreferenceCategory>
+</PreferenceScreen>
