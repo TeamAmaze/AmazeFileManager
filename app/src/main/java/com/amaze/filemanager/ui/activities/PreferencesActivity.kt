@@ -45,9 +45,7 @@ import com.readystatesoftware.systembartint.SystemBarTintManager
 import java.io.File
 
 class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback {
-    val layout: View
-        get() = _layout!!
-    private var _layout: View? = null
+    lateinit var layout: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var savedInstanceState = savedInstanceState
@@ -58,7 +56,7 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_preferences)
 
-        _layout = findViewById(R.id.activity_preferences)
+        layout = findViewById(R.id.activity_preferences)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
@@ -81,11 +79,11 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
             return
         }
 
-        val x = Intent(this, MainActivity::class.java)
-        x.action = Intent.ACTION_MAIN
-        x.action = Intent.CATEGORY_LAUNCHER
+        val intent = Intent(this, MainActivity::class.java)
+        intent.action = Intent.ACTION_MAIN
+        intent.action = Intent.CATEGORY_LAUNCHER
         finish()
-        startActivity(x)
+        startActivity(intent)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
@@ -129,10 +127,10 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
             val tintManager = SystemBarTintManager(this)
             tintManager.isStatusBarTintEnabled = true
             tintManager.setStatusBarTintColor(primaryColor)
-            val p = findViewById<View>(R.id.activity_preferences).layoutParams
+            val layoutParams = findViewById<View>(R.id.activity_preferences).layoutParams
                 as ViewGroup.MarginLayoutParams
             val config = tintManager.config
-            p.setMargins(0, config.statusBarHeight, 0, 0)
+            layoutParams.setMargins(0, config.statusBarHeight, 0, 0)
         } else if (Build.VERSION.SDK_INT >= 21) {
             val colouredNavigation = getBoolean(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)

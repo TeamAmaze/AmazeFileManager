@@ -35,38 +35,38 @@ class PrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.preferences, rootKey)
 
-        findPreference<Preference>("appearance")!!.onPreferenceClickListener =
+        findPreference<Preference>("appearance")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 activity.pushFragment(AppearancePrefsFragment())
                 true
             }
 
-        findPreference<Preference>("ui")!!.onPreferenceClickListener =
+        findPreference<Preference>("ui")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 activity.pushFragment(UiPrefsFragment())
                 true
             }
 
-        findPreference<Preference>("behavior")!!.onPreferenceClickListener =
+        findPreference<Preference>("behavior")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 activity.pushFragment(BehaviorPrefsFragment())
                 true
             }
 
-        findPreference<Preference>("security")!!.onPreferenceClickListener =
+        findPreference<Preference>("security")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 activity.pushFragment(SecurityPrefsFragment())
                 true
             }
 
-        findPreference<Preference>("about")!!.onPreferenceClickListener =
+        findPreference<Preference>("about")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 startActivity(Intent(activity, AboutActivity::class.java))
                 false
             }
 
-        findPreference<Preference>("feedback")!!
-            .onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        findPreference<Preference>("feedback")
+            ?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val emailIntent = Utils.buildEmailIntent(null, Utils.EMAIL_SUPPORT)
 
             val activities = activity.packageManager.queryIntentActivities(
