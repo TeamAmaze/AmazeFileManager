@@ -33,7 +33,6 @@ import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.files.CryptUtil
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.views.preference.CheckBox
 import java.io.IOException
 import java.security.GeneralSecurityException
@@ -46,10 +45,10 @@ class SecurityPrefsFragment : BasePrefsFragment() {
 
         val masterPasswordPreference = findPreference<Preference>(
             PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD
-        )!!
+        )
         val checkBoxFingerprint = findPreference<CheckBox>(
             PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT
-        )!!
+        )
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR2 ||
             activity.prefs.getBoolean(
@@ -58,7 +57,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                 )
         ) {
             // encryption feature not available
-            masterPasswordPreference.isEnabled = false
+            masterPasswordPreference?.isEnabled = false
         }
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -71,19 +70,19 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                 fingerprintManager = activity.getSystemService(Context.FINGERPRINT_SERVICE)
                     as FingerprintManager?
                 if (fingerprintManager != null && fingerprintManager.isHardwareDetected) {
-                    checkBoxFingerprint.isEnabled = true
+                    checkBoxFingerprint?.isEnabled = true
                 }
             }
 
             checkBoxFingerprint
-                .onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
+                ?.onPreferenceChangeListener = Preference.OnPreferenceChangeListener { _, _ ->
                 if (ActivityCompat.checkSelfPermission(
                         activity, Manifest.permission.USE_FINGERPRINT
                     )
                     != PackageManager.PERMISSION_GRANTED
                 ) {
                     Toast.makeText(
-                        getActivity(),
+                        activity,
                         resources.getString(R.string.crypt_fingerprint_no_permission),
                         Toast.LENGTH_LONG
                     )
@@ -94,7 +93,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                     !fingerprintManager.hasEnrolledFingerprints()
                 ) {
                     Toast.makeText(
-                        getActivity(),
+                        activity,
                         resources.getString(R.string.crypt_fingerprint_not_enrolled),
                         Toast.LENGTH_LONG
                     )
@@ -105,24 +104,24 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                     !keyguardManager.isKeyguardSecure
                 ) {
                     Toast.makeText(
-                        getActivity(),
+                        activity,
                         resources.getString(R.string.crypt_fingerprint_no_security),
                         Toast.LENGTH_LONG
                     )
                         .show()
                     false
                 } else {
-                    masterPasswordPreference.isEnabled = false
+                    masterPasswordPreference?.isEnabled = false
                     true
                 }
             }
         } else {
 
             // fingerprint manager class not defined in the framework
-            checkBoxFingerprint.isEnabled = false
+            checkBoxFingerprint?.isEnabled = false
         }
 
-        masterPasswordPreference.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        masterPasswordPreference?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val masterPasswordDialogBuilder = MaterialDialog.Builder(activity)
             masterPasswordDialogBuilder.title(
                 resources.getString(R.string.crypt_pref_master_password_title)
@@ -140,7 +139,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                 ) {
 
                     // password is set, try to decrypt
-                    CryptUtil.decryptPassword(getActivity(), preferencePassword)
+                    CryptUtil.decryptPassword(activity, preferencePassword)
                 } else {
                     // no password set in preferences, just leave the field empty
                     ""
@@ -161,8 +160,8 @@ class SecurityPrefsFragment : BasePrefsFragment() {
             )
             masterPasswordDialogBuilder.positiveText(resources.getString(R.string.ok))
             masterPasswordDialogBuilder.negativeText(resources.getString(R.string.cancel))
-            masterPasswordDialogBuilder.positiveColor((getActivity() as ThemedActivity?)!!.accent)
-            masterPasswordDialogBuilder.negativeColor((getActivity() as ThemedActivity?)!!.accent)
+            masterPasswordDialogBuilder.positiveColor(activity.accent)
+            masterPasswordDialogBuilder.negativeColor(activity.accent)
 
             masterPasswordDialogBuilder.onPositive { dialog, _ ->
                 try {
@@ -174,7 +173,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                         editor.putString(
                             PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
                             CryptUtil.encryptPassword(
-                                getActivity(), dialog.inputEditText!!.text.toString()
+                                activity, dialog.inputEditText!!.text.toString()
                             )
                         )
                         editor.apply()

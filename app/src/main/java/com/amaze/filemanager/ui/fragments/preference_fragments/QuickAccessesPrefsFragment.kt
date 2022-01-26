@@ -46,15 +46,17 @@ class QuickAccessesPrefsFragment : BasePrefsFragment() {
 
         val currentValue = TinyDB.getBooleanArray(activity.prefs, KEY, DEFAULT)!!
 
-        val onChange = Preference.OnPreferenceClickListener {
-            currentValue[prefPos[it.key]!!] = (it as SwitchPreference).isChecked
-            TinyDB.putBooleanArray(activity.prefs, KEY, currentValue!!)
+        val onChange = Preference.OnPreferenceClickListener { preference ->
+            prefPos[preference.key]?.let {
+                currentValue[it] = (preference as SwitchPreference).isChecked
+                TinyDB.putBooleanArray(activity.prefs, KEY, currentValue)
+            }
 
             true
         }
 
-        for (k in KEYS) {
-            findPreference<Preference>(k)!!.onPreferenceClickListener = onChange
+        for (key in KEYS) {
+            findPreference<Preference>(key)?.onPreferenceClickListener = onChange
         }
     }
 }

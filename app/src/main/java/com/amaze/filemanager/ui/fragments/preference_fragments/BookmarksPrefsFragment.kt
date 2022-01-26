@@ -60,7 +60,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.bookmarks_prefs, rootKey)
 
-        findPreference<Preference>("add_bookmarks")!!.onPreferenceClickListener =
+        findPreference<Preference>("add_bookmarks")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 showCreateDialog()
 
@@ -73,18 +73,16 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
 
     private fun reload() {
         for (p in position) {
-            bookmarksList!!.removePreference(p.key)
+            bookmarksList?.removePreference(p.key)
         }
 
         position.clear()
         for (i in dataUtils.books.indices) {
-            val p = PathSwitchPreference(activity)
+            val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
             p.title = dataUtils.books[i][0]
             p.summary = dataUtils.books[i][1]
-            p.onDelete = itemOnDeleteListener
-            p.onEdit = itemOnEditListener
             position[p] = i
-            bookmarksList!!.addPreference(p)
+            bookmarksList?.addPreference(p)
         }
     }
 
@@ -113,11 +111,9 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
         disableButtonIfNotPath(txtShortcutPath, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
-                val p = PathSwitchPreference(getActivity())
+                val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
                 p.title = txtShortcutName.text
                 p.summary = txtShortcutPath.text
-                p.onDelete = itemOnDeleteListener
-                p.onEdit = itemOnEditListener
                 position[p] = dataUtils.books.size
                 bookmarksList!!.addPreference(p)
                 val values = arrayOf(
@@ -169,11 +165,11 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                 val oldPath = p.summary.toString()
                 dataUtils.removeBook(position[p]!!)
                 position.remove(p)
-                bookmarksList!!.removePreference(p)
+                bookmarksList?.removePreference(p)
                 p.title = editText1.text
                 p.summary = editText2.text
                 position[p] = position.size
-                bookmarksList!!.addPreference(p)
+                bookmarksList?.addPreference(p)
                 val values = arrayOf(editText1.text.toString(), editText2.text.toString())
                 dataUtils.addBook(values)
                 AppConfig.getInstance()
@@ -212,7 +208,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                         p.summary.toString()
                     )
                 )
-                bookmarksList!!.removePreference(p)
+                bookmarksList?.removePreference(p)
                 position.remove(p)
                 dialog.dismiss()
             }

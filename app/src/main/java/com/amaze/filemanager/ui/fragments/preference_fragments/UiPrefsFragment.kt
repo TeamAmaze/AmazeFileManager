@@ -33,13 +33,13 @@ class UiPrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.ui_prefs, rootKey)
 
-        findPreference<Preference>("sidebar_bookmarks")!!.onPreferenceClickListener =
+        findPreference<Preference>("sidebar_bookmarks")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 activity.pushFragment(BookmarksPrefsFragment())
                 true
             }
 
-        findPreference<Preference>("sidebar_quick_access")!!.onPreferenceClickListener =
+        findPreference<Preference>("sidebar_quick_access")?.onPreferenceClickListener =
             Preference.OnPreferenceClickListener {
                 activity.pushFragment(QuickAccessesPrefsFragment())
                 true

@@ -79,12 +79,12 @@ class ColorPrefsFragment : BasePrefsFragment() {
     }
 
     private fun showPreselectedColorsConfigDialog() {
-        val dialog = ColorPickerDialog.newInstance(
+        val newDialog = ColorPickerDialog.newInstance(
             PreferencesConstants.PRESELECTED_CONFIGS,
             activity.currentColorPreference,
             activity.appTheme
         )
-        dialog.setListener {
+        newDialog.setListener {
             val colorPickerPref = activity.prefs.getInt(
                 PreferencesConstants.PREFERENCE_COLOR_CONFIG,
                 ColorPickerDialog.NO_DATA
@@ -95,8 +95,8 @@ class ColorPrefsFragment : BasePrefsFragment() {
 
             activity.recreate()
         }
-        dialog.setTargetFragment(this, 0)
-        dialog.show(parentFragmentManager, PreferencesConstants.PREFERENCE_SELECT_COLOR_CONFIG)
+        newDialog.setTargetFragment(this, 0)
+        newDialog.show(parentFragmentManager, PreferencesConstants.PREFERENCE_SELECT_COLOR_CONFIG)
     }
 
     private fun showColorChangeDialog(colorPrefKey: String) {

@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import android.os.Build
 import android.os.Bundle
 import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
@@ -64,17 +63,15 @@ class AppearancePrefsFragment : BasePrefsFragment() {
             true
         }
 
-        val navPref = findPreference<Preference>(
-            PreferencesConstants.PREFERENCE_COLORED_NAVIGATION
-        )!!
-        if (Build.VERSION.SDK_INT >= 21) {
-            navPref.isEnabled = true
-            navPref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-                activity.invalidateNavBar()
+        findPreference<Preference>(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
+            ?.let {
+                it.isEnabled = true
+                it.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+                    activity.invalidateNavBar()
 
-                true
+                    true
+                }
             }
-        }
 
         val colorPrefs = findPreference<Preference>(
             PreferencesConstants.PREFERENCE_SELECT_COLOR_CONFIG
@@ -88,7 +85,7 @@ class AppearancePrefsFragment : BasePrefsFragment() {
         val gridColumnItems = resources.getStringArray(R.array.columns)
         gridColumnPref = findPreference(PreferencesConstants.PREFERENCE_GRID_COLUMNS)
         updateGridColumnSummary()
-        gridColumnPref!!.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        gridColumnPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val builder = MaterialDialog.Builder(activity)
             builder.theme(activity.utilsProvider.appTheme.getMaterialDialogTheme(activity))
             builder.title(R.string.gridcolumnno)
