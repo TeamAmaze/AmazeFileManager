@@ -115,7 +115,7 @@ class BookmarksPrefsFragment : BasePrefsFragment() {
                 p.title = txtShortcutName.text
                 p.summary = txtShortcutPath.text
                 position[p] = dataUtils.books.size
-                bookmarksList!!.addPreference(p)
+                bookmarksList?.addPreference(p)
                 val values = arrayOf(
                     txtShortcutName.text.toString(),
                     txtShortcutPath.text.toString()

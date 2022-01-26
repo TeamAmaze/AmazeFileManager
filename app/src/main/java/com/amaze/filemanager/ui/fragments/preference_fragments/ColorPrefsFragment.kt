@@ -52,21 +52,21 @@ class ColorPrefsFragment : BasePrefsFragment() {
             ColorPickerDialog.NO_DATA
         )
 
-        val skin = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN)!!
-        val skinTwo = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN_TWO)!!
-        val accent = findPreference<Preference>(PreferencesConstants.PREFERENCE_ACCENT)!!
-        val icon = findPreference<Preference>(PreferencesConstants.PREFERENCE_ICON_SKIN)!!
+        val skin = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN)
+        val skinTwo = findPreference<Preference>(PreferencesConstants.PREFERENCE_SKIN_TWO)
+        val accent = findPreference<Preference>(PreferencesConstants.PREFERENCE_ACCENT)
+        val icon = findPreference<Preference>(PreferencesConstants.PREFERENCE_ICON_SKIN)
 
         if (colorPickerPref != ColorPickerDialog.CUSTOM_INDEX) {
-            skin.isEnabled = false
-            skinTwo.isEnabled = false
-            accent.isEnabled = false
-            icon.isEnabled = false
+            skin?.isEnabled = false
+            skinTwo?.isEnabled = false
+            accent?.isEnabled = false
+            icon?.isEnabled = false
         } else {
-            skin.onPreferenceClickListener = showColorChangeDialogListener
-            skinTwo.onPreferenceClickListener = showColorChangeDialogListener
-            accent.onPreferenceClickListener = showColorChangeDialogListener
-            icon.onPreferenceClickListener = showColorChangeDialogListener
+            skin?.onPreferenceClickListener = showColorChangeDialogListener
+            skinTwo?.onPreferenceClickListener = showColorChangeDialogListener
+            accent?.onPreferenceClickListener = showColorChangeDialogListener
+            icon?.onPreferenceClickListener = showColorChangeDialogListener
         }
     }
 
