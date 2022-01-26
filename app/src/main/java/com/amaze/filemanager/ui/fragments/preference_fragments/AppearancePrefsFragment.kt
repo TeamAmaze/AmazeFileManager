@@ -34,14 +34,14 @@ class AppearancePrefsFragment : BasePrefsFragment() {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.appearance_prefs, rootKey)
 
-        val themePref = findPreference<Preference>(PreferencesConstants.FRAGMENT_THEME)!!
+        val themePref = findPreference<Preference>(PreferencesConstants.FRAGMENT_THEME)
         val themes = resources.getStringArray(R.array.theme)
         val currentTheme = activity
             .prefs
             .getString(PreferencesConstants.FRAGMENT_THEME, "4")!!
             .toInt()
-        themePref.summary = themes[currentTheme]
-        themePref.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        themePref?.summary = themes[currentTheme]
+        themePref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             val builder = MaterialDialog.Builder(activity)
             builder.items(*themes)
                 .itemsCallbackSingleChoice(currentTheme) { dialog, _, which, _ ->
@@ -73,10 +73,9 @@ class AppearancePrefsFragment : BasePrefsFragment() {
                 }
             }
 
-        val colorPrefs = findPreference<Preference>(
+        findPreference<Preference>(
             PreferencesConstants.PREFERENCE_SELECT_COLOR_CONFIG
-        )!!
-        colorPrefs.onPreferenceClickListener = Preference.OnPreferenceClickListener {
+        )?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
             activity.pushFragment(ColorPrefsFragment())
 
             true
@@ -120,9 +119,9 @@ class AppearancePrefsFragment : BasePrefsFragment() {
             .getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1")
             ?.let {
                 if (it == "-1") {
-                    gridColumnPref!!.summary = gridColumnItems[0]
+                    gridColumnPref?.summary = gridColumnItems[0]
                 } else {
-                    gridColumnPref!!.summary = it
+                    gridColumnPref?.summary = it
                 }
             }
     }
