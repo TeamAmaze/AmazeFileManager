@@ -251,7 +251,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return retval != null && retval;
   }
 
-  @Nullable
+  @org.jetbrains.annotations.Nullable
   @Override
   public String[] list(AmazeFile f, @NonNull ContextProvider contextProvider) {
     List<String> fileNameList = SshClientUtils.execute(

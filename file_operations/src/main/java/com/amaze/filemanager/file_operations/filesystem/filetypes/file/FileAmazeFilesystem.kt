@@ -210,7 +210,7 @@ class FileAmazeFilesystem private constructor() : AmazeFilesystem() {
         return false
     }
 
-    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String?>? {
+    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String>? {
         return File(f.path).list()
     }
 

@@ -181,7 +181,7 @@ abstract class AmazeFilesystem {
      * strings naming the elements of the directory if successful; otherwise, return `null`
      * .
      */
-    abstract fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String?>?
+    abstract fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String>?
     abstract fun getInputStream(f: AmazeFile, contextProvider: ContextProvider): InputStream?
     abstract fun getOutputStream(
             f: AmazeFile, contextProvider: ContextProvider): OutputStream?

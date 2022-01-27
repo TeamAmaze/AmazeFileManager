@@ -125,12 +125,12 @@ class OtgAmazeFilesystem private constructor() : AmazeFilesystem() {
         return getDocumentFile(f.path, context, false)!!.delete()
     }
 
-    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String?>? {
+    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String>? {
         val context = contextProvider.getContext() ?: return null
-        val list = ArrayList<String?>()
-        val rootUri = getDocumentFile(f.path, context, false)
-        for (file in rootUri!!.listFiles()) {
-            list.add(file.uri.path)
+        val list = ArrayList<String>()
+        val rootUri = getDocumentFile(f.path, context, false) ?: return null
+        for (file in rootUri.listFiles()) {
+            file.uri.path?.let { list.add(it) }
         }
         return list.toTypedArray()
     }

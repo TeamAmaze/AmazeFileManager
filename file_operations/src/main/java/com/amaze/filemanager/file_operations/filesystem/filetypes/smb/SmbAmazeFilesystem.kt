@@ -312,9 +312,8 @@ class SmbAmazeFilesystem private constructor() : AmazeFilesystem() {
         }
     }
 
-    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String?>? {
-        val list: Array<String?>
-        list = try {
+    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String>? {
+        val list: Array<String?> = try {
             create(f.path).list()
         } catch (e: SmbException) {
             Log.e(TAG, "Error listing SMB files", e)
@@ -324,10 +323,9 @@ class SmbAmazeFilesystem private constructor() : AmazeFilesystem() {
             return null
         }
         val prefix = f.path.substring(0, prefixLength(f.path))
-        for (i in list.indices) {
-            list[i] = INSTANCE.normalize(prefix + getSeparator() + list[i])
+        return Array(list.size) { i: Int ->
+            INSTANCE.normalize(prefix + getSeparator() + list[i])
         }
-        return list
     }
 
     override fun getInputStream(f: AmazeFile, contextProvider: ContextProvider): InputStream? {

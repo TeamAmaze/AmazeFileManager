@@ -155,16 +155,13 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
         return true // This seems to never fail
     }
 
-    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String?>? {
-        val account = account.account
-        Objects.requireNonNull(account)
+    override fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String>? {
+        val account = account.account ?: return null
         val noPrefixPath = removePrefix(f.path)
-        val metadatas = account!!.getChildren(noPrefixPath)
-        val list = arrayOfNulls<String>(metadatas.size)
-        for (i in list.indices) {
-            list[i] = normalize(prefix + metadatas[i].path)
+        val metadatas = account.getChildren(noPrefixPath)
+        return Array(metadatas.size) { i: Int ->
+            normalize(prefix + metadatas[i].path)
         }
-        return list
     }
 
     override fun getInputStream(f: AmazeFile, contextProvider: ContextProvider): InputStream? {
