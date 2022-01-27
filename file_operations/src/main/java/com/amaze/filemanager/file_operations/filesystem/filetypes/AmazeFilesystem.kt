@@ -19,9 +19,6 @@
  */
 package com.amaze.filemanager.file_operations.filesystem.filetypes
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
-import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -67,13 +64,14 @@ abstract class AmazeFilesystem {
     abstract val defaultParent: String
     /* -- Path operations -- */
     /** Tell whether or not the given abstract pathname is absolute.  */
-    abstract fun isAbsolute(f: AmazeFile?): Boolean
+    abstract fun isAbsolute(f: AmazeFile): Boolean
 
     /**
      * Resolve the given abstract pathname into absolute form. Invoked by the getAbsolutePath and
      * getCanonicalPath methods in the [AmazeFile] class.
      */
-    abstract fun resolve(f: AmazeFile?): String
+    abstract fun resolve(f: AmazeFile): String
+
     @Throws(IOException::class)
     abstract fun canonicalize(path: String?): String
 
@@ -99,28 +97,28 @@ abstract class AmazeFilesystem {
         return r
     }
 
-    abstract fun exists(f: AmazeFile?, contextProvider: ContextProvider): Boolean
-    abstract fun isFile(f: AmazeFile?, contextProvider: ContextProvider): Boolean
-    abstract fun isDirectory(f: AmazeFile?, contextProvider: ContextProvider): Boolean
-    abstract fun isHidden(f: AmazeFile?): Boolean
+    abstract fun exists(f: AmazeFile, contextProvider: ContextProvider): Boolean
+    abstract fun isFile(f: AmazeFile, contextProvider: ContextProvider): Boolean
+    abstract fun isDirectory(f: AmazeFile, contextProvider: ContextProvider): Boolean
+    abstract fun isHidden(f: AmazeFile): Boolean
 
     /**
      * Check whether the file or directory denoted by the given abstract pathname may be accessed by
      * this process. Return false if access is denied or an I/O error occurs
      */
-    abstract fun canExecute(f: AmazeFile?, contextProvider: ContextProvider): Boolean
+    abstract fun canExecute(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Check whether the file or directory denoted by the given abstract pathname may be accessed by
      * this process. Return false if access is denied or an I/O error occurs
      */
-    abstract fun canWrite(f: AmazeFile?, contextProvider: ContextProvider): Boolean
+    abstract fun canWrite(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Check whether the file or directory denoted by the given abstract pathname may be accessed by
      * this process. Return false if access is denied or an I/O error occurs
      */
-    abstract fun canRead(f: AmazeFile?, contextProvider: ContextProvider): Boolean
+    abstract fun canRead(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Check whether the file or directory denoted by the given abstract pathname may be accessed by
@@ -128,31 +126,31 @@ abstract class AmazeFilesystem {
      *
      * Android-added: b/25878034, to support F.exists() reimplementation.
      */
-    abstract fun canAccess(f: AmazeFile?, contextProvider: ContextProvider): Boolean
+    abstract fun canAccess(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Set on or off the access permission (to owner only or to all) to the file or directory denoted
      * by the given abstract pathname, based on the parameters enable, access and oweronly.
      */
-    abstract fun setExecutable(f: AmazeFile?, enable: Boolean, owneronly: Boolean): Boolean
+    abstract fun setExecutable(f: AmazeFile, enable: Boolean, owneronly: Boolean): Boolean
 
     /**
      * Set on or off the access permission (to owner only or to all) to the file or directory denoted
      * by the given abstract pathname, based on the parameters enable, access and oweronly.
      */
-    abstract fun setWritable(f: AmazeFile?, enable: Boolean, owneronly: Boolean): Boolean
+    abstract fun setWritable(f: AmazeFile, enable: Boolean, owneronly: Boolean): Boolean
 
     /**
      * Set on or off the access permission (to owner only or to all) to the file or directory denoted
      * by the given abstract pathname, based on the parameters enable, access and oweronly.
      */
-    abstract fun setReadable(f: AmazeFile?, enable: Boolean, owneronly: Boolean): Boolean
+    abstract fun setReadable(f: AmazeFile, enable: Boolean, owneronly: Boolean): Boolean
 
     /**
      * Return the time at which the file or directory denoted by the given abstract pathname was last
      * modified, or zero if it does not exist or some other I/O error occurs.
      */
-    abstract fun getLastModifiedTime(f: AmazeFile?): Long
+    abstract fun getLastModifiedTime(f: AmazeFile): Long
 
     /**
      * Return the length in bytes of the file denoted by the given abstract pathname, or zero if it
@@ -162,7 +160,7 @@ abstract class AmazeFilesystem {
      * Note: for directories, this *could* return the size
      */
     @Throws(IOException::class)
-    abstract fun getLength(f: AmazeFile?, contextProvider: ContextProvider): Long
+    abstract fun getLength(f: AmazeFile, contextProvider: ContextProvider): Long
     /* -- File operations -- */
     /**
      * Create a new empty file with the given pathname. Return `true` if the file was
@@ -176,51 +174,51 @@ abstract class AmazeFilesystem {
      * Delete the file or directory denoted by the given abstract pathname, returning `true
     ` *  if and only if the operation succeeds.
      */
-    abstract fun delete(f: AmazeFile?, contextProvider: ContextProvider): Boolean
+    abstract fun delete(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * List the elements of the directory denoted by the given abstract pathname. Return an array of
      * strings naming the elements of the directory if successful; otherwise, return `null`
      * .
      */
-    abstract fun list(f: AmazeFile?, contextProvider: ContextProvider): Array<String?>?
-    abstract fun getInputStream(f: AmazeFile?, contextProvider: ContextProvider): InputStream?
+    abstract fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String?>?
+    abstract fun getInputStream(f: AmazeFile, contextProvider: ContextProvider): InputStream?
     abstract fun getOutputStream(
-            f: AmazeFile?, contextProvider: ContextProvider): OutputStream?
+            f: AmazeFile, contextProvider: ContextProvider): OutputStream?
 
     /**
      * Create a new directory denoted by the given abstract pathname, returning `true` if
      * and only if the operation succeeds.
      */
-    abstract fun createDirectory(f: AmazeFile?, contextProvider: ContextProvider): Boolean
+    abstract fun createDirectory(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Rename the file or directory denoted by the first abstract pathname to the second abstract
      * pathname, returning `true` if and only if the operation succeeds.
      */
     abstract fun rename(
-            f1: AmazeFile?, f2: AmazeFile?, contextProvider: ContextProvider): Boolean
+            f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Set the last-modified time of the file or directory denoted by the given abstract pathname,
      * returning `true` if and only if the operation succeeds.
      */
-    abstract fun setLastModifiedTime(f: AmazeFile?, time: Long): Boolean
+    abstract fun setLastModifiedTime(f: AmazeFile, time: Long): Boolean
 
     /**
      * Mark the file or directory denoted by the given abstract pathname as read-only, returning
      * `true` if and only if the operation succeeds.
      */
-    abstract fun setReadOnly(f: AmazeFile?): Boolean
+    abstract fun setReadOnly(f: AmazeFile): Boolean
     protected fun removePrefix(path: String): String {
         return path.substring(prefixLength(path))
     }
     /* -- Filesystem interface -- */
     /** List the available filesystem roots.  */
-    abstract fun listRoots(): Array<AmazeFile?>?
-    abstract fun getTotalSpace(f: AmazeFile?, contextProvider: ContextProvider): Long
-    abstract fun getFreeSpace(f: AmazeFile?): Long
-    abstract fun getUsableSpace(f: AmazeFile?): Long
+    abstract fun listRoots(): Array<AmazeFile>
+    abstract fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long
+    abstract fun getFreeSpace(f: AmazeFile): Long
+    abstract fun getUsableSpace(f: AmazeFile): Long
     /* -- Basic infrastructure -- */
     /** Compare two abstract pathnames lexicographically.  */
     open fun compare(f1: AmazeFile, f2: AmazeFile): Int {

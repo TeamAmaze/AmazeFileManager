@@ -17,33 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box
 
-package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem;
+class BoxAmazeFilesystem private constructor() : CloudAmazeFilesystem() {
+    companion object {
+        val TAG = BoxAmazeFilesystem::class.java.simpleName
 
-public final class DropboxAmazeFilesystem extends CloudAmazeFilesystem {
-  public static final String TAG = DropboxAmazeFilesystem.class.getSimpleName();
+        const val PREFIX = "box:/"
 
-  public static final String PREFIX = "dropbox:/";
+        val INSTANCE = BoxAmazeFilesystem()
 
-  public static final DropboxAmazeFilesystem INSTANCE = new DropboxAmazeFilesystem();
+        init {
+            AmazeFile.addFilesystem(INSTANCE)
+        }
+    }
 
-  static {
-    AmazeFile.addFilesystem(INSTANCE);
-  }
+    override val prefix: String =  PREFIX
 
-  private DropboxAmazeFilesystem() {}
-
-  @Override
-  public String getPrefix() {
-    return PREFIX;
-  }
-
-  @Override
-  public Account getAccount() {
-    return DropboxAccount.INSTANCE;
-  }
+    override val account: Account
+        get() = BoxAccount
 }

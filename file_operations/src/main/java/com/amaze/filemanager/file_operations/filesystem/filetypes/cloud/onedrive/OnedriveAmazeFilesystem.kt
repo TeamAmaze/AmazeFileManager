@@ -17,33 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive
 
-package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem;
+class OnedriveAmazeFilesystem private constructor() : CloudAmazeFilesystem() {
+    companion object {
+        val TAG = OnedriveAmazeFilesystem::class.java.simpleName
+        const val PREFIX = "onedrive:/"
+        val INSTANCE = OnedriveAmazeFilesystem()
 
-public final class GoogledriveAmazeFilesystem extends CloudAmazeFilesystem {
-  public static final String TAG = GoogledriveAmazeFilesystem.class.getSimpleName();
+        init {
+            AmazeFile.addFilesystem(INSTANCE)
+        }
+    }
 
-  public static final String PREFIX = "gdrive:/";
+    override val prefix: String = PREFIX
 
-  public static final GoogledriveAmazeFilesystem INSTANCE = new GoogledriveAmazeFilesystem();
-
-  static {
-    AmazeFile.addFilesystem(INSTANCE);
-  }
-
-  private GoogledriveAmazeFilesystem() {}
-
-  @Override
-  public String getPrefix() {
-    return PREFIX;
-  }
-
-  @Override
-  public Account getAccount() {
-    return GoogledriveAccount.INSTANCE;
-  }
+    override val account: Account
+        get() = OnedriveAccount
 }

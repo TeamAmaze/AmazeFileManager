@@ -19,6 +19,8 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -67,7 +69,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean isAbsolute(AmazeFile f) {
+  public boolean isAbsolute(@NotNull AmazeFile f) {
     return true; // Always absolute
   }
 
@@ -391,6 +393,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     return false;
   }
 
+  @NotNull
   @Override
   public AmazeFile[] listRoots() {
     return new AmazeFile[] { new AmazeFile(getDefaultParent()) };
