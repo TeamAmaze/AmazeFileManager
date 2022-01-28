@@ -42,82 +42,85 @@ import java.util.regex.Pattern
 /**
  * Root is "smb://<user>:<password>@<ip>" or "smb://<ip>" or
  * "smb://<user>:<password>@<ip>/?disableIpcSigningCheck=true" or
- * "smb://<ip>/?disableIpcSigningCheck=true" Relative paths are not supported
-</ip></ip></password></user></ip></ip></password></user> */
-class SmbAmazeFilesystem private constructor() : AmazeFilesystem() {
-    companion object {
-        val TAG = SmbAmazeFilesystem::class.java.simpleName
+ * "smb://<ip>/?disableIpcSigningCheck=true"
+ * Relative paths are not supported
+ * </ip></ip></password></user></ip></ip></password></user>
+ */
+object SmbAmazeFilesystem: AmazeFilesystem() {
+    @JvmStatic
+    val TAG = SmbAmazeFilesystem::class.java.simpleName
 
-        const val PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck"
-        private val IPv4_PATTERN = Pattern.compile("[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+")
-        private val METADATA_PATTERN = Pattern.compile("([?][a-zA-Z]+=(\")?[a-zA-Z]+(\")?)+")
+    const val PARAM_DISABLE_IPC_SIGNING_CHECK = "disableIpcSigningCheck"
+    @JvmStatic
+    private val IPv4_PATTERN = Pattern.compile("[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+.[0-9]{1,3}+")
+    @JvmStatic
+    private val METADATA_PATTERN = Pattern.compile("([?][a-zA-Z]+=(\")?[a-zA-Z]+(\")?)+")
 
-        val INSTANCE = SmbAmazeFilesystem()
-
-        @Throws(MalformedURLException::class)
-        fun create(path: String?): SmbFile {
-            val processedPath: String
-            processedPath = if (!path!!.endsWith(STANDARD_SEPARATOR + "")) {
-                path + STANDARD_SEPARATOR
-            } else {
-                path
-            }
-            val uri = Uri.parse(processedPath)
-            val disableIpcSigningCheck = java.lang.Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK))
-            val userInfo = uri.userInfo
-            val noExtraInfoPath: String
-            noExtraInfoPath = if (path.contains("?")) {
-                path.substring(0, path.indexOf('?'))
-            } else {
-                path
-            }
-            val context = createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-                    .withCredentials(createFrom(userInfo))
-            return SmbFile(noExtraInfoPath, context)
+    @JvmStatic
+    @Throws(MalformedURLException::class)
+    fun create(path: String?): SmbFile {
+        val processedPath: String
+        processedPath = if (!path!!.endsWith(STANDARD_SEPARATOR + "")) {
+            path + STANDARD_SEPARATOR
+        } else {
+            path
         }
+        val uri = Uri.parse(processedPath)
+        val disableIpcSigningCheck = java.lang.Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK))
+        val userInfo = uri.userInfo
+        val noExtraInfoPath: String
+        noExtraInfoPath = if (path.contains("?")) {
+            path.substring(0, path.indexOf('?'))
+        } else {
+            path
+        }
+        val context = createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
+                .withCredentials(createFrom(userInfo))
+        return SmbFile(noExtraInfoPath, context)
+    }
 
-        /**
-         * Create [NtlmPasswordAuthenticator] from given userInfo parameter.
-         *
-         *
-         * Logic borrowed directly from jcifs-ng's own code. They should make that protected
-         * constructor public...
-         *
-         * @param userInfo authentication string, must be already URL decoded. [Uri] shall do this
-         * for you already
-         * @return [NtlmPasswordAuthenticator] instance
-         */
-        private fun createFrom(userInfo: String?): NtlmPasswordAuthenticator {
-            return if (!TextUtils.isEmpty(userInfo)) {
-                var dom: String? = null
-                var user: String? = null
-                var pass: String? = null
-                var i: Int
-                var u: Int
-                val end = userInfo!!.length
-                i = 0
-                u = 0
-                while (i < end) {
-                    val c = userInfo[i]
-                    if (c == ';') {
-                        dom = userInfo.substring(0, i)
-                        u = i + 1
-                    } else if (c == ':') {
-                        pass = userInfo.substring(i + 1)
-                        break
-                    }
-                    i++
+    /**
+     * Create [NtlmPasswordAuthenticator] from given userInfo parameter.
+     *
+     *
+     * Logic borrowed directly from jcifs-ng's own code. They should make that protected
+     * constructor public...
+     *
+     * @param userInfo authentication string, must be already URL decoded. [Uri] shall do this
+     * for you already
+     * @return [NtlmPasswordAuthenticator] instance
+     */
+    @JvmStatic
+    private fun createFrom(userInfo: String?): NtlmPasswordAuthenticator {
+        return if (!TextUtils.isEmpty(userInfo)) {
+            var dom: String? = null
+            var user: String? = null
+            var pass: String? = null
+            var i: Int
+            var u: Int
+            val end = userInfo!!.length
+            i = 0
+            u = 0
+            while (i < end) {
+                val c = userInfo[i]
+                if (c == ';') {
+                    dom = userInfo.substring(0, i)
+                    u = i + 1
+                } else if (c == ':') {
+                    pass = userInfo.substring(i + 1)
+                    break
                 }
-                user = userInfo.substring(u, i)
-                NtlmPasswordAuthenticator(dom, user, pass)
-            } else {
-                NtlmPasswordAuthenticator()
+                i++
             }
+            user = userInfo.substring(u, i)
+            NtlmPasswordAuthenticator(dom, user, pass)
+        } else {
+            NtlmPasswordAuthenticator()
         }
+    }
 
-        init {
-            AmazeFile.addFilesystem(INSTANCE)
-        }
+    init {
+        AmazeFile.addFilesystem(this)
     }
 
     override val prefix: String = SMB_URI_PREFIX
@@ -324,7 +327,7 @@ class SmbAmazeFilesystem private constructor() : AmazeFilesystem() {
         }
         val prefix = f.path.substring(0, prefixLength(f.path))
         return Array(list.size) { i: Int ->
-            INSTANCE.normalize(prefix + getSeparator() + list[i])
+            normalize(prefix + getSeparator() + list[i])
         }
     }
 

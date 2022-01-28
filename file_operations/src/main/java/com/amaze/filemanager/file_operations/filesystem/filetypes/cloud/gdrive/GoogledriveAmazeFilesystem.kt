@@ -25,15 +25,13 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount
 
-class GoogledriveAmazeFilesystem private constructor() : CloudAmazeFilesystem() {
-    companion object {
-        val TAG = GoogledriveAmazeFilesystem::class.java.simpleName
-        const val PREFIX = "gdrive:/"
-        val INSTANCE = GoogledriveAmazeFilesystem()
+object GoogledriveAmazeFilesystem : CloudAmazeFilesystem() {
+    @JvmStatic
+    val TAG = GoogledriveAmazeFilesystem::class.java.simpleName
+    const val PREFIX = "gdrive:/"
 
-        init {
-            AmazeFile.addFilesystem(INSTANCE)
-        }
+    init {
+        AmazeFile.addFilesystem(this)
     }
 
     override val prefix = PREFIX

@@ -25,17 +25,14 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount
 
-class BoxAmazeFilesystem private constructor() : CloudAmazeFilesystem() {
-    companion object {
-        val TAG = BoxAmazeFilesystem::class.java.simpleName
+object BoxAmazeFilesystem : CloudAmazeFilesystem() {
+    @JvmStatic
+    val TAG = BoxAmazeFilesystem::class.java.simpleName
 
-        const val PREFIX = "box:/"
+    const val PREFIX = "box:/"
 
-        val INSTANCE = BoxAmazeFilesystem()
-
-        init {
-            AmazeFile.addFilesystem(INSTANCE)
-        }
+    init {
+        AmazeFile.addFilesystem(this)
     }
 
     override val prefix: String =  PREFIX

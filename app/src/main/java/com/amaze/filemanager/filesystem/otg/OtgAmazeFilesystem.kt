@@ -8,17 +8,14 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvide
 import java.io.*
 import java.util.ArrayList
 
-class OtgAmazeFilesystem private constructor() : AmazeFilesystem() {
-    companion object {
-        val TAG = OtgAmazeFilesystem::class.java.simpleName
+object OtgAmazeFilesystem : AmazeFilesystem() {
+    @JvmStatic
+    val TAG = OtgAmazeFilesystem::class.java.simpleName
 
-        val INSTANCE = OtgAmazeFilesystem()
+    const val PREFIX = "otg:/"
 
-        const val PREFIX = "otg:/"
-
-        init {
-            AmazeFile.addFilesystem(INSTANCE)
-        }
+    init {
+        AmazeFile.addFilesystem(this)
     }
 
     override val prefix = PREFIX

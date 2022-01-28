@@ -35,14 +35,12 @@ import java.io.*
  * This is in in essence calls to UnixFilesystem, but that class is not public so all calls must go
  * through java.io.File
  */
-class FileAmazeFilesystem private constructor() : AmazeFilesystem() {
-    companion object {
-        val INSTANCE = FileAmazeFilesystem()
-        val TAG = FileAmazeFilesystem::class.java.simpleName
+object FileAmazeFilesystem: AmazeFilesystem() {
+    @JvmStatic
+    val TAG = FileAmazeFilesystem::class.java.simpleName
 
-        init {
-            AmazeFile.addFilesystem(INSTANCE)
-        }
+    init {
+        AmazeFile.addFilesystem(this)
     }
 
     override fun isPathOfThisFilesystem(path: String): Boolean {

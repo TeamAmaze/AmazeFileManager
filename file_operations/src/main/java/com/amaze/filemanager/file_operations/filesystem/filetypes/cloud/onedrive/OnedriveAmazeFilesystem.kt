@@ -23,15 +23,13 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAma
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
 
-class OnedriveAmazeFilesystem private constructor() : CloudAmazeFilesystem() {
-    companion object {
-        val TAG = OnedriveAmazeFilesystem::class.java.simpleName
-        const val PREFIX = "onedrive:/"
-        val INSTANCE = OnedriveAmazeFilesystem()
+object OnedriveAmazeFilesystem : CloudAmazeFilesystem() {
+    @JvmStatic
+    val TAG = OnedriveAmazeFilesystem::class.java.simpleName
+    const val PREFIX = "onedrive:/"
 
-        init {
-            AmazeFile.addFilesystem(INSTANCE)
-        }
+    init {
+        AmazeFile.addFilesystem(this)
     }
 
     override val prefix: String = PREFIX
