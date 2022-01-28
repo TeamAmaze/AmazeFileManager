@@ -59,7 +59,7 @@ class UiPrefsFragment : BasePrefsFragment() {
                 PreferencesConstants.PREFERENCE_DRAG_DEFAULT
             )
             dragDialogBuilder
-                .items(*dragToMoveArray)
+                .items(R.array.dragAndDropPreference)
                 .itemsCallbackSingleChoice(currentDragPreference) { dialog, _, which, _ ->
                     val editor = activity.prefs.edit()
                     editor.putInt(

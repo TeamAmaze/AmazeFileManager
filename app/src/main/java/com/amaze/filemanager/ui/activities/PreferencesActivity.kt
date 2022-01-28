@@ -46,12 +46,16 @@ import com.readystatesoftware.systembartint.SystemBarTintManager
 import java.io.File
 
 class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback {
+    private companion object {
+        const val SAVED_INSTANCE_STATE_KEY = "savedInstanceState"
+    }
+
     lateinit var layout: View
 
     override fun onCreate(savedInstanceState: Bundle?) {
         var savedInstanceState = savedInstanceState
-        if (savedInstanceState == null && intent.hasExtra("savedInstanceState")) {
-            savedInstanceState = intent.getBundleExtra("savedInstanceState")
+        if (savedInstanceState == null && intent.hasExtra(SAVED_INSTANCE_STATE_KEY)) {
+            savedInstanceState = intent.getBundleExtra(SAVED_INSTANCE_STATE_KEY)
         }
 
         super.onCreate(savedInstanceState)
@@ -99,13 +103,16 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
         val bundle = Bundle()
         onSaveInstanceState(bundle)
         val intent = Intent(this, javaClass)
-        intent.putExtra("savedInstanceState", bundle)
+        intent.putExtra(SAVED_INSTANCE_STATE_KEY, bundle)
 
         finish()
         startActivity(intent)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
     }
 
+    /**
+     * Push a new fragment into the stack
+     */
     fun pushFragment(fragment: BasePrefsFragment) {
         supportFragmentManager.commit {
             setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE)
@@ -116,6 +123,11 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
         }
     }
 
+    /**
+     * Rebuild the nav bar
+     *
+     * Used to update color
+     */
     fun invalidateNavBar() {
         val primaryColor = ColorPreferenceHelper
             .getPrimary(currentColorPreference, MainActivity.currentTab)
