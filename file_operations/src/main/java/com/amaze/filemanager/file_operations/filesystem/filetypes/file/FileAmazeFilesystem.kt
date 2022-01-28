@@ -63,7 +63,7 @@ object FileAmazeFilesystem: AmazeFilesystem() {
         return if (path[0] == '/') 1 else 0
     }
 
-    override fun resolve(parent: String?, child: String?): String {
+    override fun resolve(parent: String, child: String): String {
         return File(parent, child).path
     }
 
@@ -137,7 +137,7 @@ object FileAmazeFilesystem: AmazeFilesystem() {
     }
 
     @Throws(IOException::class)
-    override fun createFileExclusively(pathname: String?): Boolean {
+    override fun createFileExclusively(pathname: String): Boolean {
         return File(pathname).createNewFile()
     }
 
@@ -279,13 +279,6 @@ object FileAmazeFilesystem: AmazeFilesystem() {
 
     override fun setReadOnly(f: AmazeFile): Boolean {
         return File(f.path).setReadOnly()
-    }
-
-    override fun listRoots(): Array<AmazeFile> {
-        val roots = File.listRoots()
-        return Array(roots.size) { i: Int ->
-            AmazeFile(roots[i].path)
-        }
     }
 
     override fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long {

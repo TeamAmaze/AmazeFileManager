@@ -29,10 +29,10 @@ object OtgAmazeFilesystem : AmazeFilesystem() {
         return simpleUnixNormalize(path)
     }
 
-    override fun resolve(parent: String?, child: String?): String {
-        val prefix = parent!!.substring(0, prefixLength(parent))
+    override fun resolve(parent: String, child: String): String {
+        val prefix = parent.substring(0, prefixLength(parent))
         val simplePathParent = parent.substring(prefixLength(parent))
-        val simplePathChild = child!!.substring(prefixLength(child))
+        val simplePathChild = child.substring(prefixLength(child))
         return prefix + basicUnixResolve(simplePathParent, simplePathChild)
     }
 
@@ -113,7 +113,7 @@ object OtgAmazeFilesystem : AmazeFilesystem() {
     }
 
     @Throws(IOException::class)
-    override fun createFileExclusively(pathname: String?): Boolean {
+    override fun createFileExclusively(pathname: String): Boolean {
         return false
     }
 
@@ -183,15 +183,6 @@ object OtgAmazeFilesystem : AmazeFilesystem() {
 
     override fun setReadOnly(f: AmazeFile): Boolean {
         return false
-    }
-
-    override fun listRoots(): Array<AmazeFile> {
-        val roots = File.listRoots()
-        val amazeRoots = arrayOfNulls<AmazeFile>(roots.size)
-        for (i in roots.indices) {
-            amazeRoots[i] = AmazeFile(roots[i].path)
-        }
-        return arrayOf(AmazeFile(defaultParent))
     }
 
     override fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long {

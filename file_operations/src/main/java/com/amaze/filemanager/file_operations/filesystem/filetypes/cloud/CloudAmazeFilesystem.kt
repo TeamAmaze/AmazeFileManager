@@ -49,7 +49,7 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
         return canonical.substring(0, canonical.length - 1)
     }
 
-    override fun resolve(parent: String?, child: String?): String {
+    override fun resolve(parent: String, child: String): String {
         return prefix + File(removePrefix(parent!!), child)
     }
 
@@ -143,7 +143,7 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
     }
 
     @Throws(IOException::class)
-    override fun createFileExclusively(pathname: String?): Boolean {
+    override fun createFileExclusively(pathname: String): Boolean {
         return false
     }
 
@@ -201,10 +201,6 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
 
     override fun setReadOnly(f: AmazeFile): Boolean {
         return false // This doesn't seem possible
-    }
-
-    override fun listRoots(): Array<AmazeFile> {
-        return arrayOf(AmazeFile("$prefix/"))
     }
 
     override fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long {

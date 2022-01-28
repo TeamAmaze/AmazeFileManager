@@ -20,7 +20,6 @@
 package com.amaze.filemanager.file_operations.filesystem.filetypes
 
 import android.os.Parcel
-import android.os.Parcelable
 import android.util.Log
 import kotlinx.parcelize.Parceler
 import java.io.File
@@ -1115,13 +1114,6 @@ class AmazeFile : Comparable<AmazeFile?> {
         } else fs.canExecute(this, contextProvider)
     }
     /* -- Filesystem interface -- */ // Android-changed: Replaced generic platform info with Android specific one.
-    /**
-     * Returns the file system roots. On Android and other Unix systems, there is a single root,
-     * `/`.
-     */
-    fun listRoots(): Array<AmazeFile> {
-        return fs.listRoots()
-    }
     /* -- Disk usage -- */
     /**
      * Returns the size of the partition [named](#partName) by this abstract pathname.

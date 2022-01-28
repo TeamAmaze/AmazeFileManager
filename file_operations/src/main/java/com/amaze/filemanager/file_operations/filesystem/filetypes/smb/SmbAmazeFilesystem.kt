@@ -147,7 +147,7 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
         return matcher.end()
     }
 
-    override fun resolve(parent: String?, child: String?): String {
+    override fun resolve(parent: String, child: String): String {
         val prefix = parent!!.substring(0, prefixLength(parent))
         val simplePathParent = parent.substring(prefixLength(parent))
         val simplePathChild = child!!.substring(prefixLength(child))
@@ -297,7 +297,7 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
     }
 
     @Throws(IOException::class)
-    override fun createFileExclusively(pathname: String?): Boolean {
+    override fun createFileExclusively(pathname: String): Boolean {
         create(pathname).mkdirs()
         return true
     }
@@ -399,10 +399,6 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
             Log.e(TAG, "Error getting SMB file to set read only", e)
             false
         }
-    }
-
-    override fun listRoots(): Array<AmazeFile> {
-        throw NotImplementedError()
     }
 
     override fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long {

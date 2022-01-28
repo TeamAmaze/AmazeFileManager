@@ -55,7 +55,7 @@ abstract class AmazeFilesystem {
      * Resolve the child pathname string against the parent. Both strings must be in normal form, and
      * the result will be in normal form.
      */
-    abstract fun resolve(parent: String?, child: String?): String
+    abstract fun resolve(parent: String, child: String): String
 
     /**
      * Return the parent pathname string to be used when the parent-directory argument in one of the
@@ -168,7 +168,7 @@ abstract class AmazeFilesystem {
      * Throw an IOException if an I/O error occurs.
      */
     @Throws(IOException::class)
-    abstract fun createFileExclusively(pathname: String?): Boolean
+    abstract fun createFileExclusively(pathname: String): Boolean
 
     /**
      * Delete the file or directory denoted by the given abstract pathname, returning `true
@@ -214,8 +214,6 @@ abstract class AmazeFilesystem {
         return path.substring(prefixLength(path))
     }
     /* -- Filesystem interface -- */
-    /** List the available filesystem roots.  */
-    abstract fun listRoots(): Array<AmazeFile>
     abstract fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long
     abstract fun getFreeSpace(f: AmazeFile): Long
     abstract fun getUsableSpace(f: AmazeFile): Long

@@ -58,7 +58,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
   @NonNull
   @Override
-  public String resolve(String parent, String child) {
+  public String resolve(@NotNull String parent, @NotNull String child) {
     return PREFIX + new File(removePrefix(parent), child).getAbsolutePath();
   }
 
@@ -102,7 +102,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
       @Override
       public Boolean execute(@NonNull SFTPClient client) throws IOException {
-        return client.statExistence(f.getPath()) != null;
+        return client.stat(SshClientUtils.extractRemotePathFrom(f.getPath())) != null;
       }
     };
 
@@ -134,7 +134,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     final SFtpClientTemplate<Boolean> template = new SFtpClientTemplate<Boolean>(f.getPath()) {
       @Override
       public Boolean execute(@NonNull SFTPClient client) throws IOException {
-        return client.lstat(f.getPath()).getType() == DIRECTORY;
+        return client.lstat(SshClientUtils.extractRemotePathFrom(f.getPath())).getType() == DIRECTORY;
       }
     };
 
@@ -228,7 +228,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean createFileExclusively(String pathname) throws IOException {
+  public boolean createFileExclusively(@NotNull String pathname) {
     return false;
   }
 
@@ -391,12 +391,6 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
   @Override
   public boolean setReadOnly(AmazeFile f) {
     return false;
-  }
-
-  @NotNull
-  @Override
-  public AmazeFile[] listRoots() {
-    return new AmazeFile[] { new AmazeFile(getDefaultParent()) };
   }
 
   public long getTotalSpace(AmazeFile f, @NonNull ContextProvider contextProvider) {

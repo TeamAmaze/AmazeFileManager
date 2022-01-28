@@ -49,6 +49,7 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.G
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.DocumentFileAmazeFilesystem;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
@@ -96,9 +97,6 @@ public class HybridFile {
 
   protected static final String TAG = HybridFile.class.getSimpleName();
 
-  public static final String DOCUMENT_FILE_PREFIX =
-      "content://com.android.externalstorage.documents";
-
   protected String path;
   protected OpenMode mode;
   protected String name;
@@ -136,7 +134,7 @@ public class HybridFile {
       mode = OpenMode.SFTP;
     } else if (path.startsWith(OTGUtil.PREFIX_OTG)) {
       mode = OpenMode.OTG;
-    } else if (path.startsWith(DOCUMENT_FILE_PREFIX)) {
+    } else if (path.startsWith(DocumentFileAmazeFilesystem.DOCUMENT_FILE_PREFIX)) {
       mode = OpenMode.DOCUMENT_FILE;
     } else if (isCustomPath()) {
       mode = OpenMode.CUSTOM;
@@ -260,9 +258,12 @@ public class HybridFile {
       case SFTP:
       case SMB:
       case FILE:
-        return new AmazeFile(path).lastModified();
       case DOCUMENT_FILE:
-        return getDocumentFile(false).lastModified();
+      case BOX:
+      case DROPBOX:
+      case GDRIVE:
+      case ONEDRIVE:
+        return new AmazeFile(path).lastModified();
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getDate();
@@ -282,6 +283,7 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case OTG:
+      case DOCUMENT_FILE:
         try {
           return new AmazeFile(path).length(() -> context);
         } catch (IOException e) {
@@ -290,9 +292,6 @@ public class HybridFile {
       case ROOT:
         HybridFileParcelable baseFile = generateBaseFileFromParent();
         if (baseFile != null) return baseFile.getSize();
-        break;
-      case DOCUMENT_FILE:
-        s = getDocumentFile(false).length();
         break;
       default:
         break;
@@ -310,6 +309,12 @@ public class HybridFile {
       case SFTP:
       case SMB:
       case FILE:
+      case ONEDRIVE:
+      case GDRIVE:
+      case DROPBOX:
+      case BOX:
+      case OTG:
+      case DOCUMENT_FILE:
         return new AmazeFile(path).getName();
       default:
         StringBuilder builder = new StringBuilder(path);
@@ -327,16 +332,11 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case OTG:
+      case SFTP:
+      case DOCUMENT_FILE:
         return new AmazeFile(path).getName();
       case ROOT:
         return getFile().getName();
-      case DOCUMENT_FILE:
-        if (!Utils.isNullOrEmpty(name)) {
-          return name;
-        }
-        return OTGUtil.getDocumentFile(
-                path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
-            .getName();
       default:
         if (path.isEmpty()) {
           return "";
@@ -375,6 +375,7 @@ public class HybridFile {
       case GDRIVE:
       case SFTP:
       case OTG:
+      case DOCUMENT_FILE:
         return new AmazeFile(path).getParent();
       default:
         if (path.length() == getName(context).length()) {
@@ -397,7 +398,6 @@ public class HybridFile {
     boolean isDirectory;
     switch (mode) {
       case SFTP:
-        return isDirectory(AppConfig.getInstance());
       case SMB:
       case FILE:
       case DROPBOX:
@@ -405,7 +405,8 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case OTG:
-        return new AmazeFile(path).isDirectory(() -> null);
+      case DOCUMENT_FILE:
+        return new AmazeFile(path).isDirectory(AppConfig::getInstance);
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
@@ -420,32 +421,6 @@ public class HybridFile {
     boolean isDirectory;
     switch (mode) {
       case SFTP:
-        final Boolean returnValue =
-            SshClientUtils.<Boolean>execute(
-                new SFtpClientTemplate<Boolean>(path) {
-                  @Override
-                  public Boolean execute(SFTPClient client) {
-                    try {
-                      return client
-                          .stat(SshClientUtils.extractRemotePathFrom(path))
-                          .getType()
-                          .equals(FileMode.Type.DIRECTORY);
-                    } catch (IOException notFound) {
-                      Log.e(
-                          getClass().getSimpleName(),
-                          "Fail to execute isDirectory for SFTP path :" + path,
-                          notFound);
-                      return false;
-                    }
-                  }
-                });
-
-        if (returnValue == null) {
-          Log.e(TAG, "Error obtaining if path is directory over SFTP");
-        }
-
-        //noinspection SimplifiableConditionalExpression
-        return returnValue == null ? false : returnValue;
       case SMB:
       case FILE:
       case DROPBOX:
@@ -453,12 +428,10 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case OTG:
+        case DOCUMENT_FILE:
         return new AmazeFile(path).isDirectory(() -> context);
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
-        break;
-      case DOCUMENT_FILE:
-        isDirectory = getDocumentFile(false).isDirectory();
         break;
       default:
         isDirectory = getFile().isDirectory();
@@ -533,12 +506,9 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case SFTP:
-        case OTG:
-        return new AmazeFile(path).getUsableSpace();
+      case OTG:
       case DOCUMENT_FILE:
-        size =
-            FileProperties.getDeviceStorageRemainingSpace(SafRootHolder.INSTANCE.getVolumeLabel());
-        break;
+        return new AmazeFile(path).getUsableSpace();
     }
     return size;
   }
@@ -555,11 +525,9 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case SFTP:
-        case OTG:
-        return new AmazeFile(path).getTotalSpace(() -> context);
+      case OTG:
       case DOCUMENT_FILE:
-        size = getDocumentFile(false).length();
-        break;
+        return new AmazeFile(path).getTotalSpace(() -> context);
     }
     return size;
   }
@@ -747,18 +715,9 @@ public class HybridFile {
       case BOX:
       case ONEDRIVE:
       case GDRIVE:
-        case OTG:
-        return new AmazeFile(getPath()).getInputStream(() -> context);
+      case OTG:
       case DOCUMENT_FILE:
-        ContentResolver contentResolver = context.getContentResolver();
-        DocumentFile documentSourceFile = getDocumentFile(false);
-        try {
-          inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-          inputStream = null;
-        }
-        break;
+        return new AmazeFile(getPath()).getInputStream(() -> context);
       default:
         try {
           inputStream = new FileInputStream(path);
@@ -783,17 +742,8 @@ public class HybridFile {
       case ONEDRIVE:
       case GDRIVE:
       case OTG:
-        return new AmazeFile(path).getOutputStream(() -> context);
       case DOCUMENT_FILE:
-        ContentResolver contentResolver = context.getContentResolver();
-        DocumentFile documentSourceFile = getDocumentFile(true);
-        try {
-          outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
-        } catch (FileNotFoundException e) {
-          e.printStackTrace();
-          outputStream = null;
-        }
-        break;
+        return new AmazeFile(path).getOutputStream(() -> context);
       default:
         try {
           outputStream = FileUtil.getOutputStream(getFile(), context);
@@ -806,35 +756,14 @@ public class HybridFile {
   }
 
   public boolean exists() {
-    boolean exists = false;
-    if (isSftp()) {
-      // TODO use Amaze file
-      final Boolean executionReturn =
-          SshClientUtils.<Boolean>execute(
-              new SFtpClientTemplate<Boolean>(path) {
-                @Override
-                public Boolean execute(SFTPClient client) throws IOException {
-                  try {
-                    return client.stat(SshClientUtils.extractRemotePathFrom(path)) != null;
-                  } catch (SFTPException notFound) {
-                    return false;
-                  }
-                }
-              });
-
-      if (executionReturn == null) {
-        Log.e(TAG, "Error obtaining existance of file over SFTP");
-      }
-
-      //noinspection SimplifiableConditionalExpression
-      exists = executionReturn == null ? false : executionReturn;
-    } else if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile() || isOneDriveFile()) {
+    if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile()
+            || isOneDriveFile() || isDocumentFile() || isSftp()) {
       return new AmazeFile(path).exists(() -> null);
     } else if (isRoot()) {
       return RootHelper.fileExists(path);
     }
 
-    return exists;
+    return false;
   }
 
   /** Helper method to check file existence in otg */
@@ -842,7 +771,7 @@ public class HybridFile {
     boolean exists = false;
     try {
       if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile()
-              || isOneDriveFile() || isOtgFile() || isSftp()) {
+              || isOneDriveFile() || isOtgFile() || isSftp() || isDocumentFile()) {
         return new AmazeFile(path).exists(() -> context);
       } else if (isDocumentFile()) {
         exists =
@@ -878,7 +807,8 @@ public class HybridFile {
   }
 
   public boolean setLastModified(final long date) {
-    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isSftp() || isOtgFile()) {
+    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile()
+            || isDropBoxFile() || isSftp() || isOtgFile()) {
       return new AmazeFile(path).setLastModified(date);
     }
     File f = getFile();
@@ -886,21 +816,10 @@ public class HybridFile {
   }
 
   public void mkdir(Context context) {
-    if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile() || isOtgFile()) {
+    if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile()
+            || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()
+            || isOtgFile() || isDocumentFile()) {
       new AmazeFile(path).mkdirs(() -> context);
-    } else if (isDocumentFile()) {
-      if (!exists(context)) {
-        DocumentFile parentDirectory =
-            OTGUtil.getDocumentFile(
-                getParent(context),
-                SafRootHolder.getUriRoot(),
-                context,
-                OpenMode.DOCUMENT_FILE,
-                true);
-        if (parentDirectory.isDirectory()) {
-          parentDirectory.createDirectory(getName(context));
-        }
-      }
     } else {
       throw new IllegalStateException();
     }
