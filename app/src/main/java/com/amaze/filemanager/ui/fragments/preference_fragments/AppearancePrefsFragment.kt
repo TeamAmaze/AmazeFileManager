@@ -29,39 +29,70 @@ import com.amaze.filemanager.ui.theme.AppTheme
 class AppearancePrefsFragment : BasePrefsFragment() {
     override val title = R.string.appearance
 
+    private lateinit var gridColumnItems: Array<String>
+    private var currentTheme = 0
     private var gridColumnPref: Preference? = null
+
+    private val onClickTheme = Preference.OnPreferenceClickListener {
+        val builder = MaterialDialog.Builder(activity)
+        builder.items(R.array.theme)
+            .itemsCallbackSingleChoice(currentTheme) { dialog, _, which, _ ->
+                val editor = activity.prefs.edit()
+                editor.putString(PreferencesConstants.FRAGMENT_THEME, which.toString())
+                editor.apply()
+
+                activity.utilsProvider.themeManager.appTheme =
+                    AppTheme.getTheme(activity, which)
+                activity.recreate()
+
+                dialog.dismiss()
+                true
+            }
+            .title(R.string.theme)
+            .build()
+            .show()
+
+        true
+    }
+
+    private val onClickGridColumn = Preference.OnPreferenceClickListener {
+        val builder = MaterialDialog.Builder(activity)
+        builder.theme(activity.utilsProvider.appTheme.getMaterialDialogTheme(activity))
+        builder.title(R.string.gridcolumnno)
+        var current = activity
+            .prefs
+            .getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1")!!
+            .toInt() - 1
+        if (current < 0) current = 0
+        builder
+            .items(R.array.columns)
+            .itemsCallbackSingleChoice(current) { dialog, _, which, _ ->
+                val editor = activity.prefs.edit()
+                editor.putString(
+                    PreferencesConstants.PREFERENCE_GRID_COLUMNS,
+                    if (which != 0) gridColumnItems[which] else "-1"
+                )
+                editor.apply()
+                dialog.dismiss()
+                updateGridColumnSummary()
+                true
+            }
+        builder.build().show()
+
+        true
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.appearance_prefs, rootKey)
 
         val themePref = findPreference<Preference>(PreferencesConstants.FRAGMENT_THEME)
         val themes = resources.getStringArray(R.array.theme)
-        val currentTheme = activity
+        currentTheme = activity
             .prefs
             .getString(PreferencesConstants.FRAGMENT_THEME, "4")!!
             .toInt()
         themePref?.summary = themes[currentTheme]
-        themePref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val builder = MaterialDialog.Builder(activity)
-            builder.items(*themes)
-                .itemsCallbackSingleChoice(currentTheme) { dialog, _, which, _ ->
-                    val editor = activity.prefs.edit()
-                    editor.putString(PreferencesConstants.FRAGMENT_THEME, which.toString())
-                    editor.apply()
-
-                    activity.utilsProvider.themeManager.appTheme =
-                        AppTheme.getTheme(activity, which)
-                    activity.recreate()
-
-                    dialog.dismiss()
-                    true
-                }
-                .title(R.string.theme)
-                .build()
-                .show()
-
-            true
-        }
+        themePref?.onPreferenceClickListener = onClickTheme
 
         findPreference<Preference>(PreferencesConstants.PREFERENCE_COLORED_NAVIGATION)
             ?.let {
@@ -81,35 +112,10 @@ class AppearancePrefsFragment : BasePrefsFragment() {
             true
         }
 
-        val gridColumnItems = resources.getStringArray(R.array.columns)
+        gridColumnItems = resources.getStringArray(R.array.columns)
         gridColumnPref = findPreference(PreferencesConstants.PREFERENCE_GRID_COLUMNS)
         updateGridColumnSummary()
-        gridColumnPref?.onPreferenceClickListener = Preference.OnPreferenceClickListener {
-            val builder = MaterialDialog.Builder(activity)
-            builder.theme(activity.utilsProvider.appTheme.getMaterialDialogTheme(activity))
-            builder.title(R.string.gridcolumnno)
-            var current = activity
-                .prefs
-                .getString(PreferencesConstants.PREFERENCE_GRID_COLUMNS, "-1")!!
-                .toInt() - 1
-            if (current < 0) current = 0
-            builder
-                .items(*gridColumnItems)
-                .itemsCallbackSingleChoice(current) { dialog, _, which, _ ->
-                    val editor = activity.prefs.edit()
-                    editor.putString(
-                        PreferencesConstants.PREFERENCE_GRID_COLUMNS,
-                        if (which != 0) gridColumnItems[which] else "-1"
-                    )
-                    editor.apply()
-                    dialog.dismiss()
-                    updateGridColumnSummary()
-                    true
-                }
-            builder.build().show()
-
-            true
-        }
+        gridColumnPref?.onPreferenceClickListener = onClickGridColumn
     }
 
     private fun updateGridColumnSummary() {
