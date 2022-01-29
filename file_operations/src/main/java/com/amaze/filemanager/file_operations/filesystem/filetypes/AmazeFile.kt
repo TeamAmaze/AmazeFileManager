@@ -792,10 +792,17 @@ class AmazeFile : Comparable<AmazeFile?> {
      * error occurs.
      */
     fun listFiles(contextProvider: ContextProvider): Array<AmazeFile>? {
+        val files = ArrayList<AmazeFile>()
+        listFiles(contextProvider, files::add) ?: return null
+        return files.toTypedArray()
+    }
+
+    fun listFiles(contextProvider: ContextProvider, onFileFound: (AmazeFile) -> Unit): Unit? {
         val ss = list(contextProvider) ?: return null
-        return Array(ss.size) { i: Int ->
-            AmazeFile(ss[i], this)
+        for (i in ss.indices) {
+            onFileFound(AmazeFile(ss[i], this))
         }
+        return Unit
     }
 
     /**
@@ -818,10 +825,23 @@ class AmazeFile : Comparable<AmazeFile?> {
         filter: AmazeFilenameFilter?,
         contextProvider: ContextProvider
     ): Array<AmazeFile>? {
-        val ss = list(contextProvider) ?: return null
         val files = ArrayList<AmazeFile>()
-        for (s in ss) if (filter == null || filter.accept(this, s)) files.add(AmazeFile(s!!, this))
+        listFiles(filter, contextProvider, files::add) ?: return null
         return files.toTypedArray()
+    }
+
+    fun listFiles(
+            filter: AmazeFilenameFilter?,
+            contextProvider: ContextProvider,
+            onFileFound: (AmazeFile) -> Unit
+    ): Unit? {
+        val ss = list(contextProvider) ?: return null
+        for (s in ss) {
+            if (filter == null || filter.accept(this, s)) {
+                onFileFound(AmazeFile(s, this))
+            }
+        }
+        return Unit
     }
 
     /**
@@ -841,13 +861,36 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @see java.nio.file.Files.newDirectoryStream
      */
     fun listFiles(filter: AmazeFileFilter?, contextProvider: ContextProvider): Array<AmazeFile>? {
-        val ss = list(contextProvider) ?: return null
         val files = ArrayList<AmazeFile>()
+        forFiles(filter, contextProvider, files::add) ?: return null
+        return files.toTypedArray()
+    }
+
+    /**
+     * Calls a function on an array of abstract pathnames denoting the files and directories
+     * in the directory denoted by this abstract pathname that satisfy the specified filter.
+     * The behavior of this method is the same as that of the [listFiles] method, except that the
+     * pathnames in the returned array must satisfy the filter. If the given `filter` is `null` then
+     * all pathnames are accepted. Otherwise, a pathname satisfies the filter if and only if the value
+     * `true` results when the [FileFilter.accept] method of the
+     * filter is invoked on the pathname.
+     *
+     * @param filter A file filter
+     * @param onFileFound the function called on every file and directory in the directory
+     * denoted by this abstract pathname. Returns `null` if this abstract pathname does
+     * not denote a directory, or if an I/O error occurs.
+     * @see java.nio.file.Files.newDirectoryStream
+     */
+    fun forFiles(filter: AmazeFileFilter?, contextProvider: ContextProvider,
+                 onFileFound: (AmazeFile) -> Unit): Unit? {
+        val ss = list(contextProvider) ?: return null
         for (s in ss) {
             val f = AmazeFile(s, this)
-            if (filter == null || filter.accept(f)) files.add(f)
+            if (filter == null || filter.accept(f)) {
+                onFileFound(f)
+            }
         }
-        return files.toTypedArray()
+        return Unit
     }
 
     fun getInputStream(contextProvider: ContextProvider): InputStream {
