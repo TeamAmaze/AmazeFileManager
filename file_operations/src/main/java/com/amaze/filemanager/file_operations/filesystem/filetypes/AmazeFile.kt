@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes
 
 import android.os.Parcel
@@ -134,7 +135,7 @@ class AmazeFile : Comparable<AmazeFile?> {
 
         object AmazeFileParceler : Parceler<AmazeFile> {
             override fun create(parcel: Parcel): AmazeFile =
-                    AmazeFile(parcel.readString() ?: "")
+                AmazeFile(parcel.readString() ?: "")
 
             override fun AmazeFile.write(parcel: Parcel, flags: Int) {
                 parcel.writeString(absolutePath)
@@ -257,7 +258,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * `child` pathname string is taken to denote either a directory or a file. If the
      * `child` pathname string is absolute then it is converted into a relative pathname in
      * a system-dependent way. If `parent` is the empty string then the new `AmazeFile
-    ` *  instance is created by converting `child` into an abstract pathname and
+     ` *  instance is created by converting `child` into an abstract pathname and
      * resolving the result against a system-dependent default directory. Otherwise each pathname
      * string is converted into an abstract pathname and the child abstract pathname is resolved
      * against the parent.
@@ -814,7 +815,9 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @see java.nio.file.Files.newDirectoryStream
      */
     fun listFiles(
-            filter: AmazeFilenameFilter?, contextProvider: ContextProvider): Array<AmazeFile>? {
+        filter: AmazeFilenameFilter?,
+        contextProvider: ContextProvider
+    ): Array<AmazeFile>? {
         val ss = list(contextProvider) ?: return null
         val files = ArrayList<AmazeFile>()
         for (s in ss) if (filter == null || filter.accept(this, s)) files.add(AmazeFile(s!!, this))
@@ -888,8 +891,10 @@ class AmazeFile : Comparable<AmazeFile?> {
             return false
         }
         val parent = canonFile.parentFile
-        return (parent != null && (parent.mkdirs(contextProvider) || parent.exists(contextProvider))
-                && canonFile.mkdir(contextProvider))
+        return (
+            parent != null && (parent.mkdirs(contextProvider) || parent.exists(contextProvider)) &&
+                canonFile.mkdir(contextProvider)
+            )
     }
     // Android-changed: Replaced generic platform info with Android specific one.
     /**
@@ -930,7 +935,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * precision. The argument will be truncated to fit the supported precision. If the operation
      * succeeds and no intervening operations on the file take place, then the next invocation of the
      * `[.lastModified]` method will return the (possibly truncated) `time
-    ` *  argument that was passed to this method.
+     ` *  argument that was passed to this method.
      *
      * @param time The new last-modified time, measured in milliseconds since the epoch (00:00:00 GMT,
      * January 1, 1970)
@@ -1205,7 +1210,11 @@ class AmazeFile : Comparable<AmazeFile?> {
             val name = prefix + java.lang.Long.toString(n) + suffix
             val f = AmazeFile(dir, name)
             if (name != f.name || f.isInvalid) {
-                if (System.getSecurityManager() != null) throw IOException("Unable to create temporary file") else throw IOException("Unable to create temporary file, $f")
+                if (System.getSecurityManager() != null) {
+                    throw IOException("Unable to create temporary file")
+                } else {
+                    throw IOException("Unable to create temporary file, $f")
+                }
             }
             return f
         }
@@ -1253,7 +1262,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @param prefix The prefix string to be used in generating the file's name; must be at least
      * three characters long
      * @param suffix The suffix string to be used in generating the file's name; may be `null
-    ` * , in which case the suffix `".tmp"` will be used
+     ` * , in which case the suffix `".tmp"` will be used
      * @param directory The directory in which the file is to be created, or `null` if the
      * default temporary-file directory is to be used
      * @return An abstract pathname denoting a newly-created empty file
@@ -1263,10 +1272,11 @@ class AmazeFile : Comparable<AmazeFile?> {
      */
     @Throws(IOException::class)
     fun createTempFile(
-            contextProvider: ContextProvider,
-            prefix: String,
-            suffix: String?,
-            directory: AmazeFile?): AmazeFile {
+        contextProvider: ContextProvider,
+        prefix: String,
+        suffix: String?,
+        directory: AmazeFile?
+    ): AmazeFile {
         require(prefix.length >= 3) { "Prefix string too short" }
 
         // Android-changed: Handle java.io.tmpdir changes.
@@ -1293,7 +1303,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @param prefix The prefix string to be used in generating the file's name; must be at least
      * three characters long
      * @param suffix The suffix string to be used in generating the file's name; may be `null
-    ` * , in which case the suffix `".tmp"` will be used
+     ` * , in which case the suffix `".tmp"` will be used
      * @return An abstract pathname denoting a newly-created empty file
      * @throws IllegalArgumentException If the `prefix` argument contains fewer than three
      * characters
@@ -1302,7 +1312,10 @@ class AmazeFile : Comparable<AmazeFile?> {
      */
     @Throws(IOException::class)
     fun createTempFile(
-            contextProvider: ContextProvider, prefix: String, suffix: String?): AmazeFile {
+        contextProvider: ContextProvider,
+        prefix: String,
+        suffix: String?
+    ): AmazeFile {
         return createTempFile(contextProvider, prefix, suffix, null)
     }
     /* -- Basic infrastructure -- */

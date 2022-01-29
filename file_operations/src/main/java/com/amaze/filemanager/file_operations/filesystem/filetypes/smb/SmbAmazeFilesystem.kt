@@ -17,23 +17,25 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.smb
 
 import android.net.Uri
 import android.text.TextUtils
 import android.util.Log
-import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.createWithDisableIpcSigningCheck
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
-import jcifs.smb.SmbFile
-import jcifs.smb.NtlmPasswordAuthenticator
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
 import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.SMB_URI_PREFIX
-import jcifs.smb.SmbException
+import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.CifsContexts.createWithDisableIpcSigningCheck
 import jcifs.SmbConstants
+import jcifs.smb.NtlmPasswordAuthenticator
+import jcifs.smb.SmbException
+import jcifs.smb.SmbFile
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
+import java.lang.Boolean.parseBoolean
 import java.lang.IllegalArgumentException
 import java.lang.IllegalStateException
 import java.net.MalformedURLException
@@ -46,7 +48,7 @@ import java.util.regex.Pattern
  * Relative paths are not supported
  * </ip></ip></password></user></ip></ip></password></user>
  */
-object SmbAmazeFilesystem: AmazeFilesystem() {
+object SmbAmazeFilesystem : AmazeFilesystem() {
     @JvmStatic
     val TAG = SmbAmazeFilesystem::class.java.simpleName
 
@@ -66,7 +68,8 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
             path
         }
         val uri = Uri.parse(processedPath)
-        val disableIpcSigningCheck = java.lang.Boolean.parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK))
+        val disableIpcSigningCheck =
+            parseBoolean(uri.getQueryParameter(PARAM_DISABLE_IPC_SIGNING_CHECK))
         val userInfo = uri.userInfo
         val noExtraInfoPath: String
         noExtraInfoPath = if (path.contains("?")) {
@@ -75,7 +78,7 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
             path
         }
         val context = createWithDisableIpcSigningCheck(path, disableIpcSigningCheck)
-                .withCredentials(createFrom(userInfo))
+            .withCredentials(createFrom(userInfo))
         return SmbFile(noExtraInfoPath, context)
     }
 
@@ -137,7 +140,9 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
     }
 
     override fun prefixLength(path: String): Int {
-        require(path.length != 0) { "This should never happen, all paths must start with SMB prefix" }
+        require(path.isNotEmpty()) {
+            "This should never happen, all paths must start with SMB prefix"
+        }
         val matcherMetadata = METADATA_PATTERN.matcher(path)
         if (matcherMetadata.find()) {
             return matcherMetadata.end()
@@ -362,7 +367,11 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
         }
     }
 
-    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+    override fun rename(
+        file1: AmazeFile,
+        file2: AmazeFile,
+        contextProvider: ContextProvider
+    ): Boolean {
         return try {
             create(file1.path).renameTo(create(file2.path))
             true

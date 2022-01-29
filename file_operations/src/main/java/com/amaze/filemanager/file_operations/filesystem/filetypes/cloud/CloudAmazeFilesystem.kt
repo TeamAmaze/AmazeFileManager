@@ -17,11 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud
 
 import android.util.Log
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
 import com.cloudrail.si.types.CloudMetaData
 import java.io.File
@@ -34,7 +35,9 @@ import java.util.*
 abstract class CloudAmazeFilesystem : AmazeFilesystem() {
     abstract val account: Account
     override fun prefixLength(path: String): Int {
-        require(path.length != 0) { "This should never happen, all paths must start with OTG prefix" }
+        require(path.isNotEmpty()) {
+            "This should never happen, all paths must start with OTG prefix"
+        }
         return super.prefixLength(path)
     }
 
@@ -182,7 +185,11 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
         return true // This seems to never fail
     }
 
-    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+    override fun rename(
+        file1: AmazeFile,
+        file2: AmazeFile,
+        contextProvider: ContextProvider
+    ): Boolean {
         val account = account.account ?: return false
         account.move(removePrefix(file1.path), removePrefix(file2.path))
         return true // This seems to never fail

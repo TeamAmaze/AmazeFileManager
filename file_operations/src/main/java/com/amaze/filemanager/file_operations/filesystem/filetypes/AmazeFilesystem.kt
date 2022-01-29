@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes
 
 import java.io.File
@@ -172,7 +173,7 @@ abstract class AmazeFilesystem {
 
     /**
      * Delete the file or directory denoted by the given abstract pathname, returning `true
-    ` *  if and only if the operation succeeds.
+     ` *  if and only if the operation succeeds.
      */
     abstract fun delete(f: AmazeFile, contextProvider: ContextProvider): Boolean
 
@@ -184,7 +185,9 @@ abstract class AmazeFilesystem {
     abstract fun list(f: AmazeFile, contextProvider: ContextProvider): Array<String>?
     abstract fun getInputStream(f: AmazeFile, contextProvider: ContextProvider): InputStream?
     abstract fun getOutputStream(
-            f: AmazeFile, contextProvider: ContextProvider): OutputStream?
+        f: AmazeFile,
+        contextProvider: ContextProvider
+    ): OutputStream?
 
     /**
      * Create a new directory denoted by the given abstract pathname, returning `true` if
@@ -197,7 +200,10 @@ abstract class AmazeFilesystem {
      * pathname, returning `true` if and only if the operation succeeds.
      */
     abstract fun rename(
-            file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean
+        file1: AmazeFile,
+        file2: AmazeFile,
+        contextProvider: ContextProvider
+    ): Boolean
 
     /**
      * Set the last-modified time of the file or directory denoted by the given abstract pathname,
@@ -356,8 +362,10 @@ abstract class AmazeFilesystem {
         }
 
         init {
-            useCanonCaches = getBooleanProperty("sun.io.useCanonCaches", useCanonCaches)
-            useCanonPrefixCache = getBooleanProperty("sun.io.useCanonPrefixCache", useCanonPrefixCache)
+            useCanonCaches =
+                getBooleanProperty("sun.io.useCanonCaches", useCanonCaches)
+            useCanonPrefixCache =
+                getBooleanProperty("sun.io.useCanonPrefixCache", useCanonPrefixCache)
         }
     }
 }

@@ -17,11 +17,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.Account
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.CloudAmazeFilesystem
 
 object OnedriveAmazeFilesystem : CloudAmazeFilesystem() {
     @JvmStatic

@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.file_operations.filesystem.filetypes.file
 
 import android.content.ContentValues
@@ -35,7 +36,7 @@ import java.io.*
  * This is in in essence calls to UnixFilesystem, but that class is not public so all calls must go
  * through java.io.File
  */
-object FileAmazeFilesystem: AmazeFilesystem() {
+object FileAmazeFilesystem : AmazeFilesystem() {
     @JvmStatic
     val TAG = FileAmazeFilesystem::class.java.simpleName
 
@@ -159,7 +160,8 @@ object FileAmazeFilesystem: AmazeFilesystem() {
             // Try with Storage Access Framework.
             if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                 val document = getDocumentFile(
-                        f, true, context, get(context))
+                    f, true, context, get(context)
+                )
                 if (document != null && document.delete()) {
                     return true
                 }
@@ -174,8 +176,9 @@ object FileAmazeFilesystem: AmazeFilesystem() {
 
                 // Delete the created entry, such that content provider will delete the file.
                 resolver.delete(
-                        MediaStore.Files.getContentUri("external"),
-                        MediaStore.MediaColumns.DATA + "=?", arrayOf(f.absolutePath))
+                    MediaStore.Files.getContentUri("external"),
+                    MediaStore.MediaColumns.DATA + "=?", arrayOf(f.absolutePath)
+                )
             }
             return !f.exists(contextProvider)
         }
@@ -185,9 +188,12 @@ object FileAmazeFilesystem: AmazeFilesystem() {
         val context = contextProvider.getContext()
 
         // Try with Storage Access Framework.
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isOnExtSdCard(f, context)) {
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            isOnExtSdCard(f, context)
+        ) {
             val document = getDocumentFile(
-                    f, false, context, get(context)) ?: return true
+                f, false, context, get(context)
+            ) ?: return true
             if (document.delete()) {
                 return true
             }
@@ -198,7 +204,7 @@ object FileAmazeFilesystem: AmazeFilesystem() {
             val resolver = context!!.contentResolver
             try {
                 val uri = MediaStoreHack.getUriFromFile(f.absolutePath, context)
-                        ?: return false
+                    ?: return false
                 resolver.delete(uri, null, null)
                 return !f.exists(contextProvider)
             } catch (e: SecurityException) {
@@ -230,7 +236,8 @@ object FileAmazeFilesystem: AmazeFilesystem() {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
                     // Storage Access Framework
                     val targetDocument = getDocumentFile(
-                            f, false, context, get(context)) ?: return null
+                        f, false, context, get(context)
+                    ) ?: return null
                     return context.contentResolver.openOutputStream(targetDocument.uri)
                 } else if (Build.VERSION.SDK_INT == Build.VERSION_CODES.KITKAT) {
                     // Workaround for Kitkat ext SD card
@@ -251,10 +258,12 @@ object FileAmazeFilesystem: AmazeFilesystem() {
         val context = contextProvider.getContext()
 
         // Try with Storage Access Framework.
-        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && isOnExtSdCard(f, context)) {
+        if (context != null && Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP &&
+            isOnExtSdCard(f, context)
+        ) {
             val preferenceUri = get(context)
             val document = getDocumentFile(f, true, context, preferenceUri)
-                    ?: return false
+                ?: return false
             // getDocumentFile implicitly creates the directory.
             return document.exists()
         }
@@ -269,7 +278,11 @@ object FileAmazeFilesystem: AmazeFilesystem() {
         } else false
     }
 
-    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+    override fun rename(
+        file1: AmazeFile,
+        file2: AmazeFile,
+        contextProvider: ContextProvider
+    ): Boolean {
         return File(file1.path).renameTo(File(file2.path))
     }
 
