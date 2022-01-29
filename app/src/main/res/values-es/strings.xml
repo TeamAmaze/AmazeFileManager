@@ -669,7 +669,6 @@
     <string name="disableIpcSignature">Desactive la verificación de firma de IPC (para servidores SMBv1 heredados - ¡INSEGURO!) </string>
     <string name="cannot_delete_file">No se puede eliminar el archivo</string>
     <string name="cannot_delete_file_with_reason">No se puede eliminar el archivo - %s</string>
-    <string name="cannot_rename_file">No se puede renombrar el archivo %s - %s</string>
     <string name="cannot_read_directory">No se puede leer el  directorio %s - %s</string>
     <string name="just_once">Sólo una vez</string>
     <string name="always">Siempre</string>

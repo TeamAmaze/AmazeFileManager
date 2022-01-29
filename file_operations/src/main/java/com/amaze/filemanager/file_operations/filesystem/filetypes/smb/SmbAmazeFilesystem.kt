@@ -362,9 +362,9 @@ object SmbAmazeFilesystem: AmazeFilesystem() {
         }
     }
 
-    override fun rename(f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean {
+    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
         return try {
-            create(f1!!.path).renameTo(create(f2!!.path))
+            create(file1.path).renameTo(create(file2.path))
             true
         } catch (e: SmbException) {
             Log.e(TAG, "Error getting SMB files for a rename", e)

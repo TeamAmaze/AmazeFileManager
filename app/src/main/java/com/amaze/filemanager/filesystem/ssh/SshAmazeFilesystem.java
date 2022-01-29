@@ -1,16 +1,23 @@
 package com.amaze.filemanager.filesystem.ssh;
 
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_FAILED_OPS;
+import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER_GENERAL;
 import static net.schmizz.sshj.sftp.FileMode.Type.DIRECTORY;
 import static net.schmizz.sshj.sftp.FileMode.Type.REGULAR;
 
+import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
@@ -358,17 +365,27 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
   }
 
   @Override
-  public boolean rename(AmazeFile f1, AmazeFile f2, @NonNull ContextProvider contextProvider) {
+  public boolean rename(AmazeFile file1, AmazeFile file2, @NonNull ContextProvider contextProvider) {
+    @Nullable final Context context = contextProvider.getContext();
+
+    if(context == null) {
+      Log.e(TAG, "Error getting context for renaming ssh file");
+      return false;
+    }
+
     Boolean retval =
-            SshClientUtils.<Boolean>execute(
-                    new SFtpClientTemplate(f1.getPath()) {
+            SshClientUtils.execute(
+                    new SFtpClientTemplate<Boolean>(file1.getPath()) {
                       @Override
-                      public Boolean execute(@NonNull SFTPClient client) throws IOException {
+                      public Boolean execute(@NonNull SFTPClient client) {
                         try {
-                          client.rename(f1.getPath(), f2.getPath());
+                          client.rename(
+                                  SshClientUtils.extractRemotePathFrom(file1.getPath()),
+                                  SshClientUtils.extractRemotePathFrom(file2.getPath())
+                          );
                           return true;
                         } catch (IOException e) {
-                          Log.e(TAG, "Error renaming over SFTP", e);
+                          Log.e(TAG, "Error renaming ssh file", e);
                           return false;
                         }
                       }

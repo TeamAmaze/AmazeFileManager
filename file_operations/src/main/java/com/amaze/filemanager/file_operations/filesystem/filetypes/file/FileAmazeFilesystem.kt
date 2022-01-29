@@ -269,8 +269,8 @@ object FileAmazeFilesystem: AmazeFilesystem() {
         } else false
     }
 
-    override fun rename(f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean {
-        return File(f1.path).renameTo(File(f2.path))
+    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+        return File(file1.path).renameTo(File(file2.path))
     }
 
     override fun setLastModifiedTime(f: AmazeFile, time: Long): Boolean {

@@ -176,26 +176,23 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
     }
 
     override fun createDirectory(f: AmazeFile, contextProvider: ContextProvider): Boolean {
-        val account = account.account
-        Objects.requireNonNull(account)
+        val account = account.account ?: return false
         val noPrefixPath = removePrefix(f.path)
-        account!!.createFolder(noPrefixPath)
+        account.createFolder(noPrefixPath)
         return true // This seems to never fail
     }
 
-    override fun rename(f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean {
-        val account = account.account
-        Objects.requireNonNull(account)
-        account!!.move(removePrefix(f1.path), removePrefix(f2.path))
+    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+        val account = account.account ?: return false
+        account.move(removePrefix(file1.path), removePrefix(file2.path))
         return true // This seems to never fail
     }
 
     override fun setLastModifiedTime(f: AmazeFile, time: Long): Boolean {
-        val account = account.account
-        Objects.requireNonNull(account)
+        val account = account.account ?: return false
         val noPrefixPath = removePrefix(f.path)
         // TODO check that this actually returns seconds since epoch
-        account!!.getMetadata(noPrefixPath).contentModifiedAt = time
+        account.getMetadata(noPrefixPath).contentModifiedAt = time
         return true // This seems to never fail
     }
 
@@ -204,23 +201,20 @@ abstract class CloudAmazeFilesystem : AmazeFilesystem() {
     }
 
     override fun getTotalSpace(f: AmazeFile, contextProvider: ContextProvider): Long {
-        val account = account.account
-        Objects.requireNonNull(account)
-        val spaceAllocation = account!!.allocation
+        val account = account.account ?: return 0
+        val spaceAllocation = account.allocation
         return spaceAllocation.total
     }
 
     override fun getFreeSpace(f: AmazeFile): Long {
-        val account = account.account
-        Objects.requireNonNull(account)
-        val spaceAllocation = account!!.allocation
+        val account = account.account ?: return 0
+        val spaceAllocation = account.allocation
         return spaceAllocation.total - spaceAllocation.used
     }
 
     override fun getUsableSpace(f: AmazeFile): Long {
-        val account = account.account
-        Objects.requireNonNull(account)
-        val spaceAllocation = account!!.allocation
+        val account = account.account ?: return 0
+        val spaceAllocation = account.allocation
         return spaceAllocation.total - spaceAllocation.used
     }
 

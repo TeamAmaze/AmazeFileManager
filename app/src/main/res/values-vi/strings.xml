@@ -678,7 +678,6 @@
     <string name="disableIpcSignature">Tắt kiểm tra ký IPC (Đối với máy chủ SMBv1 cũ - KHÔNG AN TOÀN!)</string>
     <string name="cannot_delete_file">Không thể xóa tập tin</string>
     <string name="cannot_delete_file_with_reason">Không thể xóa tập tin - %s </string>
-    <string name="cannot_rename_file">Không thể đổi tên tập tin %s - %s</string>
     <string name="cannot_read_directory">Không thể đọc thư mục %s - %s</string>
     <string name="just_once">Chỉ một lần</string>
     <string name="always">Luôn luôn</string>

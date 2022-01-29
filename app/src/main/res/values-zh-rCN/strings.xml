@@ -651,7 +651,6 @@
     <string name="error_details_headline">详情：</string>
     <string name="cannot_delete_file">无法删除文件</string>
     <string name="cannot_delete_file_with_reason">无法删除文件 - %s</string>
-    <string name="cannot_rename_file">无法重命名文件%s-%s</string>
     <string name="cannot_read_directory">无法读取文件夹%s-%s</string>
     <string name="just_once">仅本次</string>
     <string name="always">总是</string>

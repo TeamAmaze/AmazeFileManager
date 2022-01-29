@@ -682,7 +682,6 @@
     <string name="disableIpcSignature">IPC-aláírás ellenőrzés letiltása (Örökölt SMBv1-kiszolgálókhoz - UNSAFE!)</string>
     <string name="cannot_delete_file">Nem lehet törölni a fájlt</string>
     <string name="cannot_delete_file_with_reason">Nem lehet törölni a fájlt - %s </string>
-    <string name="cannot_rename_file">Nem lehet átnevezni a fájlt %s - %s</string>
     <string name="cannot_read_directory">Nem lehet olvasni a könyvtárat %s - %s</string>
     <string name="just_once">Csak egyszer</string>
     <string name="always">Mindig</string>

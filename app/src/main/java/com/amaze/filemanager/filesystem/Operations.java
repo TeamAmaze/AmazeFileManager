@@ -68,7 +68,7 @@ import jcifs.smb.SmbException;
 
 public class Operations {
 
-  private static Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
+  private static final Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
 
   private static final String TAG = Operations.class.getSimpleName();
 
@@ -120,7 +120,7 @@ public class Operations {
       @NonNull final ErrorCallBack errorCallBack) {
 
     new AsyncTask<Void, Void, Void>() {
-      private Function<DocumentFile, Void> safCreateDirectory =
+      private final Function<DocumentFile, Void> safCreateDirectory =
           input -> {
             if (input != null && input.isDirectory()) {
               boolean result = false;
@@ -251,9 +251,9 @@ public class Operations {
 
     new AsyncTask<Void, Void, Void>() {
 
-      private DataUtils dataUtils = DataUtils.getInstance();
+      private final DataUtils dataUtils = DataUtils.getInstance();
 
-      private Function<DocumentFile, Void> safCreateFile =
+      private final Function<DocumentFile, Void> safCreateFile =
           input -> {
             if (input != null && input.isDirectory()) {
               boolean result = false;
@@ -425,18 +425,6 @@ public class Operations {
 
       private final DataUtils dataUtils = DataUtils.getInstance();
 
-      private Function<DocumentFile, Void> safRenameFile =
-          input -> {
-            boolean result = false;
-            try {
-              result = input.renameTo(newFile.getName(context));
-            } catch (Exception e) {
-              Log.w(getClass().getSimpleName(), "Failed to rename", e);
-            }
-            errorCallBack.done(newFile, result);
-            return null;
-          };
-
       @Override
       protected Void doInBackground(Void... params) {
         // check whether file names for new file are valid or recursion occurs.
@@ -450,17 +438,17 @@ public class Operations {
           errorCallBack.exists(newFile);
           return null;
         }
+        AmazeFile amazeFile = new AmazeFile(oldFile.getPath());
+        // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
+        AmazeFile amazeFile1 = new AmazeFile(newFile.getPath());
 
         if (oldFile.isSmb()) {
-          AmazeFile smbFile = new AmazeFile(oldFile.getPath());
-          // FIXME: smbFile1 should be created from SmbUtil too so it can be mocked
-          AmazeFile smbFile1 = new AmazeFile(newFile.getPath());
           if (newFile.exists()) {
             errorCallBack.exists(newFile);
             return null;
           }
-          smbFile.renameTo(smbFile1, () -> context);
-          if (!smbFile.exists(() -> context) && smbFile1.exists(() -> context)) {
+          amazeFile.renameTo(amazeFile1, () -> context);
+          if (!amazeFile.exists(() -> context) && amazeFile1.exists(() -> context)) {
             errorCallBack.done(newFile, true);
             return null;
           } else {
@@ -474,104 +462,46 @@ public class Operations {
               Log.e(TAG, "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
             }
           }
+          return null;
         } else if (oldFile.isSftp()) {
-          SshClientUtils.execute(
-              new SFtpClientTemplate<Void>(oldFile.getPath()) {
-                @Override
-                public Void execute(@NonNull SFTPClient client) {
-                  try {
-                    client.rename(
-                        SshClientUtils.extractRemotePathFrom(oldFile.getPath()),
-                        SshClientUtils.extractRemotePathFrom(newFile.getPath()));
-                    errorCallBack.done(newFile, true);
-                  } catch (IOException e) {
-                    String errmsg =
-                        context.getString(
-                            R.string.cannot_rename_file,
-                            HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
-                            e.getMessage());
-                    Log.e(TAG, errmsg);
-                    ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
-                    // Nobody care the size or actual permission here. Put a simple "r" and zero
-                    // here
-                    failedOps.add(
-                        new HybridFileParcelable(
+          boolean result = amazeFile.renameTo(amazeFile1, () -> context);
+
+          if(!result) {
+            ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
+            // Nobody care the size or actual permission here. Put a simple "r" and zero
+            // here
+            failedOps.add(
+                    new HybridFileParcelable(
                             oldFile.getPath(),
                             "r",
                             oldFile.lastModified(),
                             0,
                             oldFile.isDirectory(context)));
-                    context.sendBroadcast(
-                        new Intent(TAG_INTENT_FILTER_GENERAL)
+            context.sendBroadcast(
+                    new Intent(TAG_INTENT_FILTER_GENERAL)
                             .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
-                    errorCallBack.done(newFile, false);
-                  }
-                  return null;
-                }
-              });
-        } else if (oldFile.isDropBoxFile()) {
-          CloudStorage cloudStorageDropbox = DropboxAccount.INSTANCE.getAccount();
-          try {
-            cloudStorageDropbox.move(
-                CloudUtil.stripPath(OpenMode.DROPBOX, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.DROPBOX, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            e.printStackTrace();
-            errorCallBack.done(newFile, false);
           }
-        } else if (oldFile.isBoxFile()) {
-          CloudStorage cloudStorageBox = BoxAccount.INSTANCE.getAccount();
-          try {
-            cloudStorageBox.move(
-                CloudUtil.stripPath(OpenMode.BOX, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.BOX, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            e.printStackTrace();
-            errorCallBack.done(newFile, false);
-          }
-        } else if (oldFile.isOneDriveFile()) {
-          CloudStorage cloudStorageOneDrive = OnedriveAccount.INSTANCE.getAccount();
-          try {
-            cloudStorageOneDrive.move(
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.ONEDRIVE, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            e.printStackTrace();
-            errorCallBack.done(newFile, false);
-          }
-        } else if (oldFile.isGoogleDriveFile()) {
-          CloudStorage cloudStorageGdrive = GoogledriveAccount.INSTANCE.getAccount();
-          try {
-            cloudStorageGdrive.move(
-                CloudUtil.stripPath(OpenMode.GDRIVE, oldFile.getPath()),
-                CloudUtil.stripPath(OpenMode.GDRIVE, newFile.getPath()));
-            errorCallBack.done(newFile, true);
-          } catch (Exception e) {
-            e.printStackTrace();
-            errorCallBack.done(newFile, false);
-          }
+
+          errorCallBack.done(newFile, result);
+        } else if (oldFile.isDropBoxFile() || oldFile.isBoxFile() || oldFile.isOneDriveFile()
+                || oldFile.isGoogleDriveFile()) {
+          boolean result = amazeFile.renameTo(amazeFile1, () -> context);
+          errorCallBack.done(newFile, result);
         } else if (oldFile.isOtgFile()) {
           if (checkOtgNewFileExists(newFile, context)) {
             errorCallBack.exists(newFile);
             return null;
           }
-          safRenameFile.apply(OTGUtil.getDocumentFile(oldFile.getPath(), context, false));
+          boolean result = amazeFile.renameTo(amazeFile1, () -> context);
+          errorCallBack.done(newFile, result);
           return null;
         } else if (oldFile.isDocumentFile()) {
           if (checkDocumentFileNewFileExists(newFile, context)) {
             errorCallBack.exists(newFile);
             return null;
           }
-          safRenameFile.apply(
-              OTGUtil.getDocumentFile(
-                  oldFile.getPath(),
-                  SafRootHolder.getUriRoot(),
-                  context,
-                  OpenMode.DOCUMENT_FILE,
-                  false));
+          boolean result = amazeFile.renameTo(amazeFile1, () -> context);
+          errorCallBack.done(newFile, result);
           return null;
         } else {
           File file = new File(oldFile.getPath());

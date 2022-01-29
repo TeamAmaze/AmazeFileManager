@@ -677,7 +677,6 @@
     <string name="disableIpcSignature">Nonaktifkan pemeriksaaan tanda tangan IPC (Untuk server SMBv1 lama - TIDAK AMAN!)</string>
     <string name="cannot_delete_file">Tidak bisa menghapus berkas</string>
     <string name="cannot_delete_file_with_reason">Tidak bisa menghapus berkas - %s </string>
-    <string name="cannot_rename_file">Tidak bisa mengubah nama berkas %s - %s</string>
     <string name="cannot_read_directory">Tidak bisa membaca direktori %s - %s</string>
     <string name="just_once">Hanya Sekali</string>
     <string name="always">Selalu</string>

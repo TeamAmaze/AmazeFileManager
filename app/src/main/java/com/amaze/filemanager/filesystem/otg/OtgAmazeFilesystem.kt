@@ -1,12 +1,12 @@
 package com.amaze.filemanager.filesystem.otg
 
 import android.util.Log
-import com.amaze.filemanager.utils.OTGUtil.getDocumentFile
-import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
+import com.amaze.filemanager.utils.OTGUtil
+import com.amaze.filemanager.utils.OTGUtil.getDocumentFile
 import java.io.*
-import java.util.ArrayList
 
 object OtgAmazeFilesystem : AmazeFilesystem() {
     @JvmStatic
@@ -162,19 +162,23 @@ object OtgAmazeFilesystem : AmazeFilesystem() {
         }
         val context = contextProvider.getContext() ?: return false
         val parent = f.parent ?: return false
-        val parentDirectory = getDocumentFile(parent, context, true)
-        if (parentDirectory!!.isDirectory) {
+        val parentDirectory = getDocumentFile(parent, context, true) ?: return false
+        if (parentDirectory.isDirectory) {
             parentDirectory.createDirectory(f.name)
             return true
         }
         return false
     }
 
-    override fun rename(f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean {
-        val context = contextProvider.getContext()
-        val contentResolver = context!!.contentResolver
-        val documentSourceFile = getDocumentFile(f1.path, context, true)
-        return documentSourceFile!!.renameTo(f2.path)
+    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+        val context = contextProvider.getContext() ?: return false
+        val documentSourceFile = getDocumentFile(file1.path, context, false) ?: return false
+        return try {
+            documentSourceFile.renameTo(file2.name)
+        } catch (e: UnsupportedOperationException) {
+            Log.e(TAG, "Error renaming OTG file", e)
+            false
+        }
     }
 
     override fun setLastModifiedTime(f: AmazeFile, time: Long): Boolean {

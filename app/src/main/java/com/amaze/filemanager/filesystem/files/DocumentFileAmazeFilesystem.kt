@@ -11,6 +11,7 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvide
 import com.amaze.filemanager.filesystem.FileProperties.getDeviceStorageRemainingSpace
 import com.amaze.filemanager.filesystem.SafRootHolder.uriRoot
 import com.amaze.filemanager.filesystem.SafRootHolder.volumeLabel
+import com.amaze.filemanager.filesystem.otg.OtgAmazeFilesystem
 import com.amaze.filemanager.utils.OTGUtil.getDocumentFile
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -172,12 +173,28 @@ object DocumentFileAmazeFilesystem: AmazeFilesystem() {
         return false
     }
 
-    override fun rename(f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean {
-        TODO("Not yet implemented")
+    override fun rename(file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean {
+        val context = contextProvider.getContext() ?: return false
+        val uriRoot = uriRoot ?: return false
+
+        val documentFile = getDocumentFile(
+                file1.path,
+                uriRoot,
+                context,
+                OpenMode.DOCUMENT_FILE,
+                false
+        ) ?: return false
+
+        return try {
+            documentFile.renameTo(file2.name)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error renaming DocumentFile file", e)
+            false
+        }
     }
 
     override fun setLastModifiedTime(f: AmazeFile, time: Long): Boolean {
-        TODO("Not yet implemented")
+        return false //Can't set
     }
 
     override fun setReadOnly(f: AmazeFile): Boolean {

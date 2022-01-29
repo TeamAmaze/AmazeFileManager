@@ -659,7 +659,6 @@ Wi-Fiに接続する必要があります。\n\n
     <string name="crash_report_copied">クラッシュ報告がクリップボードにコピーしました</string>
     <string name="cannot_delete_file">ファイルを削除できません</string>
     <string name="cannot_delete_file_with_reason">ファイルを削除できません - %s </string>
-    <string name="cannot_rename_file">ファイル %s 名前を変更できません - %s</string>
     <string name="just_once">一回だけ</string>
     <string name="always">常に</string>
     <string name="choose_different_app">別にAppを選ぶ</string>

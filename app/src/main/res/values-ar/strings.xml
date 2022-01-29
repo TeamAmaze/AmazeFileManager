@@ -664,7 +664,6 @@
     <string name="disableIpcSignature">الغاء اتاحة التحقق من توقيع IPC (بالنسبة لوحدات خدمة SMBv1 القديمة-UNSAFE !) </string>
     <string name="cannot_delete_file">لا يمكن حذف الملف   </string>
     <string name="cannot_delete_file_with_reason">لا يمكن حذف الملف-%s   </string>
-    <string name="cannot_rename_file">لا يمكن اعادة تسمية الملف %s-%s </string>
     <string name="cannot_read_directory">لا يمكن قراءة الدليل %s-%s </string>
     <string name="just_once">مرة واحدة فقط </string>
     <string name="always">دائما </string>

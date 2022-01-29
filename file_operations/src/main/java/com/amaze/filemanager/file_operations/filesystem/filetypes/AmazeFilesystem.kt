@@ -197,7 +197,7 @@ abstract class AmazeFilesystem {
      * pathname, returning `true` if and only if the operation succeeds.
      */
     abstract fun rename(
-            f1: AmazeFile, f2: AmazeFile, contextProvider: ContextProvider): Boolean
+            file1: AmazeFile, file2: AmazeFile, contextProvider: ContextProvider): Boolean
 
     /**
      * Set the last-modified time of the file or directory denoted by the given abstract pathname,
