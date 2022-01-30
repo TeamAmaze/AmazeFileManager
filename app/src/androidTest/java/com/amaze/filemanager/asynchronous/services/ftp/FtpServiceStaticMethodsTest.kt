@@ -64,7 +64,7 @@ class FtpServiceStaticMethodsTest {
     @Test
     fun testGetLocalInetAddressMustBeAPAddress() {
         ApplicationProvider.getApplicationContext<Context>().run {
-            if (!FtpService.isEnabledWifiHotspot(this))
+            if (!FtpService.isConnectedToLocalNetwork(this))
                 fail("Please enable Wi-Fi hotspot on your device to run this test!")
 
             assertEquals(
