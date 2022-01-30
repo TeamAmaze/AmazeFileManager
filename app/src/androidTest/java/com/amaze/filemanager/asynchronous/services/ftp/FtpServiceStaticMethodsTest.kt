@@ -49,7 +49,7 @@ class FtpServiceStaticMethodsTest {
 
             FtpService.getLocalInetAddress(this).also {
                 assertNotNull(it)
-                assertNotNull(it!!.hostAddress)
+                assertNotNull(it?.hostAddress)
             }
         }
     }
@@ -69,7 +69,7 @@ class FtpServiceStaticMethodsTest {
 
             assertEquals(
                 "192.168.43.1",
-                FtpService.getLocalInetAddress(this)!!.hostAddress
+                FtpService.getLocalInetAddress(this)?.hostAddress
             )
         }
     }
