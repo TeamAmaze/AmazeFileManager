@@ -29,6 +29,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ServiceTestRule
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.utils.ObtainableServiceBinder
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.runBlocking
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
@@ -43,6 +45,9 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
 import java.security.SecureRandom
+import java.time.Duration
+import java.util.concurrent.TimeUnit
+import kotlin.time.ExperimentalTime
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("StringLiteralDuplication")
@@ -64,7 +69,7 @@ class FtpServiceEspressoTest {
     /**
      * Test FTP service
      */
-    @Test
+    @Test(timeout = 10_000)
     fun testFtpService() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
@@ -77,6 +82,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
+        while (!FtpService.isRunning());
         assertTrue(FtpService.isRunning())
         waitForServer()
         FTPClient().run {
@@ -89,7 +95,7 @@ class FtpServiceEspressoTest {
     /**
      * Test FTP service over SSL
      */
-    @Test
+    @Test(timeout = 10_000)
     fun testSecureFtpService() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
@@ -102,6 +108,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
+        while (!FtpService.isRunning());
         assertTrue(FtpService.isRunning())
         waitForServer()
 
@@ -115,7 +122,7 @@ class FtpServiceEspressoTest {
     /**
      * Test to ensure FTP service cannot login anonymously after username/password is set
      */
-    @Test
+    @Test(timeout = 10_000)
     fun testUsernameEnabledAnonymousCannotLogin() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
@@ -134,6 +141,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
+        while (!FtpService.isRunning());
         assertTrue(FtpService.isRunning())
         waitForServer()
 

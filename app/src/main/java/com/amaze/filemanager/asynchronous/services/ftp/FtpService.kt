@@ -63,6 +63,7 @@ import java.security.GeneralSecurityException
 import java.security.KeyStore
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
+import kotlin.concurrent.thread
 
 /**
  * Created by yashwanthreddyg on 09-06-2016.
@@ -98,8 +99,8 @@ class FtpService : Service(), Runnable {
                 return START_STICKY
             }
         }
-        serverThread = Thread(this)
-        serverThread!!.start()
+
+        serverThread = thread(block = this::run)
         val notification = FtpNotification.startNotification(applicationContext, isStartedByTile)
         startForeground(NotificationConstants.FTP_ID, notification)
         return START_NOT_STICKY
@@ -215,12 +216,13 @@ class FtpService : Service(), Runnable {
 
     override fun onDestroy() {
         wakeLock.release()
-        serverThread?.interrupt().also {
+        serverThread?.let { serverThread ->
+            serverThread.interrupt()
             // wait 10 sec for server thread to finish
-            serverThread!!.join(10000)
+            serverThread.join(10000)
 
-            if (!serverThread!!.isAlive) {
-                serverThread = null
+            if (!serverThread.isAlive) {
+                Companion.serverThread = null
             }
             server?.stop().also {
                 EventBus.getDefault().post(FtpReceiverActions.STOPPED)
@@ -296,9 +298,10 @@ class FtpService : Service(), Runnable {
          * Indicator whether FTP service is running
          */
         @JvmStatic
-        fun isRunning(): Boolean = server?.let {
-            !it.isStopped
-        } ?: false
+        fun isRunning(): Boolean {
+            val server = server ?: return false
+            return !server.isStopped
+        }
 
         /**
          * Is the device connected to local network, either Ethernet or Wifi?
