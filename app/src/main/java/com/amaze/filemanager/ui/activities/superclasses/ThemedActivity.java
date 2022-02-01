@@ -33,6 +33,7 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.app.ActivityManager;
+import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,12 +44,14 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
+  private int uiModeNight = -1;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +112,26 @@ public class ThemedActivity extends PreferenceActivity {
 
     if (getBoolean(PREFERENCE_COLORED_NAVIGATION) && SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+    }
+  }
+
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    final int newUiModeNight = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    // System theme change
+    if (uiModeNight != newUiModeNight
+        && getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
+      uiModeNight = newUiModeNight;
+
+      getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
+      // Recreate activity, handling saved state
+      //
+      // Not smooth, but will only be called if the user changes the system theme, not
+      // the app theme.
+      recreate();
     }
   }
 
@@ -273,6 +296,8 @@ public class ThemedActivity extends PreferenceActivity {
   @Override
   protected void onResume() {
     super.onResume();
+
+    uiModeNight = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     setTheme();
   }
 }
