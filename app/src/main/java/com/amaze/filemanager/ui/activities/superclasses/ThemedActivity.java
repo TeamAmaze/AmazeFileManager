@@ -122,16 +122,17 @@ public class ThemedActivity extends PreferenceActivity {
     final int newUiModeNight = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
 
     // System theme change
-    if (uiModeNight != newUiModeNight
-        && getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
+    if (uiModeNight != newUiModeNight) {
       uiModeNight = newUiModeNight;
 
-      getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
-      // Recreate activity, handling saved state
-      //
-      // Not smooth, but will only be called if the user changes the system theme, not
-      // the app theme.
-      recreate();
+      if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
+        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
+        // Recreate activity, handling saved state
+        //
+        // Not smooth, but will only be called if the user changes the system theme, not
+        // the app theme.
+        recreate();
+      }
     }
   }
 
