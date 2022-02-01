@@ -57,6 +57,8 @@ public class PreferenceActivity extends BasicActivity {
 
   @Override
   public void onCreate(final Bundle savedInstanceState) {
+    // Fragments are created before the super call returns, so we must
+    // initialize sharedPrefs before the super call otherwise it cannot be used by fragments
     sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
     super.onCreate(savedInstanceState);
