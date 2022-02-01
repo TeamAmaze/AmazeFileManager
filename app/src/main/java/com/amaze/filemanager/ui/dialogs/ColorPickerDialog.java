@@ -46,6 +46,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
 import androidx.core.util.Pair;
 import androidx.preference.Preference.BaseSavedState;
 import androidx.preference.PreferenceDialogFragmentCompat;
@@ -281,6 +282,18 @@ public class ColorPickerDialog extends PreferenceDialogFragmentCompat {
       listener.onAcceptedConfig();
     } else {
       selectedIndex = sharedPrefs.getInt(PreferencesConstants.PREFERENCE_COLOR_CONFIG, NO_DATA);
+    }
+  }
+
+  public static @StringRes int getTitle(int index) {
+    if (index == RANDOM_INDEX) {
+      return R.string.random;
+    } else if (index == CUSTOM_INDEX) {
+      return R.string.custom;
+    } else if (index >= 0 && index < COLORS.length) {
+      return COLORS[index].first;
+    } else {
+      return COLORS[0].first;
     }
   }
 

@@ -32,7 +32,6 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
-import android.app.Activity;
 import android.app.ActivityManager;
 import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
@@ -52,6 +51,7 @@ import androidx.core.content.ContextCompat;
 
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
+  private int uiModeNight = -1;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -85,27 +85,6 @@ public class ThemedActivity extends PreferenceActivity {
     setTheme();
   }
 
-  @Override
-  public void onConfigurationChanged(@NonNull Configuration newConfig) {
-    super.onConfigurationChanged(newConfig);
-
-    if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
-      getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
-      restartPC(this);
-    }
-  }
-
-  public static void restartPC(final Activity activity) {
-    if (activity == null) return;
-
-    final int enter_anim = android.R.anim.fade_in;
-    final int exit_anim = android.R.anim.fade_out;
-    activity.overridePendingTransition(enter_anim, exit_anim);
-    activity.finish();
-    activity.overridePendingTransition(enter_anim, exit_anim);
-    activity.startActivity(activity.getIntent());
-  }
-
   /**
    * Set status bar and navigation bar colors based on sdk
    *
@@ -133,6 +112,27 @@ public class ThemedActivity extends PreferenceActivity {
 
     if (getBoolean(PREFERENCE_COLORED_NAVIGATION) && SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
       window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+    }
+  }
+
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    final int newUiModeNight = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    // System theme change
+    if (uiModeNight != newUiModeNight) {
+      uiModeNight = newUiModeNight;
+
+      if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
+        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
+        // Recreate activity, handling saved state
+        //
+        // Not smooth, but will only be called if the user changes the system theme, not
+        // the app theme.
+        recreate();
+      }
     }
   }
 
@@ -297,6 +297,8 @@ public class ThemedActivity extends PreferenceActivity {
   @Override
   protected void onResume() {
     super.onResume();
+
+    uiModeNight = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     setTheme();
   }
 }

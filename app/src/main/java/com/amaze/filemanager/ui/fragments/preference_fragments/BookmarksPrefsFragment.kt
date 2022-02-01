@@ -20,14 +20,12 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.view.LayoutInflater
 import android.widget.EditText
 import androidx.preference.Preference
-import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.PreferenceManager
+import androidx.preference.PreferenceCategory
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
@@ -36,74 +34,63 @@ import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.databinding.DialogTwoedittextsBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.views.preference.PathSwitchPreference
 import com.amaze.filemanager.utils.DataUtils
 import com.amaze.filemanager.utils.SimpleTextWatcher
-import java.util.*
+import java.util.HashMap
 
-/** @author Emmanuel on 17/4/2017, at 22:49.
- */
-class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickListener {
+class BookmarksPrefsFragment : BasePrefsFragment() {
+    override val title = R.string.show_bookmarks_pref
 
-    private var sharedPrefs: SharedPreferences? = null
+    companion object {
+        private val dataUtils = DataUtils.getInstance()!!
+    }
+
     private val position: MutableMap<Preference, Int> = HashMap()
-    private var dataUtils: DataUtils? = null
-    private var utilsHandler: UtilsHandler? = null
+    private var bookmarksList: PreferenceCategory? = null
 
-    private val mainActivity: ThemedActivity
-        get() = requireActivity() as ThemedActivity
+    private val itemOnEditListener = { it: PathSwitchPreference ->
+        showEditDialog(it)
+    }
 
-    private var _dialogBinding: DialogTwoedittextsBinding? = null
-    private val dialogBinding: DialogTwoedittextsBinding
-        get() = _dialogBinding!!
+    private val itemOnDeleteListener = { it: PathSwitchPreference ->
+        showDeleteDialog(it)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        utilsHandler = AppConfig.getInstance().utilsHandler
-        dataUtils = DataUtils.getInstance()
-        _dialogBinding = DialogTwoedittextsBinding.inflate(LayoutInflater.from(requireContext()))
+        setPreferencesFromResource(R.xml.bookmarks_prefs, rootKey)
 
-        // Load the preferences from an XML resource
-        addPreferencesFromResource(R.xml.folders_prefs)
-        sharedPrefs = PreferenceManager.getDefaultSharedPreferences(mainActivity)
-        findPreference<Preference>(PreferencesConstants.PREFERENCE_SHORTCUT)!!
-            .onPreferenceClickListener = this
-        for (i in dataUtils!!.books.indices) {
-            val p = PathSwitchPreference(activity)
-            p.title = dataUtils!!.books[i][0]
-            p.summary = dataUtils!!.books[i][1]
-            p.onPreferenceClickListener = this
-            position[p] = i
-            preferenceScreen.addPreference(p)
-        }
-    }
+        findPreference<Preference>("add_bookmarks")?.onPreferenceClickListener =
+            Preference.OnPreferenceClickListener {
+                showCreateDialog()
 
-    override fun onResume() {
-        super.onResume()
-        onCreate(null)
-    }
-
-    override fun onPreferenceClick(preference: Preference): Boolean {
-        if (preference is PathSwitchPreference) {
-            when (preference.lastItemClicked) {
-                PathSwitchPreference.EDIT -> loadEditDialog(preference)
-                PathSwitchPreference.DELETE -> loadDeleteDialog(preference)
-                else -> {
-                }
+                true
             }
-        } else if (preference.key == PreferencesConstants.PREFERENCE_SHORTCUT) {
-            if (preferenceScreen.preferenceCount
-                >= findPreference<Preference>(PreferencesConstants.PREFERENCE_SHORTCUT)!!.order
-            )
-                findPreference<Preference>(PreferencesConstants.PREFERENCE_SHORTCUT)
-                    ?.order = preferenceScreen.preferenceCount + 10
-            loadCreateDialog()
-        }
-        return false
+
+        bookmarksList = findPreference("bookmarks_list")
+        reload()
     }
 
-    private fun loadCreateDialog() {
-        val fab_skin = mainActivity.accent
+    private fun reload() {
+        for (p in position) {
+            bookmarksList?.removePreference(p.key)
+        }
+
+        position.clear()
+        for (i in dataUtils.books.indices) {
+            val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
+            p.title = dataUtils.books[i][0]
+            p.summary = dataUtils.books[i][1]
+            position[p] = i
+            bookmarksList?.addPreference(p)
+        }
+    }
+
+    private fun showCreateDialog() {
+        val fabSkin = activity.accent
+        val utilsHandler = AppConfig.getInstance().utilsHandler
+        val dialogBinding = DialogTwoedittextsBinding.inflate(LayoutInflater.from(requireContext()))
+
         val v = dialogBinding.root
         dialogBinding.textInput1.hint = getString(R.string.name)
         dialogBinding.textInput2.hint = getString(R.string.directory)
@@ -112,10 +99,10 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
 
         val dialog = MaterialDialog.Builder(requireActivity())
             .title(R.string.create_bookmark)
-            .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
-            .positiveColor(fab_skin)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .positiveColor(fabSkin)
             .positiveText(R.string.create)
-            .negativeColor(fab_skin)
+            .negativeColor(fabSkin)
             .negativeText(android.R.string.cancel)
             .customView(v, false)
             .build()
@@ -124,18 +111,17 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         disableButtonIfNotPath(txtShortcutPath, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
-                val p = PathSwitchPreference(getActivity())
+                val p = PathSwitchPreference(activity, itemOnEditListener, itemOnDeleteListener)
                 p.title = txtShortcutName.text
                 p.summary = txtShortcutPath.text
-                p.onPreferenceClickListener = this@FoldersPref
-                position[p] = dataUtils!!.books.size
-                preferenceScreen.addPreference(p)
+                position[p] = dataUtils.books.size
+                bookmarksList?.addPreference(p)
                 val values = arrayOf(
                     txtShortcutName.text.toString(),
                     txtShortcutPath.text.toString()
                 )
-                dataUtils!!.addBook(values)
-                utilsHandler!!.saveToDatabase(
+                dataUtils.addBook(values)
+                utilsHandler.saveToDatabase(
                     OperationData(
                         UtilsHandler.Operation.BOOKMARKS,
                         txtShortcutName.text.toString(),
@@ -147,8 +133,11 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         dialog.show()
     }
 
-    private fun loadEditDialog(p: PathSwitchPreference) {
-        val fab_skin = mainActivity.accent
+    private fun showEditDialog(p: PathSwitchPreference) {
+        val fabSkin = activity.accent
+        val utilsHandler = AppConfig.getInstance().utilsHandler
+        val dialogBinding = DialogTwoedittextsBinding.inflate(LayoutInflater.from(requireContext()))
+
         val v = dialogBinding.root
         dialogBinding.textInput1.hint = getString(R.string.name)
         dialogBinding.textInput2.hint = getString(R.string.directory)
@@ -157,35 +146,35 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         editText1.setText(p.title)
         editText2.setText(p.summary)
 
-        val dialog = MaterialDialog.Builder(mainActivity)
+        val dialog = MaterialDialog.Builder(activity)
             .title(R.string.edit_bookmark)
-            .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
-            .positiveColor(fab_skin)
-            .positiveText(getString(R.string.edit).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase()
-            .negativeColor(fab_skin)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .positiveColor(fabSkin)
+            .positiveText(getString(R.string.edit).uppercase()) // TODO: 29/4/2017 don't use toUpperCase()
+            .negativeColor(fabSkin)
             .negativeText(android.R.string.cancel)
             .customView(v, false)
             .build()
         dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-            FileUtils.isPathAccessible(editText2.text.toString(), sharedPrefs)
+            FileUtils.isPathAccessible(editText2.text.toString(), activity.prefs)
         disableButtonIfTitleEmpty(editText1, dialog)
         disableButtonIfNotPath(editText2, dialog)
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
                 val oldName = p.title.toString()
                 val oldPath = p.summary.toString()
-                dataUtils!!.removeBook(position[p]!!)
+                dataUtils.removeBook(position[p]!!)
                 position.remove(p)
-                preferenceScreen.removePreference(p)
+                bookmarksList?.removePreference(p)
                 p.title = editText1.text
                 p.summary = editText2.text
                 position[p] = position.size
-                preferenceScreen.addPreference(p)
+                bookmarksList?.addPreference(p)
                 val values = arrayOf(editText1.text.toString(), editText2.text.toString())
-                dataUtils!!.addBook(values)
+                dataUtils.addBook(values)
                 AppConfig.getInstance()
                     .runInBackground {
-                        utilsHandler!!.renameBookmark(
+                        utilsHandler.renameBookmark(
                             oldName,
                             oldPath,
                             editText1.text.toString(),
@@ -197,28 +186,29 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
         dialog.show()
     }
 
-    private fun loadDeleteDialog(p: PathSwitchPreference) {
-        val fab_skin = mainActivity.accent
+    private fun showDeleteDialog(p: PathSwitchPreference) {
+        val fabSkin = activity.accent
+        val utilsHandler = AppConfig.getInstance().utilsHandler
 
-        val dialog = MaterialDialog.Builder(mainActivity)
+        val dialog = MaterialDialog.Builder(activity)
             .title(R.string.question_delete_bookmark)
-            .theme(mainActivity.appTheme.getMaterialDialogTheme(mainActivity.applicationContext))
-            .positiveColor(fab_skin)
-            .positiveText(getString(R.string.delete).toUpperCase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
-            .negativeColor(fab_skin)
+            .theme(activity.appTheme.getMaterialDialogTheme(activity.applicationContext))
+            .positiveColor(fabSkin)
+            .positiveText(getString(R.string.delete).uppercase()) // TODO: 29/4/2017 don't use toUpperCase(), 20/9,2017 why not?
+            .negativeColor(fabSkin)
             .negativeText(android.R.string.cancel)
             .build()
         dialog.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener {
-                dataUtils!!.removeBook(position[p]!!)
-                utilsHandler!!.removeFromDatabase(
+                dataUtils.removeBook(position[p]!!)
+                utilsHandler.removeFromDatabase(
                     OperationData(
                         UtilsHandler.Operation.BOOKMARKS,
                         p.title.toString(),
                         p.summary.toString()
                     )
                 )
-                preferenceScreen.removePreference(p)
+                bookmarksList?.removePreference(p)
                 position.remove(p)
                 dialog.dismiss()
             }
@@ -230,7 +220,7 @@ class FoldersPref : PreferenceFragmentCompat(), Preference.OnPreferenceClickList
             object : SimpleTextWatcher() {
                 override fun afterTextChanged(s: Editable) {
                     dialog.getActionButton(DialogAction.POSITIVE).isEnabled =
-                        FileUtils.isPathAccessible(s.toString(), sharedPrefs)
+                        FileUtils.isPathAccessible(s.toString(), activity.prefs)
                 }
             })
     }

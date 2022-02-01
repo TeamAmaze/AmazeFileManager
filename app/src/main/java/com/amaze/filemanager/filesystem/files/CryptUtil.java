@@ -49,7 +49,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PrefFrag;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.ProgressHandler;
 
 import android.content.Context;
@@ -74,10 +74,10 @@ import androidx.preference.PreferenceManager;
  * service then calls the constructor which fires up the subsequent encryption/decryption process.
  *
  * <p>We differentiate between already encrypted files from <i>new ones</i> by encrypting the
- * plaintext {@link PrefFrag#ENCRYPT_PASSWORD_MASTER} and {@link
- * PrefFrag#ENCRYPT_PASSWORD_FINGERPRINT} against the path in database. At the time of decryption,
- * we check for these values and either retrieve master password from preferences or fire up the
- * fingerprint sensor authentication.
+ * plaintext {@link PreferencesConstants#ENCRYPT_PASSWORD_MASTER} and {@link
+ * PreferencesConstants#ENCRYPT_PASSWORD_FINGERPRINT} against the path in database. At the time of
+ * decryption, we check for these values and either retrieve master password from preferences or
+ * fire up the fingerprint sensor authentication.
  *
  * <p>From <i>new ones</i> we mean the ones when were encrypted after user changed preference for
  * master password/fingerprint sensor from settings.
