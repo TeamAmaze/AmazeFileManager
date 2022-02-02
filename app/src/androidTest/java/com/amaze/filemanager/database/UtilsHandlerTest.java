@@ -40,7 +40,6 @@ import android.os.Environment;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
-import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 @RunWith(AndroidJUnit4.class)
@@ -65,31 +64,26 @@ public class UtilsHandlerTest {
   }
 
   @Test
-  @Suppress // TODO fix the test
   public void testEncodeEncryptUri1() {
     performEncryptUriTest("ssh://test:testP@ssw0rd@127.0.0.1:5460");
   }
 
   @Test
-  @Suppress // TODO fix the test
   public void testEncodeEncryptUri2() {
     performEncryptUriTest("ssh://test:testP@##word@127.0.0.1:22");
   }
 
   @Test
-  @Suppress // TODO fix the test
   public void testEncodeEncryptUri3() {
     performEncryptUriTest("ssh://test@example.com:testP@ssw0rd@127.0.0.1:22");
   }
 
   @Test
-  @Suppress // TODO fix the test
   public void testEncodeEncryptUri4() {
     performEncryptUriTest("ssh://test@example.com:testP@ssw0##$@127.0.0.1:22");
   }
 
   @Test
-  @Suppress // TODO fix the test
   public void testRepeatedSaveBookmarkShouldNeverThrowException() {
     OperationData operationData =
         new OperationData(
@@ -137,10 +131,10 @@ public class UtilsHandlerTest {
               List<String[]> result = utilsHandler.getSftpList();
               assertEquals(1, result.size());
               assertEquals("Test", result.get(0)[0]);
-              assertEquals(origPath, result.get(0)[1]);
+              assertEquals(encryptedPath, result.get(0)[1]);
               assertEquals(
                   "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
-                  utilsHandler.getSshHostKey(origPath));
+                  utilsHandler.getSshHostKey(encryptedPath));
               return true;
             });
   }

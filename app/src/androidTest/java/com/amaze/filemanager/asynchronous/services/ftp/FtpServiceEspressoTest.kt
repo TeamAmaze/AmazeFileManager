@@ -29,11 +29,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ServiceTestRule
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.utils.ObtainableServiceBinder
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.runBlocking
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
+import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Rule
@@ -45,12 +44,13 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
 import java.security.SecureRandom
-import java.time.Duration
 import java.util.concurrent.TimeUnit
-import kotlin.time.ExperimentalTime
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("StringLiteralDuplication")
+@androidx.test.filters.Suppress
+// Require UIAutomator if need to run test on Android 11
+// in order to obtain MANAGE_EXTERNAL_STORAGE permission
 class FtpServiceEspressoTest {
 
     @get:Rule
@@ -69,12 +69,12 @@ class FtpServiceEspressoTest {
     /**
      * Test FTP service
      */
-    @Test(timeout = 10_000)
-    @androidx.test.filters.Suppress // TODO fix the test
+    @Test
     fun testFtpService() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
             .putBoolean(FtpService.KEY_PREFERENCE_SECURE, false)
+            .putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, false)
             .remove(FtpService.KEY_PREFERENCE_USERNAME)
             .remove(FtpService.KEY_PREFERENCE_PASSWORD)
             .commit()
@@ -83,8 +83,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        while (!FtpService.isRunning());
-        assertTrue(FtpService.isRunning())
+        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
         waitForServer()
         FTPClient().run {
             loginAndVerifyWith(this)
@@ -96,12 +95,12 @@ class FtpServiceEspressoTest {
     /**
      * Test FTP service over SSL
      */
-    @Test(timeout = 10_000)
-    @androidx.test.filters.Suppress // TODO fix the test
+    @Test
     fun testSecureFtpService() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
             .putBoolean(FtpService.KEY_PREFERENCE_SECURE, true)
+            .putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, false)
             .remove(FtpService.KEY_PREFERENCE_USERNAME)
             .remove(FtpService.KEY_PREFERENCE_PASSWORD)
             .commit()
@@ -110,8 +109,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        while (!FtpService.isRunning());
-        assertTrue(FtpService.isRunning())
+        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
         waitForServer()
 
         FTPSClient(true).run {
@@ -124,7 +122,7 @@ class FtpServiceEspressoTest {
     /**
      * Test to ensure FTP service cannot login anonymously after username/password is set
      */
-    @Test(timeout = 10_000)
+    @Test
     fun testUsernameEnabledAnonymousCannotLogin() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
