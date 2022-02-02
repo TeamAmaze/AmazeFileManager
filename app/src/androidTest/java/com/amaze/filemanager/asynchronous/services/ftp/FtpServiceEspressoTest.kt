@@ -69,7 +69,7 @@ class FtpServiceEspressoTest {
     /**
      * Test FTP service
      */
-    @Test(timeout = 10_000)
+    @Test
     fun testFtpService() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
@@ -95,7 +95,7 @@ class FtpServiceEspressoTest {
     /**
      * Test FTP service over SSL
      */
-    @Test(timeout = 10_000)
+    @Test
     fun testSecureFtpService() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
@@ -112,7 +112,7 @@ class FtpServiceEspressoTest {
         await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
         waitForServer()
 
-        FTPSClient("TLS", true).run {
+        FTPSClient(true).run {
             loginAndVerifyWith(this)
             testUploadWith(this)
             testDownloadWith(this)
@@ -122,7 +122,7 @@ class FtpServiceEspressoTest {
     /**
      * Test to ensure FTP service cannot login anonymously after username/password is set
      */
-    @Test(timeout = 10_000)
+    @Test
     fun testUsernameEnabledAnonymousCannotLogin() {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
