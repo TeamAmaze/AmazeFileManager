@@ -41,7 +41,6 @@ import org.junit.runner.RunWith
 class FtpServiceStaticMethodsTest {
     /** To test [FtpService.getLocalInetAddress] must not return an empty string.  */
     @Test
-    @Suppress // TODO fix the test
     fun testGetLocalInetAddressMustNotBeEmpty() {
         ApplicationProvider.getApplicationContext<Context>().run {
             if (!FtpService.isConnectedToLocalNetwork(this))
@@ -51,27 +50,6 @@ class FtpServiceStaticMethodsTest {
                 assertNotNull(it)
                 assertNotNull(it?.hostAddress)
             }
-        }
-    }
-
-    /**
-     * To test IP address returned by [FtpService.getLocalInetAddress] must be
-     * 192.168.43.1.
-     *
-     *
-     * **Remember to turn on Wi-Fi AP when running this test on <u>real</u> devices.**
-     */
-    @Test
-    @Suppress // TODO fix the test
-    fun testGetLocalInetAddressMustBeAPAddress() {
-        ApplicationProvider.getApplicationContext<Context>().run {
-            if (!FtpService.isConnectedToLocalNetwork(this))
-                fail("Please enable Wi-Fi hotspot on your device to run this test!")
-
-            assertEquals(
-                "192.168.43.1",
-                FtpService.getLocalInetAddress(this)?.hostAddress
-            )
         }
     }
 }
