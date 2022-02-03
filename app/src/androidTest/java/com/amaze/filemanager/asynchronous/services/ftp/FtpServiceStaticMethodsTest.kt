@@ -21,11 +21,13 @@
 package com.amaze.filemanager.asynchronous.services.ftp
 
 import android.content.Context
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N_MR1
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
-import androidx.test.filters.Suppress
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -39,16 +41,25 @@ import org.junit.runner.RunWith
 @SmallTest
 @RunWith(AndroidJUnit4::class)
 class FtpServiceStaticMethodsTest {
+
     /** To test [FtpService.getLocalInetAddress] must not return an empty string.  */
     @Test
     fun testGetLocalInetAddressMustNotBeEmpty() {
-        ApplicationProvider.getApplicationContext<Context>().run {
-            if (!FtpService.isConnectedToLocalNetwork(this))
-                fail("Please connect your device to network to run this test!")
+        /* Android emulator's "wifi connectivity" only exists from API 25.
+         * On the other hand, we don't do wifi AP in code, either it's not possible
+         * for lower APIs, nor we currently have no plans on doing this - see #515, #2720 -
+         * therefore we only run this test from API 25 or above.
+         * - TranceLove
+         */
+        if (SDK_INT >= N_MR1) {
+            ApplicationProvider.getApplicationContext<Context>().run {
+                if (!FtpService.isConnectedToLocalNetwork(this))
+                    fail("Please connect your device to network to run this test!")
 
-            FtpService.getLocalInetAddress(this).also {
-                assertNotNull(it)
-                assertNotNull(it?.hostAddress)
+                FtpService.getLocalInetAddress(this).also {
+                    assertNotNull(it)
+                    assertNotNull(it?.hostAddress)
+                }
             }
         }
     }
