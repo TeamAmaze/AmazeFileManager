@@ -40,6 +40,7 @@ import android.os.Environment;
 
 import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
+import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
 
 @RunWith(AndroidJUnit4.class)
@@ -84,6 +85,7 @@ public class UtilsHandlerTest {
   }
 
   @Test
+  @Suppress
   public void testRepeatedSaveBookmarkShouldNeverThrowException() {
     OperationData operationData =
         new OperationData(
