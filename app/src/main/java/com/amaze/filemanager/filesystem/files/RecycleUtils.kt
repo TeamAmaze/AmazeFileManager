@@ -47,6 +47,7 @@ class RecycleUtils {
 
         private const val RECYCLE_META_DATA_FILE_NAME = ".recycle_meta_data.json"
 
+        @Suppress("INACCESSIBLE_TYPE")
         fun moveToRecycleBin(
             positions: ArrayList<HybridFileParcelable>,
             context: Context,
@@ -60,14 +61,16 @@ class RecycleUtils {
                         Toast.LENGTH_LONG
                     ).show()
 
+                    val millis: Long = System.currentTimeMillis()
+
                     PrepareCopyTask(
-                        getRecycleBinPath(),
+                        getRecycleBinPath() + File.separator + millis,
                         true,
                         mainActivity,
                         mainActivity.isRootExplorer,
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
                         PrepareCopyTask.OnTaskCompleted {
-                            addRecycledFile(it)
+                            addRecycledFile(it, millis)
                         }
                     ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
                 },
@@ -108,56 +111,53 @@ class RecycleUtils {
             for (item in positions) {
 
                 if (list.size == 1) {
-
-                    val o = list[0]
-
-                    if (o.name.equals(item.name)) {
-
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.restoring),
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        PrepareCopyTask(
-                            o.path?.replace(item.name, ""),
-                            true,
-                            mainActivity,
-                            mainActivity.isRootExplorer,
-                            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
-                        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
-
-                        list.removeAt(0)
-
-                        writeMetaDataJSONFile(list)
-                    }
+                    doRestore(item, context, mainActivity, list, positions, 0)
                 }
 
                 for (i in 0 until list.size - 1) {
-
-                    val o = list[i]
-
-                    if (o.name.equals(item.name)) {
-
-                        Toast.makeText(
-                            context,
-                            context.getString(R.string.restoring),
-                            Toast.LENGTH_LONG
-                        ).show()
-
-                        PrepareCopyTask(
-                            o.path?.replace(item.name, ""),
-                            true,
-                            mainActivity,
-                            mainActivity.isRootExplorer,
-                            mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
-                        ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
-
-                        list.removeAt(i)
-
-                        writeMetaDataJSONFile(list)
-                    }
+                    doRestore( item, context, mainActivity, list, positions, i)
                 }
+
+            }
+        }
+
+        @Suppress("INACCESSIBLE_TYPE")
+        private fun doRestore(
+            item: HybridFileParcelable,
+            context: Context,
+            mainActivity: MainActivity,
+            list: ArrayList<RecycleItem>,
+            positions: ArrayList<HybridFileParcelable>,
+            i : Int
+        ) {
+
+            val o = list[i]
+
+            if (o.key.equals(
+                    item.path.replace(
+                        getRecycleBinPath(),
+                        ""
+                    )
+                )
+            ) {
+
+                Toast.makeText(
+                    context,
+                    context.getString(R.string.restoring),
+                    Toast.LENGTH_LONG
+                ).show()
+
+                PrepareCopyTask(
+                    o.path?.replace(item.name, ""),
+                    true,
+                    mainActivity,
+                    mainActivity.isRootExplorer,
+                    mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+                ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
+
+                list.removeAt(i)
+
+                writeMetaDataJSONFile(list)
             }
         }
 
@@ -187,7 +187,7 @@ class RecycleUtils {
             return s
         }
 
-        private fun addRecycledFile(positions: ArrayList<HybridFileParcelable>) {
+        private fun addRecycledFile(positions: ArrayList<HybridFileParcelable>, millis: Long) {
 
             val list = loadMetaDataJSONFile()
 
@@ -196,7 +196,8 @@ class RecycleUtils {
                     RecycleItem(
                         item.path,
                         item.name,
-                        item.date
+                        millis,
+                        File.separator + millis + File.separator + item.name
                     )
                 )
             }

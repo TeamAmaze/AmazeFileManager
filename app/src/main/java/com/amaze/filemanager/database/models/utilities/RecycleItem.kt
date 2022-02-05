@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.database.models.utilities
 
-class RecycleItem(var path: String?, var name: String?, var date: Long) {
+class RecycleItem(var path: String?, var name: String?, var date: Long, var key: String?) {
 
     override fun equals(other: Any?): Boolean {
         if (javaClass != other?.javaClass) return false
@@ -30,6 +30,7 @@ class RecycleItem(var path: String?, var name: String?, var date: Long) {
         if (path != other.path) return false
         if (name != other.name) return false
         if (date != other.date) return false
+        if (key != other.key) return false
 
         return true
     }
@@ -38,6 +39,7 @@ class RecycleItem(var path: String?, var name: String?, var date: Long) {
         var result = path?.hashCode() ?: 0
         result = 31 * result + (name?.hashCode() ?: 0)
         result = 31 * result + date.hashCode()
+        result = 31 * result + (key?.hashCode() ?: 0)
         return result
     }
 }
