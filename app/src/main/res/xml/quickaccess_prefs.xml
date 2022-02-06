@@ -3,11 +3,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.amaze.filemanager.ui.views.preference.CheckBox
         app:defaultValue="true"
-        app:key="sidebar_bookmarks_enable"
+        app:key="sidebar_quickaccess_enable"
         app:title="@string/show_quick_access_pref_title" />
 
     <PreferenceCategory
-        app:dependency="sidebar_bookmarks_enable"
+        app:dependency="sidebar_quickaccess_enable"
         app:key="bookmarks_list"
         app:title="@string/show_quick_access_pref">
         <SwitchPreference
