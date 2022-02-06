@@ -20,8 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments.preference_fragments
 
-import com.amaze.filemanager.file_operations.filesystem.filetypes.file.FileAmazeFilesystem
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
+import com.amaze.filemanager.filesystem.files.FileAmazeFilesystem
 
 object PreferencesConstants {
     // appearance_prefs.xml
@@ -71,7 +70,7 @@ object PreferencesConstants {
 
     // behavior_prefs.xml
     const val PREFERENCE_ROOT_LEGACY_LISTING = "legacyListing"
-    const val PREFERENCE_ROOTMODE = "rootmode"
+    const val PREFERENCE_ROOTMODE = FileAmazeFilesystem.PREFERENCE_ROOTMODE
     const val PREFERENCE_CHANGEPATHS = "typeablepaths"
     const val PREFERENCE_SAVED_PATHS = "savepaths"
     const val PREFERENCE_ZIP_EXTRACT_PATH = "extractpath"

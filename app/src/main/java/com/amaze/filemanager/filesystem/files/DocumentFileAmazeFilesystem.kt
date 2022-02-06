@@ -11,7 +11,6 @@ import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvide
 import com.amaze.filemanager.filesystem.FileProperties.getDeviceStorageRemainingSpace
 import com.amaze.filemanager.filesystem.SafRootHolder.uriRoot
 import com.amaze.filemanager.filesystem.SafRootHolder.volumeLabel
-import com.amaze.filemanager.filesystem.otg.OtgAmazeFilesystem
 import com.amaze.filemanager.utils.OTGUtil.getDocumentFile
 import java.io.FileNotFoundException
 import java.io.IOException
@@ -54,8 +53,12 @@ object DocumentFileAmazeFilesystem: AmazeFilesystem() {
     }
 
     override fun exists(f: AmazeFile, contextProvider: ContextProvider): Boolean {
-        val documentFile = getDocumentFile(f.path, false) ?: return false
-        return documentFile.exists()
+        val uriRoot = uriRoot ?: return false
+        val context = contextProvider.getContext() ?: return false
+        val documentFile = getDocumentFile(
+                f.path, uriRoot, context, OpenMode.DOCUMENT_FILE, false
+        )
+        return documentFile != null
     }
 
     override fun isFile(f: AmazeFile, contextProvider: ContextProvider): Boolean {

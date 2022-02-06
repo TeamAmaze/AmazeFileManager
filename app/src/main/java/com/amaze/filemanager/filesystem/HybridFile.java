@@ -42,11 +42,6 @@ import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAccount;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
-import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.DocumentFileAmazeFilesystem;
@@ -54,19 +49,13 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
-import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
-import com.amaze.filemanager.filesystem.ssh.Statvfs;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
-import com.amaze.filemanager.utils.Utils;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.SpaceAllocation;
 
-import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
@@ -79,13 +68,9 @@ import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.Buffer;
-import net.schmizz.sshj.sftp.FileMode;
-import net.schmizz.sshj.sftp.RemoteFile;
+
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
-import net.schmizz.sshj.sftp.SFTPException;
 
 /**
  * Hybrid file for handeling all types of files
@@ -756,35 +741,12 @@ public class HybridFile {
   }
 
   public boolean exists() {
-    if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile()
-            || isOneDriveFile() || isDocumentFile() || isSftp()) {
-      return new AmazeFile(path).exists(() -> null);
-    } else if (isRoot()) {
-      return RootHelper.fileExists(path);
-    }
-
-    return false;
+    return new AmazeFile(path).exists(() -> null);
   }
 
   /** Helper method to check file existence in otg */
   public boolean exists(Context context) {
-    boolean exists = false;
-    try {
-      if (isSmb() || isLocal() || isDropBoxFile() || isBoxFile() || isGoogleDriveFile()
-              || isOneDriveFile() || isOtgFile() || isSftp() || isDocumentFile()) {
-        return new AmazeFile(path).exists(() -> context);
-      } else if (isDocumentFile()) {
-        exists =
-            OTGUtil.getDocumentFile(
-                    path, SafRootHolder.getUriRoot(), context, OpenMode.DOCUMENT_FILE, false)
-                != null;
-      } else {
-        return (exists());
-      }
-    } catch (Exception e) {
-      Log.i(getClass().getSimpleName(), "Failed to find file", e);
-    }
-    return exists;
+    return new AmazeFile(path).exists(() -> context);
   }
 
   /**
@@ -807,22 +769,11 @@ public class HybridFile {
   }
 
   public boolean setLastModified(final long date) {
-    if (isSmb() || isLocal() || isOneDriveFile() || isBoxFile() || isGoogleDriveFile()
-            || isDropBoxFile() || isSftp() || isOtgFile()) {
-      return new AmazeFile(path).setLastModified(date);
-    }
-    File f = getFile();
-    return f.setLastModified(date);
+    return new AmazeFile(path).setLastModified(date);
   }
 
   public void mkdir(Context context) {
-    if (isSftp() || isSmb() || isLocal() || isRoot() || isCustomPath() || isUnknownFile()
-            || isOneDriveFile() || isBoxFile() || isGoogleDriveFile() || isDropBoxFile()
-            || isOtgFile() || isDocumentFile()) {
-      new AmazeFile(path).mkdirs(() -> context);
-    } else {
-      throw new IllegalStateException();
-    }
+    new AmazeFile(path).mkdirs(() -> context);
   }
 
   public boolean delete(Context context, boolean rootmode)
