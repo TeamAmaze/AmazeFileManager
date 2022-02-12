@@ -27,6 +27,7 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor
 import com.github.junrar.Archive
 import org.junit.Assert.assertEquals
+import org.junit.Ignore
 import org.junit.Test
 import java.io.File
 
@@ -80,4 +81,7 @@ class RarExtractorTest : AbstractArchiveExtractorTest() {
             assertEquals(2, this.length())
         }
     }
+
+    @Test @Ignore
+    override fun testExtractBadArchive() = Unit
 }

@@ -20,16 +20,20 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import java.io.File
 
 class TarLzmaHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
-    override fun createTask(relativePath: String): CompressedHelperTask = TarLzmaHelperTask(
-        ApplicationProvider.getApplicationContext(),
-        File(Environment.getExternalStorageDirectory(), "test-archive.tar.lzma").absolutePath,
-        relativePath,
-        false,
-        emptyCallback
-    )
+
+    override val archiveFileName: String
+        get() = "test-archive.tar.lzma"
+
+    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
+        TarLzmaHelperTask(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false,
+            emptyCallback
+        )
 }
