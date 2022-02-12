@@ -29,6 +29,9 @@ import java.io.File
 
 class RarHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
 
+    override val archiveFileName: String
+        get() = "test-archive.rar"
+
     /**
      * Test multi volume RAR (v4).
      */
@@ -75,8 +78,9 @@ class RarHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
         assertEquals(UnsupportedRarV5Exception::class.java, result.exception.cause!!.javaClass)
     }
 
-    override fun createTask(relativePath: String): CompressedHelperTask = RarHelperTask(
-        File(Environment.getExternalStorageDirectory(), "test-archive.rar").absolutePath,
+    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
+        RarHelperTask(
+        archive.absolutePath,
         relativePath,
         false,
         emptyCallback

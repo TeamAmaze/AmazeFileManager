@@ -33,6 +33,7 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.exception.ZipException
 import net.lingala.zip4j.model.FileHeader
+import org.apache.commons.compress.PasswordRequiredException
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -81,7 +82,14 @@ class ZipExtractor(
             }
             listener.onFinish()
         } catch (e: ZipException) {
-            throw IOException(e)
+            if (true == e.message?.lowercase()?.contains("password")) {
+                // Hack.
+                // zip4j uses ZipException for all problems, so we need to distinguish password
+                // related problems and throw PasswordRequiredException here
+                throw PasswordRequiredException(e.message)
+            } else {
+                throw BadArchiveNotice(e)
+            }
         }
     }
 

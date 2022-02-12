@@ -25,7 +25,7 @@ import org.junit.Assert
 import org.junit.Test
 import java.io.File
 
-class GenericCompressedHelperTaskTest : AbstractCompressedHelperTaskTest() {
+class UnknownCompressedHelperTaskTest : AbstractCompressedHelperTaskTest() {
 
     /**
      * Test file decompression.

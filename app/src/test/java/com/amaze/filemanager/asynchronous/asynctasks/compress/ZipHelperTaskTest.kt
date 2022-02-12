@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import org.apache.commons.compress.archivers.ArchiveException
 import org.junit.Assert.assertEquals
@@ -28,6 +27,9 @@ import org.junit.Test
 import java.io.File
 
 class ZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
+
+    override val archiveFileName: String
+        get() = "test-archive.zip"
 
     /**
      * Verification on logic in [ZipHelperTask] assigning zip entry path.
@@ -66,11 +68,12 @@ class ZipHelperTaskTest : AbstractCompressedHelperTaskArchiveTest() {
         ).addElements(ArrayList())
     }
 
-    override fun createTask(relativePath: String): CompressedHelperTask = ZipHelperTask(
-        ApplicationProvider.getApplicationContext(),
-        File(Environment.getExternalStorageDirectory(), "test-archive.zip").absolutePath,
-        relativePath,
-        false,
-        emptyCallback
-    )
+    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
+        ZipHelperTask(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false,
+            emptyCallback
+        )
 }
