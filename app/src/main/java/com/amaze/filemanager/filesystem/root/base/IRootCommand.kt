@@ -23,8 +23,7 @@ package com.amaze.filemanager.filesystem.root.base
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.ui.activities.MainActivity
-import eu.chainfire.libsuperuser.Shell
-import eu.chainfire.libsuperuser.Shell.OnCommandResultListener
+import com.topjohnwu.superuser.Shell
 
 open class IRootCommand {
 
@@ -39,17 +38,15 @@ open class IRootCommand {
      */
     @Throws(ShellNotRunningException::class, ShellCommandInvalidException::class)
     fun runShellCommandToList(cmd: String): List<String> {
-        val result = ArrayList<String>()
         var interrupt = false
         var errorCode: Int = -1
         // callback being called on a background handler thread
-        runShellCommandWithCallback(cmd) { _, exitCode, output ->
-            if (exitCode in 1..127) {
-                interrupt = true
-                errorCode = exitCode
-            }
-            result.addAll(output)
+        val commandResult = runShellCommand(cmd)
+        if (commandResult.code in 1..127) {
+            interrupt = true
+            errorCode = commandResult.code
         }
+        val result = commandResult.out
         if (interrupt) {
             throw ShellCommandInvalidException("$cmd , error code - $errorCode")
         }
@@ -62,44 +59,10 @@ open class IRootCommand {
      * @param cmd the command
      */
     @Throws(ShellNotRunningException::class)
-    fun runShellCommand(cmd: String?) {
-        if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning) {
+    fun runShellCommand(cmd: String): Shell.Result {
+        if (!Shell.getShell().isRoot) {
             throw ShellNotRunningException()
         }
-        MainActivity.shellInteractive.addCommand(cmd)
-        MainActivity.shellInteractive.waitForIdle()
-    }
-
-    /**
-     * Runs the command on an interactive shell. Provides a listener for the caller to interact. The
-     * caller is executed on a worker background thread, hence any calls from the callback should be
-     * thread safe. Command is run from superuser context (u:r:SuperSU0)
-     *
-     * @param cmd the command
-     */
-    @Throws(ShellNotRunningException::class)
-    fun runShellCommandWithCallback(cmd: String?, callback: OnCommandResultListener?) {
-        if (MainActivity.shellInteractive == null || !MainActivity.shellInteractive.isRunning) {
-            throw ShellNotRunningException()
-        }
-        MainActivity.shellInteractive.addCommand(cmd, 0, callback)
-        MainActivity.shellInteractive.waitForIdle()
-    }
-
-    /**
-     * @param cmd the command
-     * @return a list of results. Null only if the command passed is a blocking call or no output is
-     * there for the command passed
-     */
-    @Deprecated(
-        """Use {@link #runShellCommand(String)} instead which runs command on an interactive
-        shell
-        <p>Runs the command and stores output in a list. The listener is set on the caller thread,
-        thus any code run in callback must be thread safe. Command is run from a third-party level
-        context (u:r:init_shell0) Not callback supported as the shell is not interactive""",
-        ReplaceWith("Shell.SH.run(cmd)", "eu.chainfire.libsuperuser.Shell")
-    )
-    fun runNonRootShellCommand(cmd: String?): List<String?>? {
-        return Shell.SH.run(cmd)
+        return Shell.su(cmd).exec()
     }
 }
