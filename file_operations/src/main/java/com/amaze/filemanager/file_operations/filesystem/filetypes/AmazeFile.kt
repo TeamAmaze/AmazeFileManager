@@ -22,6 +22,11 @@ package com.amaze.filemanager.file_operations.filesystem.filetypes
 
 import android.os.Parcel
 import android.util.Log
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAmazeFilesystem
+import com.amaze.filemanager.file_operations.filesystem.filetypes.smb.SmbAmazeFilesystem
 import kotlinx.parcelize.Parceler
 import java.io.File
 import java.io.IOException
@@ -117,12 +122,23 @@ import java.util.*
  */
 class AmazeFile : Comparable<AmazeFile?> {
     companion object {
+        @JvmStatic
         val TAG = AmazeFile::class.java.simpleName
+        @JvmStatic
         private val filesystems: MutableList<AmazeFilesystem> = ArrayList()
 
         @JvmStatic
         fun addFilesystem(amazeFilesystem: AmazeFilesystem) {
             filesystems.add(amazeFilesystem)
+        }
+
+        init {
+            BoxAmazeFilesystem
+            DropboxAmazeFilesystem
+            GoogledriveAmazeFilesystem
+            OnedriveAmazeFilesystem
+
+            SmbAmazeFilesystem
         }
 
         private fun slashify(path: String, isDirectory: Boolean): String {
@@ -325,10 +341,17 @@ class AmazeFile : Comparable<AmazeFile?> {
     }
 
     private fun loadFilesystem(path: String) {
+        var loadedAFs = false
+
         for (filesystem in filesystems) {
             if (filesystem.isPathOfThisFilesystem(path)) {
                 fs = filesystem
+                loadedAFs = true
             }
+        }
+
+        if(!loadedAFs) {
+            Log.e(TAG, "Failed to load a filesystem, did you forget to add the class to the [AmazeFile]'s companion object initialization block?")
         }
     }
     /* -- Path-component accessors -- */

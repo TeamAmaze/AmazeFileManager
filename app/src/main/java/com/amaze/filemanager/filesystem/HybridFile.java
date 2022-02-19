@@ -88,6 +88,10 @@ public class HybridFile {
 
   private final DataUtils dataUtils = DataUtils.getInstance();
 
+  static {
+    FilesystemLoader.INSTANCE.toString(); // HACK forces the class to load
+  }
+
   public HybridFile(OpenMode mode, String path) {
     this.path = path;
     this.mode = mode;
