@@ -350,8 +350,12 @@ class AmazeFile : Comparable<AmazeFile?> {
             }
         }
 
-        if(!loadedAFs) {
-            Log.e(TAG, "Failed to load a filesystem, did you forget to add the class to the [AmazeFile]'s companion object initialization block?")
+        if (!loadedAFs) {
+            Log.e(
+                TAG,
+                "Failed to load a filesystem, did you forget to add the class to the " +
+                    "[AmazeFile]'s companion object initialization block?"
+            )
         }
     }
     /* -- Path-component accessors -- */
@@ -854,9 +858,9 @@ class AmazeFile : Comparable<AmazeFile?> {
     }
 
     fun listFiles(
-            filter: AmazeFilenameFilter?,
-            contextProvider: ContextProvider,
-            onFileFound: (AmazeFile) -> Unit
+        filter: AmazeFilenameFilter?,
+        contextProvider: ContextProvider,
+        onFileFound: (AmazeFile) -> Unit
     ): Unit? {
         val ss = list(contextProvider) ?: return null
         for (s in ss) {
@@ -904,8 +908,11 @@ class AmazeFile : Comparable<AmazeFile?> {
      * not denote a directory, or if an I/O error occurs.
      * @see java.nio.file.Files.newDirectoryStream
      */
-    fun forFiles(filter: AmazeFileFilter?, contextProvider: ContextProvider,
-                 onFileFound: (AmazeFile) -> Unit): Unit? {
+    fun forFiles(
+        filter: AmazeFileFilter?,
+        contextProvider: ContextProvider,
+        onFileFound: (AmazeFile) -> Unit
+    ): Unit? {
         val ss = list(contextProvider) ?: return null
         for (s in ss) {
             val f = AmazeFile(s, this)
