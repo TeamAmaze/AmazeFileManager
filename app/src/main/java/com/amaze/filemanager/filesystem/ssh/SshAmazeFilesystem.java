@@ -167,7 +167,7 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     throw new NotImplementedError();
   }
   public boolean canAccess(AmazeFile f, @NonNull ContextProvider contextProvider) {
-    throw new NotImplementedError();
+    return exists(f, contextProvider);
   }
 
   public boolean setExecutable(AmazeFile f, boolean enable, boolean owneronly) {
