@@ -20,13 +20,24 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.IBinder;
+import android.text.TextUtils;
+import android.util.Log;
+import android.widget.EditText;
+import android.widget.RemoteViews;
+import android.widget.Toast;
 
-import org.apache.commons.compress.PasswordRequiredException;
-import org.tukaani.xz.CorruptedInputException;
+import androidx.annotation.StringRes;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -42,25 +53,13 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.github.junrar.exception.UnsupportedRarV5Exception;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.IBinder;
-import android.util.Log;
-import android.widget.EditText;
-import android.widget.RemoteViews;
-import android.widget.Toast;
+import org.apache.commons.compress.PasswordRequiredException;
+import org.tukaani.xz.CorruptedInputException;
 
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
-
-import net.lingala.zip4j.exception.ZipException;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 public class ExtractService extends AbstractProgressiveService {
 
@@ -325,13 +324,17 @@ public class ExtractService extends AbstractProgressiveService {
               extractService,
               extractService.getString(R.string.error_empty_archive, compressedPath));
           return true;
+        } catch (Extractor.BadArchiveNotice e) {
+          Log.e(TAG, "Archive " + compressedPath + " is a corrupted archive.", e);
+          AppConfig.toast(
+              extractService,
+              e.getCause() != null && TextUtils.isEmpty(e.getCause().getMessage()) ? getString(R.string.error_bad_archive_without_info, compressedPath) : getString(R.string.error_bad_archive_with_info, compressedPath, e.getMessage()));
+          return true;
         } catch (CorruptedInputException e) {
           Log.d(TAG, "Corrupted LZMA input", e);
           return false;
         } catch (IOException e) {
-          if (PasswordRequiredException.class.isAssignableFrom(e.getClass())
-              || e.getCause() != null
-                  && ZipException.class.isAssignableFrom(e.getCause().getClass())) {
+          if (PasswordRequiredException.class.isAssignableFrom(e.getClass())) {
             Log.d(TAG, "Archive is password protected.", e);
             if (ArchivePasswordCache.getInstance().containsKey(compressedPath)) {
               ArchivePasswordCache.getInstance().remove(compressedPath);
@@ -355,6 +358,8 @@ public class ExtractService extends AbstractProgressiveService {
             paused = true;
             publishProgress(e);
           }
+        } catch (Throwable unhandledException) {
+          Log.e(TAG, "Unhandled exception thrown", unhandledException);
         }
       }
       return false;

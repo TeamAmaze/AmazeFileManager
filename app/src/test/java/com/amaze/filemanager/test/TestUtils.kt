@@ -28,9 +28,36 @@ import android.os.UserHandle
 import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import org.robolectric.Shadows
 import java.lang.reflect.Field
 import java.lang.reflect.Modifier
+import kotlin.random.Random
+
+/**
+ * Generate random junk. If no size specified, default to 73 bytes.
+ *
+ * No need to use SecureRandom for tests IMO.
+ */
+fun randomBytes(size: Int = 73) = Random(System.currentTimeMillis()).nextBytes(size)
+
+/**
+ * Get supported archive extensions from [CompressedHelper] via reflection.
+ */
+fun supportedArchiveExtensions(): List<String> {
+    return CompressedHelper::class.java.declaredFields.filter { field ->
+        field.name.startsWith("fileExtension") &&
+            field.type == String::class.java &&
+            Modifier.isFinal(field.modifiers) &&
+            Modifier.isPublic(field.modifiers) &&
+            Modifier.isStatic(field.modifiers)
+    }.map {
+        it.isAccessible = true
+        it.get(null).toString()
+    }.filter {
+        it != "tar"
+    }
+}
 
 object TestUtils {
     /**

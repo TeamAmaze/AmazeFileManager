@@ -23,6 +23,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 import android.content.Context
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
+import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import org.apache.commons.compress.compressors.CompressorInputStream
@@ -57,6 +58,10 @@ abstract class AbstractCompressedTarArchiveHelperTask(
     abstract fun getCompressorInputStreamClass(): Class<out CompressorInputStream>
 
     override fun createFrom(inputStream: InputStream): TarArchiveInputStream {
-        return TarArchiveInputStream(compressorInputStreamConstructor.newInstance(inputStream))
+        return runCatching {
+            TarArchiveInputStream(compressorInputStreamConstructor.newInstance(inputStream))
+        }.getOrElse {
+            throw Extractor.BadArchiveNotice(it)
+        }
     }
 }

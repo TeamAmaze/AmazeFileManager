@@ -51,11 +51,11 @@ class RarHelperTask(
     @Throws(ArchiveException::class)
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         try {
-            val zipfile = Archive(File(fileLocation))
+            val rarFile = Archive(File(fileLocation))
             val relativeDirDiffSeparator = relativeDirectory.replace(
                 CompressedHelper.SEPARATOR, "\\"
             )
-            for (rarArchive in zipfile.fileHeaders) {
+            for (rarArchive in rarFile.fileHeaders) {
                 val name = rarArchive.fileName
                 if (!CompressedHelper.isEntryPathValid(name)) {
                     continue

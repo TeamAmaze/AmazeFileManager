@@ -20,24 +20,30 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
+import android.content.Context
 import android.os.Build.VERSION_CODES.JELLY_BEAN
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
+import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.file_operations.utils.UpdatePosition
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.randomBytes
 import org.junit.*
+import org.junit.Assert.assertTrue
+import org.junit.Assert.fail
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowEnvironment
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
@@ -52,7 +58,6 @@ abstract class AbstractExtractorTest {
      * Test setup, copy archives to storage space
      */
     @Before
-    @Throws(Exception::class)
     fun setUp() {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED)
         copyArchivesToStorage()
@@ -64,7 +69,6 @@ abstract class AbstractExtractorTest {
      * Post test clean up
      */
     @After
-    @Throws(Exception::class)
     fun tearDown() {
         ArchivePasswordCache.getInstance().clear()
         val extractedArchiveRoot = File(Environment.getExternalStorageDirectory(), "test-archive")
@@ -80,12 +84,46 @@ abstract class AbstractExtractorTest {
      * Test extractor ability to extract files
      */
     @Test
-    @Throws(Exception::class)
     open fun testExtractFiles() {
         doTestExtractFiles()
     }
 
     protected abstract fun doTestExtractFiles()
+
+    /**
+     * Test extractor ability to throw [Extractor.BadArchiveNotice]
+     */
+    @Test
+    open fun testExtractBadArchive() {
+        val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
+        val extractor = extractorClass()
+            .getConstructor(
+                Context::class.java,
+                String::class.java,
+                String::class.java,
+                Extractor.OnUpdate::class.java,
+                UpdatePosition::class.java
+            )
+            .newInstance(
+                ApplicationProvider.getApplicationContext(),
+                badArchive.absolutePath,
+                Environment.getExternalStorageDirectory().absolutePath,
+                object : Extractor.OnUpdate {
+                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
+                    override fun onUpdate(entryPath: String) = Unit
+                    override fun isCancelled(): Boolean = false
+                    override fun onFinish() = Unit
+                },
+                ServiceWatcherUtil.UPDATE_POSITION
+            )
+        try {
+            extractor.extractEverything()
+            fail("BadArchiveNotice was not thrown")
+        } catch (ex: Extractor.BadArchiveNotice) {
+            // Pretend doing something to make codacy happy
+            assertTrue(true)
+        }
+    }
 
     private fun copyArchivesToStorage() {
         File("src/test/resources").listFiles()?.filter {
@@ -94,6 +132,11 @@ abstract class AbstractExtractorTest {
             FileInputStream(it).copyTo(
                 FileOutputStream(
                     File(Environment.getExternalStorageDirectory(), it.name)
+                )
+            )
+            ByteArrayInputStream(randomBytes()).copyTo(
+                FileOutputStream(
+                    File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
                 )
             )
         }
