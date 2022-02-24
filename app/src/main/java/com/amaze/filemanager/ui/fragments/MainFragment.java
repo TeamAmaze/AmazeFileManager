@@ -1465,9 +1465,10 @@ public class MainFragment extends Fragment
   }
 
   public void onSearchCompleted(final String query) {
-    final ArrayList<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
+    final @Nullable ArrayList<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
     if (elements == null) {
       Log.e(TAG, "No search results, cannot sort!");
+      return;
     }
     if (!mainFragmentViewModel.getResults()) {
       // no results were found
