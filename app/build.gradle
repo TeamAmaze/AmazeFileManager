@@ -197,7 +197,7 @@ dependencies {
 
     implementation 'com.android.volley:volley:1.2.1'
 
-    implementation 'eu.chainfire:libsuperuser:1.0.0.+'
+    implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
 
     implementation 'com.cloudrail:cloudrail-si-android:2.22.4'
 
