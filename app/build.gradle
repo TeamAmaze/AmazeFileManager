@@ -181,7 +181,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-android', version: slf4jVersion
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
@@ -198,6 +198,7 @@ dependencies {
     implementation 'com.android.volley:volley:1.2.1'
 
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
     implementation 'com.cloudrail:cloudrail-si-android:2.22.4'
 

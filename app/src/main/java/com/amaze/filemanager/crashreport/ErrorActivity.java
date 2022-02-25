@@ -20,29 +20,6 @@
 
 package com.amaze.filemanager.crashreport;
 
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.Vector;
-
-import org.acra.ReportField;
-import org.acra.data.CrashReportData;
-import org.json.JSONObject;
-
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.utils.Utils;
-import com.google.android.material.snackbar.Snackbar;
-
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -65,6 +42,29 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
+
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.snackbar.Snackbar;
+
+import org.acra.ReportField;
+import org.acra.data.CrashReportData;
+import org.json.JSONObject;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.Vector;
 
 /*
  * Created by Christian Schabesberger on 24.10.15.
@@ -147,7 +147,13 @@ public class ErrorActivity extends ThemedActivity {
       final Context context, final CrashReportData report, final ErrorInfo errorInfo) {
     System.out.println("ErrorActivity reportError");
     final String[] el = new String[] {report.getString(ReportField.STACK_TRACE)};
-
+    // Add this to try figure out what happened when stacktrace is sent to acra.
+    // Hope this will be useful for build failures...
+    if (BuildConfig.DEBUG) {
+      for(String line: el) {
+        System.out.println(line);
+      }
+    }
     final Intent intent = new Intent(context, ErrorActivity.class);
     intent.putExtra(ERROR_INFO, errorInfo);
     intent.putExtra(ERROR_LIST, el);

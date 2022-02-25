@@ -41,7 +41,11 @@ import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -61,7 +65,7 @@ import kotlin.random.Random
 @Config(sdk = [KITKAT], shadows = [ShadowMultiDex::class])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("StringLiteralDuplication")
-class FtpServiceTest {
+class FtpServiceAndroidFileSystemIntegrationTest {
 
     private val FTP_PORT = 62222
 
