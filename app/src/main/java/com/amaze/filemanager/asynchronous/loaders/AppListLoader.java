@@ -100,10 +100,9 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
       boolean isSystemApp = isAppInSystemPartition(object) || isSignedBySystem(info, androidInfo);
 
       List<String> splitPathList = null;
-      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-        if (object.splitPublicSourceDirs != null) {
-          splitPathList = Arrays.asList(object.splitPublicSourceDirs);
-        }
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+          && object.splitPublicSourceDirs != null) {
+        splitPathList = Arrays.asList(object.splitPublicSourceDirs);
       }
 
       AppDataParcelable elem =
