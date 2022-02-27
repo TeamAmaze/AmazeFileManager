@@ -239,8 +239,13 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                             .path + CompressedHelper.SEPARATOR + fileName
                     }
                 files?.add(HybridFileParcelable(path))
-                decompressor =
-                    CompressedHelper.getCompressorInstance(requireContext(), this)
+                val decompressor = CompressedHelper.getCompressorInstance(requireContext(), this)
+                if(decompressor == null) {
+                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_SHORT).show()
+                    parentFragmentManager.beginTransaction().remove(this@CompressedExplorerFragment).commit()
+                    return
+                }
+                this@CompressedExplorerFragment.decompressor = decompressor
                 changePath("")
             }
         } else {
@@ -321,9 +326,13 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             isOpen = bundle.getBoolean(KEY_OPEN)
             relativeDirectory = bundle.getString(KEY_PATH, "")
             compressedFile.let {
-                decompressor = CompressedHelper.getCompressorInstance(
-                    requireContext(), it
-                )
+                val decompressor = CompressedHelper.getCompressorInstance(requireContext(), it)
+                if(decompressor == null) {
+                    parentFragmentManager.beginTransaction().remove(this@CompressedExplorerFragment).commit()
+                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_SHORT).show()
+                    return
+                }
+                this@CompressedExplorerFragment.decompressor = decompressor
             }
             viewModel.elements.value = bundle.getParcelableArrayList(KEY_ELEMENTS)
         }
