@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.ExecutorService;
@@ -113,6 +114,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.text.TextUtilsCompat;
+import androidx.core.view.ViewCompat;
 import androidx.preference.PreferenceManager;
 
 /**
@@ -541,7 +544,8 @@ public class GeneralDialogCreation {
 
     /*Chart creation and data loading*/
     {
-      boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
+      int layoutDirection = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault());
+      boolean isRightToLeft = layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL;
       boolean isDarkTheme = appTheme.getMaterialDialogTheme(c) == Theme.DARK;
       PieChart chart = v.findViewById(R.id.chart);
 
