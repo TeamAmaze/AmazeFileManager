@@ -66,7 +66,6 @@ import androidx.preference.PreferenceManager;
 
 import jcifs.smb.SmbFile;
 
-/** Created by arpitkh996 on 17-01-2016. */
 public class SmbConnectDialog extends DialogFragment {
 
   private UtilitiesProvider utilsProvider;
@@ -386,28 +385,4 @@ public class SmbConnectDialog extends DialogFragment {
     return null;
   }
 
-  private static ColorStateList createEditTextColorStateList(int color) {
-    int[][] states = new int[3][];
-    int[] colors = new int[3];
-    int i = 0;
-    states[i] = new int[] {-android.R.attr.state_enabled};
-    colors[i] = Color.parseColor("#f6f6f6");
-    i++;
-    states[i] = new int[] {-android.R.attr.state_pressed, -android.R.attr.state_focused};
-    colors[i] = Color.parseColor("#666666");
-    i++;
-    states[i] = new int[] {};
-    colors[i] = color;
-    return new ColorStateList(states, colors);
-  }
-
-  private static void setTint(EditText editText, int color) {
-    if (Build.VERSION.SDK_INT >= 21) return;
-    ColorStateList editTextColorStateList = createEditTextColorStateList(color);
-    if (editText instanceof AppCompatEditText) {
-      ((AppCompatEditText) editText).setSupportBackgroundTintList(editTextColorStateList);
-    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      editText.setBackgroundTintList(editTextColorStateList);
-    }
-  }
 }
