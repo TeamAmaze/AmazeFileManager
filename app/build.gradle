@@ -257,6 +257,9 @@ configurations.all {
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") with module("commons-logging:commons-logging:1.1.1")
             substitute module("com.android.support:support-annotations:27.1.1") with module("com.android.support:support-annotations:27.0.2")
+            // These two lines are added to prevent possible class clashes between awaitility (which uses hamcrest 2.1) and junit (which uses hamcrest 1.3).
+            substitute module('org.hamcrest:hamcrest-core:1.3') with module("org.hamcrest:hamcrest:2.1")
+            substitute module('org.hamcrest:hamcrest-library:1.3') with module("org.hamcrest:hamcrest:2.1")
         }
     }
 }
