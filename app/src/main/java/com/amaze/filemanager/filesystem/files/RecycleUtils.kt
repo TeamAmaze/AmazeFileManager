@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.files
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Environment
+import android.util.Log
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
@@ -47,7 +48,7 @@ class RecycleUtils {
 
     companion object {
 
-        private const val RECYCLE_META_DATA_FILE_NAME = ".recycle_meta_data.json"
+        private val TAG: String = "RecycleUtils"
 
         @Suppress("INACCESSIBLE_TYPE")
         fun moveToRecycleBin(
@@ -65,7 +66,6 @@ class RecycleUtils {
                     ).show()
 
                     val date: String = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
-
 
                     PrepareCopyTask(
                         getRecycleBinPath() + File.separator + date + File.separator + path,
@@ -102,46 +102,14 @@ class RecycleUtils {
             restoreFromRecycleBin(positions, mainActivity.applicationContext, mainActivity)
         }
 
+        @Suppress("INACCESSIBLE_TYPE")
         fun restoreFromRecycleBin(
             positions: ArrayList<HybridFileParcelable>,
             context: Context,
             mainActivity: MainActivity,
         ) {
 
-            val list = loadMetaDataJSONFile()
-
-            for (item in positions) {
-
-                if (list.size == 1) {
-                    doRestore(item, context, mainActivity, list, positions, 0)
-                }
-
-                for (i in 0 until list.size - 1) {
-                    doRestore( item, context, mainActivity, list, positions, i)
-                }
-
-            }
-        }
-
-        @Suppress("INACCESSIBLE_TYPE")
-        private fun doRestore(
-            item: HybridFileParcelable,
-            context: Context,
-            mainActivity: MainActivity,
-            list: ArrayList<RecycleItem>,
-            positions: ArrayList<HybridFileParcelable>,
-            i : Int
-        ) {
-
-            val o = list[i]
-
-            if (o.key.equals(
-                    item.path.replace(
-                        getRecycleBinPath(),
-                        ""
-                    )
-                )
-            ) {
+            for (file in positions) {
 
                 Toast.makeText(
                     context,
@@ -149,18 +117,34 @@ class RecycleUtils {
                     Toast.LENGTH_LONG
                 ).show()
 
+                var path = file.path
+                    .replace(
+                        getRecycleBinPath(),
+                        ""
+                    )
+
+                path = path
+                    .replace(
+                        "/" + path.split("/")[1],
+                        ""
+                    )
+                    .replace(
+                        file.name,
+                        ""
+                    )
+
+                Log.e(TAG, "restoreFromRecycleBin path: $path")
+
                 PrepareCopyTask(
-                    o.path?.replace(item.name, ""),
+                    path,
                     true,
                     mainActivity,
                     mainActivity.isRootExplorer,
-                    mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+                    mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
                 ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
 
-                list.removeAt(i)
-
-                writeMetaDataJSONFile(list)
             }
+
         }
 
         fun getRecycleBinPath(): String {
@@ -176,58 +160,5 @@ class RecycleUtils {
             return s
         }
 
-        private fun getRecycleMetaDataFilePath(): String {
-            var s = Environment.getExternalStorageDirectory()
-                .toString() + File.separator + ".AmazeFileManager/RecycleBin"
-
-            if (!File(s).exists()) File(s).mkdirs()
-
-            s += File.separator + RECYCLE_META_DATA_FILE_NAME
-
-            DataUtils.getInstance().addHiddenFile(s)
-
-            return s
-        }
-
-        private fun writeMetaDataJSONFile(list: ArrayList<RecycleItem>) {
-
-            val bufferedWriter = BufferedWriter(FileWriter(File(getRecycleMetaDataFilePath())))
-            val type = object : TypeToken<ArrayList<RecycleItem>?>() {}.type
-            bufferedWriter.write(Gson().toJson(list, type))
-            bufferedWriter.close()
-        }
-
-        private fun loadMetaDataJSONFile(): ArrayList<RecycleItem> {
-
-            val stringBuilder = StringBuilder("")
-
-            try {
-
-                val bufferedReader = BufferedReader(FileReader(File(getRecycleMetaDataFilePath())))
-
-                var line: String? = bufferedReader.readLine()
-
-                while (line != null) {
-                    stringBuilder.append(line).append("\n")
-                    line = bufferedReader.readLine()
-                }
-
-                bufferedReader.close()
-            } catch (e: IOException) {
-                e.printStackTrace()
-            }
-
-            val s = stringBuilder.toString()
-
-            return if (s == "") {
-                ArrayList()
-            } else {
-
-                Gson().fromJson(
-                    s,
-                    object : TypeToken<ArrayList<RecycleItem>?>() {}.type
-                )
-            }
-        }
     }
 }
