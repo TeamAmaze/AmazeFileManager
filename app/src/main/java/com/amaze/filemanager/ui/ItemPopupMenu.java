@@ -160,7 +160,7 @@ public class ItemPopupMenu extends PopupMenu implements PopupMenu.OnMenuItemClic
         if (positions.get(0).getPath().contains(RecycleUtils.Companion.getRecycleBinPath()))
           GeneralDialogCreation.deleteFilesDialog(
               context, mainActivity, positions, utilitiesProvider.getAppTheme());
-        else RecycleUtils.Companion.moveToRecycleBin(positions, context, mainActivity);
+        else RecycleUtils.Companion.moveToRecycleBin(rowItem.desc.replace(rowItem.title, ""), positions, context, mainActivity);
 
         return true;
       case R.id.restore:

@@ -286,7 +286,9 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     for (checkedItem in checkedItems)
                         items.add(checkedItem.generateBaseFile())
 
-                    if (items[0].path.contains(getRecycleBinPath()))
+                    val fileParcelable = items[0];
+
+                    if (fileParcelable.path.contains(getRecycleBinPath()))
                         GeneralDialogCreation.deleteFilesDialog(
                             mainActivity,
                             mainActivity,
@@ -295,6 +297,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         )
                     else
                         moveToRecycleBin(
+                            fileParcelable.path.replace(fileParcelable.name, ""),
                             items,
                             mainActivity
                         )

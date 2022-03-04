@@ -34,6 +34,8 @@ import com.amaze.filemanager.utils.DataUtils
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.io.*
+import java.text.SimpleDateFormat
+import java.util.*
 import kotlin.collections.ArrayList
 
 /**
@@ -49,6 +51,7 @@ class RecycleUtils {
 
         @Suppress("INACCESSIBLE_TYPE")
         fun moveToRecycleBin(
+            path: String,
             positions: ArrayList<HybridFileParcelable>,
             context: Context,
             mainActivity: MainActivity,
@@ -61,17 +64,15 @@ class RecycleUtils {
                         Toast.LENGTH_LONG
                     ).show()
 
-                    val millis: Long = System.currentTimeMillis()
+                    val date: String = SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
+
 
                     PrepareCopyTask(
-                        getRecycleBinPath() + File.separator + millis,
+                        getRecycleBinPath() + File.separator + date + File.separator + path,
                         true,
                         mainActivity,
                         mainActivity.isRootExplorer,
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
-                        PrepareCopyTask.OnTaskCompleted {
-                            addRecycledFile(it, millis)
-                        }
                     ).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
                 },
                 deleteCallback = {
@@ -87,10 +88,11 @@ class RecycleUtils {
         }
 
         fun moveToRecycleBin(
+            path: String,
             positions: ArrayList<HybridFileParcelable>,
             mainActivity: MainActivity,
         ) {
-            moveToRecycleBin(positions, mainActivity.applicationContext, mainActivity)
+            moveToRecycleBin(path, positions, mainActivity.applicationContext, mainActivity)
         }
 
         fun restoreFromRecycleBin(
@@ -185,24 +187,6 @@ class RecycleUtils {
             DataUtils.getInstance().addHiddenFile(s)
 
             return s
-        }
-
-        private fun addRecycledFile(positions: ArrayList<HybridFileParcelable>, millis: Long) {
-
-            val list = loadMetaDataJSONFile()
-
-            for (item in positions) {
-                list.add(
-                    RecycleItem(
-                        item.path,
-                        item.name,
-                        millis,
-                        File.separator + millis + File.separator + item.name
-                    )
-                )
-            }
-
-            writeMetaDataJSONFile(list)
         }
 
         private fun writeMetaDataJSONFile(list: ArrayList<RecycleItem>) {
