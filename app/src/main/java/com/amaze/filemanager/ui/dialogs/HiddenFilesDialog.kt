@@ -1,6 +1,5 @@
 package com.amaze.filemanager.ui.dialogs
 
-import android.content.DialogInterface
 import android.content.SharedPreferences
 import android.graphics.Color
 import com.afollestad.materialdialogs.MaterialDialog

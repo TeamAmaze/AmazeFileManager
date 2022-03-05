@@ -41,6 +41,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.files.FileUtils
 import java.io.File
 import java.util.ArrayList
+import kotlin.concurrent.thread
 
 /**
  * This Adapter contains all logic related to showing the list of hidden files.
@@ -77,7 +78,7 @@ class HiddenAdapter(
         if (hide) {
             holder.deleteButton.visibility = View.GONE
         }
-        holder.deleteButton.setOnClickListener { view: View? ->
+        holder.deleteButton.setOnClickListener {
             // if the user taps on the delete button, un-hide the file.
             // TODO: the "hide files" feature just hide files from view in Amaze and not create
             // .nomedia
@@ -94,9 +95,12 @@ class HiddenAdapter(
             hiddenFiles.remove(hiddenFiles[position])
             notifyItemRemoved(position)
         }
-        holder.row.setOnClickListener { view: View? ->
-            val thread = Thread(Runnable {
-                val fragmentActivity = mainFragment.activity ?: return@Runnable
+        holder.row.setOnClickListener {
+            // if the user taps on the hidden file, take the user there.
+            materialDialog?.dismiss()
+
+            thread {
+                val fragmentActivity = mainFragment.requireActivity()
                 if (file.isDirectory(context)) {
                     fragmentActivity.runOnUiThread { mainFragment.loadlist(file.path, false, OpenMode.UNKNOWN) }
                 } else if (!file.isSmb) {
@@ -106,14 +110,8 @@ class HiddenAdapter(
                                 (fragmentActivity as MainActivity),
                                 sharedPrefs)
                     }
-                } else {
-                    Log.w(TAG, "User tapped on a directory but conditions not met; nothing is done.")
                 }
-            })
-
-            // if the user taps on the hidden file, take the user there.
-            materialDialog?.dismiss()
-            thread.start()
+            }
         }
     }
 
