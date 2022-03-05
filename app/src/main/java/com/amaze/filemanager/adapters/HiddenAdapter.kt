@@ -92,7 +92,7 @@ class HiddenAdapter(
             }
             DataUtils.getInstance().removeHiddenFile(hiddenFiles[position].path)
             hiddenFiles.remove(hiddenFiles[position])
-            notifyDataSetChanged()
+            notifyItemRemoved(position)
         }
         holder.row.setOnClickListener { view: View? ->
             val thread = Thread(Runnable {
