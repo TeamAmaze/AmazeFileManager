@@ -54,6 +54,10 @@ abstract class AbstractCompressedTarArchiveExtractor(
     abstract fun getCompressorInputStreamClass(): Class<out CompressorInputStream>
 
     override fun createFrom(inputStream: InputStream): TarArchiveInputStream {
-        return TarArchiveInputStream(compressorInputStreamConstructor.newInstance(inputStream))
+        return runCatching {
+            TarArchiveInputStream(compressorInputStreamConstructor.newInstance(inputStream))
+        }.getOrElse {
+            throw BadArchiveNotice(it)
+        }
     }
 }

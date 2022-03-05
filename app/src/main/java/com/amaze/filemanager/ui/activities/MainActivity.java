@@ -55,6 +55,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
 import java.io.File;
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,6 +138,7 @@ import com.leinardi.android.speeddial.SpeedDialActionItem;
 import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
 import com.leinardi.android.speeddial.SpeedDialView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.topjohnwu.superuser.Shell;
 
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -186,7 +188,6 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import eu.chainfire.libsuperuser.Shell;
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -299,11 +300,6 @@ public class MainActivity extends PermissionsActivity
   // the current visible tab, either 0 or 1
   public static int currentTab;
   private boolean listItemSelected = false;
-
-  public static Shell.Interactive shellInteractive;
-  public static Handler handler;
-
-  private static HandlerThread handlerThread;
 
   public static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
@@ -664,19 +660,14 @@ public class MainActivity extends PermissionsActivity
   }
 
   /**
-   * Initializes an interactive shell, which will stay throughout the app lifecycle The shell is
-   * associated with a handler thread which maintain the message queue from the callbacks of shell
-   * as we certainly cannot allow the callbacks to run on same thread because of possible deadlock
-   * situation and the asynchronous behaviour of LibSuperSU
+   * Initializes an interactive shell, which will stay throughout the app lifecycle.
    */
   private void initializeInteractiveShell() {
-    // only one looper can be associated to a thread. So we are making sure not to create new
-    // handler threads every time the code relaunch.
     if (isRootExplorer()) {
-      handlerThread = new HandlerThread("handler");
-      handlerThread.start();
-      handler = new Handler(handlerThread.getLooper());
-      shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
+      // Enable mount-master flag when invoking su command, to force su run in the global mount
+      // namespace. See https://github.com/topjohnwu/libsu/issues/75
+      Shell.setDefaultBuilder(Shell.Builder.create().setFlags(Shell.FLAG_MOUNT_MASTER));
+      Shell.getShell();
     }
   }
 
@@ -910,7 +901,7 @@ public class MainActivity extends PermissionsActivity
       SshConnectionPool.INSTANCE.shutdown();
       finish();
       if (isRootExplorer()) {
-        // TODO close all shells
+        closeInteractiveShell();
       }
     } else {
       this.backPressedToExitOnce = true;
@@ -1400,12 +1391,12 @@ public class MainActivity extends PermissionsActivity
   /** Closes the interactive shell and threads associated */
   private void closeInteractiveShell() {
     if (isRootExplorer()) {
-      // close interactive shell and handler thread associated with it
-      if (SDK_INT >= JELLY_BEAN_MR2) {
-        // let it finish up first with what it's doing
-        handlerThread.quitSafely();
-      } else handlerThread.quit();
-      shellInteractive.close();
+      // close interactive shell
+      try {
+        Shell.getShell().close();
+      } catch (IOException e) {
+        Log.e(TAG, "Error closing Shell", e);
+      }
     }
   }
 

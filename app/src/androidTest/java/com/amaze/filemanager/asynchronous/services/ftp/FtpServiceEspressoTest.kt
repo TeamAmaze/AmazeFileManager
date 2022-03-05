@@ -32,6 +32,7 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
+import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.*
 import org.junit.Rule
@@ -43,9 +44,13 @@ import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
 import java.security.SecureRandom
+import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
 @Suppress("StringLiteralDuplication")
+@androidx.test.filters.Suppress
+// Require UIAutomator if need to run test on Android 11
+// in order to obtain MANAGE_EXTERNAL_STORAGE permission
 class FtpServiceEspressoTest {
 
     @get:Rule
@@ -69,6 +74,7 @@ class FtpServiceEspressoTest {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
             .putBoolean(FtpService.KEY_PREFERENCE_SECURE, false)
+            .putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, false)
             .remove(FtpService.KEY_PREFERENCE_USERNAME)
             .remove(FtpService.KEY_PREFERENCE_PASSWORD)
             .commit()
@@ -77,7 +83,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        assertTrue(FtpService.isRunning())
+        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
         waitForServer()
         FTPClient().run {
             loginAndVerifyWith(this)
@@ -94,6 +100,7 @@ class FtpServiceEspressoTest {
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
             .edit()
             .putBoolean(FtpService.KEY_PREFERENCE_SECURE, true)
+            .putBoolean(FtpService.KEY_PREFERENCE_SAF_FILESYSTEM, false)
             .remove(FtpService.KEY_PREFERENCE_USERNAME)
             .remove(FtpService.KEY_PREFERENCE_PASSWORD)
             .commit()
@@ -102,7 +109,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        assertTrue(FtpService.isRunning())
+        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
         waitForServer()
 
         FTPSClient(true).run {
@@ -134,6 +141,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
+        while (!FtpService.isRunning());
         assertTrue(FtpService.isRunning())
         waitForServer()
 

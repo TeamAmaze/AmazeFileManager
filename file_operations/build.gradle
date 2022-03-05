@@ -10,6 +10,8 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
 
+		multiDexEnabled true
+
         externalNativeBuild {
             cmake {
                 cFlags '-std=c11'
@@ -50,6 +52,15 @@ android {
 }
 
 dependencies {
+    modules {
+        module("org.bouncycastle:bcprov-jdk15to18") {
+            replacedBy("org.bouncycastle:bcprov-jdk15on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15to18") {
+            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+        }
+    }
+
     implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
 
     implementation "com.github.junrar:junrar:$junrarVersion"

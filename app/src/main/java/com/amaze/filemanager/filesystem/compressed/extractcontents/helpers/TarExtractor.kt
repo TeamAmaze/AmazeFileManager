@@ -36,5 +36,9 @@ class TarExtractor(
 ) {
 
     override fun createFrom(inputStream: InputStream): TarArchiveInputStream =
-        TarArchiveInputStream(inputStream)
+        runCatching {
+            TarArchiveInputStream(inputStream)
+        }.getOrElse {
+            throw BadArchiveNotice(it)
+        }
 }

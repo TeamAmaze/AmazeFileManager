@@ -20,8 +20,15 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import org.junit.Assert.assertEquals
+import android.os.Environment
+import com.amaze.filemanager.test.randomBytes
+import com.amaze.filemanager.test.supportedArchiveExtensions
+import org.apache.commons.compress.archivers.ArchiveException
+import org.junit.Assert.*
 import org.junit.Test
+import java.io.ByteArrayInputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
@@ -38,6 +45,8 @@ abstract class AbstractCompressedHelperTaskArchiveTest : AbstractCompressedHelpe
         0,
         ZoneId.of("UTC")
     ).toInstant().toEpochMilli()
+
+    protected abstract val archiveFileName: String
 
     /**
      * Test browse archive top level.
@@ -58,7 +67,7 @@ abstract class AbstractCompressedHelperTaskArchiveTest : AbstractCompressedHelpe
     open fun testSublevels() {
         var task = createTask("test-archive")
         var result = task.doInBackground()
-        assertEquals(5, result.result.size.toLong())
+        assertEquals("Thrown from $javaClass.name", 5, result.result.size.toLong())
         assertEquals("1", result.result[0].name)
         assertEquals(EXPECTED_TIMESTAMP, result.result[0].date)
         assertEquals("2", result.result[1].name)
@@ -112,5 +121,8 @@ abstract class AbstractCompressedHelperTaskArchiveTest : AbstractCompressedHelpe
         // assertEquals(512, result.get(0).size);
     }
 
-    protected abstract fun createTask(relativePath: String): CompressedHelperTask
+    protected fun createTask(relativePath: String): CompressedHelperTask =
+        doCreateTask(File(Environment.getExternalStorageDirectory(), archiveFileName), relativePath)
+
+    protected abstract fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask
 }

@@ -39,6 +39,8 @@ import org.junit.runners.Suite.SuiteClasses
     EncryptedRarHelperTaskTest::class,
     EncryptedZipHelperTaskTest::class,
     EncryptedSevenZipHelperTaskTest::class,
-    ListEncryptedSevenZipHelperTaskTest::class
+    ListEncryptedSevenZipHelperTaskTest::class,
+    UnknownCompressedHelperTaskTest::class,
+    CompressedHelperForBadArchiveTest::class
 )
 class CompressedHelperTaskTestSuite

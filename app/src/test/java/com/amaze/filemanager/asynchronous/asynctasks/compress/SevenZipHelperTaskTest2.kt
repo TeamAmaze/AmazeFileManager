@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Environment
 import org.junit.Assert
 import org.junit.Ignore
 import org.junit.Test
@@ -28,6 +27,9 @@ import java.io.File
 
 @Ignore("Test skipped due to problem at upstream library.")
 class SevenZipHelperTaskTest2 : AbstractCompressedHelperTaskArchiveTest() {
+
+    override val archiveFileName: String
+        get() = "compress.7z"
 
     @Test
     override fun testRoot() {
@@ -40,8 +42,9 @@ class SevenZipHelperTaskTest2 : AbstractCompressedHelperTaskArchiveTest() {
     @Ignore("Not testing this one")
     override fun testSublevels() = Unit
 
-    override fun createTask(relativePath: String): CompressedHelperTask = SevenZipHelperTask(
-        File(Environment.getExternalStorageDirectory(), "compress.7z").absolutePath,
+    override fun doCreateTask(archive: File, relativePath: String): CompressedHelperTask =
+        SevenZipHelperTask(
+        archive.absolutePath,
         relativePath,
         false,
         emptyCallback

@@ -20,14 +20,10 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.util.Objects;
-import java.util.concurrent.Callable;
+import android.content.ContentResolver;
+
+import androidx.annotation.WorkerThread;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
@@ -38,10 +34,14 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
 
-import android.content.ContentResolver;
-
-import androidx.annotation.WorkerThread;
-import androidx.documentfile.provider.DocumentFile;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.util.Objects;
+import java.util.concurrent.Callable;
 
 public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
@@ -130,6 +130,12 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
     if (!file.canWrite() && isRootExplorer) {
       // try loading stream associated using root
       cachedFile = new File(externalCacheDir, file.getName());
+      // Scrap previously cached file if exist
+      if(cachedFile.exists()) {
+        cachedFile.delete();
+      }
+      cachedFile.createNewFile();
+      cachedFile.deleteOnExit();
       // creating a cache file
       CopyFilesCommand.INSTANCE.copyFiles(file.getAbsolutePath(), cachedFile.getPath());
 
