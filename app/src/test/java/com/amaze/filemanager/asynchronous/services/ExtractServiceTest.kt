@@ -30,16 +30,14 @@ import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.randomBytes
 import com.amaze.filemanager.test.supportedArchiveExtensions
 import org.awaitility.Awaitility.await
-import org.awaitility.core.ConditionEvaluationListener
-import org.awaitility.core.EvaluatedCondition
-import org.awaitility.core.TimeoutEvent
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -55,12 +53,10 @@ import org.robolectric.shadows.ShadowToast
 import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
-import java.lang.reflect.Modifier
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
-import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
@@ -417,12 +413,11 @@ class ExtractServiceTest {
             performTest(badArchive)
             ShadowLooper.idleMainLooper()
             await()
-                .conditionEvaluationListener(object : ConditionEvaluationListener<Any> {
-                    override fun conditionEvaluated(condition: EvaluatedCondition<Any>?) = Unit
-                    override fun onTimeout(timeoutEvent: TimeoutEvent?) {
+                .conditionEvaluationListener { condition ->
+                    if (condition.remainingTimeInMS <= 0 && !condition.isSatisfied) {
                         fail("Extractor unable to handle bad archive for $archiveType")
                     }
-                })
+                }
                 .atMost(10, TimeUnit.SECONDS)
                 .until {
                     ShadowToast.getLatestToast() != null

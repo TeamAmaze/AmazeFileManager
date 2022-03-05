@@ -10,7 +10,7 @@ buildscript {
         fabSpeedDialVersion = '3.1.1'
         roomVersion = '2.4.0'
         bouncyCastleVersion = '1.68'
-        awaitilityVersion = "4.1.1"
+        awaitilityVersion = "3.1.6"
         androidMaterialVersion = "1.4.0"
         androidXFragmentVersion = "1.3.6"
         androidXAppCompatVersion = "1.3.1"

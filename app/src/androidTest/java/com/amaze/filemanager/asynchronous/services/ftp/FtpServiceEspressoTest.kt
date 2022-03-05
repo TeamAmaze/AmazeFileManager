@@ -34,16 +34,26 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
 import org.awaitility.Awaitility.await
 import org.junit.After
-import org.junit.Assert.*
+import org.junit.Assert.assertArrayEquals
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.io.*
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.FileOutputStream
+import java.io.FileWriter
 import java.net.InetAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
 import java.security.SecureRandom
+import java.util.concurrent.Callable
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
@@ -83,7 +93,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
+        await().atMost(10, TimeUnit.SECONDS).until(Callable { FtpService.isRunning() })
         waitForServer()
         FTPClient().run {
             loginAndVerifyWith(this)
@@ -109,7 +119,7 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
+        await().atMost(10, TimeUnit.SECONDS).until(Callable { FtpService.isRunning() })
         waitForServer()
 
         FTPSClient(true).run {
