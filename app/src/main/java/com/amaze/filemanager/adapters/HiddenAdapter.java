@@ -52,19 +52,17 @@ import androidx.recyclerview.widget.RecyclerView;
  *
  * <p>Created by Arpit on 16-11-2014 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com>.
  *
- * @author Bowie Chen on 2019-10-26.
  * @see com.amaze.filemanager.adapters.holders.HiddenViewHolder
  */
 public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
   private static final String TAG = "HiddenAdapter";
 
-  private SharedPreferences sharedPrefs;
-  private MainFragment mainFragment;
-  private Context context;
-  private ArrayList<HybridFile> hiddenFiles;
+  private final SharedPreferences sharedPrefs;
+  private final MainFragment mainFragment;
+  private final Context context;
+  private final ArrayList<HybridFile> hiddenFiles;
   private MaterialDialog materialDialog;
-  private boolean hide;
-  private DataUtils dataUtils = DataUtils.getInstance();
+  private final boolean hide;
 
   public HiddenAdapter(
       Context context,
@@ -122,7 +120,7 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
             task.execute(filesToDelete);
           }
 
-          dataUtils.removeHiddenFile(hiddenFiles.get(position).getPath());
+          DataUtils.getInstance().removeHiddenFile(hiddenFiles.get(position).getPath());
           hiddenFiles.remove(hiddenFiles.get(position));
           notifyDataSetChanged();
         });

@@ -99,6 +99,7 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.dialogs.HiddenFilesDialog;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
@@ -1148,8 +1149,8 @@ public class MainActivity extends PermissionsActivity
               builder.build().show();
               break;
             case R.id.hiddenitems:
-              GeneralDialogCreation.showHiddenDialog(
-                  dataUtils, getPrefs(), mainFragment, getAppTheme());
+              HiddenFilesDialog.showHiddenDialog(
+                  dataUtils, getPrefs(), mainFragment, this, getAppTheme());
               break;
             case R.id.view:
               int pathLayout =

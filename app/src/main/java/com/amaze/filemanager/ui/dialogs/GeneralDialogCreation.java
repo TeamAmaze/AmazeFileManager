@@ -1280,40 +1280,6 @@ public class GeneralDialogCreation {
     x.show();
   }
 
-  public static void showHiddenDialog(
-      DataUtils dataUtils,
-      SharedPreferences sharedPrefs,
-      final MainFragment mainFragment,
-      AppTheme appTheme) {
-    if (mainFragment == null || mainFragment.getActivity() == null) {
-      return;
-    }
-
-    int accentColor = mainFragment.getMainActivity().getAccent();
-    final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainFragment.getActivity());
-    builder.positiveText(R.string.close);
-    builder.positiveColor(accentColor);
-    builder.title(R.string.hiddenfiles);
-    builder.theme(appTheme.getMaterialDialogTheme(mainFragment.requireContext()));
-    builder.autoDismiss(true);
-    HiddenAdapter adapter =
-        new HiddenAdapter(
-            mainFragment.getActivity(),
-            mainFragment,
-            sharedPrefs,
-            FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()),
-            null,
-            false);
-    builder.adapter(adapter, null);
-    builder.dividerColor(Color.GRAY);
-    MaterialDialog materialDialog = builder.build();
-    adapter.updateDialog(materialDialog);
-    materialDialog.setOnDismissListener(
-        dialogInterface ->
-            mainFragment.loadlist(mainFragment.getCurrentPath(), false, OpenMode.UNKNOWN));
-    materialDialog.show();
-  }
-
   public static void setPermissionsDialog(
       final View v,
       View but,
