@@ -54,34 +54,35 @@ class SevenZipHelperTask(
         while (true) {
             if (paused) continue
             try {
-                val sevenzFile = if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
+                if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
                     SevenZFile(
                         File(filePath),
                         ArchivePasswordCache.getInstance()[filePath]!!.toCharArray()
                     )
                 } else {
                     SevenZFile(File(filePath))
-                }
-                for (entry in sevenzFile.entries) {
-                    val name = entry.name
-                    val isInBaseDir = (
-                        relativePath == "" &&
-                            !name.contains(CompressedHelper.SEPARATOR)
-                        )
-                    val isInRelativeDir = (
-                        name.contains(CompressedHelper.SEPARATOR) &&
-                            name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
-                            == relativePath
-                        )
-                    if (isInBaseDir || isInRelativeDir) {
-                        elements.add(
-                            CompressedObjectParcelable(
-                                entry.name,
-                                entry.lastModifiedDate.time,
-                                entry.size,
-                                entry.isDirectory
+                }.use {
+                    for (entry in it.entries) {
+                        val name = entry.name
+                        val isInBaseDir = (
+                                relativePath == "" &&
+                                        !name.contains(CompressedHelper.SEPARATOR)
+                                )
+                        val isInRelativeDir = (
+                                name.contains(CompressedHelper.SEPARATOR) &&
+                                        name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
+                                        == relativePath
+                                )
+                        if (isInBaseDir || isInRelativeDir) {
+                            elements.add(
+                                    CompressedObjectParcelable(
+                                            entry.name,
+                                            entry.lastModifiedDate.time,
+                                            entry.size,
+                                            entry.isDirectory
+                                    )
                             )
-                        )
+                        }
                     }
                 }
                 paused = false
