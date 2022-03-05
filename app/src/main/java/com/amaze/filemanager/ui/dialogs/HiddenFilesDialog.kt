@@ -17,7 +17,7 @@ object HiddenFilesDialog {
     @JvmStatic
     fun showHiddenDialog(
             dataUtils: DataUtils,
-            sharedPrefs: SharedPreferences?,
+            sharedPrefs: SharedPreferences,
             mainFragment: MainFragment,
             mainActivity: MainActivity,
             appTheme: AppTheme) {

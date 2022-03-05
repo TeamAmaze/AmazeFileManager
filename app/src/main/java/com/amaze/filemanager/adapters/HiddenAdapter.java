@@ -44,6 +44,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.FragmentActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -65,11 +66,11 @@ public class HiddenAdapter extends RecyclerView.Adapter<HiddenViewHolder> {
   private final boolean hide;
 
   public HiddenAdapter(
-      Context context,
-      MainFragment mainFrag,
-      SharedPreferences sharedPreferences,
-      ArrayList<HybridFile> hiddenFiles,
-      MaterialDialog materialDialog,
+      @NonNull Context context,
+      @NonNull MainFragment mainFrag,
+      @NonNull SharedPreferences sharedPreferences,
+      @NonNull ArrayList<HybridFile> hiddenFiles,
+      @Nullable MaterialDialog materialDialog,
       boolean hide) {
     this.context = context;
     this.mainFragment = mainFrag;
