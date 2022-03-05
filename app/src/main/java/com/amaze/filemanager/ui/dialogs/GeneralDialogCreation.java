@@ -1250,36 +1250,6 @@ public class GeneralDialogCreation {
     dialog.dismiss();
   }
 
-  public static void showHistoryDialog(
-      final DataUtils dataUtils,
-      SharedPreferences sharedPrefs,
-      final MainFragment m,
-      AppTheme appTheme) {
-    int accentColor = m.getMainActivity().getAccent();
-    final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.positiveText(R.string.cancel);
-    a.positiveColor(accentColor);
-    a.negativeText(R.string.clear);
-    a.negativeColor(accentColor);
-    a.title(R.string.history);
-    a.onNegative((dialog, which) -> dataUtils.clearHistory());
-    a.theme(appTheme.getMaterialDialogTheme(m.requireContext()));
-
-    HiddenAdapter adapter =
-        new HiddenAdapter(
-            m.getActivity(),
-            m,
-            sharedPrefs,
-            toHybridFileArrayList(dataUtils.getHistory()),
-            null,
-            true);
-    a.adapter(adapter, null);
-
-    MaterialDialog x = a.build();
-    adapter.updateDialog(x);
-    x.show();
-  }
-
   public static void setPermissionsDialog(
       final View v,
       View but,

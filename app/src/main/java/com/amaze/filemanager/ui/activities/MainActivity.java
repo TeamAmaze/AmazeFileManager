@@ -100,6 +100,7 @@ import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.HiddenFilesDialog;
+import com.amaze.filemanager.ui.dialogs.HistoryDialog;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark;
 import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
@@ -1082,8 +1083,8 @@ public class MainActivity extends PermissionsActivity
               mainFragment.home();
               break;
             case R.id.history:
-              GeneralDialogCreation.showHistoryDialog(
-                  dataUtils, getPrefs(), mainFragment, getAppTheme());
+              HistoryDialog.showHistoryDialog(
+                  dataUtils, getPrefs(), this, mainFragment, getAppTheme());
               break;
             case R.id.sethome:
               if (mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.FILE
