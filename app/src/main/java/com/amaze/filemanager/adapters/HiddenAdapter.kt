@@ -46,9 +46,6 @@ import kotlin.concurrent.thread
 /**
  * This Adapter contains all logic related to showing the list of hidden files.
  *
- *
- * Created by Arpit on 16-11-2014 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>.
- *
  * @see com.amaze.filemanager.adapters.holders.HiddenViewHolder
  */
 class HiddenAdapter(
@@ -56,7 +53,7 @@ class HiddenAdapter(
         private val mainFragment: MainFragment,
         private val sharedPrefs: SharedPreferences,
         hiddenFiles: List<HybridFile>,
-        private var materialDialog: MaterialDialog?,
+        var materialDialog: MaterialDialog?,
         private val hide: Boolean) : RecyclerView.Adapter<HiddenViewHolder>() {
 
     companion object {
@@ -113,10 +110,6 @@ class HiddenAdapter(
                 }
             }
         }
-    }
-
-    fun updateDialog(dialog: MaterialDialog) {
-        materialDialog = dialog
     }
 
     override fun getItemId(position: Int): Long {

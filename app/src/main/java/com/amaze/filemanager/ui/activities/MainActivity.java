@@ -1083,8 +1083,7 @@ public class MainActivity extends PermissionsActivity
               mainFragment.home();
               break;
             case R.id.history:
-              HistoryDialog.showHistoryDialog(
-                  dataUtils, getPrefs(), this, mainFragment, getAppTheme());
+              HistoryDialog.showHistoryDialog(this, mainFragment);
               break;
             case R.id.sethome:
               if (mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.FILE
@@ -1150,8 +1149,7 @@ public class MainActivity extends PermissionsActivity
               builder.build().show();
               break;
             case R.id.hiddenitems:
-              HiddenFilesDialog.showHiddenDialog(
-                  dataUtils, getPrefs(), mainFragment, this, getAppTheme());
+              HiddenFilesDialog.showHiddenDialog(this, mainFragment);
               break;
             case R.id.view:
               int pathLayout =

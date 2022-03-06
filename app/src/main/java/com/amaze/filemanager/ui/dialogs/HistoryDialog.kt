@@ -12,18 +12,19 @@ import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.DataUtils
 
 object HistoryDialog {
+    /**
+     * Create history dialog, it shows the accessed folders from last accessed to first accessed
+     */
     @JvmStatic
-    fun showHistoryDialog(
-            dataUtils: DataUtils,
-            sharedPrefs: SharedPreferences,
-            mainActivity: MainActivity,
-            mainFragment: MainFragment,
-            appTheme: AppTheme) {
+    fun showHistoryDialog(mainActivity: MainActivity, mainFragment: MainFragment) {
+        val sharedPrefs = mainActivity.prefs
+        val appTheme = mainActivity.appTheme
+
         val adapter = HiddenAdapter(
                 mainActivity,
                 mainFragment,
                 sharedPrefs,
-                FileUtils.toHybridFileArrayList(dataUtils.history),
+                FileUtils.toHybridFileArrayList(DataUtils.getInstance().history),
                 null,
                 true)
 
@@ -33,11 +34,13 @@ object HistoryDialog {
             builder.negativeText(R.string.clear)
             builder.negativeColor(mainActivity.accent)
             builder.title(R.string.history)
-            builder.onNegative { _: MaterialDialog?, _: DialogAction? -> dataUtils.clearHistory() }
+            builder.onNegative { _: MaterialDialog?, _: DialogAction? ->
+                DataUtils.getInstance().clearHistory()
+            }
             builder.theme(appTheme.getMaterialDialogTheme(mainFragment.requireContext()))
             builder.adapter(adapter, null)
         }.build()
-        adapter.updateDialog(materialDialog)
+        adapter.materialDialog = materialDialog
         materialDialog.show()
     }
 
