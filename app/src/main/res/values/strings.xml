@@ -36,7 +36,7 @@
     <string name="uninstall">Uninstall</string>
     <string name="play">Play store</string>
     <string name="properties">Properties</string>
-    <string name="copyingapk">"Copying APK to "</string>
+    <string name="copyingapks">Copying %d APK files to %s</string>
     <string name="delbook">Delete Bookmark</string>
     <string name="add_to_bookmarks">Add to Bookmarks</string>
     <string name="enterpath">Enter Path</string>

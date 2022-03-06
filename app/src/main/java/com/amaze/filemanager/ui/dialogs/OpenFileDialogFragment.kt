@@ -369,6 +369,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                 AppDataParcelable(
                     if (label.isNotEmpty()) label else it.activityInfo.packageName,
                     "",
+                    null,
                     it.activityInfo.packageName,
                     "",
                     "",
