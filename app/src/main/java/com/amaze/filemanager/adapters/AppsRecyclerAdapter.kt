@@ -461,10 +461,9 @@ class AppsRecyclerAdapter(
         intent.putExtra(CopyService.TAG_COPY_TARGET, dst.path)
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0)
 
-        val dest = Environment.getExternalStorageDirectory().path + "/app_backup"
         Toast.makeText(
                 fragment.context,
-                fragment.getString(R.string.copyingapks, filesToCopyList.size, dest),
+                fragment.getString(R.string.copyingapks, filesToCopyList.size, dst.path),
                 Toast.LENGTH_LONG
         )
                 .show()
