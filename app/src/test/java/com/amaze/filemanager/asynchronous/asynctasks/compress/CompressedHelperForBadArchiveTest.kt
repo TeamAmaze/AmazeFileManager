@@ -48,9 +48,11 @@ class CompressedHelperForBadArchiveTest {
             ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
             val task = CompressedHelper.getCompressorInstance(
                     ApplicationProvider.getApplicationContext(), badArchive
-            ).changePath("", false)
+            )
+            Assert.assertNotNull(task)
+            task!!
             try {
-                val result = task.call()
+                val result = task.changePath("", false).call()
                 Assert.assertNull("Thrown from ${task.javaClass}", result)
             } catch (exception: ArchiveException) {
                 Assert.assertNotNull(exception)
