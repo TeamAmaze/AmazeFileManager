@@ -50,7 +50,7 @@
             android:ems="10"
             android:id="@+id/edit_text_encrypt_save_as"
             android:layout_gravity="center_vertical"
-            android:inputType="textCapWords" />
+            android:inputType="textCapSentences" />
 
     </com.amaze.filemanager.ui.views.WarnableTextInputLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

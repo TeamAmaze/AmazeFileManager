@@ -1124,7 +1124,7 @@ public class GeneralDialogCreation {
     EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
     etFilename.setText(".zip"); // TODO: Put the file/folder name here
-    etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+    etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
     etFilename.setSingleLine();
     WarnableTextInputLayout tilFilename =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
