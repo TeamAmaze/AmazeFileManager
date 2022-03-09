@@ -65,7 +65,7 @@ dependencies {
     //zip4j: support password-protected zips
     implementation "net.lingala.zip4j:zip4j:$zip4jVersion"
 
-    implementation project(':commons_compress_7z')
+    implementation projects.commonsCompress7z
 
     //SFTP
     implementation "com.hierynomus:sshj:$sshjVersion"
