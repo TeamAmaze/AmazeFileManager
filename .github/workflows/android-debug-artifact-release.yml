@@ -20,12 +20,12 @@ jobs:
         with:
           arguments: assembleDebug
       - name: Upload fdroid artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Amaze-Fdroid-debug
           path: app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk
       - name: Upload play artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: Amaze-Play-debug
           path: app/build/outputs/apk/play/debug/app-play-debug.apk
