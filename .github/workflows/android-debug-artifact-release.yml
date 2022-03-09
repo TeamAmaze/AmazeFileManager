@@ -16,8 +16,9 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Build with Gradle
-        run: |
-          bash ./gradlew assembleDebug
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v2
         with:

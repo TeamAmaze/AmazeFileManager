@@ -24,7 +24,9 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Check formatting using spotless
-        run: ./gradlew spotlessCheck --stacktrace
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: spotlessCheck --stacktrace
   build:
     name: Build debug and run Jacoco tests
     runs-on: ubuntu-20.04
@@ -37,7 +39,10 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Build with Gradle
-        run: |
-          ./gradlew assembledebug --stacktrace
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembledebug --stacktrace
       - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport --stacktrace --info
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jacocoTestPlayDebugUnitTestReport --stacktrace --info

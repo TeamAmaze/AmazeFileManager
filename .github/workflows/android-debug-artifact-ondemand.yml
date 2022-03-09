@@ -37,9 +37,9 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Build with Gradle
-        run: |
-          echo Run on-demand by ${GITHUB_ACTOR}
-          bash ./gradlew assembleDebug --stacktrace
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembleDebug --stacktrace
       - name: Upload fdroid artifact
         uses: actions/upload-artifact@v2
         with:

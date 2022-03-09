@@ -23,7 +23,9 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Check formatting using spotless
-        run: ./gradlew spotlessCheck
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: spotlessCheck
   build:
     name: Build debug, Jacoco test and publish to codacy
     runs-on: ubuntu-20.04
@@ -38,10 +40,13 @@ jobs:
           java-version: 11
           cache: 'gradle'
       - name: Build with Gradle
-        run: |
-          ./gradlew assembledebug
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembledebug
       - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jacocoTestPlayDebugUnitTestReport
       - name: Publish test cases
         run: |
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
