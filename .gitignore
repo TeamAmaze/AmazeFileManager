@@ -331,3 +331,5 @@ captures
 
 # sign config
 signing.properties
+
+.attach_pid*
