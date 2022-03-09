@@ -1,6 +1,8 @@
 # Auto detect text files and perform LF normalization
 * text=auto
 
+*.bat eol=crlf
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 *.sln    merge=union
