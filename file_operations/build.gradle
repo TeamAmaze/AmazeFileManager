@@ -2,16 +2,13 @@ apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 
 android {
-    compileSdkVersion 30
+    compileSdk 30
 
     defaultConfig {
-        minSdkVersion 14
-
+        minSdk 14
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
-
 		multiDexEnabled true
-
         externalNativeBuild {
             cmake {
                 cFlags '-std=c11'

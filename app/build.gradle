@@ -6,23 +6,12 @@ apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 31
-
-    packagingOptions {
-        exclude 'proguard-project.txt'
-        exclude 'project.properties'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/DEPENDENCIES'
-    }
+    compileSdk 31
 
     defaultConfig {
         applicationId "com.amaze.filemanager"
-        minSdkVersion 14
-        targetSdkVersion 30
+        minSdk 14
+        targetSdk 30
         versionCode 107
         versionName "3.6.7"
         multiDexEnabled true
@@ -69,7 +58,7 @@ android {
         viewBinding true
     }
 
-    lintOptions {
+    lint {
         abortOnError false
     }
 
@@ -80,12 +69,22 @@ android {
             dimension 'static'
             buildConfigField "boolean", "IS_VERSION_FDROID", "true"
         }
-
         play {
             dimension 'static'
             buildConfigField "boolean", "IS_VERSION_FDROID", "false"
             signingConfig signingConfigs.config
         }
+    }
+
+    packagingOptions {
+        exclude 'proguard-project.txt'
+        exclude 'project.properties'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/DEPENDENCIES'
     }
 
     compileOptions {
