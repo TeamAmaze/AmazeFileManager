@@ -313,6 +313,3 @@ if (propFile.canRead()) {
     println 'signing.properties not found'
     android.buildTypes.release.signingConfig = null
 }
-repositories {
-    mavenCentral()
-}

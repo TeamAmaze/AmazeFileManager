@@ -33,9 +33,7 @@ buildscript {
     }
     repositories {
         google()
-        maven {
-            url "https://plugins.gradle.org/m2/"
-        }
+        gradlePluginPortal()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.0.4'
@@ -55,9 +53,10 @@ allprojects {
 
     repositories {
         google()
-        maven { url "https://jitpack.io" }
-        maven { url "https://jcenter.bintray.com" }
         mavenCentral()
+        maven { url "https://jitpack.io" }
+        // todo: remove jcenter later
+        maven { url "https://jcenter.bintray.com" }
     }
     tasks.withType(Test) {
         maxParallelForks = 4
