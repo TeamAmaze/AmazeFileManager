@@ -21,7 +21,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
-          cache: 'gradle'
       - name: Check formatting using spotless
         uses: gradle/gradle-build-action@v2
         with:
@@ -38,7 +37,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
-          cache: 'gradle'
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
@@ -74,13 +72,9 @@ jobs:
         with:
           java-version: 15
       - name: Gradle cache
+        uses: gradle/gradle-build-action@v2
+      - name: AVD cache
         uses: actions/cache@v2
-        with:
-          path: |
-            ~/.gradle/caches
-            ~/.gradle/wrapper
-          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*') }}-${{ hashFiles('**/gradle/wrapper/gradle-wrapper.properties') }}-${{ hashFiles('**/buildSrc/**/*.kt') }}
-      - uses: actions/cache@v2
         id: avd-cache
         with:
           path: |

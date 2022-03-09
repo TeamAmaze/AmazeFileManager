@@ -14,7 +14,6 @@ jobs:
         with:
           distribution: "temurin"
           java-version: 11
-          cache: 'gradle'
       - name: Build with Gradle
         uses: gradle/gradle-build-action@v2
         with:
