@@ -7,13 +7,6 @@ android {
         minSdk 14
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
-
-    buildTypes {
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard.cfg'
-        }
-    }
 }
 
 dependencies {
