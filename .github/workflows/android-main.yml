@@ -25,6 +25,7 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: spotlessCheck
+
   build:
     name: Build debug, Jacoco test and publish to codacy
     runs-on: ubuntu-20.04
@@ -57,6 +58,8 @@ jobs:
           cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
           echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
           echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+  
+
   test_emulator:
     timeout-minutes: 30 # Emulator can get stuck
     runs-on: macos-latest
