@@ -25,7 +25,7 @@ import java.util.Arrays;
 import java.util.Objects;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.utils.Utils;
@@ -169,8 +169,9 @@ public final class PasteHelper implements Parcelable {
                                   move,
                                   mainActivity,
                                   mainActivity.isRootExplorer(),
-                                  mainFragment.getMainFragmentViewModel().getOpenMode())
-                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, arrayList);
+                                  mainFragment.getMainFragmentViewModel().getOpenMode(),
+                                  arrayList)
+                              .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                           dismissSnackbar(true);
                         },
                         () -> dismissSnackbar(true));

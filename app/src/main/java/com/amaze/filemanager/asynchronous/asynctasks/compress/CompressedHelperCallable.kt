@@ -18,23 +18,32 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
+import androidx.annotation.WorkerThread
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.asynchronous.asynctasks.compress.UnknownCompressedFileHelperCallable
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import java.util.ArrayList
+import org.apache.commons.compress.archivers.ArchiveException
+import java.util.*
+import java.util.concurrent.Callable
 
-/**
- * Used by files compressed with gzip, bz2, lzma and xz.
- */
-class UnknownCompressedFileDecompressor(context: Context) : Decompressor(context) {
-    override fun changePath(
-        path: String,
-        addGoBackItem: Boolean
-    ) =
-        UnknownCompressedFileHelperCallable(filePath, addGoBackItem)
+abstract class CompressedHelperCallable internal constructor(
+    private val createBackItem: Boolean
+) :
+    Callable<ArrayList<CompressedObjectParcelable>> {
+
+    @WorkerThread
+    @Throws(ArchiveException::class)
+    override fun call(): ArrayList<CompressedObjectParcelable> {
+        val elements = ArrayList<CompressedObjectParcelable>()
+        if (createBackItem) {
+            elements.add(0, CompressedObjectParcelable())
+        }
+
+        addElements(elements)
+        Collections.sort(elements, CompressedObjectParcelable.Sorter())
+        return elements
+    }
+
+    @Throws(ArchiveException::class)
+    protected abstract fun addElements(elements: ArrayList<CompressedObjectParcelable>)
 }

@@ -18,16 +18,34 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.asynchronous.asynctasks.compress.TarGzHelperCallable
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
+import org.junit.Assert
+import org.junit.Ignore
+import org.junit.Test
+import java.io.File
 
-class TarGzDecompressor(context: Context) : Decompressor(context) {
-    override fun changePath(
-        path: String,
-        addGoBackItem: Boolean
-    ) =
-        TarGzHelperCallable(context, filePath, path, addGoBackItem)
+@Ignore("Test skipped due to problem at upstream library.")
+class SevenZipHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest() {
+
+    override val archiveFileName: String
+        get() = "compress.7z"
+
+    @Test
+    override fun testRoot() {
+        val task = createCallable("")
+        val result = task.call()
+        Assert.assertEquals(result.size.toLong(), 0)
+    }
+
+    @Test
+    @Ignore("Not testing this one")
+    override fun testSublevels() = Unit
+
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            SevenZipHelperCallable(
+        archive.absolutePath,
+        relativePath,
+        false
+    )
 }

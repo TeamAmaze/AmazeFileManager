@@ -21,18 +21,13 @@
 package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
 
 import android.content.Context
-import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.asynchronous.asynctasks.compress.TarXzHelperTask
+import com.amaze.filemanager.asynchronous.asynctasks.compress.TarXzHelperCallable
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
-import java.util.*
 
 class TarXzDecompressor(context: Context) : Decompressor(context) {
     override fun changePath(
         path: String,
-        addGoBackItem: Boolean,
-        onFinish: OnAsyncTaskFinished<AsyncTaskResult<ArrayList<CompressedObjectParcelable>>>
+        addGoBackItem: Boolean
     ) =
-        TarXzHelperTask(context, filePath, path, addGoBackItem, onFinish)
+        TarXzHelperCallable(context, filePath, path, addGoBackItem)
 }

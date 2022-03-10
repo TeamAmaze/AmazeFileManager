@@ -18,16 +18,29 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.asynchronous.asynctasks.compress.TarGzHelperCallable
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
+import org.junit.runner.RunWith
+import org.junit.runners.Suite
+import org.junit.runners.Suite.SuiteClasses
 
-class TarGzDecompressor(context: Context) : Decompressor(context) {
-    override fun changePath(
-        path: String,
-        addGoBackItem: Boolean
-    ) =
-        TarGzHelperCallable(context, filePath, path, addGoBackItem)
-}
+@RunWith(Suite::class)
+@SuiteClasses(
+    TarGzHelperCallableTest::class,
+    ZipHelperCallableTest::class,
+    TarHelperCallableTest::class,
+    RarHelperCallableTest::class,
+    TarBzip2HelperCallableTest::class,
+    TarLzmaHelperCallableTest::class,
+    TarXzHelperCallableTest::class,
+    TarXzHelperCallableTest2::class,
+    SevenZipHelperCallableTest::class,
+    SevenZipHelperCallableTest2::class,
+    EncryptedRarHelperCallableTest::class,
+    EncryptedZipHelperCallableTest::class,
+    EncryptedSevenZipHelperCallableTest::class,
+    ListEncryptedSevenZipHelperCallableTest::class,
+    UnknownCompressedHelperCallableTest::class,
+    CompressedHelperForBadArchiveTest::class
+)
+class CompressedHelperCallableTestSuite

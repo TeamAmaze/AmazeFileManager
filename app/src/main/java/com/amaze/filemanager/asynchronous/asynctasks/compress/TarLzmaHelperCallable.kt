@@ -18,16 +18,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.content.Context
-import com.amaze.filemanager.asynchronous.asynctasks.compress.TarGzHelperCallable
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.compressors.lzma.LZMACompressorInputStream
 
-class TarGzDecompressor(context: Context) : Decompressor(context) {
-    override fun changePath(
-        path: String,
-        addGoBackItem: Boolean
-    ) =
-        TarGzHelperCallable(context, filePath, path, addGoBackItem)
+class TarLzmaHelperCallable(
+    context: Context,
+    filePath: String,
+    relativePath: String,
+    goBack: Boolean
+) :
+    AbstractCompressedTarArchiveHelperCallable(context, filePath, relativePath, goBack) {
+
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
+        LZMACompressorInputStream::class.java
 }

@@ -28,6 +28,7 @@ import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import io.reactivex.schedulers.Schedulers;
 
@@ -61,6 +62,7 @@ public class CryptHandler {
     database.encryptedEntryDao().update(newEncryptedEntry).subscribeOn(Schedulers.io()).subscribe();
   }
 
+  @Nullable
   public EncryptedEntry findEntry(String path) {
     try {
       return database.encryptedEntryDao().select(path).subscribeOn(Schedulers.io()).blockingGet();

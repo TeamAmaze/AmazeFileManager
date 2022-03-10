@@ -18,16 +18,19 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.filesystem.compressed.showcontents.helpers
+package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.content.Context
-import com.amaze.filemanager.asynchronous.asynctasks.compress.TarGzHelperCallable
-import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
+import java.io.File
 
-class TarGzDecompressor(context: Context) : Decompressor(context) {
-    override fun changePath(
-        path: String,
-        addGoBackItem: Boolean
-    ) =
-        TarGzHelperCallable(context, filePath, path, addGoBackItem)
+class EncryptedSevenZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
+
+    override val archiveFileName: String
+        get() = "test-archive-encrypted.7z"
+
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+            SevenZipHelperCallable(
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }

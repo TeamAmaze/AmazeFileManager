@@ -83,9 +83,9 @@ public class SearchWorkerFragment extends Fragment {
 
     searchAsyncTask =
         new SearchAsyncTask(
-            getActivity(), input, openMode, rootMode, isRegexEnabled, isMatchesEnabled);
+            requireContext(), input, openMode, rootMode, isRegexEnabled, isMatchesEnabled, path);
     searchAsyncTask.setCallback(callbacks);
-    searchAsyncTask.execute(path);
+    searchAsyncTask.execute();
   }
 
   @Override

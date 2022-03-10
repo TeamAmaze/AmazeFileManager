@@ -73,7 +73,8 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFilesTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.CloudContract;
@@ -1541,13 +1542,14 @@ public class MainActivity extends PermissionsActivity
                   oppathe = "";
                 }
 
-                new MoveFiles(
+                TaskKt.fromTask(
+                    new MoveFilesTask(
                         oparrayListList,
                         isRootExplorer(),
                         mainFragment.getCurrentPath(),
-                        mainFragment.getActivity(),
-                        OpenMode.FILE)
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
+                        this,
+                        OpenMode.FILE,
+                        oppatheList));
                 break;
               case NEW_FOLDER: // mkdir
                 mainActivityHelper.mkDir(

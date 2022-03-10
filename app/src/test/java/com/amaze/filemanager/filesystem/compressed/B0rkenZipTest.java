@@ -40,7 +40,7 @@ import org.robolectric.shadows.ShadowToast;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable;
-import com.amaze.filemanager.asynchronous.asynctasks.compress.ZipHelperTask;
+import com.amaze.filemanager.asynchronous.asynctasks.compress.ZipHelperCallable;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.ZipExtractor;
@@ -142,14 +142,10 @@ public class B0rkenZipTest {
 
   @Test
   public void testZipHelperTaskShouldOmitInvalidEntries() throws Exception {
-    ZipHelperTask task =
-        new ZipHelperTask(
-            ApplicationProvider.getApplicationContext(),
-            zipfile1.getAbsolutePath(),
-            null,
-            false,
-            (data) -> {});
-    List<CompressedObjectParcelable> result = task.execute().get().result;
+    ZipHelperCallable task =
+        new ZipHelperCallable(
+            ApplicationProvider.getApplicationContext(), zipfile1.getAbsolutePath(), null, false);
+    List<CompressedObjectParcelable> result = task.call();
     assertEquals(1, result.size());
     assertEquals("good.txt", result.get(0).path);
     ShadowLooper.idleMainLooper();
@@ -161,14 +157,10 @@ public class B0rkenZipTest {
 
   @Test
   public void testZipHelperTaskShouldOmitInvalidEntriesWithBackslash() throws Exception {
-    ZipHelperTask task =
-        new ZipHelperTask(
-            ApplicationProvider.getApplicationContext(),
-            zipfile2.getAbsolutePath(),
-            null,
-            false,
-            (data) -> {});
-    List<CompressedObjectParcelable> result = task.execute().get().result;
+    ZipHelperCallable task =
+        new ZipHelperCallable(
+            ApplicationProvider.getApplicationContext(), zipfile2.getAbsolutePath(), null, false);
+    List<CompressedObjectParcelable> result = task.call();
     ShadowLooper.idleMainLooper();
     assertEquals(1, result.size());
     assertEquals("good.txt", result.get(0).path);

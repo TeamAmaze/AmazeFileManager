@@ -34,6 +34,7 @@ import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
 import android.view.*
+import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.annotation.ColorInt
@@ -45,33 +46,40 @@ import androidx.preference.PreferenceManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.afollestad.materialdialogs.DialogAction
+import com.afollestad.materialdialogs.MaterialDialog
+import com.afollestad.materialdialogs.MaterialDialog.SingleButtonCallback
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.CompressedExplorerAdapter
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
 import com.amaze.filemanager.asynchronous.services.ExtractService
 import com.amaze.filemanager.databinding.ActionmodeBinding
 import com.amaze.filemanager.databinding.MainFragBinding
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.fragments.data.CompressedExplorerFragmentViewModel
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.ui.views.DividerItemDecoration
 import com.amaze.filemanager.ui.views.FastScroller
 import com.amaze.filemanager.utils.BottomBarButtonPath
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import com.amaze.filemanager.utils.Utils
 import com.github.junrar.exception.UnsupportedRarV5Exception
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.appbar.AppBarLayout.OnOffsetChangedListener
+import io.reactivex.Flowable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import org.apache.commons.compress.PasswordRequiredException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -518,28 +526,60 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         if (folder.startsWith("/")) folder = folder.substring(1)
         val addGoBackItem = gobackitem && !isRoot(folder)
         decompressor.let {
-            it.changePath(
-                folder,
-                addGoBackItem,
-                object :
-                    OnAsyncTaskFinished<AsyncTaskResult<
-                            ArrayList<CompressedObjectParcelable>>> {
-                    override fun onAsyncTaskFinished(
-                        data:
-                            AsyncTaskResult<ArrayList<CompressedObjectParcelable>>
-                    ) {
-                        if (data.exception == null) {
-                            viewModel.elements.postValue(data.result)
-                            viewModel.folder = folder
+            Flowable.fromCallable(it.changePath(folder, addGoBackItem))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(
+                    { result ->
+                        viewModel.elements.postValue(result)
+                        viewModel.folder = folder
+                    },
+                    { error ->
+                        if (error is PasswordRequiredException) {
+                            dialogGetPasswordFromUser(folder)
                         } else {
-                            archiveCorruptOrUnsupportedToast(data.exception)
+                            archiveCorruptOrUnsupportedToast(error)
                         }
                     }
-                }
-            ).execute()
+                )
             swipeRefreshLayout.isRefreshing = true
             updateBottomBar()
-        } ?: archiveCorruptOrUnsupportedToast(null)
+        }
+    }
+
+    private fun dialogGetPasswordFromUser(filePath: String) {
+        val positiveCallback =
+            SingleButtonCallback { dialog: MaterialDialog, action: DialogAction? ->
+                val editText = dialog.view.findViewById<EditText>(R.id.singleedittext_input)
+                val password: String = editText.getText().toString()
+                ArchivePasswordCache.getInstance()[filePath] = password
+                dialog.dismiss()
+                changePath(filePath)
+            }
+        ArchivePasswordCache.getInstance().remove(filePath)
+        GeneralDialogCreation.showPasswordDialog(
+            requireContext(),
+            (requireActivity() as MainActivity),
+            AppConfig.getInstance().utilsProvider.appTheme,
+            R.string.archive_password_prompt,
+            R.string.authenticate_password,
+            positiveCallback,
+            null
+        )
+    }
+
+    private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
+        @StringRes val msg: Int =
+            if (e?.cause?.javaClass is UnsupportedRarV5Exception)
+                R.string.error_unsupported_v5_rar
+            else
+                R.string.archive_unsupported_or_corrupt
+        Toast.makeText(
+            activity,
+            requireContext().getString(msg, compressedFile.absolutePath),
+            Toast.LENGTH_LONG
+        ).show()
+        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
     }
 
     override val path: String
@@ -645,20 +685,6 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
      * @return [MainActivity]
      */
     fun requireMainActivity(): MainActivity = requireActivity() as MainActivity
-
-    private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
-        @StringRes val msg: Int =
-            if (e?.cause?.javaClass is UnsupportedRarV5Exception)
-                R.string.error_unsupported_v5_rar
-            else
-                R.string.archive_unsupported_or_corrupt
-        Toast.makeText(
-            activity,
-            requireContext().getString(msg, compressedFile.absolutePath),
-            Toast.LENGTH_LONG
-        ).show()
-        requireActivity().supportFragmentManager.beginTransaction().remove(this).commit()
-    }
 
     companion object {
         const val KEY_PATH = "path"

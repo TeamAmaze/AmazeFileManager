@@ -46,8 +46,9 @@ import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
-import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.asynctasks.hashcalculator.CalculateHashTask;
 import com.amaze.filemanager.asynchronous.services.EncryptService;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Sort;
@@ -539,8 +540,7 @@ public class GeneralDialogCreation {
         new CountItemsOrAndSizeTask(c, itemsText, baseFile, forStorage);
     countItemsOrAndSizeTask.executeOnExecutor(executor);
 
-    GenerateHashesTask hashGen = new GenerateHashesTask(baseFile, c, v);
-    hashGen.executeOnExecutor(executor);
+    TaskKt.fromTask(new CalculateHashTask(baseFile, c, v));
 
     /*Chart creation and data loading*/
     {
