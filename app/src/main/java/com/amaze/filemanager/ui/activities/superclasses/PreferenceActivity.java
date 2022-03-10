@@ -48,6 +48,7 @@ import com.amaze.filemanager.utils.PreferenceUtils;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
 /** @author Emmanuel on 24/8/2017, at 23:13. */
@@ -64,6 +65,7 @@ public class PreferenceActivity extends BasicActivity {
     super.onCreate(savedInstanceState);
   }
 
+  @NonNull
   public SharedPreferences getPrefs() {
     return sharedPrefs;
   }
