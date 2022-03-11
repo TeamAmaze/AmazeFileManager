@@ -1,9 +1,11 @@
-apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.hiya.jacoco-android'
-apply plugin: "com.starter.easylauncher"
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    id "kotlin-kapt"
+    id "kotlin-parcelize"
+    id "com.hiya.jacoco-android"
+    id "com.starter.easylauncher"
+}
 
 android {
     compileSdk 31

@@ -29,31 +29,18 @@ buildscript {
         commonsCompressVersion = "1.20"
         libsuVersion = "3.2.1"
     }
-    repositories {
-        google()
-        gradlePluginPortal()
-    }
-    dependencies {
-        classpath 'com.android.tools.build:gradle:7.1.2'
-        classpath 'com.hiya:jacoco-android:0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
-        classpath "com.project.starter:easylauncher:4.0.0"
-    }
 }
 
 plugins {
+    id "com.android.application" version "7.1.2" apply false
+    id "com.android.library" version "7.1.2" apply false
+    id "org.jetbrains.kotlin.android" version "1.5.31" apply false
+    id "com.hiya.jacoco-android" version "0.2" apply false
+    id "com.starter.easylauncher" version "4.0.0" apply false
     id "com.diffplug.spotless" version "6.0.5"
 }
 
 allprojects {
-
-    repositories {
-        google()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
-        // todo: remove jcenter later
-        maven { url "https://jcenter.bintray.com" }
-    }
     tasks.withType(Test) {
         maxParallelForks = 4
         maxHeapSize = "4g"

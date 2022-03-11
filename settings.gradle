@@ -1,3 +1,22 @@
+pluginManagement {
+    repositories {
+        gradlePluginPortal()
+        google()
+        mavenCentral()
+    }
+}
+
+dependencyResolutionManagement {
+    repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS)
+    repositories {
+        google()
+        mavenCentral()
+        maven { url "https://jitpack.io" }
+        // todo: remove jcenter later
+        maven { url "https://jcenter.bintray.com" }
+    }
+}
+
 include ':file_operations'
 include ':app', ':commons_compress_7z'
 
