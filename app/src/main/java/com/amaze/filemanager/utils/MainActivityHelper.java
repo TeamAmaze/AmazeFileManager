@@ -690,7 +690,7 @@ public class MainActivityHelper {
       case WRITABLE_OR_ON_SDCARD:
         Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
         if (decompressor == null) {
-          Toast.makeText(mainActivity, R.string.error_cant_decompress_that_file, Toast.LENGTH_SHORT).show();
+          Toast.makeText(mainActivity, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show();
           return;
         }
         decompressor.decompress(file.getPath());

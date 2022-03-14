@@ -558,7 +558,7 @@ public class MainActivity extends PermissionsActivity
         pathInCompressedArchive = Utils.sanitizeInput(uri.toString());
         openCompressed(pathInCompressedArchive);
       } else {
-        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG).show();
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {

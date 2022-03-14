@@ -241,7 +241,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 files?.add(HybridFileParcelable(path))
                 val decompressor = CompressedHelper.getCompressorInstance(requireContext(), this)
                 if(decompressor == null) {
-                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show()
                     parentFragmentManager.beginTransaction().remove(this@CompressedExplorerFragment).commit()
                     return
                 }
@@ -329,7 +329,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 val decompressor = CompressedHelper.getCompressorInstance(requireContext(), it)
                 if(decompressor == null) {
                     parentFragmentManager.beginTransaction().remove(this@CompressedExplorerFragment).commit()
-                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show()
                     return
                 }
                 this@CompressedExplorerFragment.decompressor = decompressor
