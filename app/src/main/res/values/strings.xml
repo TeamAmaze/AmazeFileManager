@@ -153,7 +153,7 @@
     <string name="thumb_summary">Show Thumbnails of apps and images</string>
     <string name="thumb">Show Thumbnails</string>
     <string name="hidden">Show Hidden Files and Folders</string>
-    <string name="lastModifiedSummary">Show the data and time of last modification</string>
+    <string name="lastModifiedSummary">Show the date and time of last modification</string>
     <string name="lastModifiedPref">Show Last Modified Date and Time</string>
     <string name="size_pref_summary">Show size of files and number of items in folders</string>
     <string name="size_pref">Show Sizes</string>
