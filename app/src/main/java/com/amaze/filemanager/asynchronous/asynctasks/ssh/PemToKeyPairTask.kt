@@ -198,7 +198,7 @@ class PemToKeyPairTask(
         @Throws(Exception::class)
         override fun throwingConvert(source: String?): KeyPair? {
             val pemParser = PEMParser(StringReader(source))
-            val keyPair = pemParser.readObject() as PEMKeyPair
+            val keyPair = pemParser.readObject() as PEMKeyPair?
             val converter = JcaPEMKeyConverter()
             return converter.getKeyPair(keyPair)
         }

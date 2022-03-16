@@ -7,17 +7,12 @@ apply plugin: "com.starter.easylauncher"
 
 android {
     compileSdkVersion 31
-
     packagingOptions {
-        exclude 'proguard-project.txt'
-        exclude 'project.properties'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/DEPENDENCIES'
+        resources {
+            excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
+        }
     }
+
 
     defaultConfig {
         applicationId "com.amaze.filemanager"
@@ -69,9 +64,6 @@ android {
         viewBinding true
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     flavorDimensions 'static'
 
@@ -103,6 +95,9 @@ android {
             includeAndroidResources = true
             returnDefaultValues = true
         }
+    }
+    lint {
+        abortOnError false
     }
 }
 
