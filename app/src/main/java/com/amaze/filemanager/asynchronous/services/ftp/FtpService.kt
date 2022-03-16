@@ -31,7 +31,10 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
+import android.os.Build.VERSION_CODES.N
+import android.os.Build.VERSION_CODES.Q
 import android.os.Environment
 import android.os.IBinder
 import android.os.PowerManager
@@ -43,6 +46,8 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
+import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.ObtainableServiceBinder
@@ -61,6 +66,7 @@ import java.net.NetworkInterface
 import java.net.UnknownHostException
 import java.security.GeneralSecurityException
 import java.security.KeyStore
+import java.util.*
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
 import kotlin.concurrent.thread
@@ -127,6 +133,8 @@ class FtpService : Service(), Runnable {
                 preferences.getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
             ) {
                 fileSystem = AndroidFileSystemFactory(applicationContext)
+            } else if (preferences.getBoolean(PREFERENCE_ROOTMODE, false)) {
+                fileSystem = RootFileSystemFactory()
             }
 
             val usernamePreference = preferences.getString(
@@ -183,7 +191,7 @@ class FtpService : Service(), Runnable {
                         trustManagerFactory,
                         ClientAuth.WANT,
                         "TLS",
-                        null,
+                        enabledCipherSuites,
                         "ftpserver"
                     )
                     fac.isImplicitSsl = true
@@ -260,6 +268,7 @@ class FtpService : Service(), Runnable {
         const val KEY_PREFERENCE_SECURE = "ftp_secure"
         const val KEY_PREFERENCE_READONLY = "ftp_readonly"
         const val KEY_PREFERENCE_SAF_FILESYSTEM = "ftp_saf_filesystem"
+        const val KEY_PREFERENCE_ROOT_FILESYSTEM = "ftp_root_filesystem"
         const val INITIALS_HOST_FTP = "ftp://"
         const val INITIALS_HOST_SFTP = "ftps://"
 
@@ -270,6 +279,49 @@ class FtpService : Service(), Runnable {
             "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER"
         const val TAG_STARTED_BY_TILE = "started_by_tile"
         // attribute of action_started, used by notification
+
+        private lateinit var _enabledCipherSuites: Array<String>
+
+        init {
+            _enabledCipherSuites = LinkedList<String>().apply {
+                if (SDK_INT >= Q) {
+                    add("TLS_AES_128_GCM_SHA256")
+                    add("TLS_AES_256_GCM_SHA384")
+                    add("TLS_CHACHA20_POLY1305_SHA256")
+                }
+                if (SDK_INT >= N) {
+                    add("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")
+                    add("TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256")
+                }
+                if (SDK_INT >= LOLLIPOP) {
+                    add("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")
+                    add("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")
+                    add("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")
+                    add("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")
+                    add("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")
+                    add("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")
+                    add("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")
+                    add("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
+                    add("TLS_RSA_WITH_AES_128_GCM_SHA256")
+                    add("TLS_RSA_WITH_AES_256_GCM_SHA384")
+                }
+                if (SDK_INT < LOLLIPOP) {
+                    add("TLS_RSA_WITH_AES_128_CBC_SHA")
+                    add("TLS_RSA_WITH_AES_256_CBC_SHA")
+                }
+            }.toTypedArray()
+        }
+        /**
+         * Return a list of available ciphers for ftpserver.
+         *
+         * Added SDK detection since some ciphers are available only on higher versions, and they
+         * have to be on top of the list to make a more secure SSL
+         *
+         * @see [org.apache.ftpserver.ssl.SslConfiguration]
+         * @see [javax.net.ssl.SSLEngine]
+         */
+        @JvmStatic
+        val enabledCipherSuites = _enabledCipherSuites
 
         private var serverThread: Thread? = null
         private var server: FtpServer? = null

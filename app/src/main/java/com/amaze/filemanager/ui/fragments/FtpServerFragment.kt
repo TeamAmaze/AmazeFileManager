@@ -21,7 +21,11 @@
 package com.amaze.filemanager.ui.fragments
 
 import android.app.Activity.RESULT_OK
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
@@ -37,8 +41,18 @@ import android.provider.DocumentsContract.EXTRA_INITIAL_URI
 import android.provider.Settings
 import android.text.InputType
 import android.text.Spanned
-import android.view.*
-import android.widget.*
+import android.view.KeyEvent
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
+import android.widget.CompoundButton
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -53,6 +67,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_PATH
+import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.KEY_PREFERENCE_ROOT_FILESYSTEM
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.getLocalInetAddress
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isConnectedToLocalNetwork
 import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.isConnectedToWifi
@@ -61,6 +76,7 @@ import com.amaze.filemanager.asynchronous.services.ftp.FtpService.FtpReceiverAct
 import com.amaze.filemanager.databinding.DialogFtpLoginBinding
 import com.amaze.filemanager.databinding.FragmentFtpBinding
 import com.amaze.filemanager.filesystem.files.CryptUtil
+import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.theme.AppTheme
@@ -73,7 +89,6 @@ import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
 import java.io.IOException
 import java.security.GeneralSecurityException
-import java.util.*
 
 /**
  * Created by yashwanthreddyg on 10-06-2016. Edited by Luca D'Amico (Luca91) on 25 Jul 2017 (Fixed
@@ -765,8 +780,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
      * <code>file:///</code> or <code>content://</code> as prefix
      */
     fun changeFTPServerPath(path: String) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-        preferences.edit().putString(FtpService.KEY_PREFERENCE_PATH, path).apply()
+        val preferences = PreferenceManager.getDefaultSharedPreferences(activity).edit()
+        if (FileUtils.isRunningAboveStorage(path)) {
+            preferences.putBoolean(KEY_PREFERENCE_ROOT_FILESYSTEM, true)
+        }
+        preferences.putString(KEY_PREFERENCE_PATH, path)
+        preferences.apply()
         updateStatus()
     }
 

@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
-import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.KITKAT_WATCH;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
@@ -54,13 +53,52 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
+import android.annotation.TargetApi;
+import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
+import android.content.ContentUris;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.res.Configuration;
+import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.hardware.usb.UsbManager;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.os.Handler;
+import android.os.storage.StorageManager;
+import android.os.storage.StorageVolume;
+import android.service.quicksettings.TileService;
+import android.text.TextUtils;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.animation.DecelerateInterpolator;
+import android.widget.Toast;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.annotation.StringRes;
+import androidx.arch.core.util.Function;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.CursorLoader;
+import androidx.loader.content.Loader;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -99,6 +137,7 @@ import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
+import com.amaze.filemanager.ui.dialogs.AlertDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.HiddenFilesDialog;
 import com.amaze.filemanager.ui.dialogs.HistoryDialog;
@@ -142,53 +181,13 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
-import android.annotation.TargetApi;
-import android.app.Activity;
-import android.content.BroadcastReceiver;
-import android.content.ContentResolver;
-import android.content.ContentUris;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.res.Configuration;
-import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.hardware.usb.UsbManager;
-import android.media.RingtoneManager;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Handler;
-import android.os.HandlerThread;
-import android.os.storage.StorageManager;
-import android.os.storage.StorageVolume;
-import android.service.quicksettings.TileService;
-import android.text.TextUtils;
-import android.util.Log;
-import android.view.KeyEvent;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.animation.DecelerateInterpolator;
-import android.widget.Toast;
-
-import androidx.annotation.DrawableRes;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import androidx.arch.core.util.Function;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentTransaction;
-import androidx.loader.app.LoaderManager;
-import androidx.loader.content.CursorLoader;
-import androidx.loader.content.Loader;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
@@ -2303,8 +2302,23 @@ public class MainActivity extends PermissionsActivity
       case FtpServerFragment.TAG:
         FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
         if (folder.exists() && folder.isDirectory()) {
-          ftpServerFragment.changeFTPServerPath(folder.getPath());
-          Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+          if (FileUtils.isRunningAboveStorage(folder.getAbsolutePath())) {
+            if (!isRootExplorer()) {
+              AlertDialog.show(this, R.string.ftp_server_root_unavailable, R.string.error, android.R.string.ok, null);
+            } else {
+              MaterialDialog confirmDialog = GeneralDialogCreation.showBasicDialog(this, R.string.ftp_server_root_filesystem_warning,R.string.warning,  android.R.string.ok, android.R.string.cancel);
+              confirmDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                ftpServerFragment.changeFTPServerPath(folder.getPath());
+                Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+                confirmDialog.dismiss();
+              });
+              confirmDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> confirmDialog.dismiss());
+              confirmDialog.show();
+            }
+          } else {
+            ftpServerFragment.changeFTPServerPath(folder.getPath());
+            Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+          }
         } else {
           // try to get parent
           File pathParentFile = new File(folder.getParent());
