@@ -41,8 +41,11 @@ import androidx.appcompat.widget.Toolbar;
  */
 public class AppBar {
 
+  @NonNull
   private final Toolbar toolbar;
+  @NonNull
   private final SearchView searchView;
+  @NonNull
   private final BottomBar bottomBar;
 
   private final AppBarLayout appbarLayout;
@@ -68,14 +71,17 @@ public class AppBar {
     }
   }
 
+  @NonNull
   public Toolbar getToolbar() {
     return toolbar;
   }
 
+  @NonNull
   public SearchView getSearchView() {
     return searchView;
   }
 
+  @NonNull
   public BottomBar getBottomBar() {
     return bottomBar;
   }
@@ -85,14 +91,10 @@ public class AppBar {
   }
 
   public void setTitle(String title) {
-    if (toolbar != null) {
-      toolbar.setTitle(title);
-    }
+    toolbar.setTitle(title);
   }
 
   public void setTitle(@StringRes int title) {
-    if (toolbar != null) {
-      toolbar.setTitle(title);
-    }
+    toolbar.setTitle(title);
   }
 }

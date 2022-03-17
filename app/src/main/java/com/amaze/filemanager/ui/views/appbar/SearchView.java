@@ -41,9 +41,12 @@ import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
  */
 public class SearchView {
 
+  @NonNull
   private final MainActivity mainActivity;
+  @NonNull
   private final AppBar appbar;
 
+  @NonNull
   private final FloatingSearchView searchView;
 
   private boolean enabled = false;
@@ -65,7 +68,7 @@ public class SearchView {
         hideSearchView();
       }
     });
-    searchView.setOnHomeActionClickListener(() -> hideSearchView());
+    searchView.setOnHomeActionClickListener(this::hideSearchView);
   }
 
   /** show search view with a circular reveal animation */
