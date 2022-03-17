@@ -29,6 +29,7 @@ import com.google.android.material.appbar.AppBarLayout;
 
 import android.content.SharedPreferences;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.appcompat.widget.Toolbar;
 
@@ -40,25 +41,25 @@ import androidx.appcompat.widget.Toolbar;
  */
 public class AppBar {
 
-  private int TOOLBAR_START_INSET;
+  private final Toolbar toolbar;
+  private final SearchView searchView;
+  private final BottomBar bottomBar;
 
-  private Toolbar toolbar;
-  private SearchView searchView;
-  private BottomBar bottomBar;
-
-  private AppBarLayout appbarLayout;
+  private final AppBarLayout appbarLayout;
 
   public AppBar(
-      MainActivity a, SharedPreferences sharedPref, SearchView.SearchListener searchListener) {
-    toolbar = a.findViewById(R.id.action_bar);
-    searchView = new SearchView(this, a, searchListener);
-    bottomBar = new BottomBar(this, a);
+          @NonNull final MainActivity mainActivity,
+          @NonNull final SharedPreferences sharedPref,
+          @NonNull final SearchView.SearchListener searchListener) {
+    toolbar = mainActivity.findViewById(R.id.action_bar);
+    searchView = new SearchView(this, mainActivity, searchListener);
+    bottomBar = new BottomBar(this, mainActivity);
 
-    appbarLayout = a.findViewById(R.id.lin);
+    appbarLayout = mainActivity.findViewById(R.id.lin);
 
-    if (SDK_INT >= 21) toolbar.setElevation(0);
-    /* For SearchView, see onCreateOptionsMenu(Menu menu)*/
-    TOOLBAR_START_INSET = toolbar.getContentInsetStart();
+    if (SDK_INT >= 21) {
+      toolbar.setElevation(0);
+    }
 
     if (!sharedPref.getBoolean(PreferencesConstants.PREFERENCE_INTELLI_HIDE_TOOLBAR, true)) {
       AppBarLayout.LayoutParams params = (AppBarLayout.LayoutParams) toolbar.getLayoutParams();
@@ -84,10 +85,14 @@ public class AppBar {
   }
 
   public void setTitle(String title) {
-    if (toolbar != null) toolbar.setTitle(title);
+    if (toolbar != null) {
+      toolbar.setTitle(title);
+    }
   }
 
   public void setTitle(@StringRes int title) {
-    if (toolbar != null) toolbar.setTitle(title);
+    if (toolbar != null) {
+      toolbar.setTitle(title);
+    }
   }
 }
