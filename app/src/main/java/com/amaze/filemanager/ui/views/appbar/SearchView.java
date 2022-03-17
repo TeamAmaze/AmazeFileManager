@@ -20,68 +20,51 @@
 
 package com.amaze.filemanager.ui.views.appbar;
 
-import static android.content.Context.INPUT_METHOD_SERVICE;
 import static android.os.Build.VERSION.SDK_INT;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.ui.activities.MainActivity;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
-import android.content.Context;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
-import androidx.appcompat.widget.AppCompatEditText;
+import androidx.annotation.NonNull;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.arlib.floatingsearchview.FloatingSearchView;
+import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion;
 
 /**
  * SearchView, a simple view to search
- *
- * @author Emmanuel on 2/8/2017, at 23:30.
  */
 public class SearchView {
 
-  private MainActivity mainActivity;
-  private AppBar appbar;
+  private final MainActivity mainActivity;
+  private final AppBar appbar;
 
-  private RelativeLayout searchViewLayout;
-  private AppCompatEditText searchViewEditText;
-  private ImageView clearImageView;
-  private ImageView backImageView;
+  private final FloatingSearchView searchView;
 
   private boolean enabled = false;
 
   public SearchView(
-      final AppBar appbar, final MainActivity a, final SearchListener searchListener) {
-    mainActivity = a;
+          @NonNull final AppBar appbar, @NonNull final MainActivity mainActivity,
+          @NonNull final SearchListener searchListener) {
+    this.mainActivity = mainActivity;
     this.appbar = appbar;
 
-    searchViewLayout = a.findViewById(R.id.search_view);
-    searchViewEditText = a.findViewById(R.id.search_edit_text);
-    clearImageView = a.findViewById(R.id.search_close_btn);
-    backImageView = a.findViewById(R.id.img_view_back);
+    searchView = mainActivity.findViewById(R.id.floating_search_view);
+    searchView.setOnSearchListener(new FloatingSearchView.OnSearchListener() {
+      @Override
+      public void onSuggestionClicked(SearchSuggestion searchSuggestion) {}
 
-    clearImageView.setOnClickListener(v -> searchViewEditText.setText(""));
-
-    backImageView.setOnClickListener(v -> appbar.getSearchView().hideSearchView());
-
-    searchViewEditText.setOnEditorActionListener(
-        (v, actionId, event) -> {
-          if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-            searchListener.onSearch(searchViewEditText.getText().toString());
-            appbar.getSearchView().hideSearchView();
-            return true;
-          }
-          return false;
-        });
-
-    // searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
-    // searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
+      @Override
+      public void onSearchAction(String currentQuery) {
+        searchListener.onSearch(currentQuery);
+        hideSearchView();
+      }
+    });
+    searchView.setOnHomeActionClickListener(() -> hideSearchView());
   }
 
   /** show search view with a circular reveal animation */
@@ -96,25 +79,25 @@ public class SearchView {
           appbar
               .getToolbar()
               .findViewById(R.id.search); // It could change position, get it every time
-      searchViewEditText.setText("");
+      searchView.clearQuery();
       searchItem.getLocationOnScreen(searchCoords);
       animator =
           ViewAnimationUtils.createCircularReveal(
-              searchViewLayout,
+                  searchView,
               searchCoords[0] + 32,
               searchCoords[1] - 16,
               START_RADIUS,
               endRadius);
     } else {
       // TODO:ViewAnimationUtils.createCircularReveal
-      animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 0f, 1f);
+      animator = ObjectAnimator.ofFloat(searchView, "alpha", 0f, 1f);
     }
 
     mainActivity.showSmokeScreen();
 
     animator.setInterpolator(new AccelerateDecelerateInterpolator());
     animator.setDuration(600);
-    searchViewLayout.setVisibility(View.VISIBLE);
+    searchView.setVisibility(View.VISIBLE);
     animator.start();
     animator.addListener(
         new Animator.AnimatorListener() {
@@ -123,10 +106,7 @@ public class SearchView {
 
           @Override
           public void onAnimationEnd(Animator animation) {
-            searchViewEditText.requestFocus();
-            InputMethodManager imm =
-                (InputMethodManager) mainActivity.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.showSoftInput(searchViewEditText, InputMethodManager.SHOW_IMPLICIT);
+            searchView.setSearchFocused(true);
             enabled = true;
           }
 
@@ -141,7 +121,7 @@ public class SearchView {
   /** hide search view with a circular reveal animation */
   public void hideSearchView() {
     final int END_RADIUS = 16;
-    int startRadius = Math.max(searchViewLayout.getWidth(), searchViewLayout.getHeight());
+    int startRadius = Math.max(searchView.getWidth(), searchView.getHeight());
     Animator animator;
     if (SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
       int[] searchCoords = new int[2];
@@ -149,18 +129,18 @@ public class SearchView {
           appbar
               .getToolbar()
               .findViewById(R.id.search); // It could change position, get it every time
-      searchViewEditText.setText("");
+      searchView.clearQuery();
       searchItem.getLocationOnScreen(searchCoords);
       animator =
           ViewAnimationUtils.createCircularReveal(
-              searchViewLayout,
+                  searchView,
               searchCoords[0] + 32,
               searchCoords[1] - 16,
               startRadius,
               END_RADIUS);
     } else {
       // TODO: ViewAnimationUtils.createCircularReveal
-      animator = ObjectAnimator.ofFloat(searchViewLayout, "alpha", 1f, 0f);
+      animator = ObjectAnimator.ofFloat(searchView, "alpha", 1f, 0f);
     }
 
     // removing background fade view
@@ -175,12 +155,8 @@ public class SearchView {
 
           @Override
           public void onAnimationEnd(Animator animation) {
-            searchViewLayout.setVisibility(View.GONE);
+            searchView.setVisibility(View.GONE);
             enabled = false;
-            InputMethodManager inputMethodManager =
-                (InputMethodManager) mainActivity.getSystemService(INPUT_METHOD_SERVICE);
-            inputMethodManager.hideSoftInputFromWindow(
-                searchViewEditText.getWindowToken(), InputMethodManager.HIDE_IMPLICIT_ONLY);
           }
 
           @Override
@@ -196,7 +172,7 @@ public class SearchView {
   }
 
   public boolean isShown() {
-    return searchViewLayout.isShown();
+    return searchView.isShown();
   }
 
   public interface SearchListener {

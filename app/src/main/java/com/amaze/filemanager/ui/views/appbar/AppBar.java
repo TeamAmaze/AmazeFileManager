@@ -37,8 +37,6 @@ import androidx.appcompat.widget.Toolbar;
  *
  * <p>This is a class containing containing methods to each section of the AppBar, creating the
  * object loads the views.
- *
- * @author Emmanuel on 2/8/2017, at 23:27.
  */
 public class AppBar {
 

@@ -6,9 +6,7 @@
     <dimen name="fastscroller_track_height">70dp</dimen>
     <dimen name="fastscroller_track_padding">3dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
-    <dimen name="search_view_margin">10dp</dimen>
-    <dimen name="search_view_back_margin_left_right">16dp</dimen>
-    <dimen name="search_view_info_margin_left_right">16dp</dimen>
+    <dimen name="search_view_margin">8dp</dimen>
 
     <dimen name="minimal_material_padding">16dp</dimen>
     <dimen name="check_icon_margin_bottom_right">10dp</dimen>
