@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.views.appbar;
 import static android.os.Build.VERSION.SDK_INT;
 
 import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.view.View;
 import android.view.ViewAnimationUtils;
@@ -100,21 +101,12 @@ public class SearchView {
     searchView.setVisibility(View.VISIBLE);
     animator.start();
     animator.addListener(
-        new Animator.AnimatorListener() {
-          @Override
-          public void onAnimationStart(Animator animation) {}
-
+        new AnimatorListenerAdapter() {
           @Override
           public void onAnimationEnd(Animator animation) {
             searchView.setSearchFocused(true);
             enabled = true;
           }
-
-          @Override
-          public void onAnimationCancel(Animator animation) {}
-
-          @Override
-          public void onAnimationRepeat(Animator animation) {}
         });
   }
 
@@ -149,21 +141,12 @@ public class SearchView {
     animator.setDuration(600);
     animator.start();
     animator.addListener(
-        new Animator.AnimatorListener() {
-          @Override
-          public void onAnimationStart(Animator animation) {}
-
+        new AnimatorListenerAdapter() {
           @Override
           public void onAnimationEnd(Animator animation) {
             searchView.setVisibility(View.GONE);
             enabled = false;
           }
-
-          @Override
-          public void onAnimationCancel(Animator animation) {}
-
-          @Override
-          public void onAnimationRepeat(Animator animation) {}
         });
   }
 
