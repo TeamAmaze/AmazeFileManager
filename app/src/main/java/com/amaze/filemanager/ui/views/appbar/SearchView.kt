@@ -52,7 +52,8 @@ class SearchView(
 
     init {
         searchView.setOnSearchListener(object : OnSearchListener {
-            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion) {}
+            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion) = Unit
+
             override fun onSearchAction(currentQuery: String) {
                 onSearch(currentQuery)
                 hideSearchView()

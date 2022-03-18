@@ -57,10 +57,16 @@ class AppBar(
         }
     }
 
+    /**
+     * Sets the app title, or sets it as empty if null is passed
+     */
     fun setTitle(title: String?) {
         toolbar.title = title
     }
 
+    /**
+     * Sets the app title
+     */
     fun setTitle(@StringRes title: Int) {
         toolbar.setTitle(title)
     }
