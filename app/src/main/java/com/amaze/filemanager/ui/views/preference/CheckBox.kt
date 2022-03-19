@@ -28,10 +28,10 @@ import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
 
 /** Created by Arpit on 10/18/2015 edited by Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com>  */
-class CheckBox(context: Context?, attrs: AttributeSet?) : SwitchPreference(context, attrs) {
+class CheckBox(context: Context, attrs: AttributeSet) : SwitchPreference(context, attrs) {
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
-        clearListenerInViewGroup(holder?.itemView as ViewGroup)
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        clearListenerInViewGroup(holder.itemView as ViewGroup)
         super.onBindViewHolder(holder)
     }
 
@@ -40,10 +40,7 @@ class CheckBox(context: Context?, attrs: AttributeSet?) : SwitchPreference(conte
      *
      * @param viewGroup The ViewGroup that will need to clear the listener.
      */
-    private fun clearListenerInViewGroup(viewGroup: ViewGroup?) {
-        if (null == viewGroup) {
-            return
-        }
+    private fun clearListenerInViewGroup(viewGroup: ViewGroup) {
         for (n in 0 until viewGroup.childCount) {
             val childView = viewGroup.getChildAt(n)
             if (childView is Switch) {

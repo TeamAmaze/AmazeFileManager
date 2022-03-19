@@ -785,7 +785,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     private val defaultPathFromPreferences: String
         get() {
-            return PreferenceManager.getDefaultSharedPreferences(activity)
+            return PreferenceManager.getDefaultSharedPreferences(mainActivity)
                 .getString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))!!
         }
 
@@ -820,7 +820,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
      * <code>file:///</code> or <code>content://</code> as prefix
      */
     fun changeFTPServerPath(path: String) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(activity).edit()
+        val preferences = PreferenceManager.getDefaultSharedPreferences(mainActivity).edit()
         if (FileUtils.isRunningAboveStorage(path)) {
             preferences.putBoolean(KEY_PREFERENCE_ROOT_FILESYSTEM, true)
         }
