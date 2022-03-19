@@ -288,6 +288,11 @@ jacoco {
     toolVersion = "${jacocoVersion}"
 }
 
+jacocoAndroidUnitTestReport {
+    html.enabled true
+    xml.enabled true
+}
+
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
     jacoco.excludes = ['jdk.internal.*']
