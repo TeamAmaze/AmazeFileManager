@@ -65,7 +65,7 @@ import java.io.BufferedReader
 import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.security.PublicKey
-import java.util.Collections
+import java.util.*
 
 /** SSH/SFTP connection setup dialog.  */
 class SftpConnectDialog : DialogFragment() {
@@ -515,7 +515,7 @@ class SftpConnectDialog : DialogFragment() {
         AppConfig.getInstance().runInBackground {
             AppConfig.getInstance().utilsHandler.updateSsh(
                 connectionName,
-                requireArguments().getString(ARG_NAME),
+                requireArguments().getString(ARG_NAME)!!,
                 encryptedPath,
                 hostKeyFingerprint,
                 selectedParsedKeyPairName,
