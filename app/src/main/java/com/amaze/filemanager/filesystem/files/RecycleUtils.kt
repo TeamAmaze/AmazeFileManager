@@ -36,6 +36,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 /**
  * This class contains the code for the implementation of recycle bin
@@ -68,14 +69,28 @@ class RecycleUtils {
                     val date: String =
                         SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(Date())
 
+                    val newPath =
+                        getRecycleBinPath() + File.separator + date + path //path contains File.separator at the beginning
+
                     PrepareCopyTask(
-                        getRecycleBinPath() + File.separator + date + File.separator + path,
+                        newPath,
                         true,
                         mainActivity,
                         mainActivity.isRootExplorer,
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
                     ) {
-                        addRecycledFile(it)
+
+                        val list = loadMetaDataJSONFile()
+
+                        for (item in it) {
+                            Log.d(TAG, "RecycleUtils#moveToRecycleBin newPath: $newPath ")
+                            list.add(
+                                newPath + item.name
+                            )
+                        }
+
+                        writeMetaDataJSONFile(list)
+
                     }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
                 },
                 deleteCallback = {
@@ -133,12 +148,16 @@ class RecycleUtils {
                         "/" + path.split("/")[1],
                         ""
                     )
+                path = path
                     .replace(
                         file.name,
                         ""
                     )
 
-                Log.e(TAG, "RecycleUtils#restoreFromRecycleBin path: $path")
+                Log.d(TAG, "RecycleUtils#restoreFromRecycleBin path: $path")
+
+                val currentList = ArrayList<HybridFileParcelable>()
+                currentList.add(file)
 
                 PrepareCopyTask(
                     path,
@@ -148,11 +167,17 @@ class RecycleUtils {
                     mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
                 ) {
 
-                    for (hybridFileParcelable in it)
-                        list.remove(path)
+                    for (hybridFileParcelable in it) {
+                        Log.d(
+                            TAG,
+                            "RecycleUtils#restoreFromRecycleBin hybridFileParcelable.path: ${hybridFileParcelable.path}"
+                        )
+                        list.remove(hybridFileParcelable.path)
+                    }
 
                     writeMetaDataJSONFile(list)
-                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, positions)
+
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, currentList)
 
             }
         }
@@ -183,18 +208,6 @@ class RecycleUtils {
             return s
         }
 
-        private fun addRecycledFile(positions: ArrayList<HybridFileParcelable>) {
-
-            val list = loadMetaDataJSONFile()
-
-            for (item in positions)
-                list.add(
-                    item.path
-                )
-
-            writeMetaDataJSONFile(list)
-        }
-
         private fun writeMetaDataJSONFile(list: ArrayList<String>) {
 
             val bufferedWriter = BufferedWriter(FileWriter(File(getRecycleMetaDataFilePath())))
@@ -203,7 +216,7 @@ class RecycleUtils {
             bufferedWriter.close()
         }
 
-        private fun loadMetaDataJSONFile(): ArrayList<String> {
+        fun loadMetaDataJSONFile(): ArrayList<String> {
 
             val stringBuilder = StringBuilder("")
 

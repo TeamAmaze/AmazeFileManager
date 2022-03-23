@@ -92,6 +92,7 @@ public class PrepareCopyTask
   private static final int REPLACE = 1;
 
   private OnTaskCompleted listener = null;
+  private boolean isSuccessful = false;
 
   @IntDef({UNKNOWN, DO_NOT_REPLACE, REPLACE})
   @interface DialogState {}
@@ -173,6 +174,8 @@ public class PrepareCopyTask
 
     copyFolder = new CopyNode(path, filesToCopy);
 
+    isSuccessful = true;
+
     return copyFolder;
   }
 
@@ -216,7 +219,7 @@ public class PrepareCopyTask
 
     dialog.dismiss();
 
-    if (listener != null) {
+    if (listener != null && isSuccessful) {
       listener.onTaskCompleted(copyFolder.filesToCopy);
     }
   }

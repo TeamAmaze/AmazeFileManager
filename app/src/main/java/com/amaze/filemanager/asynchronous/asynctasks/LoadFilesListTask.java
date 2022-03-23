@@ -584,39 +584,29 @@ public class LoadFilesListTask
     }
 
     private ArrayList<LayoutElementParcelable> listRecycleItems() {
-        return listFiles(
-                new File(
-                        RecycleUtils.Companion.getRecycleBinPath()
-                )
-        );
-    }
 
-    private ArrayList<LayoutElementParcelable> listFiles(File file) {
+        ArrayList<String> list = RecycleUtils.Companion.loadMetaDataJSONFile();
 
         ArrayList<LayoutElementParcelable> recycleList = new ArrayList<>();
 
-        File[] files = file.listFiles();
+        for (String s : list) {
 
-        if (files == null)
-            return recycleList;
+            HybridFileParcelable hybridFileParcelable = RootHelper.generateBaseFile(new File(s), showHiddenFiles);
 
-        for (File f : files) {
-            if (f.isDirectory())
-                recycleList.addAll(listFiles(f));
-            else {
+            if (hybridFileParcelable != null) {
 
-                HybridFileParcelable hybridFileParcelable = RootHelper.generateBaseFile(f, showHiddenFiles);
+                LayoutElementParcelable parcelable = createListParcelables(hybridFileParcelable);
 
-                if (hybridFileParcelable != null) {
-                    LayoutElementParcelable parcelable = createListParcelables(hybridFileParcelable);
-                    if (parcelable != null) {
-                        Log.i(TAG, "LoadFilesListTask#listFiles found: " + parcelable.desc);
-                        recycleList.add(parcelable);
-                    }
+                if (parcelable != null) {
+
+                    Log.i(TAG, "LoadFilesListTask#listRecycleItems: " + parcelable.desc);
+
+                    recycleList.add(parcelable);
+
                 }
-
             }
         }
+
         return recycleList;
     }
 
