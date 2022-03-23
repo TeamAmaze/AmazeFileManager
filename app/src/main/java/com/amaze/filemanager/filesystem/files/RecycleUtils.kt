@@ -36,7 +36,6 @@ import com.google.gson.reflect.TypeToken
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 /**
  * This class contains the code for the implementation of recycle bin
@@ -193,6 +192,25 @@ class RecycleUtils {
             if (!File(s).exists()) File(s).mkdirs()
 
             return s
+        }
+
+        fun removeEntries(itemsToDelete: ArrayList<HybridFileParcelable>) {
+
+            val list = loadMetaDataJSONFile()
+
+            for (hybridFileParcelable in itemsToDelete) {
+
+                Log.d(
+                    TAG,
+                    "RecycleUtils#removeEntries hybridFileParcelable.path: ${hybridFileParcelable.path}"
+                )
+
+                list.remove(hybridFileParcelable.path)
+
+            }
+
+            writeMetaDataJSONFile(list)
+
         }
 
         private fun getRecycleMetaDataFilePath(): String {

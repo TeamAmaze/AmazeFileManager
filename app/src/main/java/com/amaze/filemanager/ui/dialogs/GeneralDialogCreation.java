@@ -61,6 +61,7 @@ import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.RecycleUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -228,6 +229,7 @@ public class GeneralDialogCreation {
                   Toast.makeText(context, context.getString(R.string.deleting), Toast.LENGTH_SHORT)
                       .show();
                   mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
+                  RecycleUtils.Companion.removeEntries(itemsToDelete);
                 })
             .build();
 
