@@ -50,7 +50,7 @@ import org.robolectric.shadows.ShadowSQLiteConnection;
 
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.test.ShadowCryptUtil;
+import com.amaze.filemanager.test.ShadowPasswordUtil;
 import com.amaze.filemanager.utils.Utils;
 
 import androidx.annotation.NonNull;
@@ -68,7 +68,7 @@ import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    shadows = {ShadowMultiDex.class, ShadowPasswordUtil.class},
     sdk = {JELLY_BEAN, KITKAT, P})
 public class SshConnectionPoolTest {
 

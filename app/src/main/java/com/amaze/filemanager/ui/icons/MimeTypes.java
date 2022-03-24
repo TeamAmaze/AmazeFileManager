@@ -124,6 +124,7 @@ public final class MimeTypes {
     MIME_TYPES.put("mts", "video/mp2t");
 
     MIME_TYPES.put(CryptUtil.CRYPT_EXTENSION.replace(".", ""), "crypt/aze");
+    MIME_TYPES.put(CryptUtil.AESCRYPT_EXTENSION.replace(".", ""), "crypt/x-aescrypt");
   }
 
   /**

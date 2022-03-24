@@ -53,4 +53,24 @@
             android:inputType="textCapSentences" />
 
     </com.amaze.filemanager.ui.views.WarnableTextInputLayout>
+
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:text="@string/encrypt_option_use_aze"
+        android:layout_gravity="center_vertical"
+        android:id="@+id/checkbox_use_aze"
+        app:layout_constraintTop_toBottomOf="@id/til_encrypt_save_as"
+        />
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:padding="5sp"
+        android:text="@string/info_glyph"
+        android:id="@+id/text_view_azecrypt_info"
+        android:layout_gravity="center_vertical"
+        android:textSize="22sp"
+        app:layout_constraintTop_toBottomOf="@id/til_encrypt_save_as"
+        app:layout_constraintStart_toEndOf="@+id/checkbox_use_aze" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

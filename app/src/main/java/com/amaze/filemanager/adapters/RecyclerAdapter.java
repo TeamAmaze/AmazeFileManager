@@ -1327,9 +1327,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+      if (description.endsWith(CryptUtil.CRYPT_EXTENSION)
+          || description.endsWith(CryptUtil.AESCRYPT_EXTENSION)) {
         popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-      else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+      } else {
+        popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+      }
     }
 
     popupMenu.show();

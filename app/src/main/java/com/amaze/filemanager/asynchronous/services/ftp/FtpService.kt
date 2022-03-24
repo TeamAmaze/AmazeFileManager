@@ -44,13 +44,13 @@ import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.ObtainableServiceBinder
+import com.amaze.filemanager.utils.PasswordUtil
 import org.apache.ftpserver.ConnectionConfigFactory
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
@@ -144,8 +144,8 @@ class FtpService : Service(), Runnable {
             if (usernamePreference != DEFAULT_USERNAME) {
                 username = usernamePreference
                 runCatching {
-                    password = CryptUtil.decryptPassword(
-                        applicationContext, preferences.getString(KEY_PREFERENCE_PASSWORD, "")
+                    password = PasswordUtil.decryptPassword(
+                        applicationContext, preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!
                     )
                     isPasswordProtected = true
                 }.onFailure {

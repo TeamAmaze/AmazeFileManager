@@ -73,6 +73,7 @@
     <string name="compress">Compress</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="info_glyph" translatable="false">&#9432;</string>
     <string name="dialog_delete_category_directories">Directories</string>
     <string name="dialog_delete_category_files">Files</string>
     <string name="dialog_delete_disclaimer">Deleting the items below will permanently remove them from your device and they cannot be recovered.</string>
@@ -626,7 +627,15 @@
     <string name="got_it">Got it!</string>
     <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>
     <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
+    <string name="encrypt_option_use_aze">Use Amaze Encryption Format</string>
+    <string name="encrypt_option_use_aescrypt_title">About Amaze Encryption Format</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>Choosing this option, Amaze will encrypt the files using its own encryption format.</p>
+        <p>Different than AESCrypt format, Amaze\'s Encryption Format can only be decrypted by this device; also you must not uninstall Amaze File Manager from this device, otherwise you will have no way to recover the encrypted file.</p>
+    ]]></string>
     <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
+    <string name="encrypt_file_must_end_with_aes">Encrypted files must use \".aes\" as the file extension.</string>
+    <string name="error_aescrypt_decrypt_failed">Cannot decrypt \'%s\': \'%s\'</string>
     <string name="cannot_overwrite">Cannot overwrite file.</string>
     <string name="saved_single_file">File saved as \'%s\'.</string>
     <string name="saved_multi_files">%d files saved.</string>

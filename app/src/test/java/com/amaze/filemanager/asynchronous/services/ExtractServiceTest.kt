@@ -112,7 +112,7 @@ class ExtractServiceTest {
         }
     }
 
-    private var service: ExtractService? = null
+    private lateinit var service: ExtractService
 
     /**
      * Copy archives to storage.
@@ -175,8 +175,8 @@ class ExtractServiceTest {
                 .map { obj: Path -> obj.toFile() }
                 .forEach { obj: File -> obj.delete() }
         }
-        service?.stopSelf()
-        service?.onDestroy()
+        service.stopSelf()
+        service.onDestroy()
     }
 
     /**
@@ -435,6 +435,6 @@ class ExtractServiceTest {
                 File(Environment.getExternalStorageDirectory(), "test-archive")
                     .absolutePath
             )
-        service!!.onStartCommand(intent, 0, 0)
+        service.onStartCommand(intent, 0, 0)
     }
 }

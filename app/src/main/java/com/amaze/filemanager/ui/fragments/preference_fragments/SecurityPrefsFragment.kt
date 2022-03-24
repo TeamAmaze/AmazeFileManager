@@ -32,8 +32,8 @@ import androidx.core.app.ActivityCompat
 import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
-import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.ui.views.preference.CheckBox
+import com.amaze.filemanager.utils.PasswordUtil
 import java.io.IOException
 import java.security.GeneralSecurityException
 
@@ -99,7 +99,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
             ) {
 
                 // password is set, try to decrypt
-                CryptUtil.decryptPassword(activity, preferencePassword)
+                PasswordUtil.decryptPassword(activity, preferencePassword)
             } else {
                 // no password set in preferences, just leave the field empty
                 ""
@@ -132,7 +132,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                     val editor = activity.prefs.edit()
                     editor.putString(
                         PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                        CryptUtil.encryptPassword(
+                        PasswordUtil.encryptPassword(
                             activity, dialog.inputEditText!!.text.toString()
                         )
                     )

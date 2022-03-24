@@ -46,7 +46,7 @@ import org.robolectric.annotation.Config;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.test.ShadowCryptUtil;
+import com.amaze.filemanager.test.ShadowPasswordUtil;
 
 import androidx.room.Room;
 import androidx.sqlite.db.SupportSQLiteDatabase;
@@ -58,7 +58,7 @@ import io.reactivex.schedulers.Schedulers;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class, ShadowCryptUtil.class},
+    shadows = {ShadowMultiDex.class, ShadowPasswordUtil.class},
     sdk = {JELLY_BEAN, KITKAT, P})
 public class ExplorerDatabaseMigrationTest {
 
