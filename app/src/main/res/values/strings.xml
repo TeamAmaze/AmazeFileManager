@@ -628,10 +628,12 @@
     <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>
     <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
     <string name="encrypt_option_use_aze">Use Amaze Encryption Format</string>
-    <string name="encrypt_option_use_aescrypt_title">About Amaze Encryption Format</string>
     <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
-        <p>Choosing this option, Amaze will encrypt the files using its own encryption format.</p>
-        <p>Different than AESCrypt format, Amaze\'s Encryption Format can only be decrypted by this device; also you must not uninstall Amaze File Manager from this device, otherwise you will have no way to recover the encrypted file.</p>
+        <p>AESCrypt is an open source file encryption format based on AES encryption. It is also portable, can be decrypted with AESCrypt programs on other platforms.</p>
+        <p><a href="https://www.aescrypt.com" target="_blank>AESCrypt website</a></p>]]>
+    </string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>Amaze\'s Encryption Format is also based on AES encryption; but different from AESCrypt format, it can only be decrypted by this device; also you must not uninstall Amaze File Manager from this device nor change the way you lock screen, otherwise you will have no way to recover the encrypted file.</p>
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
     <string name="encrypt_file_must_end_with_aes">Encrypted files must use \".aes\" as the file extension.</string>

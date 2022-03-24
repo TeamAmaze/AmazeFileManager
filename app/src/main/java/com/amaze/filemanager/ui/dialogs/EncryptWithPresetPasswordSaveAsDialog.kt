@@ -6,6 +6,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -65,6 +66,12 @@ object EncryptWithPresetPasswordSaveAsDialog {
                 }
             }
             val useAzeEncrypt = vb.checkboxUseAze
+            val usageTextInfo = vb.textViewCryptInfo.apply {
+                text = HtmlCompat.fromHtml(
+                    main.getString(R.string.encrypt_option_use_aescrypt_desc),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            }
             if (ENCRYPT_PASSWORD_FINGERPRINT != password) {
                 useAzeEncrypt.setOnCheckedChangeListener(
                     createUseAzeEncryptCheckboxOnCheckedChangeListener(
@@ -72,12 +79,13 @@ object EncryptWithPresetPasswordSaveAsDialog {
                         this,
                         preferences,
                         main,
-                        encryptSaveAsEditText
+                        encryptSaveAsEditText,
+                        usageTextInfo
                     )
                 )
             } else {
                 useAzeEncrypt.visibility = View.INVISIBLE
-                vb.textViewAzecryptInfo.visibility = View.INVISIBLE
+                usageTextInfo.visibility = View.INVISIBLE
             }
 
             val saveAsDialog = MaterialDialog.Builder(c)
