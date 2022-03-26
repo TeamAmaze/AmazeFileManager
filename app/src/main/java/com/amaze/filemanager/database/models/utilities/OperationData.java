@@ -20,12 +20,12 @@
 
 package com.amaze.filemanager.database.models.utilities;
 
-import com.amaze.filemanager.database.UtilitiesDatabase;
-
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
+
+import com.amaze.filemanager.database.UtilitiesDatabase;
 
 /**
  * Base class {@link Entity} representation of tables in utilities.db.
@@ -48,6 +48,7 @@ public abstract class OperationData {
     this.path = path;
   }
 
+  @NonNull
   @Override
   public String toString() {
     return new StringBuilder("OperationData type=[")
@@ -56,5 +57,20 @@ public abstract class OperationData {
         .append(path)
         .append("]")
         .toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (o == null || getClass() != o.getClass()) return false;
+
+    OperationData that = (OperationData) o;
+    return path.equals(that.path);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = getClass().getSimpleName().hashCode();
+    result = 31 * result + path.hashCode();
+    return result;
   }
 }
