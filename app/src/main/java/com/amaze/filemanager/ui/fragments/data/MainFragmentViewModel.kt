@@ -38,7 +38,7 @@ class MainFragmentViewModel : ViewModel() {
     var currentPath: String? = null
 
     /** This is not an exact copy of the elements in the adapter  */
-    var listElements: ArrayList<LayoutElementParcelable>? = null
+    var listElements = ArrayList<LayoutElementParcelable>()
 
     var adapterListItems: ArrayList<RecyclerAdapter.ListItem>? = null
     var iconList: ArrayList<IconDataParcelable>? = null
@@ -187,13 +187,23 @@ class MainFragmentViewModel : ViewModel() {
     }
 
     /**
-     * Check if current path is cloud path
+     * Check if current path is cloud root path
      */
-    fun getIsOnCloud(): Boolean {
+    fun getIsOnCloudRoot(): Boolean {
         return CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_ONE_DRIVE + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_BOX + "/" == currentPath ||
             CloudHandler.CLOUD_PREFIX_DROPBOX + "/" == currentPath
+    }
+
+    /**
+     * Check if current openMode is cloud
+     */
+    fun getIsCloudOpenMode(): Boolean {
+        return openMode == OpenMode.GDRIVE ||
+            openMode == OpenMode.DROPBOX ||
+            openMode == OpenMode.BOX ||
+            openMode == OpenMode.ONEDRIVE
     }
 
     /**
