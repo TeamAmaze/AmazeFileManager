@@ -228,6 +228,8 @@ public class SearchView {
                 backImageView.setColorFilter(ContextCompat.getColor(a, android.R.color.white),
                         PorterDuff.Mode.SRC_ATOP);
                 break;
+            default:
+                break;
         }
     }
 
