@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.LOLLIPOP;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.utils.Utils.openURL;
 
 import com.amaze.filemanager.LogHelper;
@@ -27,6 +30,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -41,6 +45,7 @@ import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -79,15 +84,15 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    if (getAppTheme().equals(AppTheme.DARK)) {
-      setTheme(R.style.aboutDark);
-    } else if (getAppTheme().equals(AppTheme.BLACK)) {
-      setTheme(R.style.aboutBlack);
-    } else {
-      setTheme(R.style.aboutLight);
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+      if (getAppTheme().equals(AppTheme.DARK)) {
+        setTheme(R.style.aboutDark);
+      } else if (getAppTheme().equals(AppTheme.BLACK)) {
+        setTheme(R.style.aboutBlack);
+      } else {
+        setTheme(R.style.aboutLight);
+      }
     }
-
     setContentView(R.layout.activity_about);
 
     mAppBarLayout = findViewById(R.id.appBarLayout);
@@ -133,6 +138,19 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
         (v, hasFocus) -> {
           mAppBarLayout.setExpanded(hasFocus, true);
         });
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
+        getWindow().setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
+    }
   }
 
   /**

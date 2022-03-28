@@ -155,6 +155,9 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
                 appTheme == AppTheme.DARK  -> {
                     window.navigationBarColor = Utils.getColor(this, R.color.holo_dark_background)
                 }
+                appTheme == AppTheme.LIGHT  -> {
+                    window.navigationBarColor = Color.WHITE
+                }
             }
         }
         if (appTheme == AppTheme.BLACK) {
