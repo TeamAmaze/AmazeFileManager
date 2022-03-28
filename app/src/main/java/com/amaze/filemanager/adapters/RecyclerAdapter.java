@@ -697,6 +697,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         getItemsDigested().get(p).setAnimate(true);
       }
       final LayoutElementParcelable rowItem = getItemsDigested().get(p).elem;
+      if (rowItem == null) return;
       if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT) {
         holder.rl.setOnDragListener(
             new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
