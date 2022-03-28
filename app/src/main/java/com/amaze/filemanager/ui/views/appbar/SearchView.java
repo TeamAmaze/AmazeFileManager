@@ -25,6 +25,7 @@ import static android.os.Build.VERSION.SDK_INT;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Utils;
 
 import android.animation.Animator;
@@ -204,7 +205,8 @@ public class SearchView {
   }
 
     private void initSearchViewColor(MainActivity a ) {
-        switch (a.getAppTheme().getSimpleTheme(a)) {
+        AppTheme theme = a.getAppTheme().getSimpleTheme(a);
+        switch (theme) {
             case LIGHT:
                 searchViewLayout.setBackgroundResource(R.drawable.search_view_shape);
                 searchViewEditText.setTextColor(Utils.getColor(a, android.R.color.black));
@@ -215,7 +217,11 @@ public class SearchView {
                 break;
             case DARK:
             case BLACK:
-                searchViewLayout.setBackgroundResource(R.drawable.search_view_shape_black);
+                if (theme == AppTheme.DARK){
+                    searchViewLayout.setBackgroundResource(R.drawable.search_view_shape_holo_dark);
+                }else{
+                    searchViewLayout.setBackgroundResource(R.drawable.search_view_shape_black);
+                }
                 searchViewEditText.setTextColor(Utils.getColor(a, android.R.color.white));
                 clearImageView.setColorFilter(ContextCompat.getColor(a, android.R.color.white),
                         PorterDuff.Mode.SRC_ATOP);
