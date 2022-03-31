@@ -28,9 +28,9 @@ import android.view.ViewAnimationUtils
 import android.view.animation.AccelerateDecelerateInterpolator
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.arlib.floatingsearchview.FloatingSearchView
-import com.arlib.floatingsearchview.FloatingSearchView.OnSearchListener
-import com.arlib.floatingsearchview.suggestions.model.SearchSuggestion
+import xyz.quaver.floatingsearchview.FloatingSearchView
+import xyz.quaver.floatingsearchview.FloatingSearchView.OnSearchListener
+import xyz.quaver.floatingsearchview.suggestions.model.SearchSuggestion
 import kotlin.math.max
 
 /**
@@ -39,7 +39,7 @@ import kotlin.math.max
 class SearchView(
         private val appbar: AppBar,
         private val mainActivity: MainActivity,
-        onSearch: (queue: String) -> Unit
+        onSearch: (queue: String?) -> Unit
 ) {
 
     private val searchView: FloatingSearchView = mainActivity.findViewById(R.id.floating_search_view)
@@ -51,15 +51,22 @@ class SearchView(
         get() = searchView.isShown
 
     init {
-        searchView.setOnSearchListener(object : OnSearchListener {
-            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion) = Unit
-
-            override fun onSearchAction(currentQuery: String) {
+        searchView.onSearchListener = object : OnSearchListener {
+            override fun onSearchAction(currentQuery: String?) {
                 onSearch(currentQuery)
                 hideSearchView()
             }
-        })
-        searchView.setOnHomeActionClickListener { hideSearchView() }
+
+            override fun onSuggestionClicked(searchSuggestion: SearchSuggestion?) = Unit
+        }
+        searchView.onHomeActionClickListener = { hideSearchView() }
+        searchView.onFocusChangeListener = object : FloatingSearchView.OnFocusChangeListener {
+            override fun onFocus() = Unit
+
+            override fun onFocusCleared() {
+                hideSearchView()
+            }
+        }
     }
 
     /** show search view with a circular reveal animation  */

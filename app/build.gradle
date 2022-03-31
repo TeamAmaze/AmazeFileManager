@@ -246,7 +246,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
 
-    implementation "com.github.arimorty:floatingsearchview:2.1.1"
+    implementation "xyz.quaver:floatingsearchview:1.2.0-rc2"
 }
 
 configurations.all {

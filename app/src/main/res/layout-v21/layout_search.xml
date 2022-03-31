@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.arlib.floatingsearchview.FloatingSearchView
+<xyz.quaver.floatingsearchview.FloatingSearchView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/floating_search_view"
@@ -9,6 +9,7 @@
     android:elevation="8dp"
     android:gravity="center_vertical"
     android:visibility="gone"
-    app:floatingSearch_searchHint="@string/search_hint"
-    app:floatingSearch_leftActionMode="showHome"
-    app:floatingSearch_close_search_on_keyboard_dismiss="true"/>
+    app:dimBackground="false"
+    app:searchHint="@string/search_hint"
+    app:leftActionMode="showHome"
+    app:close_search_on_keyboard_dismiss="true"/>

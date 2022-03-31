@@ -37,7 +37,7 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 class AppBar(
         mainActivity: MainActivity,
         sharedPref: SharedPreferences,
-        onSearch: (queue: String) -> Unit
+        onSearch: (queue: String?) -> Unit
 ) {
 
     val toolbar: Toolbar = mainActivity.findViewById(R.id.action_bar)
