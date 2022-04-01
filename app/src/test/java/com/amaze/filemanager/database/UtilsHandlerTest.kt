@@ -15,7 +15,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.shadows.ShadowMultiDex
-import com.amaze.filemanager.test.ShadowCryptUtil
+import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.utils.SmbUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
@@ -33,7 +33,7 @@ import java.io.File
 
 @RunWith(AndroidJUnit4::class)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
+    shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 class UtilsHandlerTest {
