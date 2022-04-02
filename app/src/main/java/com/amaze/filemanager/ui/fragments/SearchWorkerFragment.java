@@ -56,7 +56,7 @@ public class SearchWorkerFragment extends Fragment {
 
     void onPostExecute(String query);
 
-    void onProgressUpdate(HybridFileParcelable val, String query);
+    void onProgressUpdate(@NonNull HybridFileParcelable val, String query);
 
     void onCancelled();
   }

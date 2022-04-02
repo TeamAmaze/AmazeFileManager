@@ -212,8 +212,9 @@ class MainFragmentViewModel : ViewModel() {
     fun getCheckedItems(): ArrayList<LayoutElementParcelable> {
         val selected = ArrayList<LayoutElementParcelable>()
         adapterListItems?.forEach { item ->
-            if (item.checked == RecyclerAdapter.ListItem.CHECKED) {
-                selected.add(item.elem)
+            val layoutElementParcelable = item.layoutElementParcelable
+            if (layoutElementParcelable != null && item.checked == RecyclerAdapter.ListItem.CHECKED) {
+                selected.add(layoutElementParcelable)
             }
         }
         return selected

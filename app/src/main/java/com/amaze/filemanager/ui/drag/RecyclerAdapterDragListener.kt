@@ -86,11 +86,11 @@ class RecyclerAdapterDragListener(
                                 )
                             }
                         } else {
-                            val currentElement = listItem.elem
-                            if (currentElement.isDirectory && listItem.specialType !=
-                                RecyclerAdapter.TYPE_BACK
-                            ) {
-                                holder.rl.isSelected = true
+                            val currentElement = listItem.layoutElementParcelable
+                            if (currentElement != null
+                                    && currentElement.isDirectory
+                                    && listItem.specialType != RecyclerAdapter.TYPE_BACK) {
+                                holder.baseItemView.isSelected = true
                             }
                         }
                     }
@@ -103,20 +103,18 @@ class RecyclerAdapterDragListener(
                     if (itemsDigested.size != 0 &&
                         holder.adapterPosition < itemsDigested.size
                     ) {
-                        val listItem = (itemsDigested[holder.adapterPosition])
                         if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                            val checkedItems:
-                                ArrayList<LayoutElementParcelable> = adapter.checkedItems
-                            val currentElement = listItem.elem
-                            if (currentElement.isDirectory && listItem.specialType !=
-                                RecyclerAdapter.TYPE_BACK &&
-                                !checkedItems.contains(currentElement)
-                            ) {
-                                holder.rl.run {
-                                    isSelected = false
-                                    isFocusable = false
-                                    isFocusableInTouchMode = false
-                                    clearFocus()
+                            val listItem = itemsDigested[holder.adapterPosition]
+                            if (listItem.specialTypeHasFile() && listItem.specialType != RecyclerAdapter.TYPE_BACK) {
+                                val currentElement = listItem.requireLayoutElementParcelable()
+
+                                if (currentElement.isDirectory && !adapter.checkedItems.contains(currentElement)) {
+                                    holder.baseItemView.run {
+                                        isSelected = false
+                                        isFocusable = false
+                                        isFocusableInTouchMode = false
+                                        clearFocus()
+                                    }
                                 }
                             }
                         }
@@ -130,7 +128,7 @@ class RecyclerAdapterDragListener(
             DragEvent.ACTION_DRAG_LOCATION -> {
                 holder?.run {
                     if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
-                        holder.rl.run {
+                        holder.baseItemView.run {
                             isFocusable = true
                             isFocusableInTouchMode = true
                             requestFocus()
@@ -168,10 +166,10 @@ class RecyclerAdapterDragListener(
                                     )
                                     hybridFile.getParent(mainFragment.context)
                                 } else {
-                                    val currentElement = itemsDigested[holder.adapterPosition].elem
-                                    currentFileParcelable = currentElement.generateBaseFile()
-                                    isCurrentElementDirectory = currentElement.isDirectory
-                                    currentElement.desc
+                                    val currentElement = itemsDigested[holder.adapterPosition].layoutElementParcelable
+                                    currentFileParcelable = currentElement?.generateBaseFile()
+                                    isCurrentElementDirectory = currentElement?.isDirectory
+                                    currentElement?.desc
                                 }
                             }
                         }
@@ -211,7 +209,7 @@ class RecyclerAdapterDragListener(
                                         "location, not allowed ${it.desc}"
                                     )
                             )
-                            holder?.rl?.run {
+                            holder?.baseItemView?.run {
                                 isFocusable = false
                                 isFocusableInTouchMode = false
                                 clearFocus()
@@ -235,7 +233,7 @@ class RecyclerAdapterDragListener(
                         arrayList, mainFragment.requireMainActivity()
                     )
                     adapter.toggleChecked(false)
-                    holder?.rl?.run {
+                    holder?.baseItemView?.run {
                         isSelected = false
                         isFocusable = false
                         isFocusableInTouchMode = false

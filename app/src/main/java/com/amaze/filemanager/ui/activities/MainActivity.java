@@ -2045,14 +2045,14 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
-  public void onProgressUpdate(HybridFileParcelable val, String query) {
+  public void onProgressUpdate(@NonNull HybridFileParcelable hybridFileParcelable, String query) {
     final MainFragment mainFragment = getCurrentMainFragment();
     if (mainFragment == null) {
       // TODO cancel search
       return;
     }
 
-    mainFragment.addSearchResult(val, query);
+    mainFragment.addSearchResult(hybridFileParcelable, query);
   }
 
   @Override
