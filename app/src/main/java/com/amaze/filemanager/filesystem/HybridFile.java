@@ -32,6 +32,10 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.amaze.filemanager.R;
@@ -58,6 +62,7 @@ import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.CloudMetaData;
 import com.cloudrail.si.types.SpaceAllocation;
 
 import android.content.ContentResolver;
@@ -572,11 +577,28 @@ public class HybridFile {
                 .getFolder();
         break;
       case GDRIVE:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.GDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                .getFolder();
+        // TODO : delect no meaning code
+        final boolean[] isDir = new boolean[1];
+        Thread googleThread = new Thread(new Runnable() {
+          @Override
+          public void run() {
+            isDir[0] = dataUtils
+                            .getAccount(OpenMode.GDRIVE)
+                            .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
+                            .getFolder();
+          }
+        });
+        googleThread.start();
+        try{
+          googleThread.join();
+        }catch (InterruptedException e){
+          Log.e(TAG, "Fail to join the thread of google drive");
+        }finally {
+          isDirectory = isDir[0];
+          if (googleThread.isAlive()) {
+            googleThread.stop();
+          }
+        }
         break;
       case ONEDRIVE:
         isDirectory =

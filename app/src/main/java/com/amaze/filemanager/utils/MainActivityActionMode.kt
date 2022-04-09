@@ -81,7 +81,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             hideOption(R.id.share, menu)
             hideOption(R.id.openwith, menu)
             if (mainActivity.mReturnIntent) showOption(R.id.openmulti, menu)
-            // hideOption(R.id.setringtone,menu);
+//             hideOption(R.id.setringtone,menu);
             mode.title = mainActivity.resources.getString(R.string.select)
             mainActivity
                 .updateViews(
@@ -214,7 +214,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             if (mainFragmentViewModel.openMode != OpenMode.FILE) {
                 hideOption(R.id.openwith, menu)
                 hideOption(R.id.compress, menu)
-                hideOption(R.id.hide, menu)
+//                hideOption(R.id.hide, menu)
                 hideOption(R.id.addshortcut, menu)
             }
         }
