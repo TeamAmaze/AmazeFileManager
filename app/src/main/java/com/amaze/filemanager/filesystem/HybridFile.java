@@ -58,7 +58,6 @@ import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.SmbUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.CloudMetaData;
 import com.cloudrail.si.types.SpaceAllocation;
 
 import android.content.ContentResolver;
