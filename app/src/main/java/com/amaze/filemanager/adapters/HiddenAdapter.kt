@@ -79,6 +79,7 @@ class HiddenAdapter(
             // if the user taps on the delete button, un-hide the file.
             // TODO: the "hide files" feature just hide files from view in Amaze and not create
             // .nomedia
+            val position = hiddenFiles.indexOf(file)
             if (!file.isSmb && file.isDirectory(context)) {
                 val nomediaFile = HybridFileParcelable(
                         hiddenFiles[position].path + "/" + FileUtils.NOMEDIA_FILE)
