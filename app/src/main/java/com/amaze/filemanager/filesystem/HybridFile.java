@@ -32,10 +32,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.amaze.filemanager.R;
@@ -577,7 +573,6 @@ public class HybridFile {
                 .getFolder();
         break;
       case GDRIVE:
-        // TODO : delect no meaning code
         final boolean[] isDir = new boolean[1];
         Thread googleThread = new Thread(new Runnable() {
           @Override
