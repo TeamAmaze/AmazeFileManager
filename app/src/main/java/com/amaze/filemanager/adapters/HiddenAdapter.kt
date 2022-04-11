@@ -79,19 +79,24 @@ class HiddenAdapter(
             // if the user taps on the delete button, un-hide the file.
             // TODO: the "hide files" feature just hide files from view in Amaze and not create
             // .nomedia
-            val position = hiddenFiles.indexOf(file)
-            if (!file.isSmb && file.isDirectory(context)) {
-                val nomediaFile = HybridFileParcelable(
-                        hiddenFiles[position].path + "/" + FileUtils.NOMEDIA_FILE)
-                nomediaFile.mode = OpenMode.FILE
-                val filesToDelete = ArrayList<HybridFileParcelable>()
-                filesToDelete.add(nomediaFile)
-                val task = DeleteTask(context)
-                task.execute(filesToDelete)
+            thread {
+                val fragmentActivity = mainFragment.requireActivity()
+                if (!file.isSmb && file.isDirectory(context)) {
+                    val nomediaFile = HybridFileParcelable(
+                        file.path + "/" + FileUtils.NOMEDIA_FILE)
+                    nomediaFile.mode = OpenMode.FILE
+                    val filesToDelete = ArrayList<HybridFileParcelable>()
+                    filesToDelete.add(nomediaFile)
+                    val task = DeleteTask(context)
+                    task.execute(filesToDelete)
+                }
+                DataUtils.getInstance().removeHiddenFile(file.path)
+                hiddenFiles.remove(file)
+                val position = hiddenFiles.indexOf(file)
+                fragmentActivity.runOnUiThread {
+                    notifyItemRemoved(position)
+                }
             }
-            DataUtils.getInstance().removeHiddenFile(hiddenFiles[position].path)
-            hiddenFiles.remove(hiddenFiles[position])
-            notifyItemRemoved(position)
         }
         holder.row.setOnClickListener {
             // if the user taps on the hidden file, take the user there.

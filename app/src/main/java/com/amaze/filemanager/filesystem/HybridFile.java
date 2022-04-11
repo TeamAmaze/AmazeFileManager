@@ -466,7 +466,7 @@ public class HybridFile {
 
   /**
    * Whether this object refers to a directory or file, handles all types of files
-   *
+   * Warning: Can't be used directly in UI/main thread
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
   public boolean isDirectory() {
@@ -558,47 +558,13 @@ public class HybridFile {
         isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
         break;
       case DROPBOX:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.DROPBOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path))
-                .getFolder();
-        break;
       case BOX:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.BOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path))
-                .getFolder();
-        break;
       case GDRIVE:
-        final boolean[] isDir = new boolean[1];
-        Thread googleThread = new Thread(new Runnable() {
-          @Override
-          public void run() {
-            isDir[0] = dataUtils
-                            .getAccount(OpenMode.GDRIVE)
-                            .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                            .getFolder();
-          }
-        });
-        googleThread.start();
-        try{
-          googleThread.join();
-        }catch (InterruptedException e){
-          Log.e(TAG, "Fail to join the thread of google drive");
-        }finally {
-          isDirectory = isDir[0];
-          if (googleThread.isAlive()) {
-            googleThread.stop();
-          }
-        }
-        break;
       case ONEDRIVE:
         isDirectory =
             dataUtils
-                .getAccount(OpenMode.ONEDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path))
+                .getAccount(mode)
+                .getMetadata(CloudUtil.stripPath(mode, path))
                 .getFolder();
         break;
       default:
