@@ -40,6 +40,7 @@ import org.junit.runners.Suite.SuiteClasses
     TarLzmaExtractorTest::class,
     TarXzExtractorTest::class,
     SevenZipExtractorTest::class,
+    SevenZipWithoutTimestampTest::class,
     PasswordProtectedRarTest::class,
     PasswordProtectedZipTest::class,
     PasswordProtected7ZipTest::class,

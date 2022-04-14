@@ -28,7 +28,6 @@ import org.apache.commons.compress.PasswordRequiredException
 import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 class SevenZipHelperCallable(
     private val filePath: String,
@@ -64,7 +63,7 @@ class SevenZipHelperCallable(
                     elements.add(
                         CompressedObjectParcelable(
                             entry.name,
-                            entry.lastModifiedDate.time,
+                            runCatching { entry.lastModifiedDate.time }.getOrElse { 0L },
                             entry.size,
                             entry.isDirectory
                         )

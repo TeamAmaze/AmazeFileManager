@@ -36,7 +36,6 @@ import org.tukaani.xz.CorruptedInputException
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.IOException
-import java.util.*
 
 class SevenZipExtractor(
     context: Context,
@@ -126,7 +125,10 @@ class SevenZipExtractor(
                     progress += length.toLong()
                 }
                 close()
-                outputFile.setLastModified(entry.lastModifiedDate.time)
+                val lastModifiedDate = runCatching {
+                    entry.lastModifiedDate.time
+                }.getOrElse { System.currentTimeMillis() }
+                outputFile.setLastModified(lastModifiedDate)
             }
         }?.onFailure {
             throw it

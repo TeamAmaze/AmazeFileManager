@@ -20,11 +20,22 @@
 
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
-import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor
+import android.os.Environment
+import org.junit.Assert.assertTrue
+import java.io.File
 
-open class SevenZipExtractorTest : AbstractArchiveExtractorTest() {
+/**
+ * Test for extracting 7z archives without timestamps in entries. See #3035
+ */
+class SevenZipWithoutTimestampTest : SevenZipExtractorTest() {
 
-    override val archiveType: String = "7z"
+    override val archiveFile: File
+        get() = File(Environment.getExternalStorageDirectory(), "test-archive-no-timestamp.$archiveType")
 
-    override fun extractorClass(): Class<out Extractor?> = SevenZipExtractor::class.java
+    /**
+     * As timestamp is only the time we extract the file, we just check it's created recently.
+     */
+    override fun assertFileTimestampCorrect(file: File) {
+        assertTrue(System.currentTimeMillis() - file.lastModified() < 1000)
+    }
 }
