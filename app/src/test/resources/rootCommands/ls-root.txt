@@ -1,0 +1,65 @@
+total 4568
+dr-xr-xr-x  70 root   root         0 2022-04-07 22:17 acct
+lrwxrwxrwx   1 root   root        50 2022-04-04 01:33 bugreports -> /data/user_de/0/com.android.shell/files/bugreports
+drwxrwx---   7 system cache     4096 2022-04-07 22:17 cache
+lrwxrwxrwx   1 root   root        13 2022-04-04 01:33 charger -> /sbin/healthd
+drwxr-xr-x   4 root   root         0 1970-01-01 04:00 config
+drwxr-xr-x   5 root   root      4096 2020-11-12 22:38 custom
+lrwxrwxrwx   1 root   root        17 2022-04-04 01:33 d -> /sys/kernel/debug
+drwxrwx--x  50 system system    4096 2022-04-07 22:21 data
+-rw-r--r--   1 root   root      1081 2022-04-04 01:33 default.prop
+drwxr-xr-x  17 root   root      4420 2022-04-07 22:17 dev
+-rw-r--r--   1 root   root       117 2022-04-04 01:33 enableswap.sh
+lrwxrwxrwx   1 root   root        11 2022-04-04 01:33 etc -> /system/etc
+-rw-r--r--   1 root   root      1565 2022-04-04 01:33 factory_init.connectivity.rc
+-rw-r--r--   1 root   root      1145 2022-04-04 01:33 factory_init.project.rc
+-rw-r--r--   1 root   root     22797 2022-04-04 01:33 factory_init.rc
+-rw-r--r--   1 root   root    219470 2022-04-04 01:33 file_contexts.bin
+-rw-r-----   1 root   root      2963 2022-04-04 01:33 fstab.mt6755
+-rwxr-x---   1 root   root   1254760 2022-04-04 01:33 init
+-rwxr-x---   1 root   root       975 2022-04-04 01:33 init.aee.rc
+-rwxr-x---   1 root   root      2065 2022-04-04 01:33 init.c2k.rc
+-rwxr-x---   1 root   root       430 2022-04-04 01:33 init.common_svc.rc
+-rwxr-x---   1 root   root      3083 2022-04-04 01:33 init.connectivity.rc
+-rwxr-x---   1 root   root      1397 2022-04-04 01:33 init.environ.rc
+-rwxr-x---   1 root   root      2292 2022-04-04 01:33 init.microtrust.rc
+-rwxr-x---   1 root   root      5554 2022-04-04 01:33 init.modem.rc
+-rwxr-x---   1 root   root     77876 2022-04-04 01:40 init.mt6755.rc
+-rwxr-x---   1 root   root     51490 2022-04-04 01:33 init.mt6755.usb.rc
+-rwxr-x---   1 root   root      3523 2022-04-04 01:33 init.project.rc
+-rwxr-x---   1 root   root     30383 2022-04-07 22:17 init.rc
+-rwxr-x---   1 root   root       972 2022-04-04 01:33 init.recovery.mt6755.rc
+-rwxr-x---   1 root   root      1884 2022-04-04 01:33 init.rilproxy.rc
+-rwxr-x---   1 root   root      9283 2022-04-04 01:33 init.usb.configfs.rc
+-rwxr-x---   1 root   root      5707 2022-04-04 01:33 init.usb.rc
+-rwxr-x---   1 root   root      1172 2022-04-04 01:33 init.volte.rc
+-rwxr-x---   1 root   root       439 2022-04-04 01:33 init.zygote32.rc
+-rwxr-x---   1 root   root       750 2022-04-04 01:33 init.zygote64_32.rc
+-rw-r--r--   1 root   root      1004 2022-04-04 01:33 meta_init.c2k.rc
+-rw-r--r--   1 root   root      1151 2022-04-04 01:33 meta_init.connectivity.rc
+-rw-r--r--   1 root   root      1290 2022-04-04 01:33 meta_init.modem.rc
+-rw-r--r--   1 root   root       200 2022-04-04 01:33 meta_init.project.rc
+-rw-r--r--   1 root   root     16281 2022-04-04 01:33 meta_init.rc
+drwxr-xr-x  11 root   system     280 2022-04-07 22:21 mnt
+-rw-r--r--   1 root   root       306 2022-04-04 01:33 multi_init.rc
+drwxrwx--x   2 system system       0 2022-04-07 22:17 nvcfg
+drwxrwx--x   9 root   system    4096 2010-01-01 04:00 nvdata
+drwxr-xr-x   2 root   root         0 2022-04-04 01:33 oem
+dr-xr-xr-x 465 root   root         0 1970-01-01 04:00 proc
+-rw-r--r--   1 root   root     15795 2022-04-04 01:33 property_contexts
+drwxrwx---   5 system system    4096 2010-01-01 04:00 protect_f
+drwxrwx---   5 system system    4096 2010-01-01 04:00 protect_s
+drwxr-xr-x   2 root   root         0 2022-04-04 01:33 res
+drwxr-x---   2 root   root         0 2022-04-07 22:17 root
+drwxr-xr-x   3 root   root       320 2022-04-07 22:17 sbin
+lrwxrwxrwx   1 root   root        21 2022-04-04 01:33 sdcard -> /storage/self/primary
+-rw-r--r--   1 root   root       835 2022-04-04 01:33 seapp_contexts
+-rw-r--r--   1 root   root        74 2022-04-04 01:33 selinux_version
+-rw-r--r--   1 root   root    421342 2022-04-07 22:17 sepolicy
+-rw-r--r--   1 root   root     18184 2022-04-04 01:33 service_contexts
+drwxr-xr-x   5 root   root       140 2022-04-07 22:21 storage
+dr-xr-xr-x  16 root   root         0 2022-04-07 22:17 sys
+drwxr-xr-x  22 root   root      4096 2022-04-07 22:12 system
+-rw-r--r--   1 root   root      5234 2022-04-04 01:33 ueventd.mt6755.rc
+-rw-r--r--   1 root   root      4957 2022-04-04 01:33 ueventd.rc
+lrwxrwxrwx   1 root   root        14 2022-04-04 01:33 vendor -> /system/vendor
