@@ -2304,7 +2304,7 @@ public class MainActivity extends PermissionsActivity
         if (folder.exists() && folder.isDirectory()) {
           if (FileUtils.isRunningAboveStorage(folder.getAbsolutePath())) {
             if (!isRootExplorer()) {
-              AlertDialog.show(this, R.string.ftp_server_root_unavailable, R.string.error, android.R.string.ok, null);
+              AlertDialog.show(this, R.string.ftp_server_root_unavailable, R.string.error, android.R.string.ok, null, false);
             } else {
               MaterialDialog confirmDialog = GeneralDialogCreation.showBasicDialog(this, R.string.ftp_server_root_filesystem_warning,R.string.warning,  android.R.string.ok, android.R.string.cancel);
               confirmDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {

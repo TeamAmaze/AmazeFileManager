@@ -22,11 +22,12 @@ object AlertDialog {
         @StringRes content: Int,
         @StringRes title: Int,
         @StringRes positiveButtonText: Int = android.R.string.ok,
-        @Nullable onPositive: MaterialDialog.SingleButtonCallback? = null
+        @Nullable onPositive: MaterialDialog.SingleButtonCallback? = null,
+        contentIsHtml: Boolean = false
     ) {
         val accentColor: Int = activity.accent
         val a = MaterialDialog.Builder(activity)
-            .content(content)
+            .content(content, contentIsHtml)
             .widgetColor(accentColor)
             .theme(
                 activity
@@ -37,7 +38,7 @@ object AlertDialog {
             .positiveText(positiveButtonText)
             .positiveColor(accentColor)
 
-        if(onPositive != null) {
+        if (onPositive != null) {
             a.onPositive(onPositive)
         }
         a.build().show()

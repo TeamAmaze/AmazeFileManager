@@ -5,6 +5,8 @@ import android.os.Environment
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -46,6 +48,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
     private lateinit var tilFileSaveAs: WarnableTextInputLayout
     private lateinit var editTextFileSaveAs: TextInputEditText
     private lateinit var checkboxUseAze: AppCompatCheckBox
+    private lateinit var textViewCryptInfo: AppCompatTextView
     private lateinit var okButton: MDButton
 
     /**
@@ -90,6 +93,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
             testContent = { _, _, _ ->
                 assertEquals("${file.name}$CRYPT_EXTENSION", editTextFileSaveAs.text.toString())
                 assertEquals(INVISIBLE, checkboxUseAze.visibility)
+                assertEquals(INVISIBLE, textViewCryptInfo.visibility)
             },
             callback = object : EncryptDecryptUtils.EncryptButtonCallbackInterface {
                 override fun onButtonPressed(intent: Intent, password: String) {
@@ -180,6 +184,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
             testContent = { _, _, _ ->
                 assertEquals("${file.name}$AESCRYPT_EXTENSION", editTextFileSaveAs.text.toString())
                 assertEquals(VISIBLE, checkboxUseAze.visibility)
+                assertEquals(VISIBLE, textViewCryptInfo.visibility)
             },
             callback = object : EncryptDecryptUtils.EncryptButtonCallbackInterface {
                 override fun onButtonPressed(intent: Intent, password: String) {
@@ -219,6 +224,14 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
             password = ENCRYPT_PASSWORD_MASTER,
             testContent = { _, _, _ ->
                 checkboxUseAze.isChecked = true
+                assertEquals(
+                    HtmlCompat.fromHtml(
+                        getString(R.string.encrypt_option_use_azecrypt_desc),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                        .toString(),
+                    textViewCryptInfo.text.toString()
+                )
                 assertTrue(ShadowDialog.getShownDialogs().size == 2)
                 assertTrue(ShadowDialog.getLatestDialog() is MaterialDialog)
                 (ShadowDialog.getLatestDialog() as MaterialDialog).run {
@@ -241,10 +254,26 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
                 assertFalse(ShadowDialog.getLatestDialog().isShowing)
                 assertTrue(true == editTextFileSaveAs.text?.endsWith(CRYPT_EXTENSION))
                 checkboxUseAze.isChecked = false
+                assertEquals(
+                    HtmlCompat.fromHtml(
+                        getString(R.string.encrypt_option_use_aescrypt_desc),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                        .toString(),
+                    textViewCryptInfo.text.toString()
+                )
                 assertEquals(2, ShadowDialog.getShownDialogs().size)
                 assertFalse(ShadowDialog.getLatestDialog().isShowing)
                 assertTrue(true == editTextFileSaveAs.text?.endsWith(AESCRYPT_EXTENSION))
                 checkboxUseAze.isChecked = true
+                assertEquals(
+                    HtmlCompat.fromHtml(
+                        getString(R.string.encrypt_option_use_azecrypt_desc),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                        .toString(),
+                    textViewCryptInfo.text.toString()
+                )
                 assertEquals(3, ShadowDialog.getShownDialogs().size)
                 assertTrue(ShadowDialog.getLatestDialog().isShowing)
                 assertTrue(true == editTextFileSaveAs.text?.endsWith(CRYPT_EXTENSION))
@@ -289,6 +318,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
                             R.id.til_encrypt_save_as
                         )
                         checkboxUseAze = findViewById<AppCompatCheckBox>(R.id.checkbox_use_aze)
+                        textViewCryptInfo = findViewById<AppCompatTextView>(R.id.text_view_crypt_info)
                         okButton = getActionButton(DialogAction.POSITIVE)
                         testContent.invoke(it, intent, activity)
                     }
