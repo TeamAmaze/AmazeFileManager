@@ -29,6 +29,8 @@ import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DEVICE_DAT
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 
 import java.io.File;
@@ -177,6 +179,11 @@ public class MainFragment extends Fragment
 
   private boolean hideFab = false;
 
+  // Track thumbnail-related preference values so we can detect changes on resume
+  // and force a list reload (LayoutElementParcelable.iconData is set at construction time).
+  private boolean pausedShowThumb;
+  private int pausedRemoteThumbMaxSize;
+
   private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
           new ActivityResultContracts.StartActivityForResult(),
@@ -219,6 +226,12 @@ public class MainFragment extends Fragment
     if (getArguments() != null) {
       hideFab = getArguments().getBoolean(BUNDLE_HIDE_FAB, false);
     }
+
+    // Initialize thumbnail pref snapshots so the first onResume doesn't see a false change
+    pausedShowThumb = requireMainActivity().getBoolean(PREFERENCE_SHOW_THUMB);
+    pausedRemoteThumbMaxSize =
+        sharedPref.getInt(
+            PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE, PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT);
   }
 
   @Override
@@ -1281,11 +1294,36 @@ public class MainFragment extends Fragment
     super.onResume();
     resumeDecryptOperations();
     startFileObserver();
+
+    // LayoutElementParcelable.iconData is set at construction time based on the thumbnail
+    // preferences.  If the user changed the show-thumbs toggle or the remote-thumbnail
+    // size cap while we were paused (e.g. from the Settings screen), the cached list items
+    // carry stale iconData which causes blank or wrong icons.  Detect the change and force
+    // a full list reload so the elements are reconstructed with the current preference values.
+    boolean currentShowThumb = getBoolean(PREFERENCE_SHOW_THUMB);
+    int currentRemoteThumbMaxSize =
+        sharedPref.getInt(
+            PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE, PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT);
+    if (currentShowThumb != pausedShowThumb
+        || currentRemoteThumbMaxSize != pausedRemoteThumbMaxSize) {
+      if (getCurrentPath() != null) {
+        mainActivityViewModel.evictPathFromListCache(getCurrentPath());
+      }
+      // Reset the back-button element so it picks up the new PREFERENCE_SHOW_THUMB value
+      mainFragmentViewModel.setBack(null);
+      updateList(true);
+    }
   }
 
   @Override
   public void onPause() {
     super.onPause();
+    // Snapshot thumbnail-related prefs so onResume can detect changes
+    pausedShowThumb = getBoolean(PREFERENCE_SHOW_THUMB);
+    pausedRemoteThumbMaxSize =
+        sharedPref.getInt(
+            PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE, PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT);
+
     if (customFileObserver != null) {
       customFileObserver.stopWatching();
     }
