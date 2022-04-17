@@ -20,9 +20,13 @@
 
 package com.amaze.filemanager.adapters.data;
 
-import java.io.File;
-import java.util.Calendar;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT;
+import static com.amaze.filemanager.utils.AppConstants.MEGABYTE;
 
+import java.io.File;
+
+import com.amaze.filemanager.R;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.sort.ComparableParcelable;
@@ -35,11 +39,9 @@ import android.os.Parcelable;
 
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.preference.PreferenceManager;
 
 public class LayoutElementParcelable implements Parcelable, ComparableParcelable {
-
-  private static final String CURRENT_YEAR =
-      String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
 
   public final boolean isBack;
   public final int filetype;
@@ -149,6 +151,12 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
     @DrawableRes int fallbackIcon = Icons.loadMimeIcon(path, isDirectory);
     this.mode = openMode;
     if (useThumbs) {
+      int[] maxSizes = c.getResources().getIntArray(R.array.thumbnailDisplaySizeLimitPreference);
+      int idx =
+          PreferenceManager.getDefaultSharedPreferences(c)
+              .getInt(
+                  PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE,
+                  PREFERENCE_SHOW_REMOTE_THUMB_MAX_SIZE_DEFAULT);
       switch (mode) {
         case SMB:
         case SFTP:
@@ -156,8 +164,11 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
         case GDRIVE:
         case ONEDRIVE:
         case BOX:
-          if (!isDirectory
-              && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)) {
+          boolean shouldCloudIcon =
+              !isDirectory
+                  && (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK)
+                  && (idx == 0 || longSize <= (long) maxSizes[idx] * MEGABYTE);
+          if (shouldCloudIcon) {
             this.iconData =
                 new IconDataParcelable(IconDataParcelable.IMAGE_FROMCLOUD, path, fallbackIcon);
           } else {
@@ -176,6 +187,7 @@ public class LayoutElementParcelable implements Parcelable, ComparableParcelable
           } else {
             this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
           }
+          break;
       }
     } else {
       this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
