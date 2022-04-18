@@ -213,7 +213,7 @@ public class MainActivity extends PermissionsActivity
 
   public String path = "";
   public boolean mReturnIntent = false;
-  public boolean openzip = false;
+  public boolean isCompressedOpen = false;
   public boolean mRingtonePickerIntent = false;
   public int skinStatusBar;
 
@@ -248,7 +248,7 @@ public class MainActivity extends PermissionsActivity
   private Drawer drawer;
   // private HistoryManager history, grid;
   private MainActivity mainActivity = this;
-  private String zippath;
+  private String pathInCompressedArchive;
   private boolean openProcesses = false;
   private MaterialDialog materialDialog;
   private boolean backPressedToExitOnce = false;
@@ -552,13 +552,13 @@ public class MainActivity extends PermissionsActivity
           // no data field, open home for the tab in later processing
           path = null;
         }
-      } else {
+      } else if(FileUtils.isCompressedFile(Utils.sanitizeInput(uri.toString()))) {
         // we don't have folder resource mime type set, supposed to be zip/rar
-        openzip = true;
-        zippath = Utils.sanitizeInput(uri.toString());
-        if (FileUtils.isCompressedFile(zippath)) {
-          openCompressed(zippath);
-        }
+        isCompressedOpen = true;
+        pathInCompressedArchive = Utils.sanitizeInput(uri.toString());
+        openCompressed(pathInCompressedArchive);
+      } else {
+        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG).show();
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -859,8 +859,8 @@ public class MainActivity extends PermissionsActivity
       if (compressedExplorerFragment.mActionMode == null) {
         if (compressedExplorerFragment.canGoBack()) {
           compressedExplorerFragment.goBack();
-        } else if (openzip) {
-          openzip = false;
+        } else if (isCompressedOpen) {
+          isCompressedOpen = false;
           finish();
         } else {
           FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -940,9 +940,9 @@ public class MainActivity extends PermissionsActivity
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
     floatingActionButton.show();
-    if (openzip && zippath != null) {
-      openCompressed(zippath);
-      zippath = null;
+    if (isCompressedOpen && pathInCompressedArchive != null) {
+      openCompressed(pathInCompressedArchive);
+      pathInCompressedArchive = null;
     }
   }
 
