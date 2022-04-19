@@ -389,7 +389,7 @@ public class MainActivity extends PermissionsActivity
         .subscribe(
             new CompletableObserver() {
               @Override
-              public void onSubscribe(Disposable d) {}
+              public void onSubscribe(@NonNull Disposable d) {}
 
               @Override
               public void onComplete() {
@@ -398,8 +398,10 @@ public class MainActivity extends PermissionsActivity
               }
 
               @Override
-              public void onError(Throwable e) {
-                e.printStackTrace();
+              public void onError(@NonNull Throwable e) {
+                Log.e(TAG, "Error setting up DataUtils", e);
+                drawer.refreshDrawer();
+                invalidateFragmentAndBundle(savedInstanceState);
               }
             });
     initStatusBarResources(findViewById(R.id.drawer_layout));
