@@ -758,5 +758,7 @@ You only need to do this once, until the next time you select a new location for
 
     <string name="quick_desc">Files recently accessed through Amaze</string>
     <string name="recent_desc">Recently created or modified files</string>
+    <string name="error_cannot_find_way_open">Could not find way to open the file</string>
+    <string name="error_cant_decompress_that_file">Cannot process the requested archive</string>
 </resources>
 
