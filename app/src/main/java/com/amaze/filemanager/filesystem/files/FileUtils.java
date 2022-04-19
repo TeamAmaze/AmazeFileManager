@@ -807,7 +807,7 @@ public class FileUtils {
     StringBuilder link = new StringBuilder();
     String size = "-1";
     String date = "";
-    String[] array = line.split(" ");
+    String[] array = line.split(" +");
     if (array.length < 6) return null;
     for (String anArray : array) {
       if (anArray.contains("->") && array[0].startsWith("l")) {
