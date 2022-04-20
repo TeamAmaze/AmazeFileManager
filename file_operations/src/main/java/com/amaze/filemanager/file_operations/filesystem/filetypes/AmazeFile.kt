@@ -669,42 +669,6 @@ class AmazeFile : Comparable<AmazeFile?> {
     fun delete(contextProvider: ContextProvider): Boolean {
         return fs.delete(this, contextProvider)
     }
-    // Android-added: Additional information about Android behaviour.
-    /**
-     * Requests that the file or directory denoted by this abstract pathname be deleted when the
-     * virtual machine terminates. Files (or directories) are deleted in the reverse order that they
-     * are registered. Invoking this method to delete a file or directory that is already registered
-     * for deletion has no effect. Deletion will be attempted only for normal termination of the
-     * virtual machine, as defined by the Java Language Specification.
-     *
-     *
-     * Once deletion has been requested, it is not possible to cancel the request. This method
-     * should therefore be used with care.
-     *
-     *
-     * Note: this method should *not* be used for file-locking, as the resulting protocol
-     * cannot be made to work reliably. The [FileLock][java.nio.channels.FileLock] facility
-     * should be used instead.
-     *
-     *
-     * *Note that on Android, the application lifecycle does not include VM termination, so
-     * calling this method will not ensure that files are deleted*. Instead, you should use the
-     * most appropriate out of:
-     *
-     *
-     *  * Use a `finally` clause to manually invoke [.delete].
-     *  * Maintain your own set of files to delete, and process it at an appropriate point in your
-     * application's lifecycle.
-     *  * Use the Unix trick of deleting the file as soon as all readers and writers have opened
-     * it. No new readers/writers will be able to access the file, but all existing ones will
-     * still have access until the last one closes the file.
-     *
-     *
-     * @see .delete
-     */
-    fun deleteOnExit() {
-        AmazeDeleteOnExitHook.add(path)
-    }
 
     /**
      * Returns an array of strings naming the files and directories in the directory denoted by this
