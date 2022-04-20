@@ -171,10 +171,6 @@ class AmazeFile : Comparable<AmazeFile?> {
      */
     val path: String
 
-    /** The flag indicating whether the file path is invalid.  */
-    @Transient
-    private var status: PathStatus? = null
-
     /** Returns the length of this abstract pathname's prefix. For use by FileSystem classes.  */
     /** The length of this abstract pathname's prefix, or zero if it has no prefix.  */
     @Transient
@@ -195,26 +191,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * This string contains a single character, namely `[.separatorChar]`.
      */
     val separator: String
-
-    /** Enum type that indicates the status of a file path.  */
-    private enum class PathStatus {
-        INVALID, CHECKED
-    }
-
-    /**
-     * Check if the file has an invalid path. Currently, the inspection of a file path is very
-     * limited, and it only covers Nul character check. Returning true means the path is definitely
-     * invalid/garbage. But returning false does not guarantee that the path is valid.
-     *
-     * @return true if the file path is invalid.
-     */
-    val isInvalid: Boolean
-        get() {
-            if (status == null) {
-                status = if (path.indexOf('\u0000') < 0) PathStatus.CHECKED else PathStatus.INVALID
-            }
-            return status == PathStatus.INVALID
-        }
+    
     /* -- Constructors -- */
     /** Internal constructor for already-normalized pathname strings.  */
     private constructor(pathname: String, prefixLength: Int) {
@@ -497,9 +474,6 @@ class AmazeFile : Comparable<AmazeFile?> {
     @get:Throws(IOException::class)
     val canonicalPath: String
         get() {
-            if (isInvalid) {
-                throw IOException("Invalid file path")
-            }
             return fs.canonicalize(fs.resolve(this))
         }
 
@@ -528,9 +502,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * *and* can be read by the application; `false` otherwise
      */
     fun canRead(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.canRead(this, contextProvider)
+        return fs.canRead(this, contextProvider)
     }
     // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on android
@@ -542,9 +514,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * false` otherwise.
      */
     fun canWrite(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.canWrite(this, contextProvider)
+        return fs.canWrite(this, contextProvider)
     }
 
     /**
@@ -554,9 +524,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * pathname exists; `false` otherwise
      */
     fun exists(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.canAccess(this, contextProvider)
+        return fs.canAccess(this, contextProvider)
 
         // Android-changed: b/25878034 work around SELinux stat64 denial.
     }
@@ -574,9 +542,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * *and* is a directory; `false` otherwise
      */
     fun isDirectory(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.getBooleanAttributes(this, contextProvider) and AmazeFilesystem.BA_DIRECTORY != 0
+        return fs.getBooleanAttributes(this, contextProvider) and AmazeFilesystem.BA_DIRECTORY != 0
     }
 
     /**
@@ -595,9 +561,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * *and* is a normal file; `false` otherwise
      */
     fun isFile(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.getBooleanAttributes(this, contextProvider) and AmazeFilesystem.BA_REGULAR != 0
+        return fs.getBooleanAttributes(this, contextProvider) and AmazeFilesystem.BA_REGULAR != 0
     }
 
     /**
@@ -610,9 +574,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * according to the conventions of the underlying platform
      */
     fun isHidden(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.getBooleanAttributes(this, contextProvider) and AmazeFilesystem.BA_HIDDEN != 0
+        return fs.getBooleanAttributes(this, contextProvider) and AmazeFilesystem.BA_HIDDEN != 0
     }
 
     /**
@@ -629,9 +591,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * file does not exist or if an I/O error occurs
      */
     fun lastModified(): Long {
-        return if (isInvalid) {
-            0L
-        } else fs.getLastModifiedTime(this)
+        return fs.getLastModifiedTime(this)
     }
 
     /**
@@ -650,10 +610,30 @@ class AmazeFile : Comparable<AmazeFile?> {
      */
     @Throws(IOException::class)
     fun length(contextProvider: ContextProvider): Long {
-        return if (isInvalid) {
-            0L
-        } else fs.getLength(this, contextProvider)
+        return fs.getLength(this, contextProvider)
     }
+
+    /**
+     * Returns the length of the file or directory denoted by this abstract pathname.
+     *
+     * Where it is required to distinguish an I/O exception from the case that `0L` is
+     * returned, or where several attributes of the same file are required at the same time, then the
+     * [Files.readAttributes][java.nio.file.Files.readAttributes] method
+     * may be used.
+     *
+     * @return The length, in bytes, of the file denoted by this abstract pathname, or `0L`
+     * if the file does not exist. Some operating systems may return `0L` for pathnames
+     * denoting system-dependent entities such as devices or pipes.
+     */
+    fun safeLength(contextProvider: ContextProvider): Long {
+        return try {
+            length(contextProvider)
+        } catch (e: IOException) {
+            Log.e(TAG, "Error getting file size", e)
+            0L
+        }
+    }
+
     /* -- File operations -- */
     /**
      * Atomically creates a new, empty file named by this abstract pathname if and only if a file with
@@ -672,9 +652,6 @@ class AmazeFile : Comparable<AmazeFile?> {
      */
     @Throws(IOException::class)
     fun createNewFile(): Boolean {
-        if (isInvalid) {
-            throw IOException("Invalid file path")
-        }
         return fs.createFileExclusively(path)
     }
 
@@ -690,9 +667,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * false` otherwise
      */
     fun delete(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.delete(this, contextProvider)
+        return fs.delete(this, contextProvider)
     }
     // Android-added: Additional information about Android behaviour.
     /**
@@ -728,9 +703,6 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @see .delete
      */
     fun deleteOnExit() {
-        if (isInvalid) {
-            return
-        }
         AmazeDeleteOnExitHook.add(path)
     }
 
@@ -757,9 +729,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * if this abstract pathname does not denote a directory, or if an I/O error occurs.
      */
     fun list(contextProvider: ContextProvider): Array<String>? {
-        return if (isInvalid) {
-            null
-        } else fs.list(this, contextProvider)
+        return fs.list(this, contextProvider)
     }
 
     /**
@@ -938,9 +908,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * otherwise
      */
     fun mkdir(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.createDirectory(this, contextProvider)
+        return fs.createDirectory(this, contextProvider)
     }
 
     /**
@@ -995,9 +963,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @return `true` if and only if the renaming succeeded; `false` otherwise
      */
     fun renameTo(dest: AmazeFile, contextProvider: ContextProvider): Boolean {
-        return if (isInvalid || dest.isInvalid) {
-            false
-        } else fs.rename(this, dest, contextProvider)
+        return fs.rename(this, dest, contextProvider)
     }
 
     /**
@@ -1017,9 +983,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      */
     fun setLastModified(time: Long): Boolean {
         require(time >= 0) { "Negative time" }
-        return if (isInvalid) {
-            false
-        } else fs.setLastModifiedTime(this, time)
+        return fs.setLastModifiedTime(this, time)
     }
     // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on Android.
@@ -1032,9 +996,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * @return `true` if and only if the operation succeeded; `false` otherwise
      */
     fun setReadOnly(): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.setReadOnly(this)
+        return fs.setReadOnly(this)
     }
     // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on Android.
@@ -1057,9 +1019,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * pathname.
      */
     fun setWritable(writable: Boolean, ownerOnly: Boolean): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.setWritable(this, writable, ownerOnly)
+        return fs.setWritable(this, writable, ownerOnly)
     }
     // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on Android.
@@ -1104,9 +1064,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * does not implement a read permission, then the operation will fail.
      */
     fun setReadable(readable: Boolean, ownerOnly: Boolean): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.setReadable(this, readable, ownerOnly)
+        return fs.setReadable(this, readable, ownerOnly)
     }
     // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on Android.
@@ -1152,9 +1110,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * does not implement an execute permission, then the operation will fail.
      */
     fun setExecutable(executable: Boolean, ownerOnly: Boolean): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.setExecutable(this, executable, ownerOnly)
+        return fs.setExecutable(this, executable, ownerOnly)
     }
     // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on Android.
@@ -1187,9 +1143,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * application is allowed to execute the file
      */
     fun canExecute(contextProvider: ContextProvider): Boolean {
-        return if (isInvalid) {
-            false
-        } else fs.canExecute(this, contextProvider)
+        return fs.canExecute(this, contextProvider)
     }
     /* -- Filesystem interface -- */ // Android-changed: Replaced generic platform info with Android specific one.
     /* -- Disk usage -- */
@@ -1200,9 +1154,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * name a partition If there is no way to determine, total space is -1
      */
     fun getTotalSpace(contextProvider: ContextProvider): Long {
-        return if (isInvalid) {
-            0L
-        } else try {
+        return try {
             fs.getTotalSpace(this, contextProvider)
         } catch (e: NotImplementedError) {
             Log.w(TAG, "Call to unimplemented fuction", e)
@@ -1226,9 +1178,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * system size returned by [.getTotalSpace].
      */
     val freeSpace: Long
-        get() = if (isInvalid) {
-            0L
-        } else fs.getFreeSpace(this)
+        get() = fs.getFreeSpace(this)
     // Android-added: Replaced generic platform info with Android specific one.
     /**
      * Returns the number of bytes available to this virtual machine on the partition [named](#partName) by this abstract pathname. When possible, this method checks for
@@ -1253,9 +1203,7 @@ class AmazeFile : Comparable<AmazeFile?> {
      * current space left -1 is returned.
      */
     val usableSpace: Long
-        get() = if (isInvalid) {
-            0L
-        } else try {
+        get() = try {
             fs.getUsableSpace(this)
         } catch (e: NotImplementedError) {
             Log.w(TAG, "Call to unimplemented fuction", e)
@@ -1282,7 +1230,7 @@ class AmazeFile : Comparable<AmazeFile?> {
             // prefix = (new AmazeFile(prefix)).getName();
             val name = prefix + java.lang.Long.toString(n) + suffix
             val f = AmazeFile(dir, name)
-            if (name != f.name || f.isInvalid) {
+            if (name != f.name) {
                 if (System.getSecurityManager() != null) {
                     throw IOException("Unable to create temporary file")
                 } else {
