@@ -74,6 +74,7 @@ import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.databinding.DialogSigninWithGoogleBinding;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -533,7 +534,7 @@ public class GeneralDialogCreation {
         new CountItemsOrAndSizeTask(c, itemsText, baseFile, forStorage);
     countItemsOrAndSizeTask.executeOnExecutor(executor);
 
-    TaskKt.fromTask(new CalculateHashTask(baseFile, c, v));
+    TaskKt.fromTask(new CalculateHashTask(new AmazeFile(baseFile.getPath()), c, v));
 
     /*Chart creation and data loading*/
     {

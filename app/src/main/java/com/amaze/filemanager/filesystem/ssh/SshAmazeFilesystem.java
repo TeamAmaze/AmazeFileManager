@@ -21,6 +21,8 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -197,6 +199,51 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
     }
 
     return returnValue;
+  }
+
+  @NonNull
+  @Override
+  public String getHashMD5(@NonNull AmazeFile f, @NonNull ContextProvider contextProvider) {
+    return SshClientUtils.execute(
+            new SshClientSessionTemplate<String>(f.getPath()) {
+              @Override
+              public String execute(Session session) throws IOException {
+                Session.Command cmd =
+                        session.exec(
+                                String.format(
+                                        "md5sum -b \"%s\" | cut -c -32",
+                                        SshClientUtils.extractRemotePathFrom(f.getPath())));
+                String result =
+                        new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
+                cmd.close();
+                if (cmd.getExitStatus() == 0) return result;
+                else {
+                  return null;
+                }
+              }
+            });
+  }
+
+  @NonNull
+  @Override
+  public String getHashSHA256(@NonNull AmazeFile f, @NonNull ContextProvider contextProvider) {
+    return SshClientUtils.execute(
+            new SshClientSessionTemplate<String>(f.getPath()) {
+              @Override
+              public String execute(Session session) throws IOException {
+                Session.Command cmd =
+                        session.exec(
+                                String.format(
+                                        "sha256sum -b \"%s\" | cut -c -64",
+                                        SshClientUtils.extractRemotePathFrom(f.getPath())));
+                String result = IOUtils.readFully(cmd.getInputStream()).toString();
+                cmd.close();
+                if (cmd.getExitStatus() == 0) return result;
+                else {
+                  return null;
+                }
+              }
+            });
   }
 
   @Override

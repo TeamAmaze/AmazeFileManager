@@ -28,6 +28,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.FileUtils
 import java.lang.ref.WeakReference
@@ -37,7 +39,7 @@ import java.util.concurrent.Callable
 data class Hash(val md5: String, val sha: String)
 
 class CalculateHashTask(
-    private val file: HybridFileParcelable,
+    private val file: AmazeFile,
     context: Context,
     view: View
 ) : Task<Hash, Callable<Hash>> {
@@ -46,11 +48,7 @@ class CalculateHashTask(
         private val TAG = CalculateHashTask::class.java.simpleName
     }
 
-    private val task: Callable<Hash> = if (file.isSftp) {
-        CalculateHashSftpCallback(file)
-    } else {
-        CalculateHashCallback(file, context)
-    }
+    private val task: Callable<Hash> = CalculateHashCallback(file, context)
 
     private val context = WeakReference(context)
     private val view = WeakReference(view)
@@ -82,7 +80,11 @@ class CalculateHashTask(
         val mMD5LinearLayout = view.findViewById<LinearLayout>(R.id.properties_dialog_md5)
         val mSHA256LinearLayout = view.findViewById<LinearLayout>(R.id.properties_dialog_sha256)
 
-        if (!file.isDirectory(context) && file.getSize() != 0L) {
+        val contextProvider = object : ContextProvider {
+            override fun getContext(): Context? = context
+        }
+
+        if (!file.isDirectory(contextProvider) && file.safeLength(contextProvider) != 0L) {
             md5HashText.text = md5Text
             sha256Text.text = shaText
             mMD5LinearLayout.setOnLongClickListener {

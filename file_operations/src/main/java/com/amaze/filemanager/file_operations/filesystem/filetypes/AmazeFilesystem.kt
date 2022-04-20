@@ -25,6 +25,9 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.annotation.Native
+import java.security.MessageDigest
+import java.security.NoSuchAlgorithmException
+import kotlin.experimental.and
 
 abstract class AmazeFilesystem {
     /* -- Normalization and construction -- */
@@ -152,6 +155,55 @@ abstract class AmazeFilesystem {
      * modified, or zero if it does not exist or some other I/O error occurs.
      */
     abstract fun getLastModifiedTime(f: AmazeFile): Long
+
+    /**
+     * Computes the hash MD5 of a file
+     */
+    open fun getHashMD5(f: AmazeFile, contextProvider: ContextProvider): String {
+        val fis: InputStream = f.getInputStream(contextProvider)
+        val buffer = ByteArray(8192)
+        val complete = MessageDigest.getInstance("MD5")
+        var numRead: Int
+        do {
+            numRead = fis.read(buffer)
+            if (numRead > 0) {
+                complete.update(buffer, 0, numRead)
+            }
+        } while (numRead != -1)
+        fis.close()
+
+        val b = complete.digest()
+        var result = ""
+        for (aB in b) {
+            result += Integer.toString((aB.and(127)) + 0x100, 16).substring(1)
+        }
+        return result
+    }
+
+    /**
+     * Computes the hash SHA256 of a file
+     */
+    open fun getHashSHA256(f: AmazeFile, contextProvider: ContextProvider): String {
+        val DEFAULT_BUFFER_SIZE = 8192
+
+        val messageDigest = MessageDigest.getInstance("SHA-256")
+        val input = ByteArray(DEFAULT_BUFFER_SIZE)
+        var length: Int
+        val inputStream: InputStream = f.getInputStream(contextProvider)
+        while (inputStream.read(input).also { length = it } != -1) {
+            if (length > 0) messageDigest.update(input, 0, length)
+        }
+        val hash = messageDigest.digest()
+        val hexString = StringBuilder()
+        for (aHash in hash) {
+            // convert hash to base 16
+            val hex = Integer.toHexString(0xff and aHash.toInt())
+            if (hex.length == 1) hexString.append('0')
+            hexString.append(hex)
+        }
+        inputStream.close()
+        return hexString.toString()
+    }
 
     /**
      * Return the length in bytes of the file denoted by the given abstract pathname, or zero if it

@@ -27,6 +27,8 @@ import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.concurrent.Callable;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 
@@ -37,18 +39,12 @@ import androidx.annotation.WorkerThread;
 /** Generates hashes from files (MD5 and SHA256) */
 public class CalculateHashCallback implements Callable<Hash> {
 
-  private final boolean isNotADirectory;
-  private final InputStream inputStreamMd5;
-  private final InputStream inputStreamSha;
+  private final AmazeFile file;
+  private final ContextProvider contextProvider;
 
-  public CalculateHashCallback(HybridFileParcelable file, final Context context) {
-    if (file.isSftp()) {
-      throw new IllegalArgumentException("Use CalculateHashSftpCallback");
-    }
-
-    this.isNotADirectory = !file.isDirectory(context);
-    this.inputStreamMd5 = file.getInputStream(context);
-    this.inputStreamSha = file.getInputStream(context);
+  public CalculateHashCallback(AmazeFile file, final Context context) {
+    this.file = file;
+    this.contextProvider = () -> context;
   }
 
   @WorkerThread
@@ -57,67 +53,14 @@ public class CalculateHashCallback implements Callable<Hash> {
     String md5 = null;
     String sha256 = null;
 
-    if (isNotADirectory) {
-      md5 = getMD5Checksum();
-      sha256 = getSHA256Checksum();
+    if (!file.isDirectory(contextProvider)) {
+      md5 = file.getHashMD5(contextProvider);
+      sha256 = file.getHashSHA256(contextProvider);
     }
 
     Objects.requireNonNull(md5);
     Objects.requireNonNull(sha256);
 
     return new Hash(md5, sha256);
-  }
-
-  // see this How-to for a faster way to convert a byte array to a HEX string
-
-  private String getMD5Checksum() throws Exception {
-    byte[] b = createChecksum();
-    String result = "";
-
-    for (byte aB : b) {
-      result += Integer.toString((aB & 0xff) + 0x100, 16).substring(1);
-    }
-    return result;
-  }
-
-  private String getSHA256Checksum() throws NoSuchAlgorithmException, IOException {
-    MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-    byte[] input = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-    int length;
-    InputStream inputStream = inputStreamMd5;
-    while ((length = inputStream.read(input)) != -1) {
-      if (length > 0) messageDigest.update(input, 0, length);
-    }
-
-    byte[] hash = messageDigest.digest();
-
-    StringBuilder hexString = new StringBuilder();
-
-    for (byte aHash : hash) {
-      // convert hash to base 16
-      String hex = Integer.toHexString(0xff & aHash);
-      if (hex.length() == 1) hexString.append('0');
-      hexString.append(hex);
-    }
-    inputStream.close();
-    return hexString.toString();
-  }
-
-  private byte[] createChecksum() throws Exception {
-    InputStream fis = inputStreamSha;
-
-    byte[] buffer = new byte[8192];
-    MessageDigest complete = MessageDigest.getInstance("MD5");
-    int numRead;
-
-    do {
-      numRead = fis.read(buffer);
-      if (numRead > 0) {
-        complete.update(buffer, 0, numRead);
-      }
-    } while (numRead != -1);
-
-    fis.close();
-    return complete.digest();
   }
 }

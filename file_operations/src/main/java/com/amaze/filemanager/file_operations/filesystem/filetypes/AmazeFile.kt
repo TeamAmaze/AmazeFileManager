@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2014 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -595,9 +595,30 @@ class AmazeFile : Comparable<AmazeFile?> {
     }
 
     /**
-     * Returns the length of the file denoted by this abstract pathname. The return value is
-     * unspecified if this pathname denotes a directory.
-     *
+     * Computes the hash MD5 of a file
+     */
+    fun getHashMD5(contextProvider: ContextProvider): String? {
+        if(!isFile(contextProvider)) {
+            return null
+        }
+
+        return fs.getHashMD5(this, contextProvider)
+    }
+
+
+    /**
+     * Computes the hash SHA256 of a file
+     */
+    fun getHashSHA256(contextProvider: ContextProvider): String? {
+        if(!isFile(contextProvider)) {
+            return null
+        }
+
+        return fs.getHashSHA256(this, contextProvider)
+    }
+
+    /**
+     * Returns the length of the file or directory denoted by this abstract pathname.
      *
      * Where it is required to distinguish an I/O exception from the case that `0L` is
      * returned, or where several attributes of the same file are required at the same time, then the
@@ -1173,7 +1194,7 @@ class AmazeFile : Comparable<AmazeFile?> {
             Log.w(TAG, "Call to unimplemented fuction", e)
             -1
         }
-    
+
     /* -- Basic infrastructure -- */
     /**
      * Compares two abstract pathnames lexicographically. The ordering defined by this method depends
