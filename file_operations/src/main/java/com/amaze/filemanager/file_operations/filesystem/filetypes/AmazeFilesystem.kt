@@ -34,6 +34,8 @@ abstract class AmazeFilesystem {
     /** filesystem prefix  */
     abstract val prefix: String
 
+    open val nomediaFileEnabled: Boolean = false
+
     /** Is the path of this filesystem?  */
     open fun isPathOfThisFilesystem(path: String): Boolean {
         return path.startsWith(prefix)
@@ -46,6 +48,14 @@ abstract class AmazeFilesystem {
      * it is simply returned.
      */
     abstract fun normalize(path: String): String
+
+    /**
+     * Convert the given [AmazeFile]'s path to human readable. Override if file has a weird path,
+     * as if it has an IP or username.
+     */
+    open fun getHumanReadablePath(f: AmazeFile): String {
+        return f.path
+    }
 
     /**
      * Compute the length of this pathname string's prefix. The pathname string must be in normal

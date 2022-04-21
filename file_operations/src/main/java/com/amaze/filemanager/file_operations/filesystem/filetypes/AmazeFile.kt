@@ -359,6 +359,11 @@ class AmazeFile : Comparable<AmazeFile?> {
             return path.substring(index + 1)
         }
 
+    val humanReadablePath: String
+        get() {
+            return fs.getHumanReadablePath(this)
+        }
+
     /**
      * Returns the pathname string of this abstract pathname's parent, or `null` if this
      * pathname does not name a parent directory.

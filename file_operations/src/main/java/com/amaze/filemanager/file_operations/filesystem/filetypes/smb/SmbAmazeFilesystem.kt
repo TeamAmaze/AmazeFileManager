@@ -36,8 +36,6 @@ import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
 import java.lang.Boolean.parseBoolean
-import java.lang.IllegalArgumentException
-import java.lang.IllegalStateException
 import java.net.MalformedURLException
 import java.util.regex.Pattern
 
@@ -137,6 +135,11 @@ object SmbAmazeFilesystem : AmazeFilesystem() {
             pathname.substring(0, prefixLength(pathname)) + "/"
         }
         return canonical
+    }
+
+    override fun getHumanReadablePath(f: AmazeFile): String {
+        val uri = Uri.parse(f.path)
+        return String.format("%s://%s%s", uri.scheme, uri.host, uri.path)
     }
 
     override fun prefixLength(path: String): Int {

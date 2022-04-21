@@ -67,6 +67,13 @@ public class SshAmazeFilesystem extends AmazeFilesystem {
 
   @NonNull
   @Override
+  public String getHumanReadablePath(@NonNull AmazeFile f) {
+    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(f.getPath());
+    return connInfo.toString();
+  }
+
+  @NonNull
+  @Override
   public String resolve(@NotNull String parent, @NotNull String child) {
     return PREFIX + new File(removePrefix(parent), child).getAbsolutePath();
   }

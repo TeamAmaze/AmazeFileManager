@@ -22,6 +22,8 @@ import java.io.*
 object FileAmazeFilesystem : AmazeFilesystem() {
     const val PREFERENCE_ROOTMODE = "rootmode"
 
+    override val nomediaFileEnabled: Boolean = true
+
     @JvmStatic
     val TAG = FileAmazeFilesystem::class.java.simpleName
 
