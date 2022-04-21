@@ -83,6 +83,7 @@ import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
 import com.amaze.filemanager.ui.ExtensionsKt;
+import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -1128,5 +1129,23 @@ public class GeneralDialogCreation {
             });
 
     dialog.show();
+  }
+
+  public static void showDownloadAmazeUtilsDialog(final MainActivity m) {
+    int accentColor = m.getAccent();
+    MaterialDialog.Builder mat = new MaterialDialog.Builder(m);
+    mat.title(R.string.amaze_file_utilities)
+            .content(R.string.download_amaze_utils_text)
+            .positiveText(R.string.download)
+            .negativeText(R.string.cancel)
+            .positiveColor(accentColor)
+            .negativeColor(accentColor)
+            .neutralColor(accentColor)
+            .onPositive((dialog, which) -> Utils.openURL(AboutActivity.URL_AMAZE_UTILS, m))
+            .onNegative((dialog, which) -> dialog.dismiss());
+    if (m.getAppTheme().equals(AppTheme.DARK) || m.getAppTheme().equals(AppTheme.BLACK))
+      mat.theme(Theme.DARK);
+    MaterialDialog b = mat.build();
+    b.show();
   }
 }

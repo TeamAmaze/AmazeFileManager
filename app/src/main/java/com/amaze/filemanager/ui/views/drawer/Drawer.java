@@ -41,6 +41,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -520,6 +521,42 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             }),
         R.drawable.ic_ftp_white_24dp,
         null);
+
+    addNewItem(
+            menu,
+            LASTGROUP,
+            order++,
+            R.string.wifipp,
+            new MenuMetadata(
+                    () -> {
+                      boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager());
+                      if (isAUInstalled) {
+                        Utils.openURL("amaze://teamamaze.xyz/transfer", mainActivity);
+                      } else {
+                        GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                      }
+                    }),
+            R.drawable.ic_round_connect_without_contact_24,
+            null);
+
+    addNewItem(
+            menu,
+            LASTGROUP,
+            order++,
+            R.string.analyse,
+            new MenuMetadata(
+                    () -> {
+                      boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager());
+                      if (isAUInstalled) {
+                        Utils.openURL("amaze://teamamaze.xyz/analyse", mainActivity);
+                      } else {
+                        GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                      }
+                    }),
+            R.drawable.ic_round_analytics_24,
+            null);
 
     addNewItem(
         menu,

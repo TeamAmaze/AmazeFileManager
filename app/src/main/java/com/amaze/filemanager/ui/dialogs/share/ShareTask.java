@@ -26,6 +26,7 @@ import java.util.List;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.Utils;
 
 import android.app.Activity;
 import android.content.ComponentName;
@@ -85,7 +86,7 @@ public class ShareTask extends AsyncTask<String, String, Void> {
           targetShareIntents.add(intent);
         }
       }
-      if (!bluetooth_present && appInstalledOrNot("com.android.bluetooth", packageManager)) {
+      if (!bluetooth_present && Utils.appInstalledOrNot("com.android.bluetooth", packageManager)) {
         Intent intent = new Intent();
         intent.setComponent(
             new ComponentName(
@@ -114,17 +115,6 @@ public class ShareTask extends AsyncTask<String, String, Void> {
 
   private String getShareIntentAction() {
     return this.sharingUris.size() == 1 ? Intent.ACTION_SEND : Intent.ACTION_SEND_MULTIPLE;
-  }
-
-  private boolean appInstalledOrNot(String uri, PackageManager pm) {
-    boolean app_installed;
-    try {
-      pm.getPackageInfo(uri, PackageManager.GET_ACTIVITIES);
-      app_installed = true;
-    } catch (PackageManager.NameNotFoundException e) {
-      app_installed = false;
-    }
-    return app_installed;
   }
 
   @Override
