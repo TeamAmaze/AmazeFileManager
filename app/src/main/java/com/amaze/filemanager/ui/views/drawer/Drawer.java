@@ -68,6 +68,7 @@ import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.google.android.material.navigation.NavigationView;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -532,7 +533,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                       boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
                               mainActivity.getPackageManager());
                       if (isAUInstalled) {
-                        Utils.openURL("amaze://teamamaze.xyz/transfer", mainActivity);
+                        try {
+                          Utils.openURL("amaze://teamamaze.xyz/transfer", mainActivity);
+                        } catch (ActivityNotFoundException e) {
+                          GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                        }
                       } else {
                         GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
                       }
@@ -550,7 +555,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                       boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
                               mainActivity.getPackageManager());
                       if (isAUInstalled) {
-                        Utils.openURL("amaze://teamamaze.xyz/analyse", mainActivity);
+                        try {
+                          Utils.openURL("amaze://teamamaze.xyz/analyse", mainActivity);
+                        } catch (ActivityNotFoundException e) {
+                          GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                        }
                       } else {
                         GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
                       }
