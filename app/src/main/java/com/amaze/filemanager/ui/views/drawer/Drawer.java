@@ -544,7 +544,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             menu,
             LASTGROUP,
             order++,
-            R.string.analyse,
+            R.string.analyse_storage,
             new MenuMetadata(
                     () -> {
                       boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
