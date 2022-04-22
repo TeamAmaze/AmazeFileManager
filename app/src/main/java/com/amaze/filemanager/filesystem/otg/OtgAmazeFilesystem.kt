@@ -1,6 +1,9 @@
 package com.amaze.filemanager.filesystem.otg
 
+import android.net.Uri
+import android.os.Build
 import android.util.Log
+import androidx.core.content.FileProvider
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
 import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
@@ -27,6 +30,19 @@ object OtgAmazeFilesystem : AmazeFilesystem() {
 
     override fun normalize(path: String): String {
         return simpleUnixNormalize(path)
+    }
+
+    override fun getUriForFile(f: AmazeFile, contextProvider: ContextProvider): Uri? {
+        val context = contextProvider.getContext() ?: return null
+
+        val documentFile = getDocumentFile(f.path, context, true)
+
+        if(documentFile == null) {
+            Log.e(TAG, "Null DocumentFile getting Uri!")
+            return null
+        }
+
+        return documentFile.uri
     }
 
     override fun resolve(parent: String, child: String): String {

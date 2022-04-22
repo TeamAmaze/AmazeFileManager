@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes
 
+import android.net.Uri
+import android.util.Log
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
@@ -30,6 +32,7 @@ import java.security.NoSuchAlgorithmException
 import kotlin.experimental.and
 
 abstract class AmazeFilesystem {
+
     /* -- Normalization and construction -- */
     /** filesystem prefix  */
     abstract val prefix: String
@@ -55,6 +58,14 @@ abstract class AmazeFilesystem {
      */
     open fun getHumanReadablePath(f: AmazeFile): String {
         return f.path
+    }
+
+    /**
+     * Convert the given [AmazeFile]'s path to an [Uri].
+     */
+    open fun getUriForFile(f: AmazeFile, contextProvider: ContextProvider): Uri? {
+        Log.e(TAG, "get Uri failed for file")
+        return null
     }
 
     /**
@@ -297,6 +308,8 @@ abstract class AmazeFilesystem {
     }
 
     companion object {
+        private val TAG = AmazeFilesystem::class.java.simpleName
+
         /** Return the local filesystem's name-separator character.  */
         const val STANDARD_SEPARATOR = '/'
 

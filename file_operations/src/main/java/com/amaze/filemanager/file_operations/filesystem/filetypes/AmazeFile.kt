@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.file_operations.filesystem.filetypes
 
+import android.net.Uri
 import android.os.Parcel
 import android.util.Log
 import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem
@@ -497,6 +498,11 @@ class AmazeFile : Comparable<AmazeFile?> {
             val canonPath = canonicalPath
             return AmazeFile(canonPath, fs.prefixLength(canonPath))
         }
+
+    fun getUriForFile(contextProvider: ContextProvider): Uri? {
+        return fs.getUriForFile(this, contextProvider)
+    }
+
     /* -- Attribute accessors -- */ // Android-changed. Removed javadoc comment about special privileges
     // that doesn't make sense on android
     /**
