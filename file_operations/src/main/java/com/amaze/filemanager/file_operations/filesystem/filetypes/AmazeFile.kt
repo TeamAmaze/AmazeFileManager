@@ -32,7 +32,6 @@ import java.io.File
 import java.io.IOException
 import java.io.InputStream
 import java.io.OutputStream
-import java.security.SecureRandom
 import java.util.*
 
 // Android-added: Info about UTF-8 usage in filenames.
@@ -160,7 +159,7 @@ class AmazeFile : Comparable<AmazeFile?> {
     }
 
     /** The FileSystem object representing the platform's local file system.  */
-    private lateinit var fs: AmazeFilesystem
+    lateinit var fs: AmazeFilesystem
 
     /**
      * Converts this abstract pathname into a pathname string. The resulting string uses the [separator]
@@ -640,7 +639,7 @@ class AmazeFile : Comparable<AmazeFile?> {
     }
 
     /**
-     * Returns the length of the file or directory denoted by this abstract pathname.
+     * Returns the length of the file denoted by this abstract pathname.
      *
      * Where it is required to distinguish an I/O exception from the case that `0L` is
      * returned, or where several attributes of the same file are required at the same time, then the
@@ -657,6 +656,41 @@ class AmazeFile : Comparable<AmazeFile?> {
         } catch (e: IOException) {
             Log.e(TAG, "Error getting file size", e)
             0L
+        }
+    }
+
+    /**
+     * Returns the length of the directory denoted by this abstract pathname.
+     *
+     * Where it is required to distinguish an I/O exception from the case that `0L` is
+     * returned.
+     *
+     * @return The length, in bytes, of the directory denoted by this abstract pathname, or `0L`
+     * if the directory does not exist.
+     */
+    @JvmOverloads
+    fun safeLengthFolder(contextProvider: ContextProvider, callback: ((Long) -> Unit)? = null): Long {
+        if(!isDirectory(contextProvider)) {
+            return 0L
+        }
+
+        try {
+            var length: Long = 0
+            listFiles(contextProvider) { file: AmazeFile ->
+                if(file.isFile(contextProvider)) {
+                    length += file.length(contextProvider)
+                    callback?.invoke(length)
+                } else {
+                    file.safeLengthFolder(contextProvider) {
+                        length += it
+                        callback?.invoke(length)
+                    }
+                }
+            }
+            return length
+        } catch (e: IOException) {
+            Log.e(TAG, "Error getting file size", e)
+            return 0L
         }
     }
 
