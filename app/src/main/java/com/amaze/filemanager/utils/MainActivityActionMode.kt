@@ -81,7 +81,6 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
             hideOption(R.id.share, menu)
             hideOption(R.id.openwith, menu)
             if (mainActivity.mReturnIntent) showOption(R.id.openmulti, menu)
-//             hideOption(R.id.setringtone,menu);
             mode.title = mainActivity.resources.getString(R.string.select)
             mainActivity
                 .updateViews(

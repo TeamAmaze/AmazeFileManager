@@ -466,7 +466,7 @@ public class HybridFile {
 
   /**
    * Whether this object refers to a directory or file, handles all types of files
-   * Warning: Can't be used directly in UI/main thread
+   * @WorkerThread
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
   public boolean isDirectory() {
