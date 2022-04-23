@@ -145,10 +145,19 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
             val tabStatusColor = PreferenceUtils.getStatusColor(primaryColor)
             window.statusBarColor = tabStatusColor
-            if (colouredNavigation) {
-                window.navigationBarColor = tabStatusColor
-            } else if (window.navigationBarColor != Color.BLACK) {
-                window.navigationBarColor = Color.BLACK
+            when {
+                colouredNavigation         -> {
+                    window.navigationBarColor = tabStatusColor
+                }
+                appTheme == AppTheme.BLACK -> {
+                    window.navigationBarColor = Color.BLACK
+                }
+                appTheme == AppTheme.DARK  -> {
+                    window.navigationBarColor = Utils.getColor(this, R.color.holo_dark_background)
+                }
+                appTheme == AppTheme.LIGHT  -> {
+                    window.navigationBarColor = Color.WHITE
+                }
             }
         }
         if (appTheme == AppTheme.BLACK) {
