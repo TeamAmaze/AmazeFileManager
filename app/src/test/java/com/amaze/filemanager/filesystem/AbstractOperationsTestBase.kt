@@ -31,7 +31,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
 import com.amaze.filemanager.test.ShadowPasswordUtil
@@ -133,9 +133,10 @@ abstract class AbstractOperationsTestBase {
                 }
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 Shadows.shadowOf(ctx?.getSystemService(StorageManager::class.java))
                     .resetStorageVolumeList()
+            }
         }
     }
 }

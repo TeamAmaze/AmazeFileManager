@@ -73,7 +73,8 @@ object MakeFileOperation {
             return try {
                 (
                     document?.createFile(
-                        MimeTypes.getMimeType(file.path, file.isDirectory), file.name
+                        MimeTypes.getMimeType(file.path, file.isDirectory),
+                        file.name
                     )
                         != null
                     )

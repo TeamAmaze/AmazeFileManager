@@ -31,9 +31,9 @@ import java.util.List;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -72,7 +72,9 @@ public class CloudUtil {
 
   public static final String TAG = "Explorer";
 
-  /** @deprecated use getCloudFiles() */
+  /**
+   * @deprecated use getCloudFiles()
+   */
   public static ArrayList<HybridFileParcelable> listFiles(
       String path, CloudStorage cloudStorage, OpenMode openMode) throws CloudPluginException {
     final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();

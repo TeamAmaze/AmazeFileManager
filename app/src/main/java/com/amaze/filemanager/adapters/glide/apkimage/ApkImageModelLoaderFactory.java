@@ -27,7 +27,9 @@ import com.bumptech.glide.load.model.MultiModelLoaderFactory;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:21. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:21.
+ */
 public class ApkImageModelLoaderFactory implements ModelLoaderFactory<String, Drawable> {
 
   private Context context;

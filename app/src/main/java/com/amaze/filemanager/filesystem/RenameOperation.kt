@@ -23,7 +23,7 @@ package com.amaze.filemanager.filesystem
 import android.content.Context
 import android.os.Build
 import android.util.Log
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation.mkdir
 import com.amaze.filemanager.filesystem.root.RenameFileCommand.renameFile
 import java.io.*

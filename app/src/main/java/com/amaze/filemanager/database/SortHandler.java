@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.database;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
 import java.util.HashSet;
 import java.util.Set;

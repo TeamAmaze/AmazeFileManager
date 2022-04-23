@@ -25,14 +25,13 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -50,8 +49,8 @@ import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SortSearch
 import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -772,7 +771,7 @@ public class MainFragment extends Fragment
           && (mainFragmentViewModel.getOpenMode() == OpenMode.FILE
               || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT
               || (mainFragmentViewModel.getIsCloudOpenMode()
-                && !mainFragmentViewModel.getIsOnCloudRoot()))
+                  && !mainFragmentViewModel.getIsOnCloudRoot()))
           && !isOtg
           && (mainFragmentViewModel.getListElements().size() == 0
               || !mainFragmentViewModel
@@ -784,8 +783,7 @@ public class MainFragment extends Fragment
         mainFragmentViewModel.getListElements().add(0, getBackElement());
       }
 
-      if (mainFragmentViewModel.getListElements().size() == 0
-          && !results) {
+      if (mainFragmentViewModel.getListElements().size() == 0 && !results) {
         nofilesview.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
         mSwipeRefreshLayout.setEnabled(false);

@@ -20,13 +20,13 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.DbViewerFragment;
@@ -70,10 +70,10 @@ public class DatabaseViewerActivity extends ThemedActivity {
 
     path = getIntent().getStringExtra("path");
 
-    if(path == null) {
-        Toast.makeText(this, R.string.operation_not_supported, Toast.LENGTH_SHORT).show();
-        finish();
-        return;
+    if (path == null) {
+      Toast.makeText(this, R.string.operation_not_supported, Toast.LENGTH_SHORT).show();
+      finish();
+      return;
     }
 
     pathFile = new File(path);

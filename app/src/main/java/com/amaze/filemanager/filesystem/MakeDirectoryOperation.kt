@@ -22,7 +22,7 @@ package com.amaze.filemanager.filesystem
 
 import android.content.Context
 import android.os.Build
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.utils.OTGUtil
 import jcifs.smb.SmbException
 import java.io.File

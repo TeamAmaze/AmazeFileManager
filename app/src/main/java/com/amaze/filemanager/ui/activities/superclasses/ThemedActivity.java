@@ -21,13 +21,13 @@
 package com.amaze.filemanager.ui.activities.superclasses;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;

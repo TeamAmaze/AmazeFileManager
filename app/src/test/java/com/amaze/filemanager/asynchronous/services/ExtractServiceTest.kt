@@ -29,7 +29,7 @@ import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.randomBytes
 import com.amaze.filemanager.test.supportedArchiveExtensions
@@ -408,7 +408,10 @@ class ExtractServiceTest {
 
     private fun doTestBadArchive(data: ByteArray) {
         for (archiveType in supportedArchiveExtensions()) {
-            val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
+            val badArchive = File(
+                Environment.getExternalStorageDirectory(),
+                "bad-archive.$archiveType"
+            )
             ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
             performTest(badArchive)
             ShadowLooper.idleMainLooper()

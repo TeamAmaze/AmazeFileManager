@@ -28,8 +28,8 @@ import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
+import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivityViewModel
 import java.io.IOException
@@ -66,6 +66,7 @@ class WriteTextFileTask(
     override fun onError(error: Throwable) {
         Log.e(TAG, "Error on text write", error)
         val applicationContext = appContextWR.get() ?: return
+
         @StringRes val errorMessage: Int = when (error) {
             is StreamNotFoundException -> {
                 R.string.error_file_not_found

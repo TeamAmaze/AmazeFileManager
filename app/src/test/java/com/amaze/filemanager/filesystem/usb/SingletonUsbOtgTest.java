@@ -32,7 +32,7 @@ import org.robolectric.Robolectric;
 import org.robolectric.android.controller.ActivityController;
 import org.robolectric.annotation.Config;
 
-import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.ui.activities.MainActivity;
 

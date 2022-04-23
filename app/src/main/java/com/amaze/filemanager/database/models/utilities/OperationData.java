@@ -20,12 +20,12 @@
 
 package com.amaze.filemanager.database.models.utilities;
 
+import com.amaze.filemanager.database.UtilitiesDatabase;
+
 import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
-
-import com.amaze.filemanager.database.UtilitiesDatabase;
 
 /**
  * Base class {@link Entity} representation of tables in utilities.db.

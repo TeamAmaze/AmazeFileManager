@@ -60,12 +60,14 @@ class SelectionPopupMenu(
                     )
                 }
                 val popupMenu = SelectionPopupMenu(
-                    recyclerAdapter, actionModeView,
-                    currentPath, currentContext
+                    recyclerAdapter,
+                    actionModeView,
+                    currentPath,
+                    currentContext
                 )
                 popupMenu.inflate(R.menu.selection_criteria)
                 recyclerAdapter.itemsDigested?.let {
-                    itemsDigested ->
+                        itemsDigested ->
                     if (itemsDigested.size > SIMILARITY_THRESHOLD) {
                         popupMenu.menu.findItem(R.id.select_similar).isVisible = false
                     }

@@ -20,15 +20,15 @@
 
 package com.amaze.filemanager.utils;
 
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COMPRESS;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.DELETE;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.EXTRACT;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FILE;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FOLDER;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.RENAME;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.COMPRESS;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.DELETE;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.EXTRACT;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.NEW_FILE;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.NEW_FOLDER;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.RENAME;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -42,8 +42,8 @@ import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.file_operations.filesystem.FolderState;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.FolderState;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -60,7 +60,7 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.leinardi.android.speeddial.SpeedDialView;
 
@@ -679,7 +679,7 @@ public class MainActivityHelper {
 
   public void extractFile(@NonNull File file) {
     final File parent = file.getParentFile();
-    if(parent == null) {
+    if (parent == null) {
       Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show();
       Log.e(TAG, "File's parent is null " + file.getPath());
       return;
@@ -690,7 +690,8 @@ public class MainActivityHelper {
       case WRITABLE_OR_ON_SDCARD:
         Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
         if (decompressor == null) {
-          Toast.makeText(mainActivity, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show();
+          Toast.makeText(mainActivity, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG)
+              .show();
           return;
         }
         decompressor.decompress(file.getPath());

@@ -80,9 +80,9 @@ class RarHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
     }
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            RarHelperCallable(
-        archive.absolutePath,
-        relativePath,
-        false
-    )
+        RarHelperCallable(
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }

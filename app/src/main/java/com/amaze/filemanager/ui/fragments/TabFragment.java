@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.ui.fragments;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CURRENT_TAB;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SAVED_PATHS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_CURRENT_TAB;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SAVED_PATHS;
 import static com.amaze.filemanager.utils.PreferenceUtils.DEFAULT_CURRENT_TAB;
 import static com.amaze.filemanager.utils.PreferenceUtils.DEFAULT_SAVED_PATHS;
 
@@ -31,12 +31,12 @@ import java.util.List;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;

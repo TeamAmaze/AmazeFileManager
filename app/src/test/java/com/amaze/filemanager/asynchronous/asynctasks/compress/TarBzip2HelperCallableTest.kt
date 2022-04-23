@@ -28,7 +28,7 @@ class TarBzip2HelperCallableTest : AbstractCompressedHelperCallableArchiveTest()
         get() = "test-archive.tar.bz2"
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            TarBzip2HelperCallable(
+        TarBzip2HelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,

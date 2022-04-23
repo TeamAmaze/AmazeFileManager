@@ -36,7 +36,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 6/12/2017, at 15:15. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 6/12/2017, at 15:15.
+ */
 public class RecyclerPreloadModelProvider
     implements ListPreloader.PreloadModelProvider<IconDataParcelable> {
 

@@ -38,11 +38,11 @@ import java.security.Security
 class CustomSshJConfig : DefaultConfig() {
 
     companion object {
-        @JvmStatic
         /**
          * This is where we different from the original AndroidConfig. Found it only work if we remove
          * BouncyCastle bundled with Android before registering our BouncyCastle provider
          */
+        @JvmStatic
         fun init() {
             Security.removeProvider("BC")
             Security.insertProviderAt(BouncyCastleProvider(), 0)

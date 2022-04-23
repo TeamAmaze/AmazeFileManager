@@ -36,9 +36,9 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
-import com.amaze.filemanager.ui.fragments.preference_fragments.BasePrefsFragment
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
-import com.amaze.filemanager.ui.fragments.preference_fragments.PrefsFragment
+import com.amaze.filemanager.ui.fragments.preferencefragments.BasePrefsFragment
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PrefsFragment
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.PreferenceUtils
 import com.amaze.filemanager.utils.Utils
