@@ -180,6 +180,32 @@
             android:label="Error"
             />
 
+        <activity
+            android:name=".ui.activities.UtilitiesAliasActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/Custom.Dialog.Dark">
+        </activity>
+
+        <activity-alias android:name="amazeutilsalias"
+            android:targetActivity=".ui.activities.UtilitiesAliasActivity"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter
+                android:label="@string/app_name"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="audio/*" />
+                <data android:mimeType="image/*" />
+                <data android:mimeType="video/*" />
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <data android:mimeType="application/epub+zip" />
+                <data android:mimeType="application/pdf" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+        </activity-alias>
+
         <service
             android:name = ".asynchronous.services.ExtractService"
             android:label = "Extracting"

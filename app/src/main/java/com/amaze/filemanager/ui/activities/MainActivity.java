@@ -136,6 +136,7 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.AlertDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -383,6 +384,10 @@ public class MainActivity extends PermissionsActivity
               servers.addAll(utilsHandler.getSmbList());
               servers.addAll(utilsHandler.getSftpList());
               dataUtils.setServers(servers);
+
+              ExtensionsKt.refactorAUAlias(this,
+                      !Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager()));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

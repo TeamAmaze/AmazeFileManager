@@ -20,8 +20,10 @@
 
 package com.amaze.filemanager.ui
 
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.text.TextUtils
 import android.util.Log
 import android.view.inputmethod.InputMethodManager
@@ -50,6 +52,19 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
     } catch (e: SecurityException) {
         Log.e(TAG, "Error when starting activity: ", e)
         Toast.makeText(this, R.string.security_error, Toast.LENGTH_SHORT).show()
+    }
+}
+
+fun Context.refactorAUAlias(shouldEnable: Boolean) {
+    val component = ComponentName(this, "com.amaze.filemanager.amazeutilsalias")
+    if (!shouldEnable) {
+        packageManager.setComponentEnabledSetting(component,
+            PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
+            PackageManager.DONT_KILL_APP)
+    } else {
+        packageManager.setComponentEnabledSetting(component,
+            PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
+            PackageManager.DONT_KILL_APP)
     }
 }
 

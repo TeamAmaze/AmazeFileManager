@@ -527,7 +527,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             menu,
             LASTGROUP,
             order++,
-            R.string.wifipp,
+            R.string.wifip2p,
             new MenuMetadata(
                     () -> {
                       boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
