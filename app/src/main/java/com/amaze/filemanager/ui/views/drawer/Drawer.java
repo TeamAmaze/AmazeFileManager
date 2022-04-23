@@ -44,6 +44,7 @@ import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
+import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
@@ -536,10 +537,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                         try {
                           Utils.openURL("amaze://teamamaze.xyz/transfer", mainActivity);
                         } catch (ActivityNotFoundException e) {
-                          GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                          mainActivity.startActivity(new Intent(mainActivity,
+                                  UtilitiesAliasActivity.class));
                         }
                       } else {
-                        GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                        mainActivity.startActivity(new Intent(mainActivity,
+                                UtilitiesAliasActivity.class));
                       }
                     }),
             R.drawable.ic_round_connect_without_contact_24,
@@ -558,10 +561,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                         try {
                           Utils.openURL("amaze://teamamaze.xyz/analyse", mainActivity);
                         } catch (ActivityNotFoundException e) {
-                          GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                          mainActivity.startActivity(new Intent(mainActivity,
+                                  UtilitiesAliasActivity.class));
                         }
                       } else {
-                        GeneralDialogCreation.showDownloadAmazeUtilsDialog(mainActivity);
+                        mainActivity.startActivity(new Intent(mainActivity,
+                                UtilitiesAliasActivity.class));
                       }
                     }),
             R.drawable.ic_round_analytics_24,
