@@ -2323,9 +2323,13 @@ public class MainActivity extends PermissionsActivity
           }
         } else {
           // try to get parent
-          File pathParentFile = new File(folder.getParent());
+          String pathParentFilePath = folder.getParent();
+          if (pathParentFilePath == null) {
+              dialog.dismiss();
+              return;
+          }
+          File pathParentFile = new File(pathParentFilePath);
           if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-
             ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
             Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
           } else {
