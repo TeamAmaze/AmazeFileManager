@@ -766,5 +766,11 @@ You only need to do this once, until the next time you select a new location for
     <string name="download">Download</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Thank you for installing Amaze File Utilities. You\'re being redirected to the app.</string>
+    <string name="image_viewer">Amaze Image Viewer</string>
+    <string name="video_player">Amaze Video Player</string>
+    <string name="amaze_audio_player">Amaze Music Player</string>
+    <string name="pdf_viewer">Amaze Pdf Viewer</string>
+    <string name="epub_viewer">Amaze Epub Viewer</string>
+    <string name="docx_viewer">Amaze Doc Viewer</string>
 </resources>
 
