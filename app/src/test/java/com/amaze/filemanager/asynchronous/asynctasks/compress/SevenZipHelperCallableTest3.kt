@@ -20,28 +20,26 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import org.junit.runner.RunWith
-import org.junit.runners.Suite
-import org.junit.runners.Suite.SuiteClasses
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
+import org.junit.Assert.assertEquals
+import java.io.File
 
-@RunWith(Suite::class)
-@SuiteClasses(
-    TarGzHelperCallableTest::class,
-    ZipHelperCallableTest::class,
-    TarHelperCallableTest::class,
-    RarHelperCallableTest::class,
-    TarBzip2HelperCallableTest::class,
-    TarLzmaHelperCallableTest::class,
-    TarXzHelperCallableTest::class,
-    TarXzHelperCallableTest2::class,
-    SevenZipHelperCallableTest::class,
-    SevenZipHelperCallableTest2::class,
-    SevenZipHelperCallableTest3::class,
-    EncryptedRarHelperCallableTest::class,
-    EncryptedZipHelperCallableTest::class,
-    EncryptedSevenZipHelperCallableTest::class,
-    ListEncryptedSevenZipHelperCallableTest::class,
-    UnknownCompressedHelperCallableTest::class,
-    CompressedHelperForBadArchiveTest::class
-)
-class CompressedHelperCallableTestSuite
+/**
+ * Test for viewing 7z archives without timestamps in entries. See #3035
+ */
+class SevenZipHelperCallableTest3 : AbstractCompressedHelperCallableArchiveTest() {
+
+    override val archiveFileName: String
+        get() = "test-archive-no-timestamp.7z"
+
+    override fun assertEntryTimestampCorrect(entry: CompressedObjectParcelable) {
+        assertEquals(0, entry.date)
+    }
+
+    override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
+        SevenZipHelperCallable(
+            archive.absolutePath,
+            relativePath,
+            false
+        )
+}
