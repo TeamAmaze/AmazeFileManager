@@ -158,8 +158,9 @@ public final class PasteHelper implements Parcelable {
                         BaseTransientBottomBar.LENGTH_INDEFINITE,
                         R.string.paste,
                         () -> {
-                          final MainFragment mainFragment =
-                              Objects.requireNonNull(mainActivity.getCurrentMainFragment());
+                          final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
+                          if (mainFragment == null)
+                              return;
                           String path = mainFragment.getCurrentPath();
                           ArrayList<HybridFileParcelable> arrayList =
                               new ArrayList<>(Arrays.asList(paths));
