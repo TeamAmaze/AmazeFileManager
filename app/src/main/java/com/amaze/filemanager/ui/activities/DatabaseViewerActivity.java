@@ -38,6 +38,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.FragmentTransaction;
@@ -68,6 +69,13 @@ public class DatabaseViewerActivity extends ThemedActivity {
     getSupportActionBar().setDisplayHomeAsUpEnabled(!useNewStack);
 
     path = getIntent().getStringExtra("path");
+
+    if(path == null) {
+        Toast.makeText(this, R.string.operation_not_supported, Toast.LENGTH_SHORT).show();
+        finish();
+        return;
+    }
+
     pathFile = new File(path);
     listView = findViewById(R.id.listView);
 
