@@ -138,8 +138,8 @@ import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment
     implements BottomBarButtonPath,
-        ViewTreeObserver.OnGlobalLayoutListener,
-        AdjustListViewForTv<ItemViewHolder> {
+    ViewTreeObserver.OnGlobalLayoutListener,
+    AdjustListViewForTv<ItemViewHolder> {
 
   private static final String TAG = MainFragment.class.getSimpleName();
   public SwipeRefreshLayout mSwipeRefreshLayout;
