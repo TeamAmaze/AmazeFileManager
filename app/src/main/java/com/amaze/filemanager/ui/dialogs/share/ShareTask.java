@@ -27,7 +27,6 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PackageUtils;
-import com.amaze.filemanager.utils.Utils;
 
 import android.app.Activity;
 import android.content.ComponentName;
