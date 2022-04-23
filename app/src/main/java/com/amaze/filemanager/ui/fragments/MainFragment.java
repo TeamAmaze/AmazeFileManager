@@ -1623,7 +1623,7 @@ public class MainFragment extends Fragment
       if(dptopx != 0) {
         mainFragmentViewModel.setColumns(screen_width / dptopx);
       }else{
-        mainFragmentViewModel.setColumns(0);
+        mainFragmentViewModel.setColumns(dptopx);
       }
       if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
         mainFragmentViewModel.setColumns(3);
