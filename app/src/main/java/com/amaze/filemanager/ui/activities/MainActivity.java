@@ -168,6 +168,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
@@ -385,8 +386,8 @@ public class MainActivity extends PermissionsActivity
               servers.addAll(utilsHandler.getSftpList());
               dataUtils.setServers(servers);
 
-              ExtensionsKt.refactorAUAlias(this,
-                      !Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+              ExtensionsKt.updateAUAlias(this,
+                      !PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
                               mainActivity.getPackageManager()));
             })
         .subscribeOn(Schedulers.io())

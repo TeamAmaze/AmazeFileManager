@@ -1,16 +1,14 @@
 package com.amaze.filemanager.ui.activities
 
 import android.content.ActivityNotFoundException
-import android.content.ComponentName
-import android.content.pm.PackageInfo
-import android.content.pm.PackageManager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.UtilitiesAliasLayoutBinding
-import com.amaze.filemanager.ui.refactorAUAlias
+import com.amaze.filemanager.ui.updateAUAlias
+import com.amaze.filemanager.utils.PackageUtils
 import com.amaze.filemanager.utils.Utils
 
 class UtilitiesAliasActivity: AppCompatActivity() {
@@ -31,7 +29,7 @@ class UtilitiesAliasActivity: AppCompatActivity() {
         _binding.cancelButton.setOnClickListener {
             finish()
         }
-        val isAUInstalled = Utils.appInstalledOrNot(
+        val isAUInstalled = PackageUtils.appInstalledOrNot(
             AboutActivity.PACKAGE_AMAZE_UTILS,
            packageManager
         )
@@ -42,7 +40,7 @@ class UtilitiesAliasActivity: AppCompatActivity() {
             )
             try {
                 if (intent != null) {
-                    this.refactorAUAlias(false)
+                    this.updateAUAlias(false)
                     startActivity(intent)
                     finish()
                 }

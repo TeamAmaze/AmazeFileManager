@@ -57,6 +57,7 @@ import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
@@ -531,7 +532,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             R.string.wifip2p,
             new MenuMetadata(
                     () -> {
-                      boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                      boolean isAUInstalled = PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
                               mainActivity.getPackageManager());
                       if (isAUInstalled) {
                         try {
@@ -555,7 +556,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             R.string.analyse_storage,
             new MenuMetadata(
                     () -> {
-                      boolean isAUInstalled = Utils.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                      boolean isAUInstalled = PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
                               mainActivity.getPackageManager());
                       if (isAUInstalled) {
                         try {
