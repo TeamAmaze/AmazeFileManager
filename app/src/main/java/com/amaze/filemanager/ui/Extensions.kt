@@ -55,6 +55,10 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
     }
 }
 
+/**
+ * Refactor the alias, based on if Amaze Utils is installed, then we disable the alias intent-filters
+ * if not installed then we enable the amaze utilities alias
+ */
 fun Context.refactorAUAlias(shouldEnable: Boolean) {
     val component = ComponentName(this, "com.amaze.filemanager.amazeutilsalias")
     if (!shouldEnable) {
