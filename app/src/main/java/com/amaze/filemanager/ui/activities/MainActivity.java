@@ -2321,7 +2321,16 @@ public class MainActivity extends PermissionsActivity
           }
         } else {
           // try to get parent
-          File pathParentFile = new File(folder.getParent());
+
+            String  pathParentFilePath = folder.getParent();
+
+          if (pathParentFilePath == null) {
+              dialog.dismiss();
+              return;
+          }
+
+            File pathParentFile = new File(pathParentFilePath);
+
           if (pathParentFile.exists() && pathParentFile.isDirectory()) {
 
             ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
