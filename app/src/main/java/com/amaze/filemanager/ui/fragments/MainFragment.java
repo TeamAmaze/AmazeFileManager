@@ -25,6 +25,7 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -265,7 +266,7 @@ public class MainFragment extends Fragment
       mLayoutManager = new CustomScrollLinearLayoutManager(getContext());
       listView.setLayoutManager(mLayoutManager);
     } else {
-      if (mainFragmentViewModel.getColumns() == -1 || mainFragmentViewModel.getColumns() == 0)
+      if (mainFragmentViewModel.getColumns() == null)
         mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
       else
         mLayoutManagerGrid =
@@ -1617,13 +1618,14 @@ public class MainFragment extends Fragment
 
   @Override
   public void onGlobalLayout() {
-    if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
-      int screen_width = listView.getWidth();
-      int dptopx = Utils.dpToPx(getContext(), 115);
-      mainFragmentViewModel.setColumns(screen_width / dptopx);
-      if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
-        mainFragmentViewModel.setColumns(3);
+    if (mainFragmentViewModel.getColumns() == null) {
+      int screenWidth = listView.getWidth();
+      int dpToPx = Utils.dpToPx(requireContext(), 115);
+      if(dpToPx == 0) {
+        // HACK to fix a crash see #3249
+        dpToPx = 1;
       }
+      mainFragmentViewModel.setColumns(screenWidth / dpToPx);
       if (!mainFragmentViewModel.isList()) {
         mLayoutManagerGrid.setSpanCount(mainFragmentViewModel.getColumns());
       }
