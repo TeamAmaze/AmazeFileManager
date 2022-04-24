@@ -36,7 +36,6 @@
     <string name="uninstall">Desinstalar</string>
     <string name="play">Play Store</string>
     <string name="properties">Propiedaes</string>
-    <string name="copyingapk">Copiando APK en</string>
     <string name="delbook">Desaniciar marcador</string>
     <string name="add_to_bookmarks">Amestar a marcadores</string>
     <string name="enterpath">Introducir camín</string>
@@ -301,7 +300,6 @@ inestable\'l preséu.\\n¿Siguir?</string>
     <string name="report_bugs_summary">Informa fallos o pidi carauterístiques nueves</string>
     <string name="translate_title">Tornar</string>
     <string name="translate_summary">Torna Amaze a la to llingua</string>
-    <string name="easter_egg_title">Mou estudiu</string>
     <string name="paypal_copy_message">Copióse la ID de Paypal nel cartafueyu</string>
     <string name="searching_devices">Guetando preseos</string>
     <string name="use_custom_ip">Usar IP personalizada</string>
@@ -339,7 +337,6 @@ to ordenador.</li><li/><br/>\\n
 </body>\\n
 </html></string>
     <string name="share_limit">Nun pues compartir más de 100 ficheros</string>
-    <string name="opening">Abriendo...</string>
     <string name="information">Información</string>
     <string name="title">Títulu</string>
     <string name="artist">Artista</string>

@@ -21,14 +21,16 @@
 package com.amaze.filemanager.filesystem.ssh
 
 import android.content.Context
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import com.amaze.filemanager.shadows.ShadowMultiDex
-import com.amaze.filemanager.test.ShadowCryptUtil
+import com.amaze.filemanager.test.ShadowPasswordUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -43,7 +45,7 @@ import org.robolectric.annotation.LooperMode
 @RunWith(AndroidJUnit4::class)
 @LooperMode(LooperMode.Mode.PAUSED)
 @Config(
-    shadows = [ShadowMultiDex::class, ShadowCryptUtil::class],
+    shadows = [ShadowMultiDex::class, ShadowPasswordUtil::class],
     sdk = [JELLY_BEAN, KITKAT, P]
 )
 class SshHybridFileTest {

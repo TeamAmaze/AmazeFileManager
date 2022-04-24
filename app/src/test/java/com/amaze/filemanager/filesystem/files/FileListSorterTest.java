@@ -31,7 +31,6 @@ import static org.junit.Assert.assertThat;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.ShadowDateFormat;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
@@ -46,7 +45,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4;
  */
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class, ShadowDateFormat.class},
+    shadows = {ShadowMultiDex.class},
     sdk = {JELLY_BEAN, KITKAT, P})
 public class FileListSorterTest {
   /**

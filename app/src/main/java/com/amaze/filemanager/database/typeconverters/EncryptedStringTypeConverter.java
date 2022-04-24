@@ -22,18 +22,18 @@ package com.amaze.filemanager.database.typeconverters;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.StringWrapper;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.utils.PasswordUtil;
 
 import android.content.Context;
 
 import androidx.room.TypeConverter;
 
 /**
- * {@link TypeConverter} for password strings encrypted by {@link CryptUtil}.
+ * {@link TypeConverter} for password strings encrypted by {@link PasswordUtil}.
  *
  * @see StringWrapper
- * @see CryptUtil#encryptPassword(Context, String)
- * @see CryptUtil#decryptPassword(Context, String)
+ * @see PasswordUtil#encryptPassword(Context, String)
+ * @see PasswordUtil#decryptPassword(Context, String)
  */
 public class EncryptedStringTypeConverter {
 
@@ -43,7 +43,7 @@ public class EncryptedStringTypeConverter {
   public static StringWrapper toPassword(String encryptedStringEntryInDb) {
     try {
       return new StringWrapper(
-          CryptUtil.decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb));
+          PasswordUtil.INSTANCE.decryptPassword(AppConfig.getInstance(), encryptedStringEntryInDb));
     } catch (Exception e) {
       android.util.Log.e(TAG, "Error decrypting password", e);
       return new StringWrapper(encryptedStringEntryInDb);
@@ -53,7 +53,8 @@ public class EncryptedStringTypeConverter {
   @TypeConverter
   public static String fromPassword(StringWrapper unencryptedPasswordString) {
     try {
-      return CryptUtil.encryptPassword(AppConfig.getInstance(), unencryptedPasswordString.value);
+      return PasswordUtil.INSTANCE.encryptPassword(
+          AppConfig.getInstance(), unencryptedPasswordString.value);
     } catch (Exception e) {
       android.util.Log.e(TAG, "Error encrypting password", e);
       return unencryptedPasswordString.value;

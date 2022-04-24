@@ -22,6 +22,17 @@ package com.amaze.filemanager.database;
 
 import static com.amaze.filemanager.database.ExplorerDatabase.DATABASE_VERSION;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.arch.core.util.Function;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
 import com.amaze.filemanager.database.daos.CloudEntryDao;
 import com.amaze.filemanager.database.daos.EncryptedEntryDao;
 import com.amaze.filemanager.database.daos.SortDao;
@@ -30,15 +41,6 @@ import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
 import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.database.models.explorer.Tab;
-
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * Repository for {@link Tab}, {@link Sort}, {@link EncryptedEntry}, {@link CloudEntry} in
@@ -73,6 +75,9 @@ public abstract class ExplorerDatabase extends RoomDatabase {
 
   public static final String COLUMN_SORT_PATH = "path";
   public static final String COLUMN_SORT_TYPE = "type";
+
+  @VisibleForTesting
+  public static Function<Context, Builder<ExplorerDatabase>> overrideDatabaseBuilder = null;
 
   private static final String TEMP_TABLE_PREFIX = "temp_";
 
@@ -276,8 +281,10 @@ public abstract class ExplorerDatabase extends RoomDatabase {
   protected abstract CloudEntryDao cloudEntryDao();
 
   public static synchronized ExplorerDatabase initialize(@NonNull Context context) {
-    return Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME)
-        .addMigrations(MIGRATION_1_2)
+    Builder<ExplorerDatabase> builder = (overrideDatabaseBuilder == null) ?
+            Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME) :
+            overrideDatabaseBuilder.apply(context);
+    return builder.addMigrations(MIGRATION_1_2)
         .addMigrations(MIGRATION_2_3)
         .addMigrations(MIGRATION_3_4)
         .addMigrations(MIGRATION_4_5)

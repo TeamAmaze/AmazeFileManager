@@ -20,34 +20,47 @@
 
 package com.amaze.filemanager.ui.dialogs;
 
-import static android.os.Build.VERSION_CODES.M;
-import static com.amaze.filemanager.filesystem.files.FileUtils.toHybridFileArrayList;
+import static android.os.Build.VERSION.SDK_INT;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
-import java.io.File;
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.format.Formatter;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.text.TextUtilsCompat;
+import androidx.core.view.ViewCompat;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
-import com.afollestad.materialdialogs.internal.MDButton;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.HiddenAdapter;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.CountItemsOrAndSizeTask;
-import com.amaze.filemanager.asynchronous.asynctasks.GenerateHashesTask;
 import com.amaze.filemanager.asynchronous.asynctasks.LoadFolderSpaceDataTask;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.asynctasks.hashcalculator.CalculateHashTask;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.databinding.DialogSigninWithGoogleBinding;
@@ -58,7 +71,6 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.ChangeFilePermissionsCommand;
@@ -66,13 +78,9 @@ import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
-import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.FingerprintHandler;
-import com.amaze.filemanager.utils.SimpleTextWatcher;
 import com.amaze.filemanager.utils.Utils;
 import com.github.mikephil.charting.charts.PieChart;
 import com.github.mikephil.charting.components.Legend;
@@ -82,38 +90,18 @@ import com.github.mikephil.charting.data.PieDataSet;
 import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
-import com.google.android.material.textfield.TextInputEditText;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.hardware.fingerprint.FingerprintManager;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.text.InputType;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.TextWatcher;
-import android.text.format.Formatter;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.Button;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.annotation.StringRes;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.preference.PreferenceManager;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -134,7 +122,10 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(themedActivity)
             .content(content)
             .widgetColor(accentColor)
-            .theme(themedActivity.getAppTheme().getMaterialDialogTheme())
+            .theme(
+                themedActivity
+                    .getAppTheme()
+                    .getMaterialDialogTheme(themedActivity.getApplicationContext()))
             .title(title)
             .positiveText(postiveText)
             .positiveColor(accentColor)
@@ -169,7 +160,7 @@ public class GeneralDialogCreation {
     builder
         .customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(m.getAppTheme().getMaterialDialogTheme())
+        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
         .title(title)
         .positiveText(positiveButtonText)
         .onPositive(positiveButtonAction);
@@ -213,7 +204,7 @@ public class GeneralDialogCreation {
         new MaterialDialog.Builder(context)
             .title(context.getString(R.string.dialog_delete_title))
             .customView(R.layout.dialog_delete, true)
-            .theme(appTheme.getMaterialDialogTheme())
+            .theme(appTheme.getMaterialDialogTheme(context))
             .negativeText(context.getString(R.string.cancel).toUpperCase())
             .positiveText(context.getString(R.string.delete).toUpperCase())
             .positiveColor(accentColor)
@@ -379,7 +370,7 @@ public class GeneralDialogCreation {
     }.execute();
 
     // Set category text color for Jelly Bean (API 16) and later.
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+    if (SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
       categoryDirectories.setTextColor(accentColor);
       categoryFiles.setTextColor(accentColor);
     }
@@ -435,7 +426,7 @@ public class GeneralDialogCreation {
 
     MaterialDialog.Builder builder = new MaterialDialog.Builder(themedActivity);
     builder.title(c.getString(R.string.properties));
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(appTheme.getMaterialDialogTheme(c));
 
     View v = themedActivity.getLayoutInflater().inflate(R.layout.properties_dialog, null);
     TextView itemsText = v.findViewById(R.id.t7);
@@ -533,13 +524,13 @@ public class GeneralDialogCreation {
         new CountItemsOrAndSizeTask(c, itemsText, baseFile, forStorage);
     countItemsOrAndSizeTask.executeOnExecutor(executor);
 
-    GenerateHashesTask hashGen = new GenerateHashesTask(baseFile, c, v);
-    hashGen.executeOnExecutor(executor);
+    TaskKt.fromTask(new CalculateHashTask(baseFile, c, v));
 
     /*Chart creation and data loading*/
     {
-      boolean isRightToLeft = c.getResources().getBoolean(R.bool.is_right_to_left);
-      boolean isDarkTheme = appTheme.getMaterialDialogTheme() == Theme.DARK;
+      int layoutDirection = TextUtilsCompat.getLayoutDirectionFromLocale(Locale.getDefault());
+      boolean isRightToLeft = layoutDirection == ViewCompat.LAYOUT_DIRECTION_RTL;
+      boolean isDarkTheme = appTheme.getMaterialDialogTheme(c) == Theme.DARK;
       PieChart chart = v.findViewById(R.id.chart);
 
       chart.setTouchEnabled(false);
@@ -702,7 +693,7 @@ public class GeneralDialogCreation {
         break;
     }
 
-    builder.theme(appTheme.getMaterialDialogTheme());
+    builder.theme(appTheme.getMaterialDialogTheme(mainActivity.getApplicationContext()));
     builder.content(mainActivity.getString(R.string.cloud_remove));
 
     builder.positiveText(mainActivity.getString(R.string.yes));
@@ -715,268 +706,6 @@ public class GeneralDialogCreation {
     builder.onNegative((dialog, which) -> dialog.cancel());
 
     builder.show();
-  }
-
-  public static void showEncryptWarningDialog(
-      final Intent intent,
-      final MainFragment main,
-      AppTheme appTheme,
-      final EncryptDecryptUtils.EncryptButtonCallbackInterface encryptButtonCallbackInterface) {
-    int accentColor = main.getMainActivity().getAccent();
-    final SharedPreferences preferences =
-        PreferenceManager.getDefaultSharedPreferences(main.getContext());
-    final MaterialDialog.Builder builder = new MaterialDialog.Builder(main.getActivity());
-    builder.title(main.getString(R.string.warning));
-    builder.content(main.getString(R.string.crypt_warning_key));
-    builder.theme(appTheme.getMaterialDialogTheme());
-    builder.negativeText(main.getString(R.string.warning_never_show));
-    builder.positiveText(main.getString(R.string.warning_confirm));
-    builder.positiveColor(accentColor);
-
-    builder.onPositive(
-        (dialog, which) -> {
-          try {
-            encryptButtonCallbackInterface.onButtonPressed(intent);
-          } catch (Exception e) {
-            e.printStackTrace();
-
-            Toast.makeText(
-                    main.getActivity(),
-                    main.getString(R.string.crypt_encryption_fail),
-                    Toast.LENGTH_LONG)
-                .show();
-          }
-        });
-
-    builder.onNegative(
-        (dialog, which) -> {
-          preferences
-              .edit()
-              .putBoolean(PreferencesConstants.PREFERENCE_CRYPT_WARNING_REMEMBER, true)
-              .apply();
-          try {
-            encryptButtonCallbackInterface.onButtonPressed(intent);
-          } catch (Exception e) {
-            e.printStackTrace();
-
-            Toast.makeText(
-                    main.getActivity(),
-                    main.getString(R.string.crypt_encryption_fail),
-                    Toast.LENGTH_LONG)
-                .show();
-          }
-        });
-
-    builder.show();
-  }
-
-  public static void showEncryptWithPresetPasswordSaveAsDialog(
-      @NonNull final Context c,
-      @NonNull final MainActivity main,
-      @NonNull String password,
-      @NonNull final Intent intent) {
-
-    HybridFileParcelable intentParcelable = intent.getParcelableExtra(EncryptService.TAG_SOURCE);
-    MaterialDialog saveAsDialog =
-        showNameDialog(
-            main,
-            "",
-            intentParcelable.getName(c).concat(CryptUtil.CRYPT_EXTENSION),
-            c.getString(
-                intentParcelable.isDirectory()
-                    ? R.string.encrypt_folder_save_as
-                    : R.string.encrypt_file_save_as),
-            c.getString(R.string.ok),
-            null,
-            c.getString(R.string.cancel),
-            (dialog, which) -> {
-              EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
-              intent.putExtra(EncryptService.TAG_ENCRYPT_TARGET, textfield.getText().toString());
-              try {
-                EncryptDecryptUtils.startEncryption(
-                    c, intentParcelable.getPath(), password, intent);
-              } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
-                Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG)
-                    .show();
-              } finally {
-                dialog.dismiss();
-              }
-            },
-            (text) -> {
-              if (text.length() < 1) {
-                return new WarnableTextInputValidator.ReturnState(
-                    WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-              }
-              if (!text.endsWith(CryptUtil.CRYPT_EXTENSION)) {
-                return new WarnableTextInputValidator.ReturnState(
-                    WarnableTextInputValidator.ReturnState.STATE_ERROR,
-                    R.string.encrypt_file_must_end_with_aze);
-              }
-              return new WarnableTextInputValidator.ReturnState();
-            });
-    saveAsDialog.getActionButton(DialogAction.POSITIVE).setEnabled(true);
-  }
-
-  public static void showEncryptAuthenticateDialog(
-      final Context c,
-      final Intent intent,
-      final MainActivity main,
-      AppTheme appTheme,
-      final EncryptDecryptUtils.EncryptButtonCallbackInterface encryptButtonCallbackInterface) {
-
-    int accentColor = main.getAccent();
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
-    builder.title(main.getString(R.string.crypt_encrypt));
-
-    View rootView = View.inflate(c, R.layout.dialog_encrypt_authenticate, null);
-
-    final TextInputEditText passwordEditText =
-        rootView.findViewById(R.id.edit_text_dialog_encrypt_password);
-    final TextInputEditText passwordConfirmEditText =
-        rootView.findViewById(R.id.edit_text_dialog_encrypt_password_confirm);
-    final TextInputEditText encryptSaveAsEditText =
-        rootView.findViewById(R.id.edit_text_encrypt_save_as);
-
-    WarnableTextInputLayout textInputLayoutPassword =
-        rootView.findViewById(R.id.til_encrypt_password);
-    WarnableTextInputLayout textInputLayoutPasswordConfirm =
-        rootView.findViewById(R.id.til_encrypt_password_confirm);
-    WarnableTextInputLayout textInputLayoutEncryptSaveAs =
-        rootView.findViewById(R.id.til_encrypt_save_as);
-
-    HybridFileParcelable intentParcelable = intent.getParcelableExtra(EncryptService.TAG_SOURCE);
-    encryptSaveAsEditText.setText(intentParcelable.getName(c).concat(CryptUtil.CRYPT_EXTENSION));
-    textInputLayoutEncryptSaveAs.setHint(
-        intentParcelable.isDirectory()
-            ? c.getString(R.string.encrypt_folder_save_as)
-            : c.getString(R.string.encrypt_file_save_as));
-
-    builder
-        .customView(rootView, true)
-        .positiveText(c.getString(R.string.ok))
-        .negativeText(c.getString(R.string.cancel))
-        .theme(appTheme.getMaterialDialogTheme())
-        .positiveColor(accentColor)
-        .negativeColor(accentColor)
-        .autoDismiss(false)
-        .onNegative((dialog, which) -> dialog.cancel())
-        .onPositive(
-            (dialog, which) -> {
-              intent.putExtra(
-                  EncryptService.TAG_ENCRYPT_TARGET, encryptSaveAsEditText.getText().toString());
-
-              try {
-                encryptButtonCallbackInterface.onButtonPressed(
-                    intent, passwordEditText.getText().toString());
-              } catch (GeneralSecurityException | IOException e) {
-                e.printStackTrace();
-                Toast.makeText(c, c.getString(R.string.crypt_encryption_fail), Toast.LENGTH_LONG)
-                    .show();
-              } finally {
-                dialog.dismiss();
-              }
-            });
-
-    MaterialDialog dialog = builder.show();
-    MDButton btnOK = dialog.getActionButton(DialogAction.POSITIVE);
-    btnOK.setEnabled(false);
-
-    rootView.post(() -> ExtensionsKt.openKeyboard(passwordEditText, main.getApplicationContext()));
-
-    TextWatcher textWatcher =
-        new SimpleTextWatcher() {
-          @Override
-          public void onTextChanged(CharSequence s, int start, int before, int count) {
-            btnOK.setEnabled(
-                encryptSaveAsEditText.getText().toString().length() > 0
-                    && passwordEditText.getText().toString().length() > 0
-                    && passwordConfirmEditText.getText().toString().length() > 0);
-          }
-        };
-
-    passwordEditText.addTextChangedListener(textWatcher);
-    passwordConfirmEditText.addTextChangedListener(textWatcher);
-    encryptSaveAsEditText.addTextChangedListener(textWatcher);
-
-    new WarnableTextInputValidator(
-        c,
-        passwordEditText,
-        textInputLayoutPassword,
-        btnOK,
-        (text) -> {
-          if (text.length() < 1) {
-            return new WarnableTextInputValidator.ReturnState(
-                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-          }
-          return new WarnableTextInputValidator.ReturnState();
-        });
-
-    new WarnableTextInputValidator(
-        c,
-        passwordConfirmEditText,
-        textInputLayoutPasswordConfirm,
-        btnOK,
-        (text) -> {
-          if (!text.equals(passwordEditText.getText().toString())) {
-            return new WarnableTextInputValidator.ReturnState(
-                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.password_no_match);
-          }
-          return new WarnableTextInputValidator.ReturnState();
-        });
-
-    new WarnableTextInputValidator(
-        c,
-        encryptSaveAsEditText,
-        textInputLayoutEncryptSaveAs,
-        btnOK,
-        (text) -> {
-          if (text.length() < 1) {
-            return new WarnableTextInputValidator.ReturnState(
-                WarnableTextInputValidator.ReturnState.STATE_ERROR, R.string.field_empty);
-          }
-          if (!text.endsWith(CryptUtil.CRYPT_EXTENSION)) {
-            return new WarnableTextInputValidator.ReturnState(
-                WarnableTextInputValidator.ReturnState.STATE_ERROR,
-                R.string.encrypt_file_must_end_with_aze);
-          }
-          return new WarnableTextInputValidator.ReturnState();
-        });
-  }
-
-  @RequiresApi(api = M)
-  public static void showDecryptFingerprintDialog(
-      final Context c,
-      MainActivity main,
-      final Intent intent,
-      AppTheme appTheme,
-      final EncryptDecryptUtils.DecryptButtonCallbackInterface decryptButtonCallbackInterface)
-      throws GeneralSecurityException, IOException {
-
-    int accentColor = main.getAccent();
-    MaterialDialog.Builder builder = new MaterialDialog.Builder(c);
-    builder.title(c.getString(R.string.crypt_decrypt));
-
-    View rootView = View.inflate(c, R.layout.dialog_decrypt_fingerprint_authentication, null);
-
-    Button cancelButton = rootView.findViewById(R.id.button_decrypt_fingerprint_cancel);
-    cancelButton.setTextColor(accentColor);
-    builder.customView(rootView, true);
-    builder.canceledOnTouchOutside(false);
-
-    builder.theme(appTheme.getMaterialDialogTheme());
-
-    final MaterialDialog dialog = builder.show();
-    cancelButton.setOnClickListener(v -> dialog.cancel());
-
-    FingerprintManager manager =
-        (FingerprintManager) c.getSystemService(Context.FINGERPRINT_SERVICE);
-    FingerprintManager.CryptoObject object =
-        new FingerprintManager.CryptoObject(CryptUtil.initCipher(c));
-
-    FingerprintHandler handler =
-        new FingerprintHandler(c, intent, dialog, decryptButtonCallbackInterface);
-    handler.authenticate(manager, object);
   }
 
   public static void showDecryptDialog(
@@ -1027,7 +756,7 @@ public class GeneralDialogCreation {
 
     builder
         .customView(dialogLayout, false)
-        .theme(appTheme.getMaterialDialogTheme())
+        .theme(appTheme.getMaterialDialogTheme(c))
         .autoDismiss(false)
         .canceledOnTouchOutside(false)
         .title(titleText)
@@ -1077,7 +806,7 @@ public class GeneralDialogCreation {
         .neutralColor(accentColor)
         .onPositive((dialog, which) -> FileUtils.installApk(f, m))
         .onNegative((dialog, which) -> m.openCompressed(f.getPath()))
-        .theme(m.getAppTheme().getMaterialDialogTheme())
+        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
         .build()
         .show();
   }
@@ -1117,7 +846,7 @@ public class GeneralDialogCreation {
     EditText etFilename = dialogView.findViewById(R.id.singleedittext_input);
     etFilename.setHint(R.string.enterzipname);
     etFilename.setText(".zip"); // TODO: Put the file/folder name here
-    etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+    etFilename.setInputType(InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
     etFilename.setSingleLine();
     WarnableTextInputLayout tilFilename =
         dialogView.findViewById(R.id.singleedittext_warnabletextinputlayout);
@@ -1127,7 +856,8 @@ public class GeneralDialogCreation {
 
     a.customView(dialogView, false)
         .widgetColor(accentColor)
-        .theme(mainActivity.getAppTheme().getMaterialDialogTheme())
+        .theme(
+            mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()))
         .title(mainActivity.getResources().getString(R.string.enterzipname))
         .positiveText(R.string.create)
         .positiveColor(accentColor)
@@ -1181,7 +911,7 @@ public class GeneralDialogCreation {
     String[] sort = m.getResources().getStringArray(R.array.sortby);
     int current = SortHandler.getSortType(m.getContext(), path);
     MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.theme(appTheme.getMaterialDialogTheme());
+    a.theme(appTheme.getMaterialDialogTheme(m.requireContext()));
     a.items(sort)
         .itemsCallbackSingleChoice(
             current > 3 ? current - 4 : current, (dialog, view, which, text) -> true);
@@ -1240,70 +970,6 @@ public class GeneralDialogCreation {
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
     m.updateList();
     dialog.dismiss();
-  }
-
-  public static void showHistoryDialog(
-      final DataUtils dataUtils,
-      SharedPreferences sharedPrefs,
-      final MainFragment m,
-      AppTheme appTheme) {
-    int accentColor = m.getMainActivity().getAccent();
-    final MaterialDialog.Builder a = new MaterialDialog.Builder(m.getActivity());
-    a.positiveText(R.string.cancel);
-    a.positiveColor(accentColor);
-    a.negativeText(R.string.clear);
-    a.negativeColor(accentColor);
-    a.title(R.string.history);
-    a.onNegative((dialog, which) -> dataUtils.clearHistory());
-    a.theme(appTheme.getMaterialDialogTheme());
-
-    HiddenAdapter adapter =
-        new HiddenAdapter(
-            m.getActivity(),
-            m,
-            sharedPrefs,
-            toHybridFileArrayList(dataUtils.getHistory()),
-            null,
-            true);
-    a.adapter(adapter, null);
-
-    MaterialDialog x = a.build();
-    adapter.updateDialog(x);
-    x.show();
-  }
-
-  public static void showHiddenDialog(
-      DataUtils dataUtils,
-      SharedPreferences sharedPrefs,
-      final MainFragment mainFragment,
-      AppTheme appTheme) {
-    if (mainFragment == null || mainFragment.getActivity() == null) {
-      return;
-    }
-
-    int accentColor = mainFragment.getMainActivity().getAccent();
-    final MaterialDialog.Builder builder = new MaterialDialog.Builder(mainFragment.getActivity());
-    builder.positiveText(R.string.close);
-    builder.positiveColor(accentColor);
-    builder.title(R.string.hiddenfiles);
-    builder.theme(appTheme.getMaterialDialogTheme());
-    builder.autoDismiss(true);
-    HiddenAdapter adapter =
-        new HiddenAdapter(
-            mainFragment.getActivity(),
-            mainFragment,
-            sharedPrefs,
-            FileUtils.toHybridFileConcurrentRadixTree(dataUtils.getHiddenFiles()),
-            null,
-            false);
-    builder.adapter(adapter, null);
-    builder.dividerColor(Color.GRAY);
-    MaterialDialog materialDialog = builder.build();
-    adapter.updateDialog(materialDialog);
-    materialDialog.setOnDismissListener(
-        dialogInterface ->
-            mainFragment.loadlist(mainFragment.getCurrentPath(), false, OpenMode.UNKNOWN));
-    materialDialog.show();
   }
 
   public static void setPermissionsDialog(
@@ -1402,7 +1068,8 @@ public class GeneralDialogCreation {
 
     a.widgetColor(accentColor);
 
-    a.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
+    a.theme(
+        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
     a.title(R.string.enterpath);
 
     a.positiveText(R.string.go);

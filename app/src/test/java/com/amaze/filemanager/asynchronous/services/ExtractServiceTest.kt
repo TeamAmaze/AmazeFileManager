@@ -22,17 +22,22 @@ package com.amaze.filemanager.asynchronous.services
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.R
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.randomBytes
+import com.amaze.filemanager.test.supportedArchiveExtensions
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
+import org.junit.Assert.fail
 import org.junit.Before
 import org.junit.Ignore
 import org.junit.Test
@@ -45,6 +50,7 @@ import org.robolectric.shadows.ShadowEnvironment
 import org.robolectric.shadows.ShadowLooper
 import org.robolectric.shadows.ShadowPausedAsyncTask
 import org.robolectric.shadows.ShadowToast
+import java.io.ByteArrayInputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
@@ -106,7 +112,7 @@ class ExtractServiceTest {
         }
     }
 
-    private var service: ExtractService? = null
+    private lateinit var service: ExtractService
 
     /**
      * Copy archives to storage.
@@ -169,8 +175,8 @@ class ExtractServiceTest {
                 .map { obj: Path -> obj.toFile() }
                 .forEach { obj: File -> obj.delete() }
         }
-        service?.stopSelf()
-        service?.onDestroy()
+        service.stopSelf()
+        service.onDestroy()
     }
 
     /**
@@ -382,6 +388,44 @@ class ExtractServiceTest {
             }
     }
 
+    /**
+     * Test for extracting corrupt archive.
+     *
+     * @see [https://github.com/TeamAmaze/AmazeFileManager/issues/3149]
+     */
+    @Test
+    fun testBadArchive() {
+        doTestBadArchive(randomBytes())
+    }
+
+    /**
+     * Test for extracting zero byte archive.
+     */
+    @Test
+    fun testZeroByteArchive() {
+        doTestBadArchive(ByteArray(0))
+    }
+
+    private fun doTestBadArchive(data: ByteArray) {
+        for (archiveType in supportedArchiveExtensions()) {
+            val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
+            ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
+            performTest(badArchive)
+            ShadowLooper.idleMainLooper()
+            await()
+                .conditionEvaluationListener { condition ->
+                    if (condition.remainingTimeInMS <= 0 && !condition.isSatisfied) {
+                        fail("Extractor unable to handle bad archive for $archiveType")
+                    }
+                }
+                .atMost(10, TimeUnit.SECONDS)
+                .until {
+                    ShadowToast.getLatestToast() != null
+                    ShadowToast.getTextOfLatestToast().contains("is a corrupted archive")
+                }
+        }
+    }
+
     private fun performTest(archiveFile: File) {
         val intent = Intent(ApplicationProvider.getApplicationContext(), ExtractService::class.java)
             .putExtra(ExtractService.KEY_PATH_ZIP, archiveFile.absolutePath)
@@ -391,6 +435,6 @@ class ExtractServiceTest {
                 File(Environment.getExternalStorageDirectory(), "test-archive")
                     .absolutePath
             )
-        service!!.onStartCommand(intent, 0, 0)
+        service.onStartCommand(intent, 0, 0)
     }
 }

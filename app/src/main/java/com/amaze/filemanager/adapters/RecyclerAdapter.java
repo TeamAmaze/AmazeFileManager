@@ -697,6 +697,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         getItemsDigested().get(p).setAnimate(true);
       }
       final LayoutElementParcelable rowItem = getItemsDigested().get(p).elem;
+      if (rowItem == null) return;
       if (dragAndDropPreference != PreferencesConstants.PREFERENCE_DRAG_DEFAULT) {
         holder.rl.setOnDragListener(
             new RecyclerAdapterDragListener(this, holder, dragAndDropPreference, mainFrag));
@@ -1280,7 +1281,8 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
   private void showPopup(@NonNull View view, @NonNull final LayoutElementParcelable rowItem) {
     Context currentContext = this.context;
-    if (mainFrag.getMainActivity().getAppTheme().getSimpleTheme() == AppTheme.BLACK) {
+    if (mainFrag.getMainActivity().getAppTheme().getSimpleTheme(mainFrag.requireContext())
+        == AppTheme.BLACK) {
       currentContext = new ContextThemeWrapper(context, R.style.overflow_black);
     }
     PopupMenu popupMenu =
@@ -1315,16 +1317,23 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
           || description.endsWith(fileExtensionGzipTarShort)
           || description.endsWith(fileExtensionBzip2TarLong)
           || description.endsWith(fileExtensionBzip2TarShort)
-          || description.endsWith(fileExtensionXz)
+          || description.endsWith(fileExtensionTarXz)
+          || description.endsWith(fileExtensionTarLzma)
+          || description.endsWith(fileExtension7zip)
+          || description.endsWith(fileExtensionGz)
+          || description.endsWith(fileExtensionBzip2)
           || description.endsWith(fileExtensionLzma)
-          || description.endsWith(fileExtension7zip))
+          || description.endsWith(fileExtensionXz))
         popupMenu.getMenu().findItem(R.id.ex).setVisible(true);
     }
 
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-      if (description.endsWith(CryptUtil.CRYPT_EXTENSION))
+      if (description.endsWith(CryptUtil.CRYPT_EXTENSION)
+          || description.endsWith(CryptUtil.AESCRYPT_EXTENSION)) {
         popupMenu.getMenu().findItem(R.id.decrypt).setVisible(true);
-      else popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+      } else {
+        popupMenu.getMenu().findItem(R.id.encrypt).setVisible(true);
+      }
     }
 
     popupMenu.show();

@@ -22,6 +22,8 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor
 import org.apache.commons.compress.PasswordRequiredException
+import org.junit.Ignore
+import org.junit.Test
 import java.io.IOException
 
 open class PasswordProtectedRarTest : AbstractExtractorPasswordProtectedArchivesTest() {
@@ -32,4 +34,8 @@ open class PasswordProtectedRarTest : AbstractExtractorPasswordProtectedArchives
         arrayOf(IOException::class.java, PasswordRequiredException::class.java)
 
     override val archiveType: String = "rar"
+
+    @Test
+    @Ignore
+    override fun testExtractBadArchive() = Unit
 }

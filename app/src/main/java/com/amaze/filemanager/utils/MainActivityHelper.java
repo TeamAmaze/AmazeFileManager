@@ -80,14 +80,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.documentfile.provider.DocumentFile;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
-/** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
+
+  private static final String TAG = MainActivityHelper.class.getSimpleName();
 
   private MainActivity mainActivity;
   private DataUtils dataUtils = DataUtils.getInstance();
@@ -109,7 +111,7 @@ public class MainActivityHelper {
       ArrayList<HybridFileParcelable> failedOps, Context context) {
     MaterialDialog.Builder mat = new MaterialDialog.Builder(context);
     mat.title(context.getString(R.string.operation_unsuccesful));
-    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
+    mat.theme(mainActivity.getAppTheme().getMaterialDialogTheme(context));
     mat.positiveColor(accentColor);
     mat.positiveText(R.string.cancel);
     String content = context.getString(R.string.operation_fail_following);
@@ -291,7 +293,8 @@ public class MainActivityHelper {
 
   public void guideDialogForLEXA(String path, int requestCode) {
     final MaterialDialog.Builder x = new MaterialDialog.Builder(mainActivity);
-    x.theme(mainActivity.getAppTheme().getMaterialDialogTheme());
+    x.theme(
+        mainActivity.getAppTheme().getMaterialDialogTheme(mainActivity.getApplicationContext()));
     x.title(R.string.needs_access);
     LayoutInflater layoutInflater =
         (LayoutInflater) mainActivity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -389,7 +392,7 @@ public class MainActivityHelper {
                     // update the database entry to reflect rename for encrypted file
                     if (oldPath.endsWith(CryptUtil.CRYPT_EXTENSION)) {
                       try {
-                        CryptHandler cryptHandler = CryptHandler.getInstance();
+                        CryptHandler cryptHandler = CryptHandler.INSTANCE;
                         EncryptedEntry oldEntry = cryptHandler.findEntry(oldPath);
                         EncryptedEntry newEntry = new EncryptedEntry();
                         newEntry.setId(oldEntry.getId());
@@ -425,7 +428,7 @@ public class MainActivityHelper {
         });
   }
 
-  public @FolderState int checkFolder(final File folder, Context context) {
+  public @FolderState int checkFolder(final @NonNull File folder, Context context) {
     return checkFolder(folder.getAbsolutePath(), OpenMode.FILE, context);
   }
 
@@ -674,15 +677,32 @@ public class MainActivityHelper {
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
-  public void extractFile(File file) {
-    int mode = checkFolder(file.getParentFile(), mainActivity);
-    if (mode == 2) {
-      mainActivity.oppathe = (file.getPath());
-      mainActivity.operation = EXTRACT;
-    } else if (mode == 1) {
-      Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
-      decompressor.decompress(file.getPath());
-    } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+  public void extractFile(@NonNull File file) {
+    final File parent = file.getParentFile();
+    if(parent == null) {
+      Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show();
+      Log.e(TAG, "File's parent is null " + file.getPath());
+      return;
+    }
+
+    @FolderState int mode = checkFolder(parent, mainActivity);
+    switch (mode) {
+      case WRITABLE_OR_ON_SDCARD:
+        Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
+        if (decompressor == null) {
+          Toast.makeText(mainActivity, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show();
+          return;
+        }
+        decompressor.decompress(file.getPath());
+        break;
+      case CAN_CREATE_FILES:
+        mainActivity.oppathe = file.getPath();
+        mainActivity.operation = EXTRACT;
+        break;
+      default:
+        Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+        break;
+    }
   }
 
   /** Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix */

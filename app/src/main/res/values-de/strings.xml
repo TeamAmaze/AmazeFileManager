@@ -36,7 +36,6 @@
     <string name="uninstall">Deinstallieren</string>
     <string name="play">Play Store</string>
     <string name="properties">Eigenschaften</string>
-    <string name="copyingapk">Kopiere apk nach </string>
     <string name="delbook">Lesezeichen löschen</string>
     <string name="add_to_bookmarks">Zu Lesezeichen hinzufügen</string>
     <string name="enterpath">Pfad eingeben</string>
@@ -667,7 +666,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
     <string name="show_system_apps">System-Apps anzeigen</string>
     <string name="system_apps">System-Apps</string>
-    <string name="third_party_apps">Dritt-Anbieter-Apps</string>
     <string name="select_inverse">Auswal umkehren</string>
     <string name="select_by_type">Nach Typ auswählen</string>
     <string name="select_by_date">Nach Datum auswählen</string>
@@ -676,5 +674,6 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="grant_all_files_permission"><html><body>Amaze benötigt die Dateien und Medien Berechtigung zum Fortfahren.
  \nIm nächsten Dialog, wählen Sie bitte <b>Amaze</b> und drücken die Option <b>Zugriff für alle Dateien erlauben</b>.
  \n\n<font color='#ff6347'><i>Diesen Dialog abzubrechen, wird die App beenden.</i></font></body></html></string>
+    <string name="user_apps">Dritt-Anbieter-Apps</string>
 </resources>
 

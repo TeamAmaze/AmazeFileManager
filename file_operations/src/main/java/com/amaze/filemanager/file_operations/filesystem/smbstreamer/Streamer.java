@@ -92,7 +92,8 @@ public class Streamer extends StreamServer {
             }
         }
     }*/
-    if (sourceFile == null) res = new Response(StreamServer.HTTP_NOTFOUND, StreamServer.MIME_PLAINTEXT, null);
+    if (sourceFile == null)
+      res = new Response(StreamServer.HTTP_NOTFOUND, StreamServer.MIME_PLAINTEXT, null);
     else {
       long startFrom = 0;
       long endAt = -1;
@@ -119,7 +120,9 @@ public class Streamer extends StreamServer {
       long fileLen = source.length();
       if (range != null && startFrom > 0) {
         if (startFrom >= fileLen) {
-          res = new Response(StreamServer.HTTP_RANGE_NOT_SATISFIABLE, StreamServer.MIME_PLAINTEXT, null);
+          res =
+              new Response(
+                  StreamServer.HTTP_RANGE_NOT_SATISFIABLE, StreamServer.MIME_PLAINTEXT, null);
           res.addHeader("Content-Range", "bytes 0-0/" + fileLen);
         } else {
           if (endAt < 0) endAt = fileLen - 1;

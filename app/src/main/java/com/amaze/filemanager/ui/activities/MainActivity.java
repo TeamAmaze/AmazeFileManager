@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.activities;
 
 import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR1;
-import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.KITKAT_WATCH;
 import static android.os.Build.VERSION_CODES.LOLLIPOP;
@@ -54,89 +53,6 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_VIEW;
 
-import java.io.File;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.regex.Pattern;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
-import com.amaze.filemanager.LogHelper;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.TagsHelper;
-import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
-import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
-import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-import com.amaze.filemanager.asynchronous.asynctasks.MoveFiles;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.asynchronous.services.CopyService;
-import com.amaze.filemanager.database.CloudContract;
-import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.database.SortHandler;
-import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
-import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
-import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation;
-import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
-import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.MakeFileOperation;
-import com.amaze.filemanager.filesystem.PasteHelper;
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
-import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.dialogs.RenameBookmark;
-import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
-import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
-import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
-import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
-import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
-import com.amaze.filemanager.ui.fragments.AppsListFragment;
-import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
-import com.amaze.filemanager.ui.fragments.CloudSheetFragment.CloudConnectionCallbacks;
-import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.ui.fragments.FtpServerFragment;
-import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
-import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
-import com.amaze.filemanager.ui.fragments.TabFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.strings.StorageNamingHelper;
-import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
-import com.amaze.filemanager.ui.views.appbar.AppBar;
-import com.amaze.filemanager.ui.views.drawer.Drawer;
-import com.amaze.filemanager.utils.AppConstants;
-import com.amaze.filemanager.utils.BookSorter;
-import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.MainActivityActionMode;
-import com.amaze.filemanager.utils.MainActivityHelper;
-import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.PreferenceUtils;
-import com.amaze.filemanager.utils.Utils;
-import com.cloudrail.si.CloudRail;
-import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
-import com.leinardi.android.speeddial.FabWithLabelView;
-import com.leinardi.android.speeddial.SpeedDialActionItem;
-import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
-import com.leinardi.android.speeddial.SpeedDialView;
-import com.readystatesoftware.systembartint.SystemBarTintManager;
-
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -157,7 +73,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.os.HandlerThread;
 import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
@@ -185,7 +100,98 @@ import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
 
-import eu.chainfire.libsuperuser.Shell;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.amaze.filemanager.LogHelper;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.TagsHelper;
+import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
+import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFilesTask;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.services.CopyService;
+import com.amaze.filemanager.database.CloudContract;
+import com.amaze.filemanager.database.CloudHandler;
+import com.amaze.filemanager.database.SortHandler;
+import com.amaze.filemanager.database.TabHandler;
+import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.database.models.explorer.CloudEntry;
+import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
+import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg;
+import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
+import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.MakeFileOperation;
+import com.amaze.filemanager.filesystem.PasteHelper;
+import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.ui.ExtensionsKt;
+import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
+import com.amaze.filemanager.ui.dialogs.AlertDialog;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.dialogs.HiddenFilesDialog;
+import com.amaze.filemanager.ui.dialogs.HistoryDialog;
+import com.amaze.filemanager.ui.dialogs.RenameBookmark;
+import com.amaze.filemanager.ui.dialogs.RenameBookmark.BookmarkCallback;
+import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
+import com.amaze.filemanager.ui.dialogs.SmbConnectDialog;
+import com.amaze.filemanager.ui.dialogs.SmbConnectDialog.SmbConnectionListener;
+import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
+import com.amaze.filemanager.ui.fragments.AppsListFragment;
+import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
+import com.amaze.filemanager.ui.fragments.CloudSheetFragment.CloudConnectionCallbacks;
+import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
+import com.amaze.filemanager.ui.fragments.FtpServerFragment;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.ProcessViewerFragment;
+import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
+import com.amaze.filemanager.ui.fragments.TabFragment;
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.strings.StorageNamingHelper;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
+import com.amaze.filemanager.ui.views.appbar.AppBar;
+import com.amaze.filemanager.ui.views.drawer.Drawer;
+import com.amaze.filemanager.utils.AppConstants;
+import com.amaze.filemanager.utils.BookSorter;
+import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.MainActivityActionMode;
+import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.PackageUtils;
+import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.Utils;
+import com.cloudrail.si.CloudRail;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
+import com.leinardi.android.speeddial.FabWithLabelView;
+import com.leinardi.android.speeddial.SpeedDialActionItem;
+import com.leinardi.android.speeddial.SpeedDialOverlayLayout;
+import com.leinardi.android.speeddial.SpeedDialView;
+import com.readystatesoftware.systembartint.SystemBarTintManager;
+import com.topjohnwu.superuser.Shell;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.regex.Pattern;
+
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -210,7 +216,7 @@ public class MainActivity extends PermissionsActivity
 
   public String path = "";
   public boolean mReturnIntent = false;
-  public boolean openzip = false;
+  public boolean isCompressedOpen = false;
   public boolean mRingtonePickerIntent = false;
   public int skinStatusBar;
 
@@ -245,7 +251,7 @@ public class MainActivity extends PermissionsActivity
   private Drawer drawer;
   // private HistoryManager history, grid;
   private MainActivity mainActivity = this;
-  private String zippath;
+  private String pathInCompressedArchive;
   private boolean openProcesses = false;
   private MaterialDialog materialDialog;
   private boolean backPressedToExitOnce = false;
@@ -298,11 +304,6 @@ public class MainActivity extends PermissionsActivity
   // the current visible tab, either 0 or 1
   public static int currentTab;
   private boolean listItemSelected = false;
-
-  public static Shell.Interactive shellInteractive;
-  public static Handler handler;
-
-  private static HandlerThread handlerThread;
 
   public static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
@@ -385,13 +386,17 @@ public class MainActivity extends PermissionsActivity
               servers.addAll(utilsHandler.getSmbList());
               servers.addAll(utilsHandler.getSftpList());
               dataUtils.setServers(servers);
+
+              ExtensionsKt.updateAUAlias(this,
+                      !PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager()));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
             new CompletableObserver() {
               @Override
-              public void onSubscribe(Disposable d) {}
+              public void onSubscribe(@NonNull Disposable d) {}
 
               @Override
               public void onComplete() {
@@ -400,8 +405,10 @@ public class MainActivity extends PermissionsActivity
               }
 
               @Override
-              public void onError(Throwable e) {
-                e.printStackTrace();
+              public void onError(@NonNull Throwable e) {
+                Log.e(TAG, "Error setting up DataUtils", e);
+                drawer.refreshDrawer();
+                invalidateFragmentAndBundle(savedInstanceState);
               }
             });
     initStatusBarResources(findViewById(R.id.drawer_layout));
@@ -554,13 +561,13 @@ public class MainActivity extends PermissionsActivity
           // no data field, open home for the tab in later processing
           path = null;
         }
-      } else {
+      } else if(FileUtils.isCompressedFile(Utils.sanitizeInput(uri.toString()))) {
         // we don't have folder resource mime type set, supposed to be zip/rar
-        openzip = true;
-        zippath = Utils.sanitizeInput(uri.toString());
-        if (FileUtils.isCompressedFile(zippath)) {
-          openCompressed(zippath);
-        }
+        isCompressedOpen = true;
+        pathInCompressedArchive = Utils.sanitizeInput(uri.toString());
+        openCompressed(pathInCompressedArchive);
+      } else {
+        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG).show();
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -663,19 +670,14 @@ public class MainActivity extends PermissionsActivity
   }
 
   /**
-   * Initializes an interactive shell, which will stay throughout the app lifecycle The shell is
-   * associated with a handler thread which maintain the message queue from the callbacks of shell
-   * as we certainly cannot allow the callbacks to run on same thread because of possible deadlock
-   * situation and the asynchronous behaviour of LibSuperSU
+   * Initializes an interactive shell, which will stay throughout the app lifecycle.
    */
   private void initializeInteractiveShell() {
-    // only one looper can be associated to a thread. So we are making sure not to create new
-    // handler threads every time the code relaunch.
     if (isRootExplorer()) {
-      handlerThread = new HandlerThread("handler");
-      handlerThread.start();
-      handler = new Handler(handlerThread.getLooper());
-      shellInteractive = (new Shell.Builder()).useSU().setHandler(handler).open();
+      // Enable mount-master flag when invoking su command, to force su run in the global mount
+      // namespace. See https://github.com/topjohnwu/libsu/issues/75
+      Shell.setDefaultBuilder(Shell.Builder.create().setFlags(Shell.FLAG_MOUNT_MASTER));
+      Shell.getShell();
     }
   }
 
@@ -866,8 +868,8 @@ public class MainActivity extends PermissionsActivity
       if (compressedExplorerFragment.mActionMode == null) {
         if (compressedExplorerFragment.canGoBack()) {
           compressedExplorerFragment.goBack();
-        } else if (openzip) {
-          openzip = false;
+        } else if (isCompressedOpen) {
+          isCompressedOpen = false;
           finish();
         } else {
           FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -909,7 +911,7 @@ public class MainActivity extends PermissionsActivity
       SshConnectionPool.INSTANCE.shutdown();
       finish();
       if (isRootExplorer()) {
-        // TODO close all shells
+        closeInteractiveShell();
       }
     } else {
       this.backPressedToExitOnce = true;
@@ -947,9 +949,9 @@ public class MainActivity extends PermissionsActivity
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
     floatingActionButton.show();
-    if (openzip && zippath != null) {
-      openCompressed(zippath);
-      zippath = null;
+    if (isCompressedOpen && pathInCompressedArchive != null) {
+      openCompressed(pathInCompressedArchive);
+      pathInCompressedArchive = null;
     }
   }
 
@@ -1090,8 +1092,7 @@ public class MainActivity extends PermissionsActivity
               mainFragment.home();
               break;
             case R.id.history:
-              GeneralDialogCreation.showHistoryDialog(
-                  dataUtils, getPrefs(), mainFragment, getAppTheme());
+              HistoryDialog.showHistoryDialog(this, mainFragment);
               break;
             case R.id.sethome:
               if (mainFragment.getMainFragmentViewModel().getOpenMode() != OpenMode.FILE
@@ -1127,7 +1128,7 @@ public class MainActivity extends PermissionsActivity
             case R.id.dsort:
               String[] sort = getResources().getStringArray(R.array.directorysortmode);
               MaterialDialog.Builder builder = new MaterialDialog.Builder(mainActivity);
-              builder.theme(getAppTheme().getMaterialDialogTheme());
+              builder.theme(getAppTheme().getMaterialDialogTheme(this));
               builder.title(R.string.directorysort);
               int current =
                   Integer.parseInt(
@@ -1157,8 +1158,7 @@ public class MainActivity extends PermissionsActivity
               builder.build().show();
               break;
             case R.id.hiddenitems:
-              GeneralDialogCreation.showHiddenDialog(
-                  dataUtils, getPrefs(), mainFragment, getAppTheme());
+              HiddenFilesDialog.showHiddenDialog(this, mainFragment);
               break;
             case R.id.view:
               int pathLayout =
@@ -1387,18 +1387,18 @@ public class MainActivity extends PermissionsActivity
   /** Closes the interactive shell and threads associated */
   private void closeInteractiveShell() {
     if (isRootExplorer()) {
-      // close interactive shell and handler thread associated with it
-      if (SDK_INT >= JELLY_BEAN_MR2) {
-        // let it finish up first with what it's doing
-        handlerThread.quitSafely();
-      } else handlerThread.quit();
-      shellInteractive.close();
+      // close interactive shell
+      try {
+        Shell.getShell().close();
+      } catch (IOException e) {
+        Log.e(TAG, "Error closing Shell", e);
+      }
     }
   }
 
   public void updatePaths(int pos) {
     TabFragment tabFragment = getTabFragment();
-    if (tabFragment != null) tabFragment.updatepaths(pos);
+    if (tabFragment != null) tabFragment.updatePaths(pos);
   }
 
   public void openCompressed(String path) {
@@ -1433,7 +1433,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   public void setPagingEnabled(boolean b) {
-    getTabFragment().mViewPager.setPagingEnabled(b);
+    getTabFragment().setPagingEnabled(b);
   }
 
   public File getUsbDrive() {
@@ -1550,13 +1550,14 @@ public class MainActivity extends PermissionsActivity
                   oppathe = "";
                 }
 
-                new MoveFiles(
+                TaskKt.fromTask(
+                    new MoveFilesTask(
                         oparrayListList,
                         isRootExplorer(),
                         mainFragment.getCurrentPath(),
-                        mainFragment.getActivity(),
-                        OpenMode.FILE)
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, oppatheList);
+                        this,
+                        OpenMode.FILE,
+                        oppatheList));
                 break;
               case NEW_FOLDER: // mkdir
                 mainActivityHelper.mkDir(
@@ -1652,7 +1653,7 @@ public class MainActivity extends PermissionsActivity
     getSupportActionBar().setDisplayShowTitleEnabled(false);
     fabBgView = findViewById(R.id.fabs_overlay_layout);
 
-    switch (getAppTheme().getSimpleTheme()) {
+    switch (getAppTheme().getSimpleTheme(this)) {
       case DARK:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_dark);
         break;
@@ -1685,10 +1686,22 @@ public class MainActivity extends PermissionsActivity
     if (SDK_INT >= LOLLIPOP) {
       // for lollipop devices, the status bar color
       mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
         mainActivity
             .getWindow()
             .setNavigationBarColor(PreferenceUtils.getStatusColor(colorDrawable.getColor()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          mainActivity
+                  .getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          mainActivity
+                  .getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          mainActivity
+                  .getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
     } else if (SDK_INT == KITKAT_WATCH || SDK_INT == KITKAT) {
 
       // for kitkat devices, the status bar color
@@ -1731,7 +1744,7 @@ public class MainActivity extends PermissionsActivity
           if (event.getAction() == KeyEvent.ACTION_DOWN) {
             if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
               if (getCurrentTab() == 0 && getFAB().isFocused()) {
-                getTabFragment().mViewPager.setCurrentItem(1);
+                getTabFragment().setCurrentItem(1);
               }
             } else if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_LEFT) {
               findViewById(R.id.content_frame).requestFocus();
@@ -1780,7 +1793,7 @@ public class MainActivity extends PermissionsActivity
             .setLabel(fabTitle)
             .setFabBackgroundColor(iconSkin);
 
-    switch (getAppTheme().getSimpleTheme()) {
+    switch (getAppTheme().getSimpleTheme(this)) {
       case LIGHT:
         fabBgView.setBackgroundResource(R.drawable.fab_shadow_light);
         break;
@@ -2310,13 +2323,32 @@ public class MainActivity extends PermissionsActivity
       case FtpServerFragment.TAG:
         FtpServerFragment ftpServerFragment = (FtpServerFragment) getFragmentAtFrame();
         if (folder.exists() && folder.isDirectory()) {
-          ftpServerFragment.changeFTPServerPath(folder.getPath());
-          Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+          if (FileUtils.isRunningAboveStorage(folder.getAbsolutePath())) {
+            if (!isRootExplorer()) {
+              AlertDialog.show(this, R.string.ftp_server_root_unavailable, R.string.error, android.R.string.ok, null, false);
+            } else {
+              MaterialDialog confirmDialog = GeneralDialogCreation.showBasicDialog(this, R.string.ftp_server_root_filesystem_warning,R.string.warning,  android.R.string.ok, android.R.string.cancel);
+              confirmDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
+                ftpServerFragment.changeFTPServerPath(folder.getPath());
+                Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+                confirmDialog.dismiss();
+              });
+              confirmDialog.getActionButton(DialogAction.NEGATIVE).setOnClickListener(v -> confirmDialog.dismiss());
+              confirmDialog.show();
+            }
+          } else {
+            ftpServerFragment.changeFTPServerPath(folder.getPath());
+            Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
+          }
         } else {
           // try to get parent
-          File pathParentFile = new File(folder.getParent());
+          String pathParentFilePath = folder.getParent();
+          if (pathParentFilePath == null) {
+              dialog.dismiss();
+              return;
+          }
+          File pathParentFile = new File(pathParentFilePath);
           if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-
             ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
             Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
           } else {

@@ -22,9 +22,9 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.LzmaExtractor
 
-class LzmaExtractorTest : AbstractExtractorTest() {
+class LzmaExtractorTest : AbstractCompressedFileExtractorTest() {
 
-    override val archiveType: String = "tar.lzma"
+    override fun extractorClass(): Class<out Extractor> = LzmaExtractor::class.java
 
-    override fun extractorClass(): Class<out Extractor?> = LzmaExtractor::class.java
+    override val archiveType: String = "lzma"
 }

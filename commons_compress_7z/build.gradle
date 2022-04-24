@@ -5,9 +5,6 @@ android {
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 28
-        versionCode 1
-        versionName "1.0.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
@@ -23,6 +20,6 @@ android {
 }
 
 dependencies {
-    implementation 'org.apache.commons:commons-compress:1.18'
+    implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
     implementation 'org.tukaani:xz:1.8'
 }

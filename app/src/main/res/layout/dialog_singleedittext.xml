@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
             android:ems="10"
-            android:inputType="textCapWords|textMultiLine" />
+            android:inputType="textCapSentences|textMultiLine" />
     </com.amaze.filemanager.ui.views.WarnableTextInputLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

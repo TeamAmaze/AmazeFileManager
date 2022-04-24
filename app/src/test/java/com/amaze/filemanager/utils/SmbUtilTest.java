@@ -38,7 +38,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.shadows.ShadowSmbUtil;
-import com.amaze.filemanager.test.ShadowCryptUtil;
+import com.amaze.filemanager.test.ShadowPasswordUtil;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -48,7 +48,7 @@ import jcifs.smb.NtlmPasswordAuthenticator;
 @RunWith(AndroidJUnit4.class)
 @Config(
     sdk = {JELLY_BEAN, KITKAT, P},
-    shadows = {ShadowCryptUtil.class, ShadowSmbUtil.class})
+    shadows = {ShadowPasswordUtil.class, ShadowSmbUtil.class})
 public class SmbUtilTest {
 
   @Test

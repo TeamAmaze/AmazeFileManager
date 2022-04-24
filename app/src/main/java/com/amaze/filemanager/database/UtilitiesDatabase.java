@@ -22,6 +22,17 @@ package com.amaze.filemanager.database;
 
 import static com.amaze.filemanager.database.UtilitiesDatabase.DATABASE_VERSION;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.arch.core.util.Function;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
+
 import com.amaze.filemanager.database.daos.BookmarkEntryDao;
 import com.amaze.filemanager.database.daos.GridEntryDao;
 import com.amaze.filemanager.database.daos.HiddenEntryDao;
@@ -36,15 +47,6 @@ import com.amaze.filemanager.database.models.utilities.History;
 import com.amaze.filemanager.database.models.utilities.List;
 import com.amaze.filemanager.database.models.utilities.SftpEntry;
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
-
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * Repository for {@link Bookmark}, {@link Grid}, {@link Hidden}, {@link History}, {@link List},
@@ -83,6 +85,9 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
   public static final String COLUMN_HOST_PUBKEY = "pub_key";
   public static final String COLUMN_PRIVATE_KEY_NAME = "ssh_key_name";
   public static final String COLUMN_PRIVATE_KEY = "ssh_key";
+
+  @VisibleForTesting
+  public static Function<Context, Builder<UtilitiesDatabase>> overrideDatabaseBuilder = null;
 
   private static final String TEMP_TABLE_PREFIX = "temp_";
 
@@ -382,8 +387,11 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
   protected abstract SftpEntryDao sftpEntryDao();
 
   public static UtilitiesDatabase initialize(@NonNull Context context) {
-    return Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
-        .allowMainThreadQueries()
+    Builder<UtilitiesDatabase> builder = (overrideDatabaseBuilder == null) ?
+      Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME) :
+        overrideDatabaseBuilder.apply(context);
+
+    return builder.allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
         .build();
   }

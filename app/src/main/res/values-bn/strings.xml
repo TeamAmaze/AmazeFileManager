@@ -59,8 +59,6 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="properties">বিস্তারিত</string>
 
-    <string name="copyingapk">এপিকে কপি করা হচ্ছে এ</string>
-
     <string name="add_to_bookmarks">বুকমার্কে সংযুক্ত করুন</string>
 
     <string name="enterpath">পাথটি লিখুন</string>

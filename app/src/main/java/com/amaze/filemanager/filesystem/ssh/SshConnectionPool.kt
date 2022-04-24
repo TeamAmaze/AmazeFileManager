@@ -25,12 +25,12 @@ import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
-import com.amaze.filemanager.filesystem.files.CryptUtil
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils.extractBaseUriFrom
+import com.amaze.filemanager.utils.PasswordUtil
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
 import java.security.KeyPair
 import java.util.concurrent.ConcurrentHashMap
-import java.util.concurrent.CountDownLatch
 import java.util.concurrent.ExecutionException
 import java.util.concurrent.atomic.AtomicReference
 
@@ -88,7 +88,7 @@ object SshConnectionPool {
         if (client == null) {
             client = create(url)
             if (client != null) {
-                connections[url] = client
+                connections[extractBaseUriFrom(url)] = client
             }
         } else {
             if (!validate(client)) {
@@ -97,7 +97,7 @@ object SshConnectionPool {
                 connections.remove(url)
                 client = create(url)
                 if (client != null) {
-                    connections[url] = client
+                    connections[extractBaseUriFrom(url)] = client
                 }
             }
         }
@@ -176,19 +176,11 @@ object SshConnectionPool {
         val pem = utilsHandler.getSshAuthPrivateKey(url)
         val keyPair = AtomicReference<KeyPair?>(null)
         if (true == pem?.isNotEmpty()) {
-            try {
-                val latch = CountDownLatch(1)
+            keyPair.set(
                 PemToKeyPairTask(
                     pem
-                ) { result: KeyPair? ->
-                    keyPair.set(result)
-                    latch.countDown()
-                }
-                    .execute()
-                latch.await()
-            } catch (e: InterruptedException) {
-                throw RuntimeException("Error getting keypair from given PEM string", e)
-            }
+                ) { }.execute().get()
+            )
         }
         val hostKey = utilsHandler.getSshHostKey(url) ?: return null
         return create(
@@ -272,7 +264,7 @@ object SshConnectionPool {
             username = userInfo[0]
             password = if (userInfo.size > 1) {
                 runCatching {
-                    CryptUtil.decryptPassword(AppConfig.getInstance(), userInfo[1])
+                    PasswordUtil.decryptPassword(AppConfig.getInstance(), userInfo[1])!!
                 }.getOrElse {
                     /* Hack. It should only happen after creating new SSH connection settings
                      * and plain text password is sent in.

@@ -20,7 +20,9 @@
 
 package com.amaze.filemanager.utils
 
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import android.text.SpannedString
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import org.junit.Assert.assertEquals

@@ -20,33 +20,41 @@
 
 package com.amaze.filemanager.adapters.glide.apkimage;
 
+import com.amaze.filemanager.R;
 import com.bumptech.glide.Priority;
 import com.bumptech.glide.load.DataSource;
 import com.bumptech.glide.load.data.DataFetcher;
 
+import android.content.Context;
 import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:12. */
 public class ApkImageDataFetcher implements DataFetcher<Drawable> {
 
-  private PackageManager packageManager;
+  private Context context;
   private String model;
 
-  public ApkImageDataFetcher(PackageManager packageManager, String model) {
-    this.packageManager = packageManager;
+  public ApkImageDataFetcher(Context context, String model) {
+    this.context = context;
     this.model = model;
   }
 
   @Override
   public void loadData(Priority priority, DataCallback<? super Drawable> callback) {
-    PackageInfo pi = packageManager.getPackageArchiveInfo(model, 0);
-    pi.applicationInfo.sourceDir = model;
-    pi.applicationInfo.publicSourceDir = model;
-    callback.onDataReady(pi.applicationInfo.loadIcon(packageManager));
+    PackageInfo pi = context.getPackageManager().getPackageArchiveInfo(model, 0);
+    Drawable apkIcon;
+    if (pi != null) {
+      pi.applicationInfo.sourceDir = model;
+      pi.applicationInfo.publicSourceDir = model;
+      apkIcon = pi.applicationInfo.loadIcon(context.getPackageManager());
+    } else {
+      apkIcon = ContextCompat.getDrawable(context, R.drawable.ic_android_white_24dp);
+    }
+    callback.onDataReady(apkIcon);
   }
 
   @Override

@@ -66,19 +66,19 @@ public class GenericCopyUtilEspressoTest {
   @Test
   public void testCopyFile1() throws IOException, NoSuchAlgorithmException {
     doTestCopyFile1(512);
-    doTestCopyFile1(187139366);
+    doTestCopyFile1(10 * 1024 * 1024);
   }
 
   @Test
   public void testCopyFile2() throws IOException, NoSuchAlgorithmException {
     doTestCopyFile2(512);
-    doTestCopyFile2(187139366);
+    doTestCopyFile2(10 * 1024 * 1024);
   }
 
   @Test
   public void testCopyFile3() throws IOException, NoSuchAlgorithmException {
     doTestCopyFile3(512);
-    doTestCopyFile3(187139366);
+    doTestCopyFile3(10 * 1024 * 1024);
   }
 
   // doCopy(ReadableByteChannel in, WritableByteChannel out)

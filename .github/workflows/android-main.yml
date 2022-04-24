@@ -11,27 +11,106 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build:
+  check_spotless:
+    name: Check spotless
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: Set up JDK 11
-        uses: actions/setup-java@v2
+        uses: actions/setup-java@v3
         with:
-          distribution: "adopt"
+          distribution: "temurin"
           java-version: 11
       - name: Check formatting using spotless
-        run: ./gradlew spotlessCheck
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: spotlessCheck
+
+  build:
+    name: Build debug, Jacoco test and publish to codacy
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: "temurin"
+          java-version: 11
       - name: Build with Gradle
-        run: |
-          ./gradlew assembledebug
-        env:
-          TZ: UTC
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: assembledebug
       - name: Run test cases
-        run: ./gradlew jacocoTestPlayDebugUnitTestReport
-        env:
-          TZ: UTC
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: jacocoTestPlayDebugUnitTestReport
       - name: Publish test cases
         run: |
           export CODACY_PROJECT_TOKEN=${{ secrets.CODACY_TOKEN }}
           bash <(curl -Ls https://coverage.codacy.com/get.sh)
+      - name: Publish on Telegram
+        run: |
+          COMMIT_COUNT=$(git rev-list --count ${GITHUB_REF})
+          VERSION_NAME=$(echo ${GITHUB_REF##*/} | sed 's/release\///' | sed 's/hotfix\///')
+          cp app/build/outputs/apk/fdroid/debug/app-fdroid-debug.apk app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
+          cp app/build/outputs/apk/play/debug/app-play-debug.apk app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk
+          echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/fdroid/debug/amaze-fdroid-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+          echo $(curl -v -F "chat_id=${{ secrets.TELEGRAM_CHAT_ID }}" -F document=@app/build/outputs/apk/play/debug/amaze-play-$(echo $VERSION_NAME)-$(echo $COMMIT_COUNT).apk https://api.telegram.org/${{ secrets.AMAZE_BOT_ID }}:${{ secrets.TELEGRAM_INTEGRATION_KEY }}/sendDocument)
+  
+
+  test_emulator:
+    timeout-minutes: 30 # Emulator can get stuck
+    runs-on: macos-latest
+    strategy:
+      fail-fast: true
+      matrix:
+        api-level: [ 16, 19, 28 ]
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+      - name: Java 15
+        uses: actions/setup-java@v1
+        with:
+          java-version: 15
+      - name: Gradle cache
+        uses: gradle/gradle-build-action@v2
+      - name: AVD cache
+        uses: actions/cache@v2
+        id: avd-cache
+        with:
+          path: |
+            ~/.android/avd/*
+            ~/.android/adb*
+            ~/.android/debug.keystore
+          key: avd-${{ matrix.api-level }}
+      - name: create AVD and generate snapshot for caching
+        if: steps.avd-cache.outputs.cache-hit != 'true'
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: false
+          sdcard-path-or-size: 100M
+          arch: x86
+          ram-size: 2048M
+          channel: canary
+          script: echo "Generated AVD snapshot for caching."
+
+      - name: run tests
+        uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: ${{ matrix.api-level }}
+          force-avd-creation: false
+          emulator-options: -no-snapshot-save -no-window -gpu swiftshader_indirect -noaudio -no-boot-anim -camera-back none
+          disable-animations: true
+          sdcard-path-or-size: 100M
+          arch: x86
+          ram-size: 2048M
+          channel: canary
+          script: |
+            adb logcat -c
+            adb logcat *:E &
+            ./gradlew :app:connectedCheck

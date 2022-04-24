@@ -31,10 +31,11 @@ class GzipExtractor(
     outputPath: String,
     listener: OnUpdate,
     updatePosition: UpdatePosition
-) : AbstractCompressedTarArchiveExtractor(
-    context, filePath, outputPath, listener, updatePosition
+) : AbstractCommonsCompressedFileExtractor(
+    context,
+    filePath, outputPath, listener, updatePosition
 ) {
-
-    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =
-        GzipCompressorInputStream::class.java
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> {
+        return GzipCompressorInputStream::class.java
+    }
 }

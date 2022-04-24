@@ -53,7 +53,7 @@ class SelectionPopupMenu(
         ) {
             mainActivity?.also {
                 var currentContext: Context = mainActivity.applicationContext
-                if (mainActivity.appTheme.simpleTheme == AppTheme.BLACK) {
+                if (mainActivity.appTheme.getSimpleTheme(currentContext) == AppTheme.BLACK) {
                     currentContext = ContextThemeWrapper(
                         mainActivity.applicationContext,
                         R.style.overflow_black

@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.security.GeneralSecurityException;
 
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
 
 import android.content.Context;
@@ -74,7 +73,7 @@ public class SmbUtil {
     String encryptedPassword = path.substring(path.indexOf(":", 4) + 1, path.lastIndexOf("@"));
 
     if (!TextUtils.isEmpty(encryptedPassword)) {
-      String decryptedPassword = CryptUtil.decryptPassword(context, encryptedPassword);
+      String decryptedPassword = PasswordUtil.INSTANCE.decryptPassword(context, encryptedPassword);
       buffer.append(decryptedPassword);
     }
     buffer.append(path.substring(path.lastIndexOf("@")));
@@ -95,7 +94,7 @@ public class SmbUtil {
     String decryptedPassword = path.substring(path.indexOf(":", 4) + 1, path.lastIndexOf("@"));
 
     if (!TextUtils.isEmpty(decryptedPassword)) {
-      String encryptPassword = CryptUtil.encryptPassword(context, decryptedPassword);
+      String encryptPassword = PasswordUtil.INSTANCE.encryptPassword(context, decryptedPassword);
       buffer.append(encryptPassword);
     }
     buffer.append(path.substring(path.lastIndexOf("@")));

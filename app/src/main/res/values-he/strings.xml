@@ -36,7 +36,6 @@
     <string name="uninstall">הסרת התקנה</string>
     <string name="play">חנות Play</string>
     <string name="properties">מאפיינים</string>
-    <string name="copyingapk">ה־APK מועתק אל</string>
     <string name="delbook">מחיקת סימנייה</string>
     <string name="add_to_bookmarks">הוספה לסימניות</string>
     <string name="enterpath">נא להקליד נתיב</string>
@@ -716,7 +715,6 @@
     <string name="signin_with_google_title">יש לעבור אימות כדי להשתמש ב־Google Drive™‎</string>
     <string name="show_system_apps">הצגת יישומי המערכת</string>
     <string name="system_apps">יישומוני מערכת</string>
-    <string name="third_party_apps">יישומוני צד־שלישי</string>
     <string name="select_inverse">היפוך הבחירה</string>
     <string name="select_by_type">בחירה לפי סוג</string>
     <string name="select_by_date">בחירה לפי תאריך</string>
@@ -725,5 +723,6 @@
     <string name="grant_all_files_permission"><html><body>ל־Amaze נדרשות כל הרשאות הקבצים כדי להמשיך.
         \nבמסך הבא, נא לבחור ב־<b>Amaze</b> ואז באפשרות <b>לאפשר גישה לניהול כל הקבצים</b>.
             \n\n<font color='#ff6347'><i>ביטול החלונית הזאת יסגור את היישומון.</i></font></body></html></string>
+    <string name="user_apps">יישומוני צד־שלישי</string>
 </resources>
 

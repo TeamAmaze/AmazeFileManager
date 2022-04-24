@@ -25,6 +25,19 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.fail;
 
+import android.os.Environment;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.amaze.filemanager.filesystem.root.ListFilesCommand;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -35,27 +48,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-
-import com.amaze.filemanager.filesystem.root.ListFilesCommand;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.test.ShadowShellInteractive;
-import com.amaze.filemanager.ui.activities.MainActivity;
-
-import android.os.Environment;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import eu.chainfire.libsuperuser.Shell;
-
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class, ShadowShellInteractive.class},
+    shadows = {ShadowMultiDex.class},
     sdk = {JELLY_BEAN, KITKAT, P})
+@Ignore("FIXME: should not ignore - please implement a shadow")
 public class RootHelperTest {
 
   private static final File sysroot =
@@ -105,15 +102,12 @@ public class RootHelperTest {
   }
 
   @Test
-  @Ignore
   public void testNonRoot() throws InterruptedException {
     runVerify(false);
   }
 
   @Test
-  @Ignore
   public void testRoot() throws InterruptedException, SecurityException, IllegalArgumentException {
-    MainActivity.shellInteractive = new Shell.Builder().setShell("/bin/false").open();
     runVerify(true);
   }
 

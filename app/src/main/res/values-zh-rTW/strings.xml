@@ -36,7 +36,6 @@
     <string name="uninstall">解除安裝</string>
     <string name="play">在 Play 商店中檢視</string>
     <string name="properties">屬性</string>
-    <string name="copyingapk">將 APK 複製到</string>
     <string name="delbook">刪除書籤</string>
     <string name="add_to_bookmarks">新增至書籤</string>
     <string name="enterpath">輸入路徑</string>
@@ -608,7 +607,16 @@
     <string name="got_it">明白！</string>
     <string name="encrypt_file_save_as">儲存加密檔案為……</string>
     <string name="encrypt_folder_save_as">儲存加密檔案夾為……</string>
-    <string name="encrypt_file_must_end_with_aze">加密檔案必須以 .aze為檔案擴展名稱。</string>
+    <string name="encrypt_option_use_aze">使用 Amaze加密格式</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>AESCrypt是基於 AES加密技術的開源檔案加密格式。它能在任何平台上支援 AESCrypt的應用程式上解密。</p>
+        <p><a href="https://www.aescrypt.com" target="_blank>AESCrypt 官方網站</a></p>]]>
+    </string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>Amaze自有加密方式亦以 AES加密技術為基礎。但跟 AESCrypt格式不同，使用此方式加密的檔案只能在此機器上進行解密。而且你絕不可以從此機器上移除 Amaze 檔案管理員，甚至更改屏幕鎖定設定，否則你將無法對檔案進行解密。</p>
+    ]]></string>
+    <string name="encrypt_file_must_end_with_aze">加密檔案必須以“.aze”為檔案擴展名稱。</string>
+    <string name="encrypt_file_must_end_with_aes">加密檔案必須以“.aes”為檔案擴展名稱。</string>
     <string name="cannot_overwrite">不能覆蓋原有檔案。</string>
     <string name="saved_single_file">檔案 \'%s\'已儲存。</string>
     <string name="saved_multi_files">儲存了 %d 個檔案。</string>
@@ -698,6 +706,6 @@
     <string name="signin_with_google_title">登入以使用 Google雲端硬碟&#8482;</string>
     <string name="show_system_apps">顯示系統應用程式</string>
     <string name="system_apps">系統應用程式</string>
-    <string name="third_party_apps">第三方應用程式</string>
-    </resources>
+    <string name="user_apps">第三方應用程式</string>
+</resources>
 

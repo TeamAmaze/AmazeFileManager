@@ -23,17 +23,17 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents;
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR;
 import static com.amaze.filemanager.filesystem.compressed.CompressedHelper.SEPARATOR_CHAR;
 
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+
+import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
-
-import android.content.Context;
-
-import androidx.annotation.NonNull;
 
 public abstract class Extractor {
 
@@ -113,5 +113,11 @@ public abstract class Extractor {
     }
   }
 
-  public class EmptyArchiveNotice extends IOException {}
+  public static class EmptyArchiveNotice extends IOException {}
+
+  public static class BadArchiveNotice extends IOException {
+    public BadArchiveNotice(@NonNull Throwable reason) {
+      super(reason);
+    }
+  }
 }

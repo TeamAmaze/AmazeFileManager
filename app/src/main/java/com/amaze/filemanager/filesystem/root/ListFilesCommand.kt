@@ -34,7 +34,6 @@ import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import java.io.File
-import kotlin.collections.ArrayList
 
 object ListFilesCommand : IRootCommand() {
 
@@ -51,7 +50,7 @@ object ListFilesCommand : IRootCommand() {
         onFileFoundCallback: (file: HybridFileParcelable) -> Unit
     ) {
         val mode: OpenMode
-        if (root && !path.startsWith("/storage") && !path.startsWith("/sdcard")) {
+        if (root && FileUtils.isRunningAboveStorage(path)) {
             // we're rooted and we're trying to load file with superuser
             // we're at the root directories, superuser is required!
             val result = executeRootCommand(path, showHidden)

@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.root
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
+import com.topjohnwu.superuser.Shell
 
 object ChangeFilePermissionsCommand : IRootCommand() {
 
@@ -52,10 +53,8 @@ object ChangeFilePermissionsCommand : IRootCommand() {
             RootHelper.getCommandLineString(filePath)
         )
 
-        runShellCommandWithCallback(
-            command
-        ) { _: Int, exitCode: Int, _: List<String?>? ->
-            if (exitCode < 0) {
+        runShellCommand(command).let { result: Shell.Result ->
+            if (result.code < 0) {
                 onOperationPerform(false)
             } else {
                 onOperationPerform(true)

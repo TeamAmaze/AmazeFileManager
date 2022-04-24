@@ -41,20 +41,23 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
+import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.AppsListFragment;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.FtpServerFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.fragments.preference_fragments.QuickAccessPref;
+import com.amaze.filemanager.ui.fragments.preference_fragments.QuickAccessesPrefsFragment;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.ScreenUtils;
 import com.amaze.filemanager.utils.TinyDB;
 import com.amaze.filemanager.utils.Utils;
@@ -67,6 +70,7 @@ import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.google.android.material.navigation.NavigationView;
 
+import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
@@ -420,7 +424,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
     Boolean[] quickAccessPref =
         TinyDB.getBooleanArray(
-            mainActivity.getPrefs(), QuickAccessPref.KEY, QuickAccessPref.Companion.getDEFAULT());
+            mainActivity.getPrefs(),
+            QuickAccessesPrefsFragment.KEY,
+            QuickAccessesPrefsFragment.Companion.getDEFAULT());
 
     if (mainActivity.getBoolean(PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES)) {
       if (quickAccessPref[0]) {
@@ -518,6 +524,54 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             }),
         R.drawable.ic_ftp_white_24dp,
         null);
+
+    addNewItem(
+            menu,
+            LASTGROUP,
+            order++,
+            R.string.wifip2p,
+            new MenuMetadata(
+                    () -> {
+                      boolean isAUInstalled = PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager());
+                      if (isAUInstalled) {
+                        try {
+                          Utils.openURL("amaze://teamamaze.xyz/transfer", mainActivity);
+                        } catch (ActivityNotFoundException e) {
+                          mainActivity.startActivity(new Intent(mainActivity,
+                                  UtilitiesAliasActivity.class));
+                        }
+                      } else {
+                        mainActivity.startActivity(new Intent(mainActivity,
+                                UtilitiesAliasActivity.class));
+                      }
+                    }),
+            R.drawable.ic_round_connect_without_contact_24,
+            null);
+
+    addNewItem(
+            menu,
+            LASTGROUP,
+            order++,
+            R.string.analyse_storage,
+            new MenuMetadata(
+                    () -> {
+                      boolean isAUInstalled = PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager());
+                      if (isAUInstalled) {
+                        try {
+                          Utils.openURL("amaze://teamamaze.xyz/analyse", mainActivity);
+                        } catch (ActivityNotFoundException e) {
+                          mainActivity.startActivity(new Intent(mainActivity,
+                                  UtilitiesAliasActivity.class));
+                        }
+                      } else {
+                        mainActivity.startActivity(new Intent(mainActivity,
+                                UtilitiesAliasActivity.class));
+                      }
+                    }),
+            R.drawable.ic_round_analytics_24,
+            null);
 
     addNewItem(
         menu,

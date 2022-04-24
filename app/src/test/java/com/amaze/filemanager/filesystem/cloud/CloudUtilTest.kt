@@ -28,7 +28,7 @@ import org.junit.Assert
 import org.junit.Test
 import kotlin.random.Random
 
-class CloudTest {
+class CloudUtilTest {
     /**
      * Tests [CloudUtil.stripPath]
      */

@@ -28,17 +28,16 @@ import static org.junit.Assert.assertTrue;
 import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.mock;
-import static org.robolectric.Shadows.shadowOf;
 
 import java.lang.reflect.Field;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 
 import com.amaze.filemanager.ui.views.ThemedTextView;
 
-import android.os.Looper;
 import android.view.animation.Interpolator;
 
 import androidx.test.core.app.ApplicationProvider;
@@ -68,7 +67,7 @@ public class AnimUtilsTest {
     mock.setSelected(false);
 
     AnimUtils.marqueeAfterDelay(150, mock);
-    shadowOf(Looper.myLooper()).getScheduler().advanceToLastPostedRunnable();
+    ShadowLooper.runUiThreadTasksIncludingDelayedTasks();
     assertTrue(mock.isSelected());
   }
 }

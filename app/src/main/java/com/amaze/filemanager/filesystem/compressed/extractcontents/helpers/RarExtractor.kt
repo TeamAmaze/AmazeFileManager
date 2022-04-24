@@ -32,6 +32,7 @@ import com.amaze.filemanager.filesystem.compressed.isPasswordProtectedCompat
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import com.github.junrar.Archive
 import com.github.junrar.exception.CorruptHeaderException
+import com.github.junrar.exception.MainHeaderNullException
 import com.github.junrar.exception.RarException
 import com.github.junrar.exception.UnsupportedRarV5Exception
 import com.github.junrar.rarfile.FileHeader
@@ -55,17 +56,30 @@ class RarExtractor(
     override fun extractWithFilter(filter: Filter) {
         try {
             var totalBytes: Long = 0
-            val rarFile: Archive = runCatching {
+            val rarFile = runCatching {
                 ArchivePasswordCache.getInstance()[filePath]?.let {
                     Archive(File(filePath), it).also { archive ->
                         archive.password = it
                     }
                 } ?: Archive(File(filePath))
             }.onFailure {
-                if (UnsupportedRarV5Exception::class.java.isAssignableFrom(it::class.java)) {
-                    throw it
-                } else {
-                    throw PasswordRequiredException(filePath)
+                when {
+                    // Hack. CorruptHeaderException will throw if archive is really corrupt or
+                    // password-protected RAR with wrong password, hence have to distinguish two
+                    // situations
+                    (
+                        !ArchivePasswordCache.getInstance().containsKey(filePath) &&
+                            CorruptHeaderException::class.java.isAssignableFrom(it::class.java)
+                        ) or
+                        MainHeaderNullException::class.java.isAssignableFrom(it::class.java) -> {
+                        throw BadArchiveNotice(it)
+                    }
+                    UnsupportedRarV5Exception::class.java.isAssignableFrom(it::class.java) -> {
+                        throw it
+                    }
+                    else -> {
+                        throw PasswordRequiredException(filePath)
+                    }
                 }
             }.getOrNull()!!
 
@@ -105,6 +119,8 @@ class RarExtractor(
             } else {
                 throw EmptyArchiveNotice()
             }
+        } catch (e: MainHeaderNullException) {
+            throw BadArchiveNotice(e)
         } catch (e: RarException) {
             throw IOException(e)
         }

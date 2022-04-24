@@ -3,32 +3,22 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'com.hiya.jacoco-android'
-apply plugin: 'com.akaita.android.easylauncher'
+apply plugin: "com.starter.easylauncher"
 
 android {
-    compileSdkVersion 30
-
-    dexOptions {
-        jumboMode = true
-        javaMaxHeapSize "4g"
-    }
-
+    compileSdkVersion 31
     packagingOptions {
-        exclude 'proguard-project.txt'
-        exclude 'project.properties'
-        exclude 'META-INF/LICENSE.txt'
-        exclude 'META-INF/LICENSE'
-        exclude 'META-INF/NOTICE.txt'
-        exclude 'META-INF/NOTICE'
-        exclude 'META-INF/DEPENDENCIES.txt'
-        exclude 'META-INF/DEPENDENCIES'
+        resources {
+            excludes += ['proguard-project.txt', 'project.properties', 'META-INF/LICENSE.txt', 'META-INF/LICENSE', 'META-INF/NOTICE.txt', 'META-INF/NOTICE', 'META-INF/DEPENDENCIES.txt', 'META-INF/DEPENDENCIES']
+        }
     }
+
 
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 106
+        versionCode 107
         versionName "3.6.7"
         multiDexEnabled true
 
@@ -37,7 +27,7 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments += ["room.schemaLocation"  : "$projectDir/schemas".toString(),
+                arguments += ["room.schemaLocation"  : "$projectDir/src/test/resources/schemas".toString(),
                               "room.incremental"     : "true",
                               "room.expandProjection": "true"]
             }
@@ -56,6 +46,8 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             testProguardFile 'tests-proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
+            buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
+            debuggable true //For "debug" banner on icon
         }
 
         release {
@@ -64,6 +56,7 @@ android {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard.cfg'
             buildConfigField "String", "CRYPTO_IV", "\"LxbHiJhhUXcj\""
+            buildConfigField "String", "FTP_SERVER_KEYSTORE_PASSWORD", "\"vishal007\""
         }
     }
 
@@ -71,9 +64,6 @@ android {
         viewBinding true
     }
 
-    lintOptions {
-        abortOnError false
-    }
 
     flavorDimensions 'static'
 
@@ -97,6 +87,7 @@ android {
 
     kotlinOptions {
         jvmTarget = '1.8'
+        useIR = true
     }
 
     testOptions {
@@ -104,6 +95,9 @@ android {
             includeAndroidResources = true
             returnDefaultValues = true
         }
+    }
+    lint {
+        abortOnError false
     }
 }
 
@@ -133,7 +127,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
-    kapt 'androidx.annotation:annotation:1.1.0'
+    kapt 'androidx.annotation:annotation:1.2.0'
 
     implementation "androidx.preference:preference:$androidXPrefVersion"
     implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
@@ -146,7 +140,6 @@ dependencies {
     testImplementation "androidx.test:runner:$androidXTestVersion"
     testImplementation "androidx.test:rules:$androidXTestVersion"
     testImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
-    //testImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
     testImplementation "org.mockito:mockito-core:$mockitoVersion"
     testImplementation "org.mockito:mockito-inline:$mockitoVersion"
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
@@ -155,6 +148,7 @@ dependencies {
     testImplementation 'org.jsoup:jsoup:1.11.2'
     testImplementation 'commons-net:commons-net:3.6'
     testImplementation "androidx.room:room-migration:$roomVersion"
+    testImplementation "io.mockk:mockk:$mockkVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
 
     androidTestImplementation "junit:junit:$junitVersion"//tests the app logic
@@ -163,13 +157,14 @@ dependencies {
     androidTestImplementation "androidx.test:runner:$androidXTestVersion"
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
+    // androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
     androidTestImplementation 'commons-net:commons-net:3.6'
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     //Detect memory leaks
-    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.6'
+    debugImplementation 'com.squareup.leakcanary:leakcanary-android:2.7'
 
-    implementation 'org.apache.commons:commons-compress:1.18'
+    implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
 
     implementation "com.github.junrar:junrar:$junrarVersion"
 
@@ -182,7 +177,7 @@ dependencies {
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
     implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-android', version: slf4jVersion
+    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
     // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
     implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
@@ -194,11 +189,12 @@ dependencies {
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
     implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
 
-    implementation 'org.greenrobot:eventbus:3.1.1'
+    implementation 'org.greenrobot:eventbus:3.3.1'
 
-    implementation 'com.android.volley:volley:1.1.1'
+    implementation 'com.android.volley:volley:1.2.1'
 
-    implementation 'eu.chainfire:libsuperuser:1.0.0.+'
+    implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
+    implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
     implementation 'com.cloudrail:cloudrail-si-android:2.22.4'
 
@@ -242,7 +238,7 @@ dependencies {
     // Because RxAndroid releases are few and far between, it is recommended you also
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     // (see https://github.com/ReactiveX/RxJava/releases for latest 3.x.x version)
-    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.1.1'
+    implementation group: 'io.reactivex.rxjava2', name: 'rxjava', version: '2.2.9'
 
     implementation project(':commons_compress_7z')
     implementation project(':file_operations')
@@ -256,6 +252,9 @@ configurations.all {
         dependencySubstitution {
             substitute module("commons-logging:commons-logging-api:1.1") with module("commons-logging:commons-logging:1.1.1")
             substitute module("com.android.support:support-annotations:27.1.1") with module("com.android.support:support-annotations:27.0.2")
+            // These two lines are added to prevent possible class clashes between awaitility (which uses hamcrest 2.1) and junit (which uses hamcrest 1.3).
+            substitute module('org.hamcrest:hamcrest-core:1.3') with module("org.hamcrest:hamcrest:2.1")
+            substitute module('org.hamcrest:hamcrest-library:1.3') with module("org.hamcrest:hamcrest:2.1")
         }
     }
 }
@@ -278,10 +277,6 @@ project.afterEvaluate {
 
 clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
-
-easylauncher {
-    foregroundIconNames "@mipmap/ic_launcher_foreground" // Foreground of adaptive launcher icon
-}
 
 jacoco {
     toolVersion = "${jacocoVersion}"

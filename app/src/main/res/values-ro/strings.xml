@@ -30,8 +30,7 @@
   <string name="uninstall">Dezinstalaţi</string>
   <string name="play">Magazin Play</string>
   <string name="properties">Proprietăţi</string>
-  <string name="copyingapk">Copiere apk în </string>
-  <string name="add_to_bookmarks">Adăugaţi în marcaje</string>
+    <string name="add_to_bookmarks">Adăugaţi în marcaje</string>
   <string name="enterpath">Introduceţi calea</string>
   <string name="cancel">ANULAŢI</string>
   <string name="create">CREAŢI</string>

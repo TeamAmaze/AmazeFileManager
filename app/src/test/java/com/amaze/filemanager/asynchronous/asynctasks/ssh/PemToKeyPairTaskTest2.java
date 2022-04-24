@@ -23,7 +23,8 @@ package com.amaze.filemanager.asynchronous.asynctasks.ssh;
 import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
-import java.util.concurrent.CountDownLatch;
+import java.security.KeyPair;
+import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -61,34 +62,19 @@ public class PemToKeyPairTaskTest2 {
           + "-----END OPENSSH PRIVATE KEY-----";
 
   @Test
-  public void testUnencryptedKeyToKeyPair() throws InterruptedException {
-    CountDownLatch waiter = new CountDownLatch(1);
-    PemToKeyPairTask task =
-        new PemToKeyPairTask(
-            unencryptedOpenSshKey,
-            result -> {
-              assertNotNull(result);
-              assertNotNull(result.getPublic());
-              assertNotNull(result.getPrivate());
-              waiter.countDown();
-            });
-    task.execute();
-    waiter.await();
+  public void testUnencryptedKeyToKeyPair() throws ExecutionException, InterruptedException {
+    PemToKeyPairTask task = new PemToKeyPairTask(unencryptedOpenSshKey, result -> {});
+    KeyPair result = task.execute().get();
+    assertNotNull(result);
+    assertNotNull(result.getPublic());
+    assertNotNull(result.getPrivate());
   }
 
   @Test
   public void testEncryptedKeyToKeyPair()
-      throws InterruptedException, NoSuchFieldException, IllegalAccessException {
-    CountDownLatch waiter = new CountDownLatch(1);
-    PemToKeyPairTask task =
-        new PemToKeyPairTask(
-            encryptedOpenSshKey,
-            result -> {
-              assertNotNull(result);
-              assertNotNull(result.getPublic());
-              assertNotNull(result.getPrivate());
-              waiter.countDown();
-            });
+      throws InterruptedException, NoSuchFieldException, IllegalAccessException,
+          ExecutionException {
+    PemToKeyPairTask task = new PemToKeyPairTask(encryptedOpenSshKey, result -> {});
     Field field = PemToKeyPairTask.class.getDeclaredField("passwordFinder");
     field.setAccessible(true);
     field.set(
@@ -104,7 +90,9 @@ public class PemToKeyPairTaskTest2 {
             return false;
           }
         });
-    task.execute();
-    waiter.await();
+    KeyPair result = task.execute().get();
+    assertNotNull(result);
+    assertNotNull(result.getPublic());
+    assertNotNull(result.getPrivate());
   }
 }

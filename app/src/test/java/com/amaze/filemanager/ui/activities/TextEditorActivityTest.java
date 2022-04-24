@@ -44,6 +44,7 @@ import org.robolectric.shadows.ShadowEnvironment;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity;
 
 import android.content.ContentResolver;
 import android.content.Intent;
@@ -76,7 +77,7 @@ public class TextEditorActivityTest {
     intent.setData(Uri.fromFile(file));
     generateActivity(intent);
 
-    assertEquals(fileContents + "\n", text.getText().toString());
+    assertEquals(fileContents, text.getText().toString());
   }
 
   @Test

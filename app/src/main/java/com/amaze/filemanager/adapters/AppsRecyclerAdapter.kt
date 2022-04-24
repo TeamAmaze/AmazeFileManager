@@ -68,7 +68,6 @@ import com.amaze.filemanager.utils.AnimUtils.marqueeAfterDelay
 import com.amaze.filemanager.utils.Utils
 import com.amaze.filemanager.utils.safeLet
 import java.io.File
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.math.roundToInt
 
@@ -134,7 +133,7 @@ class AppsRecyclerAdapter(
                     if (viewType == TYPE_HEADER_SYSTEM)
                         SpecialViewHolder.HEADER_SYSTEM_APP
                     else
-                        SpecialViewHolder.HEADER_THIRD_PARTY_APP
+                        SpecialViewHolder.HEADER_USER_APP
                 )
             }
             EMPTY_LAST_ITEM -> {
@@ -280,7 +279,7 @@ class AppsRecyclerAdapter(
             if ((
                 fragment.requireActivity()
                     as MainActivity
-                ).appTheme.simpleTheme == AppTheme.BLACK
+                ).appTheme.getSimpleTheme(fragment.requireContext()) == AppTheme.BLACK
             ) {
                 context = ContextThemeWrapper(context, R.style.overflow_black)
             }
@@ -425,17 +424,8 @@ class AppsRecyclerAdapter(
     }
 
     private fun popupBackup(appDataParcelable: AppDataParcelable) {
-        Toast.makeText(
-            fragment.context,
-            fragment.getString(R.string.copyingapk) +
-                Environment.getExternalStorageDirectory().path +
-                "/app_backup",
-            Toast.LENGTH_LONG
-        )
-            .show()
-        val f = File(appDataParcelable.path)
-        val ab =
-            ArrayList<HybridFileParcelable>()
+        val baseApkFile = File(appDataParcelable.path)
+        val filesToCopyList = ArrayList<HybridFileParcelable>()
         val dst = File(
             Environment.getExternalStorageDirectory()
                 .path + "/app_backup"
@@ -445,15 +435,39 @@ class AppsRecyclerAdapter(
             fragment.context,
             CopyService::class.java
         )
-        val baseFile =
-            RootHelper.generateBaseFile(f, true)
+        val mainApkFile = RootHelper.generateBaseFile(baseApkFile, true)
         val startIndex = appDataParcelable.packageName.indexOf("_")
         val subString = appDataParcelable.packageName.substring(startIndex + 1)
-        baseFile.name = (appDataParcelable.label + "_$subString.apk")
-        ab.add(baseFile)
-        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, ab)
+        val fileBaseName = appDataParcelable.label + "_$subString"
+        mainApkFile.name = "$fileBaseName.apk"
+        filesToCopyList.add(mainApkFile)
+        val splitPathList = appDataParcelable.splitPathList;
+        if (splitPathList != null) {
+            for (splitApkPath : String in splitPathList) {
+                val splitApkFile = File(splitApkPath)
+                val splitParcelableFile = RootHelper.generateBaseFile(splitApkFile, true)
+                var name = splitApkFile.name.lowercase()
+                if (name.endsWith(".apk")) {
+                    name = name.substring(0, name.length - 4)
+                }
+                val dotIdx = name.lastIndexOf('.')
+                name = name.substring(dotIdx + 1)
+                name = "${fileBaseName}_${name}.apk";
+                splitParcelableFile.name = name
+                filesToCopyList.add(splitParcelableFile)
+            }
+        }
+        intent.putParcelableArrayListExtra(CopyService.TAG_COPY_SOURCES, filesToCopyList)
         intent.putExtra(CopyService.TAG_COPY_TARGET, dst.path)
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0)
+
+        Toast.makeText(
+                fragment.context,
+                fragment.getString(R.string.copyingapks, filesToCopyList.size, dst.path),
+                Toast.LENGTH_LONG
+        )
+                .show()
+
         ServiceWatcherUtil.runService(fragment.context, intent)
     }
 
@@ -466,7 +480,7 @@ class AppsRecyclerAdapter(
             MaterialDialog.Builder(fragment.requireContext())
         builder1
             .theme(
-                themedActivity.appTheme.materialDialogTheme
+                themedActivity.appTheme.getMaterialDialogTheme(fragment.requireContext())
             )
             .content(fragment.getString(R.string.unin_system_apk))
             .title(fragment.getString(R.string.warning))

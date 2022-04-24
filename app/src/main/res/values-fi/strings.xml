@@ -36,7 +36,6 @@
     <string name="uninstall">Asennuksen poisto</string>
     <string name="play">Play-kauppa</string>
     <string name="properties">Ominaisuudet</string>
-    <string name="copyingapk">Kopioi APK-tiedostoa </string>
     <string name="delbook">Poista kirjanmerkki</string>
     <string name="add_to_bookmarks">Lisää kirjanmerkkeihin</string>
     <string name="enterpath">Kirjoita polku</string>

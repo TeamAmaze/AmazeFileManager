@@ -26,6 +26,7 @@
     <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
 
+    <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
@@ -59,7 +60,8 @@
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
-            android:theme="@style/appCompatBlack">
+            android:theme="@style/appCompatBlack"
+            android:configChanges="uiMode" >
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -123,7 +125,7 @@
 
         <activity
             android:uiOptions="splitActionBarWhenNarrow"
-            android:configChanges="orientation|screenSize"
+            android:configChanges="orientation|screenSize|uiMode"
             android:label="@string/setting"
             android:name=".ui.activities.PreferencesActivity"
             android:theme="@style/appCompatBlack">
@@ -135,7 +137,8 @@
         </activity>
         <activity
             android:label="@string/textreader"
-            android:name=".ui.activities.TextEditorActivity"
+            android:name=".ui.activities.texteditor.TextEditorActivity"
+            android:configChanges="uiMode"
             android:theme="@style/appCompatBlack">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
@@ -153,6 +156,7 @@
             android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
             android:theme="@style/appCompatBlack"
+            android:configChanges="uiMode"
             android:screenOrientation="locked">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
@@ -166,13 +170,76 @@
 
         <activity android:name=".ui.activities.AboutActivity"
             android:theme="@style/aboutBlack"
+            android:configChanges="uiMode"
             android:label="About"
             />
 
         <activity android:name=".crashreport.ErrorActivity"
             android:theme="@style/appCompatBlack"
+            android:configChanges="uiMode"
             android:label="Error"
             />
+
+        <activity
+            android:name=".ui.activities.UtilitiesAliasActivity"
+            android:exported="true"
+            android:excludeFromRecents="true"
+            android:theme="@style/Custom.Dialog.Dark">
+        </activity>
+
+        <activity-alias android:name="amazeutilsalias"
+            android:targetActivity=".ui.activities.UtilitiesAliasActivity"
+            android:exported="true"
+            android:enabled="true">
+            <intent-filter
+                android:label="@string/amaze_audio_player"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="audio/*" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+            <intent-filter
+                android:label="@string/video_player"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="video/*" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+            <intent-filter
+                android:label="@string/image_viewer"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="image/*" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+            <intent-filter
+                android:label="@string/docx_viewer"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+            <intent-filter
+                android:label="@string/pdf_viewer"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="application/pdf" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+            <intent-filter
+                android:label="@string/epub_viewer"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
+                <data android:mimeType="application/epub+zip" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.OPENABLE" />
+            </intent-filter>
+        </activity-alias>
 
         <service
             android:name = ".asynchronous.services.ExtractService"
