@@ -1620,7 +1620,11 @@ public class MainFragment extends Fragment
     if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
       int screen_width = listView.getWidth();
       int dptopx = Utils.dpToPx(getContext(), 115);
-      mainFragmentViewModel.setColumns(screen_width / dptopx);
+      if(dptopx != 0) {
+        mainFragmentViewModel.setColumns(screen_width / dptopx);
+      }else{
+        mainFragmentViewModel.setColumns(dptopx);
+      }
       if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
         mainFragmentViewModel.setColumns(3);
       }
