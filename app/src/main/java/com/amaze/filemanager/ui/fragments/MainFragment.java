@@ -1,145 +1,145 @@
-  /*
-   * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
-   * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
-   *
-   * This file is part of Amaze File Manager.
-   *
-   * Amaze File Manager is free software: you can redistribute it and/or modify
-   * it under the terms of the GNU General Public License as published by
-   * the Free Software Foundation, either version 3 of the License, or
-   * (at your option) any later version.
-   *
-   * This program is distributed in the hope that it will be useful,
-   * but WITHOUT ANY WARRANTY; without even the implied warranty of
-   * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   * GNU General Public License for more details.
-   *
-   * You should have received a copy of the GNU General Public License
-   * along with this program.  If not, see <http://www.gnu.org/licenses/>.
-   */
+/*
+ * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
-  package com.amaze.filemanager.ui.fragments;
+package com.amaze.filemanager.ui.fragments;
 
-  import static android.os.Build.VERSION.SDK_INT;
-  import static android.os.Build.VERSION_CODES.JELLY_BEAN;
-  import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
-  import static android.os.Build.VERSION_CODES.Q;
-  import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
-  import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
-  import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
-  import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
-  import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN;
+import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
+import static android.os.Build.VERSION_CODES.Q;
+import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 
-  import java.io.File;
-  import java.util.ArrayList;
-  import java.util.Collections;
-  import java.util.HashMap;
-  import java.util.List;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
 
-  import com.afollestad.materialdialogs.DialogAction;
-  import com.afollestad.materialdialogs.MaterialDialog;
-  import com.amaze.filemanager.R;
-  import com.amaze.filemanager.adapters.RecyclerAdapter;
-  import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-  import com.amaze.filemanager.adapters.holders.ItemViewHolder;
-  import com.amaze.filemanager.application.AppConfig;
-  import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
-  import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
-  import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
-  import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SortSearchResultTask;
-  import com.amaze.filemanager.asynchronous.handlers.FileHandler;
-  import com.amaze.filemanager.database.SortHandler;
-  import com.amaze.filemanager.database.models.explorer.Tab;
-  import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-  import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
-  import com.amaze.filemanager.filesystem.CustomFileObserver;
-  import com.amaze.filemanager.filesystem.FileProperties;
-  import com.amaze.filemanager.filesystem.HybridFile;
-  import com.amaze.filemanager.filesystem.HybridFileParcelable;
-  import com.amaze.filemanager.filesystem.SafRootHolder;
-  import com.amaze.filemanager.filesystem.cloud.CloudUtil;
-  import com.amaze.filemanager.filesystem.files.CryptUtil;
-  import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
-  import com.amaze.filemanager.filesystem.files.FileListSorter;
-  import com.amaze.filemanager.filesystem.files.FileUtils;
-  import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-  import com.amaze.filemanager.ui.activities.MainActivity;
-  import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-  import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
-  import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
-  import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
-  import com.amaze.filemanager.ui.icons.MimeTypes;
-  import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-  import com.amaze.filemanager.ui.theme.AppTheme;
-  import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
-  import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
-  import com.amaze.filemanager.ui.views.DividerItemDecoration;
-  import com.amaze.filemanager.ui.views.FastScroller;
-  import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
-  import com.amaze.filemanager.utils.BottomBarButtonPath;
-  import com.amaze.filemanager.utils.DataUtils;
-  import com.amaze.filemanager.utils.MainActivityHelper;
-  import com.amaze.filemanager.utils.OTGUtil;
-  import com.amaze.filemanager.utils.Utils;
-  import com.google.android.material.appbar.AppBarLayout;
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.RecyclerAdapter;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.adapters.holders.ItemViewHolder;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SortSearchResultTask;
+import com.amaze.filemanager.asynchronous.handlers.FileHandler;
+import com.amaze.filemanager.database.SortHandler;
+import com.amaze.filemanager.database.models.explorer.Tab;
+import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
+import com.amaze.filemanager.filesystem.CustomFileObserver;
+import com.amaze.filemanager.filesystem.FileProperties;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.SafRootHolder;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
+import com.amaze.filemanager.filesystem.files.FileListSorter;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
+import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
+import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
+import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.CustomScrollGridLayoutManager;
+import com.amaze.filemanager.ui.views.CustomScrollLinearLayoutManager;
+import com.amaze.filemanager.ui.views.DividerItemDecoration;
+import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.amaze.filemanager.utils.BottomBarButtonPath;
+import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.MainActivityHelper;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.appbar.AppBarLayout;
 
-  import android.app.Activity;
-  import android.content.ActivityNotFoundException;
-  import android.content.BroadcastReceiver;
-  import android.content.Context;
-  import android.content.Intent;
-  import android.content.IntentFilter;
-  import android.content.SharedPreferences;
-  import android.content.UriPermission;
-  import android.content.pm.PackageManager;
-  import android.content.pm.ResolveInfo;
-  import android.content.res.Resources;
-  import android.graphics.Color;
-  import android.media.RingtoneManager;
-  import android.net.Uri;
-  import android.os.AsyncTask;
-  import android.os.Bundle;
-  import android.os.Environment;
-  import android.provider.DocumentsContract;
-  import android.text.TextUtils;
-  import android.text.format.Formatter;
-  import android.util.Log;
-  import android.view.KeyEvent;
-  import android.view.LayoutInflater;
-  import android.view.View;
-  import android.view.ViewGroup;
-  import android.view.ViewTreeObserver;
-  import android.widget.EditText;
-  import android.widget.ImageView;
-  import android.widget.TextView;
-  import android.widget.Toast;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.content.UriPermission;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.content.res.Resources;
+import android.graphics.Color;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.DocumentsContract;
+import android.text.TextUtils;
+import android.text.format.Formatter;
+import android.util.Log;
+import android.view.KeyEvent;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
 
-  import androidx.activity.result.ActivityResultLauncher;
-  import androidx.activity.result.contract.ActivityResultContracts;
-  import androidx.annotation.NonNull;
-  import androidx.annotation.Nullable;
-  import androidx.annotation.RequiresApi;
-  import androidx.core.content.pm.ShortcutInfoCompat;
-  import androidx.core.content.pm.ShortcutManagerCompat;
-  import androidx.core.graphics.drawable.IconCompat;
-  import androidx.fragment.app.Fragment;
-  import androidx.fragment.app.FragmentActivity;
-  import androidx.fragment.app.FragmentManager;
-  import androidx.lifecycle.ViewModelProvider;
-  import androidx.preference.PreferenceManager;
-  import androidx.recyclerview.widget.DefaultItemAnimator;
-  import androidx.recyclerview.widget.GridLayoutManager;
-  import androidx.recyclerview.widget.LinearLayoutManager;
-  import androidx.recyclerview.widget.RecyclerView;
-  import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import androidx.activity.result.ActivityResultLauncher;
+import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.pm.ShortcutInfoCompat;
+import androidx.core.content.pm.ShortcutManagerCompat;
+import androidx.core.graphics.drawable.IconCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentActivity;
+import androidx.fragment.app.FragmentManager;
+import androidx.lifecycle.ViewModelProvider;
+import androidx.preference.PreferenceManager;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
-  import jcifs.smb.SmbException;
-  import jcifs.smb.SmbFile;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 
-  public class MainFragment extends Fragment
-      implements BottomBarButtonPath,
-          ViewTreeObserver.OnGlobalLayoutListener,
-          AdjustListViewForTv<ItemViewHolder> {
+public class MainFragment extends Fragment
+    implements BottomBarButtonPath,
+    ViewTreeObserver.OnGlobalLayoutListener,
+    AdjustListViewForTv<ItemViewHolder> {
 
   private static final String TAG = MainFragment.class.getSimpleName();
   public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -1482,14 +1482,14 @@
     new Thread() {
       public void run() {
         try {
-            /*
-            List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
-            // finding subtitles
-            for (Layoutelements layoutelement : LIST_ELEMENTS) {
-                SmbFile smbFile = new SmbFile(layoutelement.getDesc());
-                if (smbFile.getName().contains(smbFile.getName())) subtitleFiles.add(smbFile);
-            }
-            */
+          /*
+          List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
+          // finding subtitles
+          for (Layoutelements layoutelement : LIST_ELEMENTS) {
+              SmbFile smbFile = new SmbFile(layoutelement.getDesc());
+              if (smbFile.getName().contains(smbFile.getName())) subtitleFiles.add(smbFile);
+          }
+          */
 
           s.setStreamSrc(baseFile.getSmbFile(), baseFile.getSize());
           activity.runOnUiThread(
@@ -1619,12 +1619,7 @@
     if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
       int screen_width = listView.getWidth();
       int dptopx = Utils.dpToPx(getContext(), 115);
-      if(dptopx != 0){
-        mainFragmentViewModel.setColumns(screen_width / dptopx);
-      }else{
-        mainFragmentViewModel.setColumns(dptopx);
-      }
-
+      mainFragmentViewModel.setColumns(screen_width / dptopx);
       if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
         mainFragmentViewModel.setColumns(3);
       }
@@ -1634,9 +1629,9 @@
     }
     // TODO: This trigger causes to lose selected items in case of grid view,
     //  but is necessary to adjust columns for grid view when screen is rotated
-      /*if (!mainFragmentViewModel.isList()) {
-        loadViews();
-      }*/
+    /*if (!mainFragmentViewModel.isList()) {
+      loadViews();
+    }*/
     if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN) {
       mToolbarContainer.getViewTreeObserver().removeOnGlobalLayoutListener(this);
     } else {
@@ -1671,4 +1666,4 @@
       Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
     }
   }
-  }
+}
