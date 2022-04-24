@@ -138,8 +138,8 @@ import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment
     implements BottomBarButtonPath,
-        ViewTreeObserver.OnGlobalLayoutListener,
-        AdjustListViewForTv<ItemViewHolder> {
+    ViewTreeObserver.OnGlobalLayoutListener,
+    AdjustListViewForTv<ItemViewHolder> {
 
   private static final String TAG = MainFragment.class.getSimpleName();
   public SwipeRefreshLayout mSwipeRefreshLayout;
@@ -307,7 +307,7 @@ public class MainFragment extends Fragment
               case RecyclerAdapter.TYPE_HEADER_FILES:
               case RecyclerAdapter.TYPE_HEADER_FOLDERS:
                 return (mainFragmentViewModel.getColumns() == 0
-                        || mainFragmentViewModel.getColumns() == -1)
+                    || mainFragmentViewModel.getColumns() == -1)
                     ? 3
                     : mainFragmentViewModel.getColumns();
               default:
@@ -359,7 +359,7 @@ public class MainFragment extends Fragment
   public void switchView() {
     boolean isPathLayoutGrid =
         DataUtils.getInstance()
-                .getListOrGridForPath(mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
+            .getListOrGridForPath(mainFragmentViewModel.getCurrentPath(), DataUtils.LIST)
             == DataUtils.GRID;
     reloadListElements(false, mainFragmentViewModel.getResults(), isPathLayoutGrid);
   }
@@ -480,10 +480,10 @@ public class MainFragment extends Fragment
               getActivity().getExternalCacheDir().getPath()
                   + "/"
                   + layoutElementParcelable
-                      .generateBaseFile()
-                      .getName(getMainActivity())
-                      .replace(CryptUtil.CRYPT_EXTENSION, "")
-                      .replace(CryptUtil.AESCRYPT_EXTENSION, ""));
+                  .generateBaseFile()
+                  .getName(getMainActivity())
+                  .replace(CryptUtil.CRYPT_EXTENSION, "")
+                  .replace(CryptUtil.AESCRYPT_EXTENSION, ""));
 
           EncryptDecryptUtils.decryptFile(
               getContext(),
@@ -505,9 +505,9 @@ public class MainFragment extends Fragment
                 break;
               case SFTP:
                 Toast.makeText(
-                        getContext(),
-                        getResources().getString(R.string.please_wait),
-                        Toast.LENGTH_LONG)
+                    getContext(),
+                    getResources().getString(R.string.please_wait),
+                    Toast.LENGTH_LONG)
                     .show();
                 SshClientUtils.launchSftp(
                     layoutElementParcelable.generateBaseFile(), getMainActivity());
@@ -534,9 +534,9 @@ public class MainFragment extends Fragment
               case GDRIVE:
               case ONEDRIVE:
                 Toast.makeText(
-                        getContext(),
-                        getResources().getString(R.string.please_wait),
-                        Toast.LENGTH_LONG)
+                    getContext(),
+                    getResources().getString(R.string.please_wait),
+                    Toast.LENGTH_LONG)
                     .show();
                 CloudUtil.launchCloud(
                     layoutElementParcelable.generateBaseFile(),
@@ -770,16 +770,16 @@ public class MainFragment extends Fragment
       if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
           && !"/".equals(mainFragmentViewModel.getCurrentPath())
           && (mainFragmentViewModel.getOpenMode() == OpenMode.FILE
-              || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT
-              || (mainFragmentViewModel.getIsCloudOpenMode()
-                && !mainFragmentViewModel.getIsOnCloudRoot()))
+          || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT
+          || (mainFragmentViewModel.getIsCloudOpenMode()
+          && !mainFragmentViewModel.getIsOnCloudRoot()))
           && !isOtg
           && (mainFragmentViewModel.getListElements().size() == 0
-              || !mainFragmentViewModel
-                  .getListElements()
-                  .get(0)
-                  .size
-                  .equals(getString(R.string.goback)))
+          || !mainFragmentViewModel
+          .getListElements()
+          .get(0)
+          .size
+          .equals(getString(R.string.goback)))
           && !results) {
         mainFragmentViewModel.getListElements().add(0, getBackElement());
       }
@@ -857,9 +857,9 @@ public class MainFragment extends Fragment
           mainFragmentViewModel.isList()
               ? 1
               : (mainFragmentViewModel.getColumns() == 0
-                      || mainFragmentViewModel.getColumns() == -1)
-                  ? 3
-                  : mainFragmentViewModel.getColumns());
+              || mainFragmentViewModel.getColumns() == -1)
+              ? 3
+              : mainFragmentViewModel.getColumns());
       mToolbarContainer.addOnOffsetChangedListener(
           (appBarLayout, verticalOffset) -> {
             fastScroller.updateHandlePosition(verticalOffset, 112);
@@ -1026,8 +1026,8 @@ public class MainFragment extends Fragment
           if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
             if (mainFragmentViewModel.getSmbPath() != null
                 && !mainFragmentViewModel
-                    .getSmbPath()
-                    .equals(mainFragmentViewModel.getCurrentPath())) {
+                .getSmbPath()
+                .equals(mainFragmentViewModel.getCurrentPath())) {
               StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
               if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
                 path.append(
@@ -1040,9 +1040,9 @@ public class MainFragment extends Fragment
           } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
             if (mainFragmentViewModel.getCurrentPath() != null
                 && !mainFragmentViewModel
-                    .getCurrentPath()
-                    .substring(SSH_URI_PREFIX.length())
-                    .contains("/")) {
+                .getCurrentPath()
+                .substring(SSH_URI_PREFIX.length())
+                .contains("/")) {
               loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
             } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
               loadlist(currentFile.getParent(getContext()), true, currentFile.getMode());
@@ -1052,7 +1052,7 @@ public class MainFragment extends Fragment
             }
           } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
               || (mainFragmentViewModel.getHome() != null
-                  && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
+              && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
               || mainFragmentViewModel.getIsOnCloudRoot()) {
             getMainActivity().exit();
           } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
@@ -1069,9 +1069,9 @@ public class MainFragment extends Fragment
                 currentFile.setMode(OpenMode.FILE);
                 currentFile.setPath(
                     new File(
-                            Environment.getExternalStorageDirectory(),
-                            subPath.substring(
-                                subPath.lastIndexOf(':') + 1, subPath.lastIndexOf('/')))
+                        Environment.getExternalStorageDirectory(),
+                        subPath.substring(
+                            subPath.lastIndexOf(':') + 1, subPath.lastIndexOf('/')))
                         .getAbsolutePath());
                 loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
               } else {
@@ -1097,7 +1097,7 @@ public class MainFragment extends Fragment
           // getting parent path to resume search from there
           String parentPath =
               new HybridFile(
-                      mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath())
+                  mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath())
                   .getParent(getActivity());
           // don't fuckin' remove this line, we need to change
           // the path back to parent on back press
@@ -1144,8 +1144,8 @@ public class MainFragment extends Fragment
                   int i;
                   AppConfig.toast(requireContext(), getString(R.string.unknown_error));
                   if ((i =
-                          DataUtils.getInstance()
-                              .containsServer(mainFragmentViewModel.getSmbPath()))
+                      DataUtils.getInstance()
+                          .containsServer(mainFragmentViewModel.getSmbPath()))
                       != -1) {
                     getMainActivity()
                         .showSMBDialog(
@@ -1174,8 +1174,8 @@ public class MainFragment extends Fragment
         if (mainFragmentViewModel.getOpenMode() == OpenMode.SMB) {
           if (mainFragmentViewModel.getCurrentPath() != null
               && !mainFragmentViewModel
-                  .getCurrentPath()
-                  .equals(mainFragmentViewModel.getSmbPath())) {
+              .getCurrentPath()
+              .equals(mainFragmentViewModel.getSmbPath())) {
             StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
             if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
               path.append(
@@ -1392,9 +1392,9 @@ public class MainFragment extends Fragment
 
     if (!ShortcutManagerCompat.isRequestPinShortcutSupported(ctx)) {
       Toast.makeText(
-              getActivity(),
-              getString(R.string.add_shortcut_not_supported_by_launcher),
-              Toast.LENGTH_SHORT)
+          getActivity(),
+          getString(R.string.add_shortcut_not_supported_by_launcher),
+          Toast.LENGTH_SHORT)
           .show();
       return;
     }
@@ -1484,7 +1484,6 @@ public class MainFragment extends Fragment
         try {
           /*
           List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
-
           // finding subtitles
           for (Layoutelements layoutelement : LIST_ELEMENTS) {
               SmbFile smbFile = new SmbFile(layoutelement.getDesc());
@@ -1500,7 +1499,7 @@ public class MainFragment extends Fragment
                       Uri.parse(
                           Streamer.URL
                               + Uri.fromFile(new File(Uri.parse(baseFile.getPath()).getPath()))
-                                  .getEncodedPath());
+                              .getEncodedPath());
                   Intent i = new Intent(Intent.ACTION_VIEW);
                   i.setDataAndType(
                       uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
@@ -1509,9 +1508,9 @@ public class MainFragment extends Fragment
                   if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
                   else
                     Toast.makeText(
-                            activity,
-                            activity.getResources().getString(R.string.smb_launch_error),
-                            Toast.LENGTH_SHORT)
+                        activity,
+                        activity.getResources().getString(R.string.smb_launch_error),
+                        Toast.LENGTH_SHORT)
                         .show();
                 } catch (ActivityNotFoundException e) {
                   e.printStackTrace();
