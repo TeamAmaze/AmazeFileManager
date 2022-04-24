@@ -466,7 +466,7 @@ public class HybridFile {
 
   /**
    * Whether this object refers to a directory or file, handles all types of files
-   *
+   * @WorkerThread
    * @deprecated use {@link #isDirectory(Context)} to handle content resolvers
    */
   public boolean isDirectory() {
@@ -558,31 +558,13 @@ public class HybridFile {
         isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
         break;
       case DROPBOX:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.DROPBOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path))
-                .getFolder();
-        break;
       case BOX:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.BOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path))
-                .getFolder();
-        break;
       case GDRIVE:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.GDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                .getFolder();
-        break;
       case ONEDRIVE:
         isDirectory =
             dataUtils
-                .getAccount(OpenMode.ONEDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path))
+                .getAccount(mode)
+                .getMetadata(CloudUtil.stripPath(mode, path))
                 .getFolder();
         break;
       default:
