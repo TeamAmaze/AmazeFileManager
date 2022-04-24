@@ -16,7 +16,7 @@
         app:summary="@string/intellihide_toolbar_summary"
         app:title="@string/intellihide_toolbar_title" />
     <Preference
-        app:key="columns"
+        app:key="columnsGrid"
         app:title="@string/gridcolumnno" />
     <com.amaze.filemanager.ui.views.preference.CheckBox
         app:defaultValue="true"
