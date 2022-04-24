@@ -558,32 +558,13 @@ public class HybridFile {
         isDirectory = OTGUtil.getDocumentFile(path, context, false).isDirectory();
         break;
       case DROPBOX:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.DROPBOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path))
-                .getFolder();
-        break;
       case BOX:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.BOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path))
-                .getFolder();
-        break;
       case GDRIVE:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.GDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                .getFolder();
-        break;
       case ONEDRIVE:
-        isDirectory =
-            dataUtils
-                .getAccount(OpenMode.ONEDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path))
-                .getFolder();
+        isDirectory = Single.fromCallable(() -> dataUtils
+                .getAccount(mode)
+                .getMetadata(CloudUtil.stripPath(mode, path))
+                .getFolder()).subscribeOn(Schedulers.io()).blockingGet();
         break;
       default:
         isDirectory = getFile().isDirectory();
@@ -1094,21 +1075,12 @@ public class HybridFile {
         }
         break;
       case DROPBOX:
-        CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
-        Log.d(getClass().getSimpleName(), CloudUtil.stripPath(OpenMode.DROPBOX, path));
-        inputStream = cloudStorageDropbox.download(CloudUtil.stripPath(OpenMode.DROPBOX, path));
-        break;
       case BOX:
-        CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-        inputStream = cloudStorageBox.download(CloudUtil.stripPath(OpenMode.BOX, path));
-        break;
       case GDRIVE:
-        CloudStorage cloudStorageGDrive = dataUtils.getAccount(OpenMode.GDRIVE);
-        inputStream = cloudStorageGDrive.download(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-        break;
       case ONEDRIVE:
-        CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-        inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
+        CloudStorage cloudStorageOneDrive = dataUtils.getAccount(mode);
+        Log.d(getClass().getSimpleName(), CloudUtil.stripPath(mode, path));
+        inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(mode, path));
         break;
       default:
         try {
