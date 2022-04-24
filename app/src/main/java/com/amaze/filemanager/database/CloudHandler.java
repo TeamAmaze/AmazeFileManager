@@ -25,6 +25,10 @@ import java.util.List;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAmazeFilesystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAmazeFilesystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAmazeFilesystem;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAmazeFilesystem;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 
 import android.content.Context;
@@ -37,10 +41,10 @@ import io.reactivex.schedulers.Schedulers;
 /** Created by vishal on 18/4/17. */
 public class CloudHandler {
 
-  public static final String CLOUD_PREFIX_BOX = "box:/";
-  public static final String CLOUD_PREFIX_DROPBOX = "dropbox:/";
-  public static final String CLOUD_PREFIX_GOOGLE_DRIVE = "gdrive:/";
-  public static final String CLOUD_PREFIX_ONE_DRIVE = "onedrive:/";
+  public static final String CLOUD_PREFIX_BOX = BoxAmazeFilesystem.PREFIX;
+  public static final String CLOUD_PREFIX_DROPBOX = DropboxAmazeFilesystem.PREFIX;
+  public static final String CLOUD_PREFIX_GOOGLE_DRIVE = GoogledriveAmazeFilesystem.PREFIX;
+  public static final String CLOUD_PREFIX_ONE_DRIVE = OnedriveAmazeFilesystem.PREFIX;
 
   public static final String CLOUD_NAME_GOOGLE_DRIVE = "Google Drive™";
   public static final String CLOUD_NAME_DROPBOX = "Dropbox";

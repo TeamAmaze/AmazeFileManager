@@ -39,6 +39,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadow.api.Shadow;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.shadows.ShadowMultiDex;
 import com.amaze.filemanager.file_operations.shadows.jcifs.smb.ShadowSmbFile;
 
@@ -46,15 +47,13 @@ import android.os.Environment;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
-import jcifs.smb.SmbFile;
-
 /** Created by Rustam Khadipash on 30/3/2018. */
 @RunWith(AndroidJUnit4.class)
 @Config(
     shadows = {ShadowMultiDex.class, ShadowSmbFile.class},
     sdk = {JELLY_BEAN, KITKAT, P})
 public class StreamSourceTest {
-  private SmbFile file;
+  private AmazeFile file;
   private StreamSource ss;
   private byte[] text;
 
@@ -73,7 +72,7 @@ public class StreamSourceTest {
     if (ss != null) ss.close();
   }
 
-  private SmbFile createFile() throws IOException {
+  private AmazeFile createFile() throws IOException {
     File testFile = new File(Environment.getExternalStorageDirectory(), "Test.txt");
     testFile.createNewFile();
 
@@ -82,7 +81,7 @@ public class StreamSourceTest {
     is.flush();
     is.close();
 
-    SmbFile file = new SmbFile("smb://127.0.0.1/Test.txt");
+    AmazeFile file = new AmazeFile("smb://127.0.0.1/Test.txt");
     ShadowSmbFile shadowSmbFile = Shadow.extract(file);
     shadowSmbFile.setFile(testFile);
 

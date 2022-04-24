@@ -23,8 +23,9 @@ package com.amaze.filemanager.filesystem
 import android.content.Context
 import android.os.Build
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider
 import com.amaze.filemanager.utils.OTGUtil
-import jcifs.smb.SmbException
 import java.io.File
 import java.io.IOException
 
@@ -75,19 +76,14 @@ object MakeDirectoryOperation {
     fun mkdirs(context: Context, file: HybridFile): Boolean {
         var isSuccessful = true
         when (file.mode) {
-            OpenMode.SMB ->
-                try {
-                    val smbFile = file.smbFile
-                    smbFile.mkdirs()
-                } catch (e: SmbException) {
-                    e.printStackTrace()
-                    isSuccessful = false
-                }
+            OpenMode.SMB, OpenMode.FILE ->
+                return AmazeFile(file.path).mkdirs(object : ContextProvider {
+                    override fun getContext() = context
+                })
             OpenMode.OTG -> {
                 val documentFile = OTGUtil.getDocumentFile(file.getPath(), context, true)
                 isSuccessful = documentFile != null
             }
-            OpenMode.FILE -> isSuccessful = mkdir(File(file.getPath()), context)
             else -> isSuccessful = true
         }
         return isSuccessful

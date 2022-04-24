@@ -26,12 +26,12 @@ import android.net.Uri
 import android.os.Build
 import android.util.Log
 import androidx.documentfile.provider.DocumentFile
-import androidx.preference.PreferenceManager
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.file_operations.filesystem.filetypes.file.UriForSafPersistance
 import java.io.File
 import java.io.IOException
 import java.util.*
 
+@Deprecated("Use [com.amaze.filemanager.file_operations.filesystem.filetypes.file.ExternalSdCardOperation]")
 object ExternalSdCardOperation {
     val LOG = "ExternalSdCardOperation"
 
@@ -67,8 +67,7 @@ object ExternalSdCardOperation {
             return null
         }
 
-        val preferenceUri = PreferenceManager.getDefaultSharedPreferences(context)
-            .getString(PreferencesConstants.PREFERENCE_URI, null)
+        val preferenceUri = UriForSafPersistance.get(context)
         var treeUri: Uri? = null
         if (preferenceUri != null) {
             treeUri = Uri.parse(preferenceUri)

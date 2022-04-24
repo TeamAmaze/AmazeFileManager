@@ -34,6 +34,12 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -200,18 +206,18 @@ public class CloudUtil {
         if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
           // dropbox account
           serviceType = OpenMode.DROPBOX;
-          cloudStorage = dataUtils.getAccount(OpenMode.DROPBOX);
+          cloudStorage = DropboxAccount.INSTANCE.getAccount();
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_ONE_DRIVE)) {
 
           serviceType = OpenMode.ONEDRIVE;
-          cloudStorage = dataUtils.getAccount(OpenMode.ONEDRIVE);
+          cloudStorage = OnedriveAccount.INSTANCE.getAccount();
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_BOX)) {
 
           serviceType = OpenMode.BOX;
-          cloudStorage = dataUtils.getAccount(OpenMode.BOX);
+          cloudStorage = BoxAccount.INSTANCE.getAccount();
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_GOOGLE_DRIVE)) {
           serviceType = OpenMode.GDRIVE;
-          cloudStorage = dataUtils.getAccount(OpenMode.GDRIVE);
+          cloudStorage = GoogledriveAccount.INSTANCE.getAccount();
         } else {
           throw new IllegalStateException();
         }
@@ -255,6 +261,7 @@ public class CloudUtil {
 
     switch (hybridFile.getMode()) {
       case SFTP:
+        //TODO repace with AmazeFile's
         inputStream =
             SshClientUtils.execute(
                 new SFtpClientTemplate<InputStream>(hybridFile.getPath(), false) {
@@ -277,13 +284,7 @@ public class CloudUtil {
                 });
         break;
       case SMB:
-        try {
-          inputStream = hybridFile.getSmbFile().getInputStream();
-        } catch (IOException e) {
-          inputStream = null;
-          e.printStackTrace();
-        }
-        break;
+        return new AmazeFile(hybridFile.getPath()).getInputStream(() -> context);
       case OTG:
         ContentResolver contentResolver = context.getContentResolver();
         DocumentFile documentSourceFile =
@@ -301,7 +302,7 @@ public class CloudUtil {
       case ONEDRIVE:
         OpenMode mode = hybridFile.getMode();
 
-        CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
+        CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode).getAccount();
         String stripped = CloudUtil.stripPath(mode, hybridFile.getPath());
         inputStream = cloudStorageDropbox.getThumbnail(stripped);
         break;

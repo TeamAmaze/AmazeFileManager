@@ -656,7 +656,6 @@
     <string name="disableIpcSignature">Desative a verificação de assinatura IPC (Para servidores SMBv1 legados - INSEGURO!)</string>
     <string name="cannot_delete_file">Não foi possível deletar o arquivo</string>
     <string name="cannot_delete_file_with_reason">Não foi possível deletar o arquivo%s</string>
-    <string name="cannot_rename_file">Não foi possível renomear o arquivo%s%s</string>
     <string name="cannot_read_directory">Não foi possível acessar o diretório%s%s</string>
     <string name="just_once">Apenas uma vez</string>
     <string name="always">Sempre</string>

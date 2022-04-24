@@ -46,11 +46,23 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicLong;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -89,7 +101,6 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
-import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 
 /** Functions that deal with files */
@@ -126,13 +137,26 @@ public class FileUtils {
     else return directory.folderSize(AppConfig.getInstance());
   }
 
-  public static long folderSize(SmbFile directory) {
+  public static long folderSize(AmazeFile directory, @NonNull ContextProvider contextProvider) {
+    long naiveSize;
+
+    try {
+      naiveSize = directory.length(contextProvider);
+    } catch (IOException e) {
+      Log.e(TAG, "Unexpected error getting size from AmazeFile", e);
+      naiveSize = 0;
+    }
+
+    if(naiveSize != 0) {
+      return naiveSize;
+    }
+
     long length = 0;
     try {
-      for (SmbFile file : directory.listFiles()) {
+      for (AmazeFile file : directory.listFiles(contextProvider)) {
 
-        if (file.isFile()) length += file.length();
-        else length += folderSize(file);
+        if (file.isFile(contextProvider)) length += file.length(contextProvider);
+        else length += folderSize(file, contextProvider);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -168,7 +192,7 @@ public class FileUtils {
 
     DataUtils dataUtils = DataUtils.getInstance();
     long length = 0;
-    CloudStorage cloudStorage = dataUtils.getAccount(openMode);
+    CloudStorage cloudStorage = dataUtils.getAccount(openMode).getAccount();
     for (CloudMetaData metaData :
         cloudStorage.getChildren(CloudUtil.stripPath(openMode, sourceFileMeta.getPath()))) {
 
@@ -330,7 +354,7 @@ public class FileUtils {
       @Override
       protected String doInBackground(String... params) {
         String shareFilePath = params[0];
-        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
+        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode).getAccount();
         return cloudStorage.createShareLink(CloudUtil.stripPath(openMode, shareFilePath));
       }
 
@@ -353,7 +377,7 @@ public class FileUtils {
     new AsyncTask<String, Void, String>() {
       @Override
       protected String doInBackground(String... params) {
-        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
+        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode).getAccount();
         StringBuilder links = new StringBuilder();
         links.append(cloudStorage.createShareLink(CloudUtil.stripPath(openMode, params[0])));
         for (int i = 1; i < params.length; i++) {

@@ -629,7 +629,6 @@
     <string name="disableIpcSignature">關閉 IPC簽名檢查（對應舊式嘅 SMBv1伺服器 - 唔安全㗎！）</string>
     <string name="cannot_delete_file">個檔案刪除唔到</string>
     <string name="cannot_delete_file_with_reason">個檔案刪除唔到 - %s </string>
-    <string name="cannot_rename_file">檔案 %s 改唔到名 - %s</string>
     <string name="cannot_read_directory">讀唔到檔案夾 %s - %s</string>
     <string name="just_once">只限呢次</string>
     <string name="always">以後都係</string>

@@ -37,9 +37,11 @@ import androidx.annotation.Nullable;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.Deprecated;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 
+@Deprecated(message = "Use [AmazeFile]")
 public class HybridFileParcelable extends HybridFile implements Parcelable {
 
   private long date, size;

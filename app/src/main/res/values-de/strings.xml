@@ -629,7 +629,6 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="disableIpcSignature">IPC Signaturprüfung deaktivieren (Für veraltete SMBv1 Server - UNSICHER!)</string>
     <string name="cannot_delete_file">Datei kann nicht gelöscht werden</string>
     <string name="cannot_delete_file_with_reason">Datei %s kann nicht gelöscht werden</string>
-    <string name="cannot_rename_file">Datei %s - %s kann nicht umbenannt werden</string>
     <string name="cannot_read_directory">Verzeichnis %s - %s kann nicht gelesen werden</string>
     <string name="just_once">Nur einmal</string>
     <string name="always">Immer</string>

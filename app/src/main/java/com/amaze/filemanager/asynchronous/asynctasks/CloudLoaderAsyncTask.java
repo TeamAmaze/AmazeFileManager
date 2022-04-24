@@ -28,6 +28,10 @@ import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.box.BoxAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.dropbox.DropboxAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.gdrive.GoogledriveAccount;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.cloud.onedrive.OnedriveAccount;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.cloudrail.si.CloudRail;
@@ -130,7 +134,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 cloudHandler.addEntry(cloudEntryGdrive);
               }
 
-              dataUtils.addAccount(cloudStorageDrive);
+              GoogledriveAccount.INSTANCE.add(cloudStorageDrive);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
               e.printStackTrace();
@@ -201,7 +205,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 cloudHandler.addEntry(cloudEntryDropbox);
               }
 
-              dataUtils.addAccount(cloudStorageDropbox);
+              DropboxAccount.INSTANCE.add(cloudStorageDropbox);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
               e.printStackTrace();
@@ -265,7 +269,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 cloudHandler.addEntry(cloudEntryBox);
               }
 
-              dataUtils.addAccount(cloudStorageBox);
+              BoxAccount.INSTANCE.add(cloudStorageBox);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
               e.printStackTrace();
@@ -330,7 +334,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 cloudHandler.addEntry(cloudEntryOnedrive);
               }
 
-              dataUtils.addAccount(cloudStorageOnedrive);
+              OnedriveAccount.INSTANCE.add(cloudStorageOnedrive);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
               e.printStackTrace();

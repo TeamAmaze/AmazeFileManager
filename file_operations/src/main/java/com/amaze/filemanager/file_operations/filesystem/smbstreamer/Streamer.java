@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+
 import android.util.Log;
 
 import jcifs.smb.SmbFile;
@@ -34,7 +36,7 @@ public class Streamer extends StreamServer {
 
   public static final int PORT = 7871;
   public static final String URL = "http://127.0.0.1:" + PORT;
-  private SmbFile file;
+  private AmazeFile file;
   long length = 0;
   // protected List<SmbFile> extras; //those can be subtitles
   // private InputStream stream;
@@ -65,7 +67,7 @@ public class Streamer extends StreamServer {
     return pattern.matcher(file.getName()).matches();
   }
 
-  public void setStreamSrc(SmbFile file, long len) {
+  public void setStreamSrc(AmazeFile file, long len) {
     this.file = file;
     // this.extras = extraFiles;
     this.length = len;
@@ -81,7 +83,7 @@ public class Streamer extends StreamServer {
   public Response serve(
       String uri, String method, Properties header, Properties parms, Properties files) {
     Response res;
-    SmbFile sourceFile = null;
+    AmazeFile sourceFile = null;
     String name = getNameFromPath(uri);
     if (file != null && file.getName().equals(name)) sourceFile = file;
     /*else if(extras!=null){

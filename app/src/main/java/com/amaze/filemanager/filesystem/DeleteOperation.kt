@@ -27,6 +27,7 @@ import android.provider.MediaStore
 import android.util.Log
 import java.io.File
 
+@Deprecated("Use AmazeFile.delete()")
 object DeleteOperation {
     private val LOG = "DeleteFileOperation"
 

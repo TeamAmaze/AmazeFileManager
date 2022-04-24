@@ -31,6 +31,7 @@ import static com.amaze.filemanager.ui.fragments.preference_fragments.Preference
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_THUMB;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -51,6 +52,8 @@ import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
+import com.amaze.filemanager.file_operations.filesystem.filetypes.ContextProvider;
 import com.amaze.filemanager.file_operations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileProperties;
@@ -132,9 +135,6 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
-
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 
 public class MainFragment extends Fragment
     implements BottomBarButtonPath,
@@ -1028,7 +1028,7 @@ public class MainFragment extends Fragment
                 && !mainFragmentViewModel
                     .getSmbPath()
                     .equals(mainFragmentViewModel.getCurrentPath())) {
-              StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+              StringBuilder path = new StringBuilder(currentFile.getParent(requireContext()));
               if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
                 path.append(
                     mainFragmentViewModel
@@ -1176,7 +1176,7 @@ public class MainFragment extends Fragment
               && !mainFragmentViewModel
                   .getCurrentPath()
                   .equals(mainFragmentViewModel.getSmbPath())) {
-            StringBuilder path = new StringBuilder(currentFile.getSmbFile().getParent());
+            StringBuilder path = new StringBuilder(currentFile.getParent(requireContext()));
             if (mainFragmentViewModel.getCurrentPath().indexOf('?') > 0)
               path.append(
                   mainFragmentViewModel
@@ -1225,27 +1225,31 @@ public class MainFragment extends Fragment
   }
 
   public ArrayList<LayoutElementParcelable> addToSmb(
-      @NonNull SmbFile[] mFile, @NonNull String path, boolean showHiddenFiles) throws SmbException {
+      @NonNull AmazeFile[] mFile, @NonNull String path, boolean showHiddenFiles)
+      throws IOException {
     ArrayList<LayoutElementParcelable> smbFileList = new ArrayList<>();
     String extraParams = Uri.parse(path).getQuery();
 
     if (mainFragmentViewModel.getSearchHelper().size() > 500) {
       mainFragmentViewModel.getSearchHelper().clear();
     }
-    for (SmbFile aMFile : mFile) {
-      if ((DataUtils.getInstance().isFileHidden(aMFile.getPath()) || aMFile.isHidden())
+    for (AmazeFile aMFile : mFile) {
+      if (!aMFile.isDirectory(this::requireContext) && !aMFile.isFile(this::requireContext)) {
+        continue;
+      }
+      if ((DataUtils.getInstance().isFileHidden(aMFile.getPath()) || aMFile.isHidden(this::requireContext))
           && !showHiddenFiles) {
         continue;
       }
       String name = aMFile.getName();
       name =
-          (aMFile.isDirectory() && name.endsWith("/"))
+          (aMFile.isDirectory(this::requireContext) && name.endsWith("/"))
               ? name.substring(0, name.length() - 1)
               : name;
       if (path.equals(mainFragmentViewModel.getSmbPath())) {
         if (name.endsWith("$")) continue;
       }
-      if (aMFile.isDirectory()) {
+      if (aMFile.isDirectory(this::requireContext)) {
         mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
 
         Uri.Builder aMFilePathBuilder = Uri.parse(aMFile.getPath()).buildUpon();
@@ -1278,8 +1282,18 @@ public class MainFragment extends Fragment
                 aMFile.getPath(),
                 "",
                 "",
-                Formatter.formatFileSize(getContext(), aMFile.length()),
-                aMFile.length(),
+                Formatter.formatFileSize(getContext(), aMFile.length(new ContextProvider() {
+                  @Override
+                  public Context getContext() {
+                    return requireContext();// TODO fix retaining instance of MainFragment
+                  }
+                })),
+                aMFile.length(new ContextProvider() {
+                  @Override
+                  public Context getContext() {
+                    return requireContext();// TODO fix retaining instance of MainFragment
+                  }
+                }),
                 false,
                 aMFile.lastModified() + "",
                 false,
@@ -1492,7 +1506,7 @@ public class MainFragment extends Fragment
           }
           */
 
-          s.setStreamSrc(baseFile.getSmbFile(), baseFile.getSize());
+          s.setStreamSrc(new AmazeFile(baseFile.getPath()), baseFile.getSize());
           activity.runOnUiThread(
               () -> {
                 try {

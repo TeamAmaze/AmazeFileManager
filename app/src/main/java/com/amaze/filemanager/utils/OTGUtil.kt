@@ -33,6 +33,7 @@ import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
 import com.amaze.filemanager.exceptions.DocumentFileNotFoundException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.filesystem.otg.OtgAmazeFilesystem
 import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg
 import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -42,7 +43,7 @@ import kotlin.collections.ArrayList
 /** Created by Vishal on 27-04-2017.  */
 object OTGUtil {
 
-    const val PREFIX_OTG = "otg:/"
+    const val PREFIX_OTG = OtgAmazeFilesystem.PREFIX
     private const val PREFIX_DOCUMENT_FILE = "content:/"
     const val PREFIX_MEDIA_REMOVABLE = "/mnt/media_rw"
 

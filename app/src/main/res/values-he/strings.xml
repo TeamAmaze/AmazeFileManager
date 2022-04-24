@@ -678,7 +678,6 @@
     <string name="disableIpcSignature">השבתת בדיקת חתימת IPC (לשרתי SMBv1 מיושנים - מסוכן!)</string>
     <string name="cannot_delete_file">לא ניתן למחוק קובץ</string>
     <string name="cannot_delete_file_with_reason">לא ניתן למחוק קובץ - %s </string>
-    <string name="cannot_rename_file">לא ניתן לשנות את שם הקובץ %s - %s</string>
     <string name="cannot_read_directory">לא ניתן לקרוא את התיקייה %s - %s</string>
     <string name="just_once">רק פעם אחת</string>
     <string name="always">תמיד</string>

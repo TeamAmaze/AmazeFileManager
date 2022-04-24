@@ -24,21 +24,20 @@ package com.amaze.filemanager.file_operations.filesystem.smbstreamer;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.amaze.filemanager.file_operations.filesystem.filetypes.AmazeFile;
 import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStream;
 
 import android.webkit.MimeTypeMap;
-
-import jcifs.smb.SmbFile;
 
 public class StreamSource extends RandomAccessStream {
 
   protected String mime;
   protected long fp;
   protected String name;
-  protected SmbFile file;
+  protected AmazeFile file;
   InputStream input;
 
-  public StreamSource(SmbFile file, long l) {
+  public StreamSource(AmazeFile file, long l) {
     super(l);
 
     fp = 0;
@@ -66,7 +65,7 @@ public class StreamSource extends RandomAccessStream {
    */
   public void open() throws IOException {
     try {
-      input = file.getInputStream(); // new SmbFileInputStream(file, bufferSize, 1);
+      input = file.getInputStream(() -> null); // new SmbFileInputStream(file, bufferSize, 1);
       if (fp > 0) input.skip(fp);
     } catch (Exception e) {
       throw new IOException(e);
@@ -114,7 +113,7 @@ public class StreamSource extends RandomAccessStream {
     return name;
   }
 
-  public SmbFile getFile() {
+  public AmazeFile getFile() {
     return file;
   }
 

@@ -25,6 +25,7 @@ import com.amaze.filemanager.utils.SmbUtil
 import jcifs.context.SingletonContext
 import jcifs.smb.SmbException
 import jcifs.smb.SmbFile
+import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.robolectric.annotation.Implementation
 import org.robolectric.annotation.Implements
@@ -50,15 +51,15 @@ class ShadowSmbUtil {
         const val PATH_INVOKE_SMBEXCEPTION_ON_EXISTS = "smb://user:password@5.6.7.8/newfolder/wirebroken.log"
         const val PATH_INVOKE_SMBEXCEPTION_ON_ISFOLDER = "smb://user:password@5.6.7.8/newfolder/failcheck"
 
-        var mockDeleteAccessDenied: SmbFile? = null
-        var mockDeleteDifferentNetwork: SmbFile? = null
-        var mockCannotRenameOld: SmbFile? = null
-        var mockCanRename: SmbFile? = null
-        var mockPathDoesNotExist: SmbFile? = null
-        var mockPathNotAFolder: SmbFile? = null
-        var mockPathExist: SmbFile? = null
-        var mockSmbExceptionOnExists: SmbFile? = null
-        var mockSmbExceptionOnIsFolder: SmbFile? = null
+        var mockDeleteAccessDenied: SmbFile
+        var mockDeleteDifferentNetwork: SmbFile
+        var mockCannotRenameOld: SmbFile
+        var mockCanRename: SmbFile
+        var mockPathDoesNotExist: SmbFile
+        var mockPathNotAFolder: SmbFile
+        var mockPathExist: SmbFile
+        var mockSmbExceptionOnExists: SmbFile
+        var mockSmbExceptionOnIsFolder: SmbFile
 
         init {
             mockDeleteAccessDenied = createInternal(PATH_CANNOT_DELETE_FILE).also {
@@ -76,9 +77,9 @@ class ShadowSmbUtil {
             }
 
             mockCannotRenameOld = createInternal(PATH_CANNOT_RENAME_OLDFILE)
-            `when`(mockCannotRenameOld!!.renameTo(any()))
+            `when`(mockCannotRenameOld.renameTo(any()))
                 .thenThrow(SmbException("Access is denied."))
-            `when`(mockCannotRenameOld!!.exists()).thenReturn(true)
+            `when`(mockCannotRenameOld.exists()).thenReturn(true)
 
             mockPathDoesNotExist = createInternal(PATH_DOESNT_EXIST).also {
                 `when`(it.exists()).thenReturn(false)
@@ -149,15 +150,15 @@ class ShadowSmbUtil {
         fun create(path: String): SmbFile {
 
             return when (path) {
-                PATH_CANNOT_DELETE_FILE -> mockDeleteAccessDenied!!
-                PATH_CANNOT_MOVE_FILE -> mockDeleteDifferentNetwork!!
-                PATH_CANNOT_RENAME_OLDFILE -> mockCannotRenameOld!!
-                PATH_CAN_RENAME_OLDFILE -> mockCanRename!!
-                PATH_NOT_A_FOLDER -> mockPathNotAFolder!!
-                PATH_DOESNT_EXIST -> mockPathDoesNotExist!!
-                PATH_EXIST -> mockPathExist!!
-                PATH_INVOKE_SMBEXCEPTION_ON_EXISTS -> mockSmbExceptionOnExists!!
-                PATH_INVOKE_SMBEXCEPTION_ON_ISFOLDER -> mockSmbExceptionOnIsFolder!!
+                PATH_CANNOT_DELETE_FILE -> mockDeleteAccessDenied
+                PATH_CANNOT_MOVE_FILE -> mockDeleteDifferentNetwork
+                PATH_CANNOT_RENAME_OLDFILE -> mockCannotRenameOld
+                PATH_CAN_RENAME_OLDFILE -> mockCanRename
+                PATH_NOT_A_FOLDER -> mockPathNotAFolder
+                PATH_DOESNT_EXIST -> mockPathDoesNotExist
+                PATH_EXIST -> mockPathExist
+                PATH_INVOKE_SMBEXCEPTION_ON_EXISTS -> mockSmbExceptionOnExists
+                PATH_INVOKE_SMBEXCEPTION_ON_ISFOLDER -> mockSmbExceptionOnIsFolder
                 else -> createInternal(path).also {
                     doNothing().`when`(it).delete()
                     `when`(it.exists()).thenReturn(false)
@@ -169,6 +170,7 @@ class ShadowSmbUtil {
             return mock(SmbFile::class.java).also {
                 `when`(it.name).thenReturn(path.substring(path.lastIndexOf('/') + 1))
                 `when`(it.path).thenReturn(path)
+                `when`(it.canonicalPath).thenReturn("$path/")
                 `when`(it.context).thenReturn(SingletonContext.getInstance())
             }
         }

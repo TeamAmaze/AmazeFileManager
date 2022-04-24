@@ -42,6 +42,8 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import kotlin.Deprecated;
+
 /**
  * Wrapper for manipulating files via the Android Media Content Provider. As of Android 4.4 KitKat,
  * applications can no longer write to the "secondary storage" of a device. Write operations using
@@ -57,6 +59,9 @@ import androidx.annotation.Nullable;
  *
  * @author Jared Rummler <jared.rummler@gmail.com>
  */
+@Deprecated(
+  message = "Use [com.amaze.filemanager.file_operations.filesystem.filetypes.file.MediaStoreHack]"
+)
 public class MediaStoreHack {
   private static final String TAG = "MediaStoreHack";
 
