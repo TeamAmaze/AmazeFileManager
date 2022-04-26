@@ -5,11 +5,13 @@ import android.os.Build.VERSION_CODES.JELLY_BEAN_MR2
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.ByteArrayInputStream
@@ -25,6 +27,10 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Suppress("StringLiteralDuplication")
 class CryptUtilEspressoTest {
+
+    @Rule @JvmField
+    val storagePermissionRule: GrantPermissionRule = GrantPermissionRule
+        .grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     /**
      * Sanity test of CryptUtil legacy method, to ensure refactoring won't break
