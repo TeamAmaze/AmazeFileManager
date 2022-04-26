@@ -1,5 +1,7 @@
 package com.amaze.filemanager.utils
 
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.JELLY_BEAN_MR2
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
@@ -44,7 +46,18 @@ class CryptUtilEspressoTest {
         )
         val targetFile = File(Environment.getExternalStorageDirectory(), "test.bin${CryptUtil.CRYPT_EXTENSION}")
         assertTrue(targetFile.exists())
-        assertTrue("Source size = ${source.size} target file size = ${targetFile.length()}", targetFile.length() > source.size)
+        if (SDK_INT < JELLY_BEAN_MR2) {
+            // Quirks for SDK < 18. File is not encrypted at all.
+            assertTrue(
+                "Source and target file size should be the same = ${source.size}",
+                source.size.toLong() == targetFile.length()
+            )
+        } else {
+            assertTrue(
+                "Source size = ${source.size} target file size = ${targetFile.length()}",
+                targetFile.length() > source.size
+            )
+        }
         sourceFile.delete()
         CryptUtil(
             AppConfig.getInstance(),
