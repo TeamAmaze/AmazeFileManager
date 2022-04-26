@@ -256,7 +256,9 @@ public class MainFragment extends Fragment
     getMainActivity().getAppbar().getBottomBar().setClickListener();
 
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT) && !mainFragmentViewModel.isList()) {
-      listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
+      if(getContext() != null) {
+        listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
+      }
     } else {
       listView.setBackgroundDrawable(null);
     }
@@ -323,7 +325,9 @@ public class MainFragment extends Fragment
     if (utilsProvider.getAppTheme().equals(AppTheme.LIGHT)) {
 
       // will always be grid, set alternate white background
-      listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
+      if(getContext() != null) {
+        listView.setBackgroundColor(Utils.getColor(getContext(), R.color.grid_background_light));
+      }
     }
 
     if (mLayoutManagerGrid == null)
@@ -725,10 +729,15 @@ public class MainFragment extends Fragment
       ((ImageView) nofilesview.findViewById(R.id.image))
           .setColorFilter(Color.parseColor("#666666"));
     } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
-      nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+      if(getContext() != null) {
+        nofilesview.setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+      }
       ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     } else {
-      nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+      if(getContext() != null) {
+        nofilesview.setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        
+      }
       ((TextView) nofilesview.findViewById(R.id.nofiletext)).setTextColor(Color.WHITE);
     }
   }
