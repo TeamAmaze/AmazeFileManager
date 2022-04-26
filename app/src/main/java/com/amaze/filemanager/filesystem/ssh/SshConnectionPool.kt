@@ -25,6 +25,7 @@ import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils.extractBaseUriFrom
 import com.amaze.filemanager.utils.PasswordUtil
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
@@ -87,7 +88,7 @@ object SshConnectionPool {
         if (client == null) {
             client = create(url)
             if (client != null) {
-                connections[url] = client
+                connections[extractBaseUriFrom(url)] = client
             }
         } else {
             if (!validate(client)) {
@@ -96,7 +97,7 @@ object SshConnectionPool {
                 connections.remove(url)
                 client = create(url)
                 if (client != null) {
-                    connections[url] = client
+                    connections[extractBaseUriFrom(url)] = client
                 }
             }
         }

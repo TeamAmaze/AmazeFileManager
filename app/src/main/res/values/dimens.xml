@@ -59,4 +59,7 @@
     <dimen name="dialogPreferredPadding">24dp</dimen>
 
     <dimen name="zero_dp">0dp</dimen>
+    <dimen name="eighteen_sp">18sp</dimen>
+    <dimen name="twenty_four_sp">24sp</dimen>
+    <dimen name="eight_dp">8dp</dimen>
 </resources>

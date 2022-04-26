@@ -37,23 +37,26 @@ import androidx.annotation.WorkerThread;
 /** Generates hashes from files (MD5 and SHA256) */
 public class CalculateHashCallback implements Callable<Hash> {
 
-  private final boolean isNotADirectory;
-  private final InputStream inputStreamMd5;
-  private final InputStream inputStreamSha;
+  private InputStream inputStreamMd5;
+  private InputStream inputStreamSha;
+  private final HybridFileParcelable file;
+  private final Context context;
 
   public CalculateHashCallback(HybridFileParcelable file, final Context context) {
     if (file.isSftp()) {
       throw new IllegalArgumentException("Use CalculateHashSftpCallback");
     }
-
-    this.isNotADirectory = !file.isDirectory(context);
-    this.inputStreamMd5 = file.getInputStream(context);
-    this.inputStreamSha = file.getInputStream(context);
+    this.context = context;
+    this.file = file;
   }
 
   @WorkerThread
   @Override
   public Hash call() throws Exception {
+    boolean isNotADirectory = !file.isDirectory(context);
+    this.inputStreamMd5 = file.getInputStream(context);
+    this.inputStreamSha = file.getInputStream(context);
+
     String md5 = null;
     String sha256 = null;
 
