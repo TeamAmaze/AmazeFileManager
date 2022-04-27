@@ -31,17 +31,15 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
-import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
-import org.junit.After
+import io.mockk.every
+import io.mockk.mockkObject
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyString
-import org.mockito.Mockito.`when`
-import org.mockito.Mockito.mock
 import org.mockito.kotlin.argumentCaptor
 import org.robolectric.annotation.Config
 import java.io.InputStreamReader
@@ -54,20 +52,24 @@ import java.io.InputStreamReader
 /**
  * Unit test for [ListFilesCommand].
  *
- * stat and ls outputs are captured from busybox, and used as fixed outputs from mocked object
- * to ensure command output.
- *
- * FIXME: add toybox outputs, just to be sure?
+ * stat and ls outputs are captured from busybox or toybox, and used as fixed outputs from
+ * mocked object to ensure command output.
  */
 class ListFilesCommandTest {
 
-    val sharedPreferences: SharedPreferences =
+    private val sharedPreferences: SharedPreferences =
         PreferenceManager.getDefaultSharedPreferences(ApplicationProvider.getApplicationContext())
-    val statLines =
+    private val statLines =
         InputStreamReader(javaClass.getResourceAsStream("/rootCommands/stat-bin.txt"))
             .readLines()
-    val lsLines =
+    private val statRootLines =
+        InputStreamReader(javaClass.getResourceAsStream("/rootCommands/stat-root.txt"))
+            .readLines()
+    private val lsLines =
         InputStreamReader(javaClass.getResourceAsStream("/rootCommands/ls-bin.txt"))
+            .readLines()
+    private val lsRootLines =
+        InputStreamReader(javaClass.getResourceAsStream("/rootCommands/ls-root.txt"))
             .readLines()
 
     /**
@@ -75,36 +77,27 @@ class ListFilesCommandTest {
      */
     @Before
     fun setUp() {
-        val mockCommand = mock(ListFilesCommand.javaClass)
-        `when`(
-            mockCommand.listFiles(
+        mockkObject(ListFilesCommand)
+        every {
+            ListFilesCommand.listFiles(
                 anyString(),
                 anyBoolean(),
                 anyBoolean(),
                 argumentCaptor<(OpenMode) -> Unit>().capture(),
                 argumentCaptor<(HybridFileParcelable) -> Unit>().capture()
             )
-        ).thenCallRealMethod()
-        `when`(
-            mockCommand.executeRootCommand(
-                anyString(), anyBoolean(), anyBoolean()
-            )
-        ).thenCallRealMethod()
-        `when`(mockCommand.runShellCommandToList("ls -l \"/bin\"")).thenReturn(lsLines)
-        `when`(
-            mockCommand.runShellCommandToList(
-                "stat -c '%A %h %G %U %B %Y %N' /bin/*"
-            )
-        ).thenReturn(statLines)
-        TestUtils.replaceObjectInstance(ListFilesCommand.javaClass, mockCommand)
-    }
-
-    /**
-     * Post test cleanup.
-     */
-    @After
-    fun tearDown() {
-        TestUtils.replaceObjectInstance(ListFilesCommand.javaClass, null)
+        } answers { callOriginal() }
+        every {
+            ListFilesCommand.executeRootCommand(anyString(), anyBoolean(), anyBoolean())
+        } answers { callOriginal() }
+        every { ListFilesCommand.runShellCommandToList("ls -l \"/bin\"") } answers { lsLines }
+        every { ListFilesCommand.runShellCommandToList("ls -l \"/\"") } answers { lsRootLines }
+        every {
+            ListFilesCommand.runShellCommandToList("stat -c '%A %h %G %U %B %Y %N' /bin/*")
+        } answers { statLines }
+        every {
+            ListFilesCommand.runShellCommandToList("stat -c '%A %h %G %U %B %Y %N' *")
+        } answers { statRootLines }
     }
 
     /**
@@ -118,13 +111,43 @@ class ListFilesCommandTest {
         sharedPreferences.edit()
             .putBoolean(PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING, false).commit()
         var statCount = 0
-        ListFilesCommand.listFiles("/bin", true, false, {}, { ++statCount })
+        ListFilesCommand.listFiles(
+            "/bin",
+            root = true,
+            showHidden = false,
+            openModeCallback = {},
+            onFileFoundCallback = { ++statCount }
+        )
         assertEquals(statLines.size, statCount)
+        statCount = 0
+        ListFilesCommand.listFiles(
+            "/",
+            root = true,
+            showHidden = false,
+            openModeCallback = {},
+            onFileFoundCallback = { ++statCount }
+        )
+        assertEquals(statRootLines.size, statCount)
 
         sharedPreferences.edit()
             .putBoolean(PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING, true).commit()
         var lsCount = 0
-        ListFilesCommand.listFiles("/bin", true, false, {}, { ++lsCount })
+        ListFilesCommand.listFiles(
+            "/bin",
+            root = true,
+            showHidden = false,
+            openModeCallback = {},
+            onFileFoundCallback = { ++lsCount }
+        )
         assertEquals(lsLines.size - 1, lsCount)
+        lsCount = 0
+        ListFilesCommand.listFiles(
+            "/",
+            root = true,
+            showHidden = false,
+            openModeCallback = {},
+            onFileFoundCallback = { ++lsCount }
+        )
+        assertEquals(lsRootLines.size - 1, lsCount)
     }
 }

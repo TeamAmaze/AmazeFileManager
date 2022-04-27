@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape
+            android:shape="rectangle">
+            <corners
+                android:topLeftRadius="@dimen/dialogPreferredPadding"
+                android:topRightRadius="@dimen/dialogPreferredPadding"
+                android:bottomLeftRadius="@dimen/dialogPreferredPadding"
+                android:bottomRightRadius="@dimen/dialogPreferredPadding"
+                />
+            <solid android:color="@color/navy_blue_alt" />
+        </shape>
+    </item>
+</layer-list>

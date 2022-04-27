@@ -3,16 +3,14 @@ apply plugin: 'kotlin-android'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
 
     defaultConfig {
         minSdkVersion 14
-        targetSdkVersion 30
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles "consumer-rules.pro"
+
+		multiDexEnabled true
 
         externalNativeBuild {
             cmake {
@@ -25,6 +23,7 @@ android {
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            ndk.debugSymbolLevel = 'FULL'
         }
     }
 
@@ -46,10 +45,23 @@ android {
             version '3.10.2'
         }
     }
+
+    kotlinOptions {
+        useIR = true
+    }
 }
 
 dependencies {
-    implementation 'org.apache.commons:commons-compress:1.18'
+    modules {
+        module("org.bouncycastle:bcprov-jdk15to18") {
+            replacedBy("org.bouncycastle:bcprov-jdk15on")
+        }
+        module("org.bouncycastle:bcpkix-jdk15to18") {
+            replacedBy("org.bouncycastle:bcpkix-jdk15on")
+        }
+    }
+
+    implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
 
     implementation "com.github.junrar:junrar:$junrarVersion"
 

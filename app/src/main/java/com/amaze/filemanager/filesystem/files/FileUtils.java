@@ -22,17 +22,33 @@ package com.amaze.filemanager.filesystem.files;
 
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 
-import java.io.File;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicLong;
+import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.util.Log;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
+import androidx.documentfile.provider.DocumentFile;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
@@ -60,35 +76,21 @@ import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
-import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.core.util.Pair;
-import androidx.documentfile.provider.DocumentFile;
-
-import jcifs.smb.SmbFile;
-import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
+
+import java.io.File;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicLong;
+
+import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
 
 /** Functions that deal with files */
 public class FileUtils {
@@ -341,6 +343,35 @@ public class FileUtils {
             .show();
       }
     }.execute(path);
+  }
+
+  public static void shareCloudFiles(ArrayList<LayoutElementParcelable> files, final OpenMode openMode, final Context context) {
+    String[] paths = new String[files.size()];
+    for (int i = 0; i < files.size(); i++) {
+      paths[i] = files.get(i).desc;
+    }
+    new AsyncTask<String, Void, String>() {
+      @Override
+      protected String doInBackground(String... params) {
+        CloudStorage cloudStorage = DataUtils.getInstance().getAccount(openMode);
+        StringBuilder links = new StringBuilder();
+        links.append(cloudStorage.createShareLink(CloudUtil.stripPath(openMode, params[0])));
+        for (int i = 1; i < params.length; i++) {
+          links.append('\n');
+          links.append(cloudStorage.createShareLink(CloudUtil.stripPath(openMode, params[i])));
+        }
+        return links.toString();
+      }
+
+      @Override
+      protected void onPostExecute(String s) {
+        super.onPostExecute(s);
+
+        FileUtils.copyToClipboard(context, s);
+        Toast.makeText(context, context.getString(R.string.cloud_share_copied), Toast.LENGTH_LONG)
+            .show();
+      }
+    }.execute(paths);
   }
 
   public static void shareFiles(ArrayList<File> a, Activity c, AppTheme appTheme, int fab_skin) {
@@ -776,7 +807,7 @@ public class FileUtils {
     StringBuilder link = new StringBuilder();
     String size = "-1";
     String date = "";
-    String[] array = line.split(" ");
+    String[] array = line.split(" +");
     if (array.length < 6) return null;
     for (String anArray : array) {
       if (anArray.contains("->") && array[0].startsWith("l")) {
@@ -972,5 +1003,13 @@ public class FileUtils {
       return false;
     }
     return true;
+  }
+
+  /**
+   * Determines the specified path is beyond storage level, i.e should require root access.
+   */
+  @SuppressWarnings("PMD.DoNotHardCodeSDCard")
+  public static boolean isRunningAboveStorage(@NonNull String path) {
+    return !path.startsWith("/storage") && !path.startsWith("/sdcard");
   }
 }

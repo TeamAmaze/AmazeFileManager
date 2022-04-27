@@ -68,3 +68,14 @@ inline fun <T1 : Any, T2 : Any, R : Any> safeLet(
         p2
     ) else null
 }
+
+/**
+ * Convert a byte array to its hex string representation.
+ *
+ * Optionally takes a separator parameter.
+ */
+fun ByteArray.toHex(separatorStr: String = ""): String =
+    joinToString(separator = separatorStr) {
+        eachByte ->
+        "%02x".format(eachByte)
+    }

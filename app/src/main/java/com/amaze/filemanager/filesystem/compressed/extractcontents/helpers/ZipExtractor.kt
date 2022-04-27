@@ -33,6 +33,7 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import net.lingala.zip4j.ZipFile
 import net.lingala.zip4j.exception.ZipException
 import net.lingala.zip4j.model.FileHeader
+import org.apache.commons.compress.PasswordRequiredException
 import java.io.BufferedInputStream
 import java.io.BufferedOutputStream
 import java.io.File
@@ -81,7 +82,14 @@ class ZipExtractor(
             }
             listener.onFinish()
         } catch (e: ZipException) {
-            throw IOException(e)
+            if (true == e.message?.lowercase()?.contains("password")) {
+                // Hack.
+                // zip4j uses ZipException for all problems, so we need to distinguish password
+                // related problems and throw PasswordRequiredException here
+                throw PasswordRequiredException(e.message)
+            } else {
+                throw BadArchiveNotice(e)
+            }
         }
     }
 
@@ -112,27 +120,28 @@ class ZipExtractor(
             // creating directory if not already exists
             MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
         }
-        val inputStream = BufferedInputStream(zipFile.getInputStream(entry))
-        FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
-            BufferedOutputStream(fileOutputStream).run {
-                var len: Int
-                val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
-                while (inputStream.read(buf).also { len = it } != -1) {
-                    if (!listener.isCancelled) {
-                        write(buf, 0, len)
-                        updatePosition.updatePosition(len.toLong())
-                    } else break
+        BufferedInputStream(zipFile.getInputStream(entry)).use { inputStream ->
+            FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
+                BufferedOutputStream(fileOutputStream).run {
+                    var len: Int
+                    val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
+                    while (inputStream.read(buf).also { len = it } != -1) {
+                        if (!listener.isCancelled) {
+                            write(buf, 0, len)
+                            updatePosition.updatePosition(len.toLong())
+                        } else break
+                    }
+                    close()
+                    outputFile.setLastModified(entry.lastModifiedTimeEpoch)
                 }
-                close()
-                outputFile.setLastModified(entry.lastModifiedTimeEpoch)
-            }
-        } ?: AppConfig.toast(
-            context,
-            context.getString(
-                R.string.error_archive_cannot_extract,
-                entry.fileName,
-                outputDir
+            } ?: AppConfig.toast(
+                context,
+                context.getString(
+                    R.string.error_archive_cannot_extract,
+                    entry.fileName,
+                    outputDir
+                )
             )
-        )
+        }
     }
 }

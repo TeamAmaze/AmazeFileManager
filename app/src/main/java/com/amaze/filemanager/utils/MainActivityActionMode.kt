@@ -130,7 +130,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainFragmentViewModel.fileCount
                     ) R.string.deselect_all else R.string.select_all
                 )
-            if (mainFragmentViewModel.openMode != OpenMode.FILE) {
+            if (mainFragmentViewModel.openMode != OpenMode.FILE && !mainFragmentViewModel.getIsCloudOpenMode()) {
                 hideOption(R.id.addshortcut, menu)
                 hideOption(R.id.compress, menu)
                 return true
@@ -147,7 +147,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     showOption(R.id.addshortcut, menu)
                     showOption(R.id.openwith, menu)
                     showOption(R.id.share, menu)
-                    if (mainFragmentViewModel.getCheckedItems().get(0).isDirectory) {
+                    if (mainFragmentViewModel.getCheckedItems()[0].isDirectory) {
                         hideOption(R.id.openwith, menu)
                         hideOption(R.id.share, menu)
                         hideOption(R.id.openmulti, menu)
@@ -170,6 +170,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         if (e.isDirectory) {
                             hideOption(R.id.share, menu)
                             hideOption(R.id.openmulti, menu)
+                            break;
                         }
                     }
                     hideOption(R.id.openwith, menu)
@@ -204,13 +205,14 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         if (e.isDirectory) {
                             hideOption(R.id.share, menu)
                             hideOption(R.id.openmulti, menu)
+                            break;
                         }
                     }
                     hideOption(R.id.openwith, menu)
                 }
             }
             if (mainFragmentViewModel.openMode != OpenMode.FILE) {
-                hideOption(R.id.addshortcut, menu)
+                hideOption(R.id.openwith, menu)
                 hideOption(R.id.compress, menu)
                 hideOption(R.id.hide, menu)
                 hideOption(R.id.addshortcut, menu)
@@ -274,11 +276,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     true
                 }
                 R.id.share -> {
-                    val arrayList = ArrayList<File>()
-                    for (e in checkedItems) {
-                        arrayList.add(File(e.desc))
-                    }
-                    if (arrayList.size > 100) Toast.makeText(
+                    if (checkedItems.size > 100) Toast.makeText(
                         mainActivity,
                         mainActivity.resources.getString(R.string.share_limit),
                         Toast.LENGTH_SHORT
@@ -286,22 +284,26 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         .show() else {
                         mainActivity.currentMainFragment?.mainFragmentViewModel?.also {
                             mainFragmentViewModel ->
-                            when (mainFragmentViewModel.listElements?.get(0)?.mode) {
+                            when (checkedItems[0].mode) {
                                 OpenMode.DROPBOX, OpenMode.BOX, OpenMode.GDRIVE,
                                 OpenMode.ONEDRIVE ->
-                                    mainFragmentViewModel.listElements?.also {
-                                        FileUtils.shareCloudFile(
-                                            it[0].desc,
-                                            it[0].mode,
-                                            mainActivity
-                                        )
+                                    FileUtils.shareCloudFiles(
+                                        checkedItems,
+                                        checkedItems[0].mode,
+                                        mainActivity
+                                    )
+                                 else -> {
+                                    val arrayList = ArrayList<File>()
+                                    for (e in checkedItems) {
+                                        arrayList.add(File(e.desc))
                                     }
-                                else -> FileUtils.shareFiles(
-                                    arrayList,
-                                    mainActivity,
-                                    mainActivity.utilsProvider.appTheme,
-                                    mainFragmentViewModel.accentColor
-                                )
+                                    FileUtils.shareFiles(
+                                            arrayList,
+                                            mainActivity,
+                                            mainActivity.utilsProvider.appTheme,
+                                            mainFragmentViewModel.accentColor
+                                    )
+                                }
                             }
                         }
                     }

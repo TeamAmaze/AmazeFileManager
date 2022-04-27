@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
+import android.util.Log
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
@@ -31,10 +32,12 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
+import org.apache.commons.compress.PasswordRequiredException
+import org.tukaani.xz.CorruptedInputException
 import java.io.BufferedOutputStream
 import java.io.File
 import java.io.IOException
-import java.util.*
+import java.lang.UnsupportedOperationException
 
 class SevenZipExtractor(
     context: Context,
@@ -48,10 +51,18 @@ class SevenZipExtractor(
     @Throws(IOException::class)
     override fun extractWithFilter(filter: Filter) {
         var totalBytes: Long = 0
-        val sevenzFile = if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
-            SevenZFile(File(filePath), ArchivePasswordCache.getInstance()[filePath]!!.toCharArray())
-        } else {
-            SevenZFile(File(filePath))
+        val sevenzFile = runCatching {
+            if (ArchivePasswordCache.getInstance().containsKey(filePath)) {
+                SevenZFile(File(filePath), ArchivePasswordCache.getInstance()[filePath]!!.toCharArray())
+            } else {
+                SevenZFile(File(filePath))
+            }
+        }.getOrElse {
+            if (it is PasswordRequiredException || it is CorruptedInputException) {
+                throw it
+            } else {
+                throw BadArchiveNotice(it)
+            }
         }
         val arrayList = ArrayList<SevenZArchiveEntry>()
 
@@ -116,7 +127,13 @@ class SevenZipExtractor(
                     progress += length.toLong()
                 }
                 close()
-                outputFile.setLastModified(entry.lastModifiedDate.time)
+                val lastModifiedDate = try {
+                    entry.lastModifiedDate.time
+                } catch (e: UnsupportedOperationException) {
+                    Log.w(javaClass.simpleName, "Unable to get modified date for 7zip file")
+                    System.currentTimeMillis()
+                }
+                outputFile.setLastModified(lastModifiedDate)
             }
         }?.onFailure {
             throw it

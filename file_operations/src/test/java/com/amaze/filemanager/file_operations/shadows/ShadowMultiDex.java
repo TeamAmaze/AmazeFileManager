@@ -20,12 +20,12 @@
 
 package com.amaze.filemanager.file_operations.shadows;
 
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
+
 import android.content.Context;
 
 import androidx.multidex.MultiDex;
-
-import org.robolectric.annotation.Implementation;
-import org.robolectric.annotation.Implements;
 
 @Implements(MultiDex.class)
 public class ShadowMultiDex {

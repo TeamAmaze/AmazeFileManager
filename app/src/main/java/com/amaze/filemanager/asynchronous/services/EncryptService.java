@@ -20,10 +20,26 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
-import java.util.ArrayList;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.IBinder;
+import android.widget.RemoteViews;
+
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.asynctasks.Task;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
@@ -36,28 +52,20 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.IBinder;
-import android.widget.RemoteViews;
-
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
 public class EncryptService extends AbstractProgressiveService {
+
+  public static final String TAG = EncryptService.class.getSimpleName();
 
   public static final String TAG_SOURCE = "crypt_source"; // source file to encrypt or decrypt
   public static final String TAG_ENCRYPT_TARGET = "crypt_target"; // name of encrypted file
   public static final String TAG_DECRYPT_PATH = "decrypt_path";
   public static final String TAG_OPEN_MODE = "open_mode";
+  public static final String TAG_AESCRYPT = "use_aescrypt";
+  public static final String TAG_PASSWORD = "password";
 
   public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
@@ -70,11 +78,13 @@ public class EncryptService extends AbstractProgressiveService {
   // list of data packages, to initiate chart in process viewer fragment
   private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
   private ServiceWatcherUtil serviceWatcherUtil;
-  private long totalSize = 0l;
+  private long totalSize = 0L;
   private HybridFileParcelable baseFile;
   private ArrayList<HybridFile> failedOps = new ArrayList<>();
   private String targetFilename;
   private int accentColor;
+  private boolean useAesCrypt;
+  private String password;
   private SharedPreferences sharedPreferences;
   private RemoteViews customSmallContentViews, customBigContentViews;
 
@@ -91,6 +101,10 @@ public class EncryptService extends AbstractProgressiveService {
 
     baseFile = intent.getParcelableExtra(TAG_SOURCE);
     targetFilename = intent.getStringExtra(TAG_ENCRYPT_TARGET);
+    useAesCrypt = intent.getBooleanExtra(TAG_AESCRYPT, false);
+    if(useAesCrypt) {
+      password = intent.getStringExtra(TAG_PASSWORD);
+    }
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     accentColor =
         ((AppConfig) getApplication())
@@ -117,7 +131,9 @@ public class EncryptService extends AbstractProgressiveService {
         PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     NotificationCompat.Action action =
         new NotificationCompat.Action(
-            R.drawable.ic_folder_lock_white_36dp, getString(R.string.stop_ftp), stopPendingIntent);
+            getSmallIcon(),
+            getString(R.string.stop_ftp),
+            stopPendingIntent);
 
     notificationBuilder =
         new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
@@ -130,19 +146,23 @@ public class EncryptService extends AbstractProgressiveService {
         .addAction(action)
         .setColor(accentColor)
         .setOngoing(true)
-        .setSmallIcon(R.drawable.ic_folder_lock_white_36dp);
+        .setSmallIcon(getSmallIcon());
 
     NotificationConstants.setMetadata(
         getApplicationContext(), notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
-    startForeground(NotificationConstants.ENCRYPT_ID, notificationBuilder.build());
+    startForeground(getNotificationId(), notificationBuilder.build());
     initNotificationViews();
 
     super.onStartCommand(intent, flags, startId);
     super.progressHalted();
-    new BackgroundTask().execute();
+    TaskKt.fromTask(new BackgroundTask());
 
     return START_NOT_STICKY;
+  }
+
+  protected @DrawableRes int getSmallIcon() {
+    return R.drawable.ic_folder_lock_white_36dp;
   }
 
   @Override
@@ -200,49 +220,60 @@ public class EncryptService extends AbstractProgressiveService {
     dataPackages.clear();
   }
 
-  class BackgroundTask extends AsyncTask<Void, Void, Void> {
+  class BackgroundTask implements Task<Long, Callable<Long>> {
 
     @Override
-    protected Void doInBackground(Void... params) {
-
-      if (baseFile.isDirectory()) totalSize = baseFile.folderSize(context);
-      else totalSize = baseFile.length(context);
-
-      progressHandler.setSourceSize(1);
-      progressHandler.setTotalSize(totalSize);
-      progressHandler.setProgressListener((speed) -> publishResults(speed, false, false));
-      serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
-
-      addFirstDatapoint(
-          baseFile.getName(context), 1, totalSize, true); // we're using encrypt as move flag false
-
-      if (FileProperties.checkFolder(baseFile.getPath(), context) == 1) {
-        serviceWatcherUtil.watch(EncryptService.this);
-
-        // we're here to encrypt
-        try {
-          new CryptUtil(context, baseFile, progressHandler, failedOps, targetFilename);
-        } catch (Exception e) {
-          e.printStackTrace();
-          failedOps.add(baseFile);
-        }
-      }
-
-      return null;
-    }
+    public void onError(@NonNull Throwable error) {}
 
     @Override
-    protected void onPostExecute(Void aVoid) {
-      super.onPostExecute(aVoid);
-
+    public void onFinish(Long value) {
       serviceWatcherUtil.stopWatch();
       finalizeNotification(failedOps, false);
 
       Intent intent = new Intent(MainActivity.KEY_INTENT_LOAD_LIST);
       intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
       sendBroadcast(intent);
-
       stopSelf();
+    }
+
+    @NonNull
+    @Override
+    public Callable<Long> getTask() {
+      return () -> {
+        if (baseFile.isDirectory()) totalSize = baseFile.folderSize(context);
+        else totalSize = baseFile.length(context);
+
+        progressHandler.setSourceSize(1);
+        progressHandler.setTotalSize(totalSize);
+        progressHandler.setProgressListener((speed) -> publishResults(speed, false, false));
+        serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
+
+        addFirstDatapoint(
+            baseFile.getName(context),
+            1,
+            totalSize,
+            true); // we're using encrypt as move flag false
+
+        if (FileProperties.checkFolder(baseFile.getPath(), context) == 1) {
+          serviceWatcherUtil.watch(EncryptService.this);
+
+          // we're here to encrypt
+          try {
+            new CryptUtil(
+                context,
+                baseFile,
+                progressHandler,
+                failedOps,
+                targetFilename,
+                useAesCrypt,
+                password);
+          } catch (Exception e) {
+            e.printStackTrace();
+            failedOps.add(baseFile);
+          }
+        }
+        return totalSize;
+      };
     }
   }
 

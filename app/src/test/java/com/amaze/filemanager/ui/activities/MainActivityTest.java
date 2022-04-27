@@ -58,7 +58,7 @@ import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.shadows.jcifs.smb.ShadowSmbFile;
-import com.amaze.filemanager.test.ShadowCryptUtil;
+import com.amaze.filemanager.test.ShadowPasswordUtil;
 import com.amaze.filemanager.test.TestUtils;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -82,7 +82,7 @@ import io.reactivex.schedulers.Schedulers;
     shadows = {
       ShadowMultiDex.class,
       ShadowStorageManager.class,
-      ShadowCryptUtil.class,
+      ShadowPasswordUtil.class,
       ShadowSmbFile.class
     })
 /*

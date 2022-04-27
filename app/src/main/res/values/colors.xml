@@ -121,4 +121,13 @@
     <!-- Error error for InputTextLayout -->
     <color name="error_color_material">#F4511E</color>
 
+    <!-- Used for preferences -->
+    <color name="preferenceAppearance">#673ab7</color>
+    <color name="preferenceUi">#f9a825</color>
+    <color name="preferenceBehavior">#009688</color>
+    <color name="preferenceSecurity">#da4336</color>
+    <color name="preferenceInfo">#757575</color>
+
+    <color name="navy_blue_alt">#262a3e</color>
+
 </resources>

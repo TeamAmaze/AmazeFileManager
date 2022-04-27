@@ -1,20 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory
-        app:title="@string/color_title">
+    <com.amaze.filemanager.ui.views.preference.SelectedColorsPreference
+        app:key="preselectedconfigs"
+        app:title="@string/preselected_configs_title" />
+    <PreferenceCategory app:title="@string/customize">
         <Preference
-            app:key="selectcolorconfig"
-            app:title="@string/select_color_config" />
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:key="coloriseIcons"
-            app:defaultValue="true"
-            app:title="@string/colorize"
-            app:summary="@string/colorize_summary" />
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:key="colorednavigation"
-            app:defaultValue="false"
-            app:title="@string/colored_navigation"
-            app:summary="@string/colored_navigvation_sum"
-            app:enabled="false" />
+            app:key="skin"
+            app:summary="@string/primary_color_summary"
+            app:title="@string/primary_color_title" />
+        <Preference
+            app:key="skin_two"
+            app:summary="@string/primary_two_summary"
+            app:title="@string/primary_two_title" />
+        <Preference
+            app:key="accent_skin"
+            app:summary="@string/accent_color_summary"
+            app:title="@string/accent_color_title" />
+        <Preference
+            app:key="icon_skin"
+            app:summary="@string/icon_color_summary"
+            app:title="@string/icon_color_title" />
     </PreferenceCategory>
 </PreferenceScreen>

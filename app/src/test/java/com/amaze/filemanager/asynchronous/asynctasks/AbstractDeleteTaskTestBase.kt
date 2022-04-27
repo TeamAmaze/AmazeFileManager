@@ -22,7 +22,9 @@ package com.amaze.filemanager.asynchronous.asynctasks
 
 import android.content.Context
 import android.os.Build
-import android.os.Build.VERSION_CODES.*
+import android.os.Build.VERSION_CODES.JELLY_BEAN
+import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.P
 import android.os.Looper
 import android.os.storage.StorageManager
 import androidx.lifecycle.Lifecycle
@@ -33,7 +35,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.shadows.ShadowSmbUtil
-import com.amaze.filemanager.test.ShadowCryptUtil
+import com.amaze.filemanager.test.ShadowPasswordUtil
 import com.amaze.filemanager.test.ShadowTabHandler
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.activities.MainActivity
@@ -57,7 +59,7 @@ import org.robolectric.shadows.ShadowToast
         ShadowMultiDex::class,
         ShadowSmbUtil::class,
         ShadowTabHandler::class,
-        ShadowCryptUtil::class
+        ShadowPasswordUtil::class
     ],
     sdk = [JELLY_BEAN, KITKAT, P]
 )

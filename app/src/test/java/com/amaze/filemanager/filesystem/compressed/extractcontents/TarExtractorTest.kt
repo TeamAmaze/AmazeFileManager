@@ -21,10 +21,15 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents
 
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.TarExtractor
+import org.junit.Ignore
+import org.junit.Test
 
-class TarExtractorTest : AbstractExtractorTest() {
+class TarExtractorTest : AbstractArchiveExtractorTest() {
 
     override val archiveType: String = "tar"
 
     override fun extractorClass(): Class<out Extractor?> = TarExtractor::class.java
+
+    @Test @Ignore
+    override fun testExtractBadArchive() = Unit
 }

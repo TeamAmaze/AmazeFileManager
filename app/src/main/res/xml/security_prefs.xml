@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:key="crypt_password"
+        app:summary="@string/crypt_pref_master_password_summary"
+        app:title="@string/crypt_pref_master_password_title"></Preference>
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:enabled="false"
+        app:key="crypt_fingerprint"
+        app:summary="@string/crypt_pref_fingerprint_summary"
+        app:title="@string/crypt_pref_fingerprint_title"></com.amaze.filemanager.ui.views.preference.CheckBox>
+</PreferenceScreen>

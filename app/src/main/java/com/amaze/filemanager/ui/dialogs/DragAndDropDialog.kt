@@ -32,7 +32,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
-import com.amaze.filemanager.asynchronous.asynctasks.PrepareCopyTask
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
@@ -90,13 +90,13 @@ class DragAndDropDialog : DialogFragment() {
         }
         private fun newInstance(pasteLocation: String, files: ArrayList<HybridFileParcelable>):
             DragAndDropDialog {
-                val dragAndDropDialog = DragAndDropDialog()
-                val args = Bundle()
-                args.putString(KEY_PASTE_LOCATION, pasteLocation)
-                args.putParcelableArrayList(KEY_FILES, files)
-                dragAndDropDialog.arguments = args
-                return dragAndDropDialog
-            }
+            val dragAndDropDialog = DragAndDropDialog()
+            val args = Bundle()
+            args.putString(KEY_PASTE_LOCATION, pasteLocation)
+            args.putParcelableArrayList(KEY_FILES, files)
+            dragAndDropDialog.arguments = args
+            return dragAndDropDialog
+        }
 
         private fun startCopyOrMoveTask(
             pasteLocation: String,
@@ -109,9 +109,10 @@ class DragAndDropDialog : DialogFragment() {
                 move,
                 mainActivity,
                 mainActivity.isRootExplorer,
-                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode
+                mainActivity.currentMainFragment?.mainFragmentViewModel?.openMode,
+                files
             )
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR, files)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR)
         }
     }
 
@@ -128,7 +129,9 @@ class DragAndDropDialog : DialogFragment() {
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         safeLet(
-            context, mainActivity?.appTheme?.materialDialogTheme, mainActivity?.accent,
+            context,
+            mainActivity?.appTheme?.getMaterialDialogTheme(mainActivity?.applicationContext),
+            mainActivity?.accent,
             pasteLocation, operationFiles
         ) {
             context, dialogTheme, accent, pasteLocation, operationFiles ->

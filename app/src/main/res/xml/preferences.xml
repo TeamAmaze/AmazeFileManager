@@ -17,168 +17,46 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
     -->
 
-<PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory app:title="@string/ui">
-        <Preference
-            app:key="theme"
-            app:title="@string/theme"/>
-        <Preference
-            app:key="colors"
-            app:summary="@string/color_summary"
-            app:title="@string/color_title"/>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_preference_appearance"
+        app:key="appearance"
+        app:summary="@string/appearance_summary"
+        app:title="@string/appearance" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_preference_ui"
+        app:key="ui"
+        app:summary="@string/ui_summary"
+        app:title="@string/ui" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_preference_behavior"
+        app:key="behavior"
+        app:summary="@string/behavior_summary"
+        app:title="@string/behavior" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_preference_security"
+        app:key="security"
+        app:summary="@string/security_summary"
+        app:title="@string/security" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:icon="@drawable/ic_preference_info"
+        app:key="about"
+        app:title="@string/about_amaze_file_manager_label" />
+    <Preference
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:key="feedback"
+        app:title="@string/feedback" />
 
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="circularimages"
-            app:summary="@string/circular_images"
-            app:title="@string/circular_icons"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="showDividers"
-            app:title="@string/show_dividers"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="showHeaders"
-            app:title="@string/showHeaders"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="intelliHideToolbar"
-            app:summary="@string/intellihide_toolbar_summary"
-            app:title="@string/intellihide_toolbar_title"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/sidebar_preferences">
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="sidebar_folders_enable"
-            app:title="@string/show_bookmarks_pref_title"/>
-        <Preference
-            app:dependency="sidebar_folders_enable"
-            app:key="sidebar_folders"
-            app:title="@string/show_bookmarks_pref"/>
-
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="sidebar_quickaccess_enable"
-            app:title="@string/show_quick_access_pref_title"/>
-        <Preference
-            app:dependency="sidebar_quickaccess_enable"
-            app:key="sidebar_quickaccess"
-            app:title="@string/show_quick_access_pref"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/general">
-        <Preference
-            app:key="clear_open_file"
-            app:title="@string/clear_open_file"
-            app:summary="@string/clear_open_file_summary"
-            />
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="savepaths"
-            app:summary="@string/save_path_summary"
-            app:title="@string/save_paths"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="showThumbs"
-            app:summary="@string/thumb_summary"
-            app:title="@string/thumb"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="showHidden"
-            app:title="@string/hidden"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="showLastModified"
-            app:summary="@string/lastModifiedSummary"
-            app:title="@string/lastModifiedPref"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="showFileSize"
-            app:summary="@string/size_pref_summary"
-            app:title="@string/size_pref"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="goBack_checkbox"
-            app:summary="@string/back_summary"
-            app:title="@string/back_title"/>
-        <Preference
-            app:key="columns"
-            app:title="@string/gridcolumnno"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="true"
-            app:key="enableMarqueeFilename"
-            app:title="@string/enable_marquee_filename"/>
-        <Preference
-            app:key="dragAndDropPreference"
-            app:title="@string/drag_and_drop_preference"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/security">
-        <Preference
-            app:key="crypt_password"
-            app:summary="@string/crypt_pref_master_password_summary"
-            app:title="@string/crypt_pref_master_password_title">
-        </Preference>
-
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:key="crypt_fingerprint"
-            app:summary="@string/crypt_pref_fingerprint_summary"
-            app:title="@string/crypt_pref_fingerprint_title"
-            app:enabled="false"
-            >
-        </com.amaze.filemanager.ui.views.preference.CheckBox>
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/miscellaneous">
-        <Preference
-            app:key="advancedsearch"
-            app:title="@string/advanced_search"/>
-
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="typeablepaths"
-            app:summary="@string/typeable_paths_summary"
-            app:title="@string/typeable_paths_title"/>
-
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="texteditor_newstack"
-            app:title="@string/preference_newstack_title"
-            app:summary="@string/preference_newstack_summary"/>
-
-        <Preference
-            app:key="extractpath"
-            app:summary="@string/archive_summary"
-            app:title="@string/archive_extract_folder">
-        </Preference>
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/advanced">
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="showPermissions"
-            app:summary="@string/root_pref_summary"
-            app:title="@string/root_pref"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="legacyListing"
-            app:summary="@string/legacy_listing_summary"
-            app:title="@string/legacy_listing_title"/>
-        <com.amaze.filemanager.ui.views.preference.CheckBox
-            app:defaultValue="false"
-            app:key="rootmode"
-            app:summary="@string/root_mode_summary"
-            app:title="@string/root_mode"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory app:title="@string/about">
-        <Preference
-            app:key="about"
-            app:title="@string/about_amaze_file_manager_label"
-            />
-        <Preference
-            app:key="feedback"
-            app:title="@string/feedback"/>
-    </PreferenceCategory>
 </PreferenceScreen>

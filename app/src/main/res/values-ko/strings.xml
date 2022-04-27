@@ -36,7 +36,6 @@
     <string name="uninstall">삭제</string>
     <string name="play">플레이 스토어</string>
     <string name="properties">상세정보</string>
-    <string name="copyingapk">애플리케이션이 다음 경로에 복사됩니다.</string>
     <string name="delbook">북마크 삭제</string>
     <string name="add_to_bookmarks">북마크에 추가</string>
     <string name="enterpath">경로를 입력해 주세요</string>

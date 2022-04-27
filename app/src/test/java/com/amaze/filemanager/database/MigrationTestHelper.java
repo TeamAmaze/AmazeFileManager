@@ -37,7 +37,6 @@ package com.amaze.filemanager.database;
  */
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -375,7 +374,8 @@ public class MigrationTestHelper extends TestWatcher {
    * - @TranceLove
    */
   private SchemaBundle loadSchema(Context context, int version) throws IOException {
-    InputStream input = new FileInputStream("./schemas/" + mAssetsFolder + "/" + version + ".json");
+    InputStream input =
+        getClass().getResourceAsStream("/schemas/" + mAssetsFolder + "/" + version + ".json");
     return SchemaBundle.deserialize(input);
   }
 

@@ -36,7 +36,7 @@
     <string name="uninstall">Uninstall</string>
     <string name="play">Play store</string>
     <string name="properties">Properties</string>
-    <string name="copyingapk">"Copying APK to "</string>
+    <string name="copyingapks">Copying %d APK files to %s</string>
     <string name="delbook">Delete Bookmark</string>
     <string name="add_to_bookmarks">Add to Bookmarks</string>
     <string name="enterpath">Enter Path</string>
@@ -73,6 +73,7 @@
     <string name="compress">Compress</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+    <string name="info_glyph" translatable="false">&#9432;</string>
     <string name="dialog_delete_category_directories">Directories</string>
     <string name="dialog_delete_category_files">Files</string>
     <string name="dialog_delete_disclaimer">Deleting the items below will permanently remove them from your device and they cannot be recovered.</string>
@@ -108,6 +109,7 @@
     <string name="dark">Material Dark</string>
     <string name="daytime">Daytime</string>
     <string name="black">Black (for OLED)</string>
+    <string name="system">System (follow system theme)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Folders On Top</string>
@@ -152,7 +154,7 @@
     <string name="thumb_summary">Show Thumbnails of apps and images</string>
     <string name="thumb">Show Thumbnails</string>
     <string name="hidden">Show Hidden Files and Folders</string>
-    <string name="lastModifiedSummary">Show the date and time when the file was modified last time</string>
+    <string name="lastModifiedSummary">Show the date and time of last modification</string>
     <string name="lastModifiedPref">Show Last Modified Date and Time</string>
     <string name="size_pref_summary">Show size of files and number of items in folders</string>
     <string name="size_pref">Show Sizes</string>
@@ -620,11 +622,22 @@
     <string name="no_obtainable_info">There\'s no info about this file</string>
     <string name="reopen_from_source">Can\'t, please reopen from last app</string>
     <string name="no_file_error">Something went wrong, there\'s nothing to open</string>
+    <string name="file_too_long">The file is too long and cannot be edited, however you can read the first %d characters</string>
     <string name="file_read_only">The file opened is a read-only.</string>
     <string name="got_it">Got it!</string>
     <string name="encrypt_file_save_as">Save Encrypted File As&#8230;</string>
     <string name="encrypt_folder_save_as">Save Encrypted Folder As&#8230;</string>
+    <string name="encrypt_option_use_aze">Use Amaze Encryption Format</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>AESCrypt is an open source file encryption format based on AES encryption. It is also portable, can be decrypted with AESCrypt programs on other platforms.</p>
+        <p><a href="https://www.aescrypt.com" target="_blank>AESCrypt website</a></p>]]>
+    </string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>Amaze\'s Encryption Format is also based on AES encryption; but different from AESCrypt format, it can only be decrypted by this device; also you must not uninstall Amaze File Manager from this device nor change the way you lock screen, otherwise you will have no way to recover the encrypted file.</p>
+    ]]></string>
     <string name="encrypt_file_must_end_with_aze">Encrypted files must use \".aze\" as the file extension.</string>
+    <string name="encrypt_file_must_end_with_aes">Encrypted files must use \".aes\" as the file extension.</string>
+    <string name="error_aescrypt_decrypt_failed">Cannot decrypt \'%s\': \'%s\'</string>
     <string name="cannot_overwrite">Cannot overwrite file.</string>
     <string name="saved_single_file">File saved as \'%s\'.</string>
     <string name="saved_multi_files">%d files saved.</string>
@@ -715,22 +728,49 @@ You only need to do this once, until the next time you select a new location for
     <string name="android_data_prompt_saf_access_title">Grant SAF access</string>
     <string name="ftp_preference_saf_filesystem_title">Use legacy filesystem</string>
     <string name="ftp_preference_saf_filesystem">Enable this for support for using device external storage on newer Android versions</string>
-    <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been resetted to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
+    <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been reset to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
+    <string name="ftp_server_root_unavailable">You are choosing a path which requires root access. Please enable root explorer in settings if your device is rooted.</string>
+    <string name="ftp_server_root_filesystem_warning">You are choosing a path which requires root access, which enables read/write operations in the whole filesystem on your device, and it is dangerous - careless mistakes could brick your device!\n\nAre you sure?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
     <string name="error_empty_archive">\"%s\" is an empty archive.</string>
+    <string name="error_bad_archive_without_info">\"%s\" is a corrupted archive.</string>
+    <string name="error_bad_archive_with_info">\"%s\" is a corrupted archive.\nMessage from extractor: \"%s\"</string>
     <string name="security_error">File could not be opened using this app</string>
     <string name="cloud_drive_tooltip">Create a Google Drive™ connection for managing files from within Amaze File Manager.</string>
     <string name="signin_with_google_title">Authenticate to use Google Drive™</string>
     <string name="show_system_apps">Show system apps</string>
     <string name="system_apps">System apps</string>
-    <string name="third_party_apps">Third party apps</string>
     <string name="select_inverse">Select Inverse</string>
     <string name="select_by_type">Select by type</string>
     <string name="select_by_date">Select by date</string>
     <string name="select_similar">Select similar</string>
     <string name="error_fetching_google_play_product_list">Error fetching product list from Google Play.</string>
-    <string name="grant_all_files_permission"><html><body>Amaze needs all files permission to continue.
-        \nOn next screen, please select <b>Amaze</b> and select <b>Allow access to manage all files</b> option.
-            \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
+    <string name="grant_all_files_permission"><html><body>Since Android 11, Google requests File Managers to request user permission for managing all files on the device. Details <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">here</a>.
+        \n\nAmaze File Manager needs this permission too. After pressing &quot;Grant&quot;here, please select <b>Allow access to manage all files</b> option on the next screen.
+        \n\n<font color='#ff6347'><i>Canceling this dialog will exit the app.</i></font></body></html></string>
+    <string name="user_apps">User apps</string>
+    <string name="appearance">Appearance</string>
+    <string name="behavior">Behavior</string>
+    <string name="appearance_summary">Customize the theme, colors and appearance of the file manager</string>
+    <string name="ui_summary">Control what information to show, customize the sidebar, and toggle UI preferences</string>
+    <string name="behavior_summary">Modify behaviors such as advanced search and whether to open files as a new task</string>
+    <string name="security_summary">Set up password and encryption</string>
+
+    <string name="quick_desc">Files recently accessed through Amaze</string>
+    <string name="recent_desc">Recently created or modified files</string>
+    <string name="error_cannot_find_way_open">Could not find way to open the file</string>
+    <string name="error_cant_decompress_that_file">Cannot process the requested archive</string>
+    <string name="analyse_storage">Analyse Storage</string>
+    <string name="amaze_file_utilities" translatable="false">Amaze File Utilities</string>
+    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our offering that has inbuilt audio/video/image/document viewers, allows you to analyse storage files for blurry/dark images, duplicate files, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
+    <string name="download">Download</string>
+    <string name="wifip2p">Wi-Fi P2P</string>
+    <string name="amaze_utils_installed_alias">Thank you for installing Amaze File Utilities. You\'re being redirected to the app.</string>
+    <string name="image_viewer">Amaze Image Viewer</string>
+    <string name="video_player">Amaze Video Player</string>
+    <string name="amaze_audio_player">Amaze Music Player</string>
+    <string name="pdf_viewer">Amaze Pdf Viewer</string>
+    <string name="epub_viewer">Amaze Epub Viewer</string>
+    <string name="docx_viewer">Amaze Doc Viewer</string>
 </resources>
 

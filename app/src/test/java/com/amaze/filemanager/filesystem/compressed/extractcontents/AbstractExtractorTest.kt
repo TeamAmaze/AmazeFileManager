@@ -30,61 +30,45 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.file_operations.utils.UpdatePosition
-import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor.OnUpdate
 import com.amaze.filemanager.shadows.ShadowMultiDex
-import org.junit.After
-import org.junit.Assert.assertEquals
+import com.amaze.filemanager.test.randomBytes
+import org.junit.*
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
-import org.junit.Before
-import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowEnvironment
-import java.io.File
-import java.io.FileInputStream
-import java.io.FileOutputStream
-import java.io.IOException
+import java.io.*
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.time.ZoneId
-import java.time.ZonedDateTime
-import java.util.concurrent.CountDownLatch
+import java.util.*
+import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
 abstract class AbstractExtractorTest {
 
-    private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
-        2018,
-        5,
-        29,
-        10,
-        38,
-        0,
-        0,
-        ZoneId.of("UTC")
-    ).toInstant().toEpochMilli()
-
     protected abstract fun extractorClass(): Class<out Extractor>
     protected abstract val archiveType: String
+
+    private lateinit var systemTz: TimeZone
 
     /**
      * Test setup, copy archives to storage space
      */
     @Before
-    @Throws(Exception::class)
     fun setUp() {
         ShadowEnvironment.setExternalStorageState(Environment.MEDIA_MOUNTED)
         copyArchivesToStorage()
+        systemTz = TimeZone.getDefault()
+        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
     }
 
     /**
      * Post test clean up
      */
     @After
-    @Throws(Exception::class)
     fun tearDown() {
         ArchivePasswordCache.getInstance().clear()
         val extractedArchiveRoot = File(Environment.getExternalStorageDirectory(), "test-archive")
@@ -93,27 +77,38 @@ abstract class AbstractExtractorTest {
                 .map { obj: Path -> obj.toFile() }
                 .forEach { obj: File -> obj.delete() }
         }
+        TimeZone.setDefault(systemTz)
     }
 
     /**
-     * Test extractor ability to correct problematic archive entries for security
+     * Test extractor ability to extract files
      */
     @Test
-    @Suppress("StringLiteralDuplication")
-    fun testFixEntryName() {
+    open fun testExtractFiles() {
+        doTestExtractFiles()
+    }
+
+    protected abstract fun doTestExtractFiles()
+
+    /**
+     * Test extractor ability to throw [Extractor.BadArchiveNotice]
+     */
+    @Test
+    open fun testExtractBadArchive() {
+        val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
         val extractor = extractorClass()
             .getConstructor(
                 Context::class.java,
                 String::class.java,
                 String::class.java,
-                OnUpdate::class.java,
+                Extractor.OnUpdate::class.java,
                 UpdatePosition::class.java
             )
             .newInstance(
                 ApplicationProvider.getApplicationContext(),
-                archiveFile.absolutePath,
+                badArchive.absolutePath,
                 Environment.getExternalStorageDirectory().absolutePath,
-                object : OnUpdate {
+                object : Extractor.OnUpdate {
                     override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
                     override fun onUpdate(entryPath: String) = Unit
                     override fun isCancelled(): Boolean = false
@@ -121,107 +116,12 @@ abstract class AbstractExtractorTest {
                 },
                 ServiceWatcherUtil.UPDATE_POSITION
             )
-        assertEquals("test.txt", extractor.fixEntryName("test.txt"))
-        assertEquals("test.txt", extractor.fixEntryName("/test.txt"))
-        assertEquals("test.txt", extractor.fixEntryName("/////////test.txt"))
-        assertEquals("test/", extractor.fixEntryName("/test/"))
-        assertEquals("test/a/b/c/d/e/", extractor.fixEntryName("/test/a/b/c/d/e/"))
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("a/b/c/d/e/test.txt"))
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("/a/b/c/d/e/test.txt"))
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("///////a/b/c/d/e/test.txt"))
-
-        // It is known redundant slashes inside path components are NOT tampered.
-        assertEquals("a/b/c//d//e//test.txt", extractor.fixEntryName("a/b/c//d//e//test.txt"))
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("a/b/c/d/e/test.txt"))
-        assertEquals("test.txt", extractor.fixEntryName("\\test.txt"))
-        assertEquals("test.txt", extractor.fixEntryName("\\\\\\\\\\\\\\\\\\\\test.txt"))
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("\\a\\b\\c\\d\\e\\test.txt"))
-        assertEquals("a/b/c/d/e/test.txt", extractor.fixEntryName("\\a\\b/c\\d\\e/test.txt"))
-    }
-
-    /**
-     * Test extractor ability to extract files
-     */
-    @Test
-    @Throws(Exception::class)
-    open fun testExtractFiles() {
-        doTestExtractFiles()
-    }
-
-    @Throws(Exception::class)
-    protected fun doTestExtractFiles() {
-        val latch = CountDownLatch(1)
-        val extractor = extractorClass()
-            .getConstructor(
-                Context::class.java,
-                String::class.java,
-                String::class.java,
-                OnUpdate::class.java,
-                UpdatePosition::class.java
-            )
-            .newInstance(
-                ApplicationProvider.getApplicationContext(),
-                archiveFile.absolutePath,
-                Environment.getExternalStorageDirectory().absolutePath,
-                object : OnUpdate {
-                    override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
-                    override fun onUpdate(entryPath: String) = Unit
-                    override fun isCancelled(): Boolean = false
-                    override fun onFinish() {
-                        latch.countDown()
-                        try {
-                            verifyExtractedArchiveContents()
-                        } catch (e: IOException) {
-                            e.printStackTrace()
-                            fail("Error verifying extracted archive contents")
-                        }
-                    }
-                },
-                ServiceWatcherUtil.UPDATE_POSITION
-            )
-        extractor.extractEverything()
-        latch.await()
-    }
-
-    @Throws(IOException::class)
-    private fun verifyExtractedArchiveContents() {
-        File(Environment.getExternalStorageDirectory(), "test-archive").run {
-            assertTrue(exists())
-            assertTrue(File(this, "1").exists())
-            assertTrue(File(this, "2").exists())
-            assertTrue(File(this, "3").exists())
-            assertTrue(File(this, "4").exists())
-            assertTrue(File(this, "a").exists())
-            assertTrue(File(File(this, "1"), "8").exists())
-            assertTrue(File(File(this, "2"), "7").exists())
-            assertTrue(File(File(this, "3"), "6").exists())
-            assertTrue(File(File(this, "4"), "5").exists())
-            assertTrue(File(File(this, "a/b/c/d"), "lipsum.bin").exists())
-
-            File(File(this, "1"), "8").run {
-                assertTrue(FileInputStream(this).readBytes().size == 2)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
-            }
-
-            File(File(this, "2"), "7").run {
-                assertTrue(FileInputStream(this).readBytes().size == 3)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
-            }
-
-            File(File(this, "3"), "6").run {
-                assertTrue(FileInputStream(this).readBytes().size == 4)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
-            }
-
-            File(File(this, "4"), "5").run {
-                assertTrue(FileInputStream(this).readBytes().size == 5)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
-            }
-
-            File(File(this, "a/b/c/d"), "lipsum.bin").run {
-                assertTrue(FileInputStream(this).readBytes().size == 512)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
-            }
+        try {
+            extractor.extractEverything()
+            fail("BadArchiveNotice was not thrown")
+        } catch (ex: Extractor.BadArchiveNotice) {
+            // Pretend doing something to make codacy happy
+            assertTrue(true)
         }
     }
 
@@ -232,6 +132,11 @@ abstract class AbstractExtractorTest {
             FileInputStream(it).copyTo(
                 FileOutputStream(
                     File(Environment.getExternalStorageDirectory(), it.name)
+                )
+            )
+            ByteArrayInputStream(randomBytes()).copyTo(
+                FileOutputStream(
+                    File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
                 )
             )
         }

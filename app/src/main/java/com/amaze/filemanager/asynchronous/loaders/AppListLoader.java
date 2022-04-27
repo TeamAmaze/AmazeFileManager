@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.loaders;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -34,6 +35,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.text.format.Formatter;
 
 import androidx.loader.content.AsyncTaskLoader;
@@ -96,10 +98,18 @@ public class AppListLoader extends AsyncTaskLoader<List<AppDataParcelable>> {
         info = null;
       }
       boolean isSystemApp = isAppInSystemPartition(object) || isSignedBySystem(info, androidInfo);
+
+      List<String> splitPathList = null;
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP
+          && object.splitPublicSourceDirs != null) {
+        splitPathList = Arrays.asList(object.splitPublicSourceDirs);
+      }
+
       AppDataParcelable elem =
           new AppDataParcelable(
               label == null ? object.packageName : label,
               object.sourceDir,
+              splitPathList,
               object.packageName,
               object.flags + "_" + (info != null ? info.versionName : ""),
               Formatter.formatFileSize(getContext(), sourceDir.length()),

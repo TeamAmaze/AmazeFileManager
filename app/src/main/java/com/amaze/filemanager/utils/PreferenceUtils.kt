@@ -25,6 +25,8 @@ import android.graphics.Color
 object PreferenceUtils {
     const val DEFAULT_CURRENT_TAB = 1
 
+    const val DEFAULT_SAVED_PATHS = true
+
     @JvmStatic
     fun getStatusColor(color: Int): Int =
         Color.argb(

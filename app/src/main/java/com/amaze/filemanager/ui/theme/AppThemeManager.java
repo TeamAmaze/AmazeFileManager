@@ -28,16 +28,19 @@ import android.content.SharedPreferences;
 public class AppThemeManager {
   private SharedPreferences preferences;
   private AppTheme appTheme;
+  private final boolean isNightMode;
 
-  public AppThemeManager(SharedPreferences preferences) {
+  public AppThemeManager(SharedPreferences preferences, boolean isNightMode) {
     this.preferences = preferences;
-    String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "0");
-    appTheme = AppTheme.getTheme(Integer.parseInt(themeId)).getSimpleTheme();
+    this.isNightMode = isNightMode;
+    String themeId = preferences.getString(PreferencesConstants.FRAGMENT_THEME, "4");
+    appTheme =
+        AppTheme.getTheme(isNightMode, Integer.parseInt(themeId)).getSimpleTheme(isNightMode);
   }
 
   /** @return The current Application theme */
   public AppTheme getAppTheme() {
-    return appTheme.getSimpleTheme();
+    return appTheme.getSimpleTheme(isNightMode);
   }
 
   /**
@@ -48,10 +51,6 @@ public class AppThemeManager {
    */
   public AppThemeManager setAppTheme(AppTheme appTheme) {
     this.appTheme = appTheme;
-    preferences
-        .edit()
-        .putString(PreferencesConstants.FRAGMENT_THEME, Integer.toString(appTheme.getId()))
-        .apply();
     return this;
   }
 }

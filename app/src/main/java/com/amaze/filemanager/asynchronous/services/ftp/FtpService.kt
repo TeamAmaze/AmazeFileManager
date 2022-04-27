@@ -31,19 +31,26 @@ import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION_CODES.LOLLIPOP
 import android.os.Build.VERSION_CODES.M
+import android.os.Build.VERSION_CODES.N
+import android.os.Build.VERSION_CODES.Q
 import android.os.Environment
 import android.os.IBinder
+import android.os.PowerManager
 import android.os.SystemClock
 import android.provider.DocumentsContract
 import androidx.preference.PreferenceManager
+import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
+import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.ObtainableServiceBinder
+import com.amaze.filemanager.utils.PasswordUtil
 import org.apache.ftpserver.ConnectionConfigFactory
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
@@ -59,8 +66,10 @@ import java.net.NetworkInterface
 import java.net.UnknownHostException
 import java.security.GeneralSecurityException
 import java.security.KeyStore
+import java.util.*
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
+import kotlin.concurrent.thread
 
 /**
  * Created by yashwanthreddyg on 09-06-2016.
@@ -80,6 +89,7 @@ class FtpService : Service(), Runnable {
     private var password: String? = null
     private var isPasswordProtected = false
     private var isStartedByTile = false
+    private lateinit var wakeLock: PowerManager.WakeLock
 
     override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
         isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false)
@@ -95,11 +105,19 @@ class FtpService : Service(), Runnable {
                 return START_STICKY
             }
         }
-        serverThread = Thread(this)
-        serverThread!!.start()
+
+        serverThread = thread(block = this::run)
         val notification = FtpNotification.startNotification(applicationContext, isStartedByTile)
         startForeground(NotificationConstants.FTP_ID, notification)
         return START_NOT_STICKY
+    }
+
+    override fun onCreate() {
+        super.onCreate()
+
+        val powerManager = getSystemService(POWER_SERVICE) as PowerManager
+        wakeLock = powerManager.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, javaClass.name)
+        wakeLock.setReferenceCounted(false)
     }
 
     override fun onBind(intent: Intent): IBinder {
@@ -115,6 +133,8 @@ class FtpService : Service(), Runnable {
                 preferences.getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
             ) {
                 fileSystem = AndroidFileSystemFactory(applicationContext)
+            } else if (preferences.getBoolean(PREFERENCE_ROOTMODE, false)) {
+                fileSystem = RootFileSystemFactory()
             }
 
             val usernamePreference = preferences.getString(
@@ -124,8 +144,8 @@ class FtpService : Service(), Runnable {
             if (usernamePreference != DEFAULT_USERNAME) {
                 username = usernamePreference
                 runCatching {
-                    password = CryptUtil.decryptPassword(
-                        applicationContext, preferences.getString(KEY_PREFERENCE_PASSWORD, "")
+                    password = PasswordUtil.decryptPassword(
+                        applicationContext, preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!
                     )
                     isPasswordProtected = true
                 }.onFailure {
@@ -158,10 +178,11 @@ class FtpService : Service(), Runnable {
             if (preferences.getBoolean(KEY_PREFERENCE_SECURE, DEFAULT_SECURE)) {
                 try {
                     val keyStore = KeyStore.getInstance("BKS")
-                    keyStore.load(resources.openRawResource(R.raw.key), KEYSTORE_PASSWORD)
+                    val keyStorePassword = BuildConfig.FTP_SERVER_KEYSTORE_PASSWORD.toCharArray()
+                    keyStore.load(resources.openRawResource(R.raw.key), keyStorePassword)
                     val keyManagerFactory = KeyManagerFactory
                         .getInstance(KeyManagerFactory.getDefaultAlgorithm())
-                    keyManagerFactory.init(keyStore, KEYSTORE_PASSWORD)
+                    keyManagerFactory.init(keyStore, keyStorePassword)
                     val trustManagerFactory = TrustManagerFactory
                         .getInstance(TrustManagerFactory.getDefaultAlgorithm())
                     trustManagerFactory.init(keyStore)
@@ -170,7 +191,7 @@ class FtpService : Service(), Runnable {
                         trustManagerFactory,
                         ClientAuth.WANT,
                         "TLS",
-                        null,
+                        enabledCipherSuites,
                         "ftpserver"
                     )
                     fac.isImplicitSsl = true
@@ -202,12 +223,14 @@ class FtpService : Service(), Runnable {
     }
 
     override fun onDestroy() {
-        serverThread?.interrupt().also {
+        wakeLock.release()
+        serverThread?.let { serverThread ->
+            serverThread.interrupt()
             // wait 10 sec for server thread to finish
-            serverThread!!.join(10000)
+            serverThread.join(10000)
 
-            if (!serverThread!!.isAlive) {
-                serverThread = null
+            if (!serverThread.isAlive) {
+                Companion.serverThread = null
             }
             server?.stop().also {
                 EventBus.getDefault().post(FtpReceiverActions.STOPPED)
@@ -245,10 +268,9 @@ class FtpService : Service(), Runnable {
         const val KEY_PREFERENCE_SECURE = "ftp_secure"
         const val KEY_PREFERENCE_READONLY = "ftp_readonly"
         const val KEY_PREFERENCE_SAF_FILESYSTEM = "ftp_saf_filesystem"
+        const val KEY_PREFERENCE_ROOT_FILESYSTEM = "ftp_root_filesystem"
         const val INITIALS_HOST_FTP = "ftp://"
         const val INITIALS_HOST_SFTP = "ftps://"
-        private const val WIFI_AP_ADDRESS_PREFIX = "192.168.43."
-        private val KEYSTORE_PASSWORD = "vishal007".toCharArray()
 
         // RequestStartStopReceiver listens for these actions to start/stop this server
         const val ACTION_START_FTPSERVER =
@@ -257,6 +279,49 @@ class FtpService : Service(), Runnable {
             "com.amaze.filemanager.services.ftpservice.FTPReceiver.ACTION_STOP_FTPSERVER"
         const val TAG_STARTED_BY_TILE = "started_by_tile"
         // attribute of action_started, used by notification
+
+        private lateinit var _enabledCipherSuites: Array<String>
+
+        init {
+            _enabledCipherSuites = LinkedList<String>().apply {
+                if (SDK_INT >= Q) {
+                    add("TLS_AES_128_GCM_SHA256")
+                    add("TLS_AES_256_GCM_SHA384")
+                    add("TLS_CHACHA20_POLY1305_SHA256")
+                }
+                if (SDK_INT >= N) {
+                    add("TLS_ECDHE_ECDSA_WITH_CHACHA20_POLY1305_SHA256")
+                    add("TLS_ECDHE_PSK_WITH_CHACHA20_POLY1305_SHA256")
+                }
+                if (SDK_INT >= LOLLIPOP) {
+                    add("TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA")
+                    add("TLS_ECDHE_ECDSA_WITH_AES_128_GCM_SHA256")
+                    add("TLS_ECDHE_ECDSA_WITH_AES_256_CBC_SHA")
+                    add("TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384")
+                    add("TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA")
+                    add("TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256")
+                    add("TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA")
+                    add("TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384")
+                    add("TLS_RSA_WITH_AES_128_GCM_SHA256")
+                    add("TLS_RSA_WITH_AES_256_GCM_SHA384")
+                }
+                if (SDK_INT < LOLLIPOP) {
+                    add("TLS_RSA_WITH_AES_128_CBC_SHA")
+                    add("TLS_RSA_WITH_AES_256_CBC_SHA")
+                }
+            }.toTypedArray()
+        }
+        /**
+         * Return a list of available ciphers for ftpserver.
+         *
+         * Added SDK detection since some ciphers are available only on higher versions, and they
+         * have to be on top of the list to make a more secure SSL
+         *
+         * @see [org.apache.ftpserver.ssl.SslConfiguration]
+         * @see [javax.net.ssl.SSLEngine]
+         */
+        @JvmStatic
+        val enabledCipherSuites = _enabledCipherSuites
 
         private var serverThread: Thread? = null
         private var server: FtpServer? = null
@@ -285,9 +350,10 @@ class FtpService : Service(), Runnable {
          * Indicator whether FTP service is running
          */
         @JvmStatic
-        fun isRunning(): Boolean = server?.let {
-            !it.isStopped
-        } ?: false
+        fun isRunning(): Boolean {
+            val server = server ?: return false
+            return !server.isStopped
+        }
 
         /**
          * Is the device connected to local network, either Ethernet or Wifi?
@@ -297,7 +363,7 @@ class FtpService : Service(), Runnable {
             val cm = context.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
             var connected: Boolean
             if (SDK_INT >= M) {
-                return cm.activeNetwork?.let { activeNetwork ->
+                connected = cm.activeNetwork?.let { activeNetwork ->
                     cm.getNetworkCapabilities(activeNetwork)?.let { ni ->
                         ni.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) or
                             ni.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
@@ -312,13 +378,15 @@ class FtpService : Service(), Runnable {
                             ) != 0
                         )
                 } ?: false
-                if (!connected) {
-                    connected = runCatching {
-                        NetworkInterface.getNetworkInterfaces().toList().find { netInterface ->
-                            netInterface.displayName.startsWith("rndis")
-                        }
-                    }.getOrElse { null } != null
-                }
+            }
+
+            if (!connected) {
+                connected = runCatching {
+                    NetworkInterface.getNetworkInterfaces().toList().find { netInterface ->
+                        netInterface.displayName.startsWith("rndis") or
+                            netInterface.displayName.startsWith("wlan")
+                    }
+                }.getOrElse { null } != null
             }
 
             return connected
@@ -342,20 +410,11 @@ class FtpService : Service(), Runnable {
         }
 
         /**
-         * Is the device's wifi hotspot enabled?
-         */
-        @JvmStatic
-        fun isEnabledWifiHotspot(context: Context): Boolean {
-            val wm = context.applicationContext.getSystemService(WIFI_SERVICE) as WifiManager
-            return callIsWifiApEnabled(wm)
-        }
-
-        /**
          * Determine device's IP address
          */
         @JvmStatic
         fun getLocalInetAddress(context: Context): InetAddress? {
-            if (!isConnectedToLocalNetwork(context) && !isEnabledWifiHotspot(context)) {
+            if (!isConnectedToLocalNetwork(context)) {
                 return null
             }
             if (isConnectedToWifi(context)) {
@@ -366,16 +425,9 @@ class FtpService : Service(), Runnable {
             runCatching {
                 NetworkInterface.getNetworkInterfaces().iterator().forEach { netinterface ->
                     netinterface.inetAddresses.iterator().forEach { address ->
-                        if (address.hostAddress.startsWith(WIFI_AP_ADDRESS_PREFIX) &&
-                            isEnabledWifiHotspot(context)
-                        ) {
-                            return address
-                        }
-
                         // this is the condition that sometimes gives problems
                         if (!address.isLoopbackAddress &&
-                            !address.isLinkLocalAddress &&
-                            !isEnabledWifiHotspot(context)
+                            !address.isLinkLocalAddress
                         ) {
                             return address
                         }
@@ -407,14 +459,6 @@ class FtpService : Service(), Runnable {
 
         private fun getPort(preferences: SharedPreferences): Int {
             return preferences.getInt(PORT_PREFERENCE_KEY, DEFAULT_PORT)
-        }
-
-        private fun callIsWifiApEnabled(wifiManager: WifiManager): Boolean = runCatching {
-            val method = wifiManager.javaClass.getDeclaredMethod("isWifiApEnabled")
-            method.invoke(wifiManager) as Boolean
-        }.getOrElse {
-            it.printStackTrace()
-            false
         }
     }
 }

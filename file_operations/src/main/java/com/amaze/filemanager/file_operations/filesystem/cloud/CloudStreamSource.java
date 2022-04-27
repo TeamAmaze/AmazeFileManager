@@ -20,10 +20,10 @@
 
 package com.amaze.filemanager.file_operations.filesystem.cloud;
 
-import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStream;
-
 import java.io.IOException;
 import java.io.InputStream;
+
+import com.amaze.filemanager.file_operations.filesystem.streams.RandomAccessStream;
 
 public class CloudStreamSource extends RandomAccessStream {
   protected long fp;

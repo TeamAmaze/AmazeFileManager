@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFiles;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.AbstractSftpServerTest;
@@ -82,17 +83,18 @@ public class MoveFilesTest extends AbstractSftpServerTest {
     filesToCopy.add(file);
     ArrayList<ArrayList<HybridFileParcelable>> filesToCopyPerFolder = new ArrayList<>();
     filesToCopyPerFolder.add(filesToCopy);
+
+    ArrayList<String> paths = new ArrayList<>();
+    paths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
     MoveFiles task =
         new MoveFiles(
             filesToCopyPerFolder,
             false,
-            null,
             ApplicationProvider.getApplicationContext(),
-            OpenMode.FILE);
+            OpenMode.FILE,
+            paths);
 
-    ArrayList<String> paths = new ArrayList<>();
-    paths.add(Environment.getExternalStorageDirectory().getAbsolutePath());
-    task.doInBackground(paths);
+    task.call();
 
     assertFalse(sourceFile.exists());
     assertTrue(new File(Environment.getExternalStorageDirectory(), "testfile.bin").exists());

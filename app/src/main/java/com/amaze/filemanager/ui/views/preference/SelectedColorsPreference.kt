@@ -30,6 +30,7 @@ import androidx.preference.DialogPreference
 import androidx.preference.PreferenceViewHolder
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog
+import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.ui.views.CircularColorsView
 
 /**
@@ -63,7 +64,13 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
         }
     }
 
-    override fun getSummary(): CharSequence = ""
+    override fun getSummary(): CharSequence {
+        val colorPickerPref = sharedPreferences.getInt(
+            PreferencesConstants.PREFERENCE_COLOR_CONFIG,
+            ColorPickerDialog.NO_DATA
+        )
+        return context.getString(ColorPickerDialog.getTitle(colorPickerPref))
+    }
 
     override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
         return a!!.getString(index)!!

@@ -27,7 +27,7 @@ import org.junit.Test
 import java.io.File
 import java.io.IOException
 
-abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractExtractorTest() {
+abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractArchiveExtractorTest() {
 
     /**
      * Test extract files without password.

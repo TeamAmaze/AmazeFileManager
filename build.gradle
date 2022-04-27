@@ -3,19 +3,20 @@
 buildscript {
     ext {
         kotlin_version = "1.5.0"
-        robolectricVersion = '4.3.1'
+        robolectricVersion = '4.7'
         glideVersion = '4.11.0'
-        sshjVersion = '0.26.0'
+        sshjVersion = '0.32.0'
         jcifsVersion = '2.1.6'
         fabSpeedDialVersion = '3.1.1'
-        roomVersion = '2.2.5'
+        roomVersion = '2.4.0'
         bouncyCastleVersion = '1.68'
         awaitilityVersion = "3.1.6"
-        androidMaterialVersion = "1.3.0"
-        androidXFragmentVersion = "1.3.0"
-        androidXAppCompatVersion = "1.2.0"
-        androidXTestVersion = "1.3.0"
-        androidXTestExtVersion = "1.1.2"
+        androidMaterialVersion = "1.4.0"
+        androidXFragmentVersion = "1.3.6"
+        androidXAppCompatVersion = "1.3.1"
+        androidXTestVersion = "1.4.0"
+        androidXTestExtVersion = "1.1.3"
+        uiAutomatorVersion = "2.2.0"
         junitVersion = "4.13.2"
         slf4jVersion = "1.7.25"
         mockitoVersion = "3.9.0"
@@ -23,10 +24,13 @@ buildscript {
         androidBillingVersion = "4.0.0"
         junrarVersion = "7.4.0"
         zip4jVersion = "2.6.4"
-        espressoVersion = "3.3.0"
+        espressoVersion = "3.4.0"
         androidXPrefVersion = "1.1.1"
         materialDialogsVersion = "0.9.6.0"
         jacocoVersion = "0.8.7"
+        commonsCompressVersion = "1.20"
+        libsuVersion = "3.2.1"
+        mockkVersion = "1.12.2"
     }
     repositories {
         google()
@@ -35,26 +39,25 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.2.1'
+        classpath 'com.android.tools.build:gradle:7.1.2'
         classpath 'com.hiya:jacoco-android:0.2'
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath 'com.akaita.android:easylauncher:1.3.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
+        classpath "com.project.starter:easylauncher:4.0.0"
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
 }
 
 plugins {
-    id "com.diffplug.spotless" version "5.14.2"
+    id "com.diffplug.spotless" version "6.0.5"
 }
 
 allprojects {
-
     repositories {
         google()
+        mavenCentral()
         maven { url "https://jitpack.io" }
         maven { url "https://jcenter.bintray.com" }
-        mavenCentral()
     }
     tasks.withType(Test) {
         maxParallelForks = 4
@@ -68,14 +71,17 @@ spotless {
     java {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.java'
-        googleJavaFormat('1.7')
+        target 'commons_compress_7z/src/**/*.java'
+        target 'file_operations/src/**/*.java'
+        googleJavaFormat('1.13.0')
         removeUnusedImports() // removes any unused imports
         importOrder 'java', 'javax', 'org', 'com', 'android', 'androidx', ''
     }
     kotlin {
         licenseHeaderFile 'spotless.license-java'
         target 'app/src/**/*.kt'
-        ktlint("0.39.0").userData(['disabled_rules': 'no-wildcard-imports',
+        target 'file_operations/src/**/*.kt'
+        ktlint("0.43.2").userData(['disabled_rules': 'no-wildcard-imports',
                                    'kotlin_imports_layout': 'idea', 'indent_size': '4',
                                    'max_line_length': '100'])
         trimTrailingWhitespace()
@@ -98,22 +104,26 @@ configurations {
     robo27
     robo28
     robo29
+    robo30
+    robo31
 }
 
 dependencies {
-    robo16 "org.robolectric:android-all:4.1.2_r1-robolectric-r1"
-    robo17 "org.robolectric:android-all:4.2.2_r1.2-robolectric-r1"
-    robo18 "org.robolectric:android-all:4.3_r2-robolectric-r1"
-    robo19 "org.robolectric:android-all:4.4_r1-robolectric-r2"
-    robo21 "org.robolectric:android-all:5.0.2_r3-robolectric-r0"
-    robo22 "org.robolectric:android-all:5.1.1_r9-robolectric-r2"
-    robo23 "org.robolectric:android-all:6.0.1_r3-robolectric-r1"
-    robo24 "org.robolectric:android-all:7.0.0_r1-robolectric-r1"
-    robo25 "org.robolectric:android-all:7.1.0_r7-robolectric-r1"
-    robo26 "org.robolectric:android-all:8.0.0_r4-robolectric-r1"
-    robo27 "org.robolectric:android-all:8.1.0-robolectric-4611349"
-    robo28 "org.robolectric:android-all:9-robolectric-4913185-2"
-    robo29 "org.robolectric:android-all:10-robolectric-5803371"
+    robo16 "org.robolectric:android-all-instrumented:4.1.2_r1-robolectric-r1-i2"
+    robo17 "org.robolectric:android-all-instrumented:4.2.2_r1.2-robolectric-r1-i2"
+    robo18 "org.robolectric:android-all-instrumented:4.3_r2-robolectric-r1-i2"
+    robo19 "org.robolectric:android-all-instrumented:4.4_r1-robolectric-r2-i2"
+    robo21 "org.robolectric:android-all-instrumented:5.0.2_r3-robolectric-r0-i2"
+    robo22 "org.robolectric:android-all-instrumented:5.1.1_r9-robolectric-r2-i2"
+    robo23 "org.robolectric:android-all-instrumented:6.0.1_r3-robolectric-r1-i2"
+    robo24 "org.robolectric:android-all-instrumented:7.0.0_r1-robolectric-r1-i2"
+    robo25 "org.robolectric:android-all-instrumented:7.1.0_r7-robolectric-r1-i2"
+    robo26 "org.robolectric:android-all-instrumented:8.0.0_r4-robolectric-r1-i2"
+    robo27 "org.robolectric:android-all-instrumented:8.1.0-robolectric-4611349-i2"
+    robo28 "org.robolectric:android-all-instrumented:9-robolectric-4913185-2-i2"
+    robo29 "org.robolectric:android-all-instrumented:10-robolectric-5803371-i2"
+    robo30 "org.robolectric:android-all-instrumented:11-robolectric-6757853-i2"
+    robo31 "org.robolectric:android-all-instrumented:12-robolectric-7732740-i2"
 }
 
 def robolectricDependencies = "${rootProject.buildDir.path}/robolectric"
@@ -132,6 +142,8 @@ task fetchRobolectricDependencies(type: Copy) {
     from configurations.robo27
     from configurations.robo28
     from configurations.robo29
+    from configurations.robo30
+    from configurations.robo31
     into robolectricDependencies
 }
 

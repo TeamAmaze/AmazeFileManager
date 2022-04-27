@@ -36,7 +36,6 @@
     <string name="uninstall">Deinstallieren</string>
     <string name="play">Play Store</string>
     <string name="properties">Eigenschaften</string>
-    <string name="copyingapk">Kopiere apk nach </string>
     <string name="delbook">Lesezeichen löschen</string>
     <string name="add_to_bookmarks">Zu Lesezeichen hinzufügen</string>
     <string name="enterpath">Pfad eingeben</string>
@@ -655,16 +654,26 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).\n\n
 
 Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für die Datenfreigabe verwenden.</string>
+    <string name="android_data_prompt_saf_access">Seit Android 10 gibt es bestimmte Einschränkungen auf Verzeichnisse. Für den Zugriff ist das Storage Access Framework (SAF) erforderlich.\n\nBitte erlauben Sie Amaze den Zugriff auf das Verzeichnis von dem systemweiten Dateimanager aus, durch Drücken auf \"Zugriff erlauben\".</string>
+    <string name="android_data_prompt_saf_access_title">Zugriff auf SAF erlauben</string>
+    <string name="ftp_preference_saf_filesystem_title">Älteres Dateisystem verwenden</string>
+    <string name="ftp_preference_saf_filesystem">Auf neuen Android-Versionen aktivieren, für die Unterstützung zur Verwendung externer Speichergeräte</string>
+    <string name="ftp_server_fallback_path_reset_prompt">Der freigegebene Pfad des FTP-Servers wurde auf den internen Speicher zurückgesetzt, da Sie zur Legacy-Dateisystemimplementierung zurückwechseln. Bitte wählen Sie über das Menü oben rechts einen neuen Pfad aus.</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Fehler beim Öffnen der URI \"%s\", um diese zu lesen.</string>
     <string name="error_empty_archive">\"%s\" ist ein leeres Archiv.</string>
     <string name="security_error">Datei konnte mit dieser App nicht geöffnet werden </string>
     <string name="cloud_drive_tooltip">Eine Verbindung mit Google Drive™ erstellen, um Dateien innerhalb Amaze File Manager zu verwalten.</string>
     <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
     <string name="show_system_apps">System-Apps anzeigen</string>
     <string name="system_apps">System-Apps</string>
-    <string name="third_party_apps">Dritt-Anbieter-Apps</string>
     <string name="select_inverse">Auswal umkehren</string>
     <string name="select_by_type">Nach Typ auswählen</string>
     <string name="select_by_date">Nach Datum auswählen</string>
     <string name="select_similar">Ähnliche auswählen</string>
+    <string name="error_fetching_google_play_product_list">Fehler beim Abruf der Produktliste von Google Play.</string>
+    <string name="grant_all_files_permission"><html><body>Amaze benötigt die Dateien und Medien Berechtigung zum Fortfahren.
+ \nIm nächsten Dialog, wählen Sie bitte <b>Amaze</b> und drücken die Option <b>Zugriff für alle Dateien erlauben</b>.
+ \n\n<font color='#ff6347'><i>Diesen Dialog abzubrechen, wird die App beenden.</i></font></body></html></string>
+    <string name="user_apps">Dritt-Anbieter-Apps</string>
 </resources>
 

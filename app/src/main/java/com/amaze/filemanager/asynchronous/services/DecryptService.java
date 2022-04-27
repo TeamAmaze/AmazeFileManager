@@ -20,10 +20,28 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
-import java.util.ArrayList;
+import static com.amaze.filemanager.asynchronous.services.EncryptService.TAG_PASSWORD;
+
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.IBinder;
+import android.util.Log;
+import android.widget.RemoteViews;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.asynctasks.Task;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
@@ -33,24 +51,13 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.AESCrypt;
 import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.IBinder;
-import android.widget.RemoteViews;
-
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 20:59. */
 public class DecryptService extends AbstractProgressiveService {
@@ -61,21 +68,22 @@ public class DecryptService extends AbstractProgressiveService {
 
   public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
-  private Context context;
-  private IBinder mBinder = new ObtainableServiceBinder<>(this);
-  private ProgressHandler progressHandler = new ProgressHandler();
+  private static final String TAG = DecryptService.class.getSimpleName();
+
   private NotificationManager notificationManager;
   private NotificationCompat.Builder notificationBuilder;
+  private Context context;
+  private final IBinder mBinder = new ObtainableServiceBinder<>(this);
+  private final ProgressHandler progressHandler = new ProgressHandler();
   private ProgressListener progressListener;
   // list of data packages, to initiate chart in process viewer fragment
-  private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
+  private final ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
   private ServiceWatcherUtil serviceWatcherUtil;
-  private long totalSize = 0l;
+  private long totalSize = 0L;
   private String decryptPath;
   private HybridFileParcelable baseFile;
-  private ArrayList<HybridFile> failedOps = new ArrayList<>();
-  private int accentColor;
-  private SharedPreferences sharedPreferences;
+  private final ArrayList<HybridFile> failedOps = new ArrayList<>();
+  private String password;
   private RemoteViews customSmallContentViews, customBigContentViews;
 
   @Override
@@ -90,10 +98,11 @@ public class DecryptService extends AbstractProgressiveService {
   public int onStartCommand(Intent intent, int flags, int startId) {
 
     baseFile = intent.getParcelableExtra(TAG_SOURCE);
+    password = intent.getStringExtra(TAG_PASSWORD);
+    decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
 
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    accentColor =
-        ((AppConfig) getApplication())
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    int accentColor = ((AppConfig) getApplication())
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
@@ -130,74 +139,21 @@ public class DecryptService extends AbstractProgressiveService {
         .setCustomHeadsUpContentView(customSmallContentViews)
         .setStyle(new NotificationCompat.DecoratedCustomViewStyle())
         .addAction(action)
+        .setColor(accentColor)
         .setOngoing(true)
-        .setColor(accentColor);
+        .setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
 
-    decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
-    notificationBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
     NotificationConstants.setMetadata(
-        context, notificationBuilder, NotificationConstants.TYPE_NORMAL);
+        getApplicationContext(), notificationBuilder, NotificationConstants.TYPE_NORMAL);
 
-    startForeground(NotificationConstants.DECRYPT_ID, notificationBuilder.build());
+    startForeground(getNotificationId(), notificationBuilder.build());
     initNotificationViews();
 
     super.onStartCommand(intent, flags, startId);
-
     super.progressHalted();
-    new DecryptService.BackgroundTask().execute();
+    TaskKt.fromTask(new BackgroundTask());
 
     return START_NOT_STICKY;
-  }
-
-  class BackgroundTask extends AsyncTask<Void, Void, Void> {
-
-    @Override
-    protected Void doInBackground(Void... params) {
-      String baseFileFolder =
-          baseFile.isDirectory()
-              ? baseFile.getPath()
-              : baseFile.getPath().substring(0, baseFile.getPath().lastIndexOf('/'));
-
-      if (baseFile.isDirectory()) totalSize = baseFile.folderSize(context);
-      else totalSize = baseFile.length(context);
-
-      progressHandler.setSourceSize(1);
-      progressHandler.setTotalSize(totalSize);
-      progressHandler.setProgressListener((speed) -> publishResults(speed, false, false));
-      serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
-
-      addFirstDatapoint(
-          baseFile.getName(context), 1, totalSize, false); // we're using encrypt as move flag false
-
-      if (FileProperties.checkFolder(baseFileFolder, context) == 1) {
-        serviceWatcherUtil.watch(DecryptService.this);
-
-        // we're here to decrypt, we'll decrypt at a custom path.
-        // the path is to the same directory as in encrypted one in normal case
-        // and the cache directory in case we're here because of the viewer
-        try {
-          new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps);
-        } catch (Exception e) {
-          e.printStackTrace();
-          failedOps.add(baseFile);
-        }
-      }
-
-      return null;
-    }
-
-    @Override
-    protected void onPostExecute(Void aVoid) {
-      super.onPostExecute(aVoid);
-
-      serviceWatcherUtil.stopWatch();
-      finalizeNotification(failedOps, false);
-
-      Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);
-      intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
-      sendBroadcast(intent);
-      stopSelf();
-    }
   }
 
   @Override
@@ -253,6 +209,67 @@ public class DecryptService extends AbstractProgressiveService {
   @Override
   protected void clearDataPackages() {
     dataPackages.clear();
+  }
+
+  class BackgroundTask implements Task<Long, Callable<Long>> {
+
+    @Override
+    public void onError(@NonNull Throwable error) {
+      error.printStackTrace();
+    }
+
+    @Override
+    public void onFinish(Long value) {
+      serviceWatcherUtil.stopWatch();
+      finalizeNotification(failedOps, false);
+
+      Intent intent = new Intent(EncryptDecryptUtils.DECRYPT_BROADCAST);
+      intent.putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, "");
+      sendBroadcast(intent);
+      stopSelf();
+    }
+
+    @NonNull
+    @Override
+    public Callable<Long> getTask() {
+      return () -> {
+        String baseFileFolder =
+                baseFile.isDirectory()
+                        ? baseFile.getPath()
+                        : baseFile.getPath().substring(0, baseFile.getPath().lastIndexOf('/'));
+
+        if (baseFile.isDirectory()) totalSize = baseFile.folderSize(context);
+        else totalSize = baseFile.length(context);
+
+        progressHandler.setSourceSize(1);
+        progressHandler.setTotalSize(totalSize);
+        progressHandler.setProgressListener((speed) -> publishResults(speed, false, false));
+        serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
+
+        addFirstDatapoint(
+                baseFile.getName(context),
+                1,
+                totalSize,
+                false); // we're using encrypt as move flag false
+
+        if (FileProperties.checkFolder(baseFileFolder, context) == 1) {
+          serviceWatcherUtil.watch(DecryptService.this);
+
+          // we're here to decrypt, we'll decrypt at a custom path.
+          // the path is to the same directory as in encrypted one in normal case
+          // and the cache directory in case we're here because of the viewer
+          try {
+            new CryptUtil(context, baseFile, decryptPath, progressHandler, failedOps, password);
+          } catch (AESCrypt.DecryptFailureException e) {
+
+          } catch (Exception e) {
+            Log.e(TAG, "Error decrypting " + baseFile.getPath(), e);
+            failedOps.add(baseFile);
+          }
+        }
+        return totalSize;
+      };
+    }
   }
 
   @Override

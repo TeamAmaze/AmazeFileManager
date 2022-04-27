@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        app:defaultValue="true"
+        app:key="sidebar_quickaccess_enable"
+        app:title="@string/show_quick_access_pref_title" />
+
+    <PreferenceCategory
+        app:dependency="sidebar_quickaccess_enable"
+        app:key="bookmarks_list"
+        app:title="@string/show_quick_access_pref">
+        <SwitchPreference
+            android:summary="@string/quick_desc"
+            app:defaultValue="true"
+            app:key="fastaccess"
+            app:title="@string/quick" />
+        <SwitchPreference
+            android:summary="@string/recent_desc"
+            app:defaultValue="true"
+            app:key="recent"
+            app:title="@string/recent" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:key="image"
+            app:title="@string/images" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:key="video"
+            app:title="@string/videos" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:key="audio"
+            app:title="@string/audio" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:key="documents"
+            app:title="@string/documents" />
+        <SwitchPreference
+            app:defaultValue="true"
+            app:key="apks"
+            app:title="@string/apks" />
+    </PreferenceCategory>
+</PreferenceScreen>

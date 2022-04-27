@@ -47,10 +47,10 @@ import androidx.annotation.NonNull;
 
 public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
 
-  private Cursor data;
-  private WeakReference<MainActivity> mainActivity;
-  private CloudHandler cloudHandler;
-  private DataUtils dataUtils;
+  private final Cursor data;
+  private final WeakReference<MainActivity> mainActivity;
+  private final CloudHandler cloudHandler;
+  private final DataUtils dataUtils;
 
   public CloudLoaderAsyncTask(MainActivity mainActivity, CloudHandler cloudHandler, Cursor data) {
     this.data = data;

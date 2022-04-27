@@ -65,7 +65,7 @@ import java.io.BufferedReader
 import java.lang.ref.WeakReference
 import java.security.KeyPair
 import java.security.PublicKey
-import java.util.Collections
+import java.util.*
 
 /** SSH/SFTP connection setup dialog.  */
 class SftpConnectDialog : DialogFragment() {
@@ -126,7 +126,7 @@ class SftpConnectDialog : DialogFragment() {
             .title(R.string.scp_connection)
             .autoDismiss(false)
             .customView(binding.root, true)
-            .theme(utilsProvider.appTheme.materialDialogTheme)
+            .theme(utilsProvider.appTheme.getMaterialDialogTheme(context))
             .negativeText(R.string.cancel)
             .positiveText(if (edit) R.string.update else R.string.create)
             .positiveColor(accentColor)
@@ -270,38 +270,38 @@ class SftpConnectDialog : DialogFragment() {
 
     private fun handleOnPositiveButton(edit: Boolean):
         MaterialDialog.SingleButtonCallback =
-            MaterialDialog.SingleButtonCallback { _, _ ->
-                createConnectionSettings().run {
-                    // Get original SSH host key
-                    AppConfig.getInstance().utilsHandler.getSshHostKey(
+        MaterialDialog.SingleButtonCallback { _, _ ->
+            createConnectionSettings().run {
+                // Get original SSH host key
+                AppConfig.getInstance().utilsHandler.getSshHostKey(
+                    SshClientUtils.deriveSftpPathFrom(
+                        hostname,
+                        port,
+                        defaultPath,
+                        username,
+                        arguments?.getString(ARG_PASSWORD, null),
+                        selectedParsedKeyPair
+                    )
+                )?.let { sshHostKey ->
+                    SshConnectionPool.removeConnection(
                         SshClientUtils.deriveSftpPathFrom(
                             hostname,
                             port,
                             defaultPath,
                             username,
-                            arguments?.getString(ARG_PASSWORD, null),
+                            password,
                             selectedParsedKeyPair
                         )
-                    )?.let { sshHostKey ->
-                        SshConnectionPool.removeConnection(
-                            SshClientUtils.deriveSftpPathFrom(
-                                hostname,
-                                port,
-                                defaultPath,
-                                username,
-                                password,
-                                selectedParsedKeyPair
-                            )
-                        ) {
-                            reconnectToServerToVerifyHostFingerprint(
-                                this,
-                                sshHostKey,
-                                edit
-                            )
-                        }
-                    } ?: firstConnectToServer(this, edit)
-                }
+                    ) {
+                        reconnectToServerToVerifyHostFingerprint(
+                            this,
+                            sshHostKey,
+                            edit
+                        )
+                    }
+                } ?: firstConnectToServer(this, edit)
             }
+        }
 
     private fun firstConnectToServer(
         connectionSettings: ConnectionSettings,
@@ -515,7 +515,7 @@ class SftpConnectDialog : DialogFragment() {
         AppConfig.getInstance().runInBackground {
             AppConfig.getInstance().utilsHandler.updateSsh(
                 connectionName,
-                requireArguments().getString(ARG_NAME),
+                requireArguments().getString(ARG_NAME)!!,
                 encryptedPath,
                 hostKeyFingerprint,
                 selectedParsedKeyPairName,

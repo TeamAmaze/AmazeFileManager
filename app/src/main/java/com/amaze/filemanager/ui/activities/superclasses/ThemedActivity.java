@@ -30,9 +30,11 @@ import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.app.ActivityManager;
+import android.content.res.Configuration;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -43,12 +45,14 @@ import android.view.WindowManager;
 import android.widget.FrameLayout;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 
 /** Created by arpitkh996 on 03-03-2016. */
 public class ThemedActivity extends PreferenceActivity {
+  private int uiModeNight = -1;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
@@ -101,14 +105,42 @@ public class ThemedActivity extends PreferenceActivity {
       } else {
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
       }
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
+        window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          window.setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          window.setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          window.setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
     } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
         || SDK_INT == Build.VERSION_CODES.KITKAT) {
       setKitkatStatusBarMargin(parentView);
       setKitkatStatusBarTint();
     }
+  }
 
-    if (getBoolean(PREFERENCE_COLORED_NAVIGATION) && SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+  @Override
+  public void onConfigurationChanged(@NonNull Configuration newConfig) {
+    super.onConfigurationChanged(newConfig);
+
+    final int newUiModeNight = newConfig.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+
+    // System theme change
+    if (uiModeNight != newUiModeNight) {
+      uiModeNight = newUiModeNight;
+
+      if (getPrefs().getString(PreferencesConstants.FRAGMENT_THEME, "4").equals("4")) {
+        getUtilsProvider().getThemeManager().setAppTheme(AppTheme.getTheme(this, 4));
+        // Recreate activity, handling saved state
+        //
+        // Not smooth, but will only be called if the user changes the system theme, not
+        // the app theme.
+        recreate();
+      }
     }
   }
 
@@ -145,7 +177,7 @@ public class ThemedActivity extends PreferenceActivity {
   }
 
   void setTheme() {
-    AppTheme theme = getAppTheme().getSimpleTheme();
+    AppTheme theme = getAppTheme().getSimpleTheme(this);
     if (Build.VERSION.SDK_INT >= 21) {
 
       String stringRepresentation = String.format("#%06X", (0xFFFFFF & getAccent()));
@@ -273,6 +305,8 @@ public class ThemedActivity extends PreferenceActivity {
   @Override
   protected void onResume() {
     super.onResume();
+
+    uiModeNight = getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     setTheme();
   }
 }
