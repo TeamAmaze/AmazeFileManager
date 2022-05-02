@@ -38,7 +38,13 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+
+    <queries>
+        <intent>
+            <action android:name="android.intent.action.VIEW" />
+            <data android:mimeType="*/*" />
+        </intent>
+    </queries>
 
     <uses-feature
         android:name="android.hardware.touchscreen"
@@ -61,7 +67,8 @@
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
             android:theme="@style/appCompatBlack"
-            android:configChanges="uiMode" >
+            android:configChanges="uiMode"
+            android:exported="true">
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
@@ -128,7 +135,8 @@
             android:configChanges="orientation|screenSize|uiMode"
             android:label="@string/setting"
             android:name=".ui.activities.PreferencesActivity"
-            android:theme="@style/appCompatBlack">
+            android:theme="@style/appCompatBlack"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -139,7 +147,8 @@
             android:label="@string/textreader"
             android:name=".ui.activities.texteditor.TextEditorActivity"
             android:configChanges="uiMode"
-            android:theme="@style/appCompatBlack">
+            android:theme="@style/appCompatBlack"
+            android:exported="true">
             <intent-filter
                 tools:ignore="AppLinkUrlError"
                 android:label="Amaze Text Editor">
@@ -153,6 +162,7 @@
 
         </activity>
         <activity
+            android:exported="true"
             android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
             android:theme="@style/appCompatBlack"
@@ -164,6 +174,7 @@
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="db/*" />
+                <data android:mimeType="application/vnd.sqlite3" />
             </intent-filter>
 
         </activity>
@@ -274,7 +285,8 @@
         <service android:name=".asynchronous.services.ftp.FtpTileService"
             android:icon="@drawable/ic_ftp_dark"
             android:label="@string/ftp"
-            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
+            android:permission="android.permission.BIND_QUICK_SETTINGS_TILE"
+            android:exported="false">
             <intent-filter>
                 <action
                     android:name="android.service.quicksettings.action.QS_TILE" />

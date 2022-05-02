@@ -80,8 +80,10 @@ public final class MimeTypes {
     MIME_TYPES.put("ksh", "text/plain");
     MIME_TYPES.put("sh", "application/x-sh");
 
-    MIME_TYPES.put("db", "application/octet-stream");
-    MIME_TYPES.put("db3", "application/octet-stream");
+    MIME_TYPES.put("db", "application/vnd.sqlite3");
+    MIME_TYPES.put("db3", "application/vnd.sqlite3");
+    MIME_TYPES.put("sqlite", "application/vnd.sqlite3");
+    MIME_TYPES.put("sqlite3", "application/vnd.sqlite3");
 
     MIME_TYPES.put("otf", "application/x-font-otf");
     MIME_TYPES.put("ttf", "application/x-font-ttf");
