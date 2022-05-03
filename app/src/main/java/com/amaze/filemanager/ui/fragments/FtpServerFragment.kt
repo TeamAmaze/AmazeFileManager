@@ -21,11 +21,7 @@
 package com.amaze.filemanager.ui.fragments
 
 import android.app.Activity.RESULT_OK
-import android.content.BroadcastReceiver
-import android.content.ContentResolver
-import android.content.Context
-import android.content.Intent
-import android.content.IntentFilter
+import android.content.*
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
@@ -473,10 +469,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     mainActivity,
                     getString(R.string.ftp_server_fallback_path_reset_prompt)
                 )
-                mainActivity.prefs
-                    .edit()
-                    .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
-                    .apply()
+                resetFTPPath()
             }
             callback.invoke()
         }
@@ -571,6 +564,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
         port.text = "${resources.getString(R.string.ftp_port)}: $defaultPortFromPreferences"
         updatePathText()
+
+        if(defaultPathFromPreferences == FtpService.defaultPath(requireContext()))
+            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0,0)
+        else
+            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_clear_all, 0)
     }
 
     private fun updatePathText() {
@@ -579,6 +577,36 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             .append(pathToDisplayString(defaultPathFromPreferences))
         if (readonlyPreference) sb.append(" \uD83D\uDD12")
         sharedPath.text = sb.toString()
+        setListener()
+    }
+
+    private fun setListener() {
+        sharedPath.setOnTouchListener { _, event ->
+
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                if (event.x >= sharedPath.right - sharedPath.compoundDrawables[2].bounds.width()) {
+
+                    resetFTPPath()
+                    updateStatus()
+
+                    AppConfig.toast(
+                        mainActivity,
+                        getString(R.string.ftp_server_reset_notify)
+                    )
+
+                }
+            }
+
+            false
+        }
+
+    }
+
+    private fun resetFTPPath() {
+        mainActivity.prefs
+            .edit()
+            .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
+            .apply()
     }
 
     /** Updates the status spans  */
