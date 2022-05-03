@@ -21,7 +21,11 @@
 package com.amaze.filemanager.ui.fragments
 
 import android.app.Activity.RESULT_OK
-import android.content.*
+import android.content.BroadcastReceiver
+import android.content.ContentResolver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.graphics.drawable.ColorDrawable
 import android.net.ConnectivityManager
