@@ -27,6 +27,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.robolectric.Shadows.shadowOf;
 
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Environment;
+
+import androidx.test.core.app.ApplicationProvider;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.filesystem.EditableFileAbstraction;
+import com.amaze.filemanager.filesystem.FileUtil;
+import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
+import com.amaze.filemanager.shadows.ShadowContentResolver;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+
+import org.apache.ftpserver.util.IoUtils;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
+import org.robolectric.annotation.Implementation;
+import org.robolectric.annotation.Implements;
+import org.robolectric.shadow.api.Shadow;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -38,31 +62,9 @@ import java.io.OutputStream;
 import java.io.StringReader;
 import java.nio.charset.StandardCharsets;
 
-import org.apache.ftpserver.util.IoUtils;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-import org.robolectric.annotation.Implementation;
-import org.robolectric.annotation.Implements;
-
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
-import com.amaze.filemanager.filesystem.EditableFileAbstraction;
-import com.amaze.filemanager.filesystem.FileUtil;
-import com.amaze.filemanager.filesystem.root.ConcatenateFileCommand;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-
-import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Environment;
-
-import androidx.test.core.app.ApplicationProvider;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class},
+    shadows = {ShadowMultiDex.class, ShadowContentResolver.class},
     sdk = {JELLY_BEAN, KITKAT, P})
 public class WriteTextFileCallableTest {
 
@@ -75,7 +77,8 @@ public class WriteTextFileCallableTest {
     Context ctx = ApplicationProvider.getApplicationContext();
     ContentResolver cr = ctx.getContentResolver();
     ByteArrayOutputStream bout = new ByteArrayOutputStream();
-    shadowOf(cr).registerOutputStream(uri, bout);
+    ShadowContentResolver scr = Shadow.extract(cr);
+    scr.registerOutputStream(uri, bout);
 
     WriteTextFileCallable task =
         new WriteTextFileCallable(
