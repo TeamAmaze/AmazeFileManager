@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.utils.Utils.openURL;
 
 import com.amaze.filemanager.LogHelper;
@@ -27,6 +28,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -75,19 +77,21 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private static final String URL_REPO_XDA =
       "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
   private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
+  public static final String PACKAGE_AMAZE_UTILS = "com.amaze.fileutilities";
+  public static final String URL_AMAZE_UTILS = "market://details?id=" + PACKAGE_AMAZE_UTILS;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    if (getAppTheme().equals(AppTheme.DARK)) {
-      setTheme(R.style.aboutDark);
-    } else if (getAppTheme().equals(AppTheme.BLACK)) {
-      setTheme(R.style.aboutBlack);
-    } else {
-      setTheme(R.style.aboutLight);
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+      if (getAppTheme().equals(AppTheme.DARK)) {
+        setTheme(R.style.aboutDark);
+      } else if (getAppTheme().equals(AppTheme.BLACK)) {
+        setTheme(R.style.aboutBlack);
+      } else {
+        setTheme(R.style.aboutLight);
+      }
     }
-
     setContentView(R.layout.activity_about);
 
     mAppBarLayout = findViewById(R.id.appBarLayout);
@@ -133,6 +137,19 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
         (v, hasFocus) -> {
           mAppBarLayout.setExpanded(hasFocus, true);
         });
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
+        getWindow().setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
+    }
   }
 
   /**

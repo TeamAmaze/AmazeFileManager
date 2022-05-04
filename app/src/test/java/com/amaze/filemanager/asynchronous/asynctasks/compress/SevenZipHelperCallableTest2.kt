@@ -43,9 +43,9 @@ class SevenZipHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest(
     override fun testSublevels() = Unit
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            SevenZipHelperCallable(
-        archive.absolutePath,
-        relativePath,
-        false
-    )
+        SevenZipHelperCallable(
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }

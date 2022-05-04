@@ -30,7 +30,8 @@ object PreferencesConstants {
     const val PREFERENCE_COLORED_NAVIGATION = "colorednavigation"
     const val PREFERENCE_SELECT_COLOR_CONFIG = "selectcolorconfig"
     const val PREFERENCE_INTELLI_HIDE_TOOLBAR = "intelliHideToolbar"
-    const val PREFERENCE_GRID_COLUMNS = "columns"
+    const val PREFERENCE_GRID_COLUMNS = "columnsGrid"
+    const val PREFERENCE_GRID_COLUMNS_DEFAULT = "3"
     const val PREFERENCE_ENABLE_MARQUEE_FILENAME = "enableMarqueeFilename"
 
     // color_prefs.xml

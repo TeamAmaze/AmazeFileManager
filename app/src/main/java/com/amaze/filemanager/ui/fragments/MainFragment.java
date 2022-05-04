@@ -25,6 +25,7 @@ import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -265,7 +266,7 @@ public class MainFragment extends Fragment
       mLayoutManager = new CustomScrollLinearLayoutManager(getContext());
       listView.setLayoutManager(mLayoutManager);
     } else {
-      if (mainFragmentViewModel.getColumns() == -1 || mainFragmentViewModel.getColumns() == 0)
+      if (mainFragmentViewModel.getColumns() == null)
         mLayoutManagerGrid = new CustomScrollGridLayoutManager(getActivity(), 3);
       else
         mLayoutManagerGrid =
@@ -366,8 +367,7 @@ public class MainFragment extends Fragment
 
   private void loadViews() {
     if (mainFragmentViewModel.getCurrentPath() != null) {
-      if ((mainFragmentViewModel.getListElements() == null
-              || mainFragmentViewModel.getListElements().size() == 0)
+      if (mainFragmentViewModel.getListElements().size() == 0
           && !mainFragmentViewModel.getResults()) {
         loadlist(mainFragmentViewModel.getCurrentPath(), true, mainFragmentViewModel.getOpenMode());
       } else {
@@ -771,22 +771,21 @@ public class MainFragment extends Fragment
       if (getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)
           && !"/".equals(mainFragmentViewModel.getCurrentPath())
           && (mainFragmentViewModel.getOpenMode() == OpenMode.FILE
-              || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT)
+              || mainFragmentViewModel.getOpenMode() == OpenMode.ROOT
+              || (mainFragmentViewModel.getIsCloudOpenMode()
+                && !mainFragmentViewModel.getIsOnCloudRoot()))
           && !isOtg
-          && !mainFragmentViewModel.getIsOnCloud()
-          && (mainFragmentViewModel.getListElements() != null
-              && (mainFragmentViewModel.getListElements().size() == 0
-                  || !mainFragmentViewModel
-                      .getListElements()
-                      .get(0)
-                      .size
-                      .equals(getString(R.string.goback))))
+          && (mainFragmentViewModel.getListElements().size() == 0
+              || !mainFragmentViewModel
+                  .getListElements()
+                  .get(0)
+                  .size
+                  .equals(getString(R.string.goback)))
           && !results) {
         mainFragmentViewModel.getListElements().add(0, getBackElement());
       }
 
-      if (mainFragmentViewModel.getListElements() != null
-          && mainFragmentViewModel.getListElements().size() == 0
+      if (mainFragmentViewModel.getListElements().size() == 0
           && !results) {
         nofilesview.setVisibility(View.VISIBLE);
         listView.setVisibility(View.GONE);
@@ -813,11 +812,11 @@ public class MainFragment extends Fragment
                 utilsProvider,
                 sharedPref,
                 listView,
-                listElements == null ? Collections.emptyList() : listElements,
+                listElements,
                 requireContext(),
                 grid);
       } else {
-        adapter.setItems(listView, new ArrayList<>(mainFragmentViewModel.getListElements()));
+        adapter.setItems(listView, mainFragmentViewModel.getListElements());
       }
 
       mainFragmentViewModel.setStopAnims(true);
@@ -1055,7 +1054,7 @@ public class MainFragment extends Fragment
           } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
               || (mainFragmentViewModel.getHome() != null
                   && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
-              || mainFragmentViewModel.getIsOnCloud()) {
+              || mainFragmentViewModel.getIsOnCloudRoot()) {
             getMainActivity().exit();
           } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
             if (!currentFile.getPath().startsWith("content://")) {
@@ -1187,7 +1186,7 @@ public class MainFragment extends Fragment
             loadlist(path.toString(), true, OpenMode.SMB);
           } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
         } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
-            || mainFragmentViewModel.getIsOnCloud()) {
+            || mainFragmentViewModel.getIsOnCloudRoot()) {
           getMainActivity().exit();
         } else if (FileUtils.canGoBack(getContext(), currentFile)) {
           loadlist(currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
@@ -1316,9 +1315,7 @@ public class MainFragment extends Fragment
                 getBoolean(PREFERENCE_SHOW_THUMB),
                 mFile.getMode());
 
-        if (mainFragmentViewModel.getListElements() != null) {
-          mainFragmentViewModel.getListElements().add(layoutElement);
-        }
+        mainFragmentViewModel.getListElements().add(layoutElement);
         mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
         return layoutElement;
       } else {
@@ -1437,9 +1434,7 @@ public class MainFragment extends Fragment
 
       // initially clearing the array for new result set
       if (!mainFragmentViewModel.getResults()) {
-        if (mainFragmentViewModel.getListElements() != null) {
-          mainFragmentViewModel.getListElements().clear();
-        }
+        mainFragmentViewModel.getListElements().clear();
         mainFragmentViewModel.setFileCount(0);
         mainFragmentViewModel.setFolderCount(0);
       }
@@ -1467,11 +1462,7 @@ public class MainFragment extends Fragment
   }
 
   public void onSearchCompleted(final String query) {
-    final @Nullable ArrayList<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
-    if (elements == null) {
-      Log.e(TAG, "No search results, cannot sort!");
-      return;
-    }
+    final ArrayList<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
     if (!mainFragmentViewModel.getResults()) {
       // no results were found
       mainFragmentViewModel.getListElements().clear();
@@ -1627,13 +1618,14 @@ public class MainFragment extends Fragment
 
   @Override
   public void onGlobalLayout() {
-    if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
-      int screen_width = listView.getWidth();
-      int dptopx = Utils.dpToPx(getContext(), 115);
-      mainFragmentViewModel.setColumns(screen_width / dptopx);
-      if (mainFragmentViewModel.getColumns() == 0 || mainFragmentViewModel.getColumns() == -1) {
-        mainFragmentViewModel.setColumns(3);
+    if (mainFragmentViewModel.getColumns() == null) {
+      int screenWidth = listView.getWidth();
+      int dpToPx = Utils.dpToPx(requireContext(), 115);
+      if(dpToPx == 0) {
+        // HACK to fix a crash see #3249
+        dpToPx = 1;
       }
+      mainFragmentViewModel.setColumns(screenWidth / dpToPx);
       if (!mainFragmentViewModel.isList()) {
         mLayoutManagerGrid.setSpanCount(mainFragmentViewModel.getColumns());
       }

@@ -136,6 +136,7 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.AlertDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -158,6 +159,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
@@ -167,6 +169,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
@@ -213,7 +216,7 @@ public class MainActivity extends PermissionsActivity
 
   public String path = "";
   public boolean mReturnIntent = false;
-  public boolean openzip = false;
+  public boolean isCompressedOpen = false;
   public boolean mRingtonePickerIntent = false;
   public int skinStatusBar;
 
@@ -248,7 +251,7 @@ public class MainActivity extends PermissionsActivity
   private Drawer drawer;
   // private HistoryManager history, grid;
   private MainActivity mainActivity = this;
-  private String zippath;
+  private String pathInCompressedArchive;
   private boolean openProcesses = false;
   private MaterialDialog materialDialog;
   private boolean backPressedToExitOnce = false;
@@ -383,13 +386,17 @@ public class MainActivity extends PermissionsActivity
               servers.addAll(utilsHandler.getSmbList());
               servers.addAll(utilsHandler.getSftpList());
               dataUtils.setServers(servers);
+
+              ExtensionsKt.updateAUAlias(this,
+                      !PackageUtils.Companion.appInstalledOrNot(AboutActivity.PACKAGE_AMAZE_UTILS,
+                              mainActivity.getPackageManager()));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
         .subscribe(
             new CompletableObserver() {
               @Override
-              public void onSubscribe(Disposable d) {}
+              public void onSubscribe(@NonNull Disposable d) {}
 
               @Override
               public void onComplete() {
@@ -398,8 +405,10 @@ public class MainActivity extends PermissionsActivity
               }
 
               @Override
-              public void onError(Throwable e) {
-                e.printStackTrace();
+              public void onError(@NonNull Throwable e) {
+                Log.e(TAG, "Error setting up DataUtils", e);
+                drawer.refreshDrawer();
+                invalidateFragmentAndBundle(savedInstanceState);
               }
             });
     initStatusBarResources(findViewById(R.id.drawer_layout));
@@ -552,13 +561,13 @@ public class MainActivity extends PermissionsActivity
           // no data field, open home for the tab in later processing
           path = null;
         }
-      } else {
+      } else if(FileUtils.isCompressedFile(Utils.sanitizeInput(uri.toString()))) {
         // we don't have folder resource mime type set, supposed to be zip/rar
-        openzip = true;
-        zippath = Utils.sanitizeInput(uri.toString());
-        if (FileUtils.isCompressedFile(zippath)) {
-          openCompressed(zippath);
-        }
+        isCompressedOpen = true;
+        pathInCompressedArchive = Utils.sanitizeInput(uri.toString());
+        openCompressed(pathInCompressedArchive);
+      } else {
+        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG).show();
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -859,8 +868,8 @@ public class MainActivity extends PermissionsActivity
       if (compressedExplorerFragment.mActionMode == null) {
         if (compressedExplorerFragment.canGoBack()) {
           compressedExplorerFragment.goBack();
-        } else if (openzip) {
-          openzip = false;
+        } else if (isCompressedOpen) {
+          isCompressedOpen = false;
           finish();
         } else {
           FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -940,9 +949,9 @@ public class MainActivity extends PermissionsActivity
     transaction.commitAllowingStateLoss();
     appbar.setTitle(null);
     floatingActionButton.show();
-    if (openzip && zippath != null) {
-      openCompressed(zippath);
-      zippath = null;
+    if (isCompressedOpen && pathInCompressedArchive != null) {
+      openCompressed(pathInCompressedArchive);
+      pathInCompressedArchive = null;
     }
   }
 
@@ -1677,10 +1686,22 @@ public class MainActivity extends PermissionsActivity
     if (SDK_INT >= LOLLIPOP) {
       // for lollipop devices, the status bar color
       mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
         mainActivity
             .getWindow()
             .setNavigationBarColor(PreferenceUtils.getStatusColor(colorDrawable.getColor()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          mainActivity
+                  .getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          mainActivity
+                  .getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          mainActivity
+                  .getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
     } else if (SDK_INT == KITKAT_WATCH || SDK_INT == KITKAT) {
 
       // for kitkat devices, the status bar color
@@ -2304,7 +2325,7 @@ public class MainActivity extends PermissionsActivity
         if (folder.exists() && folder.isDirectory()) {
           if (FileUtils.isRunningAboveStorage(folder.getAbsolutePath())) {
             if (!isRootExplorer()) {
-              AlertDialog.show(this, R.string.ftp_server_root_unavailable, R.string.error, android.R.string.ok, null);
+              AlertDialog.show(this, R.string.ftp_server_root_unavailable, R.string.error, android.R.string.ok, null, false);
             } else {
               MaterialDialog confirmDialog = GeneralDialogCreation.showBasicDialog(this, R.string.ftp_server_root_filesystem_warning,R.string.warning,  android.R.string.ok, android.R.string.cancel);
               confirmDialog.getActionButton(DialogAction.POSITIVE).setOnClickListener(v -> {
@@ -2321,9 +2342,13 @@ public class MainActivity extends PermissionsActivity
           }
         } else {
           // try to get parent
-          File pathParentFile = new File(folder.getParent());
+          String pathParentFilePath = folder.getParent();
+          if (pathParentFilePath == null) {
+              dialog.dismiss();
+              return;
+          }
+          File pathParentFile = new File(pathParentFilePath);
           if (pathParentFile.exists() && pathParentFile.isDirectory()) {
-
             ftpServerFragment.changeFTPServerPath(pathParentFile.getPath());
             Toast.makeText(this, R.string.ftp_path_change_success, Toast.LENGTH_SHORT).show();
           } else {

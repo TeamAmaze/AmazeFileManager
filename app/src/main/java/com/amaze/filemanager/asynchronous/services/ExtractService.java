@@ -311,6 +311,11 @@ public class ExtractService extends AbstractProgressiveService {
                 },
                 ServiceWatcherUtil.UPDATE_POSITION);
 
+        if(extractor == null) {
+          Toast.makeText(context, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show();
+          return false;
+        }
+
         try {
           if (entriesToExtract != null) {
             extractor.extractFiles(entriesToExtract);

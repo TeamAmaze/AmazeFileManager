@@ -1,13 +1,17 @@
 package com.amaze.filemanager.utils
 
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.JELLY_BEAN_MR2
 import android.os.Environment
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.SmallTest
+import androidx.test.rule.GrantPermissionRule
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertTrue
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.io.ByteArrayInputStream
@@ -23,6 +27,10 @@ import kotlin.random.Random
 @RunWith(AndroidJUnit4::class)
 @Suppress("StringLiteralDuplication")
 class CryptUtilEspressoTest {
+
+    @Rule @JvmField
+    val storagePermissionRule: GrantPermissionRule = GrantPermissionRule
+        .grant(android.Manifest.permission.WRITE_EXTERNAL_STORAGE)
 
     /**
      * Sanity test of CryptUtil legacy method, to ensure refactoring won't break
@@ -44,7 +52,18 @@ class CryptUtilEspressoTest {
         )
         val targetFile = File(Environment.getExternalStorageDirectory(), "test.bin${CryptUtil.CRYPT_EXTENSION}")
         assertTrue(targetFile.exists())
-        assertTrue("Source size = ${source.size} target file size = ${targetFile.length()}", targetFile.length() > source.size)
+        if (SDK_INT < JELLY_BEAN_MR2) {
+            // Quirks for SDK < 18. File is not encrypted at all.
+            assertTrue(
+                "Source and target file size should be the same = ${source.size}",
+                source.size.toLong() == targetFile.length()
+            )
+        } else {
+            assertTrue(
+                "Source size = ${source.size} target file size = ${targetFile.length()}",
+                targetFile.length() > source.size
+            )
+        }
         sourceFile.delete()
         CryptUtil(
             AppConfig.getInstance(),

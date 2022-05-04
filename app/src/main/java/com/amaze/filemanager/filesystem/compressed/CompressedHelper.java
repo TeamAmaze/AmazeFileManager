@@ -22,6 +22,7 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import java.io.File;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
@@ -49,10 +50,11 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecom
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
-/** @author Emmanuel on 23/11/2017, at 17:46. */
 public abstract class CompressedHelper {
 
   /**
@@ -80,7 +82,10 @@ public abstract class CompressedHelper {
   public static final String fileExtensionGz = "gz";
   public static final String fileExtensionBzip2 = "bz2";
 
+  private static final String TAG = CompressedHelper.class.getSimpleName();
+
   /** To add compatibility with other compressed file types edit this method */
+  @Nullable
   public static Extractor getExtractorInstance(
       @NonNull Context context,
       @NonNull File file,
@@ -118,13 +123,18 @@ public abstract class CompressedHelper {
     } else if (isBzip2(type)) {
       extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else {
-      return null;
+      if(BuildConfig.DEBUG) {
+        throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
+      }
+      Log.e(TAG, "The compressed file has no way of opening it: " + file);
+      extractor = null;
     }
 
     return extractor;
   }
 
   /** To add compatibility with other compressed file types edit this method */
+  @Nullable
   public static Decompressor getCompressorInstance(@NonNull Context context, @NonNull File file) {
     Decompressor decompressor;
     String type = getExtension(file.getPath());
@@ -151,10 +161,18 @@ public abstract class CompressedHelper {
       // without the compression extension
       decompressor = new UnknownCompressedFileDecompressor(context);
     } else {
-      return null;
+      if(BuildConfig.DEBUG) {
+        throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
+      }
+
+      Log.e(TAG, "The compressed file has no way of opening it: " + file);
+      decompressor = null;
     }
 
-    decompressor.setFilePath(file.getPath());
+    if (decompressor != null) {
+      decompressor.setFilePath(file.getPath());
+    }
+
     return decompressor;
   }
 
