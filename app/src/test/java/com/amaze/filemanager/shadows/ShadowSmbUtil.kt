@@ -111,7 +111,8 @@ class ShadowSmbUtil {
         @JvmStatic @Implementation
         fun getSmbEncryptedPath(context: Context, path: String): String {
             return Shadow.directlyOn(
-                SmbUtil::class.java, "getSmbEncryptedPath",
+                SmbUtil::class.java,
+                "getSmbEncryptedPath",
                 ReflectionHelpers.ClassParameter(Context::class.java, context),
                 ReflectionHelpers.ClassParameter(String::class.java, path)
             )
@@ -123,7 +124,8 @@ class ShadowSmbUtil {
         @JvmStatic @Implementation
         fun getSmbDecryptedPath(context: Context, path: String): String {
             return Shadow.directlyOn(
-                SmbUtil::class.java, "getSmbDecryptedPath",
+                SmbUtil::class.java,
+                "getSmbDecryptedPath",
                 ReflectionHelpers.ClassParameter(Context::class.java, context),
                 ReflectionHelpers.ClassParameter(String::class.java, path)
             )
@@ -135,7 +137,8 @@ class ShadowSmbUtil {
         @JvmStatic @Implementation
         fun checkFolder(path: String): Int {
             return Shadow.directlyOn(
-                SmbUtil::class.java, "checkFolder",
+                SmbUtil::class.java,
+                "checkFolder",
                 ReflectionHelpers.ClassParameter(String::class.java, path)
             )
         }
@@ -147,7 +150,6 @@ class ShadowSmbUtil {
          */
         @JvmStatic @Implementation
         fun create(path: String): SmbFile {
-
             return when (path) {
                 PATH_CANNOT_DELETE_FILE -> mockDeleteAccessDenied!!
                 PATH_CANNOT_MOVE_FILE -> mockDeleteDifferentNetwork!!

@@ -29,7 +29,9 @@ import android.graphics.drawable.Drawable;
 
 import androidx.annotation.Nullable;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:06. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:06.
+ */
 public class ApkImageModelLoader implements ModelLoader<String, Drawable> {
 
   private Context context;

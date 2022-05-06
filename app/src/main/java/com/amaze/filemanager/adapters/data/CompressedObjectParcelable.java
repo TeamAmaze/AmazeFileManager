@@ -27,7 +27,9 @@ import com.amaze.filemanager.ui.icons.Icons;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 20/11/2017, at 15:26. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 20/11/2017, at 15:26.
+ */
 public class CompressedObjectParcelable implements Parcelable {
   public static final int TYPE_GOBACK = -1, TYPE_NORMAL = 0;
 

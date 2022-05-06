@@ -41,7 +41,9 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 15:38. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 15:38.
+ */
 public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvider<String> {
 
   private Context mContext;

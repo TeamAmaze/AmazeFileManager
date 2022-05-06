@@ -22,14 +22,8 @@ package com.amaze.filemanager.filesystem;
 
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT;
 
-import android.os.AsyncTask;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.Spanned;
-import android.util.Log;
-
-import androidx.annotation.Nullable;
-import androidx.core.text.HtmlCompat;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask;
@@ -39,9 +33,14 @@ import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import android.os.AsyncTask;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.Spanned;
+import android.util.Log;
+
+import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -160,8 +159,7 @@ public final class PasteHelper implements Parcelable {
                         R.string.paste,
                         () -> {
                           final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
-                          if (mainFragment == null)
-                              return;
+                          if (mainFragment == null) return;
                           String path = mainFragment.getCurrentPath();
                           ArrayList<HybridFileParcelable> arrayList =
                               new ArrayList<>(Arrays.asList(paths));

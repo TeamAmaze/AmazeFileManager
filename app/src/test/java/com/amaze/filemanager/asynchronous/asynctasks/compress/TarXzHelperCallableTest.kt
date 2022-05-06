@@ -29,7 +29,7 @@ class TarXzHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
         get() = "test-archive.tar.xz"
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            TarXzHelperCallable(
+        TarXzHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,

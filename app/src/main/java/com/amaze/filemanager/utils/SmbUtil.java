@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.utils;
 
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
 
 import java.io.File;
 import java.io.IOException;

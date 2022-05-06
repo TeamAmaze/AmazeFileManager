@@ -66,7 +66,8 @@ class FileHandler(
                     return
                 }
                 val fileCreated = HybridFile(
-                    mainFragmentViewModel.openMode, "${main.currentPath}/$path"
+                    mainFragmentViewModel.openMode,
+                    "${main.currentPath}/$path"
                 )
                 val newElement = fileCreated.generateLayoutElement(main.requireContext(), useThumbs)
                 main.elementsList?.add(newElement)

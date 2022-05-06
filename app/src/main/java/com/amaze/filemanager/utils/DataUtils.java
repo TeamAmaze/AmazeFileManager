@@ -27,7 +27,7 @@ import java.util.List;
 
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;

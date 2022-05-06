@@ -23,7 +23,7 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 import android.content.Context
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
@@ -61,27 +61,33 @@ abstract class AbstractCommonsCompressedFileExtractor(
     override fun extractWithFilter(filter: Filter) {
         val entryName = filePath.substringAfterLast('/').substringBeforeLast('.')
         runCatching {
-            compressorInputStreamConstructor.newInstance(FileInputStream(filePath)).use { inputStream ->
-                val outputFile = File(outputPath, entryName)
-                if (false == outputFile.parentFile?.exists()) {
-                    MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
-                }
-                FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
-                    BufferedOutputStream(fileOutputStream).use {
-                        var len: Int
-                        val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
-                        while (inputStream.read(buf).also { len = it } != -1) {
-                            it.write(buf, 0, len)
-                            updatePosition.updatePosition(len.toLong())
-                        }
-                        listener.onFinish()
+            compressorInputStreamConstructor
+                .newInstance(FileInputStream(filePath))
+                .use { inputStream ->
+                    val outputFile = File(outputPath, entryName)
+                    if (false == outputFile.parentFile?.exists()) {
+                        MakeDirectoryOperation.mkdir(outputFile.parentFile, context)
                     }
-                    outputFile.setLastModified(File(filePath).lastModified())
-                } ?: AppConfig.toast(
-                    context,
-                    context.getString(R.string.error_archive_cannot_extract, entryName, outputPath)
-                )
-            }
+                    FileUtil.getOutputStream(outputFile, context)?.let { fileOutputStream ->
+                        BufferedOutputStream(fileOutputStream).use {
+                            var len: Int
+                            val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
+                            while (inputStream.read(buf).also { len = it } != -1) {
+                                it.write(buf, 0, len)
+                                updatePosition.updatePosition(len.toLong())
+                            }
+                            listener.onFinish()
+                        }
+                        outputFile.setLastModified(File(filePath).lastModified())
+                    } ?: AppConfig.toast(
+                        context,
+                        context.getString(
+                            R.string.error_archive_cannot_extract,
+                            entryName,
+                            outputPath
+                        )
+                    )
+                }
         }.onFailure {
             throw BadArchiveNotice(it)
         }

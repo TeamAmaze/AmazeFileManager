@@ -86,7 +86,8 @@ public class ShareTask extends AsyncTask<String, String, Void> {
           targetShareIntents.add(intent);
         }
       }
-      if (!bluetooth_present && PackageUtils.Companion.appInstalledOrNot("com.android.bluetooth", packageManager)) {
+      if (!bluetooth_present
+          && PackageUtils.Companion.appInstalledOrNot("com.android.bluetooth", packageManager)) {
         Intent intent = new Intent();
         intent.setComponent(
             new ComponentName(

@@ -28,8 +28,8 @@ import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileCallable.MAX_FILE_SIZE_CHARS
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
+import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import com.amaze.filemanager.shadows.ShadowMultiDex

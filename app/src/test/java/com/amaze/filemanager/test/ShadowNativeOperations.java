@@ -23,7 +23,7 @@ package com.amaze.filemanager.test;
 import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 
-import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
+import com.amaze.filemanager.fileoperations.filesystem.root.NativeOperations;
 
 import androidx.annotation.Nullable;
 

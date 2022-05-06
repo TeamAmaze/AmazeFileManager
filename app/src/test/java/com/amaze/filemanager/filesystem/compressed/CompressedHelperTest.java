@@ -35,7 +35,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.RarExtractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.SevenZipExtractor;

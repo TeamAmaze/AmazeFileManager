@@ -84,7 +84,11 @@ class CryptUtilTest {
         performFolderTest(useAescrypt = false, targetExtension = "aze")
     }
 
-    private fun performTest(useAescrypt: Boolean, password: String? = null, targetExtension: String) {
+    private fun performTest(
+        useAescrypt: Boolean,
+        password: String? = null,
+        targetExtension: String
+    ) {
         val source = randomizer.nextBytes(117)
         val sourceFile = File(Environment.getExternalStorageDirectory(), "test.bin")
         ByteArrayInputStream(source).copyTo(FileOutputStream(sourceFile))
@@ -97,7 +101,10 @@ class CryptUtilTest {
             useAescrypt,
             password
         )
-        val targetFile = File(Environment.getExternalStorageDirectory(), "test.bin.$targetExtension")
+        val targetFile = File(
+            Environment.getExternalStorageDirectory(),
+            "test.bin.$targetExtension"
+        )
         assertTrue(targetFile.length() > source.size)
         sourceFile.delete()
         CryptUtil(
@@ -116,7 +123,11 @@ class CryptUtilTest {
         }
     }
 
-    private fun performFolderTest(useAescrypt: Boolean, password: String? = null, targetExtension: String) {
+    private fun performFolderTest(
+        useAescrypt: Boolean,
+        password: String? = null,
+        targetExtension: String
+    ) {
         val filesSize = randomizer.nextInt(10, 20)
         val sourceData = Array(filesSize) {
             randomizer.nextBytes(117)
@@ -138,7 +149,10 @@ class CryptUtilTest {
             useAescrypt,
             password
         )
-        val targetFolder = File(Environment.getExternalStorageDirectory(), "test.$targetExtension")
+        val targetFolder = File(
+            Environment.getExternalStorageDirectory(),
+            "test.$targetExtension"
+        )
         assertTrue(targetFolder.isDirectory)
         assertEquals(sourceData.size, targetFolder.listFiles()?.size)
         sourceFolder.deleteRecursively()
@@ -160,8 +174,15 @@ class CryptUtilTest {
             }
             this.listFiles()?.forEach { file: File? ->
                 file?.run {
-                    val index = file.name.substring("test".length, file.name.indexOf('.')).toInt()
-                    assertArrayEquals("Comparison broken at ${file.absolutePath}", sourceData[index], file.readBytes())
+                    val index = file.name.substring(
+                        "test".length,
+                        file.name.indexOf('.')
+                    ).toInt()
+                    assertArrayEquals(
+                        "Comparison broken at ${file.absolutePath}",
+                        sourceData[index],
+                        file.readBytes()
+                    )
                 } ?: fail("File not found")
             } ?: fail("No files found")
         }

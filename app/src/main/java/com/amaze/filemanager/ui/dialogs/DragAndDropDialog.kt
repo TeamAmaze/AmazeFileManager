@@ -35,7 +35,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.utils.safeLet
 
 class DragAndDropDialog : DialogFragment() {
@@ -68,7 +68,8 @@ class DragAndDropDialog : DialogFragment() {
                     .getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, "")
                 if (dragAndDropCopy != "") {
                     startCopyOrMoveTask(
-                        pasteLocation, files,
+                        pasteLocation,
+                        files,
                         PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE
                             .equals(dragAndDropCopy, ignoreCase = true),
                         activity
@@ -132,9 +133,10 @@ class DragAndDropDialog : DialogFragment() {
             context,
             mainActivity?.appTheme?.getMaterialDialogTheme(mainActivity?.applicationContext),
             mainActivity?.accent,
-            pasteLocation, operationFiles
+            pasteLocation,
+            operationFiles
         ) {
-            context, dialogTheme, accent, pasteLocation, operationFiles ->
+                context, dialogTheme, accent, pasteLocation, operationFiles ->
             val dialog: MaterialDialog = MaterialDialog.Builder(context)
                 .title(getString(R.string.choose_operation))
                 .customView(R.layout.dialog_drag_drop, true)
@@ -173,11 +175,15 @@ class DragAndDropDialog : DialogFragment() {
                 if (dialogTheme == Theme.LIGHT) {
                     moveButton.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_baseline_content_cut_24,
-                        0, 0, 0
+                        0,
+                        0,
+                        0
                     )
                     copyButton.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_baseline_content_copy_24,
-                        0, 0, 0
+                        0,
+                        0,
+                        0
                     )
                 }
             }

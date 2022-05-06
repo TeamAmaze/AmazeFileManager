@@ -127,7 +127,8 @@ class ZipServiceTest {
                         "${entry.fileName} timestamp not equal. " +
                             "${Date(this[idx].lastModified())} " +
                             "vs ${Date(entry.lastModifiedTimeEpoch)}",
-                        this[idx].lastModified(), entry.lastModifiedTimeEpoch
+                        this[idx].lastModified(),
+                        entry.lastModifiedTimeEpoch
                     )
                 }
             }

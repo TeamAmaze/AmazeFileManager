@@ -46,7 +46,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.ObtainableServiceBinder
@@ -145,7 +145,8 @@ class FtpService : Service(), Runnable {
                 username = usernamePreference
                 runCatching {
                     password = PasswordUtil.decryptPassword(
-                        applicationContext, preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!
+                        applicationContext,
+                        preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!
                     )
                     isPasswordProtected = true
                 }.onFailure {
@@ -210,10 +211,11 @@ class FtpService : Service(), Runnable {
                     start()
                     EventBus.getDefault()
                         .post(
-                            if (isStartedByTile)
+                            if (isStartedByTile) {
                                 FtpReceiverActions.STARTED_FROM_TILE
-                            else
+                            } else {
                                 FtpReceiverActions.STARTED
+                            }
                         )
                 }
             }.onFailure {
@@ -248,7 +250,10 @@ class FtpService : Service(), Runnable {
             PendingIntent.FLAG_ONE_SHOT
         }
         val restartServicePI = PendingIntent.getService(
-            applicationContext, 1, restartService, flag
+            applicationContext,
+            1,
+            restartService,
+            flag
         )
         val alarmService = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmService[AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000] =
@@ -311,6 +316,7 @@ class FtpService : Service(), Runnable {
                 }
             }.toTypedArray()
         }
+
         /**
          * Return a list of available ciphers for ftpserver.
          *
