@@ -36,10 +36,15 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import io.reactivex.schedulers.Schedulers;
 
 /** Created by Ning on 5/28/2018. */
 public class SortHandler {
+
+  private final Logger LOG = LoggerFactory.getLogger(SortHandler.class);
 
   private final ExplorerDatabase database;
 
@@ -90,7 +95,7 @@ public class SortHandler {
       return database.sortDao().find(path).subscribeOn(Schedulers.io()).blockingGet();
     } catch (Exception e) {
       // catch error to handle Single#onError for blockingGet
-      Log.e(getClass().getSimpleName(), e.getMessage());
+      LOG.error(getClass().getSimpleName(), e);
       return null;
     }
   }

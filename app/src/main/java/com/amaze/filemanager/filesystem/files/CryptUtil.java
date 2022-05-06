@@ -38,10 +38,14 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
 import com.amaze.filemanager.utils.AESCrypt;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.security.SecretKeygen;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -94,7 +98,7 @@ public class CryptUtil {
   private static final String IV =
       BuildConfig.CRYPTO_IV; // 12 byte long IV supported by android for GCM
   private static final int GCM_TAG_LENGTH = 128;
-  private static final String TAG = TagsHelper.getTag(CryptUtil.class);
+  private final Logger LOG = LoggerFactory.getLogger(CryptUtil.class);
 
   public static final String CRYPT_EXTENSION = ".aze";
   public static final String AESCRYPT_EXTENSION = ".aes";
@@ -370,7 +374,7 @@ public class CryptUtil {
           } else break;
         }
       } catch (Exception x) {
-        Log.e(TAG, "I/O error writing output", x);
+        LOG.error("I/O error writing output", x);
       } finally {
         cipherOutputStream.flush();
         cipherOutputStream.close();

@@ -28,12 +28,15 @@ import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
+import com.amaze.filemanager.asynchronous.handlers.FileHandler
 import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivityViewModel
 import com.google.android.material.snackbar.Snackbar
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.lang.ref.WeakReference
 import java.util.*
@@ -44,11 +47,9 @@ class ReadTextFileTask(
     private val appContextWR: WeakReference<Context>
 ) : Task<ReturnedValueOnReadFile, ReadTextFileCallable> {
 
-    private val task: ReadTextFileCallable
+    private val log: Logger = LoggerFactory.getLogger(ReadTextFileTask::class.java)
 
-    companion object {
-        private val TAG = ReadTextFileTask::class.java.simpleName
-    }
+    private val task: ReadTextFileCallable
 
     init {
         val viewModel: TextEditorActivityViewModel by activity.viewModels()
@@ -64,7 +65,7 @@ class ReadTextFileTask(
 
     @MainThread
     override fun onError(error: Throwable) {
-        Log.e(TAG, "Error on text read", error)
+        log.error("Error on text read", error)
         val applicationContext = appContextWR.get() ?: return
         @StringRes val errorMessage: Int = when (error) {
             is StreamNotFoundException -> {

@@ -20,6 +20,7 @@ import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.internal.MDButton
 import com.amaze.filemanager.R
+import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SortSearchResultTask
 import com.amaze.filemanager.asynchronous.services.EncryptService
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_AESCRYPT
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_ENCRYPT_TARGET
@@ -38,11 +39,14 @@ import com.amaze.filemanager.ui.views.WarnableTextInputValidator
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator.ReturnState
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator.ReturnState.STATE_ERROR
 import com.google.android.material.textfield.TextInputEditText
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Encrypt file password dialog.
  */
 object EncryptAuthenticateDialog {
+    private val log: Logger = LoggerFactory.getLogger(EncryptAuthenticateDialog::class.java)
 
     /**
      * Display file encryption password dialog.
@@ -112,7 +116,7 @@ object EncryptAuthenticateDialog {
                             intent, passwordEditText.text.toString()
                         )
                     }.onFailure {
-                        Log.e(EncryptService.TAG, "Failed to encrypt", it)
+                        log.error("Failed to encrypt", it)
                         Toast.makeText(
                             c,
                             c.getString(R.string.crypt_encryption_fail),

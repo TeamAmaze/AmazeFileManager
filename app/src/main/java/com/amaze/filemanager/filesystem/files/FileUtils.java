@@ -50,6 +50,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFiles;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -80,6 +81,9 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
@@ -95,7 +99,7 @@ import kotlin.collections.ArraysKt;
 /** Functions that deal with files */
 public class FileUtils {
 
-  private static final String TAG = FileUtils.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   private static final String[] COMPRESSED_FILE_EXTENSIONS =
       new String[] {"zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"};
@@ -158,7 +162,7 @@ public class FileUtils {
       }
     } catch (SFTPException e) {
       // Usually happens when permission denied listing files in directory
-      Log.e("folderSizeSftp", "Problem accessing " + remotePath, e);
+      LOG.error("folderSizeSftp", "Problem accessing " + remotePath, e);
     } finally {
       return retval;
     }
@@ -460,7 +464,7 @@ public class FileUtils {
       try {
         c.startActivity(activityIntent);
       } catch (ActivityNotFoundException e) {
-        android.util.Log.e(TAG, e.getMessage(), e);
+        LOG.error(e.getMessage(), e);
         Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
         openWith(contentUri, c, useNewStack);
       }
@@ -846,7 +850,7 @@ public class FileUtils {
       SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
       Date stringDate = simpledateformat.parse(date, pos);
       if (stringDate == null) {
-        Log.w(TAG, "parseName: unable to parse datetime string [" + date + "]");
+        LOG.warn("parseName: unable to parse datetime string [" + date + "]");
       }
       HybridFileParcelable baseFile =
           new HybridFileParcelable(

@@ -245,6 +245,8 @@ dependencies {
     implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'com.github.tony19:logback-android:2.0.0'
 }
 
 configurations.all {

@@ -43,6 +43,7 @@ import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
@@ -83,10 +84,13 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Hybrid file for handeling all types of files */
 public class HybridFile {
 
-  protected static final String TAG = HybridFile.class.getSimpleName();
+  private final Logger LOG = LoggerFactory.getLogger(HybridFile.class);
 
   public static final String DOCUMENT_FILE_PREFIX =
       "content://com.android.externalstorage.documents";
@@ -256,7 +260,7 @@ public class HybridFile {
                 });
 
         if (returnValue == null) {
-          Log.e(TAG, "Error obtaining last modification time over SFTP");
+          LOG.error("Error obtaining last modification time over SFTP");
         }
 
         return returnValue == null ? 0L : returnValue;
@@ -266,7 +270,7 @@ public class HybridFile {
           try {
             return smbFile.lastModified();
           } catch (SmbException e) {
-            Log.e(TAG, "Error getting last modified time for SMB [" + path + "]", e);
+            LOG.error("Error getting last modified time for SMB [" + path + "]", e);
             return 0;
           }
         }
@@ -518,9 +522,7 @@ public class HybridFile {
                           .getType()
                           .equals(FileMode.Type.DIRECTORY);
                     } catch (IOException notFound) {
-                      Log.e(
-                          getClass().getSimpleName(),
-                          "Fail to execute isDirectory for SFTP path :" + path,
+                      LOG.error("Fail to execute isDirectory for SFTP path :" + path,
                           notFound);
                       return false;
                     }
@@ -528,7 +530,7 @@ public class HybridFile {
                 });
 
         if (returnValue == null) {
-          Log.e(TAG, "Error obtaining if path is directory over SFTP");
+          LOG.error("Error obtaining if path is directory over SFTP");
         }
 
         //noinspection SimplifiableConditionalExpression
@@ -614,7 +616,7 @@ public class HybridFile {
                 });
 
         if (returnValue == null) {
-          Log.e(TAG, "Error obtaining size of folder over SFTP");
+          LOG.error("Error obtaining size of folder over SFTP");
         }
 
         return returnValue == null ? 0L : returnValue;
@@ -697,17 +699,17 @@ public class HybridFile {
                                   .retrieve());
                       return response.diskFreeSpace();
                     } catch (SFTPException e) {
-                      Log.e(TAG, "Error querying server", e);
+                      LOG.error("Error querying server", e);
                       return 0L;
                     } catch (Buffer.BufferException e) {
-                      Log.e(TAG, "Error parsing reply", e);
+                      LOG.error("Error parsing reply", e);
                       return 0L;
                     }
                   }
                 });
 
         if (returnValue == null) {
-          Log.e(TAG, "Error obtaining usable space over SFTP");
+          LOG.error("Error obtaining usable space over SFTP");
         }
 
         size = returnValue == null ? 0L : returnValue;
@@ -765,17 +767,17 @@ public class HybridFile {
                                   .retrieve());
                       return response.diskSize();
                     } catch (SFTPException e) {
-                      Log.e(TAG, "Error querying server", e);
+                      LOG.error("Error querying server", e);
                       return 0L;
                     } catch (Buffer.BufferException e) {
-                      Log.e(TAG, "Error parsing reply", e);
+                      LOG.error("Error parsing reply", e);
                       return 0L;
                     }
                   }
                 });
 
         if (returnValue == null) {
-          Log.e(TAG, "Error obtaining total space over SFTP");
+          LOG.error("Error obtaining total space over SFTP");
         }
 
         size = returnValue == null ? 0L : returnValue;
@@ -807,14 +809,14 @@ public class HybridFile {
                     try {
                       isDirectory = SshClientUtils.isDirectory(client, info);
                     } catch (IOException ifBrokenSymlink) {
-                      Log.w(TAG, "IOException checking isDirectory(): " + info.getPath());
+                      LOG.warn("IOException checking isDirectory(): " + info.getPath());
                       continue;
                     }
                     HybridFileParcelable f = new HybridFileParcelable(path, isDirectory, info);
                     onFileFound.onFileFound(f);
                   }
                 } catch (IOException e) {
-                  Log.w("DEBUG.listFiles", "IOException", e);
+                  LOG.warn("IOException", e);
                   AppConfig.toast(
                       context,
                       context.getString(
@@ -898,14 +900,14 @@ public class HybridFile {
                         try {
                           isDirectory = SshClientUtils.isDirectory(client, info);
                         } catch (IOException ifBrokenSymlink) {
-                          Log.w(TAG, "IOException checking isDirectory(): " + info.getPath());
+                          LOG.warn("IOException checking isDirectory(): " + info.getPath());
                           continue;
                         }
                         HybridFileParcelable f = new HybridFileParcelable(path, isDirectory, info);
                         retval.add(f);
                       }
                     } catch (IOException e) {
-                      Log.w("DEBUG.listFiles", "IOException", e);
+                      LOG.warn("IOException", e);
                     }
                     return retval;
                   }
@@ -1079,7 +1081,7 @@ public class HybridFile {
       case GDRIVE:
       case ONEDRIVE:
         CloudStorage cloudStorageOneDrive = dataUtils.getAccount(mode);
-        Log.d(getClass().getSimpleName(), CloudUtil.stripPath(mode, path));
+        LOG.debug(CloudUtil.stripPath(mode, path));
         inputStream = cloudStorageOneDrive.download(CloudUtil.stripPath(mode, path));
         break;
       default:
@@ -1120,7 +1122,7 @@ public class HybridFile {
                         rf.close();
                         client.close();
                       } catch (Exception e) {
-                        Log.w(TAG, "Error closing stream", e);
+                        LOG.warn("Error closing stream", e);
                       }
                     }
                   }
@@ -1183,7 +1185,7 @@ public class HybridFile {
               });
 
       if (executionReturn == null) {
-        Log.e(TAG, "Error obtaining existance of file over SFTP");
+        LOG.error("Error obtaining existance of file over SFTP");
       }
 
       //noinspection SimplifiableConditionalExpression
@@ -1230,7 +1232,7 @@ public class HybridFile {
                 != null;
       } else return (exists());
     } catch (Exception e) {
-      Log.i(getClass().getSimpleName(), "Failed to find file", e);
+      LOG.info("Failed to find file", e);
     }
     return exists;
   }
@@ -1282,7 +1284,7 @@ public class HybridFile {
               try {
                 client.mkdir(SshClientUtils.extractRemotePathFrom(path));
               } catch (IOException e) {
-                Log.e(TAG, "Error making directory over SFTP", e);
+                LOG.error("Error making directory over SFTP", e);
               }
               // FIXME: anything better than throwing a null to make Rx happy?
               return null;
@@ -1364,7 +1366,7 @@ public class HybridFile {
       try {
         getSmbFile().delete();
       } catch (SmbException e) {
-        Log.e(TAG, "Error delete SMB file", e);
+        LOG.error("Error delete SMB file", e);
         throw e;
       }
     } else {

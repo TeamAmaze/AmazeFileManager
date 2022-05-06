@@ -23,6 +23,7 @@ package com.amaze.filemanager.asynchronous.services;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
@@ -64,8 +65,11 @@ import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
-public class CopyService extends AbstractProgressiveService {
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+public class CopyService extends AbstractProgressiveService {
+  private static final Logger LOG = LoggerFactory.getLogger(CopyService.class);
   public static final String TAG_IS_ROOT_EXPLORER = "is_root";
   public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
   public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -392,7 +396,7 @@ public class CopyService extends AbstractProgressiveService {
 
                 if ((f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT) && isRootExplorer) {
                   // either source or target are in root
-                  Log.d(getClass().getSimpleName(), "either source or target are in root");
+                  LOG.debug("either source or target are in root");
                   progressHandler.setSourceFilesProcessed(++sourceProgress);
                   copyRoot(f1, hFile, move);
                   continue;
@@ -404,7 +408,7 @@ public class CopyService extends AbstractProgressiveService {
               }
             } catch (Exception e) {
               e.printStackTrace();
-              Log.e("CopyService", "Got exception checkout: " + f1.getPath());
+              LOG.error("Got exception checkout: " + f1.getPath());
 
               failedFOps.add(sourceFiles.get(i));
               for (int j = i + 1; j < sourceFiles.size(); j++) failedFOps.add(sourceFiles.get(j));

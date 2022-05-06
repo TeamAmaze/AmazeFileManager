@@ -7,11 +7,15 @@ import androidx.appcompat.app.AppCompatActivity
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.databinding.UtilitiesAliasLayoutBinding
+import com.amaze.filemanager.ui.dialogs.EncryptAuthenticateDialog
 import com.amaze.filemanager.ui.updateAUAlias
 import com.amaze.filemanager.utils.PackageUtils
 import com.amaze.filemanager.utils.Utils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class UtilitiesAliasActivity: AppCompatActivity() {
+    private val log: Logger = LoggerFactory.getLogger(UtilitiesAliasActivity::class.java)
 
     private val _binding by lazy(LazyThreadSafetyMode.NONE) {
         UtilitiesAliasLayoutBinding.inflate(layoutInflater)
@@ -45,7 +49,7 @@ class UtilitiesAliasActivity: AppCompatActivity() {
                     finish()
                 }
             } catch (e: ActivityNotFoundException) {
-                Log.w(javaClass.simpleName, "Amaze utils not installed", e)
+                log.warn("Amaze utils not installed", e)
             }
         }
     }

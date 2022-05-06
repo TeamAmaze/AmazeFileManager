@@ -34,6 +34,7 @@ import java.util.LinkedList;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
@@ -68,6 +69,9 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
@@ -75,7 +79,7 @@ import jcifs.smb.SmbFile;
 public class LoadFilesListTask
     extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
-  private static final String TAG = LoadFilesListTask.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
 
   private String path;
   private WeakReference<MainFragment> mainFragmentReference;
@@ -151,7 +155,7 @@ public class LoadFilesListTask
           e.printStackTrace();
           return null;
         } catch (SmbException | NullPointerException e) {
-          Log.w(getClass().getSimpleName(), "Failed to load smb files for path: " + path, e);
+          LOG.warn("Failed to load smb files for path: " + path, e);
           mainFragment.reauthenticateSmb();
           return null;
         }
@@ -284,7 +288,7 @@ public class LoadFilesListTask
       if (viewModel != null) {
         Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortby, asc));
       } else {
-        Log.e(TAG, "MainFragmentViewModel is null, this is a bug");
+        LOG.error("MainFragmentViewModel is null, this is a bug");
       }
     }
 

@@ -25,6 +25,7 @@ import static com.amaze.filemanager.utils.Utils.openURL;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
@@ -49,10 +50,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.palette.graphics.Palette;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** Created by vishal on 27/7/16. */
 public class AboutActivity extends ThemedActivity implements View.OnClickListener {
-
-  private static final String TAG = "AboutActivity";
+  private final Logger LOG = LoggerFactory.getLogger(AboutActivity.class);
 
   private static final int HEADER_HEIGHT = 1024;
   private static final int HEADER_WIDTH = 500;
@@ -163,12 +166,12 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     CoordinatorLayout.LayoutParams layoutParams =
         (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
     float vidAspectRatio = (float) HEADER_WIDTH / (float) HEADER_HEIGHT;
-    Log.d(TAG, vidAspectRatio + "");
+    LOG.debug(vidAspectRatio + "");
     int screenWidth = getResources().getDisplayMetrics().widthPixels;
     float reqHeightAsPerAspectRatio = (float) screenWidth * vidAspectRatio;
-    Log.d(TAG, reqHeightAsPerAspectRatio + "");
+    LOG.debug(reqHeightAsPerAspectRatio + "");
 
-    Log.d(TAG, "new width: " + screenWidth + " and height: " + reqHeightAsPerAspectRatio);
+    LOG.debug("new width: " + screenWidth + " and height: " + reqHeightAsPerAspectRatio);
 
     layoutParams.width = screenWidth;
     layoutParams.height = (int) reqHeightAsPerAspectRatio;
@@ -233,7 +236,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
             libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
             break;
           default:
-            LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
+            LogHelper.logOnProductionOrCrash("Incorrect value for switch");
         }
 
         libsBuilder.start(this);
@@ -276,7 +279,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    Log.d(TAG, "Destroying the manager.");
+    LOG.debug("Destroying the manager.");
     if (billing != null) {
       billing.destroyBillingInstance();
     }

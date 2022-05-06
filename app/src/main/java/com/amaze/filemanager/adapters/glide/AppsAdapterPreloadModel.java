@@ -27,6 +27,7 @@ import java.util.List;
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.GlideRequest;
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.bumptech.glide.ListPreloader;
 import com.bumptech.glide.RequestBuilder;
 
@@ -41,8 +42,13 @@ import androidx.annotation.Nullable;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 15:38. */
 public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvider<String> {
+
+  private final Logger LOG = LoggerFactory.getLogger(AppsAdapterPreloadModel.class);
 
   private Context mContext;
   private GlideRequest<Drawable> request;
@@ -91,7 +97,7 @@ public class AppsAdapterPreloadModel implements ListPreloader.PreloadModelProvid
     try {
       return mContext.getPackageManager().getApplicationIcon(packageName);
     } catch (PackageManager.NameNotFoundException e) {
-      Log.w(getClass().getSimpleName(), e);
+      LOG.warn(getClass().getSimpleName(), e);
       return ContextCompat.getDrawable(mContext, R.drawable.ic_broken_image_white_24dp);
     }
   }

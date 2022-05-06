@@ -58,6 +58,8 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
 
@@ -73,7 +75,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
     companion object {
 
-        private val TAG = OpenFileDialogFragment::class.java.simpleName
+        private val log: Logger = LoggerFactory.getLogger(OpenFileDialogFragment::class.java)
 
         private const val KEY_URI = "uri"
         private const val KEY_MIME_TYPE = "mime_type"
@@ -125,7 +127,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             try {
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                Log.e(javaClass.simpleName, e.message, e)
+                log.error(e.message, e)
                 Toast.makeText(context, R.string.no_app_found, Toast.LENGTH_SHORT).show()
                 throw e
             }

@@ -29,6 +29,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.DonationViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.databinding.AdapterDonationBinding;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -51,10 +52,13 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     implements PurchasesUpdatedListener {
 
-  private static final String TAG = Billing.class.getSimpleName();
+    private final Logger LOG = LoggerFactory.getLogger(Billing.class);
 
   private BasicActivity activity;
   private List<String> skuList;
@@ -111,9 +115,8 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                   AppConfig.toast(activity, R.string.error_fetching_google_play_product_list);
                   if (BuildConfig.DEBUG) {
-                    Log.w(
-                        TAG,
-                        "Error fetching product list - looks like you are running a DEBUG build.");
+                    LOG.warn(
+                            "Error fetching product list - looks like you are running a DEBUG build.");
                   }
                 }
               });
@@ -210,7 +213,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         new BillingClientStateListener() {
           @Override
           public void onBillingSetupFinished(BillingResult billingResponse) {
-            Log.d(TAG, "Setup finished. Response code: " + billingResponse.getResponseCode());
+            LOG.debug("Setup finished. Response code: " + billingResponse.getResponseCode());
             if (billingResponse.getResponseCode() == BillingClient.BillingResponseCode.OK) {
               isServiceConnected = true;
               if (executeOnSuccess != null) {

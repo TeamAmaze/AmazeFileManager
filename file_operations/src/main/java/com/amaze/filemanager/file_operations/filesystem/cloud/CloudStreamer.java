@@ -26,13 +26,14 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jcifs.smb.SmbFile;
 
 public class CloudStreamer extends CloudStreamServer {
 
-  private static final String TAG = CloudStreamer.class.getSimpleName();
+  private static final Logger log = LoggerFactory.getLogger(CloudStreamer.class);
 
   public static final int PORT = 7871;
   public static final String URL = "http://127.0.0.1:" + PORT;
@@ -56,7 +57,7 @@ public class CloudStreamer extends CloudStreamServer {
       try {
         instance = new CloudStreamer(PORT);
       } catch (IOException e) {
-        Log.e(TAG, "Error initializing CloudStreamer", e);
+        log.error("Error initializing CloudStreamer", e);
       }
     return instance;
   }
@@ -102,7 +103,7 @@ public class CloudStreamer extends CloudStreamServer {
           }
         }
       }
-      Log.d(TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
+      log.debug("Request: " + range + " from: " + startFrom + ", to: " + endAt);
 
       // Change return code and add Content-Range header when skipping
       // is requested
@@ -117,10 +118,10 @@ public class CloudStreamer extends CloudStreamServer {
           if (endAt < 0) endAt = fileLen - 1;
           long newLen = fileLen - startFrom;
           if (newLen < 0) newLen = 0;
-          Log.d(TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
+          log.debug("start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
           final long dataLen = newLen;
           source.moveTo(startFrom);
-          Log.d(TAG, "Skipped " + startFrom + " bytes");
+          log.debug("Skipped " + startFrom + " bytes");
 
           res = new CloudStreamServer.Response(HTTP_PARTIALCONTENT, null, source);
           res.addHeader("Content-length", "" + dataLen);

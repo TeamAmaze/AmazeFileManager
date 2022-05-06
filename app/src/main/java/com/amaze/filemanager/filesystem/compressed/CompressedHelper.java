@@ -23,6 +23,7 @@ package com.amaze.filemanager.filesystem.compressed;
 import java.io.File;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.file_operations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
@@ -55,7 +56,11 @@ import android.util.Log;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class CompressedHelper {
+  private static final Logger LOG = LoggerFactory.getLogger(CompressedHelper.class);
 
   /**
    * Path separator used by all Decompressors and Extractors. e.g. rar internally uses '\' but is
@@ -126,7 +131,7 @@ public abstract class CompressedHelper {
       if(BuildConfig.DEBUG) {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
       }
-      Log.e(TAG, "The compressed file has no way of opening it: " + file);
+      LOG.error("The compressed file has no way of opening it: " + file);
       extractor = null;
     }
 
@@ -165,7 +170,7 @@ public abstract class CompressedHelper {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
       }
 
-      Log.e(TAG, "The compressed file has no way of opening it: " + file);
+      LOG.error("The compressed file has no way of opening it: " + file);
       decompressor = null;
     }
 

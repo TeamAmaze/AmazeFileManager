@@ -33,10 +33,13 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
+import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
 import com.amaze.filemanager.utils.safeLet
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class DragAndDropDialog : DialogFragment() {
 
@@ -46,6 +49,7 @@ class DragAndDropDialog : DialogFragment() {
 
     companion object {
 
+        private val log: Logger = LoggerFactory.getLogger(DragAndDropDialog::class.java)
         private const val KEY_PASTE_LOCATION = "pasteLocation"
         private const val KEY_FILES = "files"
 
@@ -81,9 +85,7 @@ class DragAndDropDialog : DialogFragment() {
                     )
                 }
             } else {
-                Log.w(
-                    javaClass.simpleName,
-                    "Trying to drop for copy / move while setting " +
+                log.warn("Trying to drop for copy / move while setting " +
                         "is drag select"
                 )
             }
@@ -183,7 +185,7 @@ class DragAndDropDialog : DialogFragment() {
             }
             return dialog
         }
-        Log.w(javaClass.simpleName, "Failed to show drag drop dialog view")
+        log.warn("Failed to show drag drop dialog view")
         return super.onCreateDialog(savedInstanceState)
     }
 

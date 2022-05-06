@@ -111,6 +111,7 @@ import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
 import com.amaze.filemanager.asynchronous.asynctasks.CloudLoaderAsyncTask;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
+import com.amaze.filemanager.asynchronous.asynctasks.LoadFilesListTask;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFilesTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
@@ -184,6 +185,9 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -207,7 +211,7 @@ public class MainActivity extends PermissionsActivity
         FolderChooserDialog.FolderCallback,
         PermissionsActivity.OnPermissionGranted {
 
-  private static final String TAG = TagsHelper.getTag(MainActivity.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
 
   public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
   public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -406,7 +410,7 @@ public class MainActivity extends PermissionsActivity
 
               @Override
               public void onError(@NonNull Throwable e) {
-                Log.e(TAG, "Error setting up DataUtils", e);
+                LOG.error("Error setting up DataUtils", e);
                 drawer.refreshDrawer();
                 invalidateFragmentAndBundle(savedInstanceState);
               }
@@ -1391,7 +1395,7 @@ public class MainActivity extends PermissionsActivity
       try {
         Shell.getShell().close();
       } catch (IOException e) {
-        Log.e(TAG, "Error closing Shell", e);
+        LOG.error("Error closing Shell", e);
       }
     }
   }
@@ -1595,7 +1599,7 @@ public class MainActivity extends PermissionsActivity
                 finish();
                 break;
               default:
-                LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
+                LogHelper.logOnProductionOrCrash("Incorrect value for switch");
             }
             return null;
           },
@@ -2404,7 +2408,7 @@ public class MainActivity extends PermissionsActivity
     if (mainFragment != null && mainFragment.getMainFragmentViewModel() != null) {
       lambda.apply(mainFragment);
     } else {
-      Log.w(TAG, "MainFragment is null");
+      LOG.warn("MainFragment is null");
       if (showToastIfMainFragmentIsNull) {
         AppConfig.toast(this, R.string.operation_unsuccesful);
       }

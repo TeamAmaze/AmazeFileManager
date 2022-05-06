@@ -30,9 +30,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.ui.dialogs.EncryptAuthenticateDialog
 import com.google.android.material.textfield.TextInputLayout
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-private const val TAG = "ExtensionsKt"
+
+private val log: Logger = LoggerFactory.getLogger(AppConfig::class.java)
 
 /**
  * Marks a text input field as mandatory (appends * at end)
@@ -50,7 +55,7 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
     try {
         startActivity(intent)
     } catch (e: SecurityException) {
-        Log.e(TAG, "Error when starting activity: ", e)
+        log.error("Error when starting activity: ", e)
         Toast.makeText(this, R.string.security_error, Toast.LENGTH_SHORT).show()
     }
 }

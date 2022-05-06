@@ -41,6 +41,7 @@ import androidx.preference.PreferenceManager;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFiles;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
@@ -54,6 +55,8 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import com.github.junrar.exception.UnsupportedRarV5Exception;
 
 import org.apache.commons.compress.PasswordRequiredException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.tukaani.xz.CorruptedInputException;
 
 import java.io.File;
@@ -65,8 +68,7 @@ public class ExtractService extends AbstractProgressiveService {
 
   Context context;
 
-  private static final String TAG = ExtractService.class.getSimpleName();
-
+  private final Logger LOG = LoggerFactory.getLogger(ExtractService.class);
   private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
   // list of data packages,// to initiate chart in process viewer fragment
@@ -324,23 +326,23 @@ public class ExtractService extends AbstractProgressiveService {
           }
           return (extractor.getInvalidArchiveEntries().size() == 0);
         } catch (Extractor.EmptyArchiveNotice e) {
-          Log.e(TAG, "Archive " + compressedPath + " is an empty archive");
+          LOG.error("Archive " + compressedPath + " is an empty archive");
           AppConfig.toast(
               extractService,
               extractService.getString(R.string.error_empty_archive, compressedPath));
           return true;
         } catch (Extractor.BadArchiveNotice e) {
-          Log.e(TAG, "Archive " + compressedPath + " is a corrupted archive.", e);
+          LOG.error("Archive " + compressedPath + " is a corrupted archive.", e);
           AppConfig.toast(
               extractService,
               e.getCause() != null && TextUtils.isEmpty(e.getCause().getMessage()) ? getString(R.string.error_bad_archive_without_info, compressedPath) : getString(R.string.error_bad_archive_with_info, compressedPath, e.getMessage()));
           return true;
         } catch (CorruptedInputException e) {
-          Log.d(TAG, "Corrupted LZMA input", e);
+          LOG.debug("Corrupted LZMA input", e);
           return false;
         } catch (IOException e) {
           if (PasswordRequiredException.class.isAssignableFrom(e.getClass())) {
-            Log.d(TAG, "Archive is password protected.", e);
+            LOG.debug("Archive is password protected.", e);
             if (ArchivePasswordCache.getInstance().containsKey(compressedPath)) {
               ArchivePasswordCache.getInstance().remove(compressedPath);
               AppConfig.toast(
@@ -352,19 +354,19 @@ public class ExtractService extends AbstractProgressiveService {
             publishProgress(e);
           } else if (e.getCause() != null
               && UnsupportedRarV5Exception.class.isAssignableFrom(e.getCause().getClass())) {
-            Log.e(TAG, "RAR " + compressedPath + " is unsupported V5 archive", e);
+            LOG.error("RAR " + compressedPath + " is unsupported V5 archive", e);
             AppConfig.toast(
                 extractService,
                 extractService.getString(R.string.error_unsupported_v5_rar, compressedPath));
             return false;
           } else {
-            Log.e(TAG, "Error while extracting file " + compressedPath, e);
+            LOG.error("Error while extracting file " + compressedPath, e);
             AppConfig.toast(extractService, extractService.getString(R.string.error));
             paused = true;
             publishProgress(e);
           }
         } catch (Throwable unhandledException) {
-          Log.e(TAG, "Unhandled exception thrown", unhandledException);
+          LOG.error("Unhandled exception thrown", unhandledException);
         }
       }
       return false;

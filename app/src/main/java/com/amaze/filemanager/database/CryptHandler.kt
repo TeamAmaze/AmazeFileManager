@@ -23,11 +23,15 @@ package com.amaze.filemanager.database
 import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
+import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity
 import io.reactivex.schedulers.Schedulers
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /** Created by vishal on 15/4/17.  */
 object CryptHandler {
 
+    private val log: Logger = LoggerFactory.getLogger(CryptHandler::class.java)
     private val database: ExplorerDatabase = AppConfig.getInstance().explorerDatabase
 
     /**
@@ -59,7 +63,7 @@ object CryptHandler {
         return runCatching {
             database.encryptedEntryDao().select(path).subscribeOn(Schedulers.io()).blockingGet()
         }.onFailure {
-            Log.e(javaClass.simpleName, it.message!!)
+            log.error(it.message!!)
         }.getOrNull()
     }
 

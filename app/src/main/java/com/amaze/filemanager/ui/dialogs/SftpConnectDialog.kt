@@ -52,6 +52,7 @@ import com.amaze.filemanager.file_operations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
@@ -61,6 +62,8 @@ import com.amaze.filemanager.utils.MinMaxInputFilter
 import com.amaze.filemanager.utils.SimpleTextWatcher
 import com.google.android.material.snackbar.Snackbar
 import net.schmizz.sshj.common.SecurityUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.BufferedReader
 import java.lang.ref.WeakReference
 import java.security.KeyPair
@@ -69,8 +72,7 @@ import java.util.*
 
 /** SSH/SFTP connection setup dialog.  */
 class SftpConnectDialog : DialogFragment() {
-
-    private val TAG = SftpConnectDialog::class.java.simpleName
+    private val log: Logger = LoggerFactory.getLogger(SftpConnectDialog::class.java)
 
     companion object {
         const val ARG_NAME = "name"
@@ -339,7 +341,7 @@ class SftpConnectDialog : DialogFragment() {
                             )
                         ) {
                             dialog1.dismiss()
-                            Log.d(TAG, "Saved setup")
+                            log.debug("Saved setup")
                             dismiss()
                         }
                     }.setNegativeButton(R.string.no) {
@@ -415,7 +417,7 @@ class SftpConnectDialog : DialogFragment() {
                         }.execute()
                     }
                 }.onFailure {
-                    Log.e(TAG, "Error reading PEM key", it)
+                    log.error("Error reading PEM key", it)
                 }
             }
         }

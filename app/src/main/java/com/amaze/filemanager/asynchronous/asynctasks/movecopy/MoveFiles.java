@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 
+import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.file_operations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -42,12 +43,17 @@ import android.util.Log;
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
  * in the same filesystem, else starting the copy service. Be advised - do not start this AsyncTask
  * directly but use {@link PrepareCopyTask} instead
  */
 public class MoveFiles implements Callable<MoveFilesReturn> {
+
+  private final Logger LOG = LoggerFactory.getLogger(MoveFiles.class);
 
   private final ArrayList<ArrayList<HybridFileParcelable>> files;
   private final ArrayList<String> paths;
@@ -101,7 +107,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
       destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
     if (!isMoveOperationValid(baseFile, new HybridFile(mode, path))) {
       // TODO: 30/06/20 Replace runtime exception with generic exception
-      Log.w(getClass().getSimpleName(), "Some files failed to be moved", new RuntimeException());
+      LOG.warn( "Some files failed to be moved", new RuntimeException());
       return new MoveFilesReturn(false, true, destinationSize, totalBytes);
     }
     switch (mode) {
