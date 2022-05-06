@@ -24,7 +24,6 @@ import android.app.Dialog
 import android.content.Context
 import android.os.AsyncTask
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.CheckBox
 import androidx.fragment.app.DialogFragment
@@ -33,10 +32,9 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.afollestad.materialdialogs.Theme
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask
-import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.utils.safeLet
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -72,7 +70,8 @@ class DragAndDropDialog : DialogFragment() {
                     .getString(PreferencesConstants.PREFERENCE_DRAG_AND_DROP_REMEMBERED, "")
                 if (dragAndDropCopy != "") {
                     startCopyOrMoveTask(
-                        pasteLocation, files,
+                        pasteLocation,
+                        files,
                         PreferencesConstants.PREFERENCE_DRAG_REMEMBER_MOVE
                             .equals(dragAndDropCopy, ignoreCase = true),
                         activity
@@ -85,7 +84,8 @@ class DragAndDropDialog : DialogFragment() {
                     )
                 }
             } else {
-                log.warn("Trying to drop for copy / move while setting " +
+                log.warn(
+                    "Trying to drop for copy / move while setting " +
                         "is drag select"
                 )
             }
@@ -134,9 +134,10 @@ class DragAndDropDialog : DialogFragment() {
             context,
             mainActivity?.appTheme?.getMaterialDialogTheme(mainActivity?.applicationContext),
             mainActivity?.accent,
-            pasteLocation, operationFiles
+            pasteLocation,
+            operationFiles
         ) {
-            context, dialogTheme, accent, pasteLocation, operationFiles ->
+                context, dialogTheme, accent, pasteLocation, operationFiles ->
             val dialog: MaterialDialog = MaterialDialog.Builder(context)
                 .title(getString(R.string.choose_operation))
                 .customView(R.layout.dialog_drag_drop, true)
@@ -175,11 +176,15 @@ class DragAndDropDialog : DialogFragment() {
                 if (dialogTheme == Theme.LIGHT) {
                     moveButton.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_baseline_content_cut_24,
-                        0, 0, 0
+                        0,
+                        0,
+                        0
                     )
                     copyButton.setCompoundDrawablesWithIntrinsicBounds(
                         R.drawable.ic_baseline_content_copy_24,
-                        0, 0, 0
+                        0,
+                        0,
+                        0
                     )
                 }
             }

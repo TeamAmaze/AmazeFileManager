@@ -34,7 +34,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.NotAllowedException;
 import com.amaze.filemanager.exceptions.OperationWouldOverwriteException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.MainActivity;

@@ -20,10 +20,8 @@
 
 package com.amaze.filemanager.database
 
-import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
-import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity
 import io.reactivex.schedulers.Schedulers
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

@@ -20,30 +20,20 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.IBinder;
-import android.text.TextUtils;
-import android.util.Log;
-import android.widget.EditText;
-import android.widget.RemoteViews;
-import android.widget.Toast;
+import java.io.File;
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
+import org.apache.commons.compress.PasswordRequiredException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.tukaani.xz.CorruptedInputException;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFiles;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache;
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache;
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.ui.activities.MainActivity;
@@ -54,15 +44,23 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.github.junrar.exception.UnsupportedRarV5Exception;
 
-import org.apache.commons.compress.PasswordRequiredException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.tukaani.xz.CorruptedInputException;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.IBinder;
+import android.text.TextUtils;
+import android.widget.EditText;
+import android.widget.RemoteViews;
+import android.widget.Toast;
 
-import java.io.File;
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
+import androidx.annotation.StringRes;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
 public class ExtractService extends AbstractProgressiveService {
 
@@ -313,8 +311,9 @@ public class ExtractService extends AbstractProgressiveService {
                 },
                 ServiceWatcherUtil.UPDATE_POSITION);
 
-        if(extractor == null) {
-          Toast.makeText(context, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show();
+        if (extractor == null) {
+          Toast.makeText(context, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG)
+              .show();
           return false;
         }
 
@@ -335,7 +334,10 @@ public class ExtractService extends AbstractProgressiveService {
           LOG.error("Archive " + compressedPath + " is a corrupted archive.", e);
           AppConfig.toast(
               extractService,
-              e.getCause() != null && TextUtils.isEmpty(e.getCause().getMessage()) ? getString(R.string.error_bad_archive_without_info, compressedPath) : getString(R.string.error_bad_archive_with_info, compressedPath, e.getMessage()));
+              e.getCause() != null && TextUtils.isEmpty(e.getCause().getMessage())
+                  ? getString(R.string.error_bad_archive_without_info, compressedPath)
+                  : getString(
+                      R.string.error_bad_archive_with_info, compressedPath, e.getMessage()));
           return true;
         } catch (CorruptedInputException e) {
           LOG.debug("Corrupted LZMA input", e);

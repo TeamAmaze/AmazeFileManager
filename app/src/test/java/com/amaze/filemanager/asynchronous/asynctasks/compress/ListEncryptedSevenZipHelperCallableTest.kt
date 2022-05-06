@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import java.io.File
 
 class ListEncryptedSevenZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {

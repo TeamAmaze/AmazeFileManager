@@ -20,24 +20,23 @@
 
 package com.amaze.filemanager.database;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Sort;
 
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.preference.PreferenceManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.reactivex.schedulers.Schedulers;
 

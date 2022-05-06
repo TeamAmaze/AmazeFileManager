@@ -31,7 +31,6 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextUtils
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.result.contract.ActivityResultContracts
@@ -48,11 +47,10 @@ import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.databinding.SftpDialogBinding
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.activities.UtilitiesAliasActivity
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.ui.provider.UtilitiesProvider
@@ -95,6 +93,7 @@ class SftpConnectDialog : DialogFragment() {
     private var oldPath: String? = null
 
     private var _binding: SftpDialogBinding? = null
+
     // This property is only valid between onCreateView and
     // onDestroyView.
     private val binding get() = _binding!!
@@ -331,7 +330,7 @@ class SftpConnectDialog : DialogFragment() {
                         )
                     ).setCancelable(true)
                     .setPositiveButton(R.string.yes) {
-                        dialog1: DialogInterface, _: Int ->
+                            dialog1: DialogInterface, _: Int ->
                         // This closes the host fingerprint verification dialog
                         dialog1.dismiss()
                         if (authenticateAndSaveSetup(
@@ -345,7 +344,7 @@ class SftpConnectDialog : DialogFragment() {
                             dismiss()
                         }
                     }.setNegativeButton(R.string.no) {
-                        dialog1: DialogInterface, _: Int ->
+                            dialog1: DialogInterface, _: Int ->
                         dialog1.dismiss()
                     }.show()
             }
@@ -359,7 +358,7 @@ class SftpConnectDialog : DialogFragment() {
     ) {
         connectionSettings.run {
             GetSshHostFingerprintTask(hostname, port) {
-                taskResult: AsyncTaskResult<PublicKey> ->
+                    taskResult: AsyncTaskResult<PublicKey> ->
                 taskResult.result?.let { hostKey ->
                     val hostKeyFingerprint = SecurityUtils.getFingerprint(hostKey)
                     if (hostKeyFingerprint == sshHostKey) {
@@ -383,7 +382,7 @@ class SftpConnectDialog : DialogFragment() {
                                     edit
                                 )
                             }.setNegativeButton(R.string.cancel_recommended) {
-                                dialog1: DialogInterface, _: Int ->
+                                    dialog1: DialogInterface, _: Int ->
                                 dialog1.dismiss()
                             }.show()
                     }
@@ -401,7 +400,7 @@ class SftpConnectDialog : DialogFragment() {
                 selectedPem = this
                 runCatching {
                     requireContext().contentResolver.openInputStream(this)?.let {
-                        selectedKeyContent ->
+                            selectedKeyContent ->
                         PemToKeyPairTask(selectedKeyContent) { result: KeyPair? ->
                             selectedParsedKeyPair = result
                             selectedParsedKeyPairName = this

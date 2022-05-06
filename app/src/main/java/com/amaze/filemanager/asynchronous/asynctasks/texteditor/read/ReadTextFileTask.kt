@@ -21,15 +21,13 @@
 package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read
 
 import android.content.Context
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.viewModels
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
-import com.amaze.filemanager.asynchronous.handlers.FileHandler
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException
+import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException
 import com.amaze.filemanager.filesystem.EditableFileAbstraction
 import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile
 import com.amaze.filemanager.ui.activities.texteditor.TextEditorActivity
@@ -67,6 +65,7 @@ class ReadTextFileTask(
     override fun onError(error: Throwable) {
         log.error("Error on text read", error)
         val applicationContext = appContextWR.get() ?: return
+
         @StringRes val errorMessage: Int = when (error) {
             is StreamNotFoundException -> {
                 R.string.error_file_not_found

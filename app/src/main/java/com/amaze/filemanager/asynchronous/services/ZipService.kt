@@ -103,10 +103,15 @@ class ZipService : AbstractProgressiveService() {
 
         val stopIntent = Intent(KEY_COMPRESS_BROADCAST_CANCEL)
         val stopPendingIntent = PendingIntent.getBroadcast(
-            applicationContext, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT
+            applicationContext,
+            1234,
+            stopIntent,
+            PendingIntent.FLAG_UPDATE_CURRENT
         )
         val action = NotificationCompat.Action(
-            R.drawable.ic_zip_box_grey, getString(R.string.stop_ftp), stopPendingIntent
+            R.drawable.ic_zip_box_grey,
+            getString(R.string.stop_ftp),
+            stopPendingIntent
         )
         mBuilder = NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID)
             .setSmallIcon(R.drawable.ic_zip_box_grey)

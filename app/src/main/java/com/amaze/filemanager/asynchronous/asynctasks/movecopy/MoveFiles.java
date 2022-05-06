@@ -25,9 +25,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 
-import com.amaze.filemanager.database.SortHandler;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -38,13 +40,9 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * AsyncTask that moves files from source to destination by trying to rename files first, if they're
@@ -107,7 +105,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
       destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
     if (!isMoveOperationValid(baseFile, new HybridFile(mode, path))) {
       // TODO: 30/06/20 Replace runtime exception with generic exception
-      LOG.warn( "Some files failed to be moved", new RuntimeException());
+      LOG.warn("Some files failed to be moved", new RuntimeException());
       return new MoveFilesReturn(false, true, destinationSize, totalBytes);
     }
     switch (mode) {

@@ -23,15 +23,17 @@ package com.amaze.filemanager.asynchronous.services;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import com.amaze.filemanager.LogHelper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -57,16 +59,12 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class CopyService extends AbstractProgressiveService {
   private static final Logger LOG = LoggerFactory.getLogger(CopyService.class);

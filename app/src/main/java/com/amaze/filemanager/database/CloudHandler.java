@@ -22,19 +22,17 @@ package com.amaze.filemanager.database;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.reactivex.schedulers.Schedulers;
 

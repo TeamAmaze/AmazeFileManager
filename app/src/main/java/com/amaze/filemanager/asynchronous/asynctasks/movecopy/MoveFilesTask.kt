@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks.movecopy
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -31,12 +30,11 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
 import com.amaze.filemanager.database.CryptHandler
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.files.FileUtils
-import com.amaze.filemanager.filesystem.root.ListFilesCommand
 import com.amaze.filemanager.ui.activities.MainActivity
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory

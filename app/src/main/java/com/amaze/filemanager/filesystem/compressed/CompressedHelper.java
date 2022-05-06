@@ -22,9 +22,11 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.database.TabHandler;
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
@@ -51,13 +53,9 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecom
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public abstract class CompressedHelper {
   private static final Logger LOG = LoggerFactory.getLogger(CompressedHelper.class);
@@ -128,7 +126,7 @@ public abstract class CompressedHelper {
     } else if (isBzip2(type)) {
       extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else {
-      if(BuildConfig.DEBUG) {
+      if (BuildConfig.DEBUG) {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
       }
       LOG.error("The compressed file has no way of opening it: " + file);
@@ -166,7 +164,7 @@ public abstract class CompressedHelper {
       // without the compression extension
       decompressor = new UnknownCompressedFileDecompressor(context);
     } else {
-      if(BuildConfig.DEBUG) {
+      if (BuildConfig.DEBUG) {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
       }
 

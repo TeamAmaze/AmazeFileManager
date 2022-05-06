@@ -22,17 +22,14 @@ package com.amaze.filemanager.database;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Tab;
-import com.amaze.filemanager.ui.activities.MainActivity;
-
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.reactivex.Completable;
 import io.reactivex.android.schedulers.AndroidSchedulers;

@@ -31,14 +31,16 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -63,14 +65,10 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.util.Pair;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;

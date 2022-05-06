@@ -172,14 +172,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
-
     implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
-    // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api

@@ -57,10 +57,10 @@ class TarXzHelperCallableTest2 : AbstractCompressedHelperCallableArchiveTest() {
     }
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            TarXzHelperCallable(
-        ApplicationProvider.getApplicationContext(),
-        archive.absolutePath,
-        relativePath,
-        false
-    )
+        TarXzHelperCallable(
+            ApplicationProvider.getApplicationContext(),
+            archive.absolutePath,
+            relativePath,
+            false
+        )
 }

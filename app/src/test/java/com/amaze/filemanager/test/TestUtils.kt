@@ -131,7 +131,6 @@ object TestUtils {
      */
     @JvmStatic
     fun <T> replaceObjectInstance(clazz: Class<T>, newInstance: T?): T {
-
         if (!clazz.declaredFields.any {
             it.name == "INSTANCE" && it.type == clazz && Modifier.isStatic(it.modifiers)
         }

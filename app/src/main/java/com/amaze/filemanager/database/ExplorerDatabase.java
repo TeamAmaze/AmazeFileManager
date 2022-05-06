@@ -22,6 +22,15 @@ package com.amaze.filemanager.database;
 
 import static com.amaze.filemanager.database.ExplorerDatabase.DATABASE_VERSION;
 
+import com.amaze.filemanager.database.daos.CloudEntryDao;
+import com.amaze.filemanager.database.daos.EncryptedEntryDao;
+import com.amaze.filemanager.database.daos.SortDao;
+import com.amaze.filemanager.database.daos.TabDao;
+import com.amaze.filemanager.database.models.explorer.CloudEntry;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
+import com.amaze.filemanager.database.models.explorer.Sort;
+import com.amaze.filemanager.database.models.explorer.Tab;
+
 import android.content.Context;
 
 import androidx.annotation.NonNull;
@@ -32,15 +41,6 @@ import androidx.room.Room;
 import androidx.room.RoomDatabase;
 import androidx.room.migration.Migration;
 import androidx.sqlite.db.SupportSQLiteDatabase;
-
-import com.amaze.filemanager.database.daos.CloudEntryDao;
-import com.amaze.filemanager.database.daos.EncryptedEntryDao;
-import com.amaze.filemanager.database.daos.SortDao;
-import com.amaze.filemanager.database.daos.TabDao;
-import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.database.models.explorer.Sort;
-import com.amaze.filemanager.database.models.explorer.Tab;
 
 /**
  * Repository for {@link Tab}, {@link Sort}, {@link EncryptedEntry}, {@link CloudEntry} in
@@ -281,10 +281,12 @@ public abstract class ExplorerDatabase extends RoomDatabase {
   protected abstract CloudEntryDao cloudEntryDao();
 
   public static synchronized ExplorerDatabase initialize(@NonNull Context context) {
-    Builder<ExplorerDatabase> builder = (overrideDatabaseBuilder == null) ?
-            Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME) :
-            overrideDatabaseBuilder.apply(context);
-    return builder.addMigrations(MIGRATION_1_2)
+    Builder<ExplorerDatabase> builder =
+        (overrideDatabaseBuilder == null)
+            ? Room.databaseBuilder(context, ExplorerDatabase.class, DATABASE_NAME)
+            : overrideDatabaseBuilder.apply(context);
+    return builder
+        .addMigrations(MIGRATION_1_2)
         .addMigrations(MIGRATION_2_3)
         .addMigrations(MIGRATION_3_4)
         .addMigrations(MIGRATION_4_5)

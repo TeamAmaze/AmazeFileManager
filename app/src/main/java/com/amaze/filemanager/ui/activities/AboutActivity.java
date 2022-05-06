@@ -20,12 +20,14 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.utils.Utils.openURL;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
@@ -40,7 +42,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -49,9 +50,6 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.palette.graphics.Palette;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Created by vishal on 27/7/16. */
 public class AboutActivity extends ThemedActivity implements View.OnClickListener {

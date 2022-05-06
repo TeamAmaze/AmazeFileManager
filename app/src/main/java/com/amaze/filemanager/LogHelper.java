@@ -20,15 +20,12 @@
 
 package com.amaze.filemanager;
 
-import android.util.Log;
-
-import com.amaze.filemanager.ui.activities.AboutActivity;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 public final class LogHelper {
   private static final Logger LOG = LoggerFactory.getLogger(LogHelper.class);
+
   private LogHelper() {}
 
   public static final void logOnProductionOrCrash(String message) {

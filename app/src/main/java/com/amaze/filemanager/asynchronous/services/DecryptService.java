@@ -22,28 +22,18 @@ package com.amaze.filemanager.asynchronous.services;
 
 import static com.amaze.filemanager.asynchronous.services.EncryptService.TAG_PASSWORD;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.SharedPreferences;
-import android.os.IBinder;
-import android.util.Log;
-import android.widget.RemoteViews;
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.Task;
 import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -56,13 +46,24 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.SharedPreferences;
+import android.os.IBinder;
+import android.widget.RemoteViews;
 
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.app.NotificationCompat;
+import androidx.preference.PreferenceManager;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 20:59. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 20:59.
+ */
 public class DecryptService extends AbstractProgressiveService {
 
   public static final String TAG_SOURCE = "crypt_source"; // source file to encrypt or decrypt
@@ -104,7 +105,8 @@ public class DecryptService extends AbstractProgressiveService {
     decryptPath = intent.getStringExtra(TAG_DECRYPT_PATH);
 
     SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-    int accentColor = ((AppConfig) getApplication())
+    int accentColor =
+        ((AppConfig) getApplication())
             .getUtilsProvider()
             .getColorPreference()
             .getCurrentUserColorPreferences(this, sharedPreferences)
@@ -236,9 +238,9 @@ public class DecryptService extends AbstractProgressiveService {
     public Callable<Long> getTask() {
       return () -> {
         String baseFileFolder =
-                baseFile.isDirectory()
-                        ? baseFile.getPath()
-                        : baseFile.getPath().substring(0, baseFile.getPath().lastIndexOf('/'));
+            baseFile.isDirectory()
+                ? baseFile.getPath()
+                : baseFile.getPath().substring(0, baseFile.getPath().lastIndexOf('/'));
 
         if (baseFile.isDirectory()) totalSize = baseFile.folderSize(context);
         else totalSize = baseFile.length(context);
@@ -249,10 +251,10 @@ public class DecryptService extends AbstractProgressiveService {
         serviceWatcherUtil = new ServiceWatcherUtil(progressHandler);
 
         addFirstDatapoint(
-                baseFile.getName(context),
-                1,
-                totalSize,
-                false); // we're using encrypt as move flag false
+            baseFile.getName(context),
+            1,
+            totalSize,
+            false); // we're using encrypt as move flag false
 
         if (FileProperties.checkFolder(baseFileFolder, context) == 1) {
           serviceWatcherUtil.watch(DecryptService.this);

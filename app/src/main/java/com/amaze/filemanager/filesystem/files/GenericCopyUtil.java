@@ -36,10 +36,12 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
 
-import com.amaze.filemanager.asynchronous.services.DecryptService;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.utils.OnLowMemory;
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.utils.OnLowMemory;
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -55,14 +57,10 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
 import androidx.documentfile.provider.DocumentFile;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /** Base class to handle file copy. */
 public class GenericCopyUtil {

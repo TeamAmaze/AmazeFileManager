@@ -27,11 +27,11 @@ import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
 import java.util.*
 
@@ -143,7 +143,10 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize column number from preference
      */
     fun initColumns(sharedPreferences: SharedPreferences) {
-        val columnPreference = sharedPreferences.getString(PREFERENCE_GRID_COLUMNS, PREFERENCE_GRID_COLUMNS_DEFAULT)
+        val columnPreference = sharedPreferences.getString(
+            PREFERENCE_GRID_COLUMNS,
+            PREFERENCE_GRID_COLUMNS_DEFAULT
+        )
         Objects.requireNonNull(columnPreference)
         columns = columnPreference?.toInt()
     }

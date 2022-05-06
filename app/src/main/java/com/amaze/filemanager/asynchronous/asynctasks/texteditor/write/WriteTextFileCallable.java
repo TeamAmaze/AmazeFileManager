@@ -29,8 +29,8 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;

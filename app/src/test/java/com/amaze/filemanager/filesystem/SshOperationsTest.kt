@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.filesystem
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.ssh.test.MockSshConnectionPools
 import org.junit.Test
 

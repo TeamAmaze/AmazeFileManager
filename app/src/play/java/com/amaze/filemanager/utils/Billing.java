@@ -23,13 +23,15 @@ package com.amaze.filemanager.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.holders.DonationViewHolder;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.databinding.AdapterDonationBinding;
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
 import com.android.billingclient.api.BillingClient;
 import com.android.billingclient.api.BillingClientStateListener;
@@ -42,7 +44,6 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -52,13 +53,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     implements PurchasesUpdatedListener {
 
-    private final Logger LOG = LoggerFactory.getLogger(Billing.class);
+  private final Logger LOG = LoggerFactory.getLogger(Billing.class);
 
   private BasicActivity activity;
   private List<String> skuList;
@@ -116,7 +114,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                   AppConfig.toast(activity, R.string.error_fetching_google_play_product_list);
                   if (BuildConfig.DEBUG) {
                     LOG.warn(
-                            "Error fetching product list - looks like you are running a DEBUG build.");
+                        "Error fetching product list - looks like you are running a DEBUG build.");
                   }
                 }
               });

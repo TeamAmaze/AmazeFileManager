@@ -32,11 +32,13 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.MakeDirectoryCommand;
 import com.amaze.filemanager.filesystem.root.MakeFileCommand;
@@ -52,7 +54,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -61,9 +62,6 @@ import androidx.documentfile.provider.DocumentFile;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.sftp.SFTPClient;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public class Operations {
 
@@ -483,7 +481,8 @@ public class Operations {
                   new Intent(TAG_INTENT_FILTER_GENERAL)
                       .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
             } catch (SmbException exceptionThrownDuringBuildParcelable) {
-              LOG.error("Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
+              LOG.error(
+                  "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
             }
             LOG.error(errmsg, e);
           }

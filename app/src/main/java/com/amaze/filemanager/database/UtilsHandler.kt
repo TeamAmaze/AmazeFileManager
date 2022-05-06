@@ -17,11 +17,11 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.database
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import android.widget.Toast
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
@@ -85,7 +85,9 @@ class UtilsHandler(
             Operation.LIST ->
                 utilitiesDatabase
                     .listEntryDao()
-                    .insert(com.amaze.filemanager.database.models.utilities.List(operationData.path))
+                    .insert(
+                        com.amaze.filemanager.database.models.utilities.List(operationData.path)
+                    )
                     .subscribeOn(Schedulers.io())
                     .subscribe()
             Operation.GRID ->
@@ -446,7 +448,7 @@ class UtilsHandler(
                 .findByNameAndPath(oldName, oldPath)
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
-        } .onFailure {
+        }.onFailure {
             // catch error to handle Single#onError for blockingGet
             log.error(it.message!!)
             return

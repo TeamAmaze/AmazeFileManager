@@ -23,11 +23,9 @@ package com.amaze.filemanager.asynchronous.handlers
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.adapters.RecyclerAdapter
-import com.amaze.filemanager.asynchronous.asynctasks.hashcalculator.CalculateHashTask
 import com.amaze.filemanager.filesystem.CustomFileObserver
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.ui.fragments.MainFragment
@@ -66,7 +64,8 @@ class FileHandler(
                     return
                 }
                 val fileCreated = HybridFile(
-                    mainFragmentViewModel.openMode, "${main.currentPath}/$path"
+                    mainFragmentViewModel.openMode,
+                    "${main.currentPath}/$path"
                 )
                 val newElement = fileCreated.generateLayoutElement(main.requireContext(), useThumbs)
                 main.elementsList?.add(newElement)

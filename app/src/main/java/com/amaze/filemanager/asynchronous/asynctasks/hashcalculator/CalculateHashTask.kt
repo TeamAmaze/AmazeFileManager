@@ -21,14 +21,12 @@
 package com.amaze.filemanager.asynchronous.asynctasks.hashcalculator
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
-import com.amaze.filemanager.asynchronous.asynctasks.texteditor.write.WriteTextFileTask
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.FileUtils
 import org.slf4j.Logger

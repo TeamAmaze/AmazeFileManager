@@ -21,8 +21,8 @@
 package com.amaze.filemanager.filesystem.cloud
 
 import com.amaze.filemanager.database.CloudHandler
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
-import com.amaze.filemanager.file_operations.filesystem.OpenMode.*
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode.*
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import org.junit.Assert
 import org.junit.Test

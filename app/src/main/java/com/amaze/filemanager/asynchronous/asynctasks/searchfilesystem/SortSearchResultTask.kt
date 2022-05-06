@@ -20,12 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
-import android.util.Log
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.asynchronous.asynctasks.Task
-import com.amaze.filemanager.asynchronous.asynctasks.movecopy.MoveFilesTask
-import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileTask
 import com.amaze.filemanager.filesystem.files.FileListSorter
 import com.amaze.filemanager.ui.fragments.MainFragment
 import org.slf4j.Logger

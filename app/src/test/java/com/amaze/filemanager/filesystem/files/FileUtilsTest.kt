@@ -367,7 +367,6 @@ class FileUtilsTest {
      */
     @Test
     fun testParseStringForHybridFileParcelable() {
-
         val systemTz = TimeZone.getDefault()
         TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
 
