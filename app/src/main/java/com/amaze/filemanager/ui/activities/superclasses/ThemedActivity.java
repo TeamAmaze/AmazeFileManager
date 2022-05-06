@@ -30,6 +30,7 @@ import com.amaze.filemanager.ui.dialogs.ColorPickerDialog;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.PreferenceUtils;
+import com.amaze.filemanager.utils.Utils;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 
 import android.app.ActivityManager;
@@ -104,14 +105,21 @@ public class ThemedActivity extends PreferenceActivity {
       } else {
         window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
       }
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
+        window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          window.setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          window.setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          window.setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
     } else if (SDK_INT == Build.VERSION_CODES.KITKAT_WATCH
         || SDK_INT == Build.VERSION_CODES.KITKAT) {
       setKitkatStatusBarMargin(parentView);
       setKitkatStatusBarTint();
-    }
-
-    if (getBoolean(PREFERENCE_COLORED_NAVIGATION) && SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      window.setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
     }
   }
 

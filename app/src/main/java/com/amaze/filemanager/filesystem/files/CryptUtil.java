@@ -28,6 +28,7 @@ import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;
 
@@ -37,6 +38,7 @@ import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
 
 import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.TagsHelper;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
@@ -49,9 +51,13 @@ import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.security.SecretKeygen;
 
 import android.content.Context;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+
+import kotlin.io.ByteStreamsKt;
+import kotlin.io.ConstantsKt;
 
 /**
  * Created by vishal on 6/4/17.
@@ -88,6 +94,7 @@ public class CryptUtil {
   private static final String IV =
       BuildConfig.CRYPTO_IV; // 12 byte long IV supported by android for GCM
   private static final int GCM_TAG_LENGTH = 128;
+  private static final String TAG = TagsHelper.getTag(CryptUtil.class);
 
   public static final String CRYPT_EXTENSION = ".aze";
   public static final String AESCRYPT_EXTENSION = ".aes";
@@ -335,26 +342,38 @@ public class CryptUtil {
     } else {
       parameterSpec = new IvParameterSpec(IV.getBytes());
     }
-    cipher.init(operationMode, SecretKeygen.INSTANCE.getSecretKey(), parameterSpec);
 
-    byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-    int count;
-
-    CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
-
-    try {
-      while ((count = inputStream.read(buffer)) != -1) {
-        if (!progressHandler.getCancelled()) {
-          cipherOutputStream.write(buffer, 0, count);
-          ServiceWatcherUtil.position += count;
-        } else break;
-      }
-    } catch (Exception x) {
-      x.printStackTrace();
-    } finally {
-      cipherOutputStream.flush();
-      cipherOutputStream.close();
+    Key secretKey = SecretKeygen.INSTANCE.getSecretKey();
+    if (secretKey == null) {
+      // Discard crypto setup objects and just pipe input to output
+      parameterSpec = null;
+      cipher = null;
+      ByteStreamsKt.copyTo(inputStream, outputStream, ConstantsKt.DEFAULT_BUFFER_SIZE);
       inputStream.close();
+      outputStream.close();
+    } else {
+      cipher.init(operationMode, SecretKeygen.INSTANCE.getSecretKey(), parameterSpec);
+
+      byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+      int count;
+
+      CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+
+      try {
+        while ((count = inputStream.read(buffer)) != -1) {
+          if (!progressHandler.getCancelled()) {
+            cipherOutputStream.write(buffer, 0, count);
+            ServiceWatcherUtil.position += count;
+          } else break;
+        }
+      } catch (Exception x) {
+        Log.e(TAG, "I/O error writing output", x);
+      } finally {
+        cipherOutputStream.flush();
+        cipherOutputStream.close();
+        inputStream.close();
+        outputStream.close();
+      }
     }
   }
 

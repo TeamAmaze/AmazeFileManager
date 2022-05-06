@@ -30,6 +30,8 @@ import com.amaze.filemanager.database.CloudHandler
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
 import java.util.*
 
@@ -45,7 +47,7 @@ class MainFragmentViewModel : ViewModel() {
 
     var fileCount = 0
     var folderCount: Int = 0
-    var columns: Int = 0
+    var columns: Int? = null
     var smbPath: String? = null
     var searchHelper = ArrayList<HybridFileParcelable>()
     var no = 0
@@ -141,15 +143,12 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize column number from preference
      */
     fun initColumns(sharedPreferences: SharedPreferences) {
-        if (columns == 0) {
-            sharedPreferences.getString(
-                PreferencesConstants
-                    .PREFERENCE_GRID_COLUMNS,
-                "-1"
-            )?.toInt()?.run {
-                columns = this
-            }
-        }
+        val columnPreference = sharedPreferences.getString(
+            PREFERENCE_GRID_COLUMNS,
+            PREFERENCE_GRID_COLUMNS_DEFAULT
+        )
+        Objects.requireNonNull(columnPreference)
+        columns = columnPreference?.toInt()
     }
 
     /**

@@ -760,5 +760,17 @@ You only need to do this once, until the next time you select a new location for
     <string name="recent_desc">Recently created or modified files</string>
     <string name="error_cannot_find_way_open">Could not find way to open the file</string>
     <string name="error_cant_decompress_that_file">Cannot process the requested archive</string>
+    <string name="analyse_storage">Analyse Storage</string>
+    <string name="amaze_file_utilities" translatable="false">Amaze File Utilities</string>
+    <string name="download_amaze_utils_text">You\'re being redirected to Amaze File Utilities. It\'s our offering that has inbuilt audio/video/image/document viewers, allows you to analyse storage files for blurry/dark images, duplicate files, fast transfer using Wifi P2P and much more.\nPlease support us by trying it out.</string>
+    <string name="download">Download</string>
+    <string name="wifip2p">Wi-Fi P2P</string>
+    <string name="amaze_utils_installed_alias">Thank you for installing Amaze File Utilities. You\'re being redirected to the app.</string>
+    <string name="image_viewer">Amaze Image Viewer</string>
+    <string name="video_player">Amaze Video Player</string>
+    <string name="amaze_audio_player">Amaze Music Player</string>
+    <string name="pdf_viewer">Amaze Pdf Viewer</string>
+    <string name="epub_viewer">Amaze Epub Viewer</string>
+    <string name="docx_viewer">Amaze Doc Viewer</string>
 </resources>
 

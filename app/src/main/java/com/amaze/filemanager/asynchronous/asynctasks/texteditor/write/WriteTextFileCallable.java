@@ -84,13 +84,13 @@ public class WriteTextFileCallable implements Callable<Unit> {
           DocumentFile documentFile =
               DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
           if (documentFile != null && documentFile.exists() && documentFile.canWrite()) {
-            outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+            outputStream = contentResolver.openOutputStream(fileAbstraction.uri, "wt");
           } else {
             destFile = FileUtils.fromContentUri(fileAbstraction.uri);
             outputStream = openFile(destFile, context.get());
           }
         } else {
-          outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+          outputStream = contentResolver.openOutputStream(fileAbstraction.uri, "wt");
         }
         break;
       case FILE:

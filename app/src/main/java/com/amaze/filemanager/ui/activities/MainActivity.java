@@ -97,6 +97,7 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.AlertDialog;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -119,6 +120,7 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.strings.StorageNamingHelper;
+import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.CustomZoomFocusChange;
 import com.amaze.filemanager.ui.views.appbar.AppBar;
 import com.amaze.filemanager.ui.views.drawer.Drawer;
@@ -128,6 +130,7 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.PackageUtils;
 import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.CloudRail;
@@ -383,6 +386,11 @@ public class MainActivity extends PermissionsActivity
               servers.addAll(utilsHandler.getSmbList());
               servers.addAll(utilsHandler.getSftpList());
               dataUtils.setServers(servers);
+
+              ExtensionsKt.updateAUAlias(
+                  this,
+                  !PackageUtils.Companion.appInstalledOrNot(
+                      AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager()));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -1680,10 +1688,25 @@ public class MainActivity extends PermissionsActivity
     if (SDK_INT >= LOLLIPOP) {
       // for lollipop devices, the status bar color
       mainActivity.getWindow().setStatusBarColor(colorDrawable.getColor());
-      if (getBoolean(PREFERENCE_COLORED_NAVIGATION))
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
         mainActivity
             .getWindow()
             .setNavigationBarColor(PreferenceUtils.getStatusColor(colorDrawable.getColor()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          mainActivity
+              .getWindow()
+              .setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          mainActivity
+              .getWindow()
+              .setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          mainActivity
+              .getWindow()
+              .setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
     } else if (SDK_INT == KITKAT_WATCH || SDK_INT == KITKAT) {
 
       // for kitkat devices, the status bar color

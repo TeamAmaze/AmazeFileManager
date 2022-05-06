@@ -18,8 +18,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 107
-        versionName "3.6.7"
+        versionCode 108
+        versionName "3.7.0"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
