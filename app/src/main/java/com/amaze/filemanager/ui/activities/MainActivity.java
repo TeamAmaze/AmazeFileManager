@@ -556,7 +556,7 @@ public class MainActivity extends PermissionsActivity
 
         if (uri != null) {
 
-          path = Utils.sanitizeInput(uri.getPath());
+          path = Utils.sanitizeInput(FileUtils.fromContentUri(uri).getAbsolutePath());
         } else {
           // no data field, open home for the tab in later processing
           path = null;
