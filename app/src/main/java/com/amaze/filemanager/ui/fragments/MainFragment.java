@@ -876,10 +876,13 @@ public class MainFragment extends Fragment
       startFileObserver();
 
       listView.post(() -> {
-        if (requireMainActivity().getScrollToFileName() != null) {
-          int scrollPosition = mainFragmentViewModel.getScrollPosition("Avicii - The Nights.mp3") - 1;
 
-          if(scrollPosition > 0)
+        String fileName = requireMainActivity().getScrollToFileName();
+
+        if (fileName != null) {
+          int scrollPosition = mainFragmentViewModel.getScrollPosition(fileName);
+
+          if(scrollPosition != -1)
             listView.scrollToPosition(scrollPosition);
 
         }
