@@ -214,4 +214,18 @@ class MainFragmentViewModel : ViewModel() {
         }
         return selected
     }
+
+    /**
+     * Get the position of an item
+     */
+    fun getScrollPosition(title: String): Int {
+        adapterListItems?.forEachIndexed { index, item ->
+            if (item.elem != null && item.elem.title.equals(title)) {
+                item.setChecked(true)
+                return index
+            }
+        }
+        return -1
+    }
+
 }

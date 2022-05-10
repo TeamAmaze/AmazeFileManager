@@ -874,6 +874,17 @@ public class MainFragment extends Fragment
           });
 
       startFileObserver();
+
+      listView.post(() -> {
+        if (requireMainActivity().getScrollToFileName() != null) {
+          int scrollPosition = mainFragmentViewModel.getScrollPosition("Avicii - The Nights.mp3") - 1;
+
+          if(scrollPosition > 0)
+            listView.scrollToPosition(scrollPosition);
+
+        }
+      });
+
     } else {
       // fragment not added
       initNoFileLayout();
