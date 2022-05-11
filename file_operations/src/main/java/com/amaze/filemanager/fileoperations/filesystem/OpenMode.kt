@@ -17,38 +17,32 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.amaze.filemanager.fileoperations.filesystem;
+package com.amaze.filemanager.fileoperations.filesystem
 
 /**
  * Created by vishal on 10/11/16.
  *
- * <p>Class denotes the type of file being handled
+ *
+ * Class denotes the type of file being handled
  */
-public enum OpenMode {
-  UNKNOWN,
-  FILE,
-  SMB,
-  SFTP,
+enum class OpenMode {
+    UNKNOWN, FILE, SMB, SFTP,
 
-  /** Custom file types like apk/images/downloads (which don't have a defined path) */
-  CUSTOM,
+    /**
+     * Custom file types like apk/images/downloads (which don't have a defined path)
+     */
+    CUSTOM, ROOT, OTG, DOCUMENT_FILE, GDRIVE, DROPBOX, BOX, ONEDRIVE;
 
-  ROOT,
-  OTG,
-  DOCUMENT_FILE,
-  GDRIVE,
-  DROPBOX,
-  BOX,
-  ONEDRIVE;
-
-  /**
-   * Get open mode based on the id assigned. Generally used to retrieve this type after config
-   * change or to send enum as argument
-   *
-   * @param ordinal the position of enum starting from 0 for first element
-   */
-  public static OpenMode getOpenMode(int ordinal) {
-    return OpenMode.values()[ordinal];
-  }
+    companion object {
+        /**
+         * Get open mode based on the id assigned. Generally used to retrieve this type after config
+         * change or to send enum as argument
+         *
+         * @param ordinal the position of enum starting from 0 for first element
+         */
+        @JvmStatic
+        fun getOpenMode(ordinal: Int): OpenMode {
+            return values()[ordinal]
+        }
+    }
 }
