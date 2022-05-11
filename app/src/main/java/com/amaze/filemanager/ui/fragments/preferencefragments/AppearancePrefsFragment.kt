@@ -24,8 +24,8 @@ import android.os.Bundle
 import androidx.preference.Preference
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.ui.theme.AppTheme
 import java.util.*
 

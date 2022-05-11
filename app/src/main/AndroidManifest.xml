@@ -23,13 +23,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager">
 
-    <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
+    <permission
+        android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
 
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.android.launcher.permission.INSTALL_SHORTCUT" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="com.amaze.cloud.permission.ACCESS_PROVIDER" />
@@ -38,33 +39,37 @@
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.QUERY_ALL_PACKAGES" />
+    <uses-permission
+        android:name="android.permission.QUERY_ALL_PACKAGES"
+        tools:ignore="QueryAllPackagesPermission" />
 
     <uses-feature
         android:name="android.hardware.touchscreen"
         android:required="false" />
 
-    <uses-feature android:name="android.software.leanback"
+    <uses-feature
+        android:name="android.software.leanback"
         android:required="false" />
 
     <application
         android:name=".application.AppConfig"
+        android:banner="@drawable/about_header"
         android:icon="@mipmap/ic_launcher"
-        android:roundIcon="@mipmap/ic_launcher_round"
-        tools:replace="android:label"
         android:label="@string/appbar_name"
         android:requestLegacyExternalStorage="true"
-        android:banner="@drawable/about_header">
+        android:roundIcon="@mipmap/ic_launcher_round"
+        tools:replace="android:label">
 
         <activity
+            android:name=".ui.activities.MainActivity"
+            android:configChanges="uiMode"
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
-            android:name=".ui.activities.MainActivity"
-            android:theme="@style/appCompatBlack"
-            android:configChanges="uiMode" >
+            android:theme="@style/appCompatBlack">
 
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
             </intent-filter>
@@ -72,6 +77,7 @@
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <data android:mimeType="*/*" />
+
                 <category android:name="android.intent.category.OPENABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -83,10 +89,11 @@
 
             <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
+
                 <data android:mimeType="application/zip" />
                 <data android:mimeType="application/rar" />
                 <data android:mimeType="application/x-gzip" />
-                <data android:mimeType="application/x-rar-compressed"/>
+                <data android:mimeType="application/x-rar-compressed" />
                 <data android:mimeType="application/x-bzip2" />
                 <data android:mimeType="application/x-xz" />
                 <data android:mimeType="application/x-7z-compressed" />
@@ -100,8 +107,10 @@
 
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
+
                 <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
 
@@ -115,20 +124,22 @@
             <intent-filter android:label="@string/intent_save_as">
                 <action android:name="android.intent.action.SEND" />
                 <action android:name="android.intent.action.SEND_MULTIPLE" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="*/*" />
             </intent-filter>
 
-            <meta-data android:name="android.app.shortcuts"
+            <meta-data
+                android:name="android.app.shortcuts"
                 android:resource="@xml/shortcuts" />
         </activity>
 
         <activity
-            android:uiOptions="splitActionBarWhenNarrow"
+            android:name=".ui.activities.PreferencesActivity"
             android:configChanges="orientation|screenSize|uiMode"
             android:label="@string/setting"
-            android:name=".ui.activities.PreferencesActivity"
-            android:theme="@style/appCompatBlack">
+            android:theme="@style/appCompatBlack"
+            android:uiOptions="splitActionBarWhenNarrow">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
@@ -136,15 +147,16 @@
 
         </activity>
         <activity
-            android:label="@string/textreader"
             android:name=".ui.activities.texteditor.TextEditorActivity"
             android:configChanges="uiMode"
+            android:label="@string/textreader"
             android:theme="@style/appCompatBlack">
             <intent-filter
-                tools:ignore="AppLinkUrlError"
-                android:label="Amaze Text Editor">
-                <action android:name="android.intent.action.VIEW"/>
+                android:label="Amaze Text Editor"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
+
                 <data android:mimeType="text/*" />
                 <data android:mimeType="application/javascript" />
                 <data android:mimeType="application/json" />
@@ -153,49 +165,50 @@
 
         </activity>
         <activity
-            android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
-            android:theme="@style/appCompatBlack"
             android:configChanges="uiMode"
-            android:screenOrientation="locked">
+            android:label="@string/databasereader"
+            android:screenOrientation="locked"
+            android:theme="@style/appCompatBlack">
             <intent-filter
-                tools:ignore="AppLinkUrlError"
-                android:label="Amaze Database Reader">
-                <action android:name="android.intent.action.VIEW"/>
+                android:label="Amaze Database Reader"
+                tools:ignore="AppLinkUrlError">
+                <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <data android:mimeType="db/*" />
             </intent-filter>
 
         </activity>
 
-        <activity android:name=".ui.activities.AboutActivity"
-            android:theme="@style/aboutBlack"
+        <activity
+            android:name=".ui.activities.AboutActivity"
             android:configChanges="uiMode"
             android:label="About"
-            />
+            android:theme="@style/aboutBlack" />
 
-        <activity android:name=".crashreport.ErrorActivity"
-            android:theme="@style/appCompatBlack"
+        <activity
+            android:name=".crashreport.ErrorActivity"
             android:configChanges="uiMode"
             android:label="Error"
-            />
+            android:theme="@style/appCompatBlack" />
 
         <activity
             android:name=".ui.activities.UtilitiesAliasActivity"
-            android:exported="true"
             android:excludeFromRecents="true"
-            android:theme="@style/Custom.Dialog.Dark">
-        </activity>
-
-        <activity-alias android:name="amazeutilsalias"
-            android:targetActivity=".ui.activities.UtilitiesAliasActivity"
             android:exported="true"
-            android:enabled="true">
+            android:theme="@style/Custom.Dialog.Dark"></activity>
+
+        <activity-alias
+            android:name="amazeutilsalias"
+            android:enabled="true"
+            android:exported="true"
+            android:targetActivity=".ui.activities.UtilitiesAliasActivity">
             <intent-filter
                 android:label="@string/amaze_audio_player"
                 tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="audio/*" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
@@ -204,6 +217,7 @@
                 tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="video/*" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
@@ -212,6 +226,7 @@
                 tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="image/*" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
@@ -220,6 +235,7 @@
                 tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/vnd.openxmlformats-officedocument.wordprocessingml.document" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
@@ -228,6 +244,7 @@
                 tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/pdf" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
@@ -236,48 +253,43 @@
                 tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="application/epub+zip" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.OPENABLE" />
             </intent-filter>
         </activity-alias>
 
         <service
-            android:name = ".asynchronous.services.ExtractService"
-            android:label = "Extracting"
-            >
-        </service>
+            android:name=".asynchronous.services.ExtractService"
+            android:label="Extracting"></service>
         <service
-            android:name = ".asynchronous.services.ZipService"
-            android:label = "Compressing"
-            >
-        </service>
+            android:name=".asynchronous.services.ZipService"
+            android:label="Compressing"></service>
         <service
-            android:name = ".asynchronous.services.CopyService"
-            android:label = "Copying"
-            >
-        </service>
+            android:name=".asynchronous.services.CopyService"
+            android:label="Copying"></service>
 
-        <service android:name=".asynchronous.services.EncryptService"
-            android:label="@string/crypt_encrypting"
-            />
+        <service
+            android:name=".asynchronous.services.EncryptService"
+            android:label="@string/crypt_encrypting" />
 
-        <service android:name=".asynchronous.services.DecryptService"
-            android:label="@string/crypt_decrypting"
-            />
+        <service
+            android:name=".asynchronous.services.DecryptService"
+            android:label="@string/crypt_decrypting" />
 
         <service
             android:name=".asynchronous.services.ftp.FtpService"
             android:enabled="true"
             android:exported="true"
-            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER"/>
+            android:permission="${applicationId}.permission.CONTROL_FTP_SERVER" />
 
-        <service android:name=".asynchronous.services.ftp.FtpTileService"
+        <service
+            android:name=".asynchronous.services.ftp.FtpTileService"
             android:icon="@drawable/ic_ftp_dark"
             android:label="@string/ftp"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">
             <intent-filter>
-                <action
-                    android:name="android.service.quicksettings.action.QS_TILE" />
+                <action android:name="android.service.quicksettings.action.QS_TILE" />
             </intent-filter>
         </service>
 

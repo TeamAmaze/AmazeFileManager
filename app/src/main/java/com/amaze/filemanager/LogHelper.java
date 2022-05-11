@@ -22,6 +22,8 @@ package com.amaze.filemanager;
 
 import android.util.Log;
 
+import androidx.multidex.BuildConfig;
+
 public final class LogHelper {
   private LogHelper() {}
 

@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.ui.fragments.preferencefragments
 
+
 object PreferencesConstants {
     // appearance_prefs.xml
     const val FRAGMENT_THEME = "theme"
