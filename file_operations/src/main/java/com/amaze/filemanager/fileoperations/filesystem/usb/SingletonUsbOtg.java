@@ -26,41 +26,44 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class SingletonUsbOtg {
-  private static SingletonUsbOtg instance = null;
+    private static SingletonUsbOtg instance = null;
 
-  public static SingletonUsbOtg getInstance() {
-    if (instance == null) instance = new SingletonUsbOtg();
-    return instance;
-  }
+    public static SingletonUsbOtg getInstance() {
+        if (instance == null) instance = new SingletonUsbOtg();
+        return instance;
+    }
 
-  private UsbOtgRepresentation connectedDevice = null;
-  private @Nullable Uri usbOtgRoot;
+    private UsbOtgRepresentation connectedDevice = null;
+    private @Nullable
+    Uri usbOtgRoot;
 
-  private SingletonUsbOtg() {}
+    private SingletonUsbOtg() {
+    }
 
-  public void setConnectedDevice(UsbOtgRepresentation connectedDevice) {
-    this.connectedDevice = connectedDevice;
-  }
+    public void setConnectedDevice(UsbOtgRepresentation connectedDevice) {
+        this.connectedDevice = connectedDevice;
+    }
 
-  public boolean isDeviceConnected() {
-    return connectedDevice != null;
-  }
+    public boolean isDeviceConnected() {
+        return connectedDevice != null;
+    }
 
-  public void setUsbOtgRoot(@Nullable Uri root) {
-    if (connectedDevice == null) throw new IllegalStateException("No device connected!");
-    usbOtgRoot = root;
-  }
+    public void setUsbOtgRoot(@Nullable Uri root) {
+        if (connectedDevice == null) throw new IllegalStateException("No device connected!");
+        usbOtgRoot = root;
+    }
 
-  public void resetUsbOtgRoot() {
-    connectedDevice = null;
-    usbOtgRoot = null;
-  }
+    public void resetUsbOtgRoot() {
+        connectedDevice = null;
+        usbOtgRoot = null;
+    }
 
-  public @Nullable Uri getUsbOtgRoot() {
-    return usbOtgRoot;
-  }
+    public @Nullable
+    Uri getUsbOtgRoot() {
+        return usbOtgRoot;
+    }
 
-  public boolean checkIfRootIsFromDevice(@NonNull UsbOtgRepresentation device) {
-    return usbOtgRoot != null && connectedDevice.hashCode() == device.hashCode();
-  }
+    public boolean checkIfRootIsFromDevice(@NonNull UsbOtgRepresentation device) {
+        return usbOtgRoot != null && connectedDevice.hashCode() == device.hashCode();
+    }
 }

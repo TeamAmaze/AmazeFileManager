@@ -17,47 +17,29 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-
-package com.amaze.filemanager.fileoperations.filesystem.usb;
-
-import androidx.annotation.Nullable;
+package com.amaze.filemanager.fileoperations.filesystem.usb
 
 /**
  * This class replesents a usb device.
  *
- * @see UsbOtgRepresentation#equals(Object)
+ * @see UsbOtgRepresentation.equals
  */
-public class UsbOtgRepresentation {
+class UsbOtgRepresentation(val productID: Int, val vendorID: Int, val serialNumber: String?) {
+    /**
+     * This does not ensure a USB OTG device is equal to another! This tests parameters to know to a certain
+     * degree of certainty that a device is "similar enough" to another one to be the same one.
+     */
+    override fun equals(other: Any?): Boolean {
+        if (other !is UsbOtgRepresentation) return false
+        return productID ==
+                other.productID
+                && vendorID == other.vendorID &&
+                (serialNumber == null && other.serialNumber == null
+                        || serialNumber == other.serialNumber)
+    }
 
-  public final int productID, vendorID;
-  public final @Nullable String serialNumber;
-
-  public UsbOtgRepresentation(int productID, int vendorID, @Nullable String serialNumber) {
-    this.productID = productID;
-    this.vendorID = vendorID;
-    this.serialNumber = serialNumber;
-  }
-
-  /**
-   * This does not ensure a device is equal to another! This tests parameters to know to a certain
-   * degree of certanty that a device is "similar enough" to another one to be the same one.
-   */
-  @Override
-  public boolean equals(Object obj) {
-    if (!(obj instanceof UsbOtgRepresentation)) return false;
-
-    UsbOtgRepresentation other = (UsbOtgRepresentation) obj;
-    return productID == other.productID
-        && vendorID == other.vendorID
-        && ((serialNumber == null && other.serialNumber == null)
-            || serialNumber.equals(other.serialNumber));
-  }
-
-  @Override
-  public int hashCode() {
-    int result = productID;
-    result = 37 * result + vendorID;
-    result = 37 * result + (serialNumber != null ? serialNumber.hashCode() : 0);
-    return result;
-  }
+    /**
+     * why? exactly why?
+     */
+    override fun hashCode() = (37 * (37 * productID + vendorID) + (serialNumber?.hashCode() ?: 0))
 }

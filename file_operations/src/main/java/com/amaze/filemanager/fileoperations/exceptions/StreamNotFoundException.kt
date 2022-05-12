@@ -17,12 +17,21 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.fileoperations.exceptions
 
-package com.amaze.filemanager.fileoperations.exceptions;
+/**
+ * Created by vishal on 21/1/17.
+ *
+ *
+ * Exception thrown when we can't get stream after trying any specific methods
+ */
+class StreamNotFoundException : Exception {
+    constructor() : super(MESSAGE) {}
+    constructor(message: String?) : super(message) {}
+    constructor(message: String?, cause: Throwable?) : super(message, cause) {}
+    constructor(cause: Throwable?) : super(MESSAGE, cause) {}
 
-/** Created by vishal on 24/12/16. Exception thrown when root is */
-public class ShellNotRunningException extends Exception {
-  public ShellNotRunningException() {
-    super("Shell stopped running!");
-  }
+    companion object {
+        private const val MESSAGE = "Can't get stream"
+    }
 }
