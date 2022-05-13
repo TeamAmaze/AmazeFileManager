@@ -17,36 +17,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.strings
 
-package com.amaze.filemanager.ui.strings;
+import android.content.Context
+import com.amaze.filemanager.R
+import com.amaze.filemanager.fileoperations.filesystem.StorageNaming
+import com.amaze.filemanager.fileoperations.filesystem.StorageNaming.DeviceDescription
+import java.io.File
 
-import java.io.File;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.fileoperations.filesystem.StorageNaming;
-
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-
-public final class StorageNamingHelper {
-  private StorageNamingHelper() {}
-
-  @NonNull
-  public static String getNameForDeviceDescription(
-      @NonNull Context context,
-      @NonNull File file,
-      @StorageNaming.DeviceDescription int deviceDescription) {
-    switch (deviceDescription) {
-      case StorageNaming.STORAGE_INTERNAL:
-        return context.getString(R.string.storage_internal);
-      case StorageNaming.STORAGE_SD_CARD:
-        return context.getString(R.string.storage_sd_card);
-      case StorageNaming.ROOT:
-        return context.getString(R.string.root_directory);
-      case StorageNaming.NOT_KNOWN:
-      default:
-        return file.getName();
+object StorageNamingHelper {
+    @JvmStatic
+    fun getNameForDeviceDescription(
+        context: Context,
+        file: File,
+        @DeviceDescription deviceDescription: Int
+    ): String {
+        return when (deviceDescription) {
+            StorageNaming.STORAGE_INTERNAL -> context.getString(R.string.storage_internal)
+            StorageNaming.STORAGE_SD_CARD -> context.getString(R.string.storage_sd_card)
+            StorageNaming.ROOT -> context.getString(R.string.root_directory)
+            StorageNaming.NOT_KNOWN -> file.name
+            else -> file.name
+        }
     }
-  }
 }

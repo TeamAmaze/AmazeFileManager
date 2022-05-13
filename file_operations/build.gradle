@@ -109,5 +109,10 @@ dependencies {
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation "androidx.test.espresso:espresso-core:$espressoVersion"
+    implementation "androidx.core:core-ktx:+"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
+}
+repositories {
+    mavenCentral()
 }
