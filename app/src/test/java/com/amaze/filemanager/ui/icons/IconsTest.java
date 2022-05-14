@@ -25,6 +25,12 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.assertEquals;
 
+import android.webkit.MimeTypeMap;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
+
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -32,38 +38,32 @@ import org.robolectric.Shadows;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowMimeTypeMap;
 
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-
-import android.webkit.MimeTypeMap;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
 @RunWith(AndroidJUnit4.class)
 @Config(
-    shadows = {ShadowMultiDex.class},
-    sdk = {JELLY_BEAN, KITKAT, P})
+        shadows = {ShadowMultiDex.class},
+        sdk = {JELLY_BEAN, KITKAT, P})
 public class IconsTest {
 
-  @Before
-  public void setUp() {
-    // By default Robolectric's MimeTypeMap is empty, we need to populate them
-    ShadowMimeTypeMap mimeTypeMap = Shadows.shadowOf(MimeTypeMap.getSingleton());
-    mimeTypeMap.addExtensionMimeTypMapping("zip", "application/zip");
-    mimeTypeMap.addExtensionMimeTypMapping("rar", "application/x-rar-compressed");
-    mimeTypeMap.addExtensionMimeTypMapping("tar", "application/x-tar");
-  }
+    @Before
+    public void setUp() {
+        // By default Robolectric's MimeTypeMap is empty, we need to populate them
+        ShadowMimeTypeMap mimeTypeMap = Shadows.shadowOf(MimeTypeMap.getSingleton());
+        mimeTypeMap.addExtensionMimeTypMapping("zip", "application/zip");
+        mimeTypeMap.addExtensionMimeTypMapping("rar", "application/x-rar-compressed");
+        mimeTypeMap.addExtensionMimeTypMapping("tar", "application/x-tar");
+    }
 
-  @Test
-  public void testReturnArchiveTypes() {
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.zip", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.rar", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.gz", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.lzma", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.xz", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.bz2", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.bz2", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.gz", false));
-    assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.gz", false));
-  }
+    @Test
+    public void testReturnArchiveTypes() {
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.zip", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.rar", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.gz", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.lzma", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.xz", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.tar.bz2", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.bz2", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.gz", false));
+        assertEquals(Icons.COMPRESSED, Icons.getTypeOfFile("archive.txt.gz", false));
+    }
 }
