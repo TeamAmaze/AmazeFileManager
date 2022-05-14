@@ -886,6 +886,7 @@ public class MainFragment extends Fragment
                         scrollPosition -> {
                           if(scrollPosition != -1)
                             listView.scrollToPosition(Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
+                            adapter.notifyItemChanged(scrollPosition);
                         });
       });
 
