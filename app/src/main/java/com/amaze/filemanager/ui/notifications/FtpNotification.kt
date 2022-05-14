@@ -17,115 +17,105 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.notifications
 
-package com.amaze.filemanager.ui.notifications;
-
-import android.app.Notification;
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-
-import androidx.annotation.StringRes;
-import androidx.core.app.NotificationCompat;
-import androidx.preference.PreferenceManager;
-
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.services.ftp.FtpService;
-import com.amaze.filemanager.ui.activities.MainActivity;
-
-import java.net.InetAddress;
+import android.annotation.SuppressLint
+import android.app.Notification
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
+import androidx.annotation.StringRes
+import androidx.core.app.NotificationCompat
+import androidx.preference.PreferenceManager
+import com.amaze.filemanager.R
+import com.amaze.filemanager.asynchronous.services.ftp.FtpService
+import com.amaze.filemanager.asynchronous.services.ftp.FtpService.Companion.getLocalInetAddress
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.notifications.NotificationConstants.setMetadata
 
 /**
  * Created by yashwanthreddyg on 19-06-2016.
- *
- * <p>Edited by zent-co on 30-07-2019
+ * Edited by zent-co on 30-07-2019.
+ * Re-edited by hojat72elect on 14-05-2022.
  */
-public class FtpNotification {
-
-    private static NotificationCompat.Builder buildNotification(
-            Context context, @StringRes int contentTitleRes, String contentText, boolean noStopButton) {
-        Intent notificationIntent = new Intent(context, MainActivity.class);
-        notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
-
-        long when = System.currentTimeMillis();
-
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
-                        .setContentTitle(context.getString(contentTitleRes))
-                        .setContentText(contentText)
-                        .setContentIntent(contentIntent)
-                        .setSmallIcon(R.drawable.ic_ftp_light)
-                        .setTicker(context.getString(R.string.ftp_notif_starting))
-                        .setWhen(when)
-                        .setOngoing(true)
-                        .setOnlyAlertOnce(true);
-
+object FtpNotification {
+    @SuppressLint("UnspecifiedImmutableFlag")
+    private fun buildNotification(
+        context: Context,
+        @StringRes contentTitleRes: Int,
+        contentText: String,
+        noStopButton: Boolean
+    ): NotificationCompat.Builder {
+        val notificationIntent = Intent(context, MainActivity::class.java)
+        notificationIntent.flags =
+            Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        val contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0)
+        val currentTime = System.currentTimeMillis()
+        val builder = NotificationCompat.Builder(context, NotificationConstants.CHANNEL_FTP_ID)
+            .setContentTitle(context.getString(contentTitleRes))
+            .setContentText(contentText)
+            .setContentIntent(contentIntent)
+            .setSmallIcon(R.drawable.ic_ftp_light)
+            .setTicker(context.getString(R.string.ftp_notif_starting))
+            .setWhen(currentTime)
+            .setOngoing(true)
+            .setOnlyAlertOnce(true)
         if (!noStopButton) {
-            int stopIcon = android.R.drawable.ic_menu_close_clear_cancel;
-            CharSequence stopText = context.getString(R.string.ftp_notif_stop_server);
-            Intent stopIntent =
-                    new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
-            PendingIntent stopPendingIntent =
-                    PendingIntent.getBroadcast(context, 0, stopIntent, PendingIntent.FLAG_ONE_SHOT);
-
-            builder.addAction(stopIcon, stopText, stopPendingIntent);
+            val stopIcon = android.R.drawable.ic_menu_close_clear_cancel
+            val stopText: CharSequence = context.getString(R.string.ftp_notif_stop_server)
+            val stopIntent =
+                Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.packageName)
+            val stopPendingIntent =
+                PendingIntent.getBroadcast(context, 0, stopIntent, PendingIntent.FLAG_ONE_SHOT)
+            builder.addAction(stopIcon, stopText, stopPendingIntent)
         }
-
-        NotificationConstants.setMetadata(context, builder, NotificationConstants.TYPE_FTP);
-
-        return builder;
+        setMetadata(context, builder, NotificationConstants.TYPE_FTP)
+        return builder
     }
 
-    public static Notification startNotification(Context context, boolean noStopButton) {
-        NotificationCompat.Builder builder =
-                buildNotification(
-                        context,
-                        R.string.ftp_notif_starting_title,
-                        context.getString(R.string.ftp_notif_starting),
-                        noStopButton);
-
-        return builder.build();
+    fun startNotification(context: Context, noStopButton: Boolean): Notification {
+        val builder = buildNotification(
+            context,
+            R.string.ftp_notif_starting_title,
+            context.getString(R.string.ftp_notif_starting),
+            noStopButton
+        )
+        return builder.build()
     }
 
-    public static void updateNotification(Context context, boolean noStopButton) {
-        String notificationService = Context.NOTIFICATION_SERVICE;
-        NotificationManager notificationManager =
-                (NotificationManager) context.getSystemService(notificationService);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-        int port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT);
-        boolean secureConnection =
-                sharedPreferences.getBoolean(FtpService.KEY_PREFERENCE_SECURE, FtpService.DEFAULT_SECURE);
-
-        InetAddress address = FtpService.getLocalInetAddress(context);
-
-        String address_text = "Address not found";
-
+    fun updateNotification(context: Context, noStopButton: Boolean) {
+        val notificationService = Context.NOTIFICATION_SERVICE
+        val notificationManager =
+            context.getSystemService(notificationService) as NotificationManager
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val port = sharedPreferences.getInt(FtpService.PORT_PREFERENCE_KEY, FtpService.DEFAULT_PORT)
+        val secureConnection = sharedPreferences.getBoolean(
+            FtpService.KEY_PREFERENCE_SECURE,
+            FtpService.DEFAULT_SECURE
+        )
+        val address = getLocalInetAddress(context)
+        var address_text = "Address not found"
         if (address != null) {
             address_text =
-                    (secureConnection ? FtpService.INITIALS_HOST_SFTP : FtpService.INITIALS_HOST_FTP)
-                            + address.getHostAddress()
-                            + ":"
-                            + port
-                            + "/";
+                ((if (secureConnection) FtpService.INITIALS_HOST_SFTP else FtpService.INITIALS_HOST_FTP)
+                        + address.hostAddress
+                        + ":"
+                        + port
+                        + "/")
         }
-
-        NotificationCompat.Builder builder =
-                buildNotification(
-                        context,
-                        R.string.ftp_notif_title,
-                        context.getString(R.string.ftp_notif_text, address_text),
-                        noStopButton);
-
-        notificationManager.notify(NotificationConstants.FTP_ID, builder.build());
+        val builder = buildNotification(
+            context,
+            R.string.ftp_notif_title,
+            context.getString(R.string.ftp_notif_text, address_text),
+            noStopButton
+        )
+        notificationManager.notify(NotificationConstants.FTP_ID, builder.build())
     }
 
-    private static void removeNotification(Context context) {
-        String ns = Context.NOTIFICATION_SERVICE;
-        NotificationManager nm = (NotificationManager) context.getSystemService(ns);
-        nm.cancelAll();
+    private fun removeNotification(context: Context) {
+        val ns = Context.NOTIFICATION_SERVICE
+        val nm = context.getSystemService(ns) as NotificationManager
+        nm.cancelAll()
     }
 }
