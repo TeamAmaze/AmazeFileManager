@@ -885,7 +885,7 @@ public class MainFragment extends Fragment
                         getViewLifecycleOwner(),
                         scrollPosition -> {
                           if(scrollPosition != -1)
-                            listView.scrollToPosition(Math.min(scrollPosition + 4, adapter.getItemCount()));
+                            listView.scrollToPosition(Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
                         });
       });
 
