@@ -880,11 +880,10 @@ public class MainFragment extends Fragment
         String fileName = requireMainActivity().getScrollToFileName();
 
         if (fileName != null) {
-          int scrollPosition = mainFragmentViewModel.getScrollPosition(fileName);
+          int scrollPosition = mainFragmentViewModel.getScrollPosition(fileName) + 4;
 
           if(scrollPosition != -1)
-            listView.scrollToPosition(scrollPosition);
-
+            listView.scrollToPosition(Math.min(scrollPosition, adapter.getItemCount()));
         }
       });
 
