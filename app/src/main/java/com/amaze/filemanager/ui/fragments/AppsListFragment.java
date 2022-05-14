@@ -23,29 +23,6 @@ package com.amaze.filemanager.ui.fragments;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_APPLIST_ISASCENDING;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_APPLIST_SORTBY;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.GlideApp;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.AppsRecyclerAdapter;
-import com.amaze.filemanager.adapters.data.AppDataParcelable;
-import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
-import com.amaze.filemanager.adapters.holders.AppHolder;
-import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.ui.views.FastScroller;
-import com.amaze.filemanager.utils.GlideConstants;
-import com.amaze.filemanager.utils.Utils;
-import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
-import com.bumptech.glide.util.ViewPreloadSizeProvider;
-
 import android.content.SharedPreferences;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -66,242 +43,265 @@ import androidx.preference.PreferenceManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.GlideApp;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.AppsRecyclerAdapter;
+import com.amaze.filemanager.adapters.data.AppDataParcelable;
+import com.amaze.filemanager.adapters.glide.AppsAdapterPreloadModel;
+import com.amaze.filemanager.adapters.holders.AppHolder;
+import com.amaze.filemanager.asynchronous.loaders.AppListLoader;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.ui.views.FastScroller;
+import com.amaze.filemanager.utils.GlideConstants;
+import com.amaze.filemanager.utils.Utils;
+import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader;
+import com.bumptech.glide.util.ViewPreloadSizeProvider;
+
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
 import me.zhanghai.android.materialprogressbar.MaterialProgressBar;
 
 public class AppsListFragment extends Fragment
-    implements LoaderManager.LoaderCallbacks<List<AppDataParcelable>>,
+        implements LoaderManager.LoaderCallbacks<List<AppDataParcelable>>,
         AdjustListViewForTv<AppHolder> {
 
-  public static final int ID_LOADER_APP_LIST = 0;
+    public static final int ID_LOADER_APP_LIST = 0;
 
-  private AppsRecyclerAdapter adapter;
-  private SharedPreferences sharedPreferences;
-  private boolean isAscending;
-  private int sortby;
-  private View rootView;
-  private AppsAdapterPreloadModel modelProvider;
-  private LinearLayoutManager linearLayoutManager;
-  private RecyclerViewPreloader<String> preloader;
-  private List<AppDataParcelable> appDataParcelableList;
-  private FastScroller fastScroller;
-  private boolean showSystemApps = false;
+    private AppsRecyclerAdapter adapter;
+    private SharedPreferences sharedPreferences;
+    private boolean isAscending;
+    private int sortby;
+    private View rootView;
+    private AppsAdapterPreloadModel modelProvider;
+    private LinearLayoutManager linearLayoutManager;
+    private RecyclerViewPreloader<String> preloader;
+    private List<AppDataParcelable> appDataParcelableList;
+    private FastScroller fastScroller;
+    private boolean showSystemApps = false;
 
-  @Override
-  public void onCreate(Bundle savedInstanceState) {
-    super.onCreate(savedInstanceState);
-    setHasOptionsMenu(true);
-  }
-
-  @Nullable
-  @Override
-  public View onCreateView(
-      @NonNull LayoutInflater inflater,
-      @Nullable ViewGroup container,
-      @Nullable Bundle savedInstanceState) {
-    rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
-    return rootView;
-  }
-
-  @Override
-  public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-    super.onViewCreated(view, savedInstanceState);
-    final MainActivity mainActivity = (MainActivity) getActivity();
-    Objects.requireNonNull(mainActivity);
-
-    UtilitiesProvider utilsProvider = mainActivity.getUtilsProvider();
-    modelProvider = new AppsAdapterPreloadModel(this, false);
-    ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
-    preloader =
-        new RecyclerViewPreloader<>(
-            GlideApp.with(this),
-            modelProvider,
-            sizeProvider,
-            GlideConstants.MAX_PRELOAD_APPSADAPTER);
-    linearLayoutManager = new LinearLayoutManager(getContext());
-    updateViews(mainActivity, utilsProvider);
-
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
-    isAscending = sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
-    sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
-    fastScroller = rootView.findViewById(R.id.fastscroll);
-    fastScroller.setPressedHandleColor(mainActivity.getAccent());
-    fastScroller.setRecyclerView(getRecyclerView(), 1);
-    mainActivity
-        .getAppbar()
-        .getAppbarLayout()
-        .addOnOffsetChangedListener(
-            (appBarLayout, verticalOffset) -> {
-              fastScroller.updateHandlePosition(verticalOffset, 112);
-            });
-    LoaderManager.getInstance(this).initLoader(ID_LOADER_APP_LIST, null, this);
-  }
-
-  @Override
-  public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
-    requireActivity().getMenuInflater().inflate(R.menu.app_menu, menu);
-    menu.findItem(R.id.checkbox_system_apps).setChecked(false);
-    super.onCreateOptionsMenu(menu, inflater);
-  }
-
-  @Override
-  public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-    switch (item.getItemId()) {
-      case R.id.sort:
-        showSortDialog(((MainActivity) requireActivity()).getAppTheme());
-        return true;
-      case R.id.exit:
-        requireActivity().finish();
-        return true;
-      case R.id.checkbox_system_apps:
-        item.setChecked(!item.isChecked());
-        adapter.setData(appDataParcelableList, item.isChecked());
-        showSystemApps = item.isChecked();
-        return true;
-      default:
-        return super.onOptionsItemSelected(item);
-    }
-  }
-
-  private void updateViews(MainActivity mainActivity, UtilitiesProvider utilsProvider) {
-    mainActivity.getAppbar().setTitle(R.string.apps);
-    mainActivity.hideFab();
-    mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
-    mainActivity.supportInvalidateOptionsMenu();
-
-    if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
-      getActivity()
-          .getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
-    } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
-      getActivity()
-          .getWindow()
-          .getDecorView()
-          .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
-    }
-    int skin_color = mainActivity.getCurrentColorPreference().getPrimaryFirstTab();
-    int skinTwoColor = mainActivity.getCurrentColorPreference().getPrimarySecondTab();
-    mainActivity.updateViews(
-        new ColorDrawable(MainActivity.currentTab == 1 ? skinTwoColor : skin_color));
-
-    getRecyclerView().addOnScrollListener(preloader);
-    getRecyclerView().setLayoutManager(linearLayoutManager);
-  }
-
-  public void showSortDialog(AppTheme appTheme) {
-    final MainActivity mainActivity = (MainActivity) getActivity();
-    if (mainActivity == null) {
-      return;
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setHasOptionsMenu(true);
     }
 
-    WeakReference<AppsListFragment> appsListFragment = new WeakReference<>(this);
+    @Nullable
+    @Override
+    public View onCreateView(
+            @NonNull LayoutInflater inflater,
+            @Nullable ViewGroup container,
+            @Nullable Bundle savedInstanceState) {
+        rootView = inflater.inflate(R.layout.fragment_app_list, container, false);
+        return rootView;
+    }
 
-    int accentColor = mainActivity.getAccent();
-    String[] sort = getResources().getStringArray(R.array.sortbyApps);
-    MaterialDialog.Builder builder =
-        new MaterialDialog.Builder(mainActivity)
-            .theme(appTheme.getMaterialDialogTheme(requireContext()))
-            .items(sort)
-            .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
-            .negativeText(R.string.ascending)
-            .positiveColor(accentColor)
-            .positiveText(R.string.descending)
-            .negativeColor(accentColor)
-            .onNegative(
-                (dialog, which) -> {
-                  final AppsListFragment $this = appsListFragment.get();
-                  if ($this == null) {
-                    return;
-                  }
-                  $this.saveAndReload(dialog.getSelectedIndex(), true);
-                  dialog.dismiss();
-                })
-            .onPositive(
-                (dialog, which) -> {
-                  final AppsListFragment $this = appsListFragment.get();
-                  if ($this == null) {
-                    return;
-                  }
+    @Override
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        final MainActivity mainActivity = (MainActivity) getActivity();
+        Objects.requireNonNull(mainActivity);
 
-                  $this.saveAndReload(dialog.getSelectedIndex(), false);
-                  dialog.dismiss();
-                })
-            .title(R.string.sort_by);
+        UtilitiesProvider utilsProvider = mainActivity.getUtilsProvider();
+        modelProvider = new AppsAdapterPreloadModel(this, false);
+        ViewPreloadSizeProvider<String> sizeProvider = new ViewPreloadSizeProvider<>();
+        preloader =
+                new RecyclerViewPreloader<>(
+                        GlideApp.with(this),
+                        modelProvider,
+                        sizeProvider,
+                        GlideConstants.MAX_PRELOAD_APPSADAPTER);
+        linearLayoutManager = new LinearLayoutManager(getContext());
+        updateViews(mainActivity, utilsProvider);
 
-    builder.build().show();
-  }
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        isAscending = sharedPreferences.getBoolean(PREFERENCE_APPLIST_ISASCENDING, true);
+        sortby = sharedPreferences.getInt(PREFERENCE_APPLIST_SORTBY, 0);
+        fastScroller = rootView.findViewById(R.id.fastscroll);
+        fastScroller.setPressedHandleColor(mainActivity.getAccent());
+        fastScroller.setRecyclerView(getRecyclerView(), 1);
+        mainActivity
+                .getAppbar()
+                .getAppbarLayout()
+                .addOnOffsetChangedListener(
+                        (appBarLayout, verticalOffset) -> {
+                            fastScroller.updateHandlePosition(verticalOffset, 112);
+                        });
+        LoaderManager.getInstance(this).initLoader(ID_LOADER_APP_LIST, null, this);
+    }
 
-  private void saveAndReload(int newSortby, boolean newIsAscending) {
-    sortby = newSortby;
-    isAscending = newIsAscending;
+    @Override
+    public void onCreateOptionsMenu(@NonNull Menu menu, @NonNull MenuInflater inflater) {
+        requireActivity().getMenuInflater().inflate(R.menu.app_menu, menu);
+        menu.findItem(R.id.checkbox_system_apps).setChecked(false);
+        super.onCreateOptionsMenu(menu, inflater);
+    }
 
-    sharedPreferences
-        .edit()
-        .putBoolean(PREFERENCE_APPLIST_ISASCENDING, newIsAscending)
-        .putInt(PREFERENCE_APPLIST_SORTBY, newSortby)
-        .apply();
-
-    LoaderManager.getInstance(this).restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, this);
-  }
-
-  @NonNull
-  @Override
-  public Loader<List<AppDataParcelable>> onCreateLoader(int id, Bundle args) {
-    return new AppListLoader(getContext(), sortby, isAscending);
-  }
-
-  @Override
-  public void onLoadFinished(
-      @NonNull Loader<List<AppDataParcelable>> loader, List<AppDataParcelable> data) {
-    getSpinner().setVisibility(View.GONE);
-    if (data.isEmpty()) {
-      getRecyclerView().setVisibility(View.GONE);
-      rootView.findViewById(R.id.empty_text_view).setVisibility(View.VISIBLE);
-    } else {
-      appDataParcelableList = new ArrayList<>(data);
-      List<AppDataParcelable> adapterList = new ArrayList<>();
-      for (AppDataParcelable appDataParcelable : data) {
-        if (!showSystemApps && appDataParcelable.isSystemApp()) {
-          continue;
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.sort:
+                showSortDialog(((MainActivity) requireActivity()).getAppTheme());
+                return true;
+            case R.id.exit:
+                requireActivity().finish();
+                return true;
+            case R.id.checkbox_system_apps:
+                item.setChecked(!item.isChecked());
+                adapter.setData(appDataParcelableList, item.isChecked());
+                showSystemApps = item.isChecked();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
-        adapterList.add(appDataParcelable);
-      }
-      adapter = new AppsRecyclerAdapter(this, modelProvider, false, this, adapterList);
-      getRecyclerView().setVisibility(View.VISIBLE);
-      getRecyclerView().setAdapter(adapter);
     }
-  }
 
-  @Override
-  public void onLoaderReset(@NonNull Loader<List<AppDataParcelable>> loader) {
-    adapter.setData(Collections.emptyList(), true);
-  }
+    private void updateViews(MainActivity mainActivity, UtilitiesProvider utilsProvider) {
+        mainActivity.getAppbar().setTitle(R.string.apps);
+        mainActivity.hideFab();
+        mainActivity.getAppbar().getBottomBar().setVisibility(View.GONE);
+        mainActivity.supportInvalidateOptionsMenu();
 
-  @Override
-  public void adjustListViewForTv(
-      @NonNull AppHolder viewHolder, @NonNull MainActivity mainActivity) {
-    try {
-      int[] location = new int[2];
-      viewHolder.rl.getLocationOnScreen(location);
-      Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
-      if (location[1] < mainActivity.getAppbar().getAppbarLayout().getHeight()) {
-        getRecyclerView().scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
-      } else if (location[1] + viewHolder.rl.getHeight()
-          >= getContext().getResources().getDisplayMetrics().heightPixels) {
-        getRecyclerView()
-            .scrollToPosition(
-                Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
-      }
-    } catch (IndexOutOfBoundsException e) {
-      Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)) {
+            getActivity()
+                    .getWindow()
+                    .getDecorView()
+                    .setBackgroundColor(Utils.getColor(getContext(), R.color.holo_dark_background));
+        } else if (utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+            getActivity()
+                    .getWindow()
+                    .getDecorView()
+                    .setBackgroundColor(Utils.getColor(getContext(), android.R.color.black));
+        }
+        int skin_color = mainActivity.getCurrentColorPreference().getPrimaryFirstTab();
+        int skinTwoColor = mainActivity.getCurrentColorPreference().getPrimarySecondTab();
+        mainActivity.updateViews(
+                new ColorDrawable(MainActivity.currentTab == 1 ? skinTwoColor : skin_color));
+
+        getRecyclerView().addOnScrollListener(preloader);
+        getRecyclerView().setLayoutManager(linearLayoutManager);
     }
-  }
 
-  private RecyclerView getRecyclerView() {
-    return rootView.findViewById(R.id.list_view);
-  }
+    public void showSortDialog(AppTheme appTheme) {
+        final MainActivity mainActivity = (MainActivity) getActivity();
+        if (mainActivity == null) {
+            return;
+        }
 
-  private MaterialProgressBar getSpinner() {
-    return rootView.findViewById(R.id.loading_spinner);
-  }
+        WeakReference<AppsListFragment> appsListFragment = new WeakReference<>(this);
+
+        int accentColor = mainActivity.getAccent();
+        String[] sort = getResources().getStringArray(R.array.sortbyApps);
+        MaterialDialog.Builder builder =
+                new MaterialDialog.Builder(mainActivity)
+                        .theme(appTheme.getMaterialDialogTheme(requireContext()))
+                        .items(sort)
+                        .itemsCallbackSingleChoice(sortby, (dialog, view, which, text) -> true)
+                        .negativeText(R.string.ascending)
+                        .positiveColor(accentColor)
+                        .positiveText(R.string.descending)
+                        .negativeColor(accentColor)
+                        .onNegative(
+                                (dialog, which) -> {
+                                    final AppsListFragment $this = appsListFragment.get();
+                                    if ($this == null) {
+                                        return;
+                                    }
+                                    $this.saveAndReload(dialog.getSelectedIndex(), true);
+                                    dialog.dismiss();
+                                })
+                        .onPositive(
+                                (dialog, which) -> {
+                                    final AppsListFragment $this = appsListFragment.get();
+                                    if ($this == null) {
+                                        return;
+                                    }
+
+                                    $this.saveAndReload(dialog.getSelectedIndex(), false);
+                                    dialog.dismiss();
+                                })
+                        .title(R.string.sort_by);
+
+        builder.build().show();
+    }
+
+    private void saveAndReload(int newSortby, boolean newIsAscending) {
+        sortby = newSortby;
+        isAscending = newIsAscending;
+
+        sharedPreferences
+                .edit()
+                .putBoolean(PREFERENCE_APPLIST_ISASCENDING, newIsAscending)
+                .putInt(PREFERENCE_APPLIST_SORTBY, newSortby)
+                .apply();
+
+        LoaderManager.getInstance(this).restartLoader(AppsListFragment.ID_LOADER_APP_LIST, null, this);
+    }
+
+    @NonNull
+    @Override
+    public Loader<List<AppDataParcelable>> onCreateLoader(int id, Bundle args) {
+        return new AppListLoader(getContext(), sortby, isAscending);
+    }
+
+    @Override
+    public void onLoadFinished(
+            @NonNull Loader<List<AppDataParcelable>> loader, List<AppDataParcelable> data) {
+        getSpinner().setVisibility(View.GONE);
+        if (data.isEmpty()) {
+            getRecyclerView().setVisibility(View.GONE);
+            rootView.findViewById(R.id.empty_text_view).setVisibility(View.VISIBLE);
+        } else {
+            appDataParcelableList = new ArrayList<>(data);
+            List<AppDataParcelable> adapterList = new ArrayList<>();
+            for (AppDataParcelable appDataParcelable : data) {
+                if (!showSystemApps && appDataParcelable.isSystemApp()) {
+                    continue;
+                }
+                adapterList.add(appDataParcelable);
+            }
+            adapter = new AppsRecyclerAdapter(this, modelProvider, false, this, adapterList);
+            getRecyclerView().setVisibility(View.VISIBLE);
+            getRecyclerView().setAdapter(adapter);
+        }
+    }
+
+    @Override
+    public void onLoaderReset(@NonNull Loader<List<AppDataParcelable>> loader) {
+        adapter.setData(Collections.emptyList(), true);
+    }
+
+    @Override
+    public void adjustListViewForTv(
+            @NonNull AppHolder viewHolder, @NonNull MainActivity mainActivity) {
+        try {
+            int[] location = new int[2];
+            viewHolder.rl.getLocationOnScreen(location);
+            Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
+            if (location[1] < mainActivity.getAppbar().getAppbarLayout().getHeight()) {
+                getRecyclerView().scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
+            } else if (location[1] + viewHolder.rl.getHeight()
+                    >= getContext().getResources().getDisplayMetrics().heightPixels) {
+                getRecyclerView()
+                        .scrollToPosition(
+                                Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
+            }
+        } catch (IndexOutOfBoundsException e) {
+            Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
+        }
+    }
+
+    private RecyclerView getRecyclerView() {
+        return rootView.findViewById(R.id.list_view);
+    }
+
+    private MaterialProgressBar getSpinner() {
+        return rootView.findViewById(R.id.loading_spinner);
+    }
 }
