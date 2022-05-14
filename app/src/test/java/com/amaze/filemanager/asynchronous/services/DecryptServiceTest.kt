@@ -24,19 +24,13 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
-import android.os.Build.VERSION_CODES.KITKAT
-import android.os.Build.VERSION_CODES.M
-import android.os.Build.VERSION_CODES.O
-import android.os.Build.VERSION_CODES.P
+import android.os.Build.VERSION_CODES.*
 import android.os.Environment
 import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
-import com.amaze.filemanager.asynchronous.services.DecryptService.NOTIFICATION_SERVICE
-import com.amaze.filemanager.asynchronous.services.DecryptService.START_NOT_STICKY
-import com.amaze.filemanager.asynchronous.services.DecryptService.TAG_DECRYPT_PATH
-import com.amaze.filemanager.asynchronous.services.DecryptService.TAG_SOURCE
+import com.amaze.filemanager.asynchronous.services.DecryptService.*
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_PASSWORD
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
@@ -48,9 +42,7 @@ import com.amaze.filemanager.utils.CryptUtilTest.Companion.initMockSecretKeygen
 import com.amaze.filemanager.utils.ProgressHandler
 import org.awaitility.Awaitility.await
 import org.junit.After
-import org.junit.Assert.assertArrayEquals
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -189,7 +181,7 @@ class DecryptServiceTest {
             assertTrue(targetFile.exists() && targetFile.length() > 0)
             assertTrue(targetFile.length() < sourceFile.length())
             assertArrayEquals(source, targetFile.readBytes())
-            /* [FIXME] in this test notification is not cleared, but when test on device
+            /* FIXME: in this test notification is not cleared, but when test on device
              * the notification did cleared
              */
             // assertTrue(notificationManager.activeNotifications.isEmpty())

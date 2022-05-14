@@ -17,76 +17,69 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.ui.notifications
 
-package com.amaze.filemanager.ui.notifications;
-
-import android.app.Notification;
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
-import android.content.Context;
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-import androidx.core.app.NotificationCompat;
-
-import com.amaze.filemanager.R;
+import android.app.Notification
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
+import androidx.annotation.RequiresApi
+import androidx.core.app.NotificationCompat
+import com.amaze.filemanager.R
 
 /**
- * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 17/9/2017, at 13:34.
+ * @author Emmanuel Messulam <emmanuelbendavid></emmanuelbendavid>@gmail.com> on 17/9/2017, at 13:34.
  */
-public class NotificationConstants {
+object NotificationConstants {
+    const val COPY_ID = 0
+    const val EXTRACT_ID = 1
+    const val ZIP_ID = 2
+    const val DECRYPT_ID = 3
+    const val ENCRYPT_ID = 4
+    const val FTP_ID = 5
+    const val FAILED_ID = 6
+    const val WAIT_ID = 7
 
-    public static final int COPY_ID = 0;
-    public static final int EXTRACT_ID = 1;
-    public static final int ZIP_ID = 2;
-    public static final int DECRYPT_ID = 3;
-    public static final int ENCRYPT_ID = 4;
-    public static final int FTP_ID = 5;
-    public static final int FAILED_ID = 6;
-    public static final int WAIT_ID = 7;
+    const val TYPE_NORMAL = 0
+    const val TYPE_FTP = 1
 
-    public static final int TYPE_NORMAL = 0, TYPE_FTP = 1;
-
-    public static final String CHANNEL_NORMAL_ID = "normalChannel";
-    public static final String CHANNEL_FTP_ID = "ftpChannel";
+    const val CHANNEL_NORMAL_ID = "normalChannel"
+    const val CHANNEL_FTP_ID = "ftpChannel"
 
     /**
      * This creates a channel (API >= 26) or applies the correct metadata to a notification (API < 26)
      */
-    public static void setMetadata(
-            Context context, NotificationCompat.Builder notification, int type) {
+    @JvmStatic
+    fun setMetadata(
+        context: Context, notification: NotificationCompat.Builder?, type: Int
+    ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            switch (type) {
-                case TYPE_NORMAL:
-                    createNormalChannel(context);
-                    break;
-                case TYPE_FTP:
-                    createFtpChannel(context);
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unrecognized type:" + type);
+            when (type) {
+                TYPE_NORMAL -> createNormalChannel(context)
+                TYPE_FTP -> createFtpChannel(context)
+                else -> throw IllegalArgumentException("Unrecognized type:$type")
             }
         } else {
-            switch (type) {
-                case TYPE_NORMAL:
+            when (type) {
+                TYPE_NORMAL -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        notification.setCategory(Notification.CATEGORY_SERVICE);
+                        notification?.setCategory(Notification.CATEGORY_SERVICE)
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        notification.setPriority(Notification.PRIORITY_MIN);
+                        notification?.priority = Notification.PRIORITY_MIN
                     }
-                    break;
-                case TYPE_FTP:
+                }
+                TYPE_FTP -> {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                        notification.setCategory(Notification.CATEGORY_SERVICE);
-                        notification.setVisibility(NotificationCompat.VISIBILITY_PUBLIC);
+                        notification?.setCategory(Notification.CATEGORY_SERVICE)
+                        notification?.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
                     }
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                        notification.setPriority(Notification.PRIORITY_MAX);
+                        notification?.priority = Notification.PRIORITY_MAX
                     }
-                    break;
-                default:
-                    throw new IllegalArgumentException("Unrecognized type:" + type);
+                }
+                else -> throw IllegalArgumentException("Unrecognized type:$type")
             }
         }
     }
@@ -96,18 +89,18 @@ public class NotificationConstants {
      * it has importance.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private static void createFtpChannel(Context context) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    private fun createFtpChannel(context: Context) {
+        val mNotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (mNotificationManager.getNotificationChannel(CHANNEL_FTP_ID) == null) {
-            NotificationChannel mChannel =
-                    new NotificationChannel(
-                            CHANNEL_FTP_ID,
-                            context.getString(R.string.channel_name_ftp),
-                            NotificationManager.IMPORTANCE_HIGH);
+            val mChannel = NotificationChannel(
+                CHANNEL_FTP_ID,
+                context.getString(R.string.channel_name_ftp),
+                NotificationManager.IMPORTANCE_HIGH
+            )
             // Configure the notification channel.
-            mChannel.setDescription(context.getString(R.string.channel_description_ftp));
-            mNotificationManager.createNotificationChannel(mChannel);
+            mChannel.description = context.getString(R.string.channel_description_ftp)
+            mNotificationManager.createNotificationChannel(mChannel)
         }
     }
 
@@ -116,18 +109,18 @@ public class NotificationConstants {
      * the lowest importance.
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    private static void createNormalChannel(Context context) {
-        NotificationManager mNotificationManager =
-                (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+    private fun createNormalChannel(context: Context) {
+        val mNotificationManager =
+            context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         if (mNotificationManager.getNotificationChannel(CHANNEL_NORMAL_ID) == null) {
-            NotificationChannel mChannel =
-                    new NotificationChannel(
-                            CHANNEL_NORMAL_ID,
-                            context.getString(R.string.channel_name_normal),
-                            NotificationManager.IMPORTANCE_MIN);
+            val mChannel = NotificationChannel(
+                CHANNEL_NORMAL_ID,
+                context.getString(R.string.channel_name_normal),
+                NotificationManager.IMPORTANCE_MIN
+            )
             // Configure the notification channel.
-            mChannel.setDescription(context.getString(R.string.channel_description_normal));
-            mNotificationManager.createNotificationChannel(mChannel);
+            mChannel.description = context.getString(R.string.channel_description_normal)
+            mNotificationManager.createNotificationChannel(mChannel)
         }
     }
 }
