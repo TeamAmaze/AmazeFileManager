@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.notifications
 
 import android.app.Notification
@@ -52,7 +53,9 @@ object NotificationConstants {
      */
     @JvmStatic
     fun setMetadata(
-        context: Context, notification: NotificationCompat.Builder?, type: Int
+        context: Context,
+        notification: NotificationCompat.Builder?,
+        type: Int
     ) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             when (type) {

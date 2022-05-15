@@ -341,7 +341,7 @@ class FtpService : Service(), Runnable {
         @JvmStatic
         fun defaultPath(context: Context): String {
             return if (PreferenceManager.getDefaultSharedPreferences(context)
-                    .getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false) && SDK_INT > M
+                .getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false) && SDK_INT > M
             ) {
                 DocumentsContract.buildTreeDocumentUri(
                     "com.android.externalstorage.documents",
@@ -372,17 +372,17 @@ class FtpService : Service(), Runnable {
                 connected = cm.activeNetwork?.let { activeNetwork ->
                     cm.getNetworkCapabilities(activeNetwork)?.let { ni ->
                         ni.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) or
-                                ni.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
+                            ni.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET)
                     } ?: false
                 } ?: false
             } else {
                 connected = cm.activeNetworkInfo?.let { ni ->
                     ni.isConnected && (
-                            ni.type and (
-                                    ConnectivityManager.TYPE_WIFI
-                                            or ConnectivityManager.TYPE_ETHERNET
-                                    ) != 0
-                            )
+                        ni.type and (
+                            ConnectivityManager.TYPE_WIFI
+                                or ConnectivityManager.TYPE_ETHERNET
+                            ) != 0
+                        )
                 } ?: false
             }
 
@@ -390,7 +390,7 @@ class FtpService : Service(), Runnable {
                 connected = runCatching {
                     NetworkInterface.getNetworkInterfaces().toList().find { netInterface ->
                         netInterface.displayName.startsWith("rndis") or
-                                netInterface.displayName.startsWith("wlan")
+                            netInterface.displayName.startsWith("wlan")
                     }
                 }.getOrElse { null } != null
             }

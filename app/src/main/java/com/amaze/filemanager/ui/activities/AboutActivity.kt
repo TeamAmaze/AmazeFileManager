@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.activities
 
 import android.annotation.SuppressLint
@@ -47,8 +48,26 @@ import kotlin.math.abs
 
 /**
  * Created by vishal on 27/7/16.
+ * Edited by hojat72elect on 2022-05-15.
  */
 class AboutActivity : ThemedActivity(), View.OnClickListener {
+    private val TAG = "AboutActivity"
+    private val HEADER_HEIGHT = 1024
+    private val HEADER_WIDTH = 500
+    private val URL_AUTHOR1_GITHUB = "https://github.com/arpitkh96"
+    private val URL_AUTHOR2_GITHUB = "https://github.com/VishalNehra"
+    private val URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess"
+    private val URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove"
+    private val URL_REPO_CHANGELOG =
+        "https://github.com/TeamAmaze/AmazeFileManager/commits/master"
+    private val URL_REPO = "https://github.com/TeamAmaze/AmazeFileManager"
+    private val URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues"
+    private val URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager/"
+    val URL_REPO_XDA =
+        "http://forum.xda-developers.com/" +
+            "android/apps-games/app-amaze-file-managermaterial-theme-t2937314"
+    val URL_REPO_RATE = "market://details?id=com.amaze.filemanager"
+
     private lateinit var mAppBarLayout: AppBarLayout
     private lateinit var mCollapsingToolbarLayout: CollapsingToolbarLayout
     private lateinit var mTitleTextView: TextView
@@ -108,7 +127,8 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
         mAppBarLayout.addOnOffsetChangedListener(
             OnOffsetChangedListener { appBarLayout: AppBarLayout, verticalOffset: Int ->
                 mTitleTextView.alpha = abs(verticalOffset / appBarLayout.totalScrollRange.toFloat())
-            })
+            }
+        )
         mAppBarLayout.onFocusChangeListener =
             View.OnFocusChangeListener { _: View?, hasFocus: Boolean ->
                 mAppBarLayout.setExpanded(
@@ -142,7 +162,6 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
      * @return the layout params with new set of width and height attribute
      */
     private fun calculateHeaderViewParams(): CoordinatorLayout.LayoutParams {
-
         // calculating cardview height as per the youtube video thumb aspect ratio
         val layoutParams = mAppBarLayout.layoutParams as CoordinatorLayout.LayoutParams
         val vidAspectRatio = HEADER_WIDTH.toFloat() / HEADER_HEIGHT.toFloat()
@@ -191,9 +210,13 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
                     .withAboutSpecial1Description(getString(R.string.amaze_license))
                     .withLicenseShown(true)
                 when (appTheme.getSimpleTheme(this)) {
-                    AppTheme.LIGHT -> libsBuilder.withActivityStyle(Libs.ActivityStyle.LIGHT_DARK_TOOLBAR)
+                    AppTheme.LIGHT -> libsBuilder.withActivityStyle(
+                        Libs.ActivityStyle.LIGHT_DARK_TOOLBAR
+                    )
                     AppTheme.DARK -> libsBuilder.withActivityStyle(Libs.ActivityStyle.DARK)
-                    AppTheme.BLACK -> libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black)
+                    AppTheme.BLACK -> libsBuilder.withActivityTheme(
+                        R.style.AboutLibrariesTheme_Black
+                    )
                     else -> LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch")
                 }
                 libsBuilder.start(this)
@@ -218,22 +241,7 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
     }
 
     companion object {
-        private const val TAG = "AboutActivity"
-        private const val HEADER_HEIGHT = 1024
-        private const val HEADER_WIDTH = 500
-        private const val URL_AUTHOR1_GITHUB = "https://github.com/arpitkh96"
-        private const val URL_AUTHOR2_GITHUB = "https://github.com/VishalNehra"
-        private const val URL_DEVELOPER1_GITHUB = "https://github.com/EmmanuelMess"
-        private const val URL_DEVELOPER2_GITHUB = "https://github.com/TranceLove"
-        private const val URL_REPO_CHANGELOG =
-            "https://github.com/TeamAmaze/AmazeFileManager/commits/master"
-        private const val URL_REPO = "https://github.com/TeamAmaze/AmazeFileManager"
-        private const val URL_REPO_ISSUES = "https://github.com/TeamAmaze/AmazeFileManager/issues"
-        private const val URL_REPO_TRANSLATE = "https://www.transifex.com/amaze/amaze-file-manager/"
-        private const val URL_REPO_XDA =
-            "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314"
-        private const val URL_REPO_RATE = "market://details?id=com.amaze.filemanager"
         const val PACKAGE_AMAZE_UTILS = "com.amaze.fileutilities"
-        const val URL_AMAZE_UTILS = "market://details?id=$PACKAGE_AMAZE_UTILS"
+        val URL_AMAZE_UTILS = "market://details?id=$PACKAGE_AMAZE_UTILS"
     }
 }

@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.fileoperations.filesystem.cloud
 
 import android.net.Uri
@@ -94,7 +95,11 @@ abstract class CloudStreamServer {
      * @return HTTP response, see class Response for details
      */
     abstract fun serve(
-        uri: String?, method: String?, header: Properties?, parms: Properties?, files: Properties?
+        uri: String?,
+        method: String?,
+        header: Properties?,
+        parms: Properties?,
+        files: Properties?
     ): Response?
 
     /** HTTP response. Return one of these from serve().  */
@@ -238,7 +243,6 @@ abstract class CloudStreamServer {
             }
         }
 
-
         @RequiresApi(api = Build.VERSION_CODES.KITKAT)
         private fun handleResponse(socket: Socket) {
             try {
@@ -283,7 +287,7 @@ abstract class CloudStreamServer {
                 var sbfound = false
                 while (splitbyte < rlen) {
                     if (buf[splitbyte].toInt().toChar() == '\r' && buf[++splitbyte].toInt()
-                            .toChar() == '\n' && buf[++splitbyte].toInt()
+                        .toChar() == '\n' && buf[++splitbyte].toInt()
                             .toChar() == '\r' && buf[++splitbyte].toInt().toChar() == '\n'
                     ) {
                         sbfound = true
@@ -303,7 +307,8 @@ abstract class CloudStreamServer {
                 // out whether we have already consumed part of body, if we
                 // have reached the end of the data to be sent or we should
                 // expect the first byte of the body at the next read.
-                if (splitbyte < rlen) size -= (rlen - splitbyte + 1).toLong() else if (!sbfound || size == 0x7FFFFFFFFFFFFFFFL) size =
+                if (splitbyte < rlen) size -= (rlen - splitbyte + 1).toLong()
+                else if (!sbfound || size == 0x7FFFFFFFFFFFFFFFL) size =
                     0
 
                 // Now read all the body and write it to f
@@ -335,14 +340,16 @@ abstract class CloudStreamServer {
                         if (!st.hasMoreTokens()) sendError(
                             socket,
                             HTTP_BADREQUEST,
-                            "BAD REQUEST: Content type is multipart/form-data but boundary missing. Usage: GET /example/file.html"
+                            "BAD REQUEST: Content type is multipart/" +
+                                "form-data but boundary missing. Usage: GET /example/file.html"
                         )
                         val boundaryExp = st.nextToken()
                         st = StringTokenizer(boundaryExp, "=")
                         if (st.countTokens() != 2) sendError(
                             socket,
                             HTTP_BADREQUEST,
-                            "BAD REQUEST: Content type is multipart/form-data but boundary syntax error. Usage: GET /example/file.html"
+                            "BAD REQUEST: Content type is multipart/" +
+                                "form-data but boundary syntax error. Usage: GET /example/file.html"
                         )
                         st.nextToken()
                         val boundary = st.nextToken()
@@ -389,7 +396,10 @@ abstract class CloudStreamServer {
         /** Decodes the sent headers and loads the data into java Properties' key - value pairs  */
         @Throws(InterruptedException::class)
         private fun decodeHeader(
-            `in`: BufferedReader, pre: Properties, parms: Properties, header: Properties
+            `in`: BufferedReader,
+            pre: Properties,
+            parms: Properties,
+            header: Properties
         ) {
             try {
                 // Read the request line
@@ -424,8 +434,10 @@ abstract class CloudStreamServer {
                     var line = `in`.readLine()
                     while (line != null && line.trim { it <= ' ' }.length > 0) {
                         val p = line.indexOf(':')
-                        if (p >= 0) header[line.substring(0, p).trim { it <= ' ' }
-                            .lowercase(Locale.getDefault())] =
+                        if (p >= 0) header[
+                            line.substring(0, p).trim { it <= ' ' }
+                                .lowercase(Locale.getDefault())
+                        ] =
                             line.substring(p + 1).trim { it <= ' ' }
                         line = `in`.readLine()
                     }
@@ -433,7 +445,9 @@ abstract class CloudStreamServer {
                 pre["uri"] = uri
             } catch (ioe: IOException) {
                 sendError(
-                    socket, HTTP_INTERNALERROR, "SERVER INTERNAL ERROR: IOException: " + ioe.message
+                    socket,
+                    HTTP_INTERNALERROR,
+                    "SERVER INTERNAL ERROR: IOException: " + ioe.message
                 )
             }
         }
@@ -455,15 +469,19 @@ abstract class CloudStreamServer {
                     if (mpline.indexOf(boundary) == -1) sendError(
                         socket,
                         HTTP_BADREQUEST,
-                        "BAD REQUEST: Content type is multipart/form-data but next chunk does not start with boundary. Usage: GET /example/file.html"
+                        "BAD REQUEST: Content type is multipart/" +
+                            "form-data but next chunk does not start with boundary. " +
+                            "Usage: GET /example/file.html"
                     )
                     boundarycount++
                     val item = Properties()
                     mpline = `in`.readLine()
                     while (mpline != null && mpline.trim { it <= ' ' }.length > 0) {
                         val p = mpline.indexOf(':')
-                        if (p != -1) item[mpline.substring(0, p).trim { it <= ' ' }
-                            .lowercase(Locale.getDefault())] =
+                        if (p != -1) item[
+                            mpline.substring(0, p).trim { it <= ' ' }
+                                .lowercase(Locale.getDefault())
+                        ] =
                             mpline.substring(p + 1).trim { it <= ' ' }
                         mpline = `in`.readLine()
                     }
@@ -473,7 +491,9 @@ abstract class CloudStreamServer {
                             sendError(
                                 socket,
                                 HTTP_BADREQUEST,
-                                "BAD REQUEST: Content type is multipart/form-data but no content-disposition info found. Usage: GET /example/file.html"
+                                "BAD REQUEST: Content type is multipart/" +
+                                    "form-data but no content-disposition info found. " +
+                                    "Usage: GET /example/file.html"
                             )
                         }
                         val st = StringTokenizer(contentDisposition, "; ")
@@ -481,8 +501,10 @@ abstract class CloudStreamServer {
                         while (st.hasMoreTokens()) {
                             val token = st.nextToken()
                             val p = token.indexOf('=')
-                            if (p != -1) disposition[token.substring(0, p).trim { it <= ' ' }
-                                .lowercase(Locale.getDefault())] =
+                            if (p != -1) disposition[
+                                token.substring(0, p).trim { it <= ' ' }
+                                    .lowercase(Locale.getDefault())
+                            ] =
                                 token.substring(p + 1).trim { it <= ' ' }
                         }
                         var pname = disposition.getProperty("name")
@@ -520,7 +542,9 @@ abstract class CloudStreamServer {
                 }
             } catch (ioe: IOException) {
                 sendError(
-                    socket, HTTP_INTERNALERROR, "SERVER INTERNAL ERROR: IOException: " + ioe.message
+                    socket,
+                    HTTP_INTERNALERROR,
+                    "SERVER INTERNAL ERROR: IOException: " + ioe.message
                 )
             }
         }
@@ -583,7 +607,7 @@ abstract class CloudStreamServer {
             i = offset
             while (i < b.size) {
                 if (b[i].toInt().toChar() == '\r' && b[++i].toInt()
-                        .toChar() == '\n' && b[++i].toInt().toChar() == '\r' && b[++i].toInt()
+                    .toChar() == '\n' && b[++i].toInt().toChar() == '\r' && b[++i].toInt()
                         .toChar() == '\n'
                 ) break
                 i++
@@ -664,8 +688,8 @@ abstract class CloudStreamServer {
                 if (header == null || header.getProperty("Date") == null) pw.print(
                     """
     Date: ${gmtFrmt!!.format(Date())}
-    
-    """.trimIndent()
+
+                    """.trimIndent()
                 )
                 if (header != null) {
                     val e: Enumeration<*> = header.keys()

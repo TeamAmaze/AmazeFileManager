@@ -21,7 +21,9 @@
 package com.amaze.filemanager.asynchronous.services
 
 import android.app.NotificationManager
+import android.app.Service.START_NOT_STICKY
 import android.content.Context
+import android.content.Context.NOTIFICATION_SERVICE
 import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.*
@@ -30,7 +32,8 @@ import android.util.Log
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
-import com.amaze.filemanager.asynchronous.services.DecryptService.*
+import com.amaze.filemanager.asynchronous.services.DecryptService.TAG_DECRYPT_PATH
+import com.amaze.filemanager.asynchronous.services.DecryptService.TAG_SOURCE
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_PASSWORD
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable

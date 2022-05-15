@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.notifications
 
 import android.annotation.SuppressLint
@@ -98,11 +99,16 @@ object FtpNotification {
         var address_text = "Address not found"
         if (address != null) {
             address_text =
-                ((if (secureConnection) FtpService.INITIALS_HOST_SFTP else FtpService.INITIALS_HOST_FTP)
-                        + address.hostAddress
-                        + ":"
-                        + port
-                        + "/")
+                (
+                    (
+                        if (secureConnection) FtpService.INITIALS_HOST_SFTP
+                        else FtpService.INITIALS_HOST_FTP
+                        ) +
+                        address.hostAddress +
+                        ":" +
+                        port +
+                        "/"
+                    )
         }
         val builder = buildNotification(
             context,

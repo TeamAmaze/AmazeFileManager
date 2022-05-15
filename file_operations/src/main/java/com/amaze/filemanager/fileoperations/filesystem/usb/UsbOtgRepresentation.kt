@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.fileoperations.filesystem.usb
 
 /**
@@ -32,10 +33,12 @@ class UsbOtgRepresentation(val productID: Int, val vendorID: Int, val serialNumb
     override fun equals(other: Any?): Boolean {
         if (other !is UsbOtgRepresentation) return false
         return productID ==
-                other.productID
-                && vendorID == other.vendorID &&
-                (serialNumber == null && other.serialNumber == null
-                        || serialNumber == other.serialNumber)
+            other.productID &&
+            vendorID == other.vendorID &&
+            (
+                serialNumber == null && other.serialNumber == null ||
+                    serialNumber == other.serialNumber
+                )
     }
 
     /**

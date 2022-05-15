@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.icons
 
 import androidx.annotation.DrawableRes
@@ -61,9 +62,10 @@ object Icons {
     @DrawableRes
     fun loadMimeIcon(path: String, isDirectory: Boolean): Int {
         if (path == "..") return R.drawable.ic_arrow_left_white_24dp
-        if (CompressedHelper.isFileExtractable(path) && !isDirectory) return R.drawable.ic_compressed_white_24dp
-        val type = getTypeOfFile(path, isDirectory)
-        return when (type) {
+        if (CompressedHelper.isFileExtractable(path) &&
+            !isDirectory
+        ) return R.drawable.ic_compressed_white_24dp
+        return when (getTypeOfFile(path, isDirectory)) {
             APK -> R.drawable.ic_doc_apk_white
             AUDIO -> R.drawable.ic_doc_audio_am
             IMAGE -> R.drawable.ic_doc_image

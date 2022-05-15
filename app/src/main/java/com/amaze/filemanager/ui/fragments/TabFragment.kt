@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.ui.fragments
 
 import android.animation.ArgbEvaluator
@@ -89,7 +90,9 @@ class TabFragment : Fragment(), OnPageChangeListener {
 
     @SuppressLint("UseRequireInsteadOfGet")
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         rootView = inflater.inflate(R.layout.tabfragment, container, false) as ViewGroup
         tabbedFragmentManager = requireActivity().supportFragmentManager
@@ -173,26 +176,28 @@ class TabFragment : Fragment(), OnPageChangeListener {
         var i = 1
         for (fragment in fragments) {
             if (fragment is MainFragment) {
-                val mainFragment = fragment
-                if (mainFragment.mainFragmentViewModel != null && i - 1 == MainActivity.currentTab && i == pos) {
-                    updateBottomBar(mainFragment)
+                if (fragment.mainFragmentViewModel != null &&
+                    i - 1 == MainActivity.currentTab &&
+                    i == pos
+                ) {
+                    updateBottomBar(fragment)
                     requireMainActivity()
                         .drawer
-                        .selectCorrectDrawerItemForPath(mainFragment.currentPath)
-                    if (mainFragment.mainFragmentViewModel!!.openMode === OpenMode.FILE) {
+                        .selectCorrectDrawerItemForPath(fragment.currentPath)
+                    if (fragment.mainFragmentViewModel!!.openMode === OpenMode.FILE) {
                         tabHandler.update(
                             Tab(
                                 i,
-                                mainFragment.currentPath,
-                                mainFragment.mainFragmentViewModel!!.home
+                                fragment.currentPath,
+                                fragment.mainFragmentViewModel!!.home
                             )
                         )
                     } else {
                         tabHandler.update(
                             Tab(
                                 i,
-                                mainFragment.mainFragmentViewModel!!.home,
-                                mainFragment.mainFragmentViewModel!!.home
+                                fragment.mainFragmentViewModel!!.home,
+                                fragment.mainFragmentViewModel!!.home
                             )
                         )
                     }
@@ -220,8 +225,11 @@ class TabFragment : Fragment(), OnPageChangeListener {
 
     override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {
         val mainFragment = requireMainActivity().currentMainFragment
-        if (mainFragment == null || mainFragment.mainFragmentViewModel == null || mainFragment.mainActivity!!.listItemSelected) {
-            return  // we do not want to update toolbar colors when ActionMode is activated
+        if (mainFragment == null ||
+            mainFragment.mainFragmentViewModel == null ||
+            mainFragment.mainActivity!!.listItemSelected
+        ) {
+            return // we do not want to update toolbar colors when ActionMode is activated
         }
 
         // during the config change
@@ -419,7 +427,8 @@ class TabFragment : Fragment(), OnPageChangeListener {
                         }
                         viewPager!!.setCurrentItem(0, true)
                     }
-                })
+                }
+            )
             rightPlaceholder.setOnDragListener(
                 TabFragmentSideDragListener {
                     if (viewPager!!.currentItem == 0) {
@@ -429,7 +438,8 @@ class TabFragment : Fragment(), OnPageChangeListener {
                         }
                         viewPager!!.setCurrentItem(1, true)
                     }
-                })
+                }
+            )
         }
     }
 

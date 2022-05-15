@@ -278,16 +278,16 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 val timeoutBuilder = MaterialDialog.Builder(requireActivity())
                 timeoutBuilder.title(
                     getString(R.string.ftp_timeout) +
-                            " (" +
-                            resources.getString(R.string.ftp_seconds) +
-                            ")"
+                        " (" +
+                        resources.getString(R.string.ftp_seconds) +
+                        ")"
                 )
                 timeoutBuilder.input(
                     (
-                            FtpService.DEFAULT_TIMEOUT.toString() +
-                                    " " +
-                                    resources.getString(R.string.ftp_seconds)
-                            ),
+                        FtpService.DEFAULT_TIMEOUT.toString() +
+                            " " +
+                            resources.getString(R.string.ftp_seconds)
+                        ),
                     ftpTimeout.toString(),
                     true
                 ) { _: MaterialDialog?, input: CharSequence ->
@@ -332,7 +332,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             FtpService.KEY_PREFERENCE_SAF_FILESYSTEM,
             false
         ) &&
-                SDK_INT >= M
+            SDK_INT >= M
     }
 
     private val mWifiReceiver: BroadcastReceiver = object : BroadcastReceiver() {
@@ -392,7 +392,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
     @Suppress("LabeledExpression")
     private fun createOpenDocumentTreeIntentCallback(callback: (directoryUri: Uri) -> Unit):
-            ActivityResultLauncher<Intent> {
+        ActivityResultLauncher<Intent> {
         return registerForActivityResult(
             ActivityResultContracts.StartActivityForResult()
         ) {
@@ -443,10 +443,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                                                 DocumentsContract.buildDocumentUri(
                                                     "com.android.externalstorage.documents",
                                                     "primary:" +
-                                                            directoryUri
-                                                                .substringAfter(
-                                                                    defaultPathFromPreferences
-                                                                )
+                                                        directoryUri
+                                                            .substringAfter(
+                                                                defaultPathFromPreferences
+                                                            )
                                                 )
                                             )
                                         }
@@ -588,7 +588,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         val statusHead = "${resources.getString(R.string.ftp_status_title)}: "
         spannedStatusConnected = HtmlCompat.fromHtml(
             "$statusHead<b>&nbsp;&nbsp;<font color='$accentColor'>" +
-                    "${resources.getString(R.string.ftp_status_running)}</font></b>",
+                "${resources.getString(R.string.ftp_status_running)}</font></b>",
             FROM_HTML_MODE_COMPACT
         )
         spannedStatusUrl = HtmlCompat.fromHtml(
@@ -597,23 +597,23 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         )
         spannedStatusNoConnection = HtmlCompat.fromHtml(
             "$statusHead<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "<font color='${Utils.getColor(context, android.R.color.holo_red_light)}'>" +
-                    "${resources.getString(R.string.ftp_status_no_connection)}</font></b>",
+                "<font color='${Utils.getColor(context, android.R.color.holo_red_light)}'>" +
+                "${resources.getString(R.string.ftp_status_no_connection)}</font></b>",
             FROM_HTML_MODE_COMPACT
         )
         spannedStatusNotRunning = HtmlCompat.fromHtml(
             "$statusHead<b>&nbsp;&nbsp;&nbsp;&nbsp;" +
-                    "${resources.getString(R.string.ftp_status_not_running)}</b>",
+                "${resources.getString(R.string.ftp_status_not_running)}</b>",
             FROM_HTML_MODE_COMPACT
         )
         spannedStatusSecure = HtmlCompat.fromHtml(
             "$statusHead<b>&nbsp;&nbsp;&nbsp;&nbsp;<font color='${
-                Utils.getColor(
-                    context,
-                    android.R.color.holo_green_light
-                )
+            Utils.getColor(
+                context,
+                android.R.color.holo_green_light
+            )
             }'>" +
-                    "${resources.getString(R.string.ftp_status_secure_connection)}</font></b>",
+                "${resources.getString(R.string.ftp_status_secure_connection)}</font></b>",
             FROM_HTML_MODE_COMPACT
         )
         spannedStatusUrl = HtmlCompat.fromHtml(
@@ -700,17 +700,17 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         get() {
             val ia = getLocalInetAddress(requireContext()) ?: return null
             return (
-                    (
-                            if (securePreference) {
-                                FtpService.INITIALS_HOST_SFTP
-                            } else {
-                                FtpService.INITIALS_HOST_FTP
-                            }
-                            ) +
-                            ia.hostAddress +
-                            ":" +
-                            defaultPortFromPreferences
-                    )
+                (
+                    if (securePreference) {
+                        FtpService.INITIALS_HOST_SFTP
+                    } else {
+                        FtpService.INITIALS_HOST_FTP
+                    }
+                    ) +
+                    ia.hostAddress +
+                    ":" +
+                    defaultPortFromPreferences
+                )
         }
 
     private val defaultPortFromPreferences: Int
