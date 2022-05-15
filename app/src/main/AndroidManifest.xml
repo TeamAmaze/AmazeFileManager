@@ -196,7 +196,7 @@
             android:name=".ui.activities.UtilitiesAliasActivity"
             android:excludeFromRecents="true"
             android:exported="true"
-            android:theme="@style/Custom.Dialog.Dark"></activity>
+            android:theme="@style/Custom.Dialog.Dark" />
 
         <activity-alias
             android:name="amazeutilsalias"

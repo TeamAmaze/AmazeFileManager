@@ -47,14 +47,13 @@ import kotlin.math.abs
 
 /**
  * Created by vishal on 27/7/16.
- * Edited by hojat72elect 2022-05-15
  */
 class AboutActivity : ThemedActivity(), View.OnClickListener {
     private lateinit var mAppBarLayout: AppBarLayout
     private lateinit var mCollapsingToolbarLayout: CollapsingToolbarLayout
     private lateinit var mTitleTextView: TextView
-    private lateinit var mAuthorsDivider: View
-    private lateinit var mDeveloper1Divider: View
+    private var mAuthorsDivider: View? = null
+    private var mDeveloper1Divider: View? = null
     private var billing: Billing? = null
 
     @SuppressLint("UseCompatLoadingForDrawables", "PrivateResource")
@@ -82,7 +81,7 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
         mAppBarLayout.layoutParams = calculateHeaderViewParams()
         val mToolbar = findViewById<Toolbar>(R.id.toolBar)
         setSupportActionBar(mToolbar)
-        (supportActionBar)?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.setHomeAsUpIndicator(resources.getDrawable(R.drawable.md_nav_back))
         supportActionBar!!.setDisplayShowTitleEnabled(false)
         switchIcons()
@@ -91,7 +90,6 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
         // It will generate colors based on the image in an AsyncTask.
         Palette.from(bitmap)
             .generate { palette: Palette? ->
-                assert(palette != null)
                 val mutedColor = palette!!.getMutedColor(
                     Utils.getColor(
                         this@AboutActivity,
@@ -159,8 +157,8 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if (item.itemId == android.R.id.home) {
-            onBackPressed()
+        when (item.itemId) {
+            android.R.id.home -> onBackPressed()
         }
         return super.onOptionsItemSelected(item)
     }
@@ -171,8 +169,8 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
     private fun switchIcons() {
         if (appTheme == AppTheme.DARK || appTheme == AppTheme.BLACK) {
             // dark theme
-            mAuthorsDivider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card))
-            mDeveloper1Divider.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card))
+            mAuthorsDivider!!.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card))
+            mDeveloper1Divider!!.setBackgroundColor(Utils.getColor(this, R.color.divider_dark_card))
         }
     }
 
@@ -214,7 +212,9 @@ class AboutActivity : ThemedActivity(), View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
         Log.d(TAG, "Destroying the manager.")
-        billing?.destroyBillingInstance()
+        if (billing != null) {
+            billing!!.destroyBillingInstance()
+        }
     }
 
     companion object {

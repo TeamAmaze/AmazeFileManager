@@ -51,10 +51,10 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
 import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.multidex.BuildConfig;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
