@@ -569,10 +569,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         port.text = "${resources.getString(R.string.ftp_port)}: $defaultPortFromPreferences"
         updatePathText()
 
-        if(defaultPathFromPreferences == FtpService.defaultPath(requireContext()))
+        if(defaultPathFromPreferences == FtpService.defaultPath(requireContext())) {
             sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0,0)
-        else
+        } else {
             sharedPath.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_clear_all, 0)
+        }
     }
 
     private fun updatePathText() {
