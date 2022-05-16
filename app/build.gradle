@@ -147,6 +147,7 @@ dependencies {
     implementation libs.androidX.multidex //Multiple dex files
     implementation libs.room.runtime
     implementation libs.room.rxjava2
+    testImplementation "com.github.luben:zstd-jni:1.5.6-4"
 
     ksp libs.room.compiler
     ksp libs.androidX.annotation
@@ -188,6 +189,11 @@ dependencies {
     debugImplementation libs.leakcanary.android
 
     implementation libs.commons.compress
+
+    implementation "com.github.luben:zstd-jni:1.5.6-4@aar"
+    implementation ("com.github.stephenc.java-iso-tools:loopy-core:1.2.2") {
+        transitive = false
+    }
 
     implementation libs.materialdialogs.core
     implementation libs.materialdialogs.commons

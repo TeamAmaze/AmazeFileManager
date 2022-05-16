@@ -20,33 +20,16 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
-import android.os.Environment
-import org.junit.Assert
-import org.junit.Test
-import java.io.File
+import android.content.Context
+import org.apache.commons.compress.compressors.CompressorInputStream
+import org.apache.commons.compress.compressors.zstandard.ZstdCompressorInputStream
 
-class UnknownCompressedHelperCallableTest : AbstractCompressedHelperCallableTest() {
-    /**
-     * Test file decompression.
-     */
-    @Test
-    fun testExtract() {
-        listOf("lzma", "gz", "xz", "bz2", "zst").forEach { ext ->
-            doTestExtract(
-                UnknownCompressedFileHelperCallable(
-                    File(
-                        Environment.getExternalStorageDirectory(),
-                        "test.txt.$ext",
-                    ).absolutePath,
-                    false,
-                ),
-            )
-        }
-    }
-
-    private fun doTestExtract(task: CompressedHelperCallable) {
-        val result = task.call()
-        Assert.assertEquals(1, result.size.toLong())
-        Assert.assertEquals("test.txt", result[0].name)
-    }
+class TarZstHelperCallable(
+    context: Context,
+    filePath: String,
+    relativePath: String,
+    goBack: Boolean,
+) :
+    AbstractCompressedTarArchiveHelperCallable(context, filePath, relativePath, goBack) {
+    override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> = ZstdCompressorInputStream::class.java
 }

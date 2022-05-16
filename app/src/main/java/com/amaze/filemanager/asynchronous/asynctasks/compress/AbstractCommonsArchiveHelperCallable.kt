@@ -29,7 +29,6 @@ import org.apache.commons.compress.archivers.ArchiveEntry
 import org.apache.commons.compress.archivers.ArchiveException
 import org.apache.commons.compress.archivers.ArchiveInputStream
 import java.io.FileInputStream
-import java.io.IOException
 import java.io.InputStream
 import java.lang.ref.WeakReference
 
@@ -52,7 +51,7 @@ abstract class AbstractCommonsArchiveHelperCallable(
     @Throws(ArchiveException::class)
     @Suppress("LabeledExpression")
     public override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
-        try {
+        runCatching {
             createFrom(FileInputStream(filePath)).use { tarInputStream ->
                 var entry: ArchiveEntry?
                 while (tarInputStream.nextEntry.also { entry = it } != null) {
@@ -88,8 +87,9 @@ abstract class AbstractCommonsArchiveHelperCallable(
                     }
                 }
             }
-        } catch (e: IOException) {
-            throw ArchiveException(String.format("Tarball archive %s is corrupt", filePath), e)
+        }.onFailure {
+            logger.error("Error enumerating archive entries", it)
+            throw ArchiveException(String.format("Tarball archive %s is corrupt", filePath))
         }
     }
 }
