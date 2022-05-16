@@ -30,8 +30,11 @@ import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import org.apache.commons.compress.archivers.ArchiveEntry
 import org.apache.commons.compress.archivers.ArchiveInputStream
-import java.io.*
-import java.util.*
+import java.io.BufferedOutputStream
+import java.io.File
+import java.io.FileInputStream
+import java.io.IOException
+import java.io.InputStream
 
 abstract class AbstractCommonsArchiveExtractor(
     context: Context,
@@ -49,6 +52,14 @@ abstract class AbstractCommonsArchiveExtractor(
      */
     abstract fun createFrom(inputStream: InputStream): ArchiveInputStream
 
+    protected open val onErrorHandler: (Throwable) -> Unit = { e ->
+        if (e !is EmptyArchiveNotice) {
+            throw BadArchiveNotice(e)
+        } else {
+            throw e
+        }
+    }
+
     @Throws(IOException::class)
     @Suppress("EmptyWhileBlock")
     override fun extractWithFilter(filter: Filter) {
@@ -56,7 +67,7 @@ abstract class AbstractCommonsArchiveExtractor(
         val archiveEntries = ArrayList<ArchiveEntry>()
         var inputStream = createFrom(FileInputStream(filePath))
         var archiveEntry: ArchiveEntry?
-        try {
+        runCatching {
             while (inputStream.nextEntry.also { archiveEntry = it } != null) {
                 archiveEntry?.run {
                     if (filter.shouldExtract(name, isDirectory)) {
@@ -82,7 +93,7 @@ abstract class AbstractCommonsArchiveExtractor(
             } else {
                 throw EmptyArchiveNotice()
             }
-        } finally {
+        }.onFailure(onErrorHandler).also {
             inputStream.close()
         }
     }

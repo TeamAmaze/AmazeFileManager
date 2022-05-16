@@ -29,7 +29,6 @@ import org.apache.commons.compress.PasswordRequiredException
 import org.apache.commons.compress.archivers.ArchiveException
 import java.io.File
 import java.io.IOException
-import java.lang.UnsupportedOperationException
 
 class SevenZipHelperCallable(
     private val filePath: String,
@@ -58,7 +57,7 @@ class SevenZipHelperCallable(
                     )
                 val isInRelativeDir = (
                     name.contains(CompressedHelper.SEPARATOR) &&
-                        name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
+                        name.substringBeforeLast(CompressedHelper.SEPARATOR)
                         == relativePath
                     )
                 if (isInBaseDir || isInRelativeDir) {
