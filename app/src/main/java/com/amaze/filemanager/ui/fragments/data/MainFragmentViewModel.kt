@@ -24,6 +24,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
@@ -35,7 +36,6 @@ import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConsta
 import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import java.util.*
 
@@ -226,11 +226,11 @@ class MainFragmentViewModel : ViewModel() {
 
         val mutableLiveData : MutableLiveData<Int> = MutableLiveData(-1)
 
-        GlobalScope.launch(Dispatchers.IO) {
+        viewModelScope.launch(Dispatchers.IO) {
             adapterListItems?.forEachIndexed { index, item ->
-                if (item.elem != null && item.elem.title.equals(title)) launch(Dispatchers.Main) {
+                if (item.elem != null && item.elem.title.equals(title)) {
                     item.setChecked(true)
-                    mutableLiveData.value = index
+                    mutableLiveData.postValue(index)
                 }
             }
 
