@@ -102,7 +102,6 @@ abstract class AbstractDeleteTaskTestBase {
     }
 
     protected fun doTestDeleteFileAccessDenied(file: HybridFileParcelable) {
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) TestUtils.initializeInternalStorage()
 
         ActivityScenario.launch(MainActivity::class.java).also {
@@ -135,9 +134,10 @@ abstract class AbstractDeleteTaskTestBase {
                 }
             }
         }.moveToState(Lifecycle.State.DESTROYED).close().run {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
                 shadowOf(ctx?.getSystemService(StorageManager::class.java))
                     .resetStorageVolumeList()
+            }
         }
     }
 }

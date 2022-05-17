@@ -29,7 +29,7 @@ class EncryptedZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTe
         get() = "test-archive-encrypted.zip"
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            ZipHelperCallable(
+        ZipHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,

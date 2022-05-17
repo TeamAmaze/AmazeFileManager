@@ -207,7 +207,12 @@ class AESCrypt(password: String) {
      */
     @Suppress("LongMethod", "ComplexMethod")
     @Throws(IOException::class, GeneralSecurityException::class)
-    fun encrypt(version: Int = AESCRYPT_SPEC_VERSION, `in`: InputStream, out: OutputStream, progressHandler: ProgressHandler) {
+    fun encrypt(
+        version: Int = AESCRYPT_SPEC_VERSION,
+        `in`: InputStream,
+        out: OutputStream,
+        progressHandler: ProgressHandler
+    ) {
         var text: ByteArray?
         ivSpec1 = IvParameterSpec(generateIv1())
         aesKey1 = SecretKeySpec(generateAESKey1(ivSpec1.iv, password), CRYPT_ALG)
@@ -333,7 +338,9 @@ class AESCrypt(password: String) {
         Log.v(TAG, "HMAC1: ${text.toHex()}")
         total = inSize - total // Payload size.
         if (total % BLOCK_SIZE != 0L) {
-            throw DecryptFailureException("Input file is corrupt. BLOCK_SIZE = $BLOCK_SIZE, total was $total")
+            throw DecryptFailureException(
+                "Input file is corrupt. BLOCK_SIZE = $BLOCK_SIZE, total was $total"
+            )
         }
         if (total == 0L) { // Hack: empty files won't enter block-processing for-loop below.
             `in`.read() // Skip last block size mod 16.

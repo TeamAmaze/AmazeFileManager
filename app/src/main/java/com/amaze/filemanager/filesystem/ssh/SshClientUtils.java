@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 import java.io.File;
@@ -32,8 +32,8 @@ import java.util.List;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.FolderState;
-import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.fileoperations.filesystem.FolderState;
+import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;

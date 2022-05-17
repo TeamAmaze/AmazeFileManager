@@ -24,7 +24,9 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.ImageButton;
 
-/** @author Emmanuel on 8/5/2017, at 13:39. */
+/**
+ * @author Emmanuel on 8/5/2017, at 13:39.
+ */
 public class ThemedImageButton extends ThemedImageView {
 
   public ThemedImageButton(Context context) {

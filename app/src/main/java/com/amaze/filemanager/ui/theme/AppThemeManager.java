@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.ui.theme;
 
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 
 import android.content.SharedPreferences;
 
@@ -38,7 +38,9 @@ public class AppThemeManager {
         AppTheme.getTheme(isNightMode, Integer.parseInt(themeId)).getSimpleTheme(isNightMode);
   }
 
-  /** @return The current Application theme */
+  /**
+   * @return The current Application theme
+   */
   public AppTheme getAppTheme() {
     return appTheme.getSimpleTheme(isNightMode);
   }

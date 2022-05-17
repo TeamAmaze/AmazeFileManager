@@ -29,7 +29,9 @@ import android.util.AttributeSet;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 31/1/2018, at 14:50. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 31/1/2018, at 14:50.
+ */
 public class WarnableTextInputLayout extends TextInputLayout {
 
   private boolean isStyleWarning = false;

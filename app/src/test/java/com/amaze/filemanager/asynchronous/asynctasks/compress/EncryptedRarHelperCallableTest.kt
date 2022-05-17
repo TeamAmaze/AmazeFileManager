@@ -28,7 +28,7 @@ class EncryptedRarHelperCallableTest : AbstractCompressedHelperCallableArchiveTe
         get() = "test-archive-encrypted.rar"
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            RarHelperCallable(
+        RarHelperCallable(
             archive.absolutePath,
             relativePath,
             false

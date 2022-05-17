@@ -17,28 +17,27 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.adapters
 
 import android.app.Activity
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.amaze.filemanager.ui.fragments.MainFragment
-import com.amaze.filemanager.filesystem.HybridFile
-import com.afollestad.materialdialogs.MaterialDialog
 import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.holders.HiddenViewHolder
-import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
-import com.amaze.filemanager.utils.DataUtils
-import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.adapters.HiddenAdapter
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.filesystem.HybridFile
+import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.FileUtils
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.amaze.filemanager.ui.fragments.MainFragment
+import com.amaze.filemanager.utils.DataUtils
 import java.io.File
 import java.util.ArrayList
 import kotlin.concurrent.thread
@@ -49,12 +48,13 @@ import kotlin.concurrent.thread
  * @see com.amaze.filemanager.adapters.holders.HiddenViewHolder
  */
 class HiddenAdapter(
-        private val context: Context,
-        private val mainFragment: MainFragment,
-        private val sharedPrefs: SharedPreferences,
-        hiddenFiles: List<HybridFile>,
-        var materialDialog: MaterialDialog?,
-        private val hide: Boolean) : RecyclerView.Adapter<HiddenViewHolder>() {
+    private val context: Context,
+    private val mainFragment: MainFragment,
+    private val sharedPrefs: SharedPreferences,
+    hiddenFiles: List<HybridFile>,
+    var materialDialog: MaterialDialog?,
+    private val hide: Boolean
+) : RecyclerView.Adapter<HiddenViewHolder>() {
 
     companion object {
         private const val TAG = "HiddenAdapter"
@@ -81,7 +81,8 @@ class HiddenAdapter(
             // .nomedia
             if (!file.isSmb && file.isDirectory(context)) {
                 val nomediaFile = HybridFileParcelable(
-                        hiddenFiles[position].path + "/" + FileUtils.NOMEDIA_FILE)
+                    hiddenFiles[position].path + "/" + FileUtils.NOMEDIA_FILE
+                )
                 nomediaFile.mode = OpenMode.FILE
                 val filesToDelete = ArrayList<HybridFileParcelable>()
                 filesToDelete.add(nomediaFile)
@@ -99,13 +100,20 @@ class HiddenAdapter(
             thread {
                 val fragmentActivity = mainFragment.requireActivity()
                 if (file.isDirectory(context)) {
-                    fragmentActivity.runOnUiThread { mainFragment.loadlist(file.path, false, OpenMode.UNKNOWN) }
+                    fragmentActivity.runOnUiThread {
+                        mainFragment.loadlist(
+                            file.path,
+                            false,
+                            OpenMode.UNKNOWN
+                        )
+                    }
                 } else if (!file.isSmb) {
                     fragmentActivity.runOnUiThread {
                         FileUtils.openFile(
-                                File(file.path),
-                                (fragmentActivity as MainActivity),
-                                sharedPrefs)
+                            File(file.path),
+                            (fragmentActivity as MainActivity),
+                            sharedPrefs
+                        )
                     }
                 }
             }

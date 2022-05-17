@@ -29,8 +29,8 @@ import java.util.Objects;
 import java.util.concurrent.Callable;
 
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException;
 import com.amaze.filemanager.filesystem.EditableFileAbstraction;
 import com.amaze.filemanager.filesystem.FileUtil;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -84,13 +84,13 @@ public class WriteTextFileCallable implements Callable<Unit> {
           DocumentFile documentFile =
               DocumentFile.fromSingleUri(AppConfig.getInstance(), fileAbstraction.uri);
           if (documentFile != null && documentFile.exists() && documentFile.canWrite()) {
-            outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+            outputStream = contentResolver.openOutputStream(fileAbstraction.uri, "wt");
           } else {
             destFile = FileUtils.fromContentUri(fileAbstraction.uri);
             outputStream = openFile(destFile, context.get());
           }
         } else {
-          outputStream = contentResolver.openOutputStream(fileAbstraction.uri);
+          outputStream = contentResolver.openOutputStream(fileAbstraction.uri, "wt");
         }
         break;
       case FILE:

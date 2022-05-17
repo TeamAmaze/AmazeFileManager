@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.util.Log
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
 import org.apache.commons.compress.PasswordRequiredException
@@ -68,7 +68,10 @@ class SevenZipHelperCallable(
                             try {
                                 entry.lastModifiedDate.time
                             } catch (e: UnsupportedOperationException) {
-                                Log.w(javaClass.simpleName, "Unable to get modified date for 7zip file")
+                                Log.w(
+                                    javaClass.simpleName,
+                                    "Unable to get modified date for 7zip file"
+                                )
                                 0L
                             },
                             entry.size,

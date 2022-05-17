@@ -55,11 +55,11 @@ import java.net.SocketException
 import java.security.SecureRandom
 import java.util.concurrent.TimeUnit
 
+// Require UIAutomator if need to run test on Android 11
+// in order to obtain MANAGE_EXTERNAL_STORAGE permission
 @RunWith(AndroidJUnit4::class)
 @Suppress("StringLiteralDuplication")
 @androidx.test.filters.Suppress
-// Require UIAutomator if need to run test on Android 11
-// in order to obtain MANAGE_EXTERNAL_STORAGE permission
 class FtpServiceEspressoTest {
 
     @get:Rule

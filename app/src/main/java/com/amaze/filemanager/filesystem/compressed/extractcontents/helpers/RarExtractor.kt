@@ -22,8 +22,8 @@ package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import com.amaze.filemanager.filesystem.FileUtil
 import com.amaze.filemanager.filesystem.MakeDirectoryOperation
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
@@ -158,7 +158,8 @@ class RarExtractor(
         */
         val inputStream = BufferedInputStream(rarFile.getInputStream(entry))
         val outputStream = CheckedOutputStream(
-            BufferedOutputStream(FileUtil.getOutputStream(outputFile, context)), CRC32()
+            BufferedOutputStream(FileUtil.getOutputStream(outputFile, context)),
+            CRC32()
         )
         try {
             var len: Int

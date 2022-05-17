@@ -22,6 +22,45 @@ package com.amaze.filemanager.filesystem.files;
 
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 
+import java.io.File;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.concurrent.atomic.AtomicLong;
+
+import com.afollestad.materialdialogs.MaterialDialog;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.Operations;
+import com.amaze.filemanager.filesystem.RootHelper;
+import com.amaze.filemanager.filesystem.cloud.CloudUtil;
+import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
+import com.amaze.filemanager.ui.activities.DatabaseViewerActivity;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
+import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
+import com.amaze.filemanager.ui.dialogs.share.ShareTask;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
+import com.amaze.filemanager.ui.icons.MimeTypes;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.OTGUtil;
+import com.amaze.filemanager.utils.OnProgressUpdate;
+import com.cloudrail.si.interfaces.CloudStorage;
+import com.cloudrail.si.types.CloudMetaData;
+import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
+import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
+
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -46,51 +85,11 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
-import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.Operations;
-import com.amaze.filemanager.filesystem.RootHelper;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
-import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
-import com.amaze.filemanager.ui.activities.DatabaseViewerActivity;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
-import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
-import com.amaze.filemanager.ui.dialogs.share.ShareTask;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.icons.MimeTypes;
-import com.amaze.filemanager.ui.theme.AppTheme;
-import com.amaze.filemanager.utils.DataUtils;
-import com.amaze.filemanager.utils.OTGUtil;
-import com.amaze.filemanager.utils.OnProgressUpdate;
-import com.cloudrail.si.interfaces.CloudStorage;
-import com.cloudrail.si.types.CloudMetaData;
-import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
-import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
-
+import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
-
-import java.io.File;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicLong;
-
-import jcifs.smb.SmbFile;
-import kotlin.collections.ArraysKt;
 
 /** Functions that deal with files */
 public class FileUtils {
@@ -345,7 +344,8 @@ public class FileUtils {
     }.execute(path);
   }
 
-  public static void shareCloudFiles(ArrayList<LayoutElementParcelable> files, final OpenMode openMode, final Context context) {
+  public static void shareCloudFiles(
+      ArrayList<LayoutElementParcelable> files, final OpenMode openMode, final Context context) {
     String[] paths = new String[files.size()];
     for (int i = 0; i < files.size(); i++) {
       paths[i] = files.get(i).desc;
@@ -1005,9 +1005,7 @@ public class FileUtils {
     return true;
   }
 
-  /**
-   * Determines the specified path is beyond storage level, i.e should require root access.
-   */
+  /** Determines the specified path is beyond storage level, i.e should require root access. */
   @SuppressWarnings("PMD.DoNotHardCodeSDCard")
   public static boolean isRunningAboveStorage(@NonNull String path) {
     return !path.startsWith("/storage") && !path.startsWith("/sdcard");
