@@ -22,7 +22,9 @@ package com.amaze.filemanager.ui.fragments.data
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
@@ -33,6 +35,8 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
 
 class MainFragmentViewModel : ViewModel() {
@@ -216,5 +220,22 @@ class MainFragmentViewModel : ViewModel() {
             }
         }
         return selected
+    }
+
+    /**
+     * Get the position of an item
+     */
+    fun getScrollPosition(title: String): MutableLiveData<Int> {
+        val mutableLiveData: MutableLiveData<Int> = MutableLiveData(-1)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            adapterListItems?.forEachIndexed { index, item ->
+                if (item.elem != null && item.elem.title.equals(title)) {
+                    item.setChecked(true)
+                    mutableLiveData.postValue(index)
+                }
+            }
+        }
+        return mutableLiveData
     }
 }
