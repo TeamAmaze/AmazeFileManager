@@ -875,20 +875,22 @@ public class MainFragment extends Fragment
 
       startFileObserver();
 
-      listView.post(() -> {
+      listView.post(
+                  () -> {
+              String fileName = requireMainActivity().getScrollToFileName();
 
-        String fileName = requireMainActivity().getScrollToFileName();
-
-        if (fileName != null)
-          mainFragmentViewModel.getScrollPosition(fileName)
-                .observe(
-                        getViewLifecycleOwner(),
-                        scrollPosition -> {
-                          if(scrollPosition != -1)
-                            listView.scrollToPosition(Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
-                            adapter.notifyItemChanged(scrollPosition);
+            if (fileName != null)
+              mainFragmentViewModel
+                          .getScrollPosition(fileName)
+                          .observe(
+                              getViewLifecycleOwner(),
+                              scrollPosition -> {
+                          if (scrollPosition != -1)
+                            listView.scrollToPosition(
+                                        Math.min(scrollPosition + 4, adapter.getItemCount() - 1));
+                          adapter.notifyItemChanged(scrollPosition);
                         });
-      });
+          });
 
     } else {
       // fragment not added
