@@ -226,8 +226,7 @@ class MainFragmentViewModel : ViewModel() {
      * Get the position of an item
      */
     fun getScrollPosition(title: String): MutableLiveData<Int> {
-
-        val mutableLiveData : MutableLiveData<Int> = MutableLiveData(-1)
+        val mutableLiveData: MutableLiveData<Int> = MutableLiveData(-1)
 
         viewModelScope.launch(Dispatchers.IO) {
             adapterListItems?.forEachIndexed { index, item ->
@@ -236,9 +235,7 @@ class MainFragmentViewModel : ViewModel() {
                     mutableLiveData.postValue(index)
                 }
             }
-
         }
         return mutableLiveData
     }
-
 }
