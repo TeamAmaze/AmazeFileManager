@@ -574,10 +574,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         port.text = "${resources.getString(R.string.ftp_port)}: $defaultPortFromPreferences"
         updatePathText()
 
-        if(defaultPathFromPreferences == FtpService.defaultPath(requireContext())) {
-            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0,0)
+        if (defaultPathFromPreferences == FtpService.defaultPath(requireContext())) {
+            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
         } else {
-            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0,0, R.drawable.ic_clear_all, 0)
+            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_all, 0)
         }
     }
 
@@ -595,7 +595,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
 
             if (event.action == KeyEvent.ACTION_DOWN) {
                 if (event.x >= sharedPath.right - sharedPath.compoundDrawables[2].bounds.width()) {
-
                     resetFTPPath()
                     updateStatus()
 
@@ -603,13 +602,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                         mainActivity,
                         getString(R.string.ftp_server_reset_notify)
                     )
-
                 }
             }
 
             false
         }
-
     }
 
     private fun resetFTPPath() {
