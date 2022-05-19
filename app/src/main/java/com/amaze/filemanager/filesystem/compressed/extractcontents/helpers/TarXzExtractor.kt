@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import org.apache.commons.compress.compressors.CompressorInputStream
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 
@@ -32,7 +32,11 @@ class TarXzExtractor(
     listener: OnUpdate,
     updatePosition: UpdatePosition
 ) : AbstractCompressedTarArchiveExtractor(
-    context, filePath, outputPath, listener, updatePosition
+    context,
+    filePath,
+    outputPath,
+    listener,
+    updatePosition
 ) {
 
     override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> =

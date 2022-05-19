@@ -38,10 +38,10 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
@@ -51,7 +51,7 @@ import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.Statvfs;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -561,10 +561,15 @@ public class HybridFile {
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        isDirectory = Single.fromCallable(() -> dataUtils
-                .getAccount(mode)
-                .getMetadata(CloudUtil.stripPath(mode, path))
-                .getFolder()).subscribeOn(Schedulers.io()).blockingGet();
+        isDirectory =
+            Single.fromCallable(
+                    () ->
+                        dataUtils
+                            .getAccount(mode)
+                            .getMetadata(CloudUtil.stripPath(mode, path))
+                            .getFolder())
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
         break;
       default:
         isDirectory = getFile().isDirectory();
@@ -573,7 +578,9 @@ public class HybridFile {
     return isDirectory;
   }
 
-  /** @deprecated use {@link #folderSize(Context)} */
+  /**
+   * @deprecated use {@link #folderSize(Context)}
+   */
   public long folderSize() {
     long size = 0L;
 

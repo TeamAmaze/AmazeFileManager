@@ -50,7 +50,8 @@ class RarHelperCallable(
         try {
             val rarFile = Archive(File(fileLocation))
             val relativeDirDiffSeparator = relativeDirectory.replace(
-                CompressedHelper.SEPARATOR, "\\"
+                CompressedHelper.SEPARATOR,
+                "\\"
             )
             for (rarArchive in rarFile.fileHeaders) {
                 val name = rarArchive.fileName

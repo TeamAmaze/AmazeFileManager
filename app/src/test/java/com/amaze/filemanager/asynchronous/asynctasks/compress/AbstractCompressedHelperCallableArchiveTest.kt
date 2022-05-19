@@ -29,7 +29,8 @@ import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
-abstract class AbstractCompressedHelperCallableArchiveTest : AbstractCompressedHelperCallableTest() {
+abstract class AbstractCompressedHelperCallableArchiveTest :
+    AbstractCompressedHelperCallableTest() {
 
     companion object {
         @JvmStatic
@@ -127,7 +128,13 @@ abstract class AbstractCompressedHelperCallableArchiveTest : AbstractCompressedH
     }
 
     protected fun createCallable(relativePath: String): CompressedHelperCallable =
-        doCreateCallable(File(Environment.getExternalStorageDirectory(), archiveFileName), relativePath)
+        doCreateCallable(
+            File(Environment.getExternalStorageDirectory(), archiveFileName),
+            relativePath
+        )
 
-    protected abstract fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable
+    protected abstract fun doCreateCallable(
+        archive: File,
+        relativePath: String
+    ): CompressedHelperCallable
 }

@@ -22,17 +22,6 @@ package com.amaze.filemanager.database;
 
 import static com.amaze.filemanager.database.UtilitiesDatabase.DATABASE_VERSION;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.VisibleForTesting;
-import androidx.arch.core.util.Function;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
-import androidx.room.migration.Migration;
-import androidx.sqlite.db.SupportSQLiteDatabase;
-
 import com.amaze.filemanager.database.daos.BookmarkEntryDao;
 import com.amaze.filemanager.database.daos.GridEntryDao;
 import com.amaze.filemanager.database.daos.HiddenEntryDao;
@@ -47,6 +36,17 @@ import com.amaze.filemanager.database.models.utilities.History;
 import com.amaze.filemanager.database.models.utilities.List;
 import com.amaze.filemanager.database.models.utilities.SftpEntry;
 import com.amaze.filemanager.database.models.utilities.SmbEntry;
+
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
+import androidx.arch.core.util.Function;
+import androidx.room.Database;
+import androidx.room.Room;
+import androidx.room.RoomDatabase;
+import androidx.room.migration.Migration;
+import androidx.sqlite.db.SupportSQLiteDatabase;
 
 /**
  * Repository for {@link Bookmark}, {@link Grid}, {@link Hidden}, {@link History}, {@link List},
@@ -387,11 +387,13 @@ public abstract class UtilitiesDatabase extends RoomDatabase {
   protected abstract SftpEntryDao sftpEntryDao();
 
   public static UtilitiesDatabase initialize(@NonNull Context context) {
-    Builder<UtilitiesDatabase> builder = (overrideDatabaseBuilder == null) ?
-      Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME) :
-        overrideDatabaseBuilder.apply(context);
+    Builder<UtilitiesDatabase> builder =
+        (overrideDatabaseBuilder == null)
+            ? Room.databaseBuilder(context, UtilitiesDatabase.class, DATABASE_NAME)
+            : overrideDatabaseBuilder.apply(context);
 
-    return builder.allowMainThreadQueries()
+    return builder
+        .allowMainThreadQueries()
         .addMigrations(MIGRATION_1_2, MIGRATION_2_3, MIGRATION_3_4, MIGRATION_4_5)
         .build();
   }

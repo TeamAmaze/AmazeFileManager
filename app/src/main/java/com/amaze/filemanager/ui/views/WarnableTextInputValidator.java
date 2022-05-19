@@ -84,7 +84,9 @@ public final class WarnableTextInputValidator extends SimpleTextWatcher
     doValidate(false);
   }
 
-  /** @return ReturnState.state */
+  /**
+   * @return ReturnState.state
+   */
   private int doValidate(boolean onlySetWarning) {
     ReturnState state = validator.isTextValid(editText.getText().toString());
     switch (state.state) {

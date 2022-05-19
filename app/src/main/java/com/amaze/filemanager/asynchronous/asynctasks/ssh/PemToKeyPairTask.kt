@@ -157,7 +157,8 @@ class PemToKeyPairTask(
         ) { text: String ->
             if (text.isEmpty()) {
                 ReturnState(
-                    ReturnState.STATE_ERROR, R.string.field_empty
+                    ReturnState.STATE_ERROR,
+                    R.string.field_empty
                 )
             }
             ReturnState()

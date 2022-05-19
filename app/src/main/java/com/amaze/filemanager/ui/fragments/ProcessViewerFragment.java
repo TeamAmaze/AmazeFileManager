@@ -22,28 +22,7 @@ package com.amaze.filemanager.ui.fragments;
 
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT;
 
-import android.content.ComponentName;
-import android.content.Intent;
-import android.content.ServiceConnection;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.graphics.drawable.ColorDrawable;
-import android.os.Bundle;
-import android.os.IBinder;
-import android.text.Spanned;
-import android.text.format.Formatter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageButton;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import androidx.annotation.Nullable;
-import androidx.cardview.widget.CardView;
-import androidx.core.text.HtmlCompat;
-import androidx.fragment.app.Fragment;
+import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
@@ -66,7 +45,28 @@ import com.github.mikephil.charting.data.LineData;
 import com.github.mikephil.charting.data.LineDataSet;
 import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
 
-import java.util.ArrayList;
+import android.content.ComponentName;
+import android.content.Intent;
+import android.content.ServiceConnection;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.os.IBinder;
+import android.text.Spanned;
+import android.text.format.Formatter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.Nullable;
+import androidx.cardview.widget.CardView;
+import androidx.core.text.HtmlCompat;
+import androidx.fragment.app.Fragment;
 
 public class ProcessViewerFragment extends Fragment {
 
@@ -226,7 +226,8 @@ public class ProcessViewerFragment extends Fragment {
                   + getResources().getString(R.string.out_of)
                   + " <i>"
                   + Formatter.formatFileSize(getContext(), total)
-                  + "</i>", FROM_HTML_MODE_COMPACT);
+                  + "</i>",
+              FROM_HTML_MODE_COMPACT);
       mProgressBytesText.setText(bytesText);
 
       Spanned fileProcessedSpan =
@@ -240,7 +241,8 @@ public class ProcessViewerFragment extends Fragment {
                   + getResources().getString(R.string.of)
                   + " <i>"
                   + dataPackage.getAmountOfSourceFiles()
-                  + "</i>", FROM_HTML_MODE_COMPACT);
+                  + "</i>",
+              FROM_HTML_MODE_COMPACT);
       mProgressFileText.setText(fileProcessedSpan);
 
       Spanned speedSpan =
@@ -250,7 +252,8 @@ public class ProcessViewerFragment extends Fragment {
                   + accentColor
                   + "'><i>"
                   + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
-                  + "/s</font></i>", FROM_HTML_MODE_COMPACT);
+                  + "/s</font></i>",
+              FROM_HTML_MODE_COMPACT);
       mProgressSpeedText.setText(speedSpan);
 
       Spanned timerSpan =
@@ -260,7 +263,8 @@ public class ProcessViewerFragment extends Fragment {
                   + accentColor
                   + "'><i>"
                   + Utils.formatTimer(++looseTimeInSeconds)
-                  + "</font></i>", FROM_HTML_MODE_COMPACT);
+                  + "</font></i>",
+              FROM_HTML_MODE_COMPACT);
 
       mProgressTimer.setText(timerSpan);
 

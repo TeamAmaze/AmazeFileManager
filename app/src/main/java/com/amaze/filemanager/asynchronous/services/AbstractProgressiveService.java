@@ -46,7 +46,9 @@ import androidx.annotation.CallSuper;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 19:32. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 19:32.
+ */
 public abstract class AbstractProgressiveService extends Service
     implements ServiceWatcherUtil.ServiceStatusCallbacks {
 
@@ -83,7 +85,9 @@ public abstract class AbstractProgressiveService extends Service
 
   public abstract void setProgressListener(ProgressListener progressListener);
 
-  /** @return list of data packages, to initiate chart in process viewer fragment */
+  /**
+   * @return list of data packages, to initiate chart in process viewer fragment
+   */
   protected abstract ArrayList<DatapointParcelable> getDataPackages();
 
   protected abstract ProgressHandler getProgressHandler();

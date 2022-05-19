@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.filesystem.ftpserver
 
 import android.util.Log
@@ -52,7 +72,6 @@ class RootFileSystemView(
     }
 
     override fun changeWorkingDirectory(dirArg: String): Boolean {
-
         var dir = dirArg
 
         // not a directory - return false
@@ -105,7 +124,6 @@ class RootFileSystemView(
         currDir: String,
         fileName: String
     ): String {
-
         // normalize root dir
         var normalizedRootDir: String = normalizeSeparateChar(rootDir)
         normalizedRootDir = appendSlash(normalizedRootDir)
@@ -231,14 +249,17 @@ class RootFileSystemView(
          * Create SuFile.
          */
         fun create(pathname: String): SuFile = SuFile(pathname)
+
         /**
          * Create SuFile.
          */
         fun create(parent: String, child: String): SuFile = SuFile(parent, child)
+
         /**
          * Create SuFile.
          */
         fun create(parent: File, child: String): SuFile = SuFile(parent, child)
+
         /**
          * Create SuFile.
          */

@@ -23,6 +23,18 @@ package com.amaze.filemanager.database;
 import static org.awaitility.Awaitility.await;
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.util.List;
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+
+import com.amaze.filemanager.database.models.OperationData;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+
 import android.content.Context;
 import android.os.Environment;
 
@@ -30,18 +42,6 @@ import androidx.annotation.NonNull;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.filters.Suppress;
 import androidx.test.platform.app.InstrumentationRegistry;
-
-import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-
-import java.io.File;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 @RunWith(AndroidJUnit4.class)
 public class UtilsHandlerTest {
@@ -129,16 +129,14 @@ public class UtilsHandlerTest {
             null,
             null));
 
-    await()
-        .atMost(10, TimeUnit.SECONDS)
-        .until(() -> utilsHandler.getSftpList().size() > 0);
+    await().atMost(10, TimeUnit.SECONDS).until(() -> utilsHandler.getSftpList().size() > 0);
 
     List<String[]> result = utilsHandler.getSftpList();
     assertEquals(1, result.size());
     assertEquals("Test", result.get(0)[0]);
     assertEquals(encryptedPath, result.get(0)[1]);
     assertEquals(
-            "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
-            utilsHandler.getSshHostKey(encryptedPath));
+        "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
+        utilsHandler.getSshHostKey(encryptedPath));
   }
 }

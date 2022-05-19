@@ -20,9 +20,9 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.movecopy;
 
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COPY;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.MOVE;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.COPY;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.MOVE;
 
 import java.io.File;
 import java.lang.ref.WeakReference;
@@ -38,8 +38,8 @@ import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.CopyService;
 import com.amaze.filemanager.databinding.CopyDialogBinding;
-import com.amaze.filemanager.file_operations.filesystem.FolderState;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.FolderState;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.files.FileUtils;
@@ -406,7 +406,9 @@ public class PrepareCopyTask extends AsyncTask<Void, String, PrepareCopyTask.Cop
       return this;
     }
 
-    /** @return true if there are no more nodes */
+    /**
+     * @return true if there are no more nodes
+     */
     CopyNode goToNextNode() {
       if (queue.isEmpty()) return null;
       else {

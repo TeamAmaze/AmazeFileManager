@@ -37,20 +37,10 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import com.amaze.filemanager.filesystem.ssh.test.TestUtils;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-import com.amaze.filemanager.test.ShadowPasswordUtil;
-import com.amaze.filemanager.utils.Utils;
-
-import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.KeyType;
-import net.schmizz.sshj.common.SecurityUtils;
-import net.schmizz.sshj.userauth.UserAuthException;
-import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
+import java.io.IOException;
+import java.security.KeyPair;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 
 import org.junit.After;
 import org.junit.BeforeClass;
@@ -59,14 +49,23 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowSQLiteConnection;
 
-import java.io.IOException;
-import java.security.KeyPair;
-import java.security.PrivateKey;
-import java.security.PublicKey;
+import com.amaze.filemanager.filesystem.ssh.test.TestUtils;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+import com.amaze.filemanager.test.ShadowPasswordUtil;
+import com.amaze.filemanager.utils.Utils;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 import io.reactivex.android.plugins.RxAndroidPlugins;
 import io.reactivex.plugins.RxJavaPlugins;
 import io.reactivex.schedulers.Schedulers;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.KeyType;
+import net.schmizz.sshj.common.SecurityUtils;
+import net.schmizz.sshj.userauth.UserAuthException;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 
 @RunWith(AndroidJUnit4.class)
 @Config(
@@ -211,24 +210,24 @@ public class SshConnectionPoolTest {
     SSHClient mock = createSshServer("testuser", validPassword);
     saveSshConnectionSettings(hostKeyPair, "testuser", validPassword, null, "/home/testuser");
     assertNotNull(
-            SshConnectionPool.INSTANCE.getConnection(
-                    SshClientUtils.encryptSshPathAsNecessary(
-                            "ssh://testuser:testpassword@127.0.0.1:22222/home/testuser")));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testpassword@127.0.0.1:22222/home/testuser")));
     assertNotNull(
-            SshConnectionPool.INSTANCE.getConnection(
-                    SshClientUtils.encryptSshPathAsNecessary(
-                            "ssh://testuser:testpassword@127.0.0.1:22222")));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://testuser:testpassword@127.0.0.1:22222")));
     assertNull(
-            SshConnectionPool.INSTANCE.getConnection(
-                    SshClientUtils.encryptSshPathAsNecessary(
-                            "ssh://invaliduser:invalidpassword@127.0.0.1:22222/home/testuser")));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222/home/testuser")));
     assertNull(
-            SshConnectionPool.INSTANCE.getConnection(
-                    SshClientUtils.encryptSshPathAsNecessary(
-                            "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
+        SshConnectionPool.INSTANCE.getConnection(
+            SshClientUtils.encryptSshPathAsNecessary(
+                "ssh://invaliduser:invalidpassword@127.0.0.1:22222")));
 
     verify(mock, atLeastOnce())
-            .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
+        .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
     verify(mock, atLeastOnce()).setConnectTimeout(SshConnectionPool.SSH_CONNECT_TIMEOUT);
     verify(mock, atLeastOnce()).connect("127.0.0.1", 22222);
     verify(mock).authPassword("testuser", "testpassword");
@@ -256,14 +255,18 @@ public class SshConnectionPoolTest {
   @Test
   public void testGetConnectionWithUrlAndKeyAuthHavingSubpath() throws IOException {
     SSHClient mock = createSshServer("testuser", null);
-    saveSshConnectionSettings(hostKeyPair, "testuser", null, userKeyPair.getPrivate(), "/home/testuser");
-    assertNotNull(SshConnectionPool.INSTANCE.getConnection("ssh://testuser@127.0.0.1:22222/home/testuser"));
+    saveSshConnectionSettings(
+        hostKeyPair, "testuser", null, userKeyPair.getPrivate(), "/home/testuser");
+    assertNotNull(
+        SshConnectionPool.INSTANCE.getConnection("ssh://testuser@127.0.0.1:22222/home/testuser"));
     assertNotNull(SshConnectionPool.INSTANCE.getConnection("ssh://testuser@127.0.0.1:22222"));
-    assertNull(SshConnectionPool.INSTANCE.getConnection("ssh://invaliduser@127.0.0.1:22222/home/testuser"));
+    assertNull(
+        SshConnectionPool.INSTANCE.getConnection(
+            "ssh://invaliduser@127.0.0.1:22222/home/testuser"));
     assertNull(SshConnectionPool.INSTANCE.getConnection("ssh://invaliduser@127.0.0.1:22222"));
 
     verify(mock, atLeastOnce())
-            .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
+        .addHostKeyVerifier(SecurityUtils.getFingerprint(hostKeyPair.getPublic()));
     verify(mock, atLeastOnce()).setConnectTimeout(SshConnectionPool.SSH_CONNECT_TIMEOUT);
     verify(mock, atLeastOnce()).connect("127.0.0.1", 22222);
 

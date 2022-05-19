@@ -53,8 +53,9 @@ class FtpServiceStaticMethodsTest {
          */
         if (SDK_INT >= N_MR1) {
             ApplicationProvider.getApplicationContext<Context>().run {
-                if (!FtpService.isConnectedToLocalNetwork(this))
+                if (!FtpService.isConnectedToLocalNetwork(this)) {
                     fail("Please connect your device to network to run this test!")
+                }
 
                 FtpService.getLocalInetAddress(this).also {
                     assertNotNull(it)

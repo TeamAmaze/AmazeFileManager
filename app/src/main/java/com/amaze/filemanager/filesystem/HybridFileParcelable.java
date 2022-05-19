@@ -20,9 +20,9 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DOCUMENT_FILE;
+import static com.amaze.filemanager.fileoperations.filesystem.OpenMode.DOCUMENT_FILE;
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.ContentResolver;

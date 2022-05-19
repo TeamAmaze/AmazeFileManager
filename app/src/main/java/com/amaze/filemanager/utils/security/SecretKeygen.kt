@@ -107,7 +107,8 @@ object SecretKeygen {
         val encodedString = preferences.getString(PREFERENCE_KEY, null)
         return if (encodedString != null) {
             SecretKeySpec(
-                decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)), "AES"
+                decryptAESKey(Base64.decode(encodedString, Base64.DEFAULT)),
+                "AES"
             )
         } else {
             generateRsaKeyPair(AppConfig.getInstance())

@@ -109,7 +109,6 @@
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="resource/folder" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
 
             <intent-filter android:label="@string/intent_save_as">

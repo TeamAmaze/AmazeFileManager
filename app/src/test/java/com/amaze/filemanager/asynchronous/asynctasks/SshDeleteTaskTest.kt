@@ -72,7 +72,8 @@ class SshDeleteTaskTest : AbstractDeleteTaskTestBase() {
 
         return HybridFileParcelable(
             "ssh://user:password@127.0.0.1:22222",
-            false, ri
+            false,
+            ri
         )
     }
 }

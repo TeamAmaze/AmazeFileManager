@@ -62,13 +62,17 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
 fun Context.updateAUAlias(shouldEnable: Boolean) {
     val component = ComponentName(this, "com.amaze.filemanager.amazeutilsalias")
     if (!shouldEnable) {
-        packageManager.setComponentEnabledSetting(component,
+        packageManager.setComponentEnabledSetting(
+            component,
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP)
+            PackageManager.DONT_KILL_APP
+        )
     } else {
-        packageManager.setComponentEnabledSetting(component,
+        packageManager.setComponentEnabledSetting(
+            component,
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP)
+            PackageManager.DONT_KILL_APP
+        )
     }
 }
 

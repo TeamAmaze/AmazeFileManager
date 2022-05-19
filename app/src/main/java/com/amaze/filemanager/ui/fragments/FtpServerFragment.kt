@@ -119,14 +119,14 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
     private val activityResultHandlerOnFtpServerPathUpdate = createOpenDocumentTreeIntentCallback {
-        directoryUri ->
+            directoryUri ->
         changeFTPServerPath(directoryUri.toString())
         updatePathText()
     }
 
     private val activityResultHandlerOnFtpServerPathGrantedSafAccess =
         createOpenDocumentTreeIntentCallback {
-            directoryUri ->
+                directoryUri ->
             changeFTPServerPath(directoryUri.toString())
             updatePathText()
             doStartServer()
@@ -204,7 +204,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                             } else {
                                 changeFTPServerPort(portNumber)
                                 Toast.makeText(
-                                    activity, R.string.ftp_port_change_success, Toast.LENGTH_SHORT
+                                    activity,
+                                    R.string.ftp_port_change_success,
+                                    Toast.LENGTH_SHORT
                                 )
                                     .show()
                             }
@@ -410,7 +412,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
                 val directoryUri = it.data?.data ?: return@registerForActivityResult
                 requireContext().contentResolver.takePersistableUriPermission(
-                    directoryUri, GRANT_URI_RW_PERMISSION
+                    directoryUri,
+                    GRANT_URI_RW_PERMISSION
                 )
                 callback.invoke(directoryUri)
             }
@@ -424,7 +427,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         if (shouldUseSafFileSystem()) {
             Uri.parse(directoryUri).run {
                 if (requireContext().checkUriPermission(
-                        this, Process.myPid(), Process.myUid(),
+                        this,
+                        Process.myPid(),
+                        Process.myUid(),
                         GRANT_URI_RW_PERMISSION
                     ) == PackageManager.PERMISSION_DENIED
                 ) {
@@ -763,7 +768,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val passwordFromPreferences: String?
         get() = runCatching {
             val encryptedPassword: String = mainActivity.prefs.getString(
-                FtpService.KEY_PREFERENCE_PASSWORD, ""
+                FtpService.KEY_PREFERENCE_PASSWORD,
+                ""
             )!!
             if (encryptedPassword == "") {
                 ""

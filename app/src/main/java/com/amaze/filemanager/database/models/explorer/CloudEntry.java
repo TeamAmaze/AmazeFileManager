@@ -24,7 +24,7 @@ import com.amaze.filemanager.database.ExplorerDatabase;
 import com.amaze.filemanager.database.models.StringWrapper;
 import com.amaze.filemanager.database.typeconverters.EncryptedStringTypeConverter;
 import com.amaze.filemanager.database.typeconverters.OpenModeTypeConverter;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
