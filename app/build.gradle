@@ -183,11 +183,11 @@ dependencies {
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0'
+    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.4'
 
     //implementation files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
+    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.4'
 
     implementation 'org.greenrobot:eventbus:3.3.1'
 
