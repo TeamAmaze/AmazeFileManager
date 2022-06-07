@@ -491,7 +491,7 @@ public class MainFragment extends Fragment
             // are we here to return an intent to another app
             returnIntentResults(layoutElementParcelable.generateBaseFile());
           } else {
-            layoutElementParcelable.generateBaseFile().openFile(getMainActivity());
+            layoutElementParcelable.generateBaseFile().openFile(getMainActivity(), false);
             DataUtils.getInstance().addHistoryFile(layoutElementParcelable.desc);
           }
         }

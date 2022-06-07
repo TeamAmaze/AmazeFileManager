@@ -469,7 +469,7 @@ public class MainActivity extends PermissionsActivity
             if (!isCloudRefresh) {
               goToMain(null);
             }
-            file.openFile(this);
+            file.openFile(this, true);
           }
         } else if (!isCloudRefresh) {
           goToMain(null);

@@ -820,8 +820,7 @@ public class GeneralDialogCreation {
             String.format(
                 m.getResources().getString(R.string.open_file_confirmation),
                 file.getName(m),
-                file.getPath(),
-                ""))
+                file.getPath()))
         .positiveText(R.string.open)
         .negativeText(R.string.cancel)
         .positiveColor(accentColor)
