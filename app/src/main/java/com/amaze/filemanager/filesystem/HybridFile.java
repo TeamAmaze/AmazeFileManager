@@ -51,6 +51,8 @@ import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.Statvfs;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -65,6 +67,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -217,6 +220,10 @@ public class HybridFile {
 
   public boolean isGoogleDriveFile() {
     return mode == OpenMode.GDRIVE;
+  }
+
+  public boolean isCloudDriveFile() {
+    return isBoxFile() || isDropBoxFile() || isOneDriveFile() || isGoogleDriveFile();
   }
 
   @Nullable
@@ -1441,5 +1448,51 @@ public class HybridFile {
       default:
         return null;
     }
+  }
+
+  public void openFile(MainActivity activity) {
+    GeneralDialogCreation.showOpenFileDeeplinkDialog(
+        this,
+        activity,
+        () -> {
+          switch (mode) {
+            case SMB:
+              FileUtils.launchSMB(this, activity);
+              break;
+            case SFTP:
+              Toast.makeText(
+                      activity,
+                      activity.getResources().getString(R.string.please_wait),
+                      Toast.LENGTH_LONG)
+                  .show();
+              SshClientUtils.launchSftp(this, activity);
+              break;
+            case OTG:
+              FileUtils.openFile(
+                  OTGUtil.getDocumentFile(path, activity, false), activity, activity.getPrefs());
+              break;
+            case DOCUMENT_FILE:
+              FileUtils.openFile(
+                  OTGUtil.getDocumentFile(
+                      path, SafRootHolder.getUriRoot(), activity, OpenMode.DOCUMENT_FILE, false),
+                  activity,
+                  activity.getPrefs());
+              break;
+            case DROPBOX:
+            case BOX:
+            case GDRIVE:
+            case ONEDRIVE:
+              Toast.makeText(
+                      activity,
+                      activity.getResources().getString(R.string.please_wait),
+                      Toast.LENGTH_LONG)
+                  .show();
+              CloudUtil.launchCloud(this, mode, activity);
+              break;
+            default:
+              FileUtils.openFile(new File(path), activity, activity.getPrefs());
+              break;
+          }
+        });
   }
 }

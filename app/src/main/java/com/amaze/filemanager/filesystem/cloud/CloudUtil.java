@@ -136,7 +136,7 @@ public class CloudUtil {
   }
 
   public static void launchCloud(
-      final HybridFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
+      final HybridFile baseFile, final OpenMode serviceType, final Activity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(

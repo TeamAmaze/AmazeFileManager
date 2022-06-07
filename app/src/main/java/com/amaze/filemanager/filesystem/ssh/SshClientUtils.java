@@ -34,7 +34,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.FolderState;
 import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -260,7 +260,7 @@ public abstract class SshClientUtils {
     }
   }
 
-  public static void launchSftp(final HybridFileParcelable baseFile, final MainActivity activity) {
+  public static void launchSftp(final HybridFile baseFile, final MainActivity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(

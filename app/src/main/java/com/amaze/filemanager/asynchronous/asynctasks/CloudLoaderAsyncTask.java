@@ -392,6 +392,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
       final MainActivity mainActivity = this.mainActivity.get();
       if (mainActivity != null) {
         mainActivity.getDrawer().refreshDrawer();
+        mainActivity.invalidateFragmentAndBundle(null, true);
       }
     }
   }

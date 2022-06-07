@@ -404,20 +404,20 @@ public class MainActivity extends PermissionsActivity
               @Override
               public void onComplete() {
                 drawer.refreshDrawer();
-                invalidateFragmentAndBundle(savedInstanceState);
+                invalidateFragmentAndBundle(savedInstanceState, false);
               }
 
               @Override
               public void onError(@NonNull Throwable e) {
                 Log.e(TAG, "Error setting up DataUtils", e);
                 drawer.refreshDrawer();
-                invalidateFragmentAndBundle(savedInstanceState);
+                invalidateFragmentAndBundle(savedInstanceState, false);
               }
             });
     initStatusBarResources(findViewById(R.id.drawer_layout));
   }
 
-  private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
+  public void invalidateFragmentAndBundle(Bundle savedInstanceState, boolean isCloudRefresh) {
     if (savedInstanceState == null) {
       if (openProcesses) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -460,12 +460,18 @@ public class MainActivity extends PermissionsActivity
         if (path != null && path.length() > 0) {
           HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
           file.generateMode(MainActivity.this);
-          if (file.isDirectory(MainActivity.this)) goToMain(path);
-          else {
+          if (file.isCloudDriveFile() && dataUtils.getAccounts().size() == 0) {
+            // not ready to serve cloud files
             goToMain(null);
-            FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
+          } else if (file.isDirectory(MainActivity.this) && !isCloudRefresh) {
+            goToMain(path);
+          } else {
+            if (!isCloudRefresh) {
+              goToMain(null);
+            }
+            file.openFile(this);
           }
-        } else {
+        } else if (!isCloudRefresh) {
           goToMain(null);
         }
       }
@@ -570,6 +576,12 @@ public class MainActivity extends PermissionsActivity
         isCompressedOpen = true;
         pathInCompressedArchive = Utils.sanitizeInput(uri.toString());
         openCompressed(pathInCompressedArchive);
+      } else if (uri.getPath().startsWith("/open_file")) {
+        /**
+         * Deeplink to open files directly through amaze using following format:
+         * http://teamamaze.xyz/open_file?path=path-to-file
+         */
+        path = Utils.sanitizeInput(uri.getQueryParameter("path"));
       } else {
         Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG)
             .show();
