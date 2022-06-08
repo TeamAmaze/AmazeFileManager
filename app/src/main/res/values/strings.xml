@@ -729,6 +729,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="ftp_preference_saf_filesystem_title">Use legacy filesystem</string>
     <string name="ftp_preference_saf_filesystem">Enable this for support for using device external storage on newer Android versions</string>
     <string name="ftp_server_fallback_path_reset_prompt">FTP server shared path had been reset to internal storage as you are switching back to legacy filesystem implementation. Please select a new path using the menu on the top right as necessary.</string>
+    <string name="ftp_server_reset_notify">FTP server shared path had been reset to internal storage</string>
     <string name="ftp_server_root_unavailable">You are choosing a path which requires root access. Please enable root explorer in settings if your device is rooted.</string>
     <string name="ftp_server_root_filesystem_warning">You are choosing a path which requires root access, which enables read/write operations in the whole filesystem on your device, and it is dangerous - careless mistakes could brick your device!\n\nAre you sure?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Error opening URI \"%s\" for reading.</string>
