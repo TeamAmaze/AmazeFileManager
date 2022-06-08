@@ -803,7 +803,8 @@ public class FileUtils {
                                   .getEncodedPath());
                   Intent i = new Intent(Intent.ACTION_VIEW);
                   i.setDataAndType(
-                      uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                      uri,
+                      MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory(activity)));
                   PackageManager packageManager = activity.getPackageManager();
                   List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                   if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);

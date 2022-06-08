@@ -1414,7 +1414,7 @@ public class HybridFile {
       case ROOT:
         File file = getFile();
         LayoutElementParcelable layoutElement;
-        if (isDirectory()) {
+        if (isDirectory(c)) {
 
           layoutElement =
               new LayoutElementParcelable(

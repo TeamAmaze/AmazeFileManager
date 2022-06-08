@@ -1903,6 +1903,7 @@ public class MainActivity extends PermissionsActivity
       supportInvalidateOptionsMenu();
     } else if (intent.getAction() != null) {
       checkForExternalIntent(intent);
+      invalidateFragmentAndBundle(null, false);
 
       if (SDK_INT >= KITKAT) {
         if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {
