@@ -23,19 +23,18 @@ package com.amaze.filemanager.filesystem;
 import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.MalformedURLException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.atomic.AtomicReference;
+import android.content.ContentResolver;
+import android.content.Context;
+import android.net.Uri;
+import android.os.Build;
+import android.text.format.Formatter;
+import android.util.Log;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.documentfile.provider.DocumentFile;
+import androidx.preference.PreferenceManager;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -69,26 +68,6 @@ import com.amaze.filemanager.utils.Utils;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.SpaceAllocation;
 
-import android.content.ContentResolver;
-import android.content.Context;
-import android.net.Uri;
-import android.os.Build;
-import android.text.format.Formatter;
-import android.util.Log;
-import android.widget.Toast;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.documentfile.provider.DocumentFile;
-import androidx.preference.PreferenceManager;
-
-import io.reactivex.Single;
-import io.reactivex.SingleObserver;
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.Disposable;
-import io.reactivex.schedulers.Schedulers;
-import jcifs.smb.SmbException;
-import jcifs.smb.SmbFile;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.common.IOUtils;
@@ -98,6 +77,28 @@ import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
+
+import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
+import jcifs.smb.SmbException;
+import jcifs.smb.SmbFile;
 
 /** Hybrid file for handeling all types of files */
 public class HybridFile {
@@ -307,7 +308,17 @@ public class HybridFile {
     long s = 0L;
     switch (mode) {
       case SFTP:
-        return ((HybridFileParcelable) this).getSize();
+        if (this instanceof HybridFileParcelable) {
+          return ((HybridFileParcelable) this).getSize();
+        } else {
+          return SshClientUtils.execute(
+              new SFtpClientTemplate<Long>(path) {
+                @Override
+                public Long execute(@NonNull SFTPClient client) throws IOException {
+                  return client.size(SshClientUtils.extractRemotePathFrom(path));
+                }
+              });
+        }
       case SMB:
         s =
             Single.fromCallable(
