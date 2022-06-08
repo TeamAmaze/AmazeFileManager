@@ -583,8 +583,7 @@ public class MainActivity extends PermissionsActivity
          */
         path = Utils.sanitizeInput(uri.getQueryParameter("path"));
       } else {
-        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG)
-            .show();
+        Log.w(getClass().getSimpleName(), getString(R.string.error_cannot_find_way_open));
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -1891,6 +1890,10 @@ public class MainActivity extends PermissionsActivity
         && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
       // we used an external authenticator instead of APIs. Probably for Google Drive
       CloudRail.setAuthenticationResponse(intent);
+      if (intent.getAction() != null) {
+        checkForExternalIntent(intent);
+        invalidateFragmentAndBundle(null, false);
+      }
     } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
       transaction.replace(

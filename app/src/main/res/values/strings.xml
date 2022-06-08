@@ -774,6 +774,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="docx_viewer">Amaze Doc Viewer</string>
     <string name="open_with_amaze">Open with Amaze</string>
     <string name="confirmation">Confirmation</string>
-    <string name="open_file_confirmation">Are you sure you want to open following file?\n\nName:\n%s\n\nLocation:\n%s\n\n</string>
+    <string name="open_file_confirmation">Are you sure you want to open following file?\n\nName:\n%s\n\nLocation:\n%s\n\nSize:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
 </resources>
 

@@ -30,10 +30,14 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.MalformedURLException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.concurrent.atomic.AtomicReference;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
@@ -44,9 +48,11 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.root.NativeOperations;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
+import com.amaze.filemanager.filesystem.ssh.SshClientSessionTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientTemplate;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
@@ -55,6 +61,7 @@ import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.Function;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnFileFound;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -66,6 +73,7 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
+import android.text.format.Formatter;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -75,11 +83,16 @@ import androidx.documentfile.provider.DocumentFile;
 import androidx.preference.PreferenceManager;
 
 import io.reactivex.Single;
+import io.reactivex.SingleObserver;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
+import net.schmizz.sshj.common.IOUtils;
+import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteFile;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -296,13 +309,23 @@ public class HybridFile {
       case SFTP:
         return ((HybridFileParcelable) this).getSize();
       case SMB:
-        SmbFile smbFile = getSmbFile();
-        if (smbFile != null)
-          try {
-            s = smbFile.length();
-          } catch (SmbException e) {
-            e.printStackTrace();
-          }
+        s =
+            Single.fromCallable(
+                    () -> {
+                      SmbFile smbFile = getSmbFile();
+                      if (smbFile != null) {
+                        try {
+                          return smbFile.length();
+                        } catch (SmbException e) {
+                          e.printStackTrace();
+                          return 0L;
+                        }
+                      } else {
+                        return 0L;
+                      }
+                    })
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
         return s;
       case FILE:
         s = getFile().length();
@@ -318,33 +341,19 @@ public class HybridFile {
         s = OTGUtil.getDocumentFile(path, context, false).length();
         break;
       case DROPBOX:
-        s =
-            dataUtils
-                .getAccount(OpenMode.DROPBOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.DROPBOX, path))
-                .getSize();
-        break;
       case BOX:
-        s =
-            dataUtils
-                .getAccount(OpenMode.BOX)
-                .getMetadata(CloudUtil.stripPath(OpenMode.BOX, path))
-                .getSize();
-        break;
       case ONEDRIVE:
-        s =
-            dataUtils
-                .getAccount(OpenMode.ONEDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.ONEDRIVE, path))
-                .getSize();
-        break;
       case GDRIVE:
         s =
-            dataUtils
-                .getAccount(OpenMode.GDRIVE)
-                .getMetadata(CloudUtil.stripPath(OpenMode.GDRIVE, path))
-                .getSize();
-        break;
+            Single.fromCallable(
+                    () ->
+                        dataUtils
+                            .getAccount(mode)
+                            .getMetadata(CloudUtil.stripPath(mode, path))
+                            .getSize())
+                .subscribeOn(Schedulers.io())
+                .blockingGet();
+        return s;
       default:
         break;
     }
@@ -1450,17 +1459,197 @@ public class HybridFile {
     }
   }
 
+  /**
+   * Open this hybrid file
+   *
+   * @param activity
+   * @param doShowDialog should show confirmation dialog (in case of deeplink)
+   */
   public void openFile(MainActivity activity, boolean doShowDialog) {
     if (doShowDialog) {
-      GeneralDialogCreation.showOpenFileDeeplinkDialog(
-          this,
+      AtomicReference<String> md5 = new AtomicReference<>(activity.getString(R.string.calculating));
+      AtomicReference<String> sha256 =
+          new AtomicReference<>(activity.getString(R.string.calculating));
+
+      AtomicReference<String> dialogContent =
+          new AtomicReference<>(
+              String.format(
+                  activity.getResources().getString(R.string.open_file_confirmation),
+                  getName(activity),
+                  path,
+                  Formatter.formatShortFileSize(activity, length(activity)),
+                  md5.get(),
+                  sha256.get()));
+      MaterialDialog dialog =
+          GeneralDialogCreation.showOpenFileDeeplinkDialog(
+              this, activity, dialogContent.get(), () -> openFileInternal(activity));
+      dialog.show();
+      getMd5Checksum(
           activity,
-          () -> {
-            openFileInternal(activity);
+          s -> {
+            md5.set(s);
+            dialogContent.set(
+                String.format(
+                    activity.getResources().getString(R.string.open_file_confirmation),
+                    getName(activity),
+                    path,
+                    Formatter.formatShortFileSize(activity, length(activity)),
+                    md5.get(),
+                    sha256.get()));
+            dialog.setContent(dialogContent.get());
+            return null;
+          });
+      getSha256Checksum(
+          activity,
+          s -> {
+            sha256.set(s);
+            dialogContent.set(
+                String.format(
+                    activity.getResources().getString(R.string.open_file_confirmation),
+                    getName(activity),
+                    path,
+                    Formatter.formatShortFileSize(activity, length(activity)),
+                    md5.get(),
+                    sha256.get()));
+            dialog.setContent(dialogContent.get());
+            return null;
           });
     } else {
       openFileInternal(activity);
     }
+  }
+
+  public void getMd5Checksum(Context context, Function<String, Void> callback) {
+    Single.fromCallable(
+            () -> {
+              try {
+                switch (mode) {
+                  case SFTP:
+                    String md5Command = "md5sum -b \"%s\" | cut -c -32";
+                    return SshClientUtils.execute(getSftpHash(md5Command));
+                  default:
+                    byte[] b = createChecksum(context);
+                    String result = "";
+
+                    for (byte aB : b) {
+                      result += Integer.toString((aB & 0xff) + 0x100, 16).substring(1);
+                    }
+                    return result;
+                }
+              } catch (Exception e) {
+                e.printStackTrace();
+                return context.getString(R.string.error);
+              }
+            })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new SingleObserver<String>() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onSuccess(String t) {
+                callback.apply(t);
+              }
+
+              @Override
+              public void onError(Throwable e) {
+                e.printStackTrace();
+                callback.apply(context.getString(R.string.error));
+              }
+            });
+  }
+
+  public void getSha256Checksum(Context context, Function<String, Void> callback) {
+    Single.fromCallable(
+            () -> {
+              try {
+                switch (mode) {
+                  case SFTP:
+                    String shaCommand = "sha256sum -b \"%s\" | cut -c -64";
+                    return SshClientUtils.execute(getSftpHash(shaCommand));
+                  default:
+                    MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
+                    byte[] input = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+                    int length;
+                    InputStream inputStream = getInputStream(context);
+                    while ((length = inputStream.read(input)) != -1) {
+                      if (length > 0) messageDigest.update(input, 0, length);
+                    }
+
+                    byte[] hash = messageDigest.digest();
+
+                    StringBuilder hexString = new StringBuilder();
+
+                    for (byte aHash : hash) {
+                      // convert hash to base 16
+                      String hex = Integer.toHexString(0xff & aHash);
+                      if (hex.length() == 1) hexString.append('0');
+                      hexString.append(hex);
+                    }
+                    inputStream.close();
+                    return hexString.toString();
+                }
+              } catch (IOException | NoSuchAlgorithmException ne) {
+                ne.printStackTrace();
+                return context.getString(R.string.error);
+              }
+            })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(
+            new SingleObserver<String>() {
+              @Override
+              public void onSubscribe(Disposable d) {}
+
+              @Override
+              public void onSuccess(String t) {
+                callback.apply(t);
+              }
+
+              @Override
+              public void onError(Throwable e) {
+                e.printStackTrace();
+                callback.apply(context.getString(R.string.error));
+              }
+            });
+  }
+
+  private SshClientSessionTemplate<String> getSftpHash(String command) {
+    return new SshClientSessionTemplate<String>(path) {
+      @Override
+      public String execute(Session session) throws IOException {
+        String extractedPath = SshClientUtils.extractRemotePathFrom(path);
+        String fullCommand = String.format(command, extractedPath);
+        Session.Command cmd = session.exec(fullCommand);
+        String result = new String(IOUtils.readFully(cmd.getInputStream()).toByteArray());
+        cmd.close();
+        if (cmd.getExitStatus() == 0) {
+          return result;
+        } else {
+          return null;
+        }
+      }
+    };
+  }
+
+  private byte[] createChecksum(Context context) throws Exception {
+    InputStream fis = getInputStream(context);
+
+    byte[] buffer = new byte[8192];
+    MessageDigest complete = MessageDigest.getInstance("MD5");
+    int numRead;
+
+    do {
+      numRead = fis.read(buffer);
+      if (numRead > 0) {
+        complete.update(buffer, 0, numRead);
+      }
+    } while (numRead != -1);
+
+    fis.close();
+    return complete.digest();
   }
 
   private void openFileInternal(MainActivity activity) {
