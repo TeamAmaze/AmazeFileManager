@@ -582,7 +582,7 @@
                             android:layout_alignParentLeft="true"
                             android:layout_marginLeft="@dimen/material_generic"
                             android:layout_marginRight="@dimen/material_generic_medium"
-                            app:srcCompat="@drawable/ic_content_copy_grey600_36dp"
+                            app:srcCompat="@drawable/ic_bug_report_grey_24dp"
                             android:layout_centerVertical="true"
                             />
 
