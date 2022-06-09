@@ -278,7 +278,7 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   private void sendReportEmail() {
-    final Intent i = Utils.buildEmailIntent(buildMarkdown(), Utils.EMAIL_NOREPLY_REPORTS);
+    final Intent i = Utils.buildEmailIntent(this, buildMarkdown(), Utils.EMAIL_NOREPLY_REPORTS);
     if (i.resolveActivity(getPackageManager()) != null) {
       startActivity(i);
     }

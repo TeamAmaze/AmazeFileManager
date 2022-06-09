@@ -567,6 +567,49 @@
                     </RelativeLayout>
 
                     <RelativeLayout
+                        android:id="@+id/relative_layout_share_logs"
+                        android:layout_width="match_parent"
+                        android:layout_height="@dimen/material_generic_list_item"
+                        android:background="?android:attr/selectableItemBackground"
+                        android:gravity="center_vertical"
+                        android:onClick="onClick"
+                        >
+
+                        <ImageView
+                            android:id="@+id/image_share_logs_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentLeft="true"
+                            android:layout_marginLeft="@dimen/material_generic"
+                            android:layout_marginRight="@dimen/material_generic_medium"
+                            app:srcCompat="@drawable/ic_content_copy_grey600_36dp"
+                            android:layout_centerVertical="true"
+                            />
+
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_toRightOf="@+id/image_share_logs_title"
+                            android:gravity="center_vertical"
+                            >
+                            <TextView
+                                android:id="@+id/text_view_share_logs_title"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="@string/share_logs"
+                                android:textSize="@dimen/material_generic_title"
+                                />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_below="@+id/text_view_share_logs_title"
+                                android:text="@string/share_logs_summary"
+                                android:textSize="@dimen/material_generic_title_summary"
+                                />
+                        </RelativeLayout>
+                    </RelativeLayout>
+
+                    <RelativeLayout
                         android:id="@+id/relative_layout_translate"
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/material_generic_list_item"
