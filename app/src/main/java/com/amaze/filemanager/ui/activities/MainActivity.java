@@ -306,6 +306,8 @@ public class MainActivity extends PermissionsActivity
   public static int currentTab;
   private boolean listItemSelected = false;
 
+  private String scrollToFileName = null;
+
   public static final int REQUEST_CODE_CLOUD_LIST_KEYS = 5463;
   public static final int REQUEST_CODE_CLOUD_LIST_KEY = 5472;
 
@@ -558,7 +560,8 @@ public class MainActivity extends PermissionsActivity
 
         if (uri != null) {
 
-          path = Utils.sanitizeInput(uri.getPath());
+          path = Utils.sanitizeInput(FileUtils.fromContentUri(uri).getAbsolutePath());
+          scrollToFileName = intent.getStringExtra("com.amaze.fileutilities.AFM_LOCATE_FILE_NAME");
         } else {
           // no data field, open home for the tab in later processing
           path = null;
@@ -2395,6 +2398,10 @@ public class MainActivity extends PermissionsActivity
    */
   public boolean getListItemSelected() {
     return this.listItemSelected;
+  }
+
+  public String getScrollToFileName() {
+    return this.scrollToFileName;
   }
 
   /**

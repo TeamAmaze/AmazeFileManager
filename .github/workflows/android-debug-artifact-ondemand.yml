@@ -9,7 +9,7 @@ on:
 jobs:
   apk:
     runs-on: ubuntu-20.04
-    if: github.event.comment.body == 'Build test apk' && (github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess')
+    if: github.event.comment.body == 'Build test apk' && (github.actor == 'VishalNehra' || github.actor == 'TranceLove' || github.actor == 'EmmanuelMess' || github.actor == 'VishnuSanal')
     steps:
       - name: Github API Request
         id: request
