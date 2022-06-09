@@ -37,10 +37,10 @@ import java.util.EnumSet;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.afollestad.materialdialogs.MaterialDialog;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
@@ -77,7 +77,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Build;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -330,7 +329,7 @@ public class HybridFile {
                         try {
                           return smbFile.length();
                         } catch (SmbException e) {
-                          e.printStackTrace();
+                          LOG.warn("failed to get length for smb file", e);
                           return 0L;
                         }
                       } else {
@@ -436,7 +435,7 @@ public class HybridFile {
       smbFile.setConnectTimeout(timeout);
       return smbFile;
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.warn("failed to get smb file with timeout", e);
       return null;
     }
   }
@@ -445,7 +444,7 @@ public class HybridFile {
     try {
       return SmbUtil.create(path);
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.warn("failed to get smb file", e);
       return null;
     }
   }
@@ -508,7 +507,7 @@ public class HybridFile {
         try {
           isDirectory = smbFile != null && smbFile.isDirectory();
         } catch (SmbException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get isDirectory for smb file", e);
           isDirectory = false;
         }
         break;
@@ -567,8 +566,7 @@ public class HybridFile {
                   .blockingGet();
         } catch (Exception e) {
           isDirectory = false;
-          if (e.getCause() != null) e.getCause().printStackTrace();
-          else e.printStackTrace();
+          LOG.warn("failed to get isDirectory with context for smb file", e);
         }
         break;
       case FILE:
@@ -698,7 +696,7 @@ public class HybridFile {
           size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
         } catch (SmbException e) {
           size = 0L;
-          e.printStackTrace();
+          LOG.warn("failed to get usage space for smb file", e);
         }
         break;
       case FILE:
@@ -766,7 +764,7 @@ public class HybridFile {
           SmbFile smbFile = getSmbFile();
           size = smbFile != null ? smbFile.getDiskFreeSpace() : 0L;
         } catch (SmbException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get total space for smb file", e);
         }
         break;
       case FILE:
@@ -869,14 +867,14 @@ public class HybridFile {
                 SmbFile sf = new SmbFile(smbFile1.getURL(), smbFile.getContext());
                 baseFile = new HybridFileParcelable(sf);
               } catch (MalformedURLException shouldNeverHappen) {
-                shouldNeverHappen.printStackTrace();
+                LOG.warn("failed to get children file for smb", shouldNeverHappen);
                 baseFile = new HybridFileParcelable(smbFile1);
               }
               onFileFound.onFileFound(baseFile);
             }
           }
         } catch (SmbException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get children file for smb file", e);
         }
         break;
       case OTG:
@@ -893,7 +891,7 @@ public class HybridFile {
         try {
           CloudUtil.getCloudFiles(path, dataUtils.getAccount(mode), mode, onFileFound);
         } catch (CloudPluginException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get children file for cloud file", e);
         }
         break;
       default:
@@ -955,7 +953,7 @@ public class HybridFile {
           }
         } catch (SmbException e) {
           arrayList.clear();
-          e.printStackTrace();
+          LOG.warn("failed to list files smb file", e);
         }
         break;
       case OTG:
@@ -978,7 +976,7 @@ public class HybridFile {
         try {
           arrayList = CloudUtil.listFiles(path, dataUtils.getAccount(mode), mode);
         } catch (CloudPluginException e) {
-          e.printStackTrace();
+          LOG.warn("failed to list files for cloud file", e);
           arrayList = new ArrayList<>();
         }
         break;
@@ -1040,14 +1038,14 @@ public class HybridFile {
         inputStream = getSmbFile().getInputStream();
       } catch (IOException e) {
         inputStream = null;
-        e.printStackTrace();
+        LOG.warn("failed to get input stream for smb file", e);
       }
     } else {
       try {
         inputStream = new FileInputStream(path);
       } catch (FileNotFoundException e) {
         inputStream = null;
-        e.printStackTrace();
+        LOG.warn("failed to get input stream for file", e);
       }
     }
     return inputStream;
@@ -1084,7 +1082,7 @@ public class HybridFile {
           inputStream = getSmbFile().getInputStream();
         } catch (IOException e) {
           inputStream = null;
-          e.printStackTrace();
+          LOG.warn("failed to get input stream for smb file", e);
         }
         break;
       case DOCUMENT_FILE:
@@ -1093,7 +1091,7 @@ public class HybridFile {
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get input stream for document file", e);
           inputStream = null;
         }
         break;
@@ -1103,7 +1101,7 @@ public class HybridFile {
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get input stream for otg file", e);
           inputStream = null;
         }
         break;
@@ -1120,7 +1118,7 @@ public class HybridFile {
           inputStream = new FileInputStream(path);
         } catch (FileNotFoundException e) {
           inputStream = null;
-          e.printStackTrace();
+          LOG.warn("failed to get input stream", e);
         }
         break;
     }
@@ -1165,7 +1163,7 @@ public class HybridFile {
           outputStream = getSmbFile().getOutputStream();
         } catch (IOException e) {
           outputStream = null;
-          e.printStackTrace();
+          LOG.warn("failed to get output stream for smb file", e);
         }
         break;
       case DOCUMENT_FILE:
@@ -1174,7 +1172,7 @@ public class HybridFile {
         try {
           outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get output stream for document file", e);
           outputStream = null;
         }
         break;
@@ -1184,7 +1182,7 @@ public class HybridFile {
         try {
           outputStream = contentResolver.openOutputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get output stream for otg file", e);
           outputStream = null;
         }
         break;
@@ -1193,7 +1191,7 @@ public class HybridFile {
           outputStream = FileUtil.getOutputStream(getFile(), context);
         } catch (Exception e) {
           outputStream = null;
-          e.printStackTrace();
+          LOG.warn("failed to get output stream", e);
         }
     }
     return outputStream;
@@ -1226,7 +1224,7 @@ public class HybridFile {
         SmbFile smbFile = getSmbFile(2000);
         exists = smbFile != null && smbFile.exists();
       } catch (SmbException e) {
-        e.printStackTrace();
+        LOG.warn("failed to find existence for smb file", e);
         exists = false;
       }
     } else if (isDropBoxFile()) {
@@ -1298,7 +1296,7 @@ public class HybridFile {
           return false;
         }
       } catch (SmbException e) {
-        e.printStackTrace();
+        LOG.warn("failed to get last modified for smb file", e);
         return false;
       }
     }
@@ -1325,7 +1323,7 @@ public class HybridFile {
       try {
         getSmbFile().mkdirs();
       } catch (SmbException e) {
-        e.printStackTrace();
+        LOG.warn("failed to make dir for smb file", e);
       }
     } else if (isOtgFile()) {
       if (!exists(context)) {
@@ -1347,33 +1345,12 @@ public class HybridFile {
           parentDirectory.createDirectory(getName(context));
         }
       }
-    } else if (isDropBoxFile()) {
-      CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
+    } else if (isCloudDriveFile()) {
+      CloudStorage cloudStorageDropbox = dataUtils.getAccount(mode);
       try {
-        cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, path));
+        cloudStorageDropbox.createFolder(CloudUtil.stripPath(mode, path));
       } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if (isBoxFile()) {
-      CloudStorage cloudStorageBox = dataUtils.getAccount(OpenMode.BOX);
-      try {
-        cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, path));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if (isOneDriveFile()) {
-      CloudStorage cloudStorageOneDrive = dataUtils.getAccount(OpenMode.ONEDRIVE);
-      try {
-        cloudStorageOneDrive.createFolder(CloudUtil.stripPath(OpenMode.ONEDRIVE, path));
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    } else if (isGoogleDriveFile()) {
-      CloudStorage cloudStorageGdrive = dataUtils.getAccount(OpenMode.GDRIVE);
-      try {
-        cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, path));
-      } catch (Exception e) {
-        e.printStackTrace();
+        LOG.warn("failed to create folder for cloud file", e);
       }
     } else MakeDirectoryOperation.mkdir(getFile(), context);
   }
@@ -1547,7 +1524,7 @@ public class HybridFile {
                     return result;
                 }
               } catch (Exception e) {
-                e.printStackTrace();
+                LOG.warn("failed to get md5 checksum for sftp file", e);
                 return context.getString(R.string.error);
               }
             })
@@ -1565,7 +1542,7 @@ public class HybridFile {
 
               @Override
               public void onError(Throwable e) {
-                e.printStackTrace();
+                LOG.warn("failed to get md5 for sftp file", e);
                 callback.apply(context.getString(R.string.error));
               }
             });
@@ -1602,7 +1579,7 @@ public class HybridFile {
                     return hexString.toString();
                 }
               } catch (IOException | NoSuchAlgorithmException ne) {
-                ne.printStackTrace();
+                LOG.warn("failed to get sha checksum for sftp file", ne);
                 return context.getString(R.string.error);
               }
             })
@@ -1620,7 +1597,7 @@ public class HybridFile {
 
               @Override
               public void onError(Throwable e) {
-                e.printStackTrace();
+                LOG.warn("failed to get sha256 for sftp file", e);
                 callback.apply(context.getString(R.string.error));
               }
             });
