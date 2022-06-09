@@ -1,0 +1,28 @@
+<configuration>
+    <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+        <!-- lazy initialization: don't create the file until 1st write -->
+        <!--<lazy>true</lazy>-->
+
+        <file>/data/data/${PACKAGE_NAME}/cache/logs.txt</file>
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %-5level %logger{35} - %msg%n</pattern>
+        </encoder>
+    </appender>
+    <appender name='ASYNC' class='ch.qos.logback.classic.AsyncAppender'>
+        <appender-ref ref='FILE' />
+    </appender>
+    <appender name="LOGCAT" class="ch.qos.logback.classic.android.LogcatAppender">
+        <tagEncoder>
+            <pattern>%logger{12}</pattern>
+        </tagEncoder>
+        <encoder>
+            <pattern>[%-20thread] %msg</pattern>
+        </encoder>
+    </appender>
+
+    <root level="WARN">
+        <appender-ref ref="ASYNC" />
+        <appender-ref ref="LOGCAT" />
+    </root>
+    <shutdownHook/>
+</configuration>

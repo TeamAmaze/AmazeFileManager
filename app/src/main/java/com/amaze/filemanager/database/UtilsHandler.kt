@@ -22,7 +22,6 @@ package com.amaze.filemanager.database
 
 import android.content.Context
 import android.os.Environment
-import android.util.Log
 import android.widget.Toast
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
@@ -39,6 +38,8 @@ import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree
 import com.googlecode.concurrenttrees.radix.node.concrete.DefaultCharArrayNodeFactory
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue
 import io.reactivex.schedulers.Schedulers
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.security.GeneralSecurityException
@@ -55,6 +56,8 @@ class UtilsHandler(
     private val context: Context,
     private val utilitiesDatabase: UtilitiesDatabase
 ) {
+
+    private val log: Logger = LoggerFactory.getLogger(UtilsHandler::class.java)
 
     enum class Operation {
         HISTORY, HIDDEN, LIST, GRID, BOOKMARKS, SMB, SFTP
@@ -327,7 +330,7 @@ class UtilsHandler(
             ) {
                 val path = entry.path
                 if (path == null) {
-                    Log.e("ERROR", "Error decrypting path: " + entry.path)
+                    log.error("Error decrypting path: " + entry.path)
                     // failing to decrypt the path, removing entry from database
                     Toast.makeText(
                         context,
@@ -353,7 +356,7 @@ class UtilsHandler(
                 .blockingGet()
         }.onFailure {
             if (BuildConfig.DEBUG) {
-                Log.e(TAG, "Error getting public key for URI [$uri]", it)
+                log.error("Error getting public key for URI [$uri]", it)
             }
         }.getOrNull()
 
@@ -369,7 +372,7 @@ class UtilsHandler(
                 .blockingGet()
         }.onFailure {
             // catch error to handle Single#onError for blockingGet
-            Log.e(TAG, "Error getting SSH private key name", it)
+            log.error("Error getting SSH private key name", it)
         }.getOrNull()
 
     /**
@@ -385,7 +388,7 @@ class UtilsHandler(
         }.onFailure {
             // catch error to handle Single#onError for blockingGet
             if (BuildConfig.DEBUG) {
-                Log.e(TAG, "Error getting auth private key for URI [$uri]", it)
+                log.error("Error getting auth private key for URI [$uri]", it)
             }
         }.getOrNull()
 
@@ -410,9 +413,9 @@ class UtilsHandler(
             try {
                 path = SmbUtil.getSmbEncryptedPath(context, path)
             } catch (e: GeneralSecurityException) {
-                Log.e(TAG, "Error encrypting path", e)
+                log.error("Error encrypting path", e)
             } catch (e: IOException) {
-                Log.e(TAG, "Error encrypting path", e)
+                log.error("Error encrypting path", e)
             }
             utilitiesDatabase
                 .smbEntryDao()
@@ -447,7 +450,7 @@ class UtilsHandler(
                 .blockingGet()
         }.onFailure {
             // catch error to handle Single#onError for blockingGet
-            Log.e(TAG, it.message!!)
+            log.error(it.message!!)
             return
         }.getOrThrow()
 
@@ -467,9 +470,9 @@ class UtilsHandler(
             oldPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), oldPath)
             newPath = SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), newPath)
         } catch (e: GeneralSecurityException) {
-            Log.e(TAG, "Error encrypting SMB path", e)
+            log.error("Error encrypting SMB path", e)
         } catch (e: IOException) {
-            Log.e(TAG, "Error encrypting SMB path", e)
+            log.error("Error encrypting SMB path", e)
         }
         val finalNewPath = newPath
         utilitiesDatabase
@@ -496,10 +499,5 @@ class UtilsHandler(
                 .subscribeOn(Schedulers.io()).subscribe()
             else -> {}
         }
-    }
-
-    companion object {
-        @JvmStatic
-        private val TAG = UtilsHandler::class.java.simpleName
     }
 }

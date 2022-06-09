@@ -20,13 +20,13 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem
 
-import android.util.Log
 import com.amaze.filemanager.R
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.asynchronous.asynctasks.Task
-import com.amaze.filemanager.asynchronous.asynctasks.texteditor.read.ReadTextFileTask
 import com.amaze.filemanager.filesystem.files.FileListSorter
 import com.amaze.filemanager.ui.fragments.MainFragment
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class SortSearchResultTask(
     val elements: MutableList<LayoutElementParcelable>,
@@ -35,24 +35,21 @@ class SortSearchResultTask(
     val query: String
 ) : Task<Unit, SortSearchResultCallable> {
 
-    private val task = SortSearchResultCallable(elements, sorter)
+    private val log: Logger = LoggerFactory.getLogger(SortSearchResultTask::class.java)
 
-    companion object {
-        private val TAG = ReadTextFileTask::class.java.simpleName
-    }
+    private val task = SortSearchResultCallable(elements, sorter)
 
     override fun getTask(): SortSearchResultCallable = task
 
     override fun onError(error: Throwable) {
-        Log.e(TAG, "Could not sort search results because of exception", error)
+        log.error("Could not sort search results because of exception", error)
     }
 
     override fun onFinish(value: Unit) {
         val mainFragmentViewModel = mainFragment.mainFragmentViewModel
 
         if (mainFragmentViewModel == null) {
-            Log.e(
-                TAG,
+            log.error(
                 "Could not show sorted search results because main fragment view model is null"
             )
             return
@@ -61,7 +58,7 @@ class SortSearchResultTask(
         val mainActivity = mainFragment.mainActivity
 
         if (mainActivity == null) {
-            Log.e(TAG, "Could not show sorted search results because main activity is null")
+            log.error("Could not show sorted search results because main activity is null")
             return
         }
 

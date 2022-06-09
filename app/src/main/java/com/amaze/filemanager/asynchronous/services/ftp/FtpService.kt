@@ -91,8 +91,8 @@ class FtpService : Service(), Runnable {
     private var isStartedByTile = false
     private lateinit var wakeLock: PowerManager.WakeLock
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false)
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        isStartedByTile = true == intent?.getBooleanExtra(TAG_STARTED_BY_TILE, false)
         var attempts = 10
         while (serverThread != null) {
             if (attempts > 0) {

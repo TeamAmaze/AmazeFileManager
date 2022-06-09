@@ -24,16 +24,18 @@ import android.annotation.TargetApi
 import android.content.Context
 import android.net.Uri
 import android.os.Build
-import android.util.Log
 import androidx.documentfile.provider.DocumentFile
 import androidx.preference.PreferenceManager
+import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 import java.util.*
 
 object ExternalSdCardOperation {
-    val LOG = "ExternalSdCardOperation"
+    private val log: Logger = LoggerFactory.getLogger(UtilsHandler::class.java)
 
     /**
      * Get a DocumentFile corresponding to the given file (for writing on ExtSdCard on Android 5). If
@@ -116,7 +118,7 @@ object ExternalSdCardOperation {
             if (file != null && file != context.getExternalFilesDir("external")) {
                 val index = file.absolutePath.lastIndexOf("/Android/data")
                 if (index < 0) {
-                    Log.w(LOG, "Unexpected external file dir: " + file.absolutePath)
+                    log.warn("Unexpected external file dir: " + file.absolutePath)
                 } else {
                     var path = file.absolutePath.substring(0, index)
                     try {
@@ -140,7 +142,7 @@ object ExternalSdCardOperation {
             if (file != null) {
                 val index = file.absolutePath.lastIndexOf("/Android/data")
                 if (index < 0) {
-                    Log.w(LOG, "Unexpected external file dir: " + file.absolutePath)
+                    log.warn("Unexpected external file dir: " + file.absolutePath)
                 } else {
                     var path = file.absolutePath.substring(0, index)
                     try {

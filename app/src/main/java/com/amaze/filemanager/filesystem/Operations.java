@@ -32,6 +32,9 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.concurrent.Executor;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
@@ -51,7 +54,6 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.arch.core.util.Function;
@@ -65,7 +67,7 @@ public class Operations {
 
   private static Executor executor = AsyncTask.THREAD_POOL_EXECUTOR;
 
-  private static final String TAG = Operations.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(Operations.class);
 
   // reserved characters by OS, shall not be allowed in file names
   private static final String FOREWARD_SLASH = "/";
@@ -125,7 +127,7 @@ public class Operations {
               try {
                 result = input.createDirectory(file.getName(context)) != null;
               } catch (Exception e) {
-                Log.w(getClass().getSimpleName(), "Failed to make directory", e);
+                LOG.warn("Failed to make directory", e);
               }
               errorCallBack.done(file, result);
             } else errorCallBack.done(file, false);
@@ -268,7 +270,7 @@ public class Operations {
                             file.getName(context))
                         != null;
               } catch (Exception e) {
-                Log.w(getClass().getSimpleName(), "Failed to make file", e);
+                LOG.warn(getClass().getSimpleName(), "Failed to make file", e);
               }
               errorCallBack.done(file, result);
             } else errorCallBack.done(file, false);
@@ -435,7 +437,7 @@ public class Operations {
             try {
               result = input.renameTo(newFile.getName(context));
             } catch (Exception e) {
-              Log.w(getClass().getSimpleName(), "Failed to rename", e);
+              LOG.warn(getClass().getSimpleName(), "Failed to rename", e);
             }
             errorCallBack.done(newFile, result);
             return null;
@@ -479,10 +481,10 @@ public class Operations {
                   new Intent(TAG_INTENT_FILTER_GENERAL)
                       .putParcelableArrayListExtra(TAG_INTENT_FILTER_FAILED_OPS, failedOps));
             } catch (SmbException exceptionThrownDuringBuildParcelable) {
-              Log.e(
-                  TAG, "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
+              LOG.error(
+                  "Error creating HybridFileParcelable", exceptionThrownDuringBuildParcelable);
             }
-            Log.e(TAG, errmsg, e);
+            LOG.error(errmsg, e);
           }
           return null;
         } else if (oldFile.isSftp()) {
@@ -501,7 +503,7 @@ public class Operations {
                             R.string.cannot_rename_file,
                             HybridFile.parseAndFormatUriForDisplay(oldFile.getPath()),
                             e.getMessage());
-                    Log.e(TAG, errmsg);
+                    LOG.error(errmsg);
                     ArrayList<HybridFileParcelable> failedOps = new ArrayList<>();
                     // Nobody care the size or actual permission here. Put a simple "r" and zero
                     // here
@@ -644,7 +646,7 @@ public class Operations {
     try {
       doesFileExist = OTGUtil.getDocumentFile(newFile.getPath(), context, false) != null;
     } catch (Exception e) {
-      Log.d(Operations.class.getSimpleName(), "Failed find existing file", e);
+      LOG.debug("Failed find existing file", e);
     }
     return doesFileExist;
   }
@@ -661,7 +663,7 @@ public class Operations {
                   false)
               != null;
     } catch (Exception e) {
-      Log.w(Operations.class.getSimpleName(), "Failed to find existing file", e);
+      LOG.warn("Failed to find existing file", e);
     }
     return doesFileExist;
   }

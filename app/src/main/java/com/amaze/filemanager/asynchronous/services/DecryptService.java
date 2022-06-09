@@ -25,6 +25,9 @@ import static com.amaze.filemanager.asynchronous.services.EncryptService.TAG_PAS
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.Task;
@@ -51,7 +54,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.NonNull;
@@ -69,8 +71,7 @@ public class DecryptService extends AbstractProgressiveService {
   public static final String TAG_OPEN_MODE = "open_mode";
 
   public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
-
-  private static final String TAG = DecryptService.class.getSimpleName();
+  private final Logger LOG = LoggerFactory.getLogger(DecryptService.class);
 
   private NotificationManager notificationManager;
   private NotificationCompat.Builder notificationBuilder;
@@ -266,7 +267,7 @@ public class DecryptService extends AbstractProgressiveService {
           } catch (AESCrypt.DecryptFailureException e) {
 
           } catch (Exception e) {
-            Log.e(TAG, "Error decrypting " + baseFile.getPath(), e);
+            LOG.error("Error decrypting " + baseFile.getPath(), e);
             failedOps.add(baseFile);
           }
         }

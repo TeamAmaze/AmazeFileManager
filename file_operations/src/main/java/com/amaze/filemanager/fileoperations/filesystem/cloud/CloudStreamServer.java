@@ -42,10 +42,12 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
 
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 (partially 1.1) server in Java
@@ -90,7 +92,7 @@ import android.util.Log;
  * See the end of the source file for distribution license (Modified BSD licence)
  */
 public abstract class CloudStreamServer {
-  private static final String TAG = "CloudStreamServer";
+  private static final Logger log = LoggerFactory.getLogger(CloudStreamServer.class);
 
   // ==================================================
   // API parts
@@ -352,9 +354,9 @@ public abstract class CloudStreamServer {
 
         // Decode the header into parms and header java properties
         decodeHeader(hin, pre, parms, header);
-        Log.d(TAG, pre.toString());
-        Log.d(TAG, "Params: " + parms.toString());
-        Log.d(TAG, "Header: " + header.toString());
+        log.debug(pre.toString());
+        log.debug("Params: " + parms.toString());
+        log.debug("Header: " + header.toString());
         String method = pre.getProperty("method");
         String uri = pre.getProperty("uri");
 
@@ -750,8 +752,6 @@ public abstract class CloudStreamServer {
           byte[] buff = new byte[8192];
           int read = 0;
           while ((read = data.read(buff)) > 0) {
-            // if(SolidExplorer.LOG)Log.d(CloudUtil.TAG, "Read: "+ read +", pending: "+
-            // data.availableExact());
             out.write(buff, 0, read);
           }
         }

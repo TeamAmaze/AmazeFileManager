@@ -24,7 +24,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
@@ -58,11 +57,14 @@ import com.amaze.filemanager.ui.views.WarnableTextInputValidator
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator.ReturnState
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator.ReturnState.STATE_ERROR
 import com.google.android.material.textfield.TextInputEditText
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 /**
  * Encrypt file password dialog.
  */
 object EncryptAuthenticateDialog {
+    private val log: Logger = LoggerFactory.getLogger(EncryptAuthenticateDialog::class.java)
 
     /**
      * Display file encryption password dialog.
@@ -136,7 +138,7 @@ object EncryptAuthenticateDialog {
                             passwordEditText.text.toString()
                         )
                     }.onFailure {
-                        Log.e(EncryptService.TAG, "Failed to encrypt", it)
+                        log.error("Failed to encrypt", it)
                         Toast.makeText(
                             c,
                             c.getString(R.string.crypt_encryption_fail),
