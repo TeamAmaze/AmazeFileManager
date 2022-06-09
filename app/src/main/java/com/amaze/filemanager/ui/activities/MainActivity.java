@@ -98,6 +98,7 @@ import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -470,6 +471,14 @@ public class MainActivity extends PermissionsActivity
             if (!isCloudRefresh) {
               goToMain(null);
             }
+            if (file.isSmb() || file.isSftp()) {
+              String authorisedPath =
+                  SshClientUtils.formatPlainServerPathToAuthorised(dataUtils.getServers(), path);
+              file.setPath(authorisedPath);
+              LOG.info(
+                  "Opening smb file from deeplink, modify plain path to authorised path {}",
+                  authorisedPath);
+            }
             file.openFile(this, true);
           }
         } else if (!isCloudRefresh) {
@@ -584,7 +593,7 @@ public class MainActivity extends PermissionsActivity
          */
         path = Utils.sanitizeInput(uri.getQueryParameter("path"));
       } else {
-        Log.w(getClass().getSimpleName(), getString(R.string.error_cannot_find_way_open));
+        LOG.warn(getString(R.string.error_cannot_find_way_open));
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {

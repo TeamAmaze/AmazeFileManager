@@ -1457,13 +1457,19 @@ public class HybridFile {
       AtomicReference<String> md5 = new AtomicReference<>(activity.getString(R.string.calculating));
       AtomicReference<String> sha256 =
           new AtomicReference<>(activity.getString(R.string.calculating));
+      AtomicReference<String> pathToDisplay = new AtomicReference<>();
+      pathToDisplay.set(path);
+      if (isSftp() || isSmb()) {
+        LOG.debug("convert authorised path to simple path for display");
+        pathToDisplay.set(parseAndFormatUriForDisplay(path));
+      }
 
       AtomicReference<String> dialogContent =
           new AtomicReference<>(
               String.format(
                   activity.getResources().getString(R.string.open_file_confirmation),
                   getName(activity),
-                  path,
+                  pathToDisplay.get(),
                   Formatter.formatShortFileSize(activity, length(activity)),
                   md5.get(),
                   sha256.get()));
@@ -1479,7 +1485,7 @@ public class HybridFile {
                 String.format(
                     activity.getResources().getString(R.string.open_file_confirmation),
                     getName(activity),
-                    path,
+                    pathToDisplay.get(),
                     Formatter.formatShortFileSize(activity, length(activity)),
                     md5.get(),
                     sha256.get()));
@@ -1494,7 +1500,7 @@ public class HybridFile {
                 String.format(
                     activity.getResources().getString(R.string.open_file_confirmation),
                     getName(activity),
-                    path,
+                    pathToDisplay.get(),
                     Formatter.formatShortFileSize(activity, length(activity)),
                     md5.get(),
                     sha256.get()));

@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -244,6 +245,33 @@ public abstract class SshClientUtils {
   public static String extractRemotePathFrom(@NonNull String fullUri) {
     String hostPath = fullUri.substring(fullUri.lastIndexOf('@'));
     return hostPath.indexOf('/') == -1 ? "/" : hostPath.substring(hostPath.indexOf('/'));
+  }
+
+  /**
+   * Converts plain path smb://127.0.0.1/test.pdf to authorized path
+   * smb://test:123@127.0.0.1/test.pdf from server list
+   *
+   * @param path
+   * @return
+   */
+  public static String formatPlainServerPathToAuthorised(ArrayList<String[]> servers, String path) {
+    synchronized (servers) {
+      for (String[] serverEntry : servers) {
+        Uri inputUri = Uri.parse(path);
+        Uri serverUri = Uri.parse(serverEntry[1]);
+        if (serverUri.getAuthority().contains(inputUri.getAuthority())) {
+          String output =
+              inputUri
+                  .buildUpon()
+                  .encodedAuthority(serverUri.getEncodedAuthority())
+                  .build()
+                  .toString();
+          LOG.info("build authorised path {} from plain path {}", output, path);
+          return output;
+        }
+      }
+      return path;
+    }
   }
 
   /**
