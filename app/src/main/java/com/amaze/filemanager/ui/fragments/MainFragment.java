@@ -35,6 +35,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -102,7 +105,6 @@ import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -140,7 +142,7 @@ public class MainFragment extends Fragment
         ViewTreeObserver.OnGlobalLayoutListener,
         AdjustListViewForTv<ItemViewHolder> {
 
-  private static final String TAG = MainFragment.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(MainFragment.class);
   public SwipeRefreshLayout mSwipeRefreshLayout;
 
   public RecyclerAdapter adapter;
@@ -568,8 +570,7 @@ public class MainFragment extends Fragment
     getMainActivity().mReturnIntent = false;
 
     Uri mediaStoreUri = Utils.getUriForBaseFile(getActivity(), baseFile);
-    Log.d(
-        getClass().getSimpleName(),
+    LOG.debug(
         mediaStoreUri.toString()
             + "\t"
             + MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
@@ -582,7 +583,7 @@ public class MainFragment extends Fragment
           mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
     } else {
-      Log.d("pickup", "file");
+      LOG.debug("pickup file");
       intent.setDataAndType(mediaStoreUri, MimeTypes.getExtension(baseFile.getPath()));
     }
     getActivity().setResult(FragmentActivity.RESULT_OK, intent);
@@ -601,7 +602,7 @@ public class MainFragment extends Fragment
   public void loadlist(
       final String providedPath, final boolean back, final OpenMode providedOpenMode) {
     if (mainFragmentViewModel == null) {
-      Log.w(getClass().getSimpleName(), "Viewmodel not available to load the data");
+      LOG.warn("Viewmodel not available to load the data");
       return;
     }
 
@@ -614,7 +615,7 @@ public class MainFragment extends Fragment
     mSwipeRefreshLayout.setRefreshing(true);
 
     if (loadFilesListTask != null && loadFilesListTask.getStatus() == AsyncTask.Status.RUNNING) {
-      Log.w(getClass().getSimpleName(), "Existing load list task running, cancel current");
+      LOG.warn("Existing load list task running, cancel current");
       loadFilesListTask.cancel(true);
     }
 
@@ -647,7 +648,7 @@ public class MainFragment extends Fragment
                 setListElements(
                     data.second, back, providedPath, data.first, false, isPathLayoutGrid);
               } else {
-                Log.w(getClass().getSimpleName(), "Load list operation cancelled");
+                LOG.warn("Load list operation cancelled");
               }
             });
     loadFilesListTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -1606,7 +1607,7 @@ public class MainFragment extends Fragment
   @Nullable
   public String getCurrentPath() {
     if (mainFragmentViewModel == null) {
-      Log.w(getClass().getSimpleName(), "Viewmodel not available to get current path");
+      LOG.warn("Viewmodel not available to get current path");
       return null;
     }
     return mainFragmentViewModel.getCurrentPath();
@@ -1661,7 +1662,7 @@ public class MainFragment extends Fragment
     if (isAdded()) {
       return new ViewModelProvider(this).get(MainFragmentViewModel.class);
     } else {
-      Log.e(getClass().getSimpleName(), "Failed to get viewmodel, fragment not yet added");
+      LOG.error("Failed to get viewmodel, fragment not yet added");
       return null;
     }
   }
@@ -1672,7 +1673,7 @@ public class MainFragment extends Fragment
     try {
       int[] location = new int[2];
       viewHolder.rl.getLocationOnScreen(location);
-      Log.i(getClass().getSimpleName(), "Current x and y " + location[0] + " " + location[1]);
+      LOG.info("Current x and y " + location[0] + " " + location[1]);
       if (location[1] < getMainActivity().getAppbar().getAppbarLayout().getHeight()) {
         listView.scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
       } else if (location[1] + viewHolder.rl.getHeight()
@@ -1681,7 +1682,7 @@ public class MainFragment extends Fragment
             Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
       }
     } catch (IndexOutOfBoundsException e) {
-      Log.w(getClass().getSimpleName(), "Failed to adjust scrollview for tv", e);
+      LOG.warn("Failed to adjust scrollview for tv", e);
     }
   }
 }

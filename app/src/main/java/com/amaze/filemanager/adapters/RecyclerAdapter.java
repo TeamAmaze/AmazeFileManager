@@ -33,6 +33,9 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.GlideApp;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
@@ -74,7 +77,6 @@ import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -110,6 +112,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       TYPE_HEADER_FILES = 2,
       EMPTY_LAST_ITEM = 3,
       TYPE_BACK = 4;
+  private final Logger LOG = LoggerFactory.getLogger(RecyclerAdapter.class);
   private static final int VIEW_GENERIC = 0, VIEW_PICTURE = 1, VIEW_APK = 2, VIEW_THUMB = 3;
 
   public boolean stoppedAnimation = false;
@@ -203,9 +206,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     if (getItemsDigested().get(position).getChecked() == ListItem.CHECKED) {
       // if the view at position is checked, un-check it
-      Log.d(
-          getClass().getSimpleName(),
-          String.format("the view at position %s is checked, un-check it", position));
+      LOG.debug("the view at position {} is checked, un-check it", position);
       getItemsDigested().get(position).setChecked(false);
 
       Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_out);
@@ -217,9 +218,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
       }
     } else {
       // if view is un-checked, check it
-      Log.d(
-          getClass().getSimpleName(),
-          String.format("the view at position %s is unchecked, check it", position));
+      LOG.debug("the view at position {} is unchecked, check it", position);
       getItemsDigested().get(position).setChecked(true);
 
       Animation iconAnimation = AnimationUtils.loadAnimation(context, R.anim.check_in);

@@ -61,12 +61,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.TagsHelper;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.SaveOnDataUtilsChange;
@@ -169,7 +171,6 @@ import android.os.storage.StorageManager;
 import android.os.storage.StorageVolume;
 import android.service.quicksettings.TileService;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -207,7 +208,7 @@ public class MainActivity extends PermissionsActivity
         FolderChooserDialog.FolderCallback,
         PermissionsActivity.OnPermissionGranted {
 
-  private static final String TAG = TagsHelper.getTag(MainActivity.class);
+  private static final Logger LOG = LoggerFactory.getLogger(MainActivity.class);
 
   public static final Pattern DIR_SEPARATOR = Pattern.compile("/");
   public static final String TAG_ASYNC_HELPER = "async_helper";
@@ -409,7 +410,7 @@ public class MainActivity extends PermissionsActivity
 
               @Override
               public void onError(@NonNull Throwable e) {
-                Log.e(TAG, "Error setting up DataUtils", e);
+                LOG.error("Error setting up DataUtils", e);
                 drawer.refreshDrawer();
                 invalidateFragmentAndBundle(savedInstanceState);
               }
@@ -1396,7 +1397,7 @@ public class MainActivity extends PermissionsActivity
       try {
         Shell.getShell().close();
       } catch (IOException e) {
-        Log.e(TAG, "Error closing Shell", e);
+        LOG.error("Error closing Shell", e);
       }
     }
   }
@@ -1600,7 +1601,7 @@ public class MainActivity extends PermissionsActivity
                 finish();
                 break;
               default:
-                LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
+                LogHelper.logOnProductionOrCrash("Incorrect value for switch");
             }
             return null;
           },
@@ -2434,7 +2435,7 @@ public class MainActivity extends PermissionsActivity
     if (mainFragment != null && mainFragment.getMainFragmentViewModel() != null) {
       lambda.apply(mainFragment);
     } else {
-      Log.w(TAG, "MainFragment is null");
+      LOG.warn("MainFragment is null");
       if (showToastIfMainFragmentIsNull) {
         AppConfig.toast(this, R.string.operation_unsuccesful);
       }

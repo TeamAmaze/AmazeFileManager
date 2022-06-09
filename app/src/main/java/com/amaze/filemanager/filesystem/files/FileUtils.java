@@ -31,6 +31,9 @@ import java.util.Date;
 import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicLong;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
@@ -75,7 +78,6 @@ import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
@@ -94,7 +96,7 @@ import net.schmizz.sshj.sftp.SFTPException;
 /** Functions that deal with files */
 public class FileUtils {
 
-  private static final String TAG = FileUtils.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   private static final String[] COMPRESSED_FILE_EXTENSIONS =
       new String[] {"zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"};
@@ -157,7 +159,7 @@ public class FileUtils {
       }
     } catch (SFTPException e) {
       // Usually happens when permission denied listing files in directory
-      Log.e("folderSizeSftp", "Problem accessing " + remotePath, e);
+      LOG.error("folderSizeSftp", "Problem accessing " + remotePath, e);
     } finally {
       return retval;
     }
@@ -460,7 +462,7 @@ public class FileUtils {
       try {
         c.startActivity(activityIntent);
       } catch (ActivityNotFoundException e) {
-        android.util.Log.e(TAG, e.getMessage(), e);
+        LOG.error(e.getMessage(), e);
         Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
         openWith(contentUri, c, useNewStack);
       }
@@ -846,7 +848,7 @@ public class FileUtils {
       SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
       Date stringDate = simpledateformat.parse(date, pos);
       if (stringDate == null) {
-        Log.w(TAG, "parseName: unable to parse datetime string [" + date + "]");
+        LOG.warn("parseName: unable to parse datetime string [" + date + "]");
       }
       HybridFileParcelable baseFile =
           new HybridFileParcelable(

@@ -31,6 +31,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
@@ -62,7 +65,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.format.Formatter;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -75,7 +77,7 @@ import jcifs.smb.SmbFile;
 public class LoadFilesListTask
     extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
 
-  private static final String TAG = LoadFilesListTask.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
 
   private String path;
   private WeakReference<MainFragment> mainFragmentReference;
@@ -151,7 +153,7 @@ public class LoadFilesListTask
           e.printStackTrace();
           return null;
         } catch (SmbException | NullPointerException e) {
-          Log.w(getClass().getSimpleName(), "Failed to load smb files for path: " + path, e);
+          LOG.warn("Failed to load smb files for path: " + path, e);
           mainFragment.reauthenticateSmb();
           return null;
         }
@@ -284,7 +286,7 @@ public class LoadFilesListTask
       if (viewModel != null) {
         Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortby, asc));
       } else {
-        Log.e(TAG, "MainFragmentViewModel is null, this is a bug");
+        LOG.error("MainFragmentViewModel is null, this is a bug");
       }
     }
 

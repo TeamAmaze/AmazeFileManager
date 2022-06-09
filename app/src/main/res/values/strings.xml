@@ -773,5 +773,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="pdf_viewer">Amaze Pdf Viewer</string>
     <string name="epub_viewer">Amaze Epub Viewer</string>
     <string name="docx_viewer">Amaze Doc Viewer</string>
+    <string name="share_logs">Share logs</string>
+    <string name="share_logs_summary">Share captured logs via email / telegram</string>
 </resources>
 

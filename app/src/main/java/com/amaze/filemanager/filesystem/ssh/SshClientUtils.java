@@ -30,6 +30,9 @@ import java.security.GeneralSecurityException;
 import java.security.KeyPair;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.FolderState;
@@ -45,7 +48,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -62,7 +64,7 @@ import net.schmizz.sshj.sftp.SFTPClient;
 
 public abstract class SshClientUtils {
 
-  private static final String TAG = SshClientUtils.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(SshClientUtils.class);
 
   /**
    * Execute the given SshClientTemplate.
@@ -88,7 +90,7 @@ public abstract class SshClientUtils {
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
       } catch (Exception e) {
-        Log.e(TAG, "Error executing template method", e);
+        LOG.error("Error executing template method", e);
       } finally {
         if (template.closeClientOnFinish) {
           tryDisconnect(client);
@@ -116,13 +118,13 @@ public abstract class SshClientUtils {
               session = client.startSession();
               retval = template.execute(session);
             } catch (IOException e) {
-              Log.e(TAG, "Error executing template method", e);
+              LOG.error("Error executing template method", e);
             } finally {
               if (session != null && session.isOpen()) {
                 try {
                   session.close();
                 } catch (IOException e) {
-                  Log.w(TAG, "Error closing SFTP client", e);
+                  LOG.warn("Error closing SFTP client", e);
                 }
               }
             }
@@ -151,13 +153,13 @@ public abstract class SshClientUtils {
               sftpClient = client.newSFTPClient();
               retval = template.execute(sftpClient);
             } catch (IOException e) {
-              Log.e(TAG, "Error executing template method", e);
+              LOG.error("Error executing template method", e);
             } finally {
               if (sftpClient != null && template.closeClientOnFinish) {
                 try {
                   sftpClient.close();
                 } catch (IOException e) {
-                  Log.w(TAG, "Error closing SFTP client", e);
+                  LOG.warn("Error closing SFTP client", e);
                 }
               }
             }
@@ -183,7 +185,7 @@ public abstract class SshClientUtils {
           ? SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri).replace("\n", "")
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
-      Log.e(TAG, "Error encrypting path", e);
+      LOG.error("Error encrypting path", e);
       return fullUri;
     }
   }
@@ -203,7 +205,7 @@ public abstract class SshClientUtils {
           ? SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri)
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
-      Log.e(TAG, "Error decrypting path", e);
+      LOG.error("Error decrypting path", e);
       return fullUri;
     }
   }
@@ -255,7 +257,7 @@ public abstract class SshClientUtils {
       try {
         client.disconnect();
       } catch (IOException e) {
-        Log.w(TAG, "Error closing SSHClient connection", e);
+        LOG.warn("Error closing SSHClient connection", e);
       }
     }
   }
@@ -325,7 +327,7 @@ public abstract class SshClientUtils {
         FileAttributes symlinkAttrs = client.stat(info.getPath());
         isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
       } catch (IOException ifSymlinkIsBroken) {
-        Log.w(TAG, String.format("Symbolic link %s is broken, skipping", info.getPath()));
+        LOG.warn("Symbolic link {} is broken, skipping", info.getPath());
         throw ifSymlinkIsBroken;
       }
     }
