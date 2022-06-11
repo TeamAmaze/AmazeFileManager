@@ -255,23 +255,22 @@ public abstract class SshClientUtils {
    * @return
    */
   public static String formatPlainServerPathToAuthorised(ArrayList<String[]> servers, String path) {
-    synchronized (servers) {
-      for (String[] serverEntry : servers) {
-        Uri inputUri = Uri.parse(path);
-        Uri serverUri = Uri.parse(serverEntry[1]);
-        if (serverUri.getAuthority().contains(inputUri.getAuthority())) {
-          String output =
-              inputUri
-                  .buildUpon()
-                  .encodedAuthority(serverUri.getEncodedAuthority())
-                  .build()
-                  .toString();
-          LOG.info("build authorised path {} from plain path {}", output, path);
-          return output;
-        }
+    for (String[] serverEntry : servers) {
+      Uri inputUri = Uri.parse(path);
+      Uri serverUri = Uri.parse(serverEntry[1]);
+      if (inputUri.getScheme().equalsIgnoreCase(serverUri.getScheme())
+          && serverUri.getAuthority().contains(inputUri.getAuthority())) {
+        String output =
+            inputUri
+                .buildUpon()
+                .encodedAuthority(serverUri.getEncodedAuthority())
+                .build()
+                .toString();
+        LOG.info("build authorised path {} from plain path {}", output, path);
+        return output;
       }
-      return path;
     }
+    return path;
   }
 
   /**
