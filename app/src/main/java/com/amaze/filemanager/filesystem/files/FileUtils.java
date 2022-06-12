@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -39,6 +40,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -775,6 +777,55 @@ public class FileUtils {
       Toast.makeText(m, m.getString(R.string.no_app_found), Toast.LENGTH_LONG).show();
       openWith(f, m, useNewStack);
     }
+  }
+
+  public static void launchSMB(final HybridFile baseFile, final Activity activity) {
+    final Streamer s = Streamer.getInstance();
+    new Thread() {
+      public void run() {
+        try {
+          /*
+          List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
+
+          // finding subtitles
+          for (Layoutelements layoutelement : LIST_ELEMENTS) {
+              SmbFile smbFile = new SmbFile(layoutelement.getDesc());
+              if (smbFile.getName().contains(smbFile.getName())) subtitleFiles.add(smbFile);
+          }
+          */
+
+          s.setStreamSrc(baseFile.getSmbFile(), baseFile.length(activity));
+          activity.runOnUiThread(
+              () -> {
+                try {
+                  Uri uri =
+                      Uri.parse(
+                          Streamer.URL
+                              + Uri.fromFile(new File(Uri.parse(baseFile.getPath()).getPath()))
+                                  .getEncodedPath());
+                  Intent i = new Intent(Intent.ACTION_VIEW);
+                  i.setDataAndType(
+                      uri,
+                      MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory(activity)));
+                  PackageManager packageManager = activity.getPackageManager();
+                  List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
+                  if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
+                  else
+                    Toast.makeText(
+                            activity,
+                            activity.getResources().getString(R.string.smb_launch_error),
+                            Toast.LENGTH_SHORT)
+                        .show();
+                } catch (ActivityNotFoundException e) {
+                  e.printStackTrace();
+                }
+              });
+
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
+      }
+    }.start();
   }
 
   public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(

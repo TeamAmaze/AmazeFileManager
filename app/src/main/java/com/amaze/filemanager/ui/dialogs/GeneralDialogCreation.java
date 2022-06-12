@@ -811,6 +811,22 @@ public class GeneralDialogCreation {
         .show();
   }
 
+  public static MaterialDialog showOpenFileDeeplinkDialog(
+      final HybridFile file, final MainActivity m, final String content, Runnable openCallback) {
+    int accentColor = m.getAccent();
+    return new MaterialDialog.Builder(m)
+        .title(R.string.confirmation)
+        .content(content)
+        .positiveText(R.string.open)
+        .negativeText(R.string.cancel)
+        .positiveColor(accentColor)
+        .negativeColor(accentColor)
+        .onPositive((dialog, which) -> openCallback.run())
+        .onNegative((dialog, which) -> dialog.dismiss())
+        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .build();
+  }
+
   public static void showArchiveDialog(final File f, final MainActivity m) {
     int accentColor = m.getAccent();
     MaterialDialog.Builder mat = new MaterialDialog.Builder(m);

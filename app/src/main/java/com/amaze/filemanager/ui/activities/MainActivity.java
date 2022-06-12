@@ -98,6 +98,7 @@ import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -405,20 +406,20 @@ public class MainActivity extends PermissionsActivity
               @Override
               public void onComplete() {
                 drawer.refreshDrawer();
-                invalidateFragmentAndBundle(savedInstanceState);
+                invalidateFragmentAndBundle(savedInstanceState, false);
               }
 
               @Override
               public void onError(@NonNull Throwable e) {
                 LOG.error("Error setting up DataUtils", e);
                 drawer.refreshDrawer();
-                invalidateFragmentAndBundle(savedInstanceState);
+                invalidateFragmentAndBundle(savedInstanceState, false);
               }
             });
     initStatusBarResources(findViewById(R.id.drawer_layout));
   }
 
-  private void invalidateFragmentAndBundle(Bundle savedInstanceState) {
+  public void invalidateFragmentAndBundle(Bundle savedInstanceState, boolean isCloudRefresh) {
     if (savedInstanceState == null) {
       if (openProcesses) {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -461,12 +462,26 @@ public class MainActivity extends PermissionsActivity
         if (path != null && path.length() > 0) {
           HybridFile file = new HybridFile(OpenMode.UNKNOWN, path);
           file.generateMode(MainActivity.this);
-          if (file.isDirectory(MainActivity.this)) goToMain(path);
-          else {
+          if (file.isCloudDriveFile() && dataUtils.getAccounts().size() == 0) {
+            // not ready to serve cloud files
             goToMain(null);
-            FileUtils.openFile(new File(path), MainActivity.this, getPrefs());
+          } else if (file.isDirectory(MainActivity.this) && !isCloudRefresh) {
+            goToMain(path);
+          } else {
+            if (!isCloudRefresh) {
+              goToMain(null);
+            }
+            if (file.isSmb() || file.isSftp()) {
+              String authorisedPath =
+                  SshClientUtils.formatPlainServerPathToAuthorised(dataUtils.getServers(), path);
+              file.setPath(authorisedPath);
+              LOG.info(
+                  "Opening smb file from deeplink, modify plain path to authorised path {}",
+                  authorisedPath);
+            }
+            file.openFile(this, true);
           }
-        } else {
+        } else if (!isCloudRefresh) {
           goToMain(null);
         }
       }
@@ -571,9 +586,14 @@ public class MainActivity extends PermissionsActivity
         isCompressedOpen = true;
         pathInCompressedArchive = Utils.sanitizeInput(uri.toString());
         openCompressed(pathInCompressedArchive);
+      } else if (uri.getPath().startsWith("/open_file")) {
+        /**
+         * Deeplink to open files directly through amaze using following format:
+         * http://teamamaze.xyz/open_file?path=path-to-file
+         */
+        path = Utils.sanitizeInput(uri.getQueryParameter("path"));
       } else {
-        Toast.makeText(this, getString(R.string.error_cannot_find_way_open), Toast.LENGTH_LONG)
-            .show();
+        LOG.warn(getString(R.string.error_cannot_find_way_open));
       }
 
     } else if (actionIntent.equals(Intent.ACTION_SEND)) {
@@ -1880,6 +1900,10 @@ public class MainActivity extends PermissionsActivity
         && i.getCategories().contains(CLOUD_AUTHENTICATOR_GDRIVE)) {
       // we used an external authenticator instead of APIs. Probably for Google Drive
       CloudRail.setAuthenticationResponse(intent);
+      if (intent.getAction() != null) {
+        checkForExternalIntent(intent);
+        invalidateFragmentAndBundle(null, false);
+      }
     } else if ((openProcesses = i.getBooleanExtra(KEY_INTENT_PROCESS_VIEWER, false))) {
       FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
       transaction.replace(
@@ -1892,6 +1916,7 @@ public class MainActivity extends PermissionsActivity
       supportInvalidateOptionsMenu();
     } else if (intent.getAction() != null) {
       checkForExternalIntent(intent);
+      invalidateFragmentAndBundle(null, false);
 
       if (SDK_INT >= KITKAT) {
         if (intent.getAction().equals(UsbManager.ACTION_USB_DEVICE_DETACHED)) {

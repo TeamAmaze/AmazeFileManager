@@ -53,18 +53,15 @@ import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
-import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.SafRootHolder;
-import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
@@ -85,16 +82,12 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -500,54 +493,7 @@ public class MainFragment extends Fragment
             // are we here to return an intent to another app
             returnIntentResults(layoutElementParcelable.generateBaseFile());
           } else {
-            switch (layoutElementParcelable.getMode()) {
-              case SMB:
-                launchSMB(layoutElementParcelable.generateBaseFile(), getMainActivity());
-                break;
-              case SFTP:
-                Toast.makeText(
-                        getContext(),
-                        getResources().getString(R.string.please_wait),
-                        Toast.LENGTH_LONG)
-                    .show();
-                SshClientUtils.launchSftp(
-                    layoutElementParcelable.generateBaseFile(), getMainActivity());
-                break;
-              case OTG:
-                FileUtils.openFile(
-                    OTGUtil.getDocumentFile(layoutElementParcelable.desc, getContext(), false),
-                    (MainActivity) getActivity(),
-                    sharedPref);
-                break;
-              case DOCUMENT_FILE:
-                FileUtils.openFile(
-                    OTGUtil.getDocumentFile(
-                        layoutElementParcelable.desc,
-                        SafRootHolder.getUriRoot(),
-                        getContext(),
-                        OpenMode.DOCUMENT_FILE,
-                        false),
-                    (MainActivity) getActivity(),
-                    sharedPref);
-                break;
-              case DROPBOX:
-              case BOX:
-              case GDRIVE:
-              case ONEDRIVE:
-                Toast.makeText(
-                        getContext(),
-                        getResources().getString(R.string.please_wait),
-                        Toast.LENGTH_LONG)
-                    .show();
-                CloudUtil.launchCloud(
-                    layoutElementParcelable.generateBaseFile(),
-                    mainFragmentViewModel.getOpenMode(),
-                    getMainActivity());
-                break;
-              default:
-                FileUtils.openFile(new File(path), (MainActivity) getActivity(), sharedPref);
-                break;
-            }
+            layoutElementParcelable.generateBaseFile().openFile(getMainActivity(), false);
             DataUtils.getInstance().addHistoryFile(layoutElementParcelable.desc);
           }
         }
@@ -1492,54 +1438,6 @@ public class MainFragment extends Fragment
                 mainFragmentViewModel.getAsc()),
             this,
             query));
-  }
-
-  public static void launchSMB(final HybridFileParcelable baseFile, final Activity activity) {
-    final Streamer s = Streamer.getInstance();
-    new Thread() {
-      public void run() {
-        try {
-          /*
-          List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
-
-          // finding subtitles
-          for (Layoutelements layoutelement : LIST_ELEMENTS) {
-              SmbFile smbFile = new SmbFile(layoutelement.getDesc());
-              if (smbFile.getName().contains(smbFile.getName())) subtitleFiles.add(smbFile);
-          }
-          */
-
-          s.setStreamSrc(baseFile.getSmbFile(), baseFile.getSize());
-          activity.runOnUiThread(
-              () -> {
-                try {
-                  Uri uri =
-                      Uri.parse(
-                          Streamer.URL
-                              + Uri.fromFile(new File(Uri.parse(baseFile.getPath()).getPath()))
-                                  .getEncodedPath());
-                  Intent i = new Intent(Intent.ACTION_VIEW);
-                  i.setDataAndType(
-                      uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
-                  PackageManager packageManager = activity.getPackageManager();
-                  List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
-                  if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
-                  else
-                    Toast.makeText(
-                            activity,
-                            activity.getResources().getString(R.string.smb_launch_error),
-                            Toast.LENGTH_SHORT)
-                        .show();
-                } catch (ActivityNotFoundException e) {
-                  e.printStackTrace();
-                }
-              });
-
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
-    }.start();
   }
 
   @Override

@@ -28,6 +28,7 @@ import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -37,7 +38,7 @@ import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.fileoperations.filesystem.FolderState;
 import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -247,6 +248,32 @@ public abstract class SshClientUtils {
   }
 
   /**
+   * Converts plain path smb://127.0.0.1/test.pdf to authorized path
+   * smb://test:123@127.0.0.1/test.pdf from server list
+   *
+   * @param path
+   * @return
+   */
+  public static String formatPlainServerPathToAuthorised(ArrayList<String[]> servers, String path) {
+    for (String[] serverEntry : servers) {
+      Uri inputUri = Uri.parse(path);
+      Uri serverUri = Uri.parse(serverEntry[1]);
+      if (inputUri.getScheme().equalsIgnoreCase(serverUri.getScheme())
+          && serverUri.getAuthority().contains(inputUri.getAuthority())) {
+        String output =
+            inputUri
+                .buildUpon()
+                .encodedAuthority(serverUri.getEncodedAuthority())
+                .build()
+                .toString();
+        LOG.info("build authorised path {} from plain path {}", output, path);
+        return output;
+      }
+    }
+    return path;
+  }
+
+  /**
    * Disconnects the given {@link SSHClient} but wrap all exceptions beneath, so callers are free
    * from the hassles of handling thrown exceptions.
    *
@@ -262,7 +289,7 @@ public abstract class SshClientUtils {
     }
   }
 
-  public static void launchSftp(final HybridFileParcelable baseFile, final MainActivity activity) {
+  public static void launchSftp(final HybridFile baseFile, final MainActivity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(
@@ -281,7 +308,9 @@ public abstract class SshClientUtils {
                             Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setDataAndType(
-                            uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                            uri,
+                            MimeTypes.getMimeType(
+                                baseFile.getPath(), baseFile.isDirectory(activity)));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
@@ -296,7 +325,6 @@ public abstract class SshClientUtils {
                       }
                     });
               } catch (Exception e) {
-
                 e.printStackTrace();
               }
             })

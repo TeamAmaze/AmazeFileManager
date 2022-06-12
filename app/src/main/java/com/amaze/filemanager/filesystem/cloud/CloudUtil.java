@@ -136,7 +136,7 @@ public class CloudUtil {
   }
 
   public static void launchCloud(
-      final HybridFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
+      final HybridFile baseFile, final OpenMode serviceType, final Activity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(
@@ -157,7 +157,9 @@ public class CloudUtil {
                             Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setDataAndType(
-                            uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                            uri,
+                            MimeTypes.getMimeType(
+                                baseFile.getPath(), baseFile.isDirectory(activity)));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);

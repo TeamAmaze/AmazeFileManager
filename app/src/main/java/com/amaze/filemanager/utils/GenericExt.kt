@@ -83,3 +83,7 @@ fun ByteArray.toHex(separatorStr: String = ""): String =
             eachByte ->
         "%02x".format(eachByte)
     }
+
+interface Function<T, R> {
+    fun apply(t: T): R
+}
