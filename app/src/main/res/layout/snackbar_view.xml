@@ -47,11 +47,12 @@
 
             <TextView
                 android:id="@+id/snackBarTextTV"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"
                 android:layout_marginStart="16dp"
                 android:layout_marginLeft="16dp"
+                android:gravity="start"
                 android:padding="8dp"
                 android:textColor="@color/vectors_white"
                 android:textSize="14sp"
