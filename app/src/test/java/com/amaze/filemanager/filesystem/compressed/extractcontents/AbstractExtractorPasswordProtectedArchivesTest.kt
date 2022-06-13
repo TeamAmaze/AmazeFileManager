@@ -24,10 +24,15 @@ import android.os.Environment
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import org.junit.Assert
 import org.junit.Test
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 
 abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractArchiveExtractorTest() {
+    private val log: Logger = LoggerFactory.getLogger(
+        AbstractExtractorPasswordProtectedArchivesTest::class.java
+    )
 
     /**
      * Test extract files without password.
@@ -55,7 +60,7 @@ abstract class AbstractExtractorPasswordProtectedArchivesTest : AbstractArchiveE
         try {
             doTestExtractFiles()
         } catch (e: IOException) {
-            e.printStackTrace()
+            log.warn("failed to extract file with wrong password", e)
             assertExceptionIsExpected(e)
             throw e
         }

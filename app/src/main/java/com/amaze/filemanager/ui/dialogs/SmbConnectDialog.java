@@ -31,6 +31,9 @@ import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.GeneralSecurityException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.filesystem.smb.CifsContexts;
@@ -66,7 +69,7 @@ public class SmbConnectDialog extends DialogFragment {
 
   private UtilitiesProvider utilsProvider;
 
-  private static final String TAG = "SmbConnectDialog";
+  private final Logger LOG = LoggerFactory.getLogger(SmbConnectDialog.class);
 
   public interface SmbConnectionListener {
 
@@ -250,9 +253,9 @@ public class SmbConnectDialog extends DialogFragment {
         }
 
       } catch (UnsupportedEncodingException e) {
-        e.printStackTrace();
+        LOG.warn("failed to load smb dialog info", e);
       } catch (MalformedURLException e) {
-        e.printStackTrace();
+        LOG.warn("failed to load smb dialog info", e);
       }
 
     } else if (path != null && path.length() > 0) {
@@ -324,7 +327,7 @@ public class SmbConnectDialog extends DialogFragment {
                   SmbUtil.getSmbEncryptedPath(getActivity(), smbFile.getPath())
                 };
           } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
+            LOG.warn("failed to load smb dialog info", e);
             Toast.makeText(getActivity(), getString(R.string.error), Toast.LENGTH_LONG).show();
             return;
           }
@@ -374,9 +377,9 @@ public class SmbConnectDialog extends DialogFragment {
               CifsContexts.createWithDisableIpcSigningCheck(sb.toString(), disableIpcSignCheck));
       return smbFile;
     } catch (MalformedURLException e) {
-      e.printStackTrace();
+      LOG.warn("failed to load smb path", e);
     } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
+      LOG.warn("Failed to load smb path", e);
     }
     return null;
   }

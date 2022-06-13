@@ -139,7 +139,7 @@ object ListFilesCommand : IRootCommand() {
                 executeRootCommand(path, showHidden, true)
             }
         } catch (exception: ShellNotRunningException) {
-            exception.printStackTrace()
+            log.warn("failed to execute root command", exception)
             return Pair(first = emptyList(), second = false)
         }
     }

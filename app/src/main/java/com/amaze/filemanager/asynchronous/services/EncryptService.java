@@ -23,6 +23,9 @@ package com.amaze.filemanager.asynchronous.services;
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.Task;
@@ -58,7 +61,7 @@ import androidx.preference.PreferenceManager;
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
 public class EncryptService extends AbstractProgressiveService {
 
-  public static final String TAG = EncryptService.class.getSimpleName();
+  private final Logger LOG = LoggerFactory.getLogger(EncryptService.class);
 
   public static final String TAG_SOURCE = "crypt_source"; // source file to encrypt or decrypt
   public static final String TAG_ENCRYPT_TARGET = "crypt_target"; // name of encrypted file
@@ -266,7 +269,7 @@ public class EncryptService extends AbstractProgressiveService {
                 useAesCrypt,
                 password);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to get crypt util instance", e);
             failedOps.add(baseFile);
           }
         }

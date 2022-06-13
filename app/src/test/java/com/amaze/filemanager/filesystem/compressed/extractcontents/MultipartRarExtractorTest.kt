@@ -35,6 +35,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowEnvironment
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.FileOutputStream
@@ -47,6 +49,8 @@ import java.util.concurrent.CountDownLatch
     sdk = [Build.VERSION_CODES.JELLY_BEAN, Build.VERSION_CODES.KITKAT, Build.VERSION_CODES.P]
 )
 class MultipartRarExtractorTest {
+
+    private val log: Logger = LoggerFactory.getLogger(MultipartRarExtractorTest::class.java)
 
     private val callback = object : OnUpdate {
         override fun onStart(totalBytes: Long, firstEntryName: String) = Unit
@@ -109,7 +113,7 @@ class MultipartRarExtractorTest {
             ).extractEverything()
             Assert.fail("No exception was thrown")
         } catch (expected: IOException) {
-            expected.printStackTrace()
+            log.warn("io exception", expected)
             Assert.assertEquals(UnsupportedRarV5Exception::class.java, expected.cause!!.javaClass)
         }
     }

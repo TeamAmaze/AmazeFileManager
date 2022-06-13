@@ -32,6 +32,8 @@ import java.security.PrivateKey;
 import java.security.SecureRandom;
 
 import org.bouncycastle.openssl.jcajce.JcaPEMWriter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.UtilsHandler;
@@ -48,13 +50,15 @@ import net.schmizz.sshj.common.SecurityUtils;
 
 public abstract class TestUtils {
 
+  private static final Logger LOG = LoggerFactory.getLogger(TestUtils.class);
+
   public static KeyPair createKeyPair() {
     try {
       KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
       keyPairGenerator.initialize(1024, new SecureRandom());
       return keyPairGenerator.generateKeyPair();
     } catch (NoSuchAlgorithmException e) {
-      e.printStackTrace();
+      LOG.warn("cannot create key pair", e);
       return null;
     }
   }

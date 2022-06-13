@@ -26,6 +26,9 @@ import static com.amaze.filemanager.filesystem.files.CryptUtil.AESCRYPT_EXTENSIO
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.asynchronous.services.DecryptService;
@@ -60,6 +63,7 @@ import androidx.preference.PreferenceManager;
 public class EncryptDecryptUtils {
 
   public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
+  private static final Logger LOG = LoggerFactory.getLogger(EncryptDecryptUtils.class);
   /**
    * Queries database to map path and password. Starts the encryption process after database query
    *
@@ -121,7 +125,7 @@ public class EncryptDecryptUtils {
       try {
         encryptedEntry = findEncryptedEntry(sourceFile.getPath());
       } catch (GeneralSecurityException | IOException e) {
-        e.printStackTrace();
+        LOG.warn("failed to find encrypted entry while decrypting", e);
 
         // we couldn't find any entry in database or lost the key to decipher
         Toast.makeText(
@@ -172,7 +176,7 @@ public class EncryptDecryptUtils {
                   decryptButtonCallbackInterface);
             } else throw new IllegalStateException("API < M!");
           } catch (GeneralSecurityException | IOException | IllegalStateException e) {
-            e.printStackTrace();
+            LOG.warn("failed to form fingerprint dialog", e);
             Toast.makeText(
                     main.getContext(),
                     main.getString(R.string.crypt_decryption_fail),
@@ -194,7 +198,7 @@ public class EncryptDecryptUtils {
                         PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)),
                 decryptButtonCallbackInterface);
           } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
+            LOG.warn("failed to show decrypt dialog, e");
             Toast.makeText(
                     main.getContext(),
                     main.getString(R.string.crypt_decryption_fail),

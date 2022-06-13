@@ -25,6 +25,8 @@ import android.text.TextUtils
 import com.amaze.filemanager.ui.activities.texteditor.SearchResultIndex
 import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import com.amaze.filemanager.utils.OnProgressUpdate
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.io.LineNumberReader
 import java.io.StringReader
@@ -37,6 +39,8 @@ class SearchTextTask(
     private val listener: OnAsyncTaskFinished<List<SearchResultIndex>>
 ) : AsyncTask<Unit, SearchResultIndex, List<SearchResultIndex>>() {
     private val lineNumberReader: LineNumberReader
+
+    private val log: Logger = LoggerFactory.getLogger(SearchTextTask::class.java)
 
     override fun doInBackground(vararg params: Unit): List<SearchResultIndex> {
         if (TextUtils.isEmpty(searchedText)) {
@@ -54,7 +58,7 @@ class SearchTextTask(
             try {
                 lineNumberReader.skip((nextPosition - charIndex).toLong())
             } catch (e: IOException) {
-                e.printStackTrace()
+                log.warn("failed to search text", e)
             }
             charIndex = nextPosition
             val index = SearchResultIndex(

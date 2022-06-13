@@ -60,6 +60,8 @@ import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration
 import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.apache.ftpserver.usermanager.impl.WritePermission
 import org.greenrobot.eventbus.EventBus
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.net.InetAddress
 import java.net.NetworkInterface
@@ -150,7 +152,7 @@ class FtpService : Service(), Runnable {
                     )
                     isPasswordProtected = true
                 }.onFailure {
-                    it.printStackTrace()
+                    log.warn("failed to decrypt password in ftp service", it)
                     AppConfig.toast(applicationContext, R.string.error)
                     preferences.edit().putString(KEY_PREFERENCE_PASSWORD, "").apply()
                     isPasswordProtected = false
@@ -261,6 +263,8 @@ class FtpService : Service(), Runnable {
     }
 
     companion object {
+        private val log: Logger = LoggerFactory.getLogger(FtpService::class.java)
+
         const val DEFAULT_PORT = 2211
         const val DEFAULT_USERNAME = ""
         const val DEFAULT_TIMEOUT = 600 // default timeout, in sec
@@ -440,7 +444,7 @@ class FtpService : Service(), Runnable {
                     }
                 }
             }.onFailure { e ->
-                e.printStackTrace()
+                log.warn("failed to get local inet address", e)
             }
             return null
         }

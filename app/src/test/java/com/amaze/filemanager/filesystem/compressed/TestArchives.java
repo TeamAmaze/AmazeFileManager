@@ -26,12 +26,16 @@ import java.io.IOException;
 import org.apache.commons.compress.utils.IOUtils;
 import org.robolectric.Shadows;
 import org.robolectric.shadows.ShadowContentResolver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import android.content.ContentResolver;
 import android.content.Context;
 import android.net.Uri;
 
 public abstract class TestArchives {
+
+  private static final Logger LOG = LoggerFactory.getLogger(TestArchives.class);
 
   private static final String[] ARCHIVE_TYPES = {"tar.gz", "zip", "tar", "rar"};
 
@@ -55,7 +59,7 @@ public abstract class TestArchives {
       ShadowContentResolver shadowContentResolver = Shadows.shadowOf(contentResolver);
       shadowContentResolver.registerInputStream(uri, new ByteArrayInputStream(readArchive(type)));
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.warn("failed to read archive", e);
     }
   }
 }

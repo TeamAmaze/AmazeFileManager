@@ -119,7 +119,7 @@ public class FileUtils {
         if (updateState != null) updateState.onUpdate(length);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get folder size", e);
     }
     return length;
   }
@@ -138,7 +138,7 @@ public class FileUtils {
         else length += folderSize(file);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get folder size", e);
     }
     return length;
   }
@@ -399,7 +399,7 @@ public class FileUtils {
 
       new ShareTask(c, uris, appTheme, fab_skin).execute(mime);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get share files", e);
     }
   }
 
@@ -439,7 +439,7 @@ public class FileUtils {
     try {
       permissionsActivity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to install apk", e);
       Toast.makeText(permissionsActivity, R.string.failed_install_apk, Toast.LENGTH_SHORT).show();
     }
   }
@@ -817,12 +817,12 @@ public class FileUtils {
                             Toast.LENGTH_SHORT)
                         .show();
                 } catch (ActivityNotFoundException e) {
-                  e.printStackTrace();
+                  LOG.warn("Failed to launch smb file due to no activity", e);
                 }
               });
 
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("failed to launch smb file", e);
         }
       }
     }.start();
@@ -1052,7 +1052,7 @@ public class FileUtils {
       context.startActivity(intent);
     } catch (Exception e) {
       Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
-      e.printStackTrace();
+      LOG.warn("failed to uninstall apk", e);
       return false;
     }
     return true;

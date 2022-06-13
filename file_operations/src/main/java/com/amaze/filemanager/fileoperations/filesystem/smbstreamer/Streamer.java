@@ -25,12 +25,17 @@ import java.io.IOException;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import android.util.Log;
 
 import jcifs.smb.SmbFile;
 
 /** Created by Arpit on 06-07-2015. */
 public class Streamer extends StreamServer {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Streamer.class);
 
   public static final int PORT = 7871;
   public static final String URL = "http://127.0.0.1:" + PORT;
@@ -56,7 +61,7 @@ public class Streamer extends StreamServer {
       try {
         instance = new Streamer(PORT);
       } catch (IOException e) {
-        e.printStackTrace();
+        LOG.warn("failed to get streamer instance", e);
       }
     return instance;
   }
