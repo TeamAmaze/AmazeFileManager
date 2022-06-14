@@ -28,6 +28,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
@@ -99,6 +102,8 @@ import androidx.legacy.app.ActionBarDrawerToggle;
 import androidx.lifecycle.ViewModelProvider;
 
 public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
+
+  private static final Logger LOG = LoggerFactory.getLogger(Drawer.class);
 
   public static final int image_selector_request_code = 31;
 
@@ -886,7 +891,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             public void onErrorResponse(VolleyError error) {}
           });
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to set drawer header background", e);
     }
   }
 

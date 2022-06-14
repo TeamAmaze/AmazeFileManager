@@ -292,7 +292,7 @@ class UtilsHandler(
                     val path = SmbUtil.getSmbDecryptedPath(context, entry.path)
                     retval.add(arrayOf(entry.name, path))
                 } catch (e: GeneralSecurityException) {
-                    e.printStackTrace()
+                    log.warn("failed to decrypt smb list path", e)
 
                     // failing to decrypt the path, removing entry from database
                     Toast.makeText(
@@ -304,7 +304,7 @@ class UtilsHandler(
                     removeSmbPath(entry.name, "")
                     continue
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    log.warn("failed to decrypt smb list path", e)
                     Toast.makeText(
                         context,
                         context.getString(R.string.failed_smb_decrypt_path),

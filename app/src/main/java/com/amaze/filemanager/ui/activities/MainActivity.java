@@ -1044,7 +1044,7 @@ public class MainActivity extends PermissionsActivity
               return null;
             });
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.warn("failure while preparing options menu", e);
       }
 
       appbar.getBottomBar().setClickListener();
@@ -2150,7 +2150,7 @@ public class MainActivity extends PermissionsActivity
         getSupportLoaderManager().initLoader(REQUEST_CODE_CLOUD_LIST_KEY, args, this);
       }
     } catch (CloudPluginException e) {
-      e.printStackTrace();
+      LOG.warn("failure when adding cloud plugin connections", e);
       Toast.makeText(this, getResources().getString(R.string.cloud_error_plugin), Toast.LENGTH_LONG)
           .show();
     }
@@ -2227,8 +2227,7 @@ public class MainActivity extends PermissionsActivity
           }
           return new CursorLoader(this, uri, projection, CloudContract.COLUMN_ID, ids, null);
         } catch (CloudPluginException e) {
-          e.printStackTrace();
-
+          LOG.warn("failure when fetching cloud connections", e);
           Toast.makeText(
                   this, getResources().getString(R.string.cloud_error_plugin), Toast.LENGTH_LONG)
               .show();

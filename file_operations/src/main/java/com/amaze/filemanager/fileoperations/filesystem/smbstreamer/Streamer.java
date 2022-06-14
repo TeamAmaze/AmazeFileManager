@@ -28,8 +28,6 @@ import java.util.regex.Pattern;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import android.util.Log;
-
 import jcifs.smb.SmbFile;
 
 /** Created by Arpit on 06-07-2015. */
@@ -116,7 +114,7 @@ public class Streamer extends StreamServer {
           }
         }
       }
-      Log.d(TAG, "Request: " + range + " from: " + startFrom + ", to: " + endAt);
+      LOG.debug("Request: " + range + " from: " + startFrom + ", to: " + endAt);
 
       // Change return code and add Content-Range header when skipping
       // is requested
@@ -133,10 +131,10 @@ public class Streamer extends StreamServer {
           if (endAt < 0) endAt = fileLen - 1;
           long newLen = fileLen - startFrom;
           if (newLen < 0) newLen = 0;
-          Log.d(TAG, "start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
+          LOG.debug("start=" + startFrom + ", endAt=" + endAt + ", newLen=" + newLen);
           final long dataLen = newLen;
           source.moveTo(startFrom);
-          Log.d(TAG, "Skipped " + startFrom + " bytes");
+          LOG.debug("Skipped " + startFrom + " bytes");
 
           res = new Response(StreamServer.HTTP_PARTIALCONTENT, source.getMimeType(), source);
           res.addHeader("Content-length", "" + dataLen);

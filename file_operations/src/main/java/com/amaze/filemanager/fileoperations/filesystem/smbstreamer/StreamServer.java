@@ -42,10 +42,12 @@ import java.util.StringTokenizer;
 import java.util.TimeZone;
 import java.util.Vector;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
 
 import android.net.Uri;
-import android.util.Log;
 
 /**
  * A simple, tiny, nicely embeddable HTTP 1.0 (partially 1.1) server in Java
@@ -90,7 +92,8 @@ import android.util.Log;
  * See the end of the source file for distribution license (Modified BSD licence)
  */
 public abstract class StreamServer {
-  public static final String TAG = "StreamServer";
+
+  private static final Logger LOG = LoggerFactory.getLogger(StreamServer.class);
 
   // ==================================================
   // API parts
@@ -233,7 +236,7 @@ public abstract class StreamServer {
             is.close();
             socket.close();
           } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn("failure while closing stream server connection", e);
           }
         }
       }
@@ -262,9 +265,9 @@ public abstract class StreamServer {
 
         // Decode the header into parms and header java properties
         decodeHeader(hin, pre, parms, header);
-        Log.d(TAG, pre.toString());
-        Log.d(TAG, "Params: " + parms.toString());
-        Log.d(TAG, "Header: " + header.toString());
+        LOG.debug(pre.toString());
+        LOG.debug("Params: " + parms.toString());
+        LOG.debug("Header: " + header.toString());
         String method = pre.getProperty("method");
         String uri = pre.getProperty("uri");
 

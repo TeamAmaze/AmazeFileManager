@@ -33,6 +33,9 @@ import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.RE
 import java.io.File;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
@@ -89,7 +92,7 @@ import androidx.preference.PreferenceManager;
 
 public class MainActivityHelper {
 
-  private static final String TAG = MainActivityHelper.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(MainActivityHelper.class);
 
   private MainActivity mainActivity;
   private DataUtils dataUtils = DataUtils.getInstance();
@@ -400,7 +403,7 @@ public class MainActivityHelper {
                         newEntry.setPath(newPath);
                         cryptHandler.updateEntry(oldEntry, newEntry);
                       } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.warn("failure after rename, couldn't change the encrypted entry", e);
                         // couldn't change the entry, leave it alone
                       }
                     }
@@ -681,7 +684,7 @@ public class MainActivityHelper {
     final File parent = file.getParentFile();
     if (parent == null) {
       Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show();
-      Log.e(TAG, "File's parent is null " + file.getPath());
+      LOG.warn("File's parent is null " + file.getPath());
       return;
     }
 

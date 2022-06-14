@@ -121,7 +121,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
                 return new MoveFilesReturn(false, false, destinationSize, totalBytes);
               }
             } catch (ShellNotRunningException e) {
-              e.printStackTrace();
+              LOG.warn("failed to move file in local filesystem", e);
               return new MoveFilesReturn(false, false, destinationSize, totalBytes);
             }
           } else {
@@ -142,7 +142,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
             cloudStorage.move(
                 CloudUtil.stripPath(mode, baseFile.getPath()), CloudUtil.stripPath(mode, destPath));
           } catch (RuntimeException e) {
-            e.printStackTrace();
+            LOG.warn("failed to move file in cloud filesystem", e);
             return new MoveFilesReturn(false, false, destinationSize, totalBytes);
           }
         } else {
