@@ -44,6 +44,8 @@ import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.DatapointParcelable
 import com.amaze.filemanager.utils.ObtainableServiceBinder
 import com.amaze.filemanager.utils.ProgressHandler
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.*
 import java.nio.file.Files
 import java.nio.file.Paths
@@ -55,6 +57,8 @@ import java.util.zip.ZipOutputStream
 
 @Suppress("TooManyFunctions") // Hack.
 class ZipService : AbstractProgressiveService() {
+
+    private val log: Logger = LoggerFactory.getLogger(ZipService::class.java)
 
     private val mBinder: IBinder = ObtainableServiceBinder(this)
     private var asyncTask: CompressAsyncTask? = null
@@ -85,7 +89,7 @@ class ZipService : AbstractProgressiveService() {
             try {
                 zipFile.createNewFile()
             } catch (e: IOException) {
-                e.printStackTrace()
+                log.warn("failed to create zip file", e)
             }
         }
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(applicationContext)
@@ -227,7 +231,7 @@ class ZipService : AbstractProgressiveService() {
                     compressFile(file, "")
                 }
             } catch (e: IOException) {
-                e.printStackTrace()
+                log.warn("failed to zip file", e)
             } finally {
                 try {
                     zos!!.flush()
@@ -237,7 +241,7 @@ class ZipService : AbstractProgressiveService() {
                             .setData(Uri.fromFile(zipDirectory))
                     )
                 } catch (e: IOException) {
-                    e.printStackTrace()
+                    log.warn("failed to close zip streams", e)
                 }
             }
         }

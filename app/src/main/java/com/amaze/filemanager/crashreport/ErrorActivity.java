@@ -34,6 +34,8 @@ import java.util.Vector;
 import org.acra.ReportField;
 import org.acra.data.CrashReportData;
 import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -88,7 +90,9 @@ import androidx.core.app.NavUtils;
 
 public class ErrorActivity extends ThemedActivity {
   // LOG TAGS
+  private static final Logger LOG = LoggerFactory.getLogger(ErrorActivity.class);
   public static final String TAG = ErrorActivity.class.toString();
+
   // BUNDLE TAGS
   public static final String ERROR_INFO = "error_info";
   public static final String ERROR_LIST = "error_list";
@@ -346,8 +350,7 @@ public class ErrorActivity extends ThemedActivity {
       jsonMap.put("user_comment", userCommentBox.getText().toString());
       return new JSONObject(jsonMap).toString();
     } catch (final Throwable e) {
-      Log.e(TAG, "Could not build json");
-      e.printStackTrace();
+      LOG.warn("failed to build json", e);
     }
 
     return "";
@@ -418,8 +421,7 @@ public class ErrorActivity extends ThemedActivity {
       htmlErrorReport.append("<hr>\n");
       return htmlErrorReport.toString();
     } catch (final Throwable e) {
-      Log.e(TAG, "Error while erroring: Could not build markdown");
-      e.printStackTrace();
+      LOG.warn("error while building markdown", e);
       return "";
     }
   }

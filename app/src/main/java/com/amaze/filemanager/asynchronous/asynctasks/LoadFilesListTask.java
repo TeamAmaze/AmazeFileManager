@@ -150,7 +150,7 @@ public class LoadFilesListTask
           if (!e.getMessage().toLowerCase().contains("denied")) {
             mainFragment.reauthenticateSmb();
           }
-          e.printStackTrace();
+          LOG.warn("failed to load smb list, authentication issue", e);
           return null;
         } catch (SmbException | NullPointerException e) {
           LOG.warn("Failed to load smb files for path: " + path, e);
@@ -240,7 +240,7 @@ public class LoadFilesListTask
                 if (elem != null) list.add(elem);
               });
         } catch (CloudPluginException e) {
-          e.printStackTrace();
+          LOG.warn("failed to load cloud files", e);
           AppConfig.toast(context, context.getResources().getString(R.string.failed_no_connection));
           return new Pair<>(openmode, list);
         }
@@ -329,7 +329,7 @@ public class LoadFilesListTask
           longSize = baseFile.getSize();
           size = Formatter.formatFileSize(context, longSize);
         } catch (NumberFormatException e) {
-          e.printStackTrace();
+          LOG.warn("failed to create list parcelables", e);
         }
       }
       mainFragment

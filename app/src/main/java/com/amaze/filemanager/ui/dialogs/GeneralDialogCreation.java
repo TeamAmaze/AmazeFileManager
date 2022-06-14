@@ -35,6 +35,9 @@ import java.util.Set;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.Theme;
@@ -87,7 +90,6 @@ import android.text.InputType;
 import android.text.SpannableString;
 import android.text.TextUtils;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.CheckBox;
@@ -109,7 +111,8 @@ import androidx.core.view.ViewCompat;
  * @author Emmanuel on 17/5/2017, at 13:27.
  */
 public class GeneralDialogCreation {
-  private static final String TAG = "GeneralDialogCreation";
+
+  private static final Logger LOG = LoggerFactory.getLogger(GeneralDialogCreation.class);
 
   public static MaterialDialog showBasicDialog(
       ThemedActivity themedActivity,
@@ -626,16 +629,16 @@ public class GeneralDialogCreation {
               try {
                 if (!nomediaFile.createNewFile()) {
                   // failed operation
-                  Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath() + " failed!");
+                  LOG.warn(".nomedia file creation in {} failed", baseFile.getPath());
                 }
               } catch (IOException e) {
-                Log.e(TAG, "Error creating file", e);
+                LOG.warn("failed to create file at path {}", baseFile.getPath(), e);
               }
             } else {
               // checkbox is unchecked, delete .nomedia
               if (!nomediaFile.delete()) {
                 // failed operation
-                Log.w(TAG, "'.nomedia' file deletion in " + baseFile.getPath() + " failed!");
+                LOG.warn(".nomedia file deletion in {} failed", baseFile.getPath());
               }
             }
           }
@@ -1059,7 +1062,7 @@ public class GeneralDialogCreation {
           } catch (ShellNotRunningException e) {
             Toast.makeText(context, mainFrag.getString(R.string.root_failure), Toast.LENGTH_LONG)
                 .show();
-            e.printStackTrace();
+            LOG.warn("failed to set permission dialog", e);
           }
         });
   }

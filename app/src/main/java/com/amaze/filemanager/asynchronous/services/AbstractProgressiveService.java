@@ -257,7 +257,7 @@ public abstract class AbstractProgressiveService extends Service
     try {
       getNotificationManager().cancel(id1);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to publish results", e);
     }
   }
 

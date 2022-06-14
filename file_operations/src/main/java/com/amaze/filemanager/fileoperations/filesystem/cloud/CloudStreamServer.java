@@ -92,7 +92,7 @@ import android.net.Uri;
  * See the end of the source file for distribution license (Modified BSD licence)
  */
 public abstract class CloudStreamServer {
-  private static final Logger log = LoggerFactory.getLogger(CloudStreamServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(CloudStreamServer.class);
 
   // ==================================================
   // API parts
@@ -194,6 +194,7 @@ public abstract class CloudStreamServer {
                   new HTTPSession(accept);
                 }
               } catch (IOException ioe) {
+                LOG.warn("failure while creating cloud stream server session", ioe);
               }
             });
     myThread.setDaemon(true);
@@ -221,6 +222,7 @@ public abstract class CloudStreamServer {
                   new HTTPSession(accept);
                 }
               } catch (IOException ioe) {
+                LOG.warn("failure while creating cloud stream server", ioe);
               }
             });
     myThread.setDaemon(true);
@@ -321,7 +323,7 @@ public abstract class CloudStreamServer {
             is.close();
             socket.close();
           } catch (IOException e) {
-            e.printStackTrace();
+            LOG.warn("failure while closing cloud stream server connection", e);
           }
         }
       }
@@ -354,9 +356,9 @@ public abstract class CloudStreamServer {
 
         // Decode the header into parms and header java properties
         decodeHeader(hin, pre, parms, header);
-        log.debug(pre.toString());
-        log.debug("Params: " + parms.toString());
-        log.debug("Header: " + header.toString());
+        LOG.debug(pre.toString());
+        LOG.debug("Params: " + parms.toString());
+        LOG.debug("Header: " + header.toString());
         String method = pre.getProperty("method");
         String uri = pre.getProperty("uri");
 

@@ -245,7 +245,7 @@ public class GenericCopyUtil {
       LOG.debug("I/O Error!", e);
       throw new IOException();
     } catch (OutOfMemoryError e) {
-      e.printStackTrace();
+      LOG.warn("low memory while copying file", e);
 
       onLowMemory.onLowMemory();
 
@@ -258,7 +258,7 @@ public class GenericCopyUtil {
         if (bufferedInputStream != null) bufferedInputStream.close();
         if (bufferedOutputStream != null) bufferedOutputStream.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOG.warn("failed to close stream after copying", e);
         // failure in closing stream
       }
 

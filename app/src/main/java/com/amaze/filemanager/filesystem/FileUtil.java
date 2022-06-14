@@ -30,6 +30,9 @@ import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.exceptions.NotAllowedException;
@@ -48,7 +51,6 @@ import android.content.Context;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Build;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -66,6 +68,8 @@ import kotlin.NotImplementedError;
 
 /** Utility class for helping parsing file systems. */
 public abstract class FileUtil {
+
+  private static final Logger LOG = LoggerFactory.getLogger(FileUtil.class);
 
   /**
    * Determine the camera folder. There seems to be no Android API to work for real devices, so this
@@ -298,11 +302,7 @@ public abstract class FileUtil {
                   AppConfig.toast(
                       mainActivity, mainActivity.getResources().getString(R.string.not_allowed));
                 }
-
-                Log.e(
-                    getClass().getSimpleName(),
-                    "Failed to write uri to storage due to " + e.getCause());
-                e.printStackTrace();
+                LOG.warn("Failed to write uri to storage", e);
               }
 
               @Override

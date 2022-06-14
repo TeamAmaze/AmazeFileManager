@@ -321,11 +321,11 @@ public abstract class SshClientUtils {
                                   Toast.LENGTH_SHORT)
                               .show();
                       } catch (ActivityNotFoundException e) {
-                        e.printStackTrace();
+                        LOG.warn("failed to launch sftp file", e);
                       }
                     });
               } catch (Exception e) {
-                e.printStackTrace();
+                LOG.warn("failed to launch sftp file", e);
               }
             })
         .start();

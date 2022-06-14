@@ -34,10 +34,15 @@ import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.views.preference.CheckBox
 import com.amaze.filemanager.utils.PasswordUtil
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
 
 class SecurityPrefsFragment : BasePrefsFragment() {
+
+    private val log: Logger = LoggerFactory.getLogger(SecurityPrefsFragment::class.java)
+
     override val title = R.string.security
 
     private var masterPasswordPreference: Preference? = null
@@ -106,9 +111,9 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                 ""
             }
         } catch (e: GeneralSecurityException) {
-            e.printStackTrace()
+            log.warn("failed to decrypt master password", e)
         } catch (e: IOException) {
-            e.printStackTrace()
+            log.warn("failed to decrypt master password", e)
         }
 
         masterPasswordDialogBuilder.input(
@@ -145,7 +150,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                     editor.apply()
                 }
             } catch (e: GeneralSecurityException) {
-                e.printStackTrace()
+                log.warn("failed to encrypt master password", e)
                 val editor = activity.prefs.edit()
                 editor.putString(
                     PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
@@ -153,7 +158,7 @@ class SecurityPrefsFragment : BasePrefsFragment() {
                 )
                 editor.apply()
             } catch (e: IOException) {
-                e.printStackTrace()
+                log.warn("failed to encrypt master password", e)
                 val editor = activity.prefs.edit()
                 editor.putString(
                     PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,

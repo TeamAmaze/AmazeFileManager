@@ -24,6 +24,9 @@ package com.amaze.filemanager.fileoperations.filesystem.smbstreamer;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.fileoperations.filesystem.streams.RandomAccessStream;
 
 import android.webkit.MimeTypeMap;
@@ -31,6 +34,8 @@ import android.webkit.MimeTypeMap;
 import jcifs.smb.SmbFile;
 
 public class StreamSource extends RandomAccessStream {
+
+  private static final Logger LOG = LoggerFactory.getLogger(StreamSource.class);
 
   protected String mime;
   protected long fp;
@@ -101,7 +106,7 @@ public class StreamSource extends RandomAccessStream {
       try {
         input.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOG.warn("failed to close stream", e);
       }
     }
   }

@@ -223,7 +223,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
           logUriList.add(logUri);
           new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("text/plain");
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("failed to share logs", e);
         }
         break;
 

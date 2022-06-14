@@ -87,6 +87,8 @@ import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
 
@@ -96,6 +98,8 @@ import java.security.GeneralSecurityException
  */
 @Suppress("TooManyFunctions")
 class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
+
+    private val log: Logger = LoggerFactory.getLogger(FtpServerFragment::class.java)
 
     private val statusText: TextView get() = binding.textViewFtpStatus
     private val url: TextView get() = binding.textViewFtpUrl
@@ -774,7 +778,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 PasswordUtil.decryptPassword(requireContext(), encryptedPassword)
             }
         }.onFailure {
-            it.printStackTrace()
+            log.warn("failed to decrypt ftp server password", it)
             Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
             mainActivity.prefs.edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply()
         }.getOrNull()
@@ -847,11 +851,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     .apply()
             }
         } catch (e: GeneralSecurityException) {
-            e.printStackTrace()
+            log.warn("failed to set ftp password", e)
             Toast.makeText(context, resources.getString(R.string.error), Toast.LENGTH_LONG)
                 .show()
         } catch (e: IOException) {
-            e.printStackTrace()
+            log.warn("failed to set ftp password", e)
             Toast.makeText(context, resources.getString(R.string.error), Toast.LENGTH_LONG)
                 .show()
         }

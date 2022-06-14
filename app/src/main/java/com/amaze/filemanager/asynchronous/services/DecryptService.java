@@ -219,7 +219,7 @@ public class DecryptService extends AbstractProgressiveService {
 
     @Override
     public void onError(@NonNull Throwable error) {
-      error.printStackTrace();
+      LOG.warn("failed to decrypt", error);
     }
 
     @Override

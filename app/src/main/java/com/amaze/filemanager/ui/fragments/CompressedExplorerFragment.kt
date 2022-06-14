@@ -268,8 +268,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     }
 
     private fun prepareCompressedFile(pathArg: String): String {
-        lateinit var fileName: String
         val pathUri = Uri.parse(pathArg)
+        var fileName: String = pathUri.path ?: "filename"
         if (ContentResolver.SCHEME_CONTENT == pathUri.scheme) {
             requireContext()
                 .contentResolver

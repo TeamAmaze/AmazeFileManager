@@ -1118,7 +1118,7 @@ public class MainFragment extends Fragment
                   }
                 });
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.warn("failure when reauthenticating smb connection", e);
       }
     }
   }
@@ -1291,7 +1291,7 @@ public class MainFragment extends Fragment
             longSize = 0;
           }
         } catch (NumberFormatException e) {
-          // e.printStackTrace();
+          LOG.warn("failure when adding search results to list", e);
         }
         try {
           LayoutElementParcelable layoutElement =
@@ -1311,7 +1311,7 @@ public class MainFragment extends Fragment
           mainFragmentViewModel.setFileCount(mainFragmentViewModel.getFileCount() + 1);
           return layoutElement;
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("failure when adding search results to list", e);
         }
       }
     }
@@ -1341,7 +1341,7 @@ public class MainFragment extends Fragment
                   new HybridFile(OpenMode.FILE, f1.getPath()),
                   this);
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("failure when hiding file", e);
         }
       }
       FileUtils.scanFile(getActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});

@@ -68,7 +68,7 @@ import jcifs.Config;
     reportSenderFactoryClasses = AcraReportSenderFactory.class)
 public class AppConfig extends GlideApplication {
 
-  private static final String TAG = AppConfig.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
 
   private UtilitiesProvider utilsProvider;
   private RequestQueue requestQueue;
@@ -83,7 +83,6 @@ public class AppConfig extends GlideApplication {
   private UtilitiesDatabase utilitiesDatabase;
 
   private ExplorerDatabase explorerDatabase;
-  private Logger log = null;
 
   public UtilitiesProvider getUtilsProvider() {
     return utilsProvider;
@@ -108,7 +107,6 @@ public class AppConfig extends GlideApplication {
     // disabling file exposure method check for api n+
     StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
     StrictMode.setVmPolicy(builder.build());
-    log = LoggerFactory.getLogger(AppConfig.class);
   }
 
   @Override
@@ -258,7 +256,7 @@ public class AppConfig extends GlideApplication {
               .build();
       ACRA.init(this, acraConfig);
     } catch (final ACRAConfigurationException ace) {
-      ace.printStackTrace();
+      LOG.warn("failed to initialize ACRA", ace);
       ErrorActivity.reportError(
           this,
           ace,

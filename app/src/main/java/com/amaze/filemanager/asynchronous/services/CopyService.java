@@ -337,7 +337,7 @@ public class CopyService extends AbstractProgressiveService {
               cryptHandler.addEntry(newEntry);
             }
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to find and replace encrypted entry after copy", e);
             // couldn't change the entry, leave it alone
           }
         }
@@ -405,7 +405,6 @@ public class CopyService extends AbstractProgressiveService {
                 break;
               }
             } catch (Exception e) {
-              e.printStackTrace();
               LOG.error("Got exception checkout: " + f1.getPath());
 
               failedFOps.add(sourceFiles.get(i));
@@ -458,7 +457,11 @@ public class CopyService extends AbstractProgressiveService {
           }
           ServiceWatcherUtil.position += sourceFile.getSize();
         } catch (ShellNotRunningException e) {
-          e.printStackTrace();
+          LOG.warn(
+              "failed to copy root file source: {} dest: {}",
+              sourceFile.getPath(),
+              targetFile.getPath(),
+              e);
           failedFOps.add(sourceFile);
         }
         FileUtils.scanFile(c, new HybridFile[] {targetFile});

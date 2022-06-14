@@ -154,7 +154,7 @@ public class Operations {
           try {
             file.getSmbFile(2000).mkdirs();
           } catch (SmbException e) {
-            e.printStackTrace();
+            LOG.warn("failed to make smb directories", e);
             errorCallBack.done(file, false);
             return null;
           }
@@ -186,7 +186,7 @@ public class Operations {
             cloudStorageDropbox.createFolder(CloudUtil.stripPath(OpenMode.DROPBOX, file.getPath()));
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make directory in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isBoxFile()) {
@@ -195,7 +195,7 @@ public class Operations {
             cloudStorageBox.createFolder(CloudUtil.stripPath(OpenMode.BOX, file.getPath()));
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make directory in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isOneDriveFile()) {
@@ -205,7 +205,7 @@ public class Operations {
                 CloudUtil.stripPath(OpenMode.ONEDRIVE, file.getPath()));
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make directory in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isGoogleDriveFile()) {
@@ -214,7 +214,7 @@ public class Operations {
             cloudStorageGdrive.createFolder(CloudUtil.stripPath(OpenMode.GDRIVE, file.getPath()));
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make directory in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else {
@@ -232,7 +232,7 @@ public class Operations {
                 MakeDirectoryCommand.INSTANCE.makeDirectory(
                     file.getParent(context), file.getName(context));
               } catch (ShellNotRunningException e) {
-                e.printStackTrace();
+                LOG.warn("failed to make directory in local filesystem", e);
               }
               errorCallBack.done(file, file.exists());
               return null;
@@ -308,7 +308,7 @@ public class Operations {
           try {
             file.getSmbFile(2000).createNewFile();
           } catch (SmbException e) {
-            e.printStackTrace();
+            LOG.warn("failed to make file in smb connection", e);
             errorCallBack.done(file, false);
             return null;
           }
@@ -326,7 +326,7 @@ public class Operations {
                 true);
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make file in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isBoxFile()) {
@@ -338,7 +338,7 @@ public class Operations {
                 CloudUtil.stripPath(OpenMode.BOX, file.getPath()), byteArrayInputStream, 0l, true);
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make file in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isOneDriveFile()) {
@@ -353,7 +353,7 @@ public class Operations {
                 true);
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make file in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isGoogleDriveFile()) {
@@ -368,7 +368,7 @@ public class Operations {
                 true);
             errorCallBack.done(file, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to make file in cloud connection", e);
             errorCallBack.done(file, false);
           }
         } else if (file.isOtgFile()) {
@@ -405,7 +405,7 @@ public class Operations {
               try {
                 MakeFileCommand.INSTANCE.makeFile(file.getPath());
               } catch (ShellNotRunningException e) {
-                e.printStackTrace();
+                LOG.warn("failed to make file in local filesystem", e);
               }
               errorCallBack.done(file, file.exists());
               return null;
@@ -530,7 +530,7 @@ public class Operations {
                 CloudUtil.stripPath(OpenMode.DROPBOX, newFile.getPath()));
             errorCallBack.done(newFile, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to rename file in cloud connection", e);
             errorCallBack.done(newFile, false);
           }
         } else if (oldFile.isBoxFile()) {
@@ -541,7 +541,7 @@ public class Operations {
                 CloudUtil.stripPath(OpenMode.BOX, newFile.getPath()));
             errorCallBack.done(newFile, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to rename file in cloud connection", e);
             errorCallBack.done(newFile, false);
           }
         } else if (oldFile.isOneDriveFile()) {
@@ -552,7 +552,7 @@ public class Operations {
                 CloudUtil.stripPath(OpenMode.ONEDRIVE, newFile.getPath()));
             errorCallBack.done(newFile, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to rename file in cloud connection", e);
             errorCallBack.done(newFile, false);
           }
         } else if (oldFile.isGoogleDriveFile()) {
@@ -563,7 +563,7 @@ public class Operations {
                 CloudUtil.stripPath(OpenMode.GDRIVE, newFile.getPath()));
             errorCallBack.done(newFile, true);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to rename file in cloud connection", e);
             errorCallBack.done(newFile, false);
           }
         } else if (oldFile.isOtgFile()) {
@@ -598,14 +598,14 @@ public class Operations {
                 try {
                   RenameOperation.renameFolder(file, file1, context);
                 } catch (ShellNotRunningException e) {
-                  e.printStackTrace();
+                  LOG.warn("failed to rename file in local filesystem", e);
                 }
                 boolean a = !file.exists() && file1.exists();
                 if (!a && rootMode) {
                   try {
                     RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
                   } catch (ShellNotRunningException e) {
-                    e.printStackTrace();
+                    LOG.warn("failed to rename file in local filesystem", e);
                   }
                   oldFile.setMode(OpenMode.ROOT);
                   newFile.setMode(OpenMode.ROOT);
@@ -619,7 +619,7 @@ public class Operations {
               try {
                 RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
               } catch (ShellNotRunningException e) {
-                e.printStackTrace();
+                LOG.warn("failed to rename file in root", e);
               }
 
               newFile.setMode(OpenMode.ROOT);
@@ -747,7 +747,7 @@ public class Operations {
       outputStream.write(buffer.getBytes());
       return buffer != null && buffer.contains(FAT);
     } catch (IOException e) {
-      e.printStackTrace();
+      LOG.warn("failed to determin is filesystem FAT", e);
       // process interrupted, returning true, as a word of cation
       return true;
     }
