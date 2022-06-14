@@ -29,8 +29,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
 import org.junit.Test
-import org.slf4j.Logger
-import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileInputStream
 import java.io.IOException
@@ -39,8 +37,6 @@ import java.time.ZonedDateTime
 import java.util.concurrent.CountDownLatch
 
 abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
-
-    private val log: Logger = LoggerFactory.getLogger(AbstractArchiveExtractorTest::class.java)
 
     companion object {
         @JvmStatic
@@ -130,7 +126,7 @@ abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
                         try {
                             verifyExtractedArchiveContents()
                         } catch (e: IOException) {
-                            log.warn("Error verifying extracted archive contents", e)
+                            e.printStackTrace()
                             fail("Error verifying extracted archive contents")
                         }
                     }
