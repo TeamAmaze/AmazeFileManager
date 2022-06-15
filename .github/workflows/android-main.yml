@@ -5,6 +5,7 @@ on:
     branches:
       - 'master'
       - 'release/*'
+      - 'hotfix/*'
 
 concurrency:
   group: build-${{ github.event.pull_request.number || github.ref }}

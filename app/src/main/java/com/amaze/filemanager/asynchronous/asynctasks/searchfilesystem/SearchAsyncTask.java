@@ -20,26 +20,28 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
 
 import java.util.regex.Pattern;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.asynchronous.asynctasks.StatefulAsyncTask;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 
 import android.content.Context;
 import android.os.AsyncTask;
-import android.util.Log;
 
 import androidx.preference.PreferenceManager;
 
 public class SearchAsyncTask extends AsyncTask<Void, HybridFileParcelable, Void>
     implements StatefulAsyncTask<SearchWorkerFragment.HelperCallbacks> {
 
-  private static final String TAG = "SearchAsyncTask";
+  private final Logger LOG = LoggerFactory.getLogger(SearchAsyncTask.class);
 
   /** This necessarily leaks the context */
   private final Context applicationContext;
@@ -150,7 +152,7 @@ public class SearchAsyncTask extends AsyncTask<Void, HybridFileParcelable, Void>
             }
           });
     } else {
-      Log.w(TAG, "Cannot search " + directory.getPath() + ": Permission Denied");
+      LOG.warn("Cannot search " + directory.getPath() + ": Permission Denied");
     }
   }
 

@@ -29,6 +29,8 @@ import org.acra.config.ACRAConfigurationException;
 import org.acra.config.CoreConfiguration;
 import org.acra.config.CoreConfigurationBuilder;
 import org.acra.data.StringFormat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -66,7 +68,7 @@ import jcifs.Config;
     reportSenderFactoryClasses = AcraReportSenderFactory.class)
 public class AppConfig extends GlideApplication {
 
-  private static final String TAG = AppConfig.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(AppConfig.class);
 
   private UtilitiesProvider utilsProvider;
   private RequestQueue requestQueue;
@@ -254,7 +256,7 @@ public class AppConfig extends GlideApplication {
               .build();
       ACRA.init(this, acraConfig);
     } catch (final ACRAConfigurationException ace) {
-      ace.printStackTrace();
+      LOG.warn("failed to initialize ACRA", ace);
       ErrorActivity.reportError(
           this,
           ace,

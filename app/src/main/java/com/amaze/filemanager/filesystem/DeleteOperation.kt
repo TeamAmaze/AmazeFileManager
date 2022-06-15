@@ -69,7 +69,8 @@ object DeleteOperation {
             // Delete the created entry, such that content provider will delete the file.
             resolver.delete(
                 MediaStore.Files.getContentUri("external"),
-                MediaStore.MediaColumns.DATA + "=?", arrayOf(file.absolutePath)
+                MediaStore.MediaColumns.DATA + "=?",
+                arrayOf(file.absolutePath)
             )
         }
         return !file.exists()

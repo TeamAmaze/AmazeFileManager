@@ -32,9 +32,9 @@ import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.documentfile.provider.DocumentFile
 import com.amaze.filemanager.exceptions.DocumentFileNotFoundException
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
-import com.amaze.filemanager.file_operations.filesystem.usb.SingletonUsbOtg
-import com.amaze.filemanager.file_operations.filesystem.usb.UsbOtgRepresentation
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg
+import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import kotlin.collections.ArrayList
@@ -66,7 +66,8 @@ object OTGUtil {
     fun getDocumentFilesList(path: String, context: Context): ArrayList<HybridFileParcelable> {
         val files = ArrayList<HybridFileParcelable>()
         getDocumentFiles(
-            path, context,
+            path,
+            context,
             object : OnFileFound {
                 override fun onFileFound(file: HybridFileParcelable) {
                     files.add(file)

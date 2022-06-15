@@ -20,7 +20,7 @@
 
 package com.amaze.filemanager.database.typeconverters;
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 
 import androidx.room.TypeConverter;
 

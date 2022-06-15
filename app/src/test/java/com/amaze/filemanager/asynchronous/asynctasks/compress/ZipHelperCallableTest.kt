@@ -40,16 +40,18 @@ class ZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
     fun testVariableYAssignment() {
         var a = "aaz"
         var y = a.apply {
-            if (startsWith("/"))
+            if (startsWith("/")) {
                 substring(1, length)
+            }
         }
         assertEquals("aaz", y)
         a = "/abcdefg"
         y = a.let {
-            if (it.startsWith("/"))
+            if (it.startsWith("/")) {
                 it.substring(1, it.length)
-            else
+            } else {
                 it
+            }
         }
         assertEquals("abcdefg", y)
     }
@@ -68,7 +70,7 @@ class ZipHelperCallableTest : AbstractCompressedHelperCallableArchiveTest() {
     }
 
     override fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable =
-            ZipHelperCallable(
+        ZipHelperCallable(
             ApplicationProvider.getApplicationContext(),
             archive.absolutePath,
             relativePath,

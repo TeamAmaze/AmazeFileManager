@@ -57,8 +57,8 @@ import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
 import com.amaze.filemanager.asynchronous.services.ExtractService
 import com.amaze.filemanager.databinding.ActionmodeBinding
 import com.amaze.filemanager.databinding.MainFragBinding
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor
@@ -67,7 +67,7 @@ import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation
 import com.amaze.filemanager.ui.fragments.data.CompressedExplorerFragmentViewModel
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.ui.views.DividerItemDecoration
 import com.amaze.filemanager.ui.views.FastScroller
@@ -91,12 +91,14 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     lateinit var compressedFile: File
 
     private val viewModel: CompressedExplorerFragmentViewModel by viewModels()
+
     /**
      * files to be deleted from cache with a Map maintaining key - the root of directory created (for
      * deletion purposes after we exit out of here and value - the path of file to open
      */
     @JvmField
     var files: ArrayList<HybridFileParcelable>? = null
+
     @JvmField
     var selection = false
 
@@ -111,17 +113,22 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     @ColorInt
     var iconskin = 0
     var compressedExplorerAdapter: CompressedExplorerAdapter? = null
+
     @JvmField
     var mActionMode: ActionMode? = null
+
     @JvmField
     var coloriseIcons = false
+
     @JvmField
     var showSize = false
+
     @JvmField
     var showLastModified = false
     var gobackitem = false
     var listView: RecyclerView? = null
     lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
     /** flag states whether to open file after service extracts it */
     @JvmField
     var isOpen = false
@@ -214,7 +221,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             else ->
                 listView?.setBackgroundColor(
                     Utils.getColor(
-                        context, android.R.color.background_light
+                        context,
+                        android.R.color.background_light
                     )
                 )
         }
@@ -240,9 +248,14 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     }
                 files?.add(HybridFileParcelable(path))
                 val decompressor = CompressedHelper.getCompressorInstance(requireContext(), this)
-                if(decompressor == null) {
-                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show()
-                    parentFragmentManager.beginTransaction().remove(this@CompressedExplorerFragment).commit()
+                if (decompressor == null) {
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.error_cant_decompress_that_file,
+                        Toast.LENGTH_LONG
+                    ).show()
+                    parentFragmentManager.beginTransaction()
+                        .remove(this@CompressedExplorerFragment).commit()
                     return
                 }
                 this@CompressedExplorerFragment.decompressor = decompressor
@@ -255,15 +268,17 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
     }
 
     private fun prepareCompressedFile(pathArg: String): String {
-        lateinit var fileName: String
         val pathUri = Uri.parse(pathArg)
+        var fileName: String = pathUri.path ?: "filename"
         if (ContentResolver.SCHEME_CONTENT == pathUri.scheme) {
             requireContext()
                 .contentResolver
                 .query(
                     pathUri,
                     arrayOf(MediaStore.MediaColumns.DISPLAY_NAME),
-                    null, null, null
+                    null,
+                    null,
+                    null
                 )?.run {
                     try {
                         if (moveToFirst()) {
@@ -273,7 +288,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                             // At this point, we know nothing the file the URI represents, we are doing everything
                             // wild guess.
                             compressedFile =
-                                File.createTempFile("compressed", null, requireContext().cacheDir)
+                                File.createTempFile(
+                                    "compressed",
+                                    null,
+                                    requireContext().cacheDir
+                                )
                                     .also {
                                         fileName = it.name
                                     }
@@ -327,9 +346,14 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             relativeDirectory = bundle.getString(KEY_PATH, "")
             compressedFile.let {
                 val decompressor = CompressedHelper.getCompressorInstance(requireContext(), it)
-                if(decompressor == null) {
-                    parentFragmentManager.beginTransaction().remove(this@CompressedExplorerFragment).commit()
-                    Toast.makeText(requireContext(), R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG).show()
+                if (decompressor == null) {
+                    parentFragmentManager.beginTransaction()
+                        .remove(this@CompressedExplorerFragment).commit()
+                    Toast.makeText(
+                        requireContext(),
+                        R.string.error_cant_decompress_that_file,
+                        Toast.LENGTH_LONG
+                    ).show()
                     return
                 }
                 this@CompressedExplorerFragment.decompressor = decompressor
@@ -371,7 +395,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             requireMainActivity().updateViews(
                 ColorDrawable(
                     Utils.getColor(
-                        context, R.color.holo_dark_action_mode
+                        context,
+                        R.color.holo_dark_action_mode
                     )
                 )
             )
@@ -459,7 +484,8 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
         override fun onDestroyActionMode(actionMode: ActionMode) {
             compressedExplorerAdapter?.toggleChecked(false)
             @ColorInt val primaryColor = ColorPreferenceHelper.getPrimary(
-                requireMainActivity().currentColorPreference, MainActivity.currentTab
+                requireMainActivity().currentColorPreference,
+                MainActivity.currentTab
             )
             selection = false
             requireMainActivity().updateViews(ColorDrawable(primaryColor))
@@ -519,7 +545,9 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                     val cacheFile = File(cachedFiles[cachedFiles.size - 1].path)
                     if (cacheFile.exists()) {
                         FileUtils.openFile(
-                            cacheFile, requireMainActivity(), requireMainActivity().prefs
+                            cacheFile,
+                            requireMainActivity(),
+                            requireMainActivity().prefs
                         )
                     }
                     // reset the flag and cache file, as it's root is already in the list for deletion
@@ -579,10 +607,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
 
     private fun archiveCorruptOrUnsupportedToast(e: Throwable?) {
         @StringRes val msg: Int =
-            if (e?.cause?.javaClass is UnsupportedRarV5Exception)
+            if (e?.cause?.javaClass is UnsupportedRarV5Exception) {
                 R.string.error_unsupported_v5_rar
-            else
+            } else {
                 R.string.archive_unsupported_or_corrupt
+            }
         Toast.makeText(
             activity,
             requireContext().getString(msg, compressedFile.absolutePath),
@@ -648,7 +677,11 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
             // listView.removeItemDecoration(headersDecor);
             addheader = true
         } else {
-            dividerItemDecoration = DividerItemDecoration(activity, true, showDividers).also {
+            dividerItemDecoration = DividerItemDecoration(
+                activity,
+                true,
+                showDividers
+            ).also {
                 listView?.addItemDecoration(it)
             }
             // headersDecor = new StickyRecyclerHeadersDecoration(compressedExplorerAdapter);

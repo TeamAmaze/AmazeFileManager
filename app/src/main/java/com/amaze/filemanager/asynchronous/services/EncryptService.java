@@ -20,6 +20,28 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import java.util.ArrayList;
+import java.util.concurrent.Callable;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.asynctasks.Task;
+import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.FileProperties;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.CryptUtil;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.notifications.NotificationConstants;
+import com.amaze.filemanager.utils.DatapointParcelable;
+import com.amaze.filemanager.utils.ObtainableServiceBinder;
+import com.amaze.filemanager.utils.ProgressHandler;
+
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -36,29 +58,10 @@ import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.asynctasks.Task;
-import com.amaze.filemanager.asynchronous.asynctasks.TaskKt;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.FileProperties;
-import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.files.CryptUtil;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.notifications.NotificationConstants;
-import com.amaze.filemanager.utils.DatapointParcelable;
-import com.amaze.filemanager.utils.ObtainableServiceBinder;
-import com.amaze.filemanager.utils.ProgressHandler;
-
-import java.util.ArrayList;
-import java.util.concurrent.Callable;
-
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
 public class EncryptService extends AbstractProgressiveService {
 
-  public static final String TAG = EncryptService.class.getSimpleName();
+  private final Logger LOG = LoggerFactory.getLogger(EncryptService.class);
 
   public static final String TAG_SOURCE = "crypt_source"; // source file to encrypt or decrypt
   public static final String TAG_ENCRYPT_TARGET = "crypt_target"; // name of encrypted file
@@ -102,7 +105,7 @@ public class EncryptService extends AbstractProgressiveService {
     baseFile = intent.getParcelableExtra(TAG_SOURCE);
     targetFilename = intent.getStringExtra(TAG_ENCRYPT_TARGET);
     useAesCrypt = intent.getBooleanExtra(TAG_AESCRYPT, false);
-    if(useAesCrypt) {
+    if (useAesCrypt) {
       password = intent.getStringExtra(TAG_PASSWORD);
     }
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
@@ -131,9 +134,7 @@ public class EncryptService extends AbstractProgressiveService {
         PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     NotificationCompat.Action action =
         new NotificationCompat.Action(
-            getSmallIcon(),
-            getString(R.string.stop_ftp),
-            stopPendingIntent);
+            getSmallIcon(), getString(R.string.stop_ftp), stopPendingIntent);
 
     notificationBuilder =
         new NotificationCompat.Builder(this, NotificationConstants.CHANNEL_NORMAL_ID);
@@ -268,7 +269,7 @@ public class EncryptService extends AbstractProgressiveService {
                 useAesCrypt,
                 password);
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to get crypt util instance", e);
             failedOps.add(baseFile);
           }
         }

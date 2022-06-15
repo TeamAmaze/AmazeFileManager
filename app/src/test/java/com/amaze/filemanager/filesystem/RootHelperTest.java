@@ -25,19 +25,6 @@ import static android.os.Build.VERSION_CODES.KITKAT;
 import static android.os.Build.VERSION_CODES.P;
 import static org.junit.Assert.fail;
 
-import android.os.Environment;
-
-import androidx.test.ext.junit.runners.AndroidJUnit4;
-
-import com.amaze.filemanager.filesystem.root.ListFilesCommand;
-import com.amaze.filemanager.shadows.ShadowMultiDex;
-
-import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.robolectric.annotation.Config;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -47,6 +34,19 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
+
+import org.junit.Before;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.annotation.Config;
+
+import com.amaze.filemanager.filesystem.root.ListFilesCommand;
+import com.amaze.filemanager.shadows.ShadowMultiDex;
+
+import android.os.Environment;
+
+import androidx.test.ext.junit.runners.AndroidJUnit4;
 
 @RunWith(AndroidJUnit4.class)
 @Config(

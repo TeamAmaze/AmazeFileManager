@@ -32,7 +32,9 @@ import android.graphics.drawable.Drawable;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:12. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 10/12/2017, at 16:12.
+ */
 public class ApkImageDataFetcher implements DataFetcher<Drawable> {
 
   private Context context;

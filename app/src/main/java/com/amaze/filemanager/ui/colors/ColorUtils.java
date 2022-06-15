@@ -29,7 +29,9 @@ import android.graphics.drawable.GradientDrawable;
 
 import androidx.annotation.ColorInt;
 
-/** @author Emmanuel on 24/5/2017, at 18:56. */
+/**
+ * @author Emmanuel on 24/5/2017, at 18:56.
+ */
 public class ColorUtils {
 
   public static void colorizeIcons(

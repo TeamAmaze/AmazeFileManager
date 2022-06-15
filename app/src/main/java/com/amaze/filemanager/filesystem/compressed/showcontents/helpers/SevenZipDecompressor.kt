@@ -29,5 +29,5 @@ class SevenZipDecompressor(context: Context) : Decompressor(context) {
         path: String,
         addGoBackItem: Boolean
     ) =
-    SevenZipHelperCallable(filePath, path, addGoBackItem)
+        SevenZipHelperCallable(filePath, path, addGoBackItem)
 }

@@ -105,11 +105,17 @@
                 <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
 
+            <intent-filter android:label="@string/open_with_amaze">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="http" android:host="teamamaze.xyz" android:pathPrefix="/open_file" />
+            </intent-filter>
+
             <intent-filter tools:ignore="AppLinkUrlError">
                 <action android:name="android.intent.action.VIEW" />
                 <data android:mimeType="resource/folder" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <data android:scheme="com.amaze.filemanager" />
             </intent-filter>
 
             <intent-filter android:label="@string/intent_save_as">

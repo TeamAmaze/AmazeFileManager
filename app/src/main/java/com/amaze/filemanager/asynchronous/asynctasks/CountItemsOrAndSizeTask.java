@@ -33,7 +33,9 @@ import android.widget.TextView;
 
 import androidx.core.util.Pair;
 
-/** @author Emmanuel on 12/5/2017, at 19:40. */
+/**
+ * @author Emmanuel on 12/5/2017, at 19:40.
+ */
 public class CountItemsOrAndSizeTask extends AsyncTask<Void, Pair<Integer, Long>, String> {
 
   private Context context;

@@ -44,8 +44,10 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
 
     override fun getWorkingDirectory(): FtpFile {
         return AndroidFtpFile(
-            context, rootDocumentFile,
-            resolveDocumentFileFromRoot(currentPath!!), currentPath!!
+            context,
+            rootDocumentFile,
+            resolveDocumentFileFromRoot(currentPath!!),
+            currentPath!!
         )
     }
 
@@ -57,9 +59,9 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
                 true
             }
             dir.startsWith("..") -> {
-                if (currentPath.isNullOrEmpty() || currentPath == "/")
+                if (currentPath.isNullOrEmpty() || currentPath == "/") {
                     false
-                else {
+                } else {
                     currentPath = normalizePath("$currentPath/$dir")
                     resolveDocumentFileFromRoot(currentPath) != null
                 }
@@ -87,7 +89,8 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
             AndroidFtpFile(
                 context,
                 resolveDocumentFileFromRoot(getParentFrom(normalizedPath))!!, // rootDocumentFile,
-                resolveDocumentFileFromRoot(normalizedPath), normalizedPath
+                resolveDocumentFileFromRoot(normalizedPath),
+                normalizedPath
             )
         }
     }
@@ -133,17 +136,18 @@ class AndroidFtpFileSystemView(private var context: Context, root: String) : Fil
     }
 
     private fun resolveDocumentFileFromRoot(path: String?): DocumentFile? {
-        return if (path.isNullOrBlank() or ("/" == path) or ("./" == path))
+        return if (path.isNullOrBlank() or ("/" == path) or ("./" == path)) {
             rootDocumentFile
-        else {
+        } else {
             val pathElements = path!!.split('/')
             if (pathElements.isEmpty()) {
                 rootDocumentFile
             } else {
                 var retval: DocumentFile? = rootDocumentFile
                 pathElements.forEach { pathElement ->
-                    if (pathElement.isNotBlank())
+                    if (pathElement.isNotBlank()) {
                         retval = retval?.findFile(pathElement)
+                    }
                 }
                 retval
             }

@@ -31,7 +31,7 @@ class RarDecompressor(context: Context) : Decompressor(context) {
         path: String,
         addGoBackItem: Boolean
     ) =
-    RarHelperCallable(filePath, path, addGoBackItem)
+        RarHelperCallable(filePath, path, addGoBackItem)
 
     override fun realRelativeDirectory(dir: String): String {
         var dir = dir

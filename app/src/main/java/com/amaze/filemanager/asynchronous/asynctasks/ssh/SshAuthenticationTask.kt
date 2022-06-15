@@ -34,6 +34,8 @@ import net.schmizz.sshj.common.DisconnectReason
 import net.schmizz.sshj.common.KeyType
 import net.schmizz.sshj.transport.TransportException
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.security.KeyPair
@@ -72,6 +74,8 @@ class SshAuthenticationTask(
     private val privateKey: KeyPair? = null
 ) : AsyncTask<Void, Void, AsyncTaskResult<SSHClient>>() {
 
+    private val log: Logger = LoggerFactory.getLogger(SshAuthenticationTask::class.java)
+
     override fun doInBackground(vararg params: Void): AsyncTaskResult<SSHClient> {
         val sshClient = SshConnectionPool.sshClientFactory.create(CustomSshJConfig()).also {
             it.addHostKeyVerifier(hostKey)
@@ -102,7 +106,7 @@ class SshAuthenticationTask(
                 AsyncTaskResult(sshClient)
             }
         }.getOrElse {
-            it.printStackTrace()
+            log.warn("failed to authenticate ssh connection", it)
             AsyncTaskResult(it)
         }
     }

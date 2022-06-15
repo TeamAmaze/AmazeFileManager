@@ -20,24 +20,25 @@
 
 package com.amaze.filemanager.filesystem.root
 
-import android.util.Log
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
-import com.amaze.filemanager.file_operations.filesystem.root.NativeOperations
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.root.NativeOperations
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 
 object ListFilesCommand : IRootCommand() {
 
-    private val TAG: String = javaClass.simpleName
+    private val log: Logger = LoggerFactory.getLogger(ListFilesCommand::class.java)
 
     /**
      * list files in given directory and invoke callback
@@ -109,7 +110,7 @@ object ListFilesCommand : IRootCommand() {
                         false
                     )
             return if (!retryWithLs && !enforceLegacyFileListing) {
-                Log.i(TAG, "Using stat for list parsing")
+                log.info("Using stat for list parsing")
                 Pair(
                     first = runShellCommandToList(command).map {
                         it.replace(appendedPath, "")
@@ -117,7 +118,7 @@ object ListFilesCommand : IRootCommand() {
                     second = enforceLegacyFileListing
                 )
             } else {
-                Log.i(TAG, "Using ls for list parsing")
+                log.info("Using ls for list parsing")
                 Pair(
                     first = runShellCommandToList(
                         "ls -l " + (if (showHidden) "-a " else "") +
@@ -131,14 +132,14 @@ object ListFilesCommand : IRootCommand() {
                 )
             }
         } catch (invalidCommand: ShellCommandInvalidException) {
-            Log.w(TAG, "Command not found - ${invalidCommand.message}")
+            log.warn("Command not found - ${invalidCommand.message}")
             return if (retryWithLs) {
                 Pair(first = emptyList(), second = true)
             } else {
                 executeRootCommand(path, showHidden, true)
             }
         } catch (exception: ShellNotRunningException) {
-            exception.printStackTrace()
+            log.warn("failed to execute root command", exception)
             return Pair(first = emptyList(), second = false)
         }
     }
@@ -186,7 +187,7 @@ object ListFilesCommand : IRootCommand() {
                     }
                 }
             } else {
-                Log.e(TAG, "Error listing files at [$path]. Access permission denied?")
+                log.error("Error listing files at [$path]. Access permission denied?")
                 AppConfig.getInstance().run {
                     AppConfig.toast(this, this.getString(R.string.error_permission_denied))
                 }

@@ -25,9 +25,12 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.services.Box;
 import com.cloudrail.si.services.Dropbox;
@@ -40,7 +43,6 @@ import com.googlecode.concurrenttrees.radixinverted.ConcurrentInvertedRadixTree;
 import com.googlecode.concurrenttrees.radixinverted.InvertedRadixTree;
 
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.MenuItem;
 
 import androidx.annotation.Nullable;
@@ -50,7 +52,7 @@ import androidx.annotation.Nullable;
 // Central data being used across activity,fragments and classes
 public class DataUtils {
 
-  private static final String TAG = DataUtils.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(DataUtils.class);
 
   private ConcurrentRadixTree<VoidValue> hiddenfiles =
       new ConcurrentRadixTree<>(new DefaultCharArrayNodeFactory());
@@ -352,7 +354,7 @@ public class DataUtils {
     try {
       return getHiddenFiles().getValueForExactKey(path) != null;
     } catch (IllegalStateException e) {
-      Log.w(TAG, e);
+      LOG.warn("failed to get hidden file", e);
       return false;
     }
   }
@@ -411,7 +413,7 @@ public class DataUtils {
         tree.put(path, item.getItemId());
         return true;
       } catch (IllegalStateException e) {
-        Log.w(TAG, e);
+        LOG.warn("failed to put drawer path", e);
         return false;
       }
     }

@@ -35,6 +35,8 @@ import com.amaze.filemanager.filesystem.ExternalSdCardOperation.isOnExtSdCard
 import com.amaze.filemanager.filesystem.smb.CifsContexts
 import com.amaze.filemanager.filesystem.ssh.SshConnectionPool
 import com.amaze.filemanager.utils.OTGUtil
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileNotFoundException
 import java.io.FileOutputStream
@@ -44,6 +46,8 @@ import java.util.regex.Pattern
 // TODO check if these can be done with just File methods
 // TODO make all of these methods File extensions
 object FileProperties {
+
+    private val log: Logger = LoggerFactory.getLogger(FileProperties::class.java)
 
     private const val STORAGE_PRIMARY = "primary"
     private const val COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS =
@@ -86,11 +90,11 @@ object FileProperties {
             try {
                 output.close()
             } catch (e: IOException) {
-                e.printStackTrace()
+                log.warn("failed to check if file is writable", e)
                 // do nothing.
             }
         } catch (e: FileNotFoundException) {
-            e.printStackTrace()
+            log.warn("failed to check if file is writable as file not available", e)
             return false
         }
         val result = file.canWrite()

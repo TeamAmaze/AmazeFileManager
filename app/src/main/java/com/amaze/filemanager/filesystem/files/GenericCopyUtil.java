@@ -36,9 +36,12 @@ import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.util.Objects;
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.utils.OnLowMemory;
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.utils.OnLowMemory;
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -54,7 +57,6 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.os.Build;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -62,6 +64,7 @@ import androidx.documentfile.provider.DocumentFile;
 
 /** Base class to handle file copy. */
 public class GenericCopyUtil {
+  private final Logger LOG = LoggerFactory.getLogger(GenericCopyUtil.class);
 
   private HybridFileParcelable mSourceFile;
   private HybridFile mTargetFile;
@@ -239,11 +242,10 @@ public class GenericCopyUtil {
 
       doCopy(inChannel, outChannel, updatePosition);
     } catch (IOException e) {
-      e.printStackTrace();
-      Log.d(getClass().getSimpleName(), "I/O Error!");
+      LOG.debug("I/O Error!", e);
       throw new IOException();
     } catch (OutOfMemoryError e) {
-      e.printStackTrace();
+      LOG.warn("low memory while copying file", e);
 
       onLowMemory.onLowMemory();
 
@@ -256,7 +258,7 @@ public class GenericCopyUtil {
         if (bufferedInputStream != null) bufferedInputStream.close();
         if (bufferedOutputStream != null) bufferedOutputStream.close();
       } catch (IOException e) {
-        e.printStackTrace();
+        LOG.warn("failed to close stream after copying", e);
         // failure in closing stream
       }
 

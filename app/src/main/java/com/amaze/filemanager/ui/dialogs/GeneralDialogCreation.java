@@ -21,35 +21,22 @@
 package com.amaze.filemanager.ui.dialogs;
 
 import static android.os.Build.VERSION.SDK_INT;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SORTBY_ONLY_THIS;
 
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
-import android.graphics.Typeface;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.text.InputType;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.text.format.Formatter;
-import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.CheckBox;
-import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.appcompat.widget.AppCompatButton;
-import androidx.core.text.TextUtilsCompat;
-import androidx.core.view.ViewCompat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -64,8 +51,8 @@ import com.amaze.filemanager.asynchronous.asynctasks.hashcalculator.CalculateHas
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Sort;
 import com.amaze.filemanager.databinding.DialogSigninWithGoogleBinding;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -91,17 +78,32 @@ import com.github.mikephil.charting.data.PieEntry;
 import com.github.mikephil.charting.formatter.IValueFormatter;
 import com.github.mikephil.charting.utils.ViewPortHandler;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
-import java.util.Set;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Color;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.text.InputType;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.text.format.Formatter;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.widget.CheckBox;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.appcompat.widget.AppCompatButton;
+import androidx.core.text.TextUtilsCompat;
+import androidx.core.view.ViewCompat;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -109,7 +111,8 @@ import java.util.concurrent.Executors;
  * @author Emmanuel on 17/5/2017, at 13:27.
  */
 public class GeneralDialogCreation {
-  private static final String TAG = "GeneralDialogCreation";
+
+  private static final Logger LOG = LoggerFactory.getLogger(GeneralDialogCreation.class);
 
   public static MaterialDialog showBasicDialog(
       ThemedActivity themedActivity,
@@ -626,16 +629,16 @@ public class GeneralDialogCreation {
               try {
                 if (!nomediaFile.createNewFile()) {
                   // failed operation
-                  Log.w(TAG, "'.nomedia' file creation in " + baseFile.getPath() + " failed!");
+                  LOG.warn(".nomedia file creation in {} failed", baseFile.getPath());
                 }
               } catch (IOException e) {
-                Log.e(TAG, "Error creating file", e);
+                LOG.warn("failed to create file at path {}", baseFile.getPath(), e);
               }
             } else {
               // checkbox is unchecked, delete .nomedia
               if (!nomediaFile.delete()) {
                 // failed operation
-                Log.w(TAG, "'.nomedia' file deletion in " + baseFile.getPath() + " failed!");
+                LOG.warn(".nomedia file deletion in {} failed", baseFile.getPath());
               }
             }
           }
@@ -809,6 +812,22 @@ public class GeneralDialogCreation {
         .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
         .build()
         .show();
+  }
+
+  public static MaterialDialog showOpenFileDeeplinkDialog(
+      final HybridFile file, final MainActivity m, final String content, Runnable openCallback) {
+    int accentColor = m.getAccent();
+    return new MaterialDialog.Builder(m)
+        .title(R.string.confirmation)
+        .content(content)
+        .positiveText(R.string.open)
+        .negativeText(R.string.cancel)
+        .positiveColor(accentColor)
+        .negativeColor(accentColor)
+        .onPositive((dialog, which) -> openCallback.run())
+        .onNegative((dialog, which) -> dialog.dismiss())
+        .theme(m.getAppTheme().getMaterialDialogTheme(m.getApplicationContext()))
+        .build();
   }
 
   public static void showArchiveDialog(final File f, final MainActivity m) {
@@ -1043,7 +1062,7 @@ public class GeneralDialogCreation {
           } catch (ShellNotRunningException e) {
             Toast.makeText(context, mainFrag.getString(R.string.root_failure), Toast.LENGTH_LONG)
                 .show();
-            e.printStackTrace();
+            LOG.warn("failed to set permission dialog", e);
           }
         });
   }
