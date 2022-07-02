@@ -61,6 +61,7 @@ import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
+import com.amaze.filemanager.utils.PackageInstallValidation;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
@@ -416,6 +417,25 @@ public class FileUtils {
    */
   public static void installApk(
       final @NonNull File f, final @NonNull PermissionsActivity permissionsActivity) {
+
+    try {
+      PackageInstallValidation.validatePackageInstallability(f);
+    } catch (PackageInstallValidation.PackageCannotBeInstalledException e) {
+      Toast.makeText(
+              permissionsActivity,
+              R.string.error_google_play_cannot_update_myself,
+              Toast.LENGTH_LONG)
+          .show();
+      return;
+    } catch (IllegalStateException e) {
+      Toast.makeText(
+              permissionsActivity,
+              permissionsActivity.getString(
+                  R.string.error_cannot_get_package_info, f.getAbsolutePath()),
+              Toast.LENGTH_LONG)
+          .show();
+    }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
         && !permissionsActivity.getPackageManager().canRequestPackageInstalls()) {
       permissionsActivity.requestInstallApkPermission(
