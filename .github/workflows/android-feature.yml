@@ -43,5 +43,3 @@ jobs:
           arguments: assembledebug --stacktrace
       - name: Run test cases
         uses: gradle/gradle-build-action@v2
-        with:
-          arguments: -PjacocoEnabled=true jacocoTestReport
