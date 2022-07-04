@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
-apply plugin: 'com.hiya.jacoco-android'
 apply plugin: "com.starter.easylauncher"
 
 android {
@@ -272,15 +271,6 @@ project.afterEvaluate {
 
 clean.dependsOn supportOldLangCodes
 clean.mustRunAfter supportOldLangCodes
-
-jacoco {
-    toolVersion = "${jacocoVersion}"
-}
-
-tasks.withType(Test) {
-    jacoco.includeNoLocationClasses = true
-    jacoco.excludes = ['jdk.internal.*']
-}
 
 
 Properties props = new Properties()
