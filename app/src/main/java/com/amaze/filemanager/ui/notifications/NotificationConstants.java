@@ -31,7 +31,9 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 import androidx.core.app.NotificationCompat;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 17/9/2017, at 13:34. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 17/9/2017, at 13:34.
+ */
 public class NotificationConstants {
 
   public static final int COPY_ID = 0;

@@ -87,6 +87,8 @@ import com.google.android.material.snackbar.Snackbar
 import org.greenrobot.eventbus.EventBus
 import org.greenrobot.eventbus.Subscribe
 import org.greenrobot.eventbus.ThreadMode
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.security.GeneralSecurityException
 
@@ -96,6 +98,8 @@ import java.security.GeneralSecurityException
  */
 @Suppress("TooManyFunctions")
 class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
+
+    private val log: Logger = LoggerFactory.getLogger(FtpServerFragment::class.java)
 
     private val statusText: TextView get() = binding.textViewFtpStatus
     private val url: TextView get() = binding.textViewFtpUrl
@@ -119,14 +123,14 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val mainActivity: MainActivity get() = requireActivity() as MainActivity
 
     private val activityResultHandlerOnFtpServerPathUpdate = createOpenDocumentTreeIntentCallback {
-        directoryUri ->
+            directoryUri ->
         changeFTPServerPath(directoryUri.toString())
         updatePathText()
     }
 
     private val activityResultHandlerOnFtpServerPathGrantedSafAccess =
         createOpenDocumentTreeIntentCallback {
-            directoryUri ->
+                directoryUri ->
             changeFTPServerPath(directoryUri.toString())
             updatePathText()
             doStartServer()
@@ -204,7 +208,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                             } else {
                                 changeFTPServerPort(portNumber)
                                 Toast.makeText(
-                                    activity, R.string.ftp_port_change_success, Toast.LENGTH_SHORT
+                                    activity,
+                                    R.string.ftp_port_change_success,
+                                    Toast.LENGTH_SHORT
                                 )
                                     .show()
                             }
@@ -410,7 +416,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             if (it.resultCode == RESULT_OK && SDK_INT >= LOLLIPOP) {
                 val directoryUri = it.data?.data ?: return@registerForActivityResult
                 requireContext().contentResolver.takePersistableUriPermission(
-                    directoryUri, GRANT_URI_RW_PERMISSION
+                    directoryUri,
+                    GRANT_URI_RW_PERMISSION
                 )
                 callback.invoke(directoryUri)
             }
@@ -424,7 +431,9 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         if (shouldUseSafFileSystem()) {
             Uri.parse(directoryUri).run {
                 if (requireContext().checkUriPermission(
-                        this, Process.myPid(), Process.myUid(),
+                        this,
+                        Process.myPid(),
+                        Process.myUid(),
                         GRANT_URI_RW_PERMISSION
                     ) == PackageManager.PERMISSION_DENIED
                 ) {
@@ -473,10 +482,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     mainActivity,
                     getString(R.string.ftp_server_fallback_path_reset_prompt)
                 )
-                mainActivity.prefs
-                    .edit()
-                    .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
-                    .apply()
+                resetFTPPath()
             }
             callback.invoke()
         }
@@ -571,6 +577,12 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
         }
         port.text = "${resources.getString(R.string.ftp_port)}: $defaultPortFromPreferences"
         updatePathText()
+
+        if (defaultPathFromPreferences == FtpService.defaultPath(requireContext())) {
+            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0)
+        } else {
+            sharedPath.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_clear_all, 0)
+        }
     }
 
     private fun updatePathText() {
@@ -579,6 +591,33 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             .append(pathToDisplayString(defaultPathFromPreferences))
         if (readonlyPreference) sb.append(" \uD83D\uDD12")
         sharedPath.text = sb.toString()
+        setListener()
+    }
+
+    private fun setListener() {
+        sharedPath.setOnTouchListener { _, event ->
+
+            if (event.action == KeyEvent.ACTION_DOWN) {
+                if (event.x >= sharedPath.right - sharedPath.compoundDrawables[2].bounds.width()) {
+                    resetFTPPath()
+                    updateStatus()
+
+                    AppConfig.toast(
+                        mainActivity,
+                        getString(R.string.ftp_server_reset_notify)
+                    )
+                }
+            }
+
+            false
+        }
+    }
+
+    private fun resetFTPPath() {
+        mainActivity.prefs
+            .edit()
+            .putString(KEY_PREFERENCE_PATH, FtpService.defaultPath(requireContext()))
+            .apply()
     }
 
     /** Updates the status spans  */
@@ -730,7 +769,8 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private val passwordFromPreferences: String?
         get() = runCatching {
             val encryptedPassword: String = mainActivity.prefs.getString(
-                FtpService.KEY_PREFERENCE_PASSWORD, ""
+                FtpService.KEY_PREFERENCE_PASSWORD,
+                ""
             )!!
             if (encryptedPassword == "") {
                 ""
@@ -738,7 +778,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 PasswordUtil.decryptPassword(requireContext(), encryptedPassword)
             }
         }.onFailure {
-            it.printStackTrace()
+            log.warn("failed to decrypt ftp server password", it)
             Toast.makeText(requireContext(), R.string.error, Toast.LENGTH_SHORT).show()
             mainActivity.prefs.edit().putString(FtpService.KEY_PREFERENCE_PASSWORD, "").apply()
         }.getOrNull()
@@ -811,11 +851,11 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                     .apply()
             }
         } catch (e: GeneralSecurityException) {
-            e.printStackTrace()
+            log.warn("failed to set ftp password", e)
             Toast.makeText(context, resources.getString(R.string.error), Toast.LENGTH_LONG)
                 .show()
         } catch (e: IOException) {
-            e.printStackTrace()
+            log.warn("failed to set ftp password", e)
             Toast.makeText(context, resources.getString(R.string.error), Toast.LENGTH_LONG)
                 .show()
         }

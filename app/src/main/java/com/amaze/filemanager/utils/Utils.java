@@ -391,7 +391,7 @@ public class Utils {
    * @param supportMail support mail for given intent
    * @return intent
    */
-  public static Intent buildEmailIntent(String text, String supportMail) {
+  public static Intent buildEmailIntent(Context context, String text, String supportMail) {
     Intent emailIntent = new Intent(Intent.ACTION_SEND);
     String[] aEmailList = {supportMail};
     String[] aEmailCCList = {EMAIL_VISHAL, EMAIL_EMMANUEL, EMAIL_RAYMOND};
@@ -399,6 +399,12 @@ public class Utils {
     emailIntent.putExtra(Intent.EXTRA_CC, aEmailCCList);
     emailIntent.putExtra(
         Intent.EXTRA_SUBJECT, "Feedback : Amaze File Manager for " + BuildConfig.VERSION_NAME);
+    Uri logUri =
+        FileProvider.getUriForFile(
+            context,
+            context.getPackageName(),
+            new File(String.format("/data/data/%s/cache/logs.txt", context.getPackageName())));
+    emailIntent.putExtra(Intent.EXTRA_STREAM, logUri);
     if (!Utils.isNullOrEmpty(text)) {
       emailIntent.putExtra(Intent.EXTRA_TEXT, text);
     }

@@ -1,27 +1,30 @@
 /*
- *  Licensed to the Apache Software Foundation (ASF) under one or more
- *  contributor license agreements.  See the NOTICE file distributed with
- *  this work for additional information regarding copyright ownership.
- *  The ASF licenses this file to You under the Apache License, Version 2.0
- *  (the "License"); you may not use this file except in compliance with
- *  the License.  You may obtain a copy of the License at
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * This file is part of Amaze File Manager.
  *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
  *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+
 package com.amaze.filemanager.filesystem.compressed.sevenz;
 
 /**
  * Combines a SevenZMethod with configuration options for the method.
  *
- * <p>The exact type and interpretation of options depends on the
- * method being configured.  Currently supported are:</p>
+ * <p>The exact type and interpretation of options depends on the method being configured. Currently
+ * supported are:
  *
  * <table summary="Options">
  * <tr><th>Method</th><th>Option Type</th><th>Description</th></tr>
@@ -33,49 +36,53 @@ package com.amaze.filemanager.filesystem.compressed.sevenz;
  * </table>
  *
  * @Immutable
+ *
  * @since 1.8
  */
 public class SevenZMethodConfiguration {
-    private final SevenZMethod method;
-    private final Object options;
+  private final SevenZMethod method;
+  private final Object options;
 
-    /**
-     * Doesn't configure any additional options.
-     * @param method the method to use
-     */
-    public SevenZMethodConfiguration(final SevenZMethod method) {
-        this(method, null);
+  /**
+   * Doesn't configure any additional options.
+   *
+   * @param method the method to use
+   */
+  public SevenZMethodConfiguration(final SevenZMethod method) {
+    this(method, null);
+  }
+
+  /**
+   * Specifies and method plus configuration options.
+   *
+   * @param method the method to use
+   * @param options the options to use
+   * @throws IllegalArgumentException if the method doesn't understand the options specified.
+   */
+  public SevenZMethodConfiguration(final SevenZMethod method, final Object options) {
+    this.method = method;
+    this.options = options;
+    if (options != null && !Coders.findByMethod(method).canAcceptOptions(options)) {
+      throw new IllegalArgumentException(
+          "The " + method + " method doesn't support options of type " + options.getClass());
     }
+  }
 
-    /**
-     * Specifies and method plus configuration options.
-     * @param method the method to use
-     * @param options the options to use
-     * @throws IllegalArgumentException if the method doesn't understand the options specified.
-     */
-    public SevenZMethodConfiguration(final SevenZMethod method, final Object options) {
-        this.method = method;
-        this.options = options;
-        if (options != null && !Coders.findByMethod(method).canAcceptOptions(options)) {
-            throw new IllegalArgumentException("The " + method + " method doesn't support options of type "
-                                               + options.getClass());
-        }
-    }
+  /**
+   * The specified method.
+   *
+   * @return the method
+   */
+  public SevenZMethod getMethod() {
+    return method;
+  }
 
-    /**
-     * The specified method.
-     * @return the method
-     */
-    public SevenZMethod getMethod() {
-        return method;
-    }
-
-    /**
-     * The specified options.
-     * @return the options
-     */
-    public Object getOptions() {
-        return options;
-    }
-
+  /**
+   * The specified options.
+   *
+   * @return the options
+   */
+  public Object getOptions() {
+    return options;
+  }
 }

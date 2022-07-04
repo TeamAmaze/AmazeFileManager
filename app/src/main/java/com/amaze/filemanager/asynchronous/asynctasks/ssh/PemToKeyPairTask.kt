@@ -43,6 +43,8 @@ import net.schmizz.sshj.userauth.password.Resource
 import org.bouncycastle.openssl.PEMKeyPair
 import org.bouncycastle.openssl.PEMParser
 import org.bouncycastle.openssl.jcajce.JcaPEMKeyConverter
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.io.InputStream
 import java.io.StringReader
@@ -74,6 +76,8 @@ class PemToKeyPairTask(
         OpenSshV1PemToKeyPairConverter(),
         PuttyPrivateKeyToKeyPairConverter()
     )
+    private val log: Logger = LoggerFactory.getLogger(PemToKeyPairTask::class.java)
+
     private var paused = false
     private var passwordFinder: PasswordFinder? = null
     private var errorMessage: String? = null
@@ -157,7 +161,8 @@ class PemToKeyPairTask(
         ) { text: String ->
             if (text.isEmpty()) {
                 ReturnState(
-                    ReturnState.STATE_ERROR, R.string.field_empty
+                    ReturnState.STATE_ERROR,
+                    R.string.field_empty
                 )
             }
             ReturnState()
@@ -187,7 +192,7 @@ class PemToKeyPairTask(
         fun convert(source: String?): KeyPair? = runCatching {
             throwingConvert(source)
         }.onFailure {
-            it.printStackTrace()
+            log.warn("failed to convert pem to keypair", it)
         }.getOrNull()
 
         @Throws(Exception::class)

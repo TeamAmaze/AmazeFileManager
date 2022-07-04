@@ -18,8 +18,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 108
-        versionName "3.7.0"
+        versionCode 110
+        versionName "3.7.2"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
@@ -172,14 +172,7 @@ dependencies {
     implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
-
     implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
-    // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
@@ -245,6 +238,8 @@ dependencies {
     implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
+    implementation 'org.slf4j:slf4j-api:1.7.32'
+    implementation 'com.github.tony19:logback-android:2.0.0'
 }
 
 configurations.all {

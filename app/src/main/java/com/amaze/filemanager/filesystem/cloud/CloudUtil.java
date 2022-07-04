@@ -28,12 +28,15 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.IconDataParcelable;
 import com.amaze.filemanager.database.CloudHandler;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -70,9 +73,11 @@ import net.schmizz.sshj.sftp.SFTPClient;
  */
 public class CloudUtil {
 
-  public static final String TAG = "Explorer";
+  private static final Logger LOG = LoggerFactory.getLogger(CloudUtil.class);
 
-  /** @deprecated use getCloudFiles() */
+  /**
+   * @deprecated use getCloudFiles()
+   */
   public static ArrayList<HybridFileParcelable> listFiles(
       String path, CloudStorage cloudStorage, OpenMode openMode) throws CloudPluginException {
     final ArrayList<HybridFileParcelable> baseFiles = new ArrayList<>();
@@ -98,7 +103,7 @@ public class CloudUtil {
         fileFoundCallback.onFileFound(baseFile);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get cloud files", e);
       throw new CloudPluginException();
     }
   }
@@ -134,7 +139,7 @@ public class CloudUtil {
   }
 
   public static void launchCloud(
-      final HybridFileParcelable baseFile, final OpenMode serviceType, final Activity activity) {
+      final HybridFile baseFile, final OpenMode serviceType, final Activity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(
@@ -155,7 +160,9 @@ public class CloudUtil {
                             Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setDataAndType(
-                            uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                            uri,
+                            MimeTypes.getMimeType(
+                                baseFile.getPath(), baseFile.isDirectory(activity)));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
@@ -166,12 +173,11 @@ public class CloudUtil {
                                   Toast.LENGTH_SHORT)
                               .show();
                       } catch (ActivityNotFoundException e) {
-                        e.printStackTrace();
+                        LOG.warn("failed to launch cloud file in activity", e);
                       }
                     });
               } catch (Exception e) {
-
-                e.printStackTrace();
+                LOG.warn("failed to launch cloud file", e);
               }
             })
         .start();
@@ -219,11 +225,9 @@ public class CloudUtil {
         try {
           cloudStorage.getUserLogin();
         } catch (RuntimeException e) {
-          e.printStackTrace();
-
+          LOG.warn("Failed to validate user token for cloud connection", e);
           isTokenValid = false;
         }
-
         return isTokenValid;
       }
 
@@ -281,7 +285,7 @@ public class CloudUtil {
           inputStream = hybridFile.getSmbFile().getInputStream();
         } catch (IOException e) {
           inputStream = null;
-          e.printStackTrace();
+          LOG.warn("failed to get inputstream for smb file for thumbnail", e);
         }
         break;
       case OTG:
@@ -291,7 +295,7 @@ public class CloudUtil {
         try {
           inputStream = contentResolver.openInputStream(documentSourceFile.getUri());
         } catch (FileNotFoundException e) {
-          e.printStackTrace();
+          LOG.warn("failed to get inputstream for otg for thumbnail", e);
           inputStream = null;
         }
         break;
@@ -310,7 +314,7 @@ public class CloudUtil {
           inputStream = new FileInputStream(hybridFile.getPath());
         } catch (FileNotFoundException e) {
           inputStream = null;
-          e.printStackTrace();
+          LOG.warn("failed to get inputstream for cloud files for thumbnail", e);
         }
         break;
     }

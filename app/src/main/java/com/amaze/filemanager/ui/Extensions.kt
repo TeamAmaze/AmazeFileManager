@@ -25,14 +25,16 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.text.TextUtils
-import android.util.Log
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.google.android.material.textfield.TextInputLayout
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
-private const val TAG = "ExtensionsKt"
+private val log: Logger = LoggerFactory.getLogger(AppConfig::class.java)
 
 /**
  * Marks a text input field as mandatory (appends * at end)
@@ -50,7 +52,7 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
     try {
         startActivity(intent)
     } catch (e: SecurityException) {
-        Log.e(TAG, "Error when starting activity: ", e)
+        log.error("Error when starting activity: ", e)
         Toast.makeText(this, R.string.security_error, Toast.LENGTH_SHORT).show()
     }
 }
@@ -62,13 +64,17 @@ fun Context.startActivityCatchingSecurityException(intent: Intent) {
 fun Context.updateAUAlias(shouldEnable: Boolean) {
     val component = ComponentName(this, "com.amaze.filemanager.amazeutilsalias")
     if (!shouldEnable) {
-        packageManager.setComponentEnabledSetting(component,
+        packageManager.setComponentEnabledSetting(
+            component,
             PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-            PackageManager.DONT_KILL_APP)
+            PackageManager.DONT_KILL_APP
+        )
     } else {
-        packageManager.setComponentEnabledSetting(component,
+        packageManager.setComponentEnabledSetting(
+            component,
             PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-            PackageManager.DONT_KILL_APP)
+            PackageManager.DONT_KILL_APP
+        )
     }
 }
 

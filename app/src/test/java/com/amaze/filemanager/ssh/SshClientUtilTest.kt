@@ -46,7 +46,8 @@ class SshClientUtilTest {
             SshClientUtils.extractRemotePathFrom("ssh://user:password@127.0.0.1:22")
         )
         Assert.assertEquals(
-            "/", SshClientUtils.extractRemotePathFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
+            "/",
+            SshClientUtils.extractRemotePathFrom("ssh://root:a8/875dbc-==@127.0.0.1:9899")
         )
         Assert.assertEquals(
             "/root/.config",

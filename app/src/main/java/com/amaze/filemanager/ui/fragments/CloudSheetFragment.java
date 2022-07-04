@@ -23,7 +23,7 @@ package com.amaze.filemanager.ui.fragments;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.CloudContract;
 import com.amaze.filemanager.databinding.FragmentSheetCloudBinding;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.SftpConnectDialog;

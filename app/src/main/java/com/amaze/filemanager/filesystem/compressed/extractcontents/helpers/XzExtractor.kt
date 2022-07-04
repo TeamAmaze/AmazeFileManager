@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import org.apache.commons.compress.compressors.CompressorInputStream
 import org.apache.commons.compress.compressors.xz.XZCompressorInputStream
 
@@ -33,7 +33,10 @@ class XzExtractor(
     updatePosition: UpdatePosition
 ) : AbstractCommonsCompressedFileExtractor(
     context,
-    filePath, outputPath, listener, updatePosition
+    filePath,
+    outputPath,
+    listener,
+    updatePosition
 ) {
     override fun getCompressorInputStreamClass(): Class<out CompressorInputStream> {
         return XZCompressorInputStream::class.java

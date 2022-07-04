@@ -23,7 +23,7 @@ package com.amaze.filemanager.ui.strings;
 import java.io.File;
 
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.file_operations.filesystem.StorageNaming;
+import com.amaze.filemanager.fileoperations.filesystem.StorageNaming;
 
 import android.content.Context;
 

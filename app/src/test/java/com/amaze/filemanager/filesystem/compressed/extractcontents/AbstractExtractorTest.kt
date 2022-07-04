@@ -28,8 +28,8 @@ import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.randomBytes
 import org.junit.*
@@ -43,7 +43,6 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import java.util.*
-import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
 @Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])

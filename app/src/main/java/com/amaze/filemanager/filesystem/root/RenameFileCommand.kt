@@ -21,11 +21,15 @@
 package com.amaze.filemanager.filesystem.root
 
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.root.base.IRootCommand
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 object RenameFileCommand : IRootCommand() {
+
+    private val log: Logger = LoggerFactory.getLogger(RenameFileCommand::class.java)
 
     /**
      * Renames file using root
@@ -44,7 +48,7 @@ object RenameFileCommand : IRootCommand() {
             mountPoint?.let { MountPathCommand.mountPath(it, MountPathCommand.READ_ONLY) }
             output.isEmpty()
         } catch (e: ShellCommandInvalidException) {
-            e.printStackTrace()
+            log.warn("failed to rename file", e)
             false
         }
     }

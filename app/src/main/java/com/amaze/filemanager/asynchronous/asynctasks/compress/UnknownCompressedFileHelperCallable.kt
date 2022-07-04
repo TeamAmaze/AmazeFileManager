@@ -21,8 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
-import com.amaze.filemanager.utils.OnAsyncTaskFinished
 import java.util.ArrayList
 
 /**
@@ -56,7 +54,7 @@ class UnknownCompressedFileHelperCallable(
     private val filePath: String,
     goBack: Boolean
 ) :
-        CompressedHelperCallable(goBack) {
+    CompressedHelperCallable(goBack) {
 
     override fun addElements(elements: ArrayList<CompressedObjectParcelable>) {
         val entryName = filePath.substringAfterLast('/').substringBeforeLast('.')

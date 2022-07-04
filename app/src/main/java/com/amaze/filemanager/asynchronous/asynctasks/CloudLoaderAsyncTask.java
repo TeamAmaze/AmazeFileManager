@@ -22,12 +22,15 @@ package com.amaze.filemanager.asynchronous.asynctasks;
 
 import java.lang.ref.WeakReference;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.utils.DataUtils;
 import com.cloudrail.si.CloudRail;
@@ -46,6 +49,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(CloudLoaderAsyncTask.class);
 
   private final Cursor data;
   private final WeakReference<MainActivity> mainActivity;
@@ -78,7 +83,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               CloudRail.setAppKey(data.getString(1));
             } catch (Exception e) {
               // any other exception due to network conditions or other error
-              e.printStackTrace();
+              LOG.warn("failed to set app key", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.failed_cloud_api_key);
@@ -115,7 +120,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 try {
                   cloudStorageDrive.loadAsString(savedCloudEntryGdrive.getPersistData().value);
                 } catch (ParseException e) {
-                  e.printStackTrace();
+                  LOG.warn("failed to load cloud storage connection", e);
                   // we need to update the persist string as existing one is been compromised
 
                   cloudStorageDrive.login();
@@ -133,7 +138,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               dataUtils.addAccount(cloudStorageDrive);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
-              e.printStackTrace();
+              LOG.warn("failed to find cloud entry", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
@@ -143,7 +148,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               }
               return false;
             } catch (AuthenticationException e) {
-              e.printStackTrace();
+              LOG.warn("failed to authenticate cloud connection", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
@@ -154,7 +159,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               return false;
             } catch (Exception e) {
               // any other exception due to network conditions or other error
-              e.printStackTrace();
+              LOG.warn("Failed to load cloud conn due to network conditions or other error", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
@@ -186,7 +191,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 try {
                   cloudStorageDropbox.loadAsString(savedCloudEntryDropbox.getPersistData().value);
                 } catch (ParseException e) {
-                  e.printStackTrace();
+                  LOG.warn("failed to load cloud storage connection", e);
                   // we need to persist data again
 
                   cloudStorageDropbox.login();
@@ -204,7 +209,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               dataUtils.addAccount(cloudStorageDropbox);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
-              e.printStackTrace();
+              LOG.warn("failed to find cloud entry", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
@@ -214,7 +219,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               }
               return false;
             } catch (AuthenticationException e) {
-              e.printStackTrace();
+              LOG.warn("failed to authenticate cloud connection", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
@@ -223,7 +228,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               return false;
             } catch (Exception e) {
               // any other exception due to network conditions or other error
-              e.printStackTrace();
+              LOG.warn("Failed to load cloud conn due to network conditions or other error", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
@@ -253,7 +258,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 try {
                   cloudStorageBox.loadAsString(savedCloudEntryBox.getPersistData().value);
                 } catch (ParseException e) {
-                  e.printStackTrace();
+                  LOG.warn("failed to load cloud storage connection", e);
                   // we need to persist data again
                   cloudStorageBox.login();
                   cloudEntryBox = new CloudEntry(OpenMode.BOX, cloudStorageBox.saveAsString());
@@ -268,7 +273,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               dataUtils.addAccount(cloudStorageBox);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
-              e.printStackTrace();
+              LOG.warn("failed to find cloud entry", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
@@ -276,7 +281,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               } else cancel(true);
               return false;
             } catch (AuthenticationException e) {
-              e.printStackTrace();
+              LOG.warn("failed to authenticate cloud connection", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
@@ -285,7 +290,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               return false;
             } catch (Exception e) {
               // any other exception due to network conditions or other error
-              e.printStackTrace();
+              LOG.warn("Failed to load cloud conn due to network conditions or other error", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
@@ -315,7 +320,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
                 try {
                   cloudStorageOnedrive.loadAsString(savedCloudEntryOnedrive.getPersistData().value);
                 } catch (ParseException e) {
-                  e.printStackTrace();
+                  LOG.warn("failed to load cloud storage connection", e);
                   // we need to persist data again
 
                   cloudStorageOnedrive.login();
@@ -333,7 +338,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               dataUtils.addAccount(cloudStorageOnedrive);
               hasUpdatedDrawer = true;
             } catch (CloudPluginException e) {
-              e.printStackTrace();
+              LOG.warn("failed to find cloud entry", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_error_plugin);
@@ -341,7 +346,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               } else cancel(true);
               return false;
             } catch (AuthenticationException e) {
-              e.printStackTrace();
+              LOG.warn("failed to authenticate cloud connection", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.cloud_fail_authenticate);
@@ -350,7 +355,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
               return false;
             } catch (Exception e) {
               // any other exception due to network conditions or other error
-              e.printStackTrace();
+              LOG.warn("Failed to load cloud conn due to network conditions or other error", e);
               final MainActivity mainActivity = this.mainActivity.get();
               if (mainActivity != null) {
                 AppConfig.toast(mainActivity, R.string.failed_cloud_new_connection);
@@ -392,6 +397,7 @@ public class CloudLoaderAsyncTask extends AsyncTask<Void, Void, Boolean> {
       final MainActivity mainActivity = this.mainActivity.get();
       if (mainActivity != null) {
         mainActivity.getDrawer().refreshDrawer();
+        mainActivity.invalidateFragmentAndBundle(null, true);
       }
     }
   }

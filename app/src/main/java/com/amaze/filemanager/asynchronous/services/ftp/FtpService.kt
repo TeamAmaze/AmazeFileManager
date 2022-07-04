@@ -46,7 +46,7 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_ROOTMODE
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
 import com.amaze.filemanager.ui.notifications.FtpNotification
 import com.amaze.filemanager.ui.notifications.NotificationConstants
 import com.amaze.filemanager.utils.ObtainableServiceBinder
@@ -60,6 +60,8 @@ import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration
 import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.apache.ftpserver.usermanager.impl.WritePermission
 import org.greenrobot.eventbus.EventBus
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.IOException
 import java.net.InetAddress
 import java.net.NetworkInterface
@@ -91,8 +93,8 @@ class FtpService : Service(), Runnable {
     private var isStartedByTile = false
     private lateinit var wakeLock: PowerManager.WakeLock
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
-        isStartedByTile = intent.getBooleanExtra(TAG_STARTED_BY_TILE, false)
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        isStartedByTile = true == intent?.getBooleanExtra(TAG_STARTED_BY_TILE, false)
         var attempts = 10
         while (serverThread != null) {
             if (attempts > 0) {
@@ -145,11 +147,12 @@ class FtpService : Service(), Runnable {
                 username = usernamePreference
                 runCatching {
                     password = PasswordUtil.decryptPassword(
-                        applicationContext, preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!
+                        applicationContext,
+                        preferences.getString(KEY_PREFERENCE_PASSWORD, "")!!
                     )
                     isPasswordProtected = true
                 }.onFailure {
-                    it.printStackTrace()
+                    log.warn("failed to decrypt password in ftp service", it)
                     AppConfig.toast(applicationContext, R.string.error)
                     preferences.edit().putString(KEY_PREFERENCE_PASSWORD, "").apply()
                     isPasswordProtected = false
@@ -210,10 +213,11 @@ class FtpService : Service(), Runnable {
                     start()
                     EventBus.getDefault()
                         .post(
-                            if (isStartedByTile)
+                            if (isStartedByTile) {
                                 FtpReceiverActions.STARTED_FROM_TILE
-                            else
+                            } else {
                                 FtpReceiverActions.STARTED
+                            }
                         )
                 }
             }.onFailure {
@@ -248,7 +252,10 @@ class FtpService : Service(), Runnable {
             PendingIntent.FLAG_ONE_SHOT
         }
         val restartServicePI = PendingIntent.getService(
-            applicationContext, 1, restartService, flag
+            applicationContext,
+            1,
+            restartService,
+            flag
         )
         val alarmService = applicationContext.getSystemService(ALARM_SERVICE) as AlarmManager
         alarmService[AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 2000] =
@@ -256,6 +263,8 @@ class FtpService : Service(), Runnable {
     }
 
     companion object {
+        private val log: Logger = LoggerFactory.getLogger(FtpService::class.java)
+
         const val DEFAULT_PORT = 2211
         const val DEFAULT_USERNAME = ""
         const val DEFAULT_TIMEOUT = 600 // default timeout, in sec
@@ -311,6 +320,7 @@ class FtpService : Service(), Runnable {
                 }
             }.toTypedArray()
         }
+
         /**
          * Return a list of available ciphers for ftpserver.
          *
@@ -434,7 +444,7 @@ class FtpService : Service(), Runnable {
                     }
                 }
             }.onFailure { e ->
-                e.printStackTrace()
+                log.warn("failed to get local inet address", e)
             }
             return null
         }

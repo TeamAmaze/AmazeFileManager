@@ -20,21 +20,25 @@
 
 package com.amaze.filemanager.filesystem.ssh;
 
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.WRITABLE_ON_REMOTE;
 import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
 
 import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 import java.security.KeyPair;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.FolderState;
-import com.amaze.filemanager.file_operations.filesystem.cloud.CloudStreamer;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.fileoperations.filesystem.FolderState;
+import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
+import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.SmbUtil;
@@ -45,7 +49,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -62,7 +65,7 @@ import net.schmizz.sshj.sftp.SFTPClient;
 
 public abstract class SshClientUtils {
 
-  private static final String TAG = SshClientUtils.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(SshClientUtils.class);
 
   /**
    * Execute the given SshClientTemplate.
@@ -88,7 +91,7 @@ public abstract class SshClientUtils {
                 .subscribeOn(Schedulers.io())
                 .blockingGet();
       } catch (Exception e) {
-        Log.e(TAG, "Error executing template method", e);
+        LOG.error("Error executing template method", e);
       } finally {
         if (template.closeClientOnFinish) {
           tryDisconnect(client);
@@ -116,13 +119,13 @@ public abstract class SshClientUtils {
               session = client.startSession();
               retval = template.execute(session);
             } catch (IOException e) {
-              Log.e(TAG, "Error executing template method", e);
+              LOG.error("Error executing template method", e);
             } finally {
               if (session != null && session.isOpen()) {
                 try {
                   session.close();
                 } catch (IOException e) {
-                  Log.w(TAG, "Error closing SFTP client", e);
+                  LOG.warn("Error closing SFTP client", e);
                 }
               }
             }
@@ -151,13 +154,13 @@ public abstract class SshClientUtils {
               sftpClient = client.newSFTPClient();
               retval = template.execute(sftpClient);
             } catch (IOException e) {
-              Log.e(TAG, "Error executing template method", e);
+              LOG.error("Error executing template method", e);
             } finally {
               if (sftpClient != null && template.closeClientOnFinish) {
                 try {
                   sftpClient.close();
                 } catch (IOException e) {
-                  Log.w(TAG, "Error closing SFTP client", e);
+                  LOG.warn("Error closing SFTP client", e);
                 }
               }
             }
@@ -183,7 +186,7 @@ public abstract class SshClientUtils {
           ? SmbUtil.getSmbEncryptedPath(AppConfig.getInstance(), fullUri).replace("\n", "")
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
-      Log.e(TAG, "Error encrypting path", e);
+      LOG.error("Error encrypting path", e);
       return fullUri;
     }
   }
@@ -203,7 +206,7 @@ public abstract class SshClientUtils {
           ? SmbUtil.getSmbDecryptedPath(AppConfig.getInstance(), fullUri)
           : fullUri;
     } catch (IOException | GeneralSecurityException e) {
-      Log.e(TAG, "Error decrypting path", e);
+      LOG.error("Error decrypting path", e);
       return fullUri;
     }
   }
@@ -245,6 +248,32 @@ public abstract class SshClientUtils {
   }
 
   /**
+   * Converts plain path smb://127.0.0.1/test.pdf to authorized path
+   * smb://test:123@127.0.0.1/test.pdf from server list
+   *
+   * @param path
+   * @return
+   */
+  public static String formatPlainServerPathToAuthorised(ArrayList<String[]> servers, String path) {
+    for (String[] serverEntry : servers) {
+      Uri inputUri = Uri.parse(path);
+      Uri serverUri = Uri.parse(serverEntry[1]);
+      if (inputUri.getScheme().equalsIgnoreCase(serverUri.getScheme())
+          && serverUri.getAuthority().contains(inputUri.getAuthority())) {
+        String output =
+            inputUri
+                .buildUpon()
+                .encodedAuthority(serverUri.getEncodedAuthority())
+                .build()
+                .toString();
+        LOG.info("build authorised path {} from plain path {}", output, path);
+        return output;
+      }
+    }
+    return path;
+  }
+
+  /**
    * Disconnects the given {@link SSHClient} but wrap all exceptions beneath, so callers are free
    * from the hassles of handling thrown exceptions.
    *
@@ -255,12 +284,12 @@ public abstract class SshClientUtils {
       try {
         client.disconnect();
       } catch (IOException e) {
-        Log.w(TAG, "Error closing SSHClient connection", e);
+        LOG.warn("Error closing SSHClient connection", e);
       }
     }
   }
 
-  public static void launchSftp(final HybridFileParcelable baseFile, final MainActivity activity) {
+  public static void launchSftp(final HybridFile baseFile, final MainActivity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(
@@ -279,7 +308,9 @@ public abstract class SshClientUtils {
                             Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setDataAndType(
-                            uri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
+                            uri,
+                            MimeTypes.getMimeType(
+                                baseFile.getPath(), baseFile.isDirectory(activity)));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
@@ -290,12 +321,11 @@ public abstract class SshClientUtils {
                                   Toast.LENGTH_SHORT)
                               .show();
                       } catch (ActivityNotFoundException e) {
-                        e.printStackTrace();
+                        LOG.warn("failed to launch sftp file", e);
                       }
                     });
               } catch (Exception e) {
-
-                e.printStackTrace();
+                LOG.warn("failed to launch sftp file", e);
               }
             })
         .start();
@@ -325,7 +355,7 @@ public abstract class SshClientUtils {
         FileAttributes symlinkAttrs = client.stat(info.getPath());
         isDirectory = symlinkAttrs.getType().equals(FileMode.Type.DIRECTORY);
       } catch (IOException ifSymlinkIsBroken) {
-        Log.w(TAG, String.format("Symbolic link %s is broken, skipping", info.getPath()));
+        LOG.warn("Symbolic link {} is broken, skipping", info.getPath());
         throw ifSymlinkIsBroken;
       }
     }
