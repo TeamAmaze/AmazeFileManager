@@ -1,0 +1,70 @@
+apply plugin: 'jacoco'
+
+jacoco {
+    toolVersion = '0.8.2'
+}
+
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+
+    group "Reporting"
+    description "Generate Jacoco coverage reports."
+
+    reports {
+        xml.enabled = true
+        html.enabled = true
+        html.destination file("${rootProject.buildDir}/coverage-report")
+    }
+
+    def fileFilter = ['**/R.class',
+                      '**/R2.class',
+                      '**/R$*.class',
+                      '**/BuildConfig.*',
+                      '**/Manifest*.*',
+                      '**/*Test*.*',
+                      '**/AutoValue_*.*',
+                      '**/*JavascriptBridge.class',
+                      '**/*JsonObjectMapper*.*',
+                      '**/*MembersInjector*.*',
+                      '**/*$InjectAdapter.class',
+                      '**/*$ModuleAdapter.class',
+                      '**/*View.class',
+                      '**/*Activity*.*',
+                      '**/*Fragment*.*',
+                      '**/views/**',
+                      '**/viewholder/**',
+                      '**/viewholders/**',
+                      '**/wrapper/**',
+                      '**/orientation/**',
+                      '**/ktx/**',
+                      '**/decorator/**',
+                      '**/*$ViewInjector*.class',
+                      '**/*$ViewHolder*.class',
+                      '**/*$Viewholder*.class',
+                      '**/*ViewBinding*.*',
+                      '**/Dao*.class',
+                      '**/*Component*.*',
+                      '**/*Module*.*',
+                      '**/*Injector*.*',
+                      'android/**/*.*',
+                      '**/io/**',
+                      '**/apache/**',
+                      '**/sharing/**']
+
+    def javaClasses = fileTree(dir: "$project.buildDir/intermediates/javac/debug", excludes: fileFilter)
+    def kotlinClasses = fileTree(dir: "$project.buildDir/tmp/kotlin-classes/debug", excludes: fileFilter)
+    def javaSrc = "$project.projectDir/src/main/java"
+    def kotlinSrc = "$project.projectDir/src/main/java"
+    def execution = fileTree(dir: project.buildDir,
+            includes: ['jacoco/testDebugUnitTest.exec'])
+
+    sourceDirectories = files([javaSrc, kotlinSrc])
+    classDirectories = files([javaClasses, kotlinClasses])
+
+    print execution
+
+    executionData = files(execution)
+
+    doLast() {
+        print "file://${reports.html.destination}/index.html"
+    }
+}
