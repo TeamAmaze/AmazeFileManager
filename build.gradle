@@ -26,8 +26,7 @@ buildscript {
         zip4jVersion = "2.6.4"
         espressoVersion = "3.4.0"
         androidXPrefVersion = "1.1.1"
-        materialDialogsVersion = "0.9.6.0"
-        jacocoVersion = "0.8.7"
+        materialDialogsVersion = "0.9.6.0""
         commonsCompressVersion = "1.20"
         libsuVersion = "3.2.1"
         mockkVersion = "1.12.2"
@@ -40,7 +39,6 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:7.1.2'
-        classpath 'com.hiya:jacoco-android:0.2'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.31"
         classpath "com.project.starter:easylauncher:4.0.0"
         // NOTE: Do not place your application dependencies here; they belong
@@ -158,12 +156,7 @@ subprojects {
                 it.dependsOn fetchRobolectricDependencies
             }
         }
-        jacocoEnabled = System.properties.getProperty("jacocoEnabled") ?: "false"
-        if (project.plugins.hasPlugin("jacoco-android") && jacocoEnabled.toBoolean()){
-                project.logger.lifecycle('Applying jacoco build file: jacoco.gradle')
-                apply from: rootProject.file("jacoco.gradle")
-            }
-        }
+       
         dependencies {
             compileOnly 'com.github.pengrad:jdk9-deps:1.0'
 
