@@ -158,13 +158,10 @@ subprojects {
                 it.dependsOn fetchRobolectricDependencies
             }
         }
-        if (project.plugins.hasPlugin("jacoco-android")){
-            android {
-                testOptions.unitTests.all {
-                    jacoco {
-                        excludes = ['jdk.internal.*']
-                    }
-                }
+        jacocoEnabled = System.properties.getProperty("jacocoEnabled") ?: "false"
+        if (project.plugins.hasPlugin("jacoco-android") && jacocoEnabled.toBoolean()){
+                project.logger.lifecycle('Applying jacoco build file: jacoco.gradle')
+                apply from: rootProject.file("jacoco.gradle")
             }
         }
         dependencies {
