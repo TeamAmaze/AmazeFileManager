@@ -25,10 +25,13 @@ import static android.os.Build.VERSION.SDK_INT;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.theme.AppTheme;
+import com.amaze.filemanager.utils.Utils;
 
 import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.graphics.PorterDuff;
 import android.view.View;
 import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -38,6 +41,7 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
 import androidx.appcompat.widget.AppCompatEditText;
+import androidx.core.content.ContextCompat;
 
 /**
  * SearchView, a simple view to search
@@ -80,6 +84,7 @@ public class SearchView {
           return false;
         });
 
+      initSearchViewColor(a);
     // searchViewEditText.setTextColor(Utils.getColor(this, android.R.color.black));
     // searchViewEditText.setHintTextColor(Color.parseColor(ThemedActivity.accentSkin));
   }
@@ -199,7 +204,37 @@ public class SearchView {
     return searchViewLayout.isShown();
   }
 
-  public interface SearchListener {
+    private void initSearchViewColor(MainActivity a ) {
+        AppTheme theme = a.getAppTheme().getSimpleTheme(a);
+        switch (theme) {
+            case LIGHT:
+                searchViewLayout.setBackgroundResource(R.drawable.search_view_shape);
+                searchViewEditText.setTextColor(Utils.getColor(a, android.R.color.black));
+                clearImageView.setColorFilter(ContextCompat.getColor(a, android.R.color.black),
+                        PorterDuff.Mode.SRC_ATOP);
+                backImageView.setColorFilter(ContextCompat.getColor(a, android.R.color.black),
+                        PorterDuff.Mode.SRC_ATOP);
+                break;
+            case DARK:
+            case BLACK:
+                if (theme == AppTheme.DARK){
+                    searchViewLayout.setBackgroundResource(R.drawable.search_view_shape_holo_dark);
+                }else{
+                    searchViewLayout.setBackgroundResource(R.drawable.search_view_shape_black);
+                }
+                searchViewEditText.setTextColor(Utils.getColor(a, android.R.color.white));
+                clearImageView.setColorFilter(ContextCompat.getColor(a, android.R.color.white),
+                        PorterDuff.Mode.SRC_ATOP);
+                backImageView.setColorFilter(ContextCompat.getColor(a, android.R.color.white),
+                        PorterDuff.Mode.SRC_ATOP);
+                break;
+            default:
+                break;
+        }
+    }
+
+
+    public interface SearchListener {
     void onSearch(String queue);
   }
 }
