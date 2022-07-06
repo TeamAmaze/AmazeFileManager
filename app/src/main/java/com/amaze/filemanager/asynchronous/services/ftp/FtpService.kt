@@ -54,6 +54,7 @@ import com.amaze.filemanager.utils.PasswordUtil
 import org.apache.ftpserver.ConnectionConfigFactory
 import org.apache.ftpserver.FtpServer
 import org.apache.ftpserver.FtpServerFactory
+import org.apache.ftpserver.filesystem.nativefs.NativeFileSystemFactory
 import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.ClientAuth
 import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration
@@ -131,13 +132,17 @@ class FtpService : Service(), Runnable {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         FtpServerFactory().run {
             val connectionConfigFactory = ConnectionConfigFactory()
-            if (SDK_INT >= KITKAT &&
+            val shouldUseAndroidFileSystem =
                 preferences.getBoolean(KEY_PREFERENCE_SAF_FILESYSTEM, false)
-            ) {
+            if (SDK_INT >= KITKAT && shouldUseAndroidFileSystem) {
                 fileSystem = AndroidFileSystemFactory(applicationContext)
             } else if (preferences.getBoolean(PREFERENCE_ROOTMODE, false)) {
                 fileSystem = RootFileSystemFactory()
+            } else {
+                fileSystem = NativeFileSystemFactory()
             }
+
+            commandFactory = CommandFactoryFactory.create(shouldUseAndroidFileSystem)
 
             val usernamePreference = preferences.getString(
                 KEY_PREFERENCE_USERNAME,
