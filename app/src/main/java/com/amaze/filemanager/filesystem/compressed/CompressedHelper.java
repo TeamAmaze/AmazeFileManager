@@ -100,7 +100,7 @@ public abstract class CompressedHelper {
 
     if (isZip(type)) {
       extractor = new ZipExtractor(context, file.getPath(), outputPath, listener, updatePosition);
-    } else if (isRar(type)) {
+    } else if (BuildConfig.FLAVOR.equals("play") && isRar(type)) {
       extractor = new RarExtractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else if (isTar(type)) {
       extractor = new TarExtractor(context, file.getPath(), outputPath, listener, updatePosition);
@@ -144,7 +144,7 @@ public abstract class CompressedHelper {
 
     if (isZip(type)) {
       decompressor = new ZipDecompressor(context);
-    } else if (isRar(type)) {
+    } else if (BuildConfig.FLAVOR.equals("play") && isRar(type)) {
       decompressor = new RarDecompressor(context);
     } else if (isTar(type)) {
       decompressor = new TarDecompressor(context);

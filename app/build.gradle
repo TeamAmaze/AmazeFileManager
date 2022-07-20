@@ -166,7 +166,7 @@ dependencies {
 
     implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
 
-    implementation "com.github.junrar:junrar:$junrarVersion"
+    playImplementation "com.github.junrar:junrar:$junrarVersion"
 
     implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
     implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
