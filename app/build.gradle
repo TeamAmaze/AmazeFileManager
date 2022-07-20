@@ -123,7 +123,7 @@ dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
-    implementation "com.android.billingclient:billing:$androidBillingVersion"
+    playImplementation "com.android.billingclient:billing:$androidBillingVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
@@ -189,7 +189,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
-    implementation 'com.cloudrail:cloudrail-si-android:2.22.4'
+    playImplementation 'com.cloudrail:cloudrail-si-android:2.22.4'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 
