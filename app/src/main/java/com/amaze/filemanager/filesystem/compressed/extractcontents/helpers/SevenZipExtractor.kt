@@ -21,9 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
-import android.util.Log
 import com.amaze.filemanager.R
-import com.amaze.filemanager.TagsHelper
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.fileoperations.utils.UpdatePosition
@@ -34,6 +32,8 @@ import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil
 import org.apache.commons.compress.PasswordRequiredException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.tukaani.xz.CorruptedInputException
 import java.io.BufferedOutputStream
 import java.io.File
@@ -50,7 +50,7 @@ class SevenZipExtractor(
 
     companion object {
         @JvmStatic
-        private val TAG: String = TagsHelper.getTag(SevenZipExtractor::class.java)
+        private val LOG: Logger = LoggerFactory.getLogger(SevenZipExtractor::class.java)
     }
 
     @Throws(IOException::class)
@@ -138,7 +138,7 @@ class SevenZipExtractor(
                 val lastModifiedDate = try {
                     entry.lastModifiedDate.time
                 } catch (e: UnsupportedOperationException) {
-                    Log.w(TAG, "Unable to get modified date for 7zip file")
+                    LOG.warn("Unable to get modified date for 7zip file")
                     System.currentTimeMillis()
                 }
                 outputFile.setLastModified(lastModifiedDate)

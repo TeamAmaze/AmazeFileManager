@@ -66,6 +66,7 @@ import kotlin.random.Random
     sdk = [P],
     shadows = [ShadowPasswordUtil::class, ShadowMultiDex::class]
 )
+@Suppress("StringLiteralDuplication")
 open class FtpHybridFileTest {
 
     protected lateinit var tmpFile: File
@@ -175,6 +176,52 @@ open class FtpHybridFileTest {
             object : OperationsTest.AbstractErrorCallback() {
                 override fun done(file: HybridFile?, b: Boolean) {
                     assertTrue(true == file?.exists())
+                    assertEquals(newFile.path, file?.path)
+                    assertNotNull(file?.ftpFile)
+                    latch.countDown()
+                }
+            }
+        )
+        latch.await()
+    }
+
+    /**
+     * Test rename file
+     *
+     * @see Operations.rename
+     */
+    @Test
+    @FlakyTest()
+    fun testRenameFile() {
+        val oldFile = HybridFile(OpenMode.FTP, "$ftpUrl/${tmpFile.name}")
+        val newFile = HybridFile(OpenMode.FTP, "$ftpUrl/${tmpFile.name}-new")
+        var latch = CountDownLatch(1)
+        Operations.mkfile(
+            hybridFile,
+            oldFile,
+            AppConfig.getInstance(),
+            false,
+            object : OperationsTest.AbstractErrorCallback() {
+                override fun done(file: HybridFile?, b: Boolean) {
+                    assertTrue(true == file?.exists())
+                    assertEquals(oldFile.path, file?.path)
+                    assertNotNull(file?.ftpFile)
+                    latch.countDown()
+                }
+            }
+        )
+        latch.await()
+        latch = CountDownLatch(1)
+        Operations.rename(
+            oldFile,
+            newFile,
+            false,
+            AppConfig.getInstance(),
+            object : OperationsTest.AbstractErrorCallback() {
+                override fun done(file: HybridFile?, b: Boolean) {
+                    assertTrue(true == file?.exists())
+                    assertFalse(oldFile.exists())
+                    assertTrue(newFile.exists())
                     assertEquals(newFile.path, file?.path)
                     assertNotNull(file?.ftpFile)
                     latch.countDown()
