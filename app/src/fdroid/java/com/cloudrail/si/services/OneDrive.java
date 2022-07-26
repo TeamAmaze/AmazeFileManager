@@ -25,7 +25,7 @@ import com.cloudrail.si.interfaces.CloudStorage;
 import android.content.Context;
 
 public class OneDrive extends CloudStorage {
-  public OneDrive(Context c, String s, String s1, String s2, String s3) {
+  public OneDrive(Context unused1, String unused2, String unused3, String unused4, String unused5) {
     super();
   }
 }

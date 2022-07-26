@@ -26,7 +26,7 @@ import android.content.Context;
 
 public class Dropbox extends CloudStorage {
 
-  public Dropbox(Context c, String s, String s1, String s2, String s3) {
+  public Dropbox(Context unused1, String unused2, String unused3, String unused4, String unused5) {
     super();
   }
 }

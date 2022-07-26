@@ -31,5 +31,7 @@ class RarExtractor(
     listener: OnUpdate,
     updatePosition: UpdatePosition
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
-    override fun extractWithFilter(filter: Filter) {}
+    override fun extractWithFilter(filter: Filter) {
+        // no-op
+    }
 }
