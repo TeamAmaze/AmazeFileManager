@@ -21,12 +21,27 @@
 package com.amaze.filemanager.filesystem.ftp
 
 import org.apache.commons.net.ftp.FTPClient
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient> {
 
+    companion object {
+        @JvmStatic
+        private val logger: Logger = LoggerFactory.getLogger(FTPClientImpl::class.java)
+    }
+
     override fun getClientImpl() = ftpClient
 
-    override fun isConnectionValid(): Boolean = ftpClient.isConnected
+    override fun isConnectionValid(): Boolean {
+        return if (ftpClient.isConnected) {
+            runCatching { ftpClient.sendNoOp() }.onFailure {
+                logger.warn("Failure sending NOOP to FTP server", it)
+            }.getOrDefault(false)
+        } else {
+            false
+        }
+    }
 
     override fun isRequireThreadSafety(): Boolean = true
 

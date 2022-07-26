@@ -29,6 +29,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.Task
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.common.DisconnectReason
 import net.schmizz.sshj.transport.TransportException
+import java.net.ConnectException
 import java.net.SocketException
 import java.net.SocketTimeoutException
 import java.security.KeyPair
@@ -48,6 +49,7 @@ class SshAuthenticationTask(
     @MainThread
     override fun onError(error: Throwable) {
         if (SocketException::class.java.isAssignableFrom(error.javaClass) ||
+            ConnectException::class.java.isAssignableFrom(error.javaClass) ||
             SocketTimeoutException::class.java
                 .isAssignableFrom(error.javaClass)
         ) {

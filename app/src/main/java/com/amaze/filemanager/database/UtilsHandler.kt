@@ -356,7 +356,7 @@ class UtilsHandler(
                 .blockingGet()
         }.onFailure {
             if (BuildConfig.DEBUG) {
-                log.error("Error getting public key for URI [$uri]", it)
+                log.warn("Error getting public key for URI [$uri]", it)
             }
         }.getOrNull()
 

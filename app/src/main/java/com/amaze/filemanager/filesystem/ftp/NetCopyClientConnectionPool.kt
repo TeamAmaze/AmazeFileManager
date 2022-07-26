@@ -41,6 +41,7 @@ import org.json.JSONObject
 import java.security.KeyPair
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
 
@@ -300,14 +301,19 @@ object NetCopyClientConnectionPool {
             password = password,
             privateKey = keyPair
         )
-        val retval: SSHClient? = runCatching {
-            Single.fromCallable(task.getTask())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .blockingGet()
-        }.onFailure {
-            task.onError(it)
-        }.getOrNull()
+        val latch = CountDownLatch(1)
+        var retval: SSHClient? = null
+        Maybe.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                retval = it
+                latch.countDown()
+            }, {
+                task.onError(it)
+                latch.countDown()
+            })
+        latch.await()
         return retval?.let {
             SSHClientImpl(it)
         }
@@ -348,16 +354,20 @@ object NetCopyClientConnectionPool {
             username,
             password
         )
-        val result: FTPClient? = runCatching {
-            Single.fromCallable(task.getTask())
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .blockingGet()
-        }.onFailure {
-            Log.e(TAG, "Error getting connection", it)
-            task.onError(it)
-        }.getOrNull()
-
+        val latch = CountDownLatch(1)
+        var result: FTPClient? = null
+        Single.fromCallable(task.getTask())
+            .subscribeOn(Schedulers.io())
+//            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({
+                result = it
+                latch.countDown()
+            }, {
+                Log.e(TAG, "Error getting connection", it)
+                task.onError(it)
+                latch.countDown()
+            })
+        latch.await()
         return result?.let { ftpClient ->
             FTPClientImpl(ftpClient)
         }

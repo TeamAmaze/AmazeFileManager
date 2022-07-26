@@ -20,12 +20,16 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
-import android.util.Log
 import net.schmizz.sshj.SSHClient
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class SSHClientImpl(private val sshClient: SSHClient) : NetCopyClient<SSHClient> {
 
-    private val TAG = SSHClientImpl::class.java.simpleName
+    companion object {
+        @JvmStatic
+        private val logger: Logger = LoggerFactory.getLogger(SSHClientImpl::class.java)
+    }
 
     override fun getClientImpl() = sshClient
 
@@ -37,7 +41,7 @@ class SSHClientImpl(private val sshClient: SSHClient) : NetCopyClient<SSHClient>
             runCatching {
                 sshClient.disconnect()
             }.onFailure {
-                Log.w(TAG, "Error closing SSHClient connection", it)
+                logger.warn("Error closing SSHClient connection", it)
             }
         }
     }

@@ -34,7 +34,7 @@
             android:layout_height="wrap_content"
             android:hint="Protocol" />
         <androidx.appcompat.widget.AppCompatSpinner
-            style="@android:style/Widget.Holo.Light.Spinner"
+            style="@style/Widget.AppCompat.Spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:id="@+id/protocolDropDown" />

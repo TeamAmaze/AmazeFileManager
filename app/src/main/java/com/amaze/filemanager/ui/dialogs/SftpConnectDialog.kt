@@ -172,7 +172,7 @@ class SftpConnectDialog : DialogFragment() {
                 }
             }
         }
-        protocolDropDown.adapter = ArrayAdapter<String>(
+        protocolDropDown.adapter = ArrayAdapter(
             requireContext(),
             android.R.layout.simple_spinner_dropdown_item,
             requireContext().resources.getStringArray(R.array.ftpProtocols)
@@ -420,7 +420,8 @@ class SftpConnectDialog : DialogFragment() {
         connectToSecureServerInternal(
             GetSshHostFingerprintTask(
                 hostname,
-                port
+                port,
+                true
             ) { hostKey: PublicKey ->
                 createFirstConnectCallback.invoke(
                     edit,
@@ -475,7 +476,7 @@ class SftpConnectDialog : DialogFragment() {
     ) {
         connectionSettings.run {
             connectToSecureServerInternal(
-                GetSshHostFingerprintTask(hostname, port) {
+                GetSshHostFingerprintTask(hostname, port, false) {
                         currentHostKey: PublicKey ->
                     SecurityUtils.getFingerprint(currentHostKey).let {
                             currentHostKeyFingerprint ->
@@ -637,6 +638,7 @@ class SftpConnectDialog : DialogFragment() {
                     true
                 } ?: false
             }.getOrElse {
+                it.printStackTrace()
                 false
             }
         }

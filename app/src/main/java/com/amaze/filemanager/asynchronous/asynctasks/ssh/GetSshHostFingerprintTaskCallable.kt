@@ -20,11 +20,12 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
-import android.util.Log
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils
 import net.schmizz.sshj.transport.verification.HostKeyVerifier
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.security.PublicKey
 import java.util.*
 import java.util.concurrent.Callable
@@ -32,11 +33,15 @@ import java.util.concurrent.CountDownLatch
 
 class GetSshHostFingerprintTaskCallable(
     private val hostname: String,
-    private val port: Int
+    private val port: Int,
+    private val firstContact: Boolean = false
 ) : Callable<PublicKey> {
 
     companion object {
-        const val TAG = "GetSshHostFingerprint"
+        @JvmStatic
+        private val logger: Logger = LoggerFactory.getLogger(
+            GetSshHostFingerprintTaskCallable::class.java
+        )
     }
 
     override fun call(): PublicKey {
@@ -62,7 +67,9 @@ class GetSshHostFingerprintTaskCallable(
             latch.await()
             holder!!
         }.onFailure {
-            Log.e(TAG, "Unable to connect to [$hostname:$port]", it)
+            if (!firstContact) {
+                logger.error("Unable to connect to [$hostname:$port]", it)
+            }
             latch.countDown()
         }.getOrThrow().also {
             SshClientUtils.tryDisconnect(sshClient)
