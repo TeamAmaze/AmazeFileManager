@@ -239,6 +239,7 @@ open class FtpHybridFileTest {
      */
     @Test
     @FlakyTest()
+    @Ignore
     fun testFileIO() {
         val randomBytes = Random(System.currentTimeMillis()).nextBytes(32)
         val f = HybridFile(

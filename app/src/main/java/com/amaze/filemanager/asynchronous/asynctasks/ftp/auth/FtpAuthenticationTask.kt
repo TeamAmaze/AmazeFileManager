@@ -20,7 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
-import android.widget.Toast
 import androidx.annotation.MainThread
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -64,7 +63,7 @@ class FtpAuthenticationTask(
     override fun onError(error: Throwable) {
         if (error is SocketException || error is SocketTimeoutException || error is ConnectException
         ) {
-            Toast.makeText(
+            AppConfig.toast(
                 AppConfig.getInstance(),
                 AppConfig.getInstance()
                     .resources
@@ -73,10 +72,8 @@ class FtpAuthenticationTask(
                         host,
                         port,
                         error.localizedMessage ?: error.message
-                    ),
-                Toast.LENGTH_LONG
+                    )
             )
-                .show()
         }
     }
 

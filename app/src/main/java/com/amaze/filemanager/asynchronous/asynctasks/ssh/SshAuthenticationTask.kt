@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
 import android.app.AlertDialog
-import android.widget.Toast
 import androidx.annotation.MainThread
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -53,7 +52,7 @@ class SshAuthenticationTask(
             SocketTimeoutException::class.java
                 .isAssignableFrom(error.javaClass)
         ) {
-            Toast.makeText(
+            AppConfig.toast(
                 AppConfig.getInstance(),
                 AppConfig.getInstance()
                     .resources
@@ -62,10 +61,8 @@ class SshAuthenticationTask(
                         hostname,
                         port,
                         error.localizedMessage ?: error.message
-                    ),
-                Toast.LENGTH_LONG
+                    )
             )
-                .show()
         } else if (TransportException::class.java
             .isAssignableFrom(error.javaClass)
         ) {
@@ -81,19 +78,15 @@ class SshAuthenticationTask(
                     .show()
             }
         } else if (password != null) {
-            Toast.makeText(
+            AppConfig.toast(
                 AppConfig.getInstance(),
-                R.string.ssh_authentication_failure_password,
-                Toast.LENGTH_LONG
+                R.string.ssh_authentication_failure_password
             )
-                .show()
         } else if (privateKey != null) {
-            Toast.makeText(
+            AppConfig.toast(
                 AppConfig.getInstance(),
-                R.string.ssh_authentication_failure_key,
-                Toast.LENGTH_LONG
+                R.string.ssh_authentication_failure_key
             )
-                .show()
         }
     }
 

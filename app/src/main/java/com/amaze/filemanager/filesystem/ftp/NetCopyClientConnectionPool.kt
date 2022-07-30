@@ -30,7 +30,6 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.extractBaseUriFro
 import com.amaze.filemanager.utils.PasswordUtil
 import io.reactivex.Maybe
 import io.reactivex.Single
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
@@ -214,7 +213,6 @@ object NetCopyClientConnectionPool {
     fun removeConnection(url: String, callback: () -> Unit) {
         Maybe.fromCallable(AsyncRemoveConnection(url))
             .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
             .subscribe { callback.invoke() }
     }
 
@@ -305,13 +303,12 @@ object NetCopyClientConnectionPool {
         var retval: SSHClient? = null
         Maybe.fromCallable(task.getTask())
             .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 retval = it
                 latch.countDown()
             }, {
-                task.onError(it)
                 latch.countDown()
+                task.onError(it)
             })
         latch.await()
         return retval?.let {
@@ -358,14 +355,12 @@ object NetCopyClientConnectionPool {
         var result: FTPClient? = null
         Single.fromCallable(task.getTask())
             .subscribeOn(Schedulers.io())
-//            .observeOn(AndroidSchedulers.mainThread())
             .subscribe({
                 result = it
                 latch.countDown()
             }, {
-                Log.e(TAG, "Error getting connection", it)
-                task.onError(it)
                 latch.countDown()
+                task.onError(it)
             })
         latch.await()
         return result?.let { ftpClient ->

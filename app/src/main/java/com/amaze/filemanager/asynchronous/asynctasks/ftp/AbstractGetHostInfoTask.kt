@@ -54,6 +54,7 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
 
     @MainThread
     override fun onError(error: Throwable) {
+        progressDialog.dismiss()
         if (SocketException::class.java.isAssignableFrom(error.javaClass) ||
             SocketTimeoutException::class.java
                 .isAssignableFrom(error.javaClass)

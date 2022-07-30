@@ -81,11 +81,11 @@ import java.util.concurrent.Callable
 
 /** SSH/SFTP connection setup dialog.  */
 class SftpConnectDialog : DialogFragment() {
-    private val log: Logger = LoggerFactory.getLogger(SftpConnectDialog::class.java)
 
     companion object {
 
-        private const val TAG = "SftpConnectDialog"
+        @JvmStatic
+        private val log: Logger = LoggerFactory.getLogger(SftpConnectDialog::class.java)
 
         const val ARG_NAME = "name"
         const val ARG_EDIT = "edit"
@@ -638,7 +638,7 @@ class SftpConnectDialog : DialogFragment() {
                     true
                 } ?: false
             }.getOrElse {
-                it.printStackTrace()
+                log.warn("Problem getting connection and load file list", it)
                 false
             }
         }
