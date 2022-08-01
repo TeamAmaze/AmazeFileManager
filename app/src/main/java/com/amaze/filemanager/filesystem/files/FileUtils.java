@@ -102,7 +102,9 @@ public class FileUtils {
   private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   private static final String[] COMPRESSED_FILE_EXTENSIONS =
-      new String[] {"zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"};
+      new String[] {
+        "zip", "rar", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"
+      };
 
   public static final String FILE_PROVIDER_PREFIX = "storage_root";
   public static final String NOMEDIA_FILE = ".nomedia";
