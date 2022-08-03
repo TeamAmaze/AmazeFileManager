@@ -1,0 +1,1 @@
+Light and smooth file manager following the Material Design guidelines
