@@ -597,7 +597,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
     private fun setListener() {
         sharedPath.setOnTouchListener { _, event ->
 
-            if (event.action == KeyEvent.ACTION_DOWN) {
+            if (sharedPath.compoundDrawables[2] != null && event.action == KeyEvent.ACTION_DOWN) {
                 if (event.x >= sharedPath.right - sharedPath.compoundDrawables[2].bounds.width()) {
                     resetFTPPath()
                     updateStatus()
