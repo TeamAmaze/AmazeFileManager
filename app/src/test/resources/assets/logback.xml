@@ -1,11 +1,14 @@
-<configuration debug="true">
-    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+<configuration>
+    <appender name="logcat" class="ch.qos.logback.classic.android.LogcatAppender">
+        <tagEncoder>
+            <pattern>%logger{12}</pattern>
+        </tagEncoder>
         <encoder>
-            <pattern>%msg</pattern>
+            <pattern>[%-20thread] %msg</pattern>
         </encoder>
     </appender>
 
     <root level="DEBUG">
-        <appender-ref ref="console" />
+        <appender-ref ref="logcat" />
     </root>
 </configuration>
