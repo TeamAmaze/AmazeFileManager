@@ -21,7 +21,6 @@
 package com.amaze.filemanager.filesystem.ftp
 
 import android.annotation.SuppressLint
-import android.util.Log
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.auth.FtpAuthenticationTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
@@ -37,6 +36,8 @@ import org.apache.commons.net.PrintCommandListener
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
 import org.json.JSONObject
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.security.KeyPair
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
@@ -53,10 +54,14 @@ object NetCopyClientConnectionPool {
     const val FTPS_URI_PREFIX = "ftps://"
     const val SSH_URI_PREFIX = "ssh://"
     const val CONNECT_TIMEOUT = 30000
-
-    private val TAG = NetCopyClientConnectionPool::class.java.simpleName
+    const val AT = '@'
+    const val SLASH = '/'
+    const val COLON = ':'
 
     private var connections: MutableMap<String, NetCopyClient<*>> = ConcurrentHashMap()
+
+    @JvmStatic
+    private val LOG: Logger = LoggerFactory.getLogger(NetCopyClientConnectionPool::class.java)
 
     @JvmField
     var sshClientFactory: SSHClientFactory = DefaultSSHClientFactory()
@@ -89,7 +94,7 @@ object NetCopyClientConnectionPool {
             }
         } else {
             if (!validate(client)) {
-                Log.d(TAG, "Connection no longer usable. Reconnecting...")
+                LOG.debug("Connection no longer usable. Reconnecting...")
                 expire(client)
                 connections.remove(url)
                 client = createNetCopyClient.invoke(url)
@@ -99,7 +104,7 @@ object NetCopyClientConnectionPool {
             }
         }
         return if (client != null) {
-            client as NetCopyClient<ClientType>
+            client as NetCopyClient<ClientType>?
         } else {
             null
         }
@@ -158,7 +163,7 @@ object NetCopyClientConnectionPool {
             if (client != null) connections[url] = client
         } else {
             if (!validate(client)) {
-                Log.d(TAG, "Connection no longer usable. Reconnecting...")
+                LOG.debug("Connection no longer usable. Reconnecting...")
                 expire(client)
                 connections.remove(url)
                 client = createNetCopyClient(url)
@@ -394,12 +399,16 @@ object NetCopyClientConnectionPool {
             ) {
                 "Argument is not a SSH URI: $url"
             }
-            host = url.substring(url.lastIndexOf('@') + 1, url.lastIndexOf(':'))
-            val portAndPath = url.substring(url.lastIndexOf(':') + 1)
+            host = if (url.contains(AT)) {
+                url.substring(url.lastIndexOf(AT) + 1, url.lastIndexOf(COLON))
+            } else {
+                url.substring(url.lastIndexOf("//") + 2, url.lastIndexOf(COLON))
+            }
+            val portAndPath = url.substring(url.lastIndexOf(COLON) + 1)
             var port: Int
-            if (portAndPath.contains("/")) {
-                port = portAndPath.substring(0, portAndPath.indexOf('/')).toInt()
-                defaultPath = portAndPath.substring(portAndPath.indexOf('/'))
+            if (portAndPath.contains(SLASH)) {
+                port = portAndPath.substring(0, portAndPath.indexOf(SLASH)).toInt()
+                defaultPath = portAndPath.substring(portAndPath.indexOf(SLASH))
             } else {
                 port = portAndPath.toInt()
                 defaultPath = null
@@ -410,22 +419,27 @@ object NetCopyClientConnectionPool {
                 url.startsWith(FTPS_URI_PREFIX) -> FTPS_URI_PREFIX
                 else -> FTP_URI_PREFIX
             }
-            val authString = url.substring(prefix.length, url.lastIndexOf('@'))
-            val userInfo = authString.split(":").toTypedArray()
-            username = userInfo[0]
-            password = if (userInfo.size > 1) {
-                runCatching {
-                    PasswordUtil.decryptPassword(AppConfig.getInstance(), userInfo[1])
-                }.getOrElse {
-                    /* Hack. It should only happen after creating new SSH connection settings
-                     * and plain text password is sent in.
-                     *
-                     * Possible to encrypt password there as alternate solution.
-                     */
-                    userInfo[1]
-                }
+            if (prefix != SSH_URI_PREFIX && !url.contains(AT)) {
+                username = ""
+                password = ""
             } else {
-                null
+                val authString = url.substring(prefix.length, url.lastIndexOf(AT))
+                val userInfo = authString.split(":").toTypedArray()
+                username = userInfo[0]
+                password = if (userInfo.size > 1) {
+                    runCatching {
+                        PasswordUtil.decryptPassword(AppConfig.getInstance(), userInfo[1])
+                    }.getOrElse {
+                        /* Hack. It should only happen after creating new SSH connection settings
+                         * and plain text password is sent in.
+                         *
+                         * Possible to encrypt password there as alternate solution.
+                         */
+                        userInfo[1]
+                    }
+                } else {
+                    null
+                }
             }
             if (port < 0) port = if (url.startsWith(SSH_URI_PREFIX)) {
                 SSH_DEFAULT_PORT
@@ -437,7 +451,11 @@ object NetCopyClientConnectionPool {
         }
 
         override fun toString(): String {
-            return "$prefix$username@$host:$port${defaultPath ?: ""}"
+            return if (username != "") {
+                "$prefix$username@$host:$port${defaultPath ?: ""}"
+            } else {
+                "$prefix$host:$port${defaultPath ?: ""}"
+            }
         }
     }
 

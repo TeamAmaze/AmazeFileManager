@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
 import androidx.annotation.WorkerThread
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.CONNECT_TIMEOUT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
@@ -41,7 +42,14 @@ open class FtpAuthenticationTaskCallable(
         ftpClient.connectTimeout = CONNECT_TIMEOUT
         ftpClient.controlEncoding = Charsets.UTF_8.name()
         ftpClient.connect(hostname, port)
-        val loginSuccess = ftpClient.login(username, password)
+        val loginSuccess = if (username.isBlank() && password.isBlank()) {
+            ftpClient.login(
+                FTPClientImpl.ANONYMOUS,
+                FTPClientImpl.generateRandomEmailAddressForLogin()
+            )
+        } else {
+            ftpClient.login(username, password)
+        }
         return if (loginSuccess) {
             ftpClient.enterLocalPassiveMode()
             ftpClient

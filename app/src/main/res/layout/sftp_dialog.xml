@@ -125,11 +125,20 @@
             android:layout_gravity="center_horizontal" />
     </com.google.android.material.textfield.TextInputLayout>
 
+    <androidx.appcompat.widget.AppCompatCheckBox
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/chkFtpAnonymous"
+        android:text="@string/anonymous"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/passwordTIL"
+        android:layout_gravity="center_horizontal"/>
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/selectPemTIL"
         app:errorEnabled="true"
         app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/passwordTIL"
+        app:layout_constraintTop_toBottomOf="@id/chkFtpAnonymous"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

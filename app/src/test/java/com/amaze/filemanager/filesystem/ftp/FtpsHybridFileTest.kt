@@ -31,16 +31,18 @@ import org.apache.ftpserver.listener.ListenerFactory
 import org.apache.ftpserver.ssl.ClientAuth
 import org.apache.ftpserver.ssl.impl.DefaultSslConfiguration
 import org.json.JSONObject
+import org.junit.Ignore
 import java.security.KeyStore
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
 import javax.security.cert.X509Certificate
 
-class FtpsHybridFileTest : FtpHybridFileTest() {
+@Ignore
+open class FtpsHybridFileTest : FtpHybridFileTest() {
 
     private lateinit var keyStore: KeyStore
     private lateinit var keyStorePassword: CharArray
-    private lateinit var certInfo: JSONObject
+    protected lateinit var certInfo: JSONObject
 
     override val ftpPrefix: String
         get() = FTPS_URI_PREFIX
@@ -48,7 +50,7 @@ class FtpsHybridFileTest : FtpHybridFileTest() {
         get() = PORT
 
     companion object {
-        private const val PORT = 22222
+        private const val PORT = 2222
     }
 
     override fun setUp() {
@@ -86,7 +88,7 @@ class FtpsHybridFileTest : FtpHybridFileTest() {
                 "ftpserver"
             )
             isImplicitSsl = true
-            port = PORT
+            port = ftpPort
         }.createListener()
     }
 }

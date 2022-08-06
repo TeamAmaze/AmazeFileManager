@@ -26,8 +26,6 @@ import androidx.annotation.MainThread
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.Task
-import java.net.SocketException
-import java.net.SocketTimeoutException
 import java.util.concurrent.Callable
 
 abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
@@ -55,23 +53,18 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
     @MainThread
     override fun onError(error: Throwable) {
         progressDialog.dismiss()
-        if (SocketException::class.java.isAssignableFrom(error.javaClass) ||
-            SocketTimeoutException::class.java
-                .isAssignableFrom(error.javaClass)
-        ) {
-            Toast.makeText(
-                AppConfig.getInstance(),
-                AppConfig.getInstance()
-                    .resources
-                    .getString(
-                        R.string.ssh_connect_failed,
-                        hostname,
-                        port,
-                        error.localizedMessage
-                    ),
-                Toast.LENGTH_LONG
-            ).show()
-        }
+        Toast.makeText(
+            AppConfig.getInstance(),
+            AppConfig.getInstance()
+                .resources
+                .getString(
+                    R.string.ssh_connect_failed,
+                    hostname,
+                    port,
+                    error.localizedMessage
+                ),
+            Toast.LENGTH_LONG
+        ).show()
     }
 
     @MainThread

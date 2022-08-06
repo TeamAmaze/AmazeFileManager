@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
 import com.amaze.filemanager.utils.X509CertificateUtil
@@ -43,7 +44,14 @@ class FtpsAuthenticationTaskCallable(
         ftpClient.connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
         ftpClient.controlEncoding = Charsets.UTF_8.name()
         ftpClient.connect(hostname, port)
-        val loginSuccess = ftpClient.login(username, password)
+        val loginSuccess = if (username.isBlank() && password.isBlank()) {
+            ftpClient.login(
+                FTPClientImpl.ANONYMOUS,
+                FTPClientImpl.generateRandomEmailAddressForLogin()
+            )
+        } else {
+            ftpClient.login(username, password)
+        }
         return if (loginSuccess) {
             // RFC 2228 set protection buffer size to 0
             ftpClient.execPBSZ(0)

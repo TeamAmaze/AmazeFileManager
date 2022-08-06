@@ -24,7 +24,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @Suppress("StringLiteralDuplication")
-class FtpClientUtilTest {
+class NetCopyClientUtilTest {
     /**
      * Test [NetCopyClientUtils.extractRemotePathFrom].
      */
@@ -53,6 +53,14 @@ class FtpClientUtilTest {
             NetCopyClientUtils.extractRemotePathFrom(
                 "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config"
             )
+        )
+        assertEquals(
+            "/Incoming/shared",
+            NetCopyClientUtils.extractRemotePathFrom("ftp://127.0.0.1:2211/Incoming/shared")
+        )
+        assertEquals(
+            "/pub/notice.txt",
+            NetCopyClientUtils.extractRemotePathFrom("ftp://127.0.0.1:2211/pub/notice.txt")
         )
     }
 
@@ -90,6 +98,18 @@ class FtpClientUtilTest {
             NetCopyClientUtils.extractBaseUriFrom(
                 "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config"
             )
+        )
+        assertEquals(
+            "ftp://127.0.0.1:2211",
+            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211")
+        )
+        assertEquals(
+            "ftp://127.0.0.1:2211",
+            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211/Incoming/shared")
+        )
+        assertEquals(
+            "ftp://127.0.0.1:2211",
+            NetCopyClientUtils.extractBaseUriFrom("ftp://127.0.0.1:2211/pub/notice.txt")
         )
     }
 }

@@ -33,6 +33,7 @@ import android.text.TextUtils
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.text.isDigitsOnly
@@ -177,12 +178,48 @@ class SftpConnectDialog : DialogFragment() {
             android.R.layout.simple_spinner_dropdown_item,
             requireContext().resources.getStringArray(R.array.ftpProtocols)
         )
+        chkFtpAnonymous.setOnCheckedChangeListener { _, isChecked ->
+            usernameET.isEnabled = !isChecked
+            passwordET.isEnabled = !isChecked
+            if (isChecked) {
+                usernameET.setText("")
+                passwordET.setText("")
+            }
+        }
 
         // If it's new connection setup, set some default values
         // Otherwise, use given Bundle instance for filling in the blanks
         if (!edit) {
             connectionET.setText(R.string.scp_connection)
             portET.setText(NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString())
+            protocolDropDown.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    parent: AdapterView<*>?,
+                    view: View?,
+                    position: Int,
+                    id: Long
+                ) {
+                    portET.setText(
+                        when (position) {
+                            1 -> NetCopyClientConnectionPool.FTP_DEFAULT_PORT.toString()
+                            2 -> NetCopyClientConnectionPool.FTPS_DEFAULT_PORT.toString()
+                            else -> NetCopyClientConnectionPool.SSH_DEFAULT_PORT.toString()
+                        }
+                    )
+                    chkFtpAnonymous.visibility = when (position) {
+                        0 -> View.GONE
+                        else -> View.VISIBLE
+                    }
+                    if (position == 0) {
+                        chkFtpAnonymous.isChecked = false
+                    }
+                    selectPemBTN.visibility = when (position) {
+                        0 -> View.VISIBLE
+                        else -> View.GONE
+                    }
+                }
+                override fun onNothingSelected(parent: AdapterView<*>?) = Unit
+            }
         } else {
             protocolDropDown.setSelection(
                 when (requireArguments().getString(ARG_PROTOCOL)) {
@@ -280,11 +317,16 @@ class SftpConnectDialog : DialogFragment() {
                 } else {
                     true == binding.passwordET.text?.isNotEmpty() || selectedParsedKeyPair != null
                 }
-                okBTN.isEnabled = true == binding.connectionET.text?.isNotEmpty() &&
-                    true == binding.ipET.text?.isNotEmpty() &&
-                    port in VALID_PORT_RANGE &&
-                    true == binding.usernameET.text?.isNotEmpty() &&
-                    hasCredential
+                okBTN.isEnabled = (
+                    true == binding.connectionET.text?.isNotEmpty() &&
+                        true == binding.ipET.text?.isNotEmpty() &&
+                        port in VALID_PORT_RANGE &&
+                        true == binding.usernameET.text?.isNotEmpty() &&
+                        hasCredential
+                    ) || (
+                    binding.chkFtpAnonymous.isChecked &&
+                        binding.protocolDropDown.selectedItemPosition > 0
+                    )
             }
         }
     }

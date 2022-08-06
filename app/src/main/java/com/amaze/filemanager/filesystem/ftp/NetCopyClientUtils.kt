@@ -20,12 +20,14 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
-import android.util.Log
 import androidx.annotation.WorkerThread
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.FolderState
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.AT
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SLASH
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
@@ -44,11 +46,7 @@ import kotlin.concurrent.withLock
 
 object NetCopyClientUtils {
 
-    private const val TAG = "NetCopyClientUtils"
-    private const val AT = '@'
-    private const val SLASH = '/'
-    private const val COLON = ':'
-
+    @JvmStatic
     private val LOG = LoggerFactory.getLogger(NetCopyClientUtils::class.java)
 
     /**
@@ -84,7 +82,7 @@ object NetCopyClientUtils {
                     exec.invoke()
                 }
             }.onFailure {
-                Log.e(TAG, "Error executing template method", it)
+                LOG.error("Error executing template method", it)
             }.also {
                 if (template.closeClientOnFinish) {
                     tryDisconnect(client)
@@ -122,7 +120,7 @@ object NetCopyClientUtils {
      * @return SSH URL with the password (if exists) decrypted
      */
     fun decryptFtpPathAsNecessary(fullUri: String): String? {
-        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 2)
+        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 3)
         val uriWithoutProtocol: String = fullUri.substring(prefix.length)
         return try {
             if (uriWithoutProtocol.lastIndexOf(COLON) > 0) SmbUtil.getSmbDecryptedPath(
@@ -130,10 +128,10 @@ object NetCopyClientUtils {
                 fullUri
             ) else fullUri
         } catch (e: IOException) {
-            Log.e(TAG, "Error decrypting path", e)
+            LOG.error("Error decrypting path", e)
             fullUri
         } catch (e: GeneralSecurityException) {
-            Log.e(TAG, "Error decrypting path", e)
+            LOG.error("Error decrypting path", e)
             fullUri
         }
     }
@@ -149,17 +147,29 @@ object NetCopyClientUtils {
      * @return The remote path part of the full SSH URL
      */
     fun extractBaseUriFrom(fullUri: String): String {
-        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 2)
+        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 3)
         val uriWithoutProtocol: String = fullUri.substring(prefix.length)
-        val credentials = uriWithoutProtocol.substring(0, uriWithoutProtocol.lastIndexOf(AT))
-        val hostAndPath = uriWithoutProtocol.substring(uriWithoutProtocol.lastIndexOf(AT) + 1)
+        val credentials: String
+        val hostAndPath: String
+        if (uriWithoutProtocol.contains(AT)) {
+            credentials = uriWithoutProtocol.substring(0, uriWithoutProtocol.lastIndexOf(AT))
+            hostAndPath = uriWithoutProtocol.substring(uriWithoutProtocol.lastIndexOf(AT) + 1)
+        } else {
+            credentials = ""
+            hostAndPath = uriWithoutProtocol
+        }
         return if (hostAndPath.indexOf(SLASH) == -1) {
             fullUri
         } else {
             val host = hostAndPath.substring(0, hostAndPath.indexOf(SLASH))
+            val credentialsLen = if (credentials == "") {
+                0
+            } else {
+                credentials.length + 1
+            }
             fullUri.substring(
                 0,
-                prefix.length + credentials.length + 1 + host.length
+                prefix.length + credentialsLen + host.length
             )
         }
     }
@@ -175,11 +185,23 @@ object NetCopyClientUtils {
      * @return The remote path part of the full SSH URL
      */
     fun extractRemotePathFrom(fullUri: String): String {
-        val hostPath = fullUri.substring(fullUri.lastIndexOf(AT))
-        return if (hostPath.indexOf(SLASH) == -1) {
-            SLASH.toString()
+        if (fullUri.contains(AT)) {
+            val hostPath = fullUri.substring(fullUri.lastIndexOf(AT))
+            return if (hostPath.indexOf(SLASH) == -1) {
+                SLASH.toString()
+            } else {
+                URLDecoder.decode(
+                    hostPath.substring(hostPath.indexOf(SLASH)),
+                    Charsets.UTF_8.name()
+                )
+            }
         } else {
-            URLDecoder.decode(hostPath.substring(hostPath.indexOf(SLASH)), Charsets.UTF_8.name())
+            val hostAndPath = fullUri.substringAfter("://")
+            return if (hostAndPath.contains(SLASH)) {
+                hostAndPath.substring(hostAndPath.indexOf(SLASH))
+            } else {
+                SLASH.toString()
+            }
         }
     }
 
@@ -211,8 +233,10 @@ object NetCopyClientUtils {
         // FIXME: should be caller's responsibility
         var pathSuffix = defaultPath
         if (pathSuffix == null) pathSuffix = SLASH.toString()
-        return if (selectedParsedKeyPair != null || password == null) {
+        return if (selectedParsedKeyPair != null) {
             "$prefix$username@$hostname:$port$pathSuffix"
+        } else if (username == "" && (password == "" || password == null)) {
+            "$prefix$hostname:$port$pathSuffix"
         } else {
             "$prefix$username:$password@$hostname:$port$pathSuffix"
         }

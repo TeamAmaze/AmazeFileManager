@@ -56,7 +56,6 @@ import java.net.InetAddress.getLoopbackAddress
 import java.net.InetSocketAddress
 import java.net.Socket
 import java.net.SocketException
-import java.util.*
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.random.Random
@@ -75,6 +74,11 @@ open class FtpHybridFileTest {
 
     protected open val ftpPrefix: String
         get() = FTP_URI_PREFIX
+
+    /**
+     * Workaround. Tests are being run in parallel, hence different FTP server integration
+     * tests will need a different port to prevent port in use exceptions.
+     */
     protected open val ftpPort: Int
         get() = PORT
     protected open val ftpUrl: String
@@ -86,7 +90,7 @@ open class FtpHybridFileTest {
         const val USERNAME = "ftpuser"
         const val PASSWORD = "passw0rD"
 
-        private const val PORT = 22221
+        private const val PORT = 2221
     }
 
     /**

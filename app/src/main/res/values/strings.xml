@@ -584,6 +584,8 @@
 
     <string name="update">UPDATE</string>
 	<string name="scp_connection">SCP/SFTP Connection</string>
+    <string name="ftp_connection">FTP Connection</string>
+    <string name="ftps_connection">FTP over SSL Connection</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">The authenticity of host \'%1$s\' can\'t be established.\n\n%2$s key fingerprint is %3$s.\n\nPlease tap \"Yes\" to confirm identity; otherwise, please tap \"No\".</string>
     <string name="ssh_host_key_verification_prompt_title">Verify Host</string>

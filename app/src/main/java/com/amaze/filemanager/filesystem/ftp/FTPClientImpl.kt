@@ -23,12 +23,40 @@ package com.amaze.filemanager.filesystem.ftp
 import org.apache.commons.net.ftp.FTPClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import kotlin.random.Random
 
 class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient> {
 
     companion object {
         @JvmStatic
         private val logger: Logger = LoggerFactory.getLogger(FTPClientImpl::class.java)
+
+        @JvmStatic
+        val ANONYMOUS = "anonymous"
+
+        private const val ALPHABET = "abcdefghijklmnopqrstuvwxyz1234567890"
+
+        @JvmStatic
+        private fun randomString(strlen: Int) = (1..strlen)
+            .map { Random.nextInt(0, ALPHABET.length) }
+            .map(ALPHABET::get)
+            .joinToString("")
+
+        /**
+         * Generate random email address for anonymous FTP login.
+         */
+        @JvmStatic
+        fun generateRandomEmailAddressForLogin(
+            usernameLen: Int = 8,
+            domainPrefixLen: Int = 5,
+            domainSuffixLen: Int = 3
+        ): String {
+            val username = randomString(usernameLen)
+            val domainPrefix = randomString(domainPrefixLen)
+            val domainSuffix = randomString(domainSuffixLen)
+
+            return "$username@$domainPrefix.$domainSuffix"
+        }
     }
 
     override fun getClientImpl() = ftpClient

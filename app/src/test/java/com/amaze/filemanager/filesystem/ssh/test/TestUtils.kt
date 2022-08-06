@@ -70,9 +70,12 @@ object TestUtils {
             } else {
                 FTP_URI_PREFIX
             }
-        ).append(validUsername)
-        fullUri.append(':').append(validPassword)
-        fullUri.append("@${NetCopyClientConnectionPoolFtpTest.HOST}:$port")
+        )
+        if (validUsername != "" && validPassword != "") {
+            fullUri.append(validUsername)
+            fullUri.append(':').append(validPassword).append("@")
+        }
+        fullUri.append("${NetCopyClientConnectionPoolFtpTest.HOST}:$port")
 
         utilsHandler.saveToDatabase(
             OperationData(
