@@ -117,6 +117,7 @@ public class LoadFilesListTask
     }
 
     HybridFile hFile = null;
+    MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
 
     if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
       hFile = new HybridFile(openmode, path);
@@ -142,56 +143,91 @@ public class LoadFilesListTask
         if (!hFile.getPath().endsWith("/")) {
           hFile.setPath(hFile.getPath() + "/");
         }
-        try {
-          SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
-          list = mainFragment.addToSmb(smbFile, path, showHiddenFiles);
-          openmode = OpenMode.SMB;
-        } catch (SmbAuthException e) {
-          if (!e.getMessage().toLowerCase().contains("denied")) {
+        ArrayList<LayoutElementParcelable> smbCache = mainFragmentViewModel.getFromListCache(path);
+        openmode = OpenMode.SMB;
+        if (smbCache != null) {
+          list = smbCache;
+        } else {
+          try {
+            SmbFile[] smbFile = hFile.getSmbFile(5000).listFiles();
+            list = mainFragment.addToSmb(smbFile, path, showHiddenFiles);
+          } catch (SmbAuthException e) {
+            if (!e.getMessage().toLowerCase().contains("denied")) {
+              mainFragment.reauthenticateSmb();
+            }
+            LOG.warn("failed to load smb list, authentication issue", e);
+            return null;
+          } catch (SmbException | NullPointerException e) {
+            LOG.warn("Failed to load smb files for path: " + path, e);
             mainFragment.reauthenticateSmb();
+            return null;
           }
-          LOG.warn("failed to load smb list, authentication issue", e);
-          return null;
-        } catch (SmbException | NullPointerException e) {
-          LOG.warn("Failed to load smb files for path: " + path, e);
-          mainFragment.reauthenticateSmb();
-          return null;
+          mainFragmentViewModel.putInCache(path, list);
         }
         break;
       case SFTP:
         HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
-
-        list = new ArrayList();
-
-        sftpHFile.forEachChildrenFile(
-            context,
-            false,
-            file -> {
-              if (!(dataUtils.isFileHidden(file.getPath())
-                  || file.isHidden() && !showHiddenFiles)) {
-                LayoutElementParcelable elem = createListParcelables(file);
-                if (elem != null) {
-                  list.add(elem);
+        ArrayList<LayoutElementParcelable> sftpCache = mainFragmentViewModel.getFromListCache(path);
+        if (sftpCache != null) {
+          list = sftpCache;
+        } else {
+          list = new ArrayList();
+          sftpHFile.forEachChildrenFile(
+              context,
+              false,
+              file -> {
+                if (!(dataUtils.isFileHidden(file.getPath())
+                    || file.isHidden() && !showHiddenFiles)) {
+                  LayoutElementParcelable elem = createListParcelables(file);
+                  if (elem != null) {
+                    list.add(elem);
+                  }
                 }
-              }
-            });
+              });
+          mainFragmentViewModel.putInCache(path, list);
+        }
         break;
       case CUSTOM:
         switch (Integer.parseInt(path)) {
           case 0:
-            list = listImages();
+            if (mainFragmentViewModel.getStorageImages() == null) {
+              list = listImages();
+              mainFragmentViewModel.setStorageImages(list);
+            } else {
+              list = mainFragmentViewModel.getStorageImages();
+            }
             break;
           case 1:
-            list = listVideos();
+            if (mainFragmentViewModel.getStorageVideos() == null) {
+              list = listVideos();
+              mainFragmentViewModel.setStorageVideos(list);
+            } else {
+              list = mainFragmentViewModel.getStorageVideos();
+            }
             break;
           case 2:
-            list = listaudio();
+            if (mainFragmentViewModel.getStorageAudios() == null) {
+              list = listaudio();
+              mainFragmentViewModel.setStorageAudios(list);
+            } else {
+              list = mainFragmentViewModel.getStorageAudios();
+            }
             break;
           case 3:
-            list = listDocs();
+            if (mainFragmentViewModel.getStorageDocs() == null) {
+              list = listDocs();
+              mainFragmentViewModel.setStorageDocs(list);
+            } else {
+              list = mainFragmentViewModel.getStorageDocs();
+            }
             break;
           case 4:
-            list = listApks();
+            if (mainFragmentViewModel.getStorageApks() == null) {
+              list = listApks();
+              mainFragmentViewModel.setStorageApks(list);
+            } else {
+              list = mainFragmentViewModel.getStorageApks();
+            }
             break;
           case 5:
             list = listRecent();
@@ -215,12 +251,18 @@ public class LoadFilesListTask
         openmode = OpenMode.OTG;
         break;
       case DOCUMENT_FILE:
-        list = new ArrayList<>();
-        listDocumentFiles(
-            file -> {
-              LayoutElementParcelable elem = createListParcelables(file);
-              if (elem != null) list.add(elem);
-            });
+        ArrayList<LayoutElementParcelable> cache = mainFragmentViewModel.getFromListCache(path);
+        if (cache != null) {
+          list = cache;
+        } else {
+          list = new ArrayList<>();
+          listDocumentFiles(
+              file -> {
+                LayoutElementParcelable elem = createListParcelables(file);
+                if (elem != null) list.add(elem);
+              });
+          mainFragmentViewModel.putInCache(path, list);
+        }
         openmode = OpenMode.DOCUMENT_FILE;
         break;
       case DROPBOX:
@@ -228,42 +270,64 @@ public class LoadFilesListTask
       case GDRIVE:
       case ONEDRIVE:
         CloudStorage cloudStorage = dataUtils.getAccount(openmode);
-        list = new ArrayList<>();
-
-        try {
-          listCloud(
-              path,
-              cloudStorage,
-              openmode,
-              file -> {
-                LayoutElementParcelable elem = createListParcelables(file);
-                if (elem != null) list.add(elem);
-              });
-        } catch (CloudPluginException e) {
-          LOG.warn("failed to load cloud files", e);
-          AppConfig.toast(context, context.getResources().getString(R.string.failed_no_connection));
-          return new Pair<>(openmode, list);
+        ArrayList<LayoutElementParcelable> cloudCache =
+            mainFragmentViewModel.getFromListCache(path);
+        if (cloudCache != null) {
+          list = cloudCache;
+        } else {
+          list = new ArrayList<>();
+          try {
+            listCloud(
+                path,
+                cloudStorage,
+                openmode,
+                file -> {
+                  LayoutElementParcelable elem = createListParcelables(file);
+                  if (elem != null) list.add(elem);
+                });
+            mainFragmentViewModel.putInCache(path, list);
+          } catch (CloudPluginException e) {
+            LOG.warn("failed to load cloud files", e);
+            AppConfig.toast(
+                context, context.getResources().getString(R.string.failed_no_connection));
+            return new Pair<>(openmode, list);
+          }
         }
         break;
       default:
         // we're neither in OTG not in SMB, load the list based on root/general filesystem
-        list = new ArrayList<>();
-        final OpenMode[] currentOpenMode = new OpenMode[1];
-        ListFilesCommand.INSTANCE.listFiles(
-            path,
-            mainFragment.getMainActivity().isRootExplorer(),
-            showHiddenFiles,
-            mode -> {
-              currentOpenMode[0] = mode;
-              return null;
-            },
-            hybridFileParcelable -> {
-              LayoutElementParcelable elem = createListParcelables(hybridFileParcelable);
-              if (elem != null) list.add(elem);
-              return null;
-            });
-        if (null != currentOpenMode[0]) {
-          openmode = currentOpenMode[0];
+        ArrayList<LayoutElementParcelable> localCache =
+            mainFragmentViewModel.getFromListCache(path);
+        openmode =
+            ListFilesCommand.INSTANCE.getOpenMode(
+                path, mainFragment.getMainActivity().isRootExplorer());
+        if (localCache != null) {
+          list = localCache;
+          openmode =
+              ListFilesCommand.INSTANCE.getOpenMode(
+                  path, mainFragment.getMainActivity().isRootExplorer());
+        } else {
+          list = new ArrayList<>();
+          final OpenMode[] currentOpenMode = new OpenMode[1];
+          ListFilesCommand.INSTANCE.listFiles(
+              path,
+              mainFragment.getMainActivity().isRootExplorer(),
+              showHiddenFiles,
+              mode -> {
+                currentOpenMode[0] = mode;
+                return null;
+              },
+              hybridFileParcelable -> {
+                LayoutElementParcelable elem = createListParcelables(hybridFileParcelable);
+                if (elem != null) list.add(elem);
+                return null;
+              });
+          if (list.size() > MainFragmentViewModel.Companion.getCACHE_LOCAL_LIST_THRESHOLD()) {
+            mainFragmentViewModel.putInCache(path, list);
+          }
+          if (null != currentOpenMode[0]) {
+            openmode = currentOpenMode[0];
+          }
         }
         break;
     }

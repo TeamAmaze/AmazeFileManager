@@ -79,6 +79,20 @@ object ListFilesCommand : IRootCommand() {
         openModeCallback(mode)
     }
 
+    fun getOpenMode(
+        path: String,
+        root: Boolean
+    ): OpenMode {
+        val mode: OpenMode = if (root && FileUtils.isRunningAboveStorage(path)) {
+            OpenMode.ROOT
+        } else if (FileUtils.canListFiles(File(path))) {
+            OpenMode.FILE
+        } else {
+            OpenMode.FILE
+        }
+        return mode
+    }
+
     /**
      * executes list files root command directory and return each line item
      * returns pair with first denoting the result array and second if run with ls (true) or stat (false)

@@ -101,6 +101,9 @@ class FileHandler(
             // there was no list view, means the directory was empty
             main.loadlist(main.currentPath, true, mainFragmentViewModel.openMode)
         }
+        main.currentPath?.let {
+            main.mainFragmentViewModel?.evictPathFromListCache(it)
+        }
         main.computeScroll()
     }
 }

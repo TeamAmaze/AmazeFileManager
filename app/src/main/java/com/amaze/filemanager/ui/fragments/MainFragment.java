@@ -228,11 +228,13 @@ public class MainFragment extends Fragment
     mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
     mSwipeRefreshLayout.setOnRefreshListener(
-        () ->
-            loadlist(
-                (mainFragmentViewModel.getCurrentPath()),
-                false,
-                mainFragmentViewModel.getOpenMode()));
+        () -> {
+          //          loadlist(
+          //                  (mainFragmentViewModel.getCurrentPath()),
+          //                  false,
+          //                  mainFragmentViewModel.getOpenMode());
+          updateList();
+        });
 
     // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
     mToolbarContainer.setBackgroundColor(
@@ -380,7 +382,9 @@ public class MainFragment extends Fragment
           // load the list on a load broadcast
           // local file system don't need an explicit load, we've set an observer to
           // take actions on creation/moving/deletion/modification of file on current path
-
+          if (getCurrentPath() != null) {
+            mainFragmentViewModel.evictPathFromListCache(getCurrentPath());
+          }
           updateList();
         }
       };
