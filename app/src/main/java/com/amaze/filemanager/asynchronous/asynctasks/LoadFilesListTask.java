@@ -503,7 +503,7 @@ public class LoadFilesListTask
             RootHelper.generateBaseFile(new File(f), showHiddenFiles);
         if (hybridFileParcelable != null) {
           hybridFileParcelable.generateMode(mainFragment.getActivity());
-          if (!hybridFileParcelable.isSmb()
+          if (hybridFileParcelable.isSimpleFile()
               && !hybridFileParcelable.isDirectory()
               && hybridFileParcelable.exists()) {
             LayoutElementParcelable parcelable = createListParcelables(hybridFileParcelable);
