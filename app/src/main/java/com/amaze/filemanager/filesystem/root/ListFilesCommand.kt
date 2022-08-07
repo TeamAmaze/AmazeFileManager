@@ -79,6 +79,9 @@ object ListFilesCommand : IRootCommand() {
         openModeCallback(mode)
     }
 
+    /**
+     * Get open mode for path if it's a root path or normal storage
+     */
     fun getOpenMode(
         path: String,
         root: Boolean

@@ -227,14 +227,7 @@ public class MainFragment extends Fragment
 
     mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
-    mSwipeRefreshLayout.setOnRefreshListener(
-        () -> {
-          //          loadlist(
-          //                  (mainFragmentViewModel.getCurrentPath()),
-          //                  false,
-          //                  mainFragmentViewModel.getOpenMode());
-          updateList();
-        });
+    mSwipeRefreshLayout.setOnRefreshListener(this::updateList);
 
     // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
     mToolbarContainer.setBackgroundColor(

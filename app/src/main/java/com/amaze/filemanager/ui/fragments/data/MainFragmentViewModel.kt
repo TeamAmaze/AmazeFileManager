@@ -139,18 +139,27 @@ class MainFragmentViewModel : ViewModel() {
         }
     }
 
+    /**
+     * Put list for a given path in cache
+     */
     fun putInCache(path: String, listToCache: ArrayList<LayoutElementParcelable>) {
         viewModelScope.launch(Dispatchers.Default) {
             listCache.put(path, listToCache)
         }
     }
 
+    /**
+     * Removes cache for a given path
+     */
     fun evictPathFromListCache(path: String) {
         viewModelScope.launch(Dispatchers.Default) {
             listCache.remove(path)
         }
     }
 
+    /**
+     * Get cache from a given path and updates files / folder count
+     */
     fun getFromListCache(path: String): ArrayList<LayoutElementParcelable>? {
         val cacheList = listCache.get(path)
         cacheList?.forEach {
