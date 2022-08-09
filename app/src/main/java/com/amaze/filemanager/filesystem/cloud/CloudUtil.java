@@ -134,7 +134,13 @@ public class CloudUtil {
       return path.replace(prefix, "");
     } else {
       // we're not at root, replace prefix + /
-      return path.replace(prefix + "/", "");
+      // handle when paths are in format gdrive:/Documents // TODO: normalize drive paths
+      String pathReplaced = path.replace(prefix + "/", "");
+      if (pathReplaced.equals(path)) {
+        // we convert gdrive:/Documents to /Documents
+        return path.replace(prefix.substring(0, prefix.length() - 1), "");
+      }
+      return pathReplaced;
     }
   }
 
