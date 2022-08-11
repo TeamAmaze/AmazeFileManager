@@ -102,7 +102,7 @@ class FileHandler(
             main.loadlist(main.currentPath, true, mainFragmentViewModel.openMode)
         }
         main.currentPath?.let {
-            main.mainFragmentViewModel?.evictPathFromListCache(it)
+            main.mainActivityViewModel?.evictPathFromListCache(it)
         }
         main.computeScroll()
     }

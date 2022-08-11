@@ -48,6 +48,7 @@ import com.amaze.filemanager.filesystem.SafRootHolder;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
+import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
@@ -111,13 +112,15 @@ public class LoadFilesListTask
 
     if (mainFragment == null
         || context == null
-        || mainFragment.getMainFragmentViewModel() == null) {
+        || mainFragment.getMainFragmentViewModel() == null
+        || mainFragment.getMainActivityViewModel() == null) {
       cancel(true);
       return null;
     }
 
     HybridFile hFile = null;
     MainFragmentViewModel mainFragmentViewModel = mainFragment.getMainFragmentViewModel();
+    MainActivityViewModel mainActivityViewModel = mainFragment.getMainActivityViewModel();
 
     if (OpenMode.UNKNOWN.equals(openmode) || OpenMode.CUSTOM.equals(openmode)) {
       hFile = new HybridFile(openmode, path);
@@ -125,14 +128,14 @@ public class LoadFilesListTask
       openmode = hFile.getMode();
 
       if (hFile.isSmb()) {
-        mainFragment.getMainFragmentViewModel().setSmbPath(path);
+        mainFragmentViewModel.setSmbPath(path);
       }
     }
 
     if (isCancelled()) return null;
 
-    mainFragment.getMainFragmentViewModel().setFolderCount(0);
-    mainFragment.getMainFragmentViewModel().setFileCount(0);
+    mainFragmentViewModel.setFolderCount(0);
+    mainFragmentViewModel.setFileCount(0);
     final ArrayList<LayoutElementParcelable> list;
 
     switch (openmode) {
@@ -143,7 +146,7 @@ public class LoadFilesListTask
         if (!hFile.getPath().endsWith("/")) {
           hFile.setPath(hFile.getPath() + "/");
         }
-        ArrayList<LayoutElementParcelable> smbCache = mainFragmentViewModel.getFromListCache(path);
+        ArrayList<LayoutElementParcelable> smbCache = mainActivityViewModel.getFromListCache(path);
         openmode = OpenMode.SMB;
         if (smbCache != null) {
           list = smbCache;
@@ -162,12 +165,12 @@ public class LoadFilesListTask
             mainFragment.reauthenticateSmb();
             return null;
           }
-          mainFragmentViewModel.putInCache(path, list);
+          mainActivityViewModel.putInCache(path, list);
         }
         break;
       case SFTP:
         HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
-        ArrayList<LayoutElementParcelable> sftpCache = mainFragmentViewModel.getFromListCache(path);
+        ArrayList<LayoutElementParcelable> sftpCache = mainActivityViewModel.getFromListCache(path);
         if (sftpCache != null) {
           list = sftpCache;
         } else {
@@ -184,61 +187,11 @@ public class LoadFilesListTask
                   }
                 }
               });
-          mainFragmentViewModel.putInCache(path, list);
+          mainActivityViewModel.putInCache(path, list);
         }
         break;
       case CUSTOM:
-        switch (Integer.parseInt(path)) {
-          case 0:
-            if (mainFragmentViewModel.getStorageImages() == null) {
-              list = listImages();
-              mainFragmentViewModel.setStorageImages(list);
-            } else {
-              list = mainFragmentViewModel.getStorageImages();
-            }
-            break;
-          case 1:
-            if (mainFragmentViewModel.getStorageVideos() == null) {
-              list = listVideos();
-              mainFragmentViewModel.setStorageVideos(list);
-            } else {
-              list = mainFragmentViewModel.getStorageVideos();
-            }
-            break;
-          case 2:
-            if (mainFragmentViewModel.getStorageAudios() == null) {
-              list = listaudio();
-              mainFragmentViewModel.setStorageAudios(list);
-            } else {
-              list = mainFragmentViewModel.getStorageAudios();
-            }
-            break;
-          case 3:
-            if (mainFragmentViewModel.getStorageDocs() == null) {
-              list = listDocs();
-              mainFragmentViewModel.setStorageDocs(list);
-            } else {
-              list = mainFragmentViewModel.getStorageDocs();
-            }
-            break;
-          case 4:
-            if (mainFragmentViewModel.getStorageApks() == null) {
-              list = listApks();
-              mainFragmentViewModel.setStorageApks(list);
-            } else {
-              list = mainFragmentViewModel.getStorageApks();
-            }
-            break;
-          case 5:
-            list = listRecent();
-            break;
-          case 6:
-            list = listRecentFiles();
-            break;
-          default:
-            throw new IllegalStateException();
-        }
-
+        list = getCachedMediaList(mainActivityViewModel);
         break;
       case OTG:
         list = new ArrayList<>();
@@ -251,7 +204,7 @@ public class LoadFilesListTask
         openmode = OpenMode.OTG;
         break;
       case DOCUMENT_FILE:
-        ArrayList<LayoutElementParcelable> cache = mainFragmentViewModel.getFromListCache(path);
+        ArrayList<LayoutElementParcelable> cache = mainActivityViewModel.getFromListCache(path);
         if (cache != null) {
           list = cache;
         } else {
@@ -261,7 +214,7 @@ public class LoadFilesListTask
                 LayoutElementParcelable elem = createListParcelables(file);
                 if (elem != null) list.add(elem);
               });
-          mainFragmentViewModel.putInCache(path, list);
+          mainActivityViewModel.putInCache(path, list);
         }
         openmode = OpenMode.DOCUMENT_FILE;
         break;
@@ -269,12 +222,12 @@ public class LoadFilesListTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        CloudStorage cloudStorage = dataUtils.getAccount(openmode);
         ArrayList<LayoutElementParcelable> cloudCache =
-            mainFragmentViewModel.getFromListCache(path);
+            mainActivityViewModel.getFromListCache(path);
         if (cloudCache != null) {
           list = cloudCache;
         } else {
+          CloudStorage cloudStorage = dataUtils.getAccount(openmode);
           list = new ArrayList<>();
           try {
             listCloud(
@@ -285,7 +238,7 @@ public class LoadFilesListTask
                   LayoutElementParcelable elem = createListParcelables(file);
                   if (elem != null) list.add(elem);
                 });
-            mainFragmentViewModel.putInCache(path, list);
+            mainActivityViewModel.putInCache(path, list);
           } catch (CloudPluginException e) {
             LOG.warn("failed to load cloud files", e);
             AppConfig.toast(
@@ -297,15 +250,12 @@ public class LoadFilesListTask
       default:
         // we're neither in OTG not in SMB, load the list based on root/general filesystem
         ArrayList<LayoutElementParcelable> localCache =
-            mainFragmentViewModel.getFromListCache(path);
+            mainActivityViewModel.getFromListCache(path);
         openmode =
             ListFilesCommand.INSTANCE.getOpenMode(
                 path, mainFragment.getMainActivity().isRootExplorer());
         if (localCache != null) {
           list = localCache;
-          openmode =
-              ListFilesCommand.INSTANCE.getOpenMode(
-                  path, mainFragment.getMainActivity().isRootExplorer());
         } else {
           list = new ArrayList<>();
           final OpenMode[] currentOpenMode = new OpenMode[1];
@@ -322,8 +272,8 @@ public class LoadFilesListTask
                 if (elem != null) list.add(elem);
                 return null;
               });
-          if (list.size() > MainFragmentViewModel.Companion.getCACHE_LOCAL_LIST_THRESHOLD()) {
-            mainFragmentViewModel.putInCache(path, list);
+          if (list.size() > MainActivityViewModel.Companion.getCACHE_LOCAL_LIST_THRESHOLD()) {
+            mainActivityViewModel.putInCache(path, list);
           }
           if (null != currentOpenMode[0]) {
             openmode = currentOpenMode[0];
@@ -347,6 +297,14 @@ public class LoadFilesListTask
 
       MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
 
+      for (LayoutElementParcelable layoutElementParcelable : list) {
+        if (layoutElementParcelable.isDirectory) {
+          viewModel.setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
+        } else {
+          viewModel.setFileCount(mainFragment.getMainFragmentViewModel().getFileCount() + 1);
+        }
+      }
+
       if (viewModel != null) {
         Collections.sort(list, new FileListSorter(viewModel.getDsort(), sortby, asc));
       } else {
@@ -367,6 +325,48 @@ public class LoadFilesListTask
     listener.onAsyncTaskFinished(list);
   }
 
+  private ArrayList<LayoutElementParcelable> getCachedMediaList(
+      MainActivityViewModel mainActivityViewModel) throws IllegalStateException {
+    ArrayList<LayoutElementParcelable> list;
+    int mediaType = Integer.parseInt(path);
+    if (5 == mediaType
+        || 6 == mediaType
+        || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null) {
+      switch (Integer.parseInt(path)) {
+        case 0:
+          list = listImages();
+          break;
+        case 1:
+          list = listVideos();
+          break;
+        case 2:
+          list = listaudio();
+          break;
+        case 3:
+          list = listDocs();
+          break;
+        case 4:
+          list = listApks();
+          break;
+        case 5:
+          list = listRecent();
+          break;
+        case 6:
+          list = listRecentFiles();
+          break;
+        default:
+          throw new IllegalStateException();
+      }
+      if (5 != mediaType && 6 != mediaType) {
+        // not saving recent files in cache
+        mainActivityViewModel.getMediaCacheHash().set(mediaType, list);
+      }
+    } else {
+      list = mainActivityViewModel.getFromMediaFilesCache(mediaType);
+    }
+    return list;
+  }
+
   private @Nullable LayoutElementParcelable createListParcelables(HybridFileParcelable baseFile) {
     if (dataUtils.isFileHidden(baseFile.getPath())) {
       return null;
@@ -383,11 +383,7 @@ public class LoadFilesListTask
     String size = "";
     long longSize = 0;
 
-    if (baseFile.isDirectory()) {
-      mainFragment
-          .getMainFragmentViewModel()
-          .setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
-    } else {
+    if (!baseFile.isDirectory()) {
       if (baseFile.getSize() != -1) {
         try {
           longSize = baseFile.getSize();
@@ -396,9 +392,6 @@ public class LoadFilesListTask
           LOG.warn("failed to create list parcelables", e);
         }
       }
-      mainFragment
-          .getMainFragmentViewModel()
-          .setFileCount(mainFragment.getMainFragmentViewModel().getFileCount() + 1);
     }
 
     LayoutElementParcelable layoutElement =

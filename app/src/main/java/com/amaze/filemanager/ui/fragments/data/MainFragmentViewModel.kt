@@ -22,7 +22,6 @@ package com.amaze.filemanager.ui.fragments.data
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.collection.LruCache
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -47,13 +46,6 @@ class MainFragmentViewModel : ViewModel() {
 
     /** This is not an exact copy of the elements in the adapter  */
     var listElements = ArrayList<LayoutElementParcelable>()
-
-    var storageImages: ArrayList<LayoutElementParcelable>? = null
-    var storageVideos: ArrayList<LayoutElementParcelable>? = null
-    var storageAudios: ArrayList<LayoutElementParcelable>? = null
-    var storageDocs: ArrayList<LayoutElementParcelable>? = null
-    var storageApks: ArrayList<LayoutElementParcelable>? = null
-    var listCache: LruCache<String, ArrayList<LayoutElementParcelable>> = LruCache(50)
 
     var adapterListItems: ArrayList<RecyclerAdapter.ListItem>? = null
     var iconList: ArrayList<IconDataParcelable>? = null
@@ -102,13 +94,6 @@ class MainFragmentViewModel : ViewModel() {
     var primaryTwoColor = 0
     var stopAnims = true
 
-    companion object {
-        /**
-         * size of list to be cached for local files
-         */
-        val CACHE_LOCAL_LIST_THRESHOLD: Int = 100
-    }
-
     /**
      * Initialize arguemnts from bundle in MainFragment
      */
@@ -137,39 +122,6 @@ class MainFragmentViewModel : ViewModel() {
                 }
             }
         }
-    }
-
-    /**
-     * Put list for a given path in cache
-     */
-    fun putInCache(path: String, listToCache: ArrayList<LayoutElementParcelable>) {
-        viewModelScope.launch(Dispatchers.Default) {
-            listCache.put(path, listToCache)
-        }
-    }
-
-    /**
-     * Removes cache for a given path
-     */
-    fun evictPathFromListCache(path: String) {
-        viewModelScope.launch(Dispatchers.Default) {
-            listCache.remove(path)
-        }
-    }
-
-    /**
-     * Get cache from a given path and updates files / folder count
-     */
-    fun getFromListCache(path: String): ArrayList<LayoutElementParcelable>? {
-        val cacheList = listCache.get(path)
-        cacheList?.forEach {
-            if (it.isDirectory) {
-                folderCount++
-            } else {
-                fileCount++
-            }
-        }
-        return cacheList
     }
 
     /**

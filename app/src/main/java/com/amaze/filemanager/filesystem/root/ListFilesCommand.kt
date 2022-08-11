@@ -88,8 +88,6 @@ object ListFilesCommand : IRootCommand() {
     ): OpenMode {
         val mode: OpenMode = if (root && FileUtils.isRunningAboveStorage(path)) {
             OpenMode.ROOT
-        } else if (FileUtils.canListFiles(File(path))) {
-            OpenMode.FILE
         } else {
             OpenMode.FILE
         }
