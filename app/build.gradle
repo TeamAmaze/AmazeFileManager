@@ -254,6 +254,15 @@ configurations.all {
     }
 }
 
+configurations.all { config ->
+    // This workarounds logback's multiple bindings problem when running tests.
+    if (config.name.toLowerCase().contains('test')) {
+        config.resolutionStrategy.dependencySubstitution {
+            substitute module("com.github.tony19:logback-android:$logbackAndroidVersion") with module("ch.qos.logback:logback-classic:1.2.9")
+        }
+    }
+}
+
 task supportOldLangCodes
 
 [['id', 'in'], ['yi', 'ji'], ['he', 'iw']].forEach { sourceCode, destinationCode ->
