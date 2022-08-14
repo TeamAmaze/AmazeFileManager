@@ -289,6 +289,11 @@ public class CloudUtil {
                   }
                 });
         break;
+      case FTP:
+        // Until we find a way to properly handle threading issues with thread unsafe FTPClient,
+        // we refrain from loading any files via FTP as file thumbnail. - TranceLove
+        inputStream = null;
+        break;
       case SMB:
         try {
           inputStream = hybridFile.getSmbFile().getInputStream();

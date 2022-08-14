@@ -27,6 +27,7 @@ import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.extractBaseUriFrom
 import com.amaze.filemanager.utils.PasswordUtil
+import io.reactivex.Flowable
 import io.reactivex.Maybe
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -44,6 +45,7 @@ import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
 import java.util.concurrent.locks.ReentrantLock
+import kotlin.concurrent.withLock
 
 object NetCopyClientConnectionPool {
 
@@ -238,9 +240,23 @@ object NetCopyClientConnectionPool {
         }
     }
 
-    private fun validate(client: NetCopyClient<*>): Boolean = client.isConnectionValid()
+    private fun validate(client: NetCopyClient<*>): Boolean {
+        return Single.fromCallable {
+            if (client.isRequireThreadSafety()) {
+                lock.withLock(client::isConnectionValid)
+            } else {
+                client.isConnectionValid()
+            }
+        }.subscribeOn(Schedulers.io()).blockingGet()
+    }
 
-    private fun expire(client: NetCopyClient<*>) = client.expire()
+    private fun expire(client: NetCopyClient<*>) = Flowable.fromCallable {
+        if (client.isRequireThreadSafety()) {
+            lock.withLock(client::expire)
+        } else {
+            client.expire()
+        }
+    }.subscribeOn(Schedulers.io())
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication

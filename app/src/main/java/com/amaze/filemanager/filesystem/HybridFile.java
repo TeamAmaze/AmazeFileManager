@@ -1710,6 +1710,7 @@ public class HybridFile {
         FileUtils.launchSMB(this, activity);
         break;
       case SFTP:
+      case FTP:
         Toast.makeText(
                 activity,
                 activity.getResources().getString(R.string.please_wait),
