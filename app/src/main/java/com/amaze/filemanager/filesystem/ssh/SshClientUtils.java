@@ -174,10 +174,12 @@ public abstract class SshClientUtils {
     new Thread(
             () -> {
               try {
+                boolean isDirectory = baseFile.isDirectory(activity);
+                long fileLength = baseFile.length(activity);
                 streamer.setStreamSrc(
                     baseFile.getInputStream(activity),
                     baseFile.getName(activity),
-                    baseFile.length(activity));
+                    fileLength);
                 activity.runOnUiThread(
                     () -> {
                       try {
@@ -191,7 +193,7 @@ public abstract class SshClientUtils {
                         i.setDataAndType(
                             uri,
                             MimeTypes.getMimeType(
-                                baseFile.getPath(), baseFile.isDirectory(activity)));
+                                baseFile.getPath(), isDirectory));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);

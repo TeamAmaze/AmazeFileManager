@@ -42,7 +42,6 @@ import java.io.IOException
 import java.net.URLDecoder
 import java.security.GeneralSecurityException
 import java.security.KeyPair
-import kotlin.concurrent.withLock
 
 object NetCopyClientUtils {
 
@@ -69,17 +68,23 @@ object NetCopyClientUtils {
         }
         var retval: T? = null
         if (client != null) {
-            val exec: () -> T? = {
-                Single.fromCallable {
-                    template.execute(client)
-                }.subscribeOn(Schedulers.io())
-                    .blockingGet()
-            }
             retval = runCatching {
                 if (client.isRequireThreadSafety()) {
-                    NetCopyClientConnectionPool.lock.withLock(exec)
+                    NetCopyClientConnectionPool.lock.lock()
+                    template.lock = NetCopyClientConnectionPool.lock
+                    Single.fromCallable {
+                        template.execute(client)
+                    }.subscribeOn(Schedulers.io())
+                        .blockingGet().also {
+                            if (NetCopyClientConnectionPool.lock.isLocked) {
+                                NetCopyClientConnectionPool.lock.unlock()
+                            }
+                        }
                 } else {
-                    exec.invoke()
+                    Single.fromCallable {
+                        template.execute(client)
+                    }.subscribeOn(Schedulers.io())
+                        .blockingGet()
                 }
             }.onFailure {
                 LOG.error("Error executing template method", it)

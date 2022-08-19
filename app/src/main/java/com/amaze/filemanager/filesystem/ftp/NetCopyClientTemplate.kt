@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.ftp
 
 import java.io.IOException
+import java.util.concurrent.locks.Lock
 
 abstract class NetCopyClientTemplate<ClientType, T>
 
@@ -34,6 +35,17 @@ abstract class NetCopyClientTemplate<ClientType, T>
  */
 @JvmOverloads
 constructor(@JvmField val url: String, @JvmField val closeClientOnFinish: Boolean = true) {
+
+    /**
+     * Optional property, for templates that requires extended control of lock retention.
+     *
+     * Injected at [NetCopyClientUtils.execute] if the given [NetCopyClient]
+     * requires thread safety.
+     *
+     * @see NetCopyClientConnectionPool.lock
+     * @see NetCopyClientUtils.execute
+     */
+    lateinit var lock: Lock
 
     /**
      * Implement logic here.

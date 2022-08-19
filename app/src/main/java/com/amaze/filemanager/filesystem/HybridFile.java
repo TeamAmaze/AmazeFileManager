@@ -42,6 +42,7 @@ import java.util.EnumSet;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.Lock;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -1075,8 +1076,27 @@ public class HybridFile {
                 new FtpClientTemplate<InputStream>(path, false) {
                   public InputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
-                    return ftpClient.retrieveFileStream(
+                    Lock lock = this.lock;
+                    InputStream in = ftpClient.retrieveFileStream(
                         NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                    if (in != null) {
+                      return new InputStream() {
+                        @Override
+                        public int read() throws IOException {
+                          return in.read();
+                        }
+                        @Override
+                        public void close() throws IOException {
+                          try {
+                            super.close();
+                          } finally {
+                            lock.unlock();
+                          }
+                        }
+                      };
+                    } else {
+                      return null;
+                    }
                   }
                 });
         break;
