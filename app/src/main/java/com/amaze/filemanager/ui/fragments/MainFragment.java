@@ -63,6 +63,7 @@ import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.drag.RecyclerAdapterDragListener;
 import com.amaze.filemanager.ui.drag.TabFragmentBottomDragListener;
@@ -160,6 +161,7 @@ public class MainFragment extends Fragment
   // private int mCurrentTab;
 
   private MainFragmentViewModel mainFragmentViewModel;
+  private MainActivityViewModel mainActivityViewModel;
 
   private ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
@@ -181,6 +183,8 @@ public class MainFragment extends Fragment
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
     mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+    mainActivityViewModel =
+        new ViewModelProvider(requireMainActivity()).get(MainActivityViewModel.class);
 
     utilsProvider = getMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
@@ -227,12 +231,7 @@ public class MainFragment extends Fragment
 
     mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
-    mSwipeRefreshLayout.setOnRefreshListener(
-        () ->
-            loadlist(
-                (mainFragmentViewModel.getCurrentPath()),
-                false,
-                mainFragmentViewModel.getOpenMode()));
+    mSwipeRefreshLayout.setOnRefreshListener(this::updateList);
 
     // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
     mToolbarContainer.setBackgroundColor(
@@ -380,7 +379,9 @@ public class MainFragment extends Fragment
           // load the list on a load broadcast
           // local file system don't need an explicit load, we've set an observer to
           // take actions on creation/moving/deletion/modification of file on current path
-
+          if (getCurrentPath() != null) {
+            mainActivityViewModel.evictPathFromListCache(getCurrentPath());
+          }
           updateList();
         }
       };
@@ -1558,7 +1559,23 @@ public class MainFragment extends Fragment
 
   public @Nullable MainFragmentViewModel getMainFragmentViewModel() {
     if (isAdded()) {
-      return new ViewModelProvider(this).get(MainFragmentViewModel.class);
+      if (mainFragmentViewModel == null) {
+        mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
+      }
+      return mainFragmentViewModel;
+    } else {
+      LOG.error("Failed to get viewmodel, fragment not yet added");
+      return null;
+    }
+  }
+
+  public @Nullable MainActivityViewModel getMainActivityViewModel() {
+    if (isAdded()) {
+      if (mainActivityViewModel == null) {
+        mainActivityViewModel =
+            new ViewModelProvider(requireMainActivity()).get(MainActivityViewModel.class);
+      }
+      return mainActivityViewModel;
     } else {
       LOG.error("Failed to get viewmodel, fragment not yet added");
       return null;

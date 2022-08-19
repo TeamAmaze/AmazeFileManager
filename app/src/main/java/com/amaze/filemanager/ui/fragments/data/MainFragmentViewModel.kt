@@ -38,6 +38,7 @@ import com.amaze.filemanager.utils.DataUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainFragmentViewModel : ViewModel() {
 

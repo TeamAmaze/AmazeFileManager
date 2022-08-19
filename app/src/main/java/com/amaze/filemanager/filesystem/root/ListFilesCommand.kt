@@ -80,6 +80,21 @@ object ListFilesCommand : IRootCommand() {
     }
 
     /**
+     * Get open mode for path if it's a root path or normal storage
+     */
+    fun getOpenMode(
+        path: String,
+        root: Boolean
+    ): OpenMode {
+        val mode: OpenMode = if (root && FileUtils.isRunningAboveStorage(path)) {
+            OpenMode.ROOT
+        } else {
+            OpenMode.FILE
+        }
+        return mode
+    }
+
+    /**
      * executes list files root command directory and return each line item
      * returns pair with first denoting the result array and second if run with ls (true) or stat (false)
      */
