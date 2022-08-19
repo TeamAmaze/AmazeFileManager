@@ -168,7 +168,7 @@ public abstract class SshClientUtils {
     }
   }
 
-  public static void launchSftp(final HybridFile baseFile, final MainActivity activity) {
+  public static void launchFtp(final HybridFile baseFile, final MainActivity activity) {
     final CloudStreamer streamer = CloudStreamer.getInstance();
 
     new Thread(
@@ -177,9 +177,7 @@ public abstract class SshClientUtils {
                 boolean isDirectory = baseFile.isDirectory(activity);
                 long fileLength = baseFile.length(activity);
                 streamer.setStreamSrc(
-                    baseFile.getInputStream(activity),
-                    baseFile.getName(activity),
-                    fileLength);
+                    baseFile.getInputStream(activity), baseFile.getName(activity), fileLength);
                 activity.runOnUiThread(
                     () -> {
                       try {
@@ -191,9 +189,7 @@ public abstract class SshClientUtils {
                             Uri.parse(CloudStreamer.URL + Uri.fromFile(file).getEncodedPath());
                         Intent i = new Intent(Intent.ACTION_VIEW);
                         i.setDataAndType(
-                            uri,
-                            MimeTypes.getMimeType(
-                                baseFile.getPath(), isDirectory));
+                            uri, MimeTypes.getMimeType(baseFile.getPath(), isDirectory));
                         PackageManager packageManager = activity.getPackageManager();
                         List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
                         if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
