@@ -23,8 +23,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager">
 
-
-
     <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
 

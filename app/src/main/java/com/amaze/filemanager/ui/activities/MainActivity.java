@@ -201,8 +201,6 @@ import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 
-
-
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
         BookmarkCallback,
@@ -330,7 +328,7 @@ public class MainActivity extends PermissionsActivity
   /** Called when the activity is first created. */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
-    SplashScreen splashScreen =SplashScreen.installSplashScreen(this);
+    SplashScreen.installSplashScreen(this);
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
     intent = getIntent();
