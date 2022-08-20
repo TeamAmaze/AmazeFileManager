@@ -23,6 +23,7 @@
         <item name="android:background">@drawable/fab_label_background</item>
         <item name="android:textColor">#ffffff</item>
     </style>
+    
     <style name="Theme.Splash" parent="Theme.SplashScreen">
         <item name="postSplashScreenTheme">@style/appCompatBlack</item>
         <item name="windowSplashScreenBackground">#000000</item>
