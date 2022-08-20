@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem.ftp
 
+import androidx.annotation.VisibleForTesting
 import androidx.annotation.WorkerThread
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
@@ -32,6 +33,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
 import com.amaze.filemanager.utils.SmbUtil
+import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.sftp.SFTPClient
@@ -42,12 +44,27 @@ import java.io.IOException
 import java.net.URLDecoder
 import java.security.GeneralSecurityException
 import java.security.KeyPair
-import kotlin.concurrent.withLock
 
 object NetCopyClientUtils {
 
     @JvmStatic
     private val LOG = LoggerFactory.getLogger(NetCopyClientUtils::class.java)
+
+    /**
+     * Lambda to determine the [Scheduler] to use.
+     * Default is [Schedulers.io] while [Schedulers.single] is used when thread safety is required.
+     */
+    @JvmStatic
+    var getScheduler: (NetCopyClient<*>) -> Scheduler = {
+        if (it.isRequireThreadSafety()) {
+            Schedulers.single()
+        } else {
+            Schedulers.io()
+        }
+    }
+        // Allow test cases to override the Scheduler to use, or deadlocks will occur
+        // because tests are run in parallel
+        @VisibleForTesting set
 
     /**
      * Execute the given NetCopyClientTemplate.
@@ -69,18 +86,10 @@ object NetCopyClientUtils {
         }
         var retval: T? = null
         if (client != null) {
-            val exec: () -> T? = {
+            retval = runCatching {
                 Single.fromCallable {
                     template.execute(client)
-                }.subscribeOn(Schedulers.io())
-                    .blockingGet()
-            }
-            retval = runCatching {
-                if (client.isRequireThreadSafety()) {
-                    NetCopyClientConnectionPool.lock.withLock(exec)
-                } else {
-                    exec.invoke()
-                }
+                }.subscribeOn(getScheduler.invoke(client)).blockingGet()
             }.onFailure {
                 LOG.error("Error executing template method", it)
             }.also {

@@ -109,6 +109,9 @@ open class FtpHybridFileTest {
         RxAndroidPlugins.setInitMainThreadSchedulerHandler {
             Schedulers.trampoline()
         }
+        NetCopyClientUtils.getScheduler = {
+            Schedulers.trampoline()
+        }
         Environment.getExternalStorageDirectory().run {
             FtpServiceAndroidFileSystemIntegrationTest.directories.forEach { dir ->
                 File(this, dir).mkdirs()
@@ -243,7 +246,6 @@ open class FtpHybridFileTest {
      */
     @Test
     @FlakyTest()
-    @Ignore
     fun testFileIO() {
         val randomBytes = Random(System.currentTimeMillis()).nextBytes(32)
         val f = HybridFile(

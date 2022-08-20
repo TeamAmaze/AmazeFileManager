@@ -62,6 +62,7 @@ import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
+import com.amaze.filemanager.filesystem.ftp.FTPClientImpl;
 import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
@@ -1075,8 +1076,14 @@ public class HybridFile {
                 new FtpClientTemplate<InputStream>(path, false) {
                   public InputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
-                    return ftpClient.retrieveFileStream(
-                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                    InputStream retval =
+                        ftpClient.retrieveFileStream(
+                            NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                    if (retval != null) {
+                      return FTPClientImpl.wrap(retval, ftpClient);
+                    } else {
+                      return null;
+                    }
                   }
                 });
         break;
@@ -1160,21 +1167,14 @@ public class HybridFile {
                 new FtpClientTemplate<OutputStream>(path, false) {
                   public OutputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
-                    ftpClient.setFileTransferMode(FTP.BINARY_FILE_TYPE);
+                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                     String remotePath = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path);
-                    OutputStream _outputStream = ftpClient.storeFileStream(remotePath);
-                    return new OutputStream() {
-                      @Override
-                      public void write(int b) throws IOException {
-                        _outputStream.write(b);
-                      }
-
-                      @Override
-                      public void close() throws IOException {
-                        _outputStream.close();
-                        ftpClient.completePendingCommand();
-                      }
-                    };
+                    OutputStream outputStream = ftpClient.storeFileStream(remotePath);
+                    if (outputStream != null) {
+                      return FTPClientImpl.wrap(outputStream, ftpClient);
+                    } else {
+                      return null;
+                    }
                   }
                 });
         return outputStream;

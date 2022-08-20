@@ -40,12 +40,11 @@ import org.json.JSONObject
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.security.KeyPair
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.atomic.AtomicReference
-import java.util.concurrent.locks.ReentrantLock
-import kotlin.concurrent.withLock
 
 object NetCopyClientConnectionPool {
 
@@ -70,9 +69,6 @@ object NetCopyClientConnectionPool {
 
     @JvmField
     var ftpClientFactory: FTPClientFactory = DefaultFTPClientFactory()
-
-    @JvmField
-    val lock = ReentrantLock(true)
 
     /**
      * Obtain a [SSHClient] connection from the underlying connection pool.
@@ -242,21 +238,13 @@ object NetCopyClientConnectionPool {
 
     private fun validate(client: NetCopyClient<*>): Boolean {
         return Single.fromCallable {
-            if (client.isRequireThreadSafety()) {
-                lock.withLock(client::isConnectionValid)
-            } else {
-                client.isConnectionValid()
-            }
-        }.subscribeOn(Schedulers.io()).blockingGet()
+            client.isConnectionValid()
+        }.subscribeOn(NetCopyClientUtils.getScheduler(client)).blockingGet()
     }
 
     private fun expire(client: NetCopyClient<*>) = Flowable.fromCallable {
-        if (client.isRequireThreadSafety()) {
-            lock.withLock(client::expire)
-        } else {
-            client.expire()
-        }
-    }.subscribeOn(Schedulers.io())
+        client.expire()
+    }.subscribeOn(NetCopyClientUtils.getScheduler(client))
 
     // Logic for creating SSH connection. Depends on password existence in given Uri password or
     // key-based authentication

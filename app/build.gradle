@@ -227,7 +227,7 @@ dependencies {
     //zip4j: support password-protected zips
     implementation "net.lingala.zip4j:zip4j:$zip4jVersion"
 
-    implementation 'org.tukaani:xz:1.8'
+    implementation 'org.tukaani:xz:1.9'
 
     implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
     // Because RxAndroid releases are few and far between, it is recommended you also

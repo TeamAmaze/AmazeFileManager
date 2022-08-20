@@ -1006,30 +1006,30 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     holder.genericIcon.setVisibility(View.VISIBLE);
     holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
 
-        if (rowItem.filetype == Icons.IMAGE || rowItem.filetype == Icons.VIDEO) {
-          if (getBoolean(PREFERENCE_SHOW_THUMB) && rowItem.getMode() != OpenMode.FTP) {
-            holder.imageView1.setVisibility(View.VISIBLE);
-            holder.imageView1.setImageDrawable(null);
-            if (utilsProvider.getAppTheme().equals(AppTheme.DARK)
-                || utilsProvider.getAppTheme().equals(AppTheme.BLACK))
-              holder.imageView1.setBackgroundColor(Color.BLACK);
-            showRoundedThumbnail(
-                holder, rowItem.iconData, holder.imageView1, rowItem.iconData::setImageBroken);
-          } else {
-            if (rowItem.filetype == Icons.IMAGE)
-              holder.genericIcon.setImageResource(R.drawable.ic_doc_image);
-            else holder.genericIcon.setImageResource(R.drawable.ic_doc_video_am);
-          }
-        } else if (rowItem.filetype == Icons.APK) {
-          if (getBoolean(PREFERENCE_SHOW_THUMB))
-            showRoundedThumbnail(
-                holder, rowItem.iconData, holder.genericIcon, rowItem.iconData::setImageBroken);
-          else {
-            holder.genericIcon.setImageResource(R.drawable.ic_doc_apk_white);
-          }
-        } else {
-          GlideApp.with(mainFragment).load(rowItem.iconData.image).into(holder.genericIcon);
-        }
+    if (rowItem.filetype == Icons.IMAGE || rowItem.filetype == Icons.VIDEO) {
+      if (getBoolean(PREFERENCE_SHOW_THUMB) && rowItem.getMode() != OpenMode.FTP) {
+        holder.imageView1.setVisibility(View.VISIBLE);
+        holder.imageView1.setImageDrawable(null);
+        if (utilsProvider.getAppTheme().equals(AppTheme.DARK)
+            || utilsProvider.getAppTheme().equals(AppTheme.BLACK))
+          holder.imageView1.setBackgroundColor(Color.BLACK);
+        showRoundedThumbnail(
+            holder, rowItem.iconData, holder.imageView1, rowItem.iconData::setImageBroken);
+      } else {
+        if (rowItem.filetype == Icons.IMAGE)
+          holder.genericIcon.setImageResource(R.drawable.ic_doc_image);
+        else holder.genericIcon.setImageResource(R.drawable.ic_doc_video_am);
+      }
+    } else if (rowItem.filetype == Icons.APK) {
+      if (getBoolean(PREFERENCE_SHOW_THUMB))
+        showRoundedThumbnail(
+            holder, rowItem.iconData, holder.genericIcon, rowItem.iconData::setImageBroken);
+      else {
+        holder.genericIcon.setImageResource(R.drawable.ic_doc_apk_white);
+      }
+    } else {
+      GlideApp.with(mainFragment).load(rowItem.iconData.image).into(holder.genericIcon);
+    }
 
     if (holder.genericIcon.getVisibility() == View.VISIBLE) {
       View iconBackground =
