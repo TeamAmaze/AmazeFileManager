@@ -23,6 +23,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.amaze.filemanager">
 
+
+
     <permission android:name="${applicationId}.permission.CONTROL_FTP_SERVER"
         android:protectionLevel="dangerous" />
 
@@ -47,9 +49,12 @@
     <uses-feature android:name="android.software.leanback"
         android:required="false" />
 
+    <uses-sdk tools:overrideLibrary="androidx.core.splashscreen"/>
+
     <application
         android:name=".application.AppConfig"
         android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.Splash"
         android:roundIcon="@mipmap/ic_launcher_round"
         tools:replace="android:label"
         android:label="@string/appbar_name"
@@ -60,7 +65,7 @@
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
-            android:theme="@style/appCompatBlack"
+            android:theme="@style/Theme.Splash"
             android:configChanges="uiMode" >
 
             <intent-filter android:label="@string/appbar_name">

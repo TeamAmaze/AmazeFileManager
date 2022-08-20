@@ -120,6 +120,8 @@ dependencies {
     implementation "com.google.android.material:material:$androidMaterialVersion"
     implementation "androidx.fragment:fragment-ktx:$androidXFragmentVersion"
     implementation "androidx.appcompat:appcompat:$androidXAppCompatVersion"
+    implementation 'androidx.core:core-splashscreen:1.0.0-beta01'
+
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
