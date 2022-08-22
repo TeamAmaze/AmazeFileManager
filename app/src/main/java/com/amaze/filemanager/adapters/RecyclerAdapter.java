@@ -418,6 +418,10 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         : null;
   }
 
+  public boolean isItemsDigestedNullOrEmpty() {
+    return getItemsDigested() == null || getItemsDigested().isEmpty();
+  }
+
   public boolean areAllChecked(String path) {
     int i = (path.equals("/") || !getBoolean(PREFERENCE_SHOW_GOBACK_BUTTON)) ? 0 : 1;
 
@@ -527,7 +531,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     ArrayList<ListItem> listItems = new ArrayList<>();
 
     for (LayoutElementParcelable e : elements) {
-      if (getItemsDigested() == null || invalidate) {
+      if (invalidate || isItemsDigestedNullOrEmpty()) {
         listItems.add(new ListItem(e.isBack, e));
         uris.add(e != null ? e.iconData : null);
       }
@@ -536,12 +540,12 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     if (mainFrag.getMainFragmentViewModel() != null
         && mainFrag.getMainFragmentViewModel().isList()
         && listItems.size() > 0
-        && (getItemsDigested() == null || invalidate)) {
+        && (invalidate || isItemsDigestedNullOrEmpty())) {
       listItems.add(new ListItem(EMPTY_LAST_ITEM));
       uris.add(null);
     }
 
-    if (getItemsDigested() == null || invalidate) {
+    if (invalidate || isItemsDigestedNullOrEmpty()) {
       mainFrag.getMainFragmentViewModel().setAdapterListItems(listItems);
       mainFrag.getMainFragmentViewModel().setIconList(uris);
 
