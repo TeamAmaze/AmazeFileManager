@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.ui.dialogs
 
 import android.content.Intent
@@ -5,6 +25,8 @@ import android.os.Environment
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -20,11 +42,11 @@ import com.amaze.filemanager.filesystem.files.CryptUtil.CRYPT_EXTENSION
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils
 import com.amaze.filemanager.test.getString
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.ENCRYPT_PASSWORD_MASTER
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.ENCRYPT_PASSWORD_MASTER
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_CRYPT_FINGERPRINT_DEFAULT
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout
 import com.google.android.material.textfield.TextInputEditText
 import org.junit.After
@@ -46,6 +68,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
     private lateinit var tilFileSaveAs: WarnableTextInputLayout
     private lateinit var editTextFileSaveAs: TextInputEditText
     private lateinit var checkboxUseAze: AppCompatCheckBox
+    private lateinit var textViewCryptInfo: AppCompatTextView
     private lateinit var okButton: MDButton
 
     /**
@@ -57,7 +80,8 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
         file = File(
             Environment.getExternalStorageDirectory(),
             RandomPathGenerator.generateRandomPath(
-                randomizer, 16
+                randomizer,
+                16
             )
         )
     }
@@ -90,6 +114,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
             testContent = { _, _, _ ->
                 assertEquals("${file.name}$CRYPT_EXTENSION", editTextFileSaveAs.text.toString())
                 assertEquals(INVISIBLE, checkboxUseAze.visibility)
+                assertEquals(INVISIBLE, textViewCryptInfo.visibility)
             },
             callback = object : EncryptDecryptUtils.EncryptButtonCallbackInterface {
                 override fun onButtonPressed(intent: Intent, password: String) {
@@ -180,6 +205,7 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
             testContent = { _, _, _ ->
                 assertEquals("${file.name}$AESCRYPT_EXTENSION", editTextFileSaveAs.text.toString())
                 assertEquals(VISIBLE, checkboxUseAze.visibility)
+                assertEquals(VISIBLE, textViewCryptInfo.visibility)
             },
             callback = object : EncryptDecryptUtils.EncryptButtonCallbackInterface {
                 override fun onButtonPressed(intent: Intent, password: String) {
@@ -219,6 +245,14 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
             password = ENCRYPT_PASSWORD_MASTER,
             testContent = { _, _, _ ->
                 checkboxUseAze.isChecked = true
+                assertEquals(
+                    HtmlCompat.fromHtml(
+                        getString(R.string.encrypt_option_use_azecrypt_desc),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                        .toString(),
+                    textViewCryptInfo.text.toString()
+                )
                 assertTrue(ShadowDialog.getShownDialogs().size == 2)
                 assertTrue(ShadowDialog.getLatestDialog() is MaterialDialog)
                 (ShadowDialog.getLatestDialog() as MaterialDialog).run {
@@ -241,10 +275,26 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
                 assertFalse(ShadowDialog.getLatestDialog().isShowing)
                 assertTrue(true == editTextFileSaveAs.text?.endsWith(CRYPT_EXTENSION))
                 checkboxUseAze.isChecked = false
+                assertEquals(
+                    HtmlCompat.fromHtml(
+                        getString(R.string.encrypt_option_use_aescrypt_desc),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                        .toString(),
+                    textViewCryptInfo.text.toString()
+                )
                 assertEquals(2, ShadowDialog.getShownDialogs().size)
                 assertFalse(ShadowDialog.getLatestDialog().isShowing)
                 assertTrue(true == editTextFileSaveAs.text?.endsWith(AESCRYPT_EXTENSION))
                 checkboxUseAze.isChecked = true
+                assertEquals(
+                    HtmlCompat.fromHtml(
+                        getString(R.string.encrypt_option_use_azecrypt_desc),
+                        HtmlCompat.FROM_HTML_MODE_COMPACT
+                    )
+                        .toString(),
+                    textViewCryptInfo.text.toString()
+                )
                 assertEquals(3, ShadowDialog.getShownDialogs().size)
                 assertTrue(ShadowDialog.getLatestDialog().isShowing)
                 assertTrue(true == editTextFileSaveAs.text?.endsWith(CRYPT_EXTENSION))
@@ -289,6 +339,9 @@ class EncryptWithPresetPasswordSaveAsDialogTest : AbstractEncryptDialogTests() {
                             R.id.til_encrypt_save_as
                         )
                         checkboxUseAze = findViewById<AppCompatCheckBox>(R.id.checkbox_use_aze)
+                        textViewCryptInfo = findViewById<AppCompatTextView>(
+                            R.id.text_view_crypt_info
+                        )
                         okButton = getActionButton(DialogAction.POSITIVE)
                         testContent.invoke(it, intent, activity)
                     }

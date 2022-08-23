@@ -47,7 +47,13 @@ object MockSshConnectionPools {
 
     // Yes, idiot hardcoded paths. Shall expand as more test cases arrive.
     private fun doPrepareSSHClientInternal(canDelete: Boolean) {
-        TestUtils.saveSshConnectionSettings(hostKeyPair, "user", "password", userKeyPair.private)
+        TestUtils.saveSshConnectionSettings(
+            hostKeyPair,
+            "user",
+            "password",
+            userKeyPair.private,
+            null
+        )
 
         val fileAttributes = mock(FileAttributes::class.java).apply {
             `when`(type).thenReturn(FileMode.Type.DIRECTORY)

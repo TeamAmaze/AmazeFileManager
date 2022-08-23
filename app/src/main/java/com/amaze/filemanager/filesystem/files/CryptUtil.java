@@ -24,27 +24,11 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.KITKAT;
 
-import android.content.Context;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.HybridFile;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.utils.AESCrypt;
-import com.amaze.filemanager.utils.ProgressHandler;
-import com.amaze.filemanager.utils.security.SecretKeygen;
-
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
+import java.security.Key;
 import java.security.spec.AlgorithmParameterSpec;
 import java.util.ArrayList;
 
@@ -52,6 +36,29 @@ import javax.crypto.Cipher;
 import javax.crypto.CipherOutputStream;
 import javax.crypto.spec.GCMParameterSpec;
 import javax.crypto.spec.IvParameterSpec;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.HybridFile;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.MakeDirectoryOperation;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
+import com.amaze.filemanager.utils.AESCrypt;
+import com.amaze.filemanager.utils.ProgressHandler;
+import com.amaze.filemanager.utils.security.SecretKeygen;
+
+import android.content.Context;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import kotlin.io.ByteStreamsKt;
+import kotlin.io.ConstantsKt;
 
 /**
  * Created by vishal on 6/4/17.
@@ -88,6 +95,7 @@ public class CryptUtil {
   private static final String IV =
       BuildConfig.CRYPTO_IV; // 12 byte long IV supported by android for GCM
   private static final int GCM_TAG_LENGTH = 128;
+  private final Logger LOG = LoggerFactory.getLogger(CryptUtil.class);
 
   public static final String CRYPT_EXTENSION = ".aze";
   public static final String AESCRYPT_EXTENSION = ".aes";
@@ -193,12 +201,7 @@ public class CryptUtil {
           sourceFile.isRoot(),
           file -> {
             try {
-              decrypt(
-                context,
-                file,
-                hFile,
-                useAescrypt,
-                password);
+              decrypt(context, file, hFile, useAescrypt, password);
             } catch (IOException | GeneralSecurityException e) {
               throw new IllegalStateException(e); // throw unchecked exception, no throws needed
             }
@@ -284,8 +287,8 @@ public class CryptUtil {
           });
     } else {
 
-      if (sourceFile.getName(context).endsWith(CRYPT_EXTENSION) ||
-        sourceFile.getName(context).endsWith(AESCRYPT_EXTENSION)) {
+      if (sourceFile.getName(context).endsWith(CRYPT_EXTENSION)
+          || sourceFile.getName(context).endsWith(AESCRYPT_EXTENSION)) {
         failedOps.add(sourceFile);
         return;
       }
@@ -326,38 +329,52 @@ public class CryptUtil {
    *
    * @param inputStream stream associated with the file to be encrypted
    * @param outputStream stream associated with new output encrypted file
-   * @param operationMode either <code>Cipher.ENCRYPT_MODE</code> or <code>Cipher.DECRYPT_MODE</code>
+   * @param operationMode either <code>Cipher.ENCRYPT_MODE</code> or <code>Cipher.DECRYPT_MODE
+   *     </code>
    */
-  private void doEncrypt(BufferedInputStream inputStream, BufferedOutputStream outputStream, int operationMode)
+  private void doEncrypt(
+      BufferedInputStream inputStream, BufferedOutputStream outputStream, int operationMode)
       throws GeneralSecurityException, IOException {
 
     Cipher cipher = Cipher.getInstance(ALGO_AES);
     AlgorithmParameterSpec parameterSpec;
-    if(SDK_INT >= KITKAT) {
+    if (SDK_INT >= KITKAT) {
       parameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, IV.getBytes());
     } else {
       parameterSpec = new IvParameterSpec(IV.getBytes());
     }
-    cipher.init(operationMode, SecretKeygen.INSTANCE.getSecretKey(), parameterSpec);
 
-    byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
-    int count;
-
-    CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
-
-    try {
-      while ((count = inputStream.read(buffer)) != -1) {
-        if (!progressHandler.getCancelled()) {
-          cipherOutputStream.write(buffer, 0, count);
-          ServiceWatcherUtil.position += count;
-        } else break;
-      }
-    } catch (Exception x) {
-      x.printStackTrace();
-    } finally {
-      cipherOutputStream.flush();
-      cipherOutputStream.close();
+    Key secretKey = SecretKeygen.INSTANCE.getSecretKey();
+    if (secretKey == null) {
+      // Discard crypto setup objects and just pipe input to output
+      parameterSpec = null;
+      cipher = null;
+      ByteStreamsKt.copyTo(inputStream, outputStream, ConstantsKt.DEFAULT_BUFFER_SIZE);
       inputStream.close();
+      outputStream.close();
+    } else {
+      cipher.init(operationMode, SecretKeygen.INSTANCE.getSecretKey(), parameterSpec);
+
+      byte[] buffer = new byte[GenericCopyUtil.DEFAULT_BUFFER_SIZE];
+      int count;
+
+      CipherOutputStream cipherOutputStream = new CipherOutputStream(outputStream, cipher);
+
+      try {
+        while ((count = inputStream.read(buffer)) != -1) {
+          if (!progressHandler.getCancelled()) {
+            cipherOutputStream.write(buffer, 0, count);
+            ServiceWatcherUtil.position += count;
+          } else break;
+        }
+      } catch (Exception x) {
+        LOG.error("I/O error writing output", x);
+      } finally {
+        cipherOutputStream.flush();
+        cipherOutputStream.close();
+        inputStream.close();
+        outputStream.close();
+      }
     }
   }
 

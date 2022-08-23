@@ -20,18 +20,21 @@
 
 package com.amaze.filemanager.utils;
 
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.CAN_CREATE_FILES;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.DOESNT_EXIST;
-import static com.amaze.filemanager.file_operations.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.COMPRESS;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.DELETE;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.EXTRACT;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FILE;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.NEW_FOLDER;
-import static com.amaze.filemanager.file_operations.filesystem.OperationTypeKt.RENAME;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.CAN_CREATE_FILES;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.DOESNT_EXIST;
+import static com.amaze.filemanager.fileoperations.filesystem.FolderStateKt.WRITABLE_OR_ON_SDCARD;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.COMPRESS;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.DELETE;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.EXTRACT;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.NEW_FILE;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.NEW_FOLDER;
+import static com.amaze.filemanager.fileoperations.filesystem.OperationTypeKt.RENAME;
 
 import java.io.File;
 import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
@@ -42,8 +45,8 @@ import com.amaze.filemanager.asynchronous.services.ZipService;
 import com.amaze.filemanager.database.CloudHandler;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.file_operations.filesystem.FolderState;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.FolderState;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -60,7 +63,7 @@ import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.leinardi.android.speeddial.SpeedDialView;
 
@@ -87,8 +90,9 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.PreferenceManager;
 
-/** Created by root on 11/22/15, modified by Emmanuel Messulam<emmanuelbendavid@gmail.com> */
 public class MainActivityHelper {
+
+  private static final Logger LOG = LoggerFactory.getLogger(MainActivityHelper.class);
 
   private MainActivity mainActivity;
   private DataUtils dataUtils = DataUtils.getInstance();
@@ -399,7 +403,7 @@ public class MainActivityHelper {
                         newEntry.setPath(newPath);
                         cryptHandler.updateEntry(oldEntry, newEntry);
                       } catch (Exception e) {
-                        e.printStackTrace();
+                        LOG.warn("failure after rename, couldn't change the encrypted entry", e);
                         // couldn't change the entry, leave it alone
                       }
                     }
@@ -427,7 +431,7 @@ public class MainActivityHelper {
         });
   }
 
-  public @FolderState int checkFolder(final File folder, Context context) {
+  public @FolderState int checkFolder(final @NonNull File folder, Context context) {
     return checkFolder(folder.getAbsolutePath(), OpenMode.FILE, context);
   }
 
@@ -676,15 +680,33 @@ public class MainActivityHelper {
     else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
   }
 
-  public void extractFile(File file) {
-    int mode = checkFolder(file.getParentFile(), mainActivity);
-    if (mode == 2) {
-      mainActivity.oppathe = (file.getPath());
-      mainActivity.operation = EXTRACT;
-    } else if (mode == 1) {
-      Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
-      decompressor.decompress(file.getPath());
-    } else Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+  public void extractFile(@NonNull File file) {
+    final File parent = file.getParentFile();
+    if (parent == null) {
+      Toast.makeText(mainActivity, R.string.error, Toast.LENGTH_SHORT).show();
+      LOG.warn("File's parent is null " + file.getPath());
+      return;
+    }
+
+    @FolderState int mode = checkFolder(parent, mainActivity);
+    switch (mode) {
+      case WRITABLE_OR_ON_SDCARD:
+        Decompressor decompressor = CompressedHelper.getCompressorInstance(mainActivity, file);
+        if (decompressor == null) {
+          Toast.makeText(mainActivity, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG)
+              .show();
+          return;
+        }
+        decompressor.decompress(file.getPath());
+        break;
+      case CAN_CREATE_FILES:
+        mainActivity.oppathe = file.getPath();
+        mainActivity.operation = EXTRACT;
+        break;
+      default:
+        Toast.makeText(mainActivity, R.string.not_allowed, Toast.LENGTH_SHORT).show();
+        break;
+    }
   }
 
   /** Retrieve a path with {@link OTGUtil#PREFIX_OTG} as prefix */

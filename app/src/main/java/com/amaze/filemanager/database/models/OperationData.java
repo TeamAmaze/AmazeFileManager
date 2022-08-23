@@ -28,13 +28,13 @@ import static com.amaze.filemanager.database.UtilsHandler.Operation.LIST;
 import static com.amaze.filemanager.database.UtilsHandler.Operation.SFTP;
 import static com.amaze.filemanager.database.UtilsHandler.Operation.SMB;
 
+import com.amaze.filemanager.database.UtilsHandler;
+import com.amaze.filemanager.database.UtilsHandler.Operation;
+
 import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
-import com.amaze.filemanager.database.UtilsHandler;
-import com.amaze.filemanager.database.UtilsHandler.Operation;
 
 public class OperationData {
   public final Operation type;
@@ -82,12 +82,12 @@ public class OperationData {
    * UtilsHandler#removeFromDatabase(OperationData)}
    */
   public OperationData(
-          @NonNull Operation type,
-          @NonNull String path,
-          @NonNull String name,
-          @Nullable String hostKey,
-          @Nullable String sshKeyName,
-          @Nullable String sshKey) {
+      @NonNull Operation type,
+      @NonNull String path,
+      @NonNull String name,
+      @Nullable String hostKey,
+      @Nullable String sshKeyName,
+      @Nullable String sshKey) {
     if (type != SFTP) throw new IllegalArgumentException("Wrong constructor for object type");
 
     this.type = type;

@@ -39,6 +39,7 @@ import com.amaze.filemanager.database.models.OperationData;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 
 import android.os.Looper;
+import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -62,7 +63,8 @@ public abstract class TestUtils {
       @NonNull KeyPair hostKeyPair,
       @NonNull String validUsername,
       @Nullable String validPassword,
-      @Nullable PrivateKey privateKey) {
+      @Nullable PrivateKey privateKey,
+      @Nullable String subpath) {
 
     UtilsHandler utilsHandler = AppConfig.getInstance().getUtilsHandler();
 
@@ -84,6 +86,10 @@ public abstract class TestUtils {
     if (validPassword != null) fullUri.append(':').append(validPassword);
 
     fullUri.append("@127.0.0.1:22222");
+
+    if (!TextUtils.isEmpty(subpath)) {
+      fullUri.append(subpath);
+    }
 
     if (validPassword != null)
       utilsHandler.saveToDatabase(

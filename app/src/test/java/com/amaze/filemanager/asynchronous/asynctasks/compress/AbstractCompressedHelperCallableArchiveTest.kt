@@ -21,27 +21,38 @@
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Environment
-import org.junit.Assert.*
+import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.io.File
 import java.time.ZoneId
 import java.time.ZonedDateTime
 
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
-abstract class AbstractCompressedHelperCallableArchiveTest : AbstractCompressedHelperCallableTest() {
+abstract class AbstractCompressedHelperCallableArchiveTest :
+    AbstractCompressedHelperCallableTest() {
 
-    private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
-        2018,
-        5,
-        29,
-        10,
-        38,
-        0,
-        0,
-        ZoneId.of("UTC")
-    ).toInstant().toEpochMilli()
+    companion object {
+        @JvmStatic
+        private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
+            2018,
+            5,
+            29,
+            10,
+            38,
+            0,
+            0,
+            ZoneId.of("UTC")
+        ).toInstant().toEpochMilli()
+    }
 
     protected abstract val archiveFileName: String
+
+    /**
+     * Assert archive entry timestamp is correct.
+     */
+    protected open fun assertEntryTimestampCorrect(entry: CompressedObjectParcelable) =
+        assertEquals(EXPECTED_TIMESTAMP, entry.date)
 
     /**
      * Test browse archive top level.
@@ -52,7 +63,7 @@ abstract class AbstractCompressedHelperCallableArchiveTest : AbstractCompressedH
         val result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("test-archive", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
     }
 
     /**
@@ -64,60 +75,66 @@ abstract class AbstractCompressedHelperCallableArchiveTest : AbstractCompressedH
         var result = task.call()
         assertEquals("Thrown from $javaClass.name", 5, result.size.toLong())
         assertEquals("1", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         assertEquals("2", result[1].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[1].date)
+        assertEntryTimestampCorrect(result[1])
         assertEquals("3", result[2].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[2].date)
+        assertEntryTimestampCorrect(result[2])
         assertEquals("4", result[3].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[3].date)
+        assertEntryTimestampCorrect(result[3])
         assertEquals("a", result[4].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[4].date)
+        assertEntryTimestampCorrect(result[4])
         task = createCallable("test-archive/1")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("8", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/2")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("7", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/3")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("6", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/4")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("5", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/a")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("b", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/a/b")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("c", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/a/b/c")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("d", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         task = createCallable("test-archive/a/b/c/d")
         result = task.call()
         assertEquals(1, result.size.toLong())
         assertEquals("lipsum.bin", result[0].name)
-        assertEquals(EXPECTED_TIMESTAMP, result[0].date)
+        assertEntryTimestampCorrect(result[0])
         // assertEquals(512, result.get(0).size);
     }
 
     protected fun createCallable(relativePath: String): CompressedHelperCallable =
-        doCreateCallable(File(Environment.getExternalStorageDirectory(), archiveFileName), relativePath)
+        doCreateCallable(
+            File(Environment.getExternalStorageDirectory(), archiveFileName),
+            relativePath
+        )
 
-    protected abstract fun doCreateCallable(archive: File, relativePath: String): CompressedHelperCallable
+    protected abstract fun doCreateCallable(
+        archive: File,
+        relativePath: String
+    ): CompressedHelperCallable
 }

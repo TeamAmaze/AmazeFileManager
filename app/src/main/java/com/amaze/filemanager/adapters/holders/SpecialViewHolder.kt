@@ -36,7 +36,7 @@ class SpecialViewHolder(
     c: Context,
     view: View,
     utilsProvider: UtilitiesProvider,
-    val type: Int,
+    val type: Int
 ) : RecyclerView.ViewHolder(view) {
     // each data item is just a string in this case
     private val txtTitle: TextView = view.findViewById(R.id.text)

@@ -22,16 +22,23 @@ package com.amaze.filemanager.ui.fragments.data
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.adapters.data.IconDataParcelable
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable
 import com.amaze.filemanager.database.CloudHandler
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_GRID_COLUMNS_DEFAULT
 import com.amaze.filemanager.utils.DataUtils
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainFragmentViewModel : ViewModel() {
 
@@ -45,7 +52,7 @@ class MainFragmentViewModel : ViewModel() {
 
     var fileCount = 0
     var folderCount: Int = 0
-    var columns: Int = 0
+    var columns: Int? = null
     var smbPath: String? = null
     var searchHelper = ArrayList<HybridFileParcelable>()
     var no = 0
@@ -141,15 +148,12 @@ class MainFragmentViewModel : ViewModel() {
      * Initialize column number from preference
      */
     fun initColumns(sharedPreferences: SharedPreferences) {
-        if (columns == 0) {
-            sharedPreferences.getString(
-                PreferencesConstants
-                    .PREFERENCE_GRID_COLUMNS,
-                "-1"
-            )?.toInt()?.run {
-                columns = this
-            }
-        }
+        val columnPreference = sharedPreferences.getString(
+            PREFERENCE_GRID_COLUMNS,
+            PREFERENCE_GRID_COLUMNS_DEFAULT
+        )
+        Objects.requireNonNull(columnPreference)
+        columns = columnPreference?.toInt()
     }
 
     /**
@@ -218,5 +222,23 @@ class MainFragmentViewModel : ViewModel() {
             }
         }
         return selected
+    }
+
+    /**
+     * Get the position of an item
+     */
+    fun getScrollPosition(title: String): MutableLiveData<Int> {
+        val mutableLiveData: MutableLiveData<Int> = MutableLiveData(-1)
+
+        viewModelScope.launch(Dispatchers.IO) {
+            adapterListItems?.forEachIndexed { index, item ->
+                if (item.layoutElementParcelable != null
+                    && item.layoutElementParcelable?.title.equals(title)) {
+                    item.setChecked(true)
+                    mutableLiveData.postValue(index)
+                }
+            }
+        }
+        return mutableLiveData
     }
 }

@@ -140,6 +140,14 @@
         <item name="behavior_hideable">false</item>
     </style>
 
+    <!-- Amaze utils style -->
+    <style name="Custom.Dialog.Dark" parent="Theme.AppCompat.Dialog.Alert">
+        <item name="android:windowBackground">@drawable/background_curved</item>
+        <item name="android:windowMinWidthMinor">85%</item>
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
     <!-- styles for preferences -->
     <!-- light -->
     <style name="pref_accent_light_red" parent="appCompatLight">

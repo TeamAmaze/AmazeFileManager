@@ -22,10 +22,11 @@ package com.amaze.filemanager.database;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.models.explorer.Tab;
-
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +37,7 @@ import io.reactivex.schedulers.Schedulers;
 
 /** Created by Vishal on 9/17/2014. */
 public class TabHandler {
+  private static final Logger LOG = LoggerFactory.getLogger(TabHandler.class);
 
   private final ExplorerDatabase database;
 
@@ -74,7 +76,7 @@ public class TabHandler {
       return database.tabDao().find(tabNo).subscribeOn(Schedulers.io()).blockingGet();
     } catch (Exception e) {
       // catch error to handle Single#onError for blockingGet
-      Log.e(getClass().getSimpleName(), e.getMessage());
+      LOG.error(e.getMessage());
       return null;
     }
   }

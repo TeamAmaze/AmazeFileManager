@@ -24,7 +24,7 @@ import android.content.Context
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Assert.fail
@@ -38,16 +38,25 @@ import java.util.concurrent.CountDownLatch
 
 abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
 
-    private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
-        2018,
-        5,
-        29,
-        10,
-        38,
-        0,
-        0,
-        ZoneId.of("UTC")
-    ).toInstant().toEpochMilli()
+    companion object {
+        @JvmStatic
+        private val EXPECTED_TIMESTAMP = ZonedDateTime.of(
+            2018,
+            5,
+            29,
+            10,
+            38,
+            0,
+            0,
+            ZoneId.of("UTC")
+        ).toInstant().toEpochMilli()
+    }
+
+    /**
+     * run assertion on file timestamp correctness.
+     */
+    protected open fun assertFileTimestampCorrect(file: File) =
+        assertEquals(EXPECTED_TIMESTAMP, file.lastModified())
 
     /**
      * Test extractor ability to correct problematic archive entries for security
@@ -145,27 +154,27 @@ abstract class AbstractArchiveExtractorTest : AbstractExtractorTest() {
 
             File(File(this, "1"), "8").run {
                 assertTrue(FileInputStream(this).readBytes().size == 2)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
+                assertFileTimestampCorrect(this)
             }
 
             File(File(this, "2"), "7").run {
                 assertTrue(FileInputStream(this).readBytes().size == 3)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
+                assertFileTimestampCorrect(this)
             }
 
             File(File(this, "3"), "6").run {
                 assertTrue(FileInputStream(this).readBytes().size == 4)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
+                assertFileTimestampCorrect(this)
             }
 
             File(File(this, "4"), "5").run {
                 assertTrue(FileInputStream(this).readBytes().size == 5)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
+                assertFileTimestampCorrect(this)
             }
 
             File(File(this, "a/b/c/d"), "lipsum.bin").run {
                 assertTrue(FileInputStream(this).readBytes().size == 512)
-                assertEquals(EXPECTED_TIMESTAMP, lastModified())
+                assertFileTimestampCorrect(this)
             }
         }
     }

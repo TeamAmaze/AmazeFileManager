@@ -22,7 +22,6 @@ package com.amaze.filemanager.asynchronous.asynctasks.movecopy
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -31,12 +30,14 @@ import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
 import com.amaze.filemanager.database.CryptHandler
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.CryptUtil
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 data class MoveFilesReturn(
     val movedCorrectly: Boolean,
@@ -54,9 +55,7 @@ class MoveFilesTask(
     val paths: ArrayList<String>
 ) : Task<MoveFilesReturn, MoveFiles> {
 
-    companion object {
-        private val TAG = MoveFilesTask::class.java.simpleName
-    }
+    private val log: Logger = LoggerFactory.getLogger(MoveFilesTask::class.java)
 
     private val task: MoveFiles = MoveFiles(files, isRootExplorer, context, mode, paths)
     private val applicationContext: Context = context.applicationContext
@@ -64,7 +63,7 @@ class MoveFilesTask(
     override fun getTask(): MoveFiles = task
 
     override fun onError(error: Throwable) {
-        Log.e(TAG, "Unexpected error on file move: ", error)
+        log.error("Unexpected error on file move: ", error)
     }
 
     override fun onFinish(value: MoveFilesReturn) {

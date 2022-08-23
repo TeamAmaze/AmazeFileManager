@@ -20,9 +20,12 @@
 
 package com.amaze.filemanager.filesystem;
 
-import static com.amaze.filemanager.file_operations.filesystem.OpenMode.DOCUMENT_FILE;
+import static com.amaze.filemanager.fileoperations.filesystem.OpenMode.DOCUMENT_FILE;
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.ContentResolver;
@@ -30,7 +33,6 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Parcel;
 import android.os.Parcelable;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -41,6 +43,7 @@ import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 
 public class HybridFileParcelable extends HybridFile implements Parcelable {
+  private final Logger LOG = LoggerFactory.getLogger(HybridFileParcelable.class);
 
   private long date, size;
   private boolean isDirectory;
@@ -151,7 +154,7 @@ public class HybridFileParcelable extends HybridFile implements Parcelable {
       // TODO: throw IllegalArgumentException is not a good idea here?
       // FIXME: OpenMode is mutable (which is a bad idea) hence check for OpenMode.DOCUMENT_FILE
       //        will not make sense either.
-      Log.d(TAG, "Provided URI is not content URI, skipping. Given URI: " + fullUri.toString());
+      LOG.debug("Provided URI is not content URI, skipping. Given URI: " + fullUri.toString());
     } else {
       this.fullUri = fullUri;
     }

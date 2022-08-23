@@ -18,8 +18,8 @@ android {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
         targetSdkVersion 30
-        versionCode 107
-        versionName "3.6.7"
+        versionCode 110
+        versionName "3.7.2"
         multiDexEnabled true
 
         vectorDrawables.useSupportLibrary = true
@@ -123,7 +123,7 @@ dependencies {
     implementation 'androidx.palette:palette-ktx:1.0.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation "androidx.room:room-runtime:$roomVersion"
-    implementation "com.android.billingclient:billing:$androidBillingVersion"
+    playImplementation "com.android.billingclient:billing:$androidBillingVersion"
     kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
@@ -166,28 +166,21 @@ dependencies {
 
     implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
 
-    implementation "com.github.junrar:junrar:$junrarVersion"
+    playImplementation "com.github.junrar:junrar:$junrarVersion"
 
     implementation "com.afollestad.material-dialogs:core:$materialDialogsVersion"
     implementation "com.afollestad.material-dialogs:commons:$materialDialogsVersion"
 
     // https://mvnrepository.com/artifact/org.apache.mina/mina-core
-
     implementation group: 'org.apache.mina', name: 'mina-core', version: '2.0.16'
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-api
-    implementation group: 'org.slf4j', name: 'slf4j-api', version: slf4jVersion
-    // https://mvnrepository.com/artifact/org.slf4j/slf4j-simple
-    implementation group: 'org.slf4j', name: 'slf4j-simple', version: slf4jVersion
-    // https://mvnrepository.com/artifact/org.slf4j/jcl-over-slf4j
-    implementation group: 'org.slf4j', name: 'jcl-over-slf4j', version: slf4jVersion
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.0'
+    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.4'
 
     //implementation files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.0'
+    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.4'
 
     implementation 'org.greenrobot:eventbus:3.3.1'
 
@@ -196,7 +189,7 @@ dependencies {
     implementation "com.github.topjohnwu.libsu:core:${libsuVersion}"
     implementation "com.github.topjohnwu.libsu:io:${libsuVersion}"
 
-    implementation 'com.cloudrail:cloudrail-si-android:2.22.4'
+    playImplementation 'com.cloudrail:cloudrail-si-android:2.22.4'
 
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.2'//Nice charts and graphs
 
@@ -245,6 +238,8 @@ dependencies {
     implementation "androidx.core:core-ktx:$kotlin_version"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
+    runtimeOnly 'org.slf4j:slf4j-api:1.7.32'
+    runtimeOnly "com.github.tony19:logback-android:$logbackAndroidVersion"
 }
 
 configurations.all {
@@ -255,6 +250,15 @@ configurations.all {
             // These two lines are added to prevent possible class clashes between awaitility (which uses hamcrest 2.1) and junit (which uses hamcrest 1.3).
             substitute module('org.hamcrest:hamcrest-core:1.3') with module("org.hamcrest:hamcrest:2.1")
             substitute module('org.hamcrest:hamcrest-library:1.3') with module("org.hamcrest:hamcrest:2.1")
+        }
+    }
+}
+
+configurations.all { config ->
+    // This workarounds logback's multiple bindings problem when running tests.
+    if (config.name.toLowerCase().contains('test')) {
+        config.resolutionStrategy.dependencySubstitution {
+            substitute module("com.github.tony19:logback-android:$logbackAndroidVersion") with module("ch.qos.logback:logback-classic:1.2.9")
         }
     }
 }

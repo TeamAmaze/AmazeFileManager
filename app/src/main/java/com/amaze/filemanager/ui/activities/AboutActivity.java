@@ -20,13 +20,22 @@
 
 package com.amaze.filemanager.ui.activities;
 
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.utils.Utils.openURL;
+
+import java.io.File;
+import java.util.ArrayList;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.ui.dialogs.share.ShareTask;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.Billing;
+import com.amaze.filemanager.utils.PreferenceUtils;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
@@ -35,9 +44,9 @@ import com.mikepenz.aboutlibraries.LibsBuilder;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
@@ -45,12 +54,12 @@ import android.widget.TextView;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.FileProvider;
 import androidx.palette.graphics.Palette;
 
 /** Created by vishal on 27/7/16. */
 public class AboutActivity extends ThemedActivity implements View.OnClickListener {
-
-  private static final String TAG = "AboutActivity";
+  private final Logger LOG = LoggerFactory.getLogger(AboutActivity.class);
 
   private static final int HEADER_HEIGHT = 1024;
   private static final int HEADER_WIDTH = 500;
@@ -75,19 +84,21 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   private static final String URL_REPO_XDA =
       "http://forum.xda-developers.com/android/apps-games/app-amaze-file-managermaterial-theme-t2937314";
   private static final String URL_REPO_RATE = "market://details?id=com.amaze.filemanager";
+  public static final String PACKAGE_AMAZE_UTILS = "com.amaze.fileutilities";
+  public static final String URL_AMAZE_UTILS = "market://details?id=" + PACKAGE_AMAZE_UTILS;
 
   @Override
   public void onCreate(@Nullable Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-
-    if (getAppTheme().equals(AppTheme.DARK)) {
-      setTheme(R.style.aboutDark);
-    } else if (getAppTheme().equals(AppTheme.BLACK)) {
-      setTheme(R.style.aboutBlack);
-    } else {
-      setTheme(R.style.aboutLight);
+    if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
+      if (getAppTheme().equals(AppTheme.DARK)) {
+        setTheme(R.style.aboutDark);
+      } else if (getAppTheme().equals(AppTheme.BLACK)) {
+        setTheme(R.style.aboutBlack);
+      } else {
+        setTheme(R.style.aboutLight);
+      }
     }
-
     setContentView(R.layout.activity_about);
 
     mAppBarLayout = findViewById(R.id.appBarLayout);
@@ -133,6 +144,19 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
         (v, hasFocus) -> {
           mAppBarLayout.setExpanded(hasFocus, true);
         });
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      if (getBoolean(PREFERENCE_COLORED_NAVIGATION)) {
+        getWindow().setNavigationBarColor(PreferenceUtils.getStatusColor(getPrimary()));
+      } else {
+        if (getAppTheme().equals(AppTheme.LIGHT)) {
+          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.white));
+        } else if (getAppTheme().equals(AppTheme.BLACK)) {
+          getWindow().setNavigationBarColor(Utils.getColor(this, android.R.color.black));
+        } else {
+          getWindow().setNavigationBarColor(Utils.getColor(this, R.color.holo_dark_background));
+        }
+      }
+    }
   }
 
   /**
@@ -146,12 +170,12 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
     CoordinatorLayout.LayoutParams layoutParams =
         (CoordinatorLayout.LayoutParams) mAppBarLayout.getLayoutParams();
     float vidAspectRatio = (float) HEADER_WIDTH / (float) HEADER_HEIGHT;
-    Log.d(TAG, vidAspectRatio + "");
+    LOG.debug(vidAspectRatio + "");
     int screenWidth = getResources().getDisplayMetrics().widthPixels;
     float reqHeightAsPerAspectRatio = (float) screenWidth * vidAspectRatio;
-    Log.d(TAG, reqHeightAsPerAspectRatio + "");
+    LOG.debug(reqHeightAsPerAspectRatio + "");
 
-    Log.d(TAG, "new width: " + screenWidth + " and height: " + reqHeightAsPerAspectRatio);
+    LOG.debug("new width: " + screenWidth + " and height: " + reqHeightAsPerAspectRatio);
 
     layoutParams.width = screenWidth;
     layoutParams.height = (int) reqHeightAsPerAspectRatio;
@@ -188,6 +212,21 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
         openURL(URL_REPO_ISSUES, this);
         break;
 
+      case R.id.relative_layout_share_logs:
+        try {
+          Uri logUri =
+              FileProvider.getUriForFile(
+                  this,
+                  this.getPackageName(),
+                  new File(String.format("/data/data/%s/cache/logs.txt", getPackageName())));
+          ArrayList<Uri> logUriList = new ArrayList<>();
+          logUriList.add(logUri);
+          new ShareTask(this, logUriList, this.getAppTheme(), getAccent()).execute("text/plain");
+        } catch (Exception e) {
+          LOG.warn("failed to share logs", e);
+        }
+        break;
+
       case R.id.relative_layout_changelog:
         openURL(URL_REPO_CHANGELOG, this);
         break;
@@ -216,7 +255,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
             libsBuilder.withActivityTheme(R.style.AboutLibrariesTheme_Black);
             break;
           default:
-            LogHelper.logOnProductionOrCrash(TAG, "Incorrect value for switch");
+            LogHelper.logOnProductionOrCrash("Incorrect value for switch");
         }
 
         libsBuilder.start(this);
@@ -259,7 +298,7 @@ public class AboutActivity extends ThemedActivity implements View.OnClickListene
   @Override
   protected void onDestroy() {
     super.onDestroy();
-    Log.d(TAG, "Destroying the manager.");
+    LOG.debug("Destroying the manager.");
     if (billing != null) {
       billing.destroyBillingInstance();
     }

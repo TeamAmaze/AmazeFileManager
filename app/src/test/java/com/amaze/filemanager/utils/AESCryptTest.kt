@@ -47,7 +47,8 @@ class AESCryptTest {
         val out = ByteArrayOutputStream()
         var crypter = AESCrypt("12345678")
         crypter.encrypt(
-            `in` = ByteArrayInputStream(contents), out = out,
+            `in` = ByteArrayInputStream(contents),
+            out = out,
             progressHandler = ProgressHandler()
         )
         out.close()
@@ -69,7 +70,8 @@ class AESCryptTest {
         val out = ByteArrayOutputStream()
         var crypter = AESCrypt("password")
         crypter.encrypt(
-            `in` = ByteArrayInputStream(contents), out = out,
+            `in` = ByteArrayInputStream(contents),
+            out = out,
             progressHandler = ProgressHandler()
         )
         out.close()

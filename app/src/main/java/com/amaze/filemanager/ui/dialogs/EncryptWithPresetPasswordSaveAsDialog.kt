@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.ui.dialogs
 
 import android.annotation.SuppressLint
@@ -6,6 +26,7 @@ import android.content.Intent
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
+import androidx.core.text.HtmlCompat
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -20,8 +41,8 @@ import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils.EncryptButtonC
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.dialogs.EncryptAuthenticateDialog.createFilenameValidator
 import com.amaze.filemanager.ui.dialogs.EncryptAuthenticateDialog.createUseAzeEncryptCheckboxOnCheckedChangeListener
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.ENCRYPT_PASSWORD_MASTER
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.ENCRYPT_PASSWORD_FINGERPRINT
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.ENCRYPT_PASSWORD_MASTER
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator
 
 /**
@@ -65,6 +86,12 @@ object EncryptWithPresetPasswordSaveAsDialog {
                 }
             }
             val useAzeEncrypt = vb.checkboxUseAze
+            val usageTextInfo = vb.textViewCryptInfo.apply {
+                text = HtmlCompat.fromHtml(
+                    main.getString(R.string.encrypt_option_use_aescrypt_desc),
+                    HtmlCompat.FROM_HTML_MODE_LEGACY
+                )
+            }
             if (ENCRYPT_PASSWORD_FINGERPRINT != password) {
                 useAzeEncrypt.setOnCheckedChangeListener(
                     createUseAzeEncryptCheckboxOnCheckedChangeListener(
@@ -72,12 +99,13 @@ object EncryptWithPresetPasswordSaveAsDialog {
                         this,
                         preferences,
                         main,
-                        encryptSaveAsEditText
+                        encryptSaveAsEditText,
+                        usageTextInfo
                     )
                 )
             } else {
                 useAzeEncrypt.visibility = View.INVISIBLE
-                vb.textViewAzecryptInfo.visibility = View.INVISIBLE
+                usageTextInfo.visibility = View.INVISIBLE
             }
 
             val saveAsDialog = MaterialDialog.Builder(c)

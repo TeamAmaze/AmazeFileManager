@@ -28,7 +28,7 @@ import java.io.IOException
  * Template class for executing actions with [SSHClient] while leave the complexities of
  * handling connection setup/teardown to [SshClientUtils].
  */
-abstract class SshClientTemplate <T>
+abstract class SshClientTemplate<T>
 /**
  * Constructor, with closeClientOnFinish set to true (that the connection must close after `
  * execute`.

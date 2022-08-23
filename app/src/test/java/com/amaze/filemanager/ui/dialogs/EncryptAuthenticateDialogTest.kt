@@ -1,8 +1,31 @@
+/*
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.ui.dialogs
 
 import android.content.Intent
 import android.os.Environment
 import androidx.appcompat.widget.AppCompatCheckBox
+import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.text.HtmlCompat
+import androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT
 import androidx.preference.PreferenceManager
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
@@ -13,7 +36,7 @@ import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_AESCRYPT
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_ENCRYPT_TARGET
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_OPEN_MODE
 import com.amaze.filemanager.asynchronous.services.EncryptService.TAG_SOURCE
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RandomPathGenerator
 import com.amaze.filemanager.filesystem.files.CryptUtil.AESCRYPT_EXTENSION
@@ -21,7 +44,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil.CRYPT_EXTENSION
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils
 import com.amaze.filemanager.test.getString
 import com.amaze.filemanager.ui.activities.MainActivity
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout
 import com.google.android.material.textfield.TextInputEditText
 import org.junit.Assert.assertEquals
@@ -49,6 +72,7 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
     private lateinit var editTextEncryptPassword: TextInputEditText
     private lateinit var editTextEncryptPasswordConfirm: TextInputEditText
     private lateinit var checkboxUseAze: AppCompatCheckBox
+    private lateinit var textViewCryptInfo: AppCompatTextView
     private lateinit var okButton: MDButton
 
     /**
@@ -60,7 +84,8 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
         file = File(
             Environment.getExternalStorageDirectory(),
             RandomPathGenerator.generateRandomPath(
-                randomizer, 16
+                randomizer,
+                16
             )
         )
     }
@@ -140,9 +165,15 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             editTextEncryptPasswordConfirm.setText("")
             assertFalse(okButton.isEnabled)
             assertEquals(getString(R.string.field_empty), tilEncryptPassword.error)
+            editTextEncryptPassword.setText("     ")
+            editTextEncryptPasswordConfirm.setText("     ")
+            assertFalse(okButton.isEnabled)
+            assertEquals(getString(R.string.field_empty), tilEncryptPassword.error)
             editTextEncryptPassword.setText("abcdef")
             editTextEncryptPasswordConfirm.setText("abcdef")
             assertTrue(okButton.isEnabled)
+            editTextFileSaveAs.setText("")
+            assertFalse(okButton.isEnabled)
         })
     }
 
@@ -152,6 +183,8 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
     @Test
     fun testFilenameValidations() {
         performTest({ _, _, _ ->
+            editTextEncryptPassword.setText("abc")
+            editTextEncryptPasswordConfirm.setText("abc")
             editTextFileSaveAs.setText("${file.name}.error")
             assertFalse(okButton.isEnabled)
             assertEquals(
@@ -179,6 +212,18 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                 getString(R.string.encrypt_file_must_end_with_aze),
                 tilFileSaveAs.error
             )
+            editTextFileSaveAs.setText("")
+            assertFalse(okButton.isEnabled)
+            assertEquals(
+                getString(R.string.field_empty),
+                tilFileSaveAs.error
+            )
+            editTextFileSaveAs.setText("          ")
+            assertFalse(okButton.isEnabled)
+            assertEquals(
+                getString(R.string.field_empty),
+                tilFileSaveAs.error
+            )
             editTextFileSaveAs.setText("${file.name}.aze")
             assertTrue(okButton.isEnabled)
             assertNull(tilFileSaveAs.error)
@@ -192,6 +237,14 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
     fun testAzeCryptDialog() {
         performTest({ _, _, _ ->
             checkboxUseAze.isChecked = true
+            assertEquals(
+                HtmlCompat.fromHtml(
+                    getString(R.string.encrypt_option_use_azecrypt_desc),
+                    FROM_HTML_MODE_COMPACT
+                )
+                    .toString(),
+                textViewCryptInfo.text.toString()
+            )
             assertTrue(ShadowDialog.getShownDialogs().size == 2)
             assertTrue(ShadowDialog.getLatestDialog() is MaterialDialog)
             (ShadowDialog.getLatestDialog() as MaterialDialog).run {
@@ -211,10 +264,26 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertFalse(ShadowDialog.getLatestDialog().isShowing)
             assertTrue(true == editTextFileSaveAs.text?.endsWith(CRYPT_EXTENSION))
             checkboxUseAze.isChecked = false
+            assertEquals(
+                HtmlCompat.fromHtml(
+                    getString(R.string.encrypt_option_use_aescrypt_desc),
+                    FROM_HTML_MODE_COMPACT
+                )
+                    .toString(),
+                textViewCryptInfo.text.toString()
+            )
             assertEquals(2, ShadowDialog.getShownDialogs().size)
             assertFalse(ShadowDialog.getLatestDialog().isShowing)
             assertTrue(true == editTextFileSaveAs.text?.endsWith(AESCRYPT_EXTENSION))
             checkboxUseAze.isChecked = true
+            assertEquals(
+                HtmlCompat.fromHtml(
+                    getString(R.string.encrypt_option_use_azecrypt_desc),
+                    FROM_HTML_MODE_COMPACT
+                )
+                    .toString(),
+                textViewCryptInfo.text.toString()
+            )
             assertEquals(3, ShadowDialog.getShownDialogs().size)
             assertTrue(ShadowDialog.getLatestDialog().isShowing)
             assertTrue(true == editTextFileSaveAs.text?.endsWith(CRYPT_EXTENSION))
@@ -230,6 +299,21 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
             assertEquals(3, ShadowDialog.getShownDialogs().size) // no new dialog
             checkboxUseAze.isChecked = true
             assertEquals(3, ShadowDialog.getShownDialogs().size)
+        })
+    }
+
+    /**
+     * Test jump across textfields should keep button status.
+     */
+    @Test
+    fun testTextfieldFocusChanges() {
+        performTest({ _, _, _ ->
+            editTextFileSaveAs.requestFocus()
+            assertFalse(okButton.isEnabled)
+            editTextEncryptPasswordConfirm.requestFocus()
+            assertFalse(okButton.isEnabled)
+            editTextEncryptPassword.requestFocus()
+            assertFalse(okButton.isEnabled)
         })
     }
 
@@ -280,6 +364,9 @@ class EncryptAuthenticateDialogTest : AbstractEncryptDialogTests() {
                                 R.id.til_encrypt_password
                             )
                             checkboxUseAze = findViewById<AppCompatCheckBox>(R.id.checkbox_use_aze)
+                            textViewCryptInfo = findViewById<AppCompatTextView>(
+                                R.id.text_view_crypt_info
+                            )
                             okButton = getActionButton(DialogAction.POSITIVE)
                             assertFalse(okButton.isEnabled)
                             assertTrue(true == editTextFileSaveAs.text?.startsWith(file.name))

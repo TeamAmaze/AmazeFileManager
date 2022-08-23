@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.ui.fragments;
 
+import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT;
+
 import java.util.ArrayList;
 
 import com.amaze.filemanager.R;
@@ -51,7 +53,6 @@ import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.text.Html;
 import android.text.Spanned;
 import android.text.format.Formatter;
 import android.view.LayoutInflater;
@@ -64,6 +65,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.cardview.widget.CardView;
+import androidx.core.text.HtmlCompat;
 import androidx.fragment.app.Fragment;
 
 public class ProcessViewerFragment extends Fragment {
@@ -214,7 +216,7 @@ public class ProcessViewerFragment extends Fragment {
       mProgressFileNameText.setText(name);
 
       Spanned bytesText =
-          Html.fromHtml(
+          HtmlCompat.fromHtml(
               getResources().getString(R.string.written)
                   + " <font color='"
                   + accentColor
@@ -224,11 +226,12 @@ public class ProcessViewerFragment extends Fragment {
                   + getResources().getString(R.string.out_of)
                   + " <i>"
                   + Formatter.formatFileSize(getContext(), total)
-                  + "</i>");
+                  + "</i>",
+              FROM_HTML_MODE_COMPACT);
       mProgressBytesText.setText(bytesText);
 
       Spanned fileProcessedSpan =
-          Html.fromHtml(
+          HtmlCompat.fromHtml(
               getResources().getString(R.string.processing_file)
                   + " <font color='"
                   + accentColor
@@ -238,27 +241,30 @@ public class ProcessViewerFragment extends Fragment {
                   + getResources().getString(R.string.of)
                   + " <i>"
                   + dataPackage.getAmountOfSourceFiles()
-                  + "</i>");
+                  + "</i>",
+              FROM_HTML_MODE_COMPACT);
       mProgressFileText.setText(fileProcessedSpan);
 
       Spanned speedSpan =
-          Html.fromHtml(
+          HtmlCompat.fromHtml(
               getResources().getString(R.string.current_speed)
                   + ": <font color='"
                   + accentColor
                   + "'><i>"
                   + Formatter.formatFileSize(getContext(), dataPackage.getSpeedRaw())
-                  + "/s</font></i>");
+                  + "/s</font></i>",
+              FROM_HTML_MODE_COMPACT);
       mProgressSpeedText.setText(speedSpan);
 
       Spanned timerSpan =
-          Html.fromHtml(
+          HtmlCompat.fromHtml(
               getResources().getString(R.string.service_timer)
                   + ": <font color='"
                   + accentColor
                   + "'><i>"
                   + Utils.formatTimer(++looseTimeInSeconds)
-                  + "</font></i>");
+                  + "</font></i>",
+              FROM_HTML_MODE_COMPACT);
 
       mProgressTimer.setText(timerSpan);
 

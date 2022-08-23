@@ -1,3 +1,23 @@
+/*
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
+ *
+ * This file is part of Amaze File Manager.
+ *
+ * Amaze File Manager is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.os.Build.VERSION_CODES.*
@@ -44,19 +64,25 @@ class CompressedHelperForBadArchiveTest {
         for (
             archiveType in supportedArchiveExtensions().subtract(excludedArchiveTypes)
         ) {
-            val badArchive = File(Environment.getExternalStorageDirectory(), "bad-archive.$archiveType")
+            val badArchive = File(
+                Environment.getExternalStorageDirectory(),
+                "bad-archive.$archiveType"
+            )
             ByteArrayInputStream(data).copyTo(FileOutputStream(badArchive))
             val task = CompressedHelper.getCompressorInstance(
-                    ApplicationProvider.getApplicationContext(), badArchive
-            ).changePath("", false)
+                ApplicationProvider.getApplicationContext(),
+                badArchive
+            )
+            Assert.assertNotNull(task)
+            task!!
             try {
-                val result = task.call()
+                val result = task.changePath("", false).call()
                 Assert.assertNull("Thrown from ${task.javaClass}", result)
             } catch (exception: ArchiveException) {
                 Assert.assertNotNull(exception)
                 Assert.assertTrue(
-                        "Thrown from ${task.javaClass}: ${exception.javaClass} was thrown",
-                        ArchiveException::class.java.isAssignableFrom(exception.javaClass)
+                    "Thrown from ${task.javaClass}: ${exception.javaClass} was thrown",
+                    ArchiveException::class.java.isAssignableFrom(exception.javaClass)
                 )
             }
         }

@@ -44,7 +44,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.test.ShadowPasswordUtil;
 

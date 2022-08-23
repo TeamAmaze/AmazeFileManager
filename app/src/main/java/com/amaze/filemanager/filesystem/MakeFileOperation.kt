@@ -22,9 +22,10 @@ package com.amaze.filemanager.filesystem
 
 import android.content.Context
 import android.os.Build
-import android.util.Log
 import com.amaze.filemanager.ui.icons.MimeTypes
 import com.amaze.filemanager.utils.AppConstants
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -33,7 +34,7 @@ import java.io.OutputStreamWriter
 // This object is here to not polute the global namespace
 // All functions must be static
 object MakeFileOperation {
-    val LOG = "MakeFileOperation"
+    private val log: Logger = LoggerFactory.getLogger(MakeFileOperation::class.java)
 
     /**
      * Get a temp file.
@@ -61,7 +62,7 @@ object MakeFileOperation {
                 return true
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            log.warn("failed to make file", e)
         }
 
         // Try with Storage Access Framework.
@@ -73,12 +74,13 @@ object MakeFileOperation {
             return try {
                 (
                     document?.createFile(
-                        MimeTypes.getMimeType(file.path, file.isDirectory), file.name
+                        MimeTypes.getMimeType(file.path, file.isDirectory),
+                        file.name
                     )
                         != null
                     )
             } catch (e: UnsupportedOperationException) {
-                e.printStackTrace()
+                log.warn("Failed to create file on sd card using document file", e)
                 false
             }
         }
@@ -105,7 +107,7 @@ object MakeFileOperation {
                 false
             }
         } catch (io: IOException) {
-            Log.e(LOG, "Error writing file contents", io)
+            log.warn("Error writing file contents", io)
             false
         } finally {
             try {
@@ -118,7 +120,7 @@ object MakeFileOperation {
                     out.close()
                 }
             } catch (e: IOException) {
-                Log.e(LOG, "Error closing file output stream", e)
+                log.warn("Error closing file output stream", e)
             }
         }
     }

@@ -25,8 +25,11 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.concurrent.Callable;
 
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.Operations;
@@ -37,7 +40,6 @@ import com.amaze.filemanager.utils.DataUtils;
 import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.WorkerThread;
@@ -48,6 +50,8 @@ import androidx.annotation.WorkerThread;
  * directly but use {@link PrepareCopyTask} instead
  */
 public class MoveFiles implements Callable<MoveFilesReturn> {
+
+  private final Logger LOG = LoggerFactory.getLogger(MoveFiles.class);
 
   private final ArrayList<ArrayList<HybridFileParcelable>> files;
   private final ArrayList<String> paths;
@@ -101,7 +105,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
       destPath += baseFile.getPath().substring(baseFile.getPath().indexOf('?'));
     if (!isMoveOperationValid(baseFile, new HybridFile(mode, path))) {
       // TODO: 30/06/20 Replace runtime exception with generic exception
-      Log.w(getClass().getSimpleName(), "Some files failed to be moved", new RuntimeException());
+      LOG.warn("Some files failed to be moved", new RuntimeException());
       return new MoveFilesReturn(false, true, destinationSize, totalBytes);
     }
     switch (mode) {
@@ -117,7 +121,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
                 return new MoveFilesReturn(false, false, destinationSize, totalBytes);
               }
             } catch (ShellNotRunningException e) {
-              e.printStackTrace();
+              LOG.warn("failed to move file in local filesystem", e);
               return new MoveFilesReturn(false, false, destinationSize, totalBytes);
             }
           } else {
@@ -138,7 +142,7 @@ public class MoveFiles implements Callable<MoveFilesReturn> {
             cloudStorage.move(
                 CloudUtil.stripPath(mode, baseFile.getPath()), CloudUtil.stripPath(mode, destPath));
           } catch (RuntimeException e) {
-            e.printStackTrace();
+            LOG.warn("failed to move file in cloud filesystem", e);
             return new MoveFilesReturn(false, false, destinationSize, totalBytes);
           }
         } else {

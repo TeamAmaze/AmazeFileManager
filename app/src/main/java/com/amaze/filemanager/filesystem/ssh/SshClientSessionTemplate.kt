@@ -23,7 +23,7 @@ package com.amaze.filemanager.filesystem.ssh
 import net.schmizz.sshj.connection.channel.direct.Session
 import java.io.IOException
 
-abstract class SshClientSessionTemplate <T>
+abstract class SshClientSessionTemplate<T>
 /**
  * Constructor.
  *

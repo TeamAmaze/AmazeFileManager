@@ -23,14 +23,17 @@ package com.amaze.filemanager.asynchronous.services;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.database.CryptHandler;
 import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -56,7 +59,6 @@ import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.util.Log;
 import android.widget.RemoteViews;
 import android.widget.Toast;
 
@@ -65,7 +67,7 @@ import androidx.core.app.NotificationCompat;
 import androidx.preference.PreferenceManager;
 
 public class CopyService extends AbstractProgressiveService {
-
+  private static final Logger LOG = LoggerFactory.getLogger(CopyService.class);
   public static final String TAG_IS_ROOT_EXPLORER = "is_root";
   public static final String TAG_COPY_TARGET = "COPY_DIRECTORY";
   public static final String TAG_COPY_SOURCES = "FILE_PATHS";
@@ -335,7 +337,7 @@ public class CopyService extends AbstractProgressiveService {
               cryptHandler.addEntry(newEntry);
             }
           } catch (Exception e) {
-            e.printStackTrace();
+            LOG.warn("failed to find and replace encrypted entry after copy", e);
             // couldn't change the entry, leave it alone
           }
         }
@@ -392,7 +394,7 @@ public class CopyService extends AbstractProgressiveService {
 
                 if ((f1.getMode() == OpenMode.ROOT || mode == OpenMode.ROOT) && isRootExplorer) {
                   // either source or target are in root
-                  Log.d(getClass().getSimpleName(), "either source or target are in root");
+                  LOG.debug("either source or target are in root");
                   progressHandler.setSourceFilesProcessed(++sourceProgress);
                   copyRoot(f1, hFile, move);
                   continue;
@@ -403,8 +405,7 @@ public class CopyService extends AbstractProgressiveService {
                 break;
               }
             } catch (Exception e) {
-              e.printStackTrace();
-              Log.e("CopyService", "Got exception checkout: " + f1.getPath());
+              LOG.error("Got exception checkout: " + f1.getPath());
 
               failedFOps.add(sourceFiles.get(i));
               for (int j = i + 1; j < sourceFiles.size(); j++) failedFOps.add(sourceFiles.get(j));
@@ -456,7 +457,11 @@ public class CopyService extends AbstractProgressiveService {
           }
           ServiceWatcherUtil.position += sourceFile.getSize();
         } catch (ShellNotRunningException e) {
-          e.printStackTrace();
+          LOG.warn(
+              "failed to copy root file source: {} dest: {}",
+              sourceFile.getPath(),
+              targetFile.getPath(),
+              e);
           failedFOps.add(sourceFile);
         }
         FileUtils.scanFile(c, new HybridFile[] {targetFile});

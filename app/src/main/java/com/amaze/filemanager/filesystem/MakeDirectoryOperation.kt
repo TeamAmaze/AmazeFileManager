@@ -22,15 +22,20 @@ package com.amaze.filemanager.filesystem
 
 import android.content.Context
 import android.os.Build
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.utils.OTGUtil
 import jcifs.smb.SmbException
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.io.IOException
 
 // This object is here to not polute the global namespace
 // All functions must be static
 object MakeDirectoryOperation {
+
+    private val log: Logger = LoggerFactory.getLogger(MakeDirectoryOperation::class.java)
+
     /**
      * Create a folder. The folder may even be on external SD card for Kitkat.
      *
@@ -80,7 +85,7 @@ object MakeDirectoryOperation {
                     val smbFile = file.smbFile
                     smbFile.mkdirs()
                 } catch (e: SmbException) {
-                    e.printStackTrace()
+                    log.warn("failed to make directory in smb", e)
                     isSuccessful = false
                 }
             OpenMode.OTG -> {

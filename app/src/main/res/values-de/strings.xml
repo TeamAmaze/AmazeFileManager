@@ -36,6 +36,7 @@
     <string name="uninstall">Deinstallieren</string>
     <string name="play">Play Store</string>
     <string name="properties">Eigenschaften</string>
+    <string name="copyingapks">%d APK-Dateien nach %s kopieren</string>
     <string name="delbook">Lesezeichen löschen</string>
     <string name="add_to_bookmarks">Zu Lesezeichen hinzufügen</string>
     <string name="enterpath">Pfad eingeben</string>
@@ -107,6 +108,7 @@
     <string name="dark">Dunkel</string>
     <string name="daytime">Tageslicht</string>
     <string name="black">Schwarz (für OLED)</string>
+    <string name="system">System (folgt dem System)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">Ordner oben</string>
@@ -151,7 +153,7 @@
     <string name="thumb_summary">Zeige Miniaturansicht von Apps und Bildern</string>
     <string name="thumb">Thumbnails anzeigen</string>
     <string name="hidden">Zeige versteckte Dateien und Ordner an</string>
-    <string name="lastModifiedSummary">Zeige Datum und Zeit der letzten Dateiänderung an</string>
+    <string name="lastModifiedSummary">Datum und Uhrzeit der letzten Änderung anzeigen</string>
     <string name="lastModifiedPref">Änderungsdatum anzeigen</string>
     <string name="size_pref_summary">Zeige die Größe bei Dateien und Anzahl der enthaltenen Elemente bei Ordnern an</string>
     <string name="size_pref">Größe anzeigen</string>
@@ -568,11 +570,22 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="no_obtainable_info">Es gibt keine Info zu dieser Datei</string>
     <string name="reopen_from_source">Klappt nicht, bitte erneut von letzter App aus öffnen</string>
     <string name="no_file_error">Etwas ist schief gelaufen, hier gibt es nichts zu öffnen</string>
+    <string name="file_too_long">Die Datei ist zu lang und kann nicht bearbeitet werden. Sie können jedoch den ersten %d Zeichen lesen</string>
     <string name="file_read_only">Die Datei wurde als nur lesend geöffnet.</string>
     <string name="got_it">Alles klar!</string>
     <string name="encrypt_file_save_as">Verschlüsselte Datei speichern als&#8230;</string>
     <string name="encrypt_folder_save_as">Verschlüsselten Ordner speichern als&#8230;</string>
+    <string name="encrypt_option_use_aze">Amaze-Verschlüsselungsformat verwenden</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>AESCrypt ist ein quelloffenes Verschlüsselungsformat basierend auf AES. Es ist universal und kann mit AESCrypt-Programmen auf anderen Plattformen entschlüsselt werden.</p>
+        <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt Webseite</a></p>]]>
+</string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>Das Verschlüsselungsformat von Amaze basiert ebenfalls auf AES, unterscheidet sich aber vom AESCrypt-Format. Es kann nur von diesem Gerät entschlüsselt werden. Es sollte beachtet werden, dass mit der Deinstallation von Amaze File Manager auf diesem Gerät oder bei Änderung wie der Sperrbildschirm gehandhabt wird, verschlüsselte Dateien nicht wiederhergestellt werdne können.</p>
+    ]]></string>
     <string name="encrypt_file_must_end_with_aze">Verschlüsselte Dateien müssen \".aze\" als Dateierweiterung verwenden.</string>
+    <string name="encrypt_file_must_end_with_aes">Verschlüsselte Dateien müssen \".aes\" als Dateierweiterung verwenden.</string>
+    <string name="error_aescrypt_decrypt_failed">\'%s\': \'%s\' kann nicht entschlüsselt werden</string>
     <string name="cannot_overwrite">Datei kann nicht überschrieben werden.</string>
     <string name="saved_single_file">Datei als \'%s\' gespeichert.</string>
     <string name="saved_multi_files">%d Dateien gespeichert.</string>
@@ -654,7 +667,17 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).\n\n
 
 Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für die Datenfreigabe verwenden.</string>
+    <string name="android_data_prompt_saf_access">Seit Android 10 gibt es bestimmte Einschränkungen auf Verzeichnisse. Für den Zugriff ist das Storage Access Framework (SAF) erforderlich.\n\nBitte erlauben Sie Amaze den Zugriff auf das Verzeichnis von dem systemweiten Dateimanager aus, durch Drücken auf \"Zugriff erlauben\".</string>
+    <string name="android_data_prompt_saf_access_title">Zugriff auf SAF erlauben</string>
+    <string name="ftp_preference_saf_filesystem_title">Älteres Dateisystem verwenden</string>
+    <string name="ftp_preference_saf_filesystem">Auf neuen Android-Versionen aktivieren, für die Unterstützung zur Verwendung externer Speichergeräte</string>
+    <string name="ftp_server_fallback_path_reset_prompt">Der freigegebene Pfad des FTP-Servers wurde auf den internen Speicher zurückgesetzt, da Sie zur Legacy-Dateisystemimplementierung zurückwechseln. Bitte wählen Sie über das Menü oben rechts einen neuen Pfad aus.</string>
+    <string name="ftp_server_root_unavailable">Sie wählen einen Pfad aus der Root-Zugriff erfordert. Bitte aktivieren Sie in den Einstellungen den Root-Explorer, wenn Ihr Gerät gerootet ist.</string>
+    <string name="ftp_server_root_filesystem_warning">Sie wählen einen Pfad aus der Root-Zugriff erfordert. Dadurch aktivieren Sie Lese-/Schreibvorgänge im gesamten Dateisystem des Gerät und das ist gefährlich - Flüchtigkeitsfehler könnten Ihr Gerät beschädigen!\n\nSind Sie sicher?</string>
+    <string name="compressed_explorer_fragment_error_open_uri">Fehler beim Öffnen der URI \"%s\", um diese zu lesen.</string>
     <string name="error_empty_archive">\"%s\" ist ein leeres Archiv.</string>
+    <string name="error_bad_archive_without_info">\"%s\" ist ein defektes Archiv.</string>
+    <string name="error_bad_archive_with_info">\"%s\" ist ein defektes Archiv.\nMeldung des Extrators: \"%s\"</string>
     <string name="security_error">Datei konnte mit dieser App nicht geöffnet werden </string>
     <string name="cloud_drive_tooltip">Eine Verbindung mit Google Drive™ erstellen, um Dateien innerhalb Amaze File Manager zu verwalten.</string>
     <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
@@ -664,6 +687,32 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="select_by_type">Nach Typ auswählen</string>
     <string name="select_by_date">Nach Datum auswählen</string>
     <string name="select_similar">Ähnliche auswählen</string>
-    <string name="user_apps">Dritt-Anbieter-Apps</string>
+    <string name="error_fetching_google_play_product_list">Fehler beim Abruf der Produktliste von Google Play.</string>
+    <string name="grant_all_files_permission"><html><body>Seit Android 11 wird seitens Google verlangt, dass Dateiverwalter Berechtigungen zum Verwalten aller Dateien auf dem Gerät anfordern. Mehr Details dazu <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">hier</a>.
+        \n\nAmaze File Manager benötigt diese Berechtigung ebenfalls. Nach drücken auf &quot;Zulassen&quot; bitte die Option <b>Zugriff zum Verwalten aller Dateien zulassen</b> auf der nächsten Seite auswählen.
+        \n\n<font color='#ff6347'><i>Das Abbrechen dieser Abfrage wird die App beenden.</i></font></body></html></string>
+    <string name="user_apps">Benutzer-Apps</string>
+    <string name="appearance">Aussehen</string>
+    <string name="behavior">Verhalten</string>
+    <string name="appearance_summary">Thema, Farben und Aussehen des Dateimanagers anpassen</string>
+    <string name="ui_summary">Steuerung was für Informationen angezeigt werden, die Seitenleiste anpassen und Vorlieben der Oberfläche umstellen</string>
+    <string name="behavior_summary">Ändern Sie Verhaltensweisen wie die erweiterte Suche und ob Dateien als neuer Task geöffnet werden sollen</string>
+    <string name="security_summary">Passwort und Verschlüsselung festlegen</string>
+
+    <string name="quick_desc">Dateien auf die über Amaze kürzlich zugegriffen wurde</string>
+    <string name="recent_desc">Kürzlich erstellte oder geänderte Dateien</string>
+    <string name="error_cannot_find_way_open">Kein Weg gefunden um die Datei zu öffnen</string>
+    <string name="error_cant_decompress_that_file">Angefragtes Archiv kann nicht bearbeitet werden</string>
+    <string name="analyse_storage">Speicher analysieren</string>
+    <string name="download_amaze_utils_text">Sie werden zur den Amaze File Utillities weitergeleitet.Es ist unser Angebot, das über integrierte Audio-/Video-/Bild-/Dokumentenbetrachter verfügt, mit denen Sie gespeicherte Dateien auf verschwommene/dunkle Bilder und doppelte Dateien analysieren können, sowie schnelle Übertragung mit Wifi P2P und vieles mehr.\nBitte unterstützen Sie uns, indem Sie es ausprobieren. </string>
+    <string name="download">Download</string>
+    <string name="wifip2p">Wi-Fi P2P</string>
+    <string name="amaze_utils_installed_alias">Danke für die Installation der Amaze File Utilities. Sie werden zur App weitergeleitet.</string>
+    <string name="image_viewer">Amaze-Bildbetrachter</string>
+    <string name="video_player">Amaze-Videoplayer</string>
+    <string name="amaze_audio_player">Amaze-Musikplayer</string>
+    <string name="pdf_viewer">Amaze-PDF-Betrachter</string>
+    <string name="epub_viewer">Amaze-Epub-Betrachter</string>
+    <string name="docx_viewer">Amaze-Doc-Betrachter</string>
 </resources>
 

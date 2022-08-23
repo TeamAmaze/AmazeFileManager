@@ -20,23 +20,26 @@
 
 package com.amaze.filemanager.ui.fragments;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_CURRENT_TAB;
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_SAVED_PATHS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_CURRENT_TAB;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SAVED_PATHS;
 import static com.amaze.filemanager.utils.PreferenceUtils.DEFAULT_CURRENT_TAB;
 import static com.amaze.filemanager.utils.PreferenceUtils.DEFAULT_SAVED_PATHS;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
 import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
 import com.amaze.filemanager.ui.views.Indicator;
 import com.amaze.filemanager.utils.DataUtils;
@@ -49,7 +52,6 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -66,7 +68,7 @@ import androidx.preference.PreferenceManager;
 import androidx.viewpager.widget.ViewPager;
 
 public class TabFragment extends Fragment implements ViewPager.OnPageChangeListener {
-  private static final String TAG = TabFragment.class.getSimpleName();
+  private final Logger LOG = LoggerFactory.getLogger(TabFragment.class);
 
   private static final String KEY_PATH = "path";
   private static final String KEY_POSITION = "pos";
@@ -142,7 +144,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
           updateIndicator(viewPager.getCurrentItem());
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.warn("failed to set current viewpager item", e);
       }
     } else {
       fragments.clear();
@@ -150,7 +152,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
         fragments.add(0, fragmentManager.getFragment(savedInstanceState, KEY_FRAGMENT_0));
         fragments.add(1, fragmentManager.getFragment(savedInstanceState, KEY_FRAGMENT_1));
       } catch (Exception e) {
-        e.printStackTrace();
+        LOG.warn("failed to clear fragments", e);
       }
 
       sectionsPagerAdapter = new ScreenSlidePagerAdapter(fragmentManager);
@@ -422,7 +424,7 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
 
   public void updateBottomBar(MainFragment mainFragment) {
     if (mainFragment == null || mainFragment.getMainFragmentViewModel() == null) {
-      Log.w(TAG, "Failed to update bottom bar: main fragment not available");
+      LOG.warn("Failed to update bottom bar: main fragment not available");
       return;
     }
     requireMainActivity()

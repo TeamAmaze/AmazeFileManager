@@ -61,7 +61,10 @@ public class UtilsHandlerTest {
 
   @After
   public void tearDown() {
-    if (utilitiesDatabase.isOpen()) utilitiesDatabase.close();
+    if (utilitiesDatabase.isOpen()) {
+      utilitiesDatabase.clearAllTables();
+      utilitiesDatabase.close();
+    }
   }
 
   @Test
@@ -126,18 +129,14 @@ public class UtilsHandlerTest {
             null,
             null));
 
-    await()
-        .atMost(10, TimeUnit.SECONDS)
-        .until(
-            () -> {
-              List<String[]> result = utilsHandler.getSftpList();
-              assertEquals(1, result.size());
-              assertEquals("Test", result.get(0)[0]);
-              assertEquals(encryptedPath, result.get(0)[1]);
-              assertEquals(
-                  "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
-                  utilsHandler.getSshHostKey(encryptedPath));
-              return true;
-            });
+    await().atMost(10, TimeUnit.SECONDS).until(() -> utilsHandler.getSftpList().size() > 0);
+
+    List<String[]> result = utilsHandler.getSftpList();
+    assertEquals(1, result.size());
+    assertEquals("Test", result.get(0)[0]);
+    assertEquals(encryptedPath, result.get(0)[1]);
+    assertEquals(
+        "00:11:22:33:44:55:66:77:88:99:aa:bb:cc:dd:ee:ff",
+        utilsHandler.getSshHostKey(encryptedPath));
   }
 }

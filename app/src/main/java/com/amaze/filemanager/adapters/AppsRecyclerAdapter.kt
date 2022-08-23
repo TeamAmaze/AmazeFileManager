@@ -51,7 +51,7 @@ import com.amaze.filemanager.adapters.holders.SpecialViewHolder
 import com.amaze.filemanager.asynchronous.asynctasks.DeleteTask
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil
 import com.amaze.filemanager.asynchronous.services.CopyService
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
 import com.amaze.filemanager.filesystem.files.FileUtils
@@ -61,7 +61,7 @@ import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment.Companion.buildIntent
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment.Companion.setLastOpenedApp
 import com.amaze.filemanager.ui.fragments.AdjustListViewForTv
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.startActivityCatchingSecurityException
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.AnimUtils.marqueeAfterDelay
@@ -128,12 +128,14 @@ class AppsRecyclerAdapter(
             TYPE_HEADER_SYSTEM, TYPE_HEADER_THIRD_PARTY -> {
                 view = mInflater.inflate(R.layout.list_header, parent, false)
                 return SpecialViewHolder(
-                    fragment.requireContext(), view,
+                    fragment.requireContext(),
+                    view,
                     (fragment.requireActivity() as MainActivity).utilsProvider,
-                    if (viewType == TYPE_HEADER_SYSTEM)
+                    if (viewType == TYPE_HEADER_SYSTEM) {
                         SpecialViewHolder.HEADER_SYSTEM_APP
-                    else
+                    } else {
                         SpecialViewHolder.HEADER_USER_APP
+                    }
                 )
             }
             EMPTY_LAST_ITEM -> {
@@ -186,8 +188,11 @@ class AppsRecyclerAdapter(
                     (fragment.requireActivity() as MainActivity)
                         .getBoolean(PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME)
                 if (enableMarqueeFilename) {
-                    holder.txtTitle.ellipsize = if (enableMarqueeFilename)
-                        TextUtils.TruncateAt.MARQUEE else TextUtils.TruncateAt.MIDDLE
+                    holder.txtTitle.ellipsize = if (enableMarqueeFilename) {
+                        TextUtils.TruncateAt.MARQUEE
+                    } else {
+                        TextUtils.TruncateAt.MIDDLE
+                    }
                     marqueeAfterDelay(2000, holder.txtTitle)
                 }
 
@@ -239,12 +244,15 @@ class AppsRecyclerAdapter(
                 val openFileParcelable = rowItem.openFileParcelable
                 openFileParcelable?.let {
                     safeLet(
-                        openFileParcelable.uri, openFileParcelable.mimeType,
+                        openFileParcelable.uri,
+                        openFileParcelable.mimeType,
                         openFileParcelable.useNewStack
                     ) {
-                        uri, mimeType, useNewStack ->
+                            uri, mimeType, useNewStack ->
                         val intent = buildIntent(
-                            uri, mimeType, useNewStack,
+                            uri,
+                            mimeType,
+                            useNewStack,
                             openFileParcelable.className,
                             openFileParcelable.packageName
                         )
@@ -263,7 +271,8 @@ class AppsRecyclerAdapter(
                     fragment.startActivity(i1)
                 } else {
                     Toast.makeText(
-                        fragment.context, fragment.getString(R.string.not_allowed),
+                        fragment.context,
+                        fragment.getString(R.string.not_allowed),
                         Toast.LENGTH_LONG
                     )
                         .show()
@@ -284,7 +293,8 @@ class AppsRecyclerAdapter(
                 context = ContextThemeWrapper(context, R.style.overflow_black)
             }
             val popupMenu = PopupMenu(
-                context, view
+                context,
+                view
             )
             popupMenu.setOnMenuItemClickListener { item: MenuItem ->
                 val themedActivity: MainActivity = fragment.requireActivity() as MainActivity
@@ -441,9 +451,9 @@ class AppsRecyclerAdapter(
         val fileBaseName = appDataParcelable.label + "_$subString"
         mainApkFile.name = "$fileBaseName.apk"
         filesToCopyList.add(mainApkFile)
-        val splitPathList = appDataParcelable.splitPathList;
+        val splitPathList = appDataParcelable.splitPathList
         if (splitPathList != null) {
-            for (splitApkPath : String in splitPathList) {
+            for (splitApkPath: String in splitPathList) {
                 val splitApkFile = File(splitApkPath)
                 val splitParcelableFile = RootHelper.generateBaseFile(splitApkFile, true)
                 var name = splitApkFile.name.lowercase()
@@ -452,7 +462,7 @@ class AppsRecyclerAdapter(
                 }
                 val dotIdx = name.lastIndexOf('.')
                 name = name.substring(dotIdx + 1)
-                name = "${fileBaseName}_${name}.apk";
+                name = "${fileBaseName}_$name.apk"
                 splitParcelableFile.name = name
                 filesToCopyList.add(splitParcelableFile)
             }
@@ -462,11 +472,11 @@ class AppsRecyclerAdapter(
         intent.putExtra(CopyService.TAG_COPY_OPEN_MODE, 0)
 
         Toast.makeText(
-                fragment.context,
-                fragment.getString(R.string.copyingapks, filesToCopyList.size, dst.path),
-                Toast.LENGTH_LONG
+            fragment.context,
+            fragment.getString(R.string.copyingapks, filesToCopyList.size, dst.path),
+            Toast.LENGTH_LONG
         )
-                .show()
+            .show()
 
         ServiceWatcherUtil.runService(fragment.context, intent)
     }
@@ -518,7 +528,7 @@ class AppsRecyclerAdapter(
         TYPE_ITEM,
         TYPE_HEADER_SYSTEM,
         TYPE_HEADER_THIRD_PARTY,
-        EMPTY_LAST_ITEM,
+        EMPTY_LAST_ITEM
     )
     annotation class ListItemType
 

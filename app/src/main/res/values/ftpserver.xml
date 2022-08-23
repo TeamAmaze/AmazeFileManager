@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:ignore="MissingTranslation"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <string name="ftp_error_AVBL.notimplemented" translatable="false">Command not implemented for AndroidFileSystem.</string>
+    <string name="ftp_error_AVBL.isafile" translatable="false">Is a File.</string>
+    <string name="ftp_error_AVBL.missing" translatable="false">Path not found.</string>
+    <string name="ftp_error_AVBL.accessdenied" translatable="false">Access denied.</string>
+    <string name="ftp_command_FEAT" translatable="false">Extensions supported\n SIZE\n MDTM\n REST STREAM\n LANG en;zh-tw;ja;is\n MLST Size;Modify;Type;Perm\n AUTH SSL\n AUTH TLS\n MODE Z\n UTF8\n TVFS\n MD5\n MMD5\n MFMT\n AVBL\nEnd</string>
+</resources>

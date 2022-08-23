@@ -25,11 +25,14 @@ import static com.amaze.filemanager.ui.activities.MainActivity.TAG_INTENT_FILTER
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.SafRootHolder;
@@ -38,7 +41,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.fragments.CompressedExplorerFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -61,6 +64,8 @@ import jcifs.smb.SmbException;
 
 public class DeleteTask
     extends AsyncTask<ArrayList<HybridFileParcelable>, String, AsyncTaskResult<Boolean>> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(DeleteTask.class);
 
   private ArrayList<HybridFileParcelable> files;
   private final Context applicationContext;
@@ -177,14 +182,14 @@ public class DeleteTask
           cloudStorage.delete(CloudUtil.stripPath(file.getMode(), file.getPath()));
           return true;
         } catch (Exception e) {
-          e.printStackTrace();
+          LOG.warn("failed to delete cloud files", e);
           return false;
         }
       default:
         try {
           return (file.delete(applicationContext, rootMode));
         } catch (ShellNotRunningException | SmbException e) {
-          e.printStackTrace();
+          LOG.warn("failed to delete files", e);
           throw e;
         }
     }
