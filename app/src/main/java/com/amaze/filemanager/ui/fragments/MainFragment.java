@@ -53,7 +53,6 @@ import com.amaze.filemanager.asynchronous.handlers.FileHandler;
 import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
-import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.CustomFileObserver;
 import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -84,16 +83,12 @@ import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
 
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.RingtoneManager;
@@ -1399,8 +1394,7 @@ public class MainFragment extends Fragment
     }
 
     // adding new value to LIST_ELEMENTS
-    @Nullable
-    LayoutElementParcelable layoutElementAdded = addTo(hybridFileParcelable);
+    @Nullable LayoutElementParcelable layoutElementAdded = addTo(hybridFileParcelable);
     if (!getMainActivity()
         .getAppbar()
         .getBottomBar()

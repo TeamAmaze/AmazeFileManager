@@ -87,9 +87,10 @@ class RecyclerAdapterDragListener(
                             }
                         } else {
                             val currentElement = listItem.layoutElementParcelable
-                            if (currentElement != null
-                                    && currentElement.isDirectory
-                                    && listItem.specialType != RecyclerAdapter.TYPE_BACK) {
+                            if (currentElement != null &&
+                                currentElement.isDirectory &&
+                                listItem.specialType != RecyclerAdapter.TYPE_BACK
+                            ) {
                                 holder.baseItemView.isSelected = true
                             }
                         }
@@ -105,10 +106,14 @@ class RecyclerAdapterDragListener(
                     ) {
                         if (dragAndDropPref != PreferencesConstants.PREFERENCE_DRAG_TO_SELECT) {
                             val listItem = itemsDigested[holder.adapterPosition]
-                            if (listItem.specialTypeHasFile() && listItem.specialType != RecyclerAdapter.TYPE_BACK) {
+                            if (listItem.specialTypeHasFile() &&
+                                listItem.specialType != RecyclerAdapter.TYPE_BACK
+                            ) {
                                 val currentElement = listItem.requireLayoutElementParcelable()
 
-                                if (currentElement.isDirectory && !adapter.checkedItems.contains(currentElement)) {
+                                if (currentElement.isDirectory &&
+                                    !adapter.checkedItems.contains(currentElement)
+                                ) {
                                     holder.baseItemView.run {
                                         isSelected = false
                                         isFocusable = false
@@ -166,7 +171,9 @@ class RecyclerAdapterDragListener(
                                     )
                                     hybridFile.getParent(mainFragment.context)
                                 } else {
-                                    val currentElement = itemsDigested[holder.adapterPosition].layoutElementParcelable
+                                    val currentElement =
+                                        itemsDigested[holder.adapterPosition]
+                                            .layoutElementParcelable
                                     currentFileParcelable = currentElement?.generateBaseFile()
                                     isCurrentElementDirectory = currentElement?.isDirectory
                                     currentElement?.desc
