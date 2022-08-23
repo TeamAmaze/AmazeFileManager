@@ -216,8 +216,11 @@ class MainFragmentViewModel : ViewModel() {
     fun getCheckedItems(): ArrayList<LayoutElementParcelable> {
         val selected = ArrayList<LayoutElementParcelable>()
         adapterListItems?.forEach { item ->
-            if (item.checked == RecyclerAdapter.ListItem.CHECKED) {
-                selected.add(item.elem)
+            val layoutElementParcelable = item.layoutElementParcelable
+            if (layoutElementParcelable != null &&
+                item.checked == RecyclerAdapter.ListItem.CHECKED
+            ) {
+                selected.add(layoutElementParcelable)
             }
         }
         return selected
@@ -231,7 +234,9 @@ class MainFragmentViewModel : ViewModel() {
 
         viewModelScope.launch(Dispatchers.IO) {
             adapterListItems?.forEachIndexed { index, item ->
-                if (item.elem != null && item.elem.title.equals(title)) {
+                if (item.layoutElementParcelable != null &&
+                    item.layoutElementParcelable?.title.equals(title)
+                ) {
                     item.setChecked(true)
                     mutableLiveData.postValue(index)
                 }

@@ -799,11 +799,11 @@ public class MainActivityHelper {
    * @param matches is matches enabled for patter matching
    */
   public static void addSearchFragment(
-      FragmentManager fragmentManager,
-      Fragment fragment,
-      String path,
-      String input,
-      OpenMode openMode,
+      @NonNull FragmentManager fragmentManager,
+      @NonNull Fragment fragment,
+      @NonNull String path,
+      @NonNull String input,
+      @NonNull OpenMode openMode,
       boolean rootMode,
       boolean regex,
       boolean matches) {

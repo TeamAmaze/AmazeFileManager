@@ -1258,66 +1258,55 @@ public class MainFragment extends Fragment
   }
 
   // method to add search result entry to the LIST_ELEMENT arrayList
-  private LayoutElementParcelable addTo(HybridFileParcelable mFile) {
-    File f = new File(mFile.getPath());
-    String size = "";
-    if (!DataUtils.getInstance().isFileHidden(mFile.getPath())) {
-      if (mFile.isDirectory()) {
-        size = "";
-        LayoutElementParcelable layoutElement =
-            new LayoutElementParcelable(
-                getContext(),
-                f.getPath(),
-                mFile.getPermission(),
-                mFile.getLink(),
-                size,
-                0,
-                true,
-                mFile.getDate() + "",
-                true,
-                getBoolean(PREFERENCE_SHOW_THUMB),
-                mFile.getMode());
-
-        mainFragmentViewModel.getListElements().add(layoutElement);
-        mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
-        return layoutElement;
-      } else {
-        long longSize = 0;
-        try {
-          if (mFile.getSize() != -1) {
-            longSize = mFile.getSize();
-            size = Formatter.formatFileSize(getContext(), longSize);
-          } else {
-            size = "";
-            longSize = 0;
-          }
-        } catch (NumberFormatException e) {
-          LOG.warn("failure when adding search results to list", e);
-        }
-        try {
-          LayoutElementParcelable layoutElement =
-              new LayoutElementParcelable(
-                  getContext(),
-                  f.getPath(),
-                  mFile.getPermission(),
-                  mFile.getLink(),
-                  size,
-                  longSize,
-                  false,
-                  mFile.getDate() + "",
-                  false,
-                  getBoolean(PREFERENCE_SHOW_THUMB),
-                  mFile.getMode());
-          mainFragmentViewModel.getListElements().add(layoutElement);
-          mainFragmentViewModel.setFileCount(mainFragmentViewModel.getFileCount() + 1);
-          return layoutElement;
-        } catch (Exception e) {
-          LOG.warn("failure when adding search results to list", e);
-        }
-      }
+  @Nullable
+  private LayoutElementParcelable addTo(@NonNull HybridFileParcelable hybridFileParcelable) {
+    if (DataUtils.getInstance().isFileHidden(hybridFileParcelable.getPath())) {
+      return null;
     }
 
-    return null;
+    if (hybridFileParcelable.isDirectory()) {
+      LayoutElementParcelable layoutElement =
+          new LayoutElementParcelable(
+              getContext(),
+              hybridFileParcelable.getPath(),
+              hybridFileParcelable.getPermission(),
+              hybridFileParcelable.getLink(),
+              "",
+              0,
+              true,
+              hybridFileParcelable.getDate() + "",
+              true,
+              getBoolean(PREFERENCE_SHOW_THUMB),
+              hybridFileParcelable.getMode());
+
+      mainFragmentViewModel.getListElements().add(layoutElement);
+      mainFragmentViewModel.setFolderCount(mainFragmentViewModel.getFolderCount() + 1);
+      return layoutElement;
+    } else {
+      long longSize = 0;
+      String size = "";
+      if (hybridFileParcelable.getSize() != -1) {
+        longSize = hybridFileParcelable.getSize();
+        size = Formatter.formatFileSize(getContext(), longSize);
+      }
+
+      LayoutElementParcelable layoutElement =
+          new LayoutElementParcelable(
+              requireContext(),
+              hybridFileParcelable.getPath(),
+              hybridFileParcelable.getPermission(),
+              hybridFileParcelable.getLink(),
+              size,
+              longSize,
+              false,
+              hybridFileParcelable.getDate() + "",
+              false,
+              getBoolean(PREFERENCE_SHOW_THUMB),
+              hybridFileParcelable.getMode());
+      mainFragmentViewModel.getListElements().add(layoutElement);
+      mainFragmentViewModel.setFileCount(mainFragmentViewModel.getFileCount() + 1);
+      return layoutElement;
+    }
   }
 
   @Override
@@ -1392,36 +1381,37 @@ public class MainFragment extends Fragment
 
   // adds search results based on result boolean. If false, the adapter is initialised with initial
   // values, if true, new values are added to the adapter.
-  public void addSearchResult(HybridFileParcelable a, String query) {
-    if (listView != null) {
+  public void addSearchResult(@NonNull HybridFileParcelable hybridFileParcelable, String query) {
+    if (listView == null) {
+      return;
+    }
 
-      // initially clearing the array for new result set
-      if (!mainFragmentViewModel.getResults()) {
-        mainFragmentViewModel.getListElements().clear();
-        mainFragmentViewModel.setFileCount(0);
-        mainFragmentViewModel.setFolderCount(0);
-      }
+    // initially clearing the array for new result set
+    if (!mainFragmentViewModel.getResults()) {
+      mainFragmentViewModel.getListElements().clear();
+      mainFragmentViewModel.setFileCount(0);
+      mainFragmentViewModel.setFolderCount(0);
+    }
 
-      // adding new value to LIST_ELEMENTS
-      LayoutElementParcelable layoutElementAdded = addTo(a);
-      if (!getMainActivity()
+    // adding new value to LIST_ELEMENTS
+    @Nullable LayoutElementParcelable layoutElementAdded = addTo(hybridFileParcelable);
+    if (!getMainActivity()
+        .getAppbar()
+        .getBottomBar()
+        .getFullPathText()
+        .contains(getString(R.string.searching))) {
+      getMainActivity()
           .getAppbar()
           .getBottomBar()
-          .getFullPathText()
-          .contains(getString(R.string.searching))) {
-        getMainActivity()
-            .getAppbar()
-            .getBottomBar()
-            .setFullPathText(getString(R.string.searching, query));
-      }
-      if (!mainFragmentViewModel.getResults()) {
-        reloadListElements(false, true, !mainFragmentViewModel.isList());
-        getMainActivity().getAppbar().getBottomBar().setPathText("");
-      } else {
-        adapter.addItem(layoutElementAdded);
-      }
-      stopAnimation();
+          .setFullPathText(getString(R.string.searching, query));
     }
+    if (!mainFragmentViewModel.getResults()) {
+      reloadListElements(false, true, !mainFragmentViewModel.isList());
+      getMainActivity().getAppbar().getBottomBar().setPathText("");
+    } else if (layoutElementAdded != null) {
+      adapter.addItem(layoutElementAdded);
+    }
+    stopAnimation();
   }
 
   public void onSearchCompleted(final String query) {
@@ -1587,11 +1577,11 @@ public class MainFragment extends Fragment
       @NonNull ItemViewHolder viewHolder, @NonNull MainActivity mainActivity) {
     try {
       int[] location = new int[2];
-      viewHolder.rl.getLocationOnScreen(location);
+      viewHolder.baseItemView.getLocationOnScreen(location);
       LOG.info("Current x and y " + location[0] + " " + location[1]);
       if (location[1] < getMainActivity().getAppbar().getAppbarLayout().getHeight()) {
         listView.scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
-      } else if (location[1] + viewHolder.rl.getHeight()
+      } else if (location[1] + viewHolder.baseItemView.getHeight()
           > getContext().getResources().getDisplayMetrics().heightPixels) {
         listView.scrollToPosition(
             Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
