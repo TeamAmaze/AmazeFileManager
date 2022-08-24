@@ -193,6 +193,7 @@ import androidx.fragment.app.FragmentTransaction;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.CursorLoader;
 import androidx.loader.content.Loader;
+import androidx.core.splashscreen.SplashScreen;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
@@ -327,9 +328,9 @@ public class MainActivity extends PermissionsActivity
   /** Called when the activity is first created. */
   @Override
   public void onCreate(final Bundle savedInstanceState) {
+    SplashScreen.installSplashScreen(this);
     super.onCreate(savedInstanceState);
     setContentView(R.layout.main_toolbar);
-
     intent = getIntent();
 
     dataUtils = DataUtils.getInstance();
