@@ -483,7 +483,14 @@ public class HybridFile {
     return NetCopyClientUtils.INSTANCE.execute(
         new FtpClientTemplate<FTPFile>(path, false) {
           public FTPFile executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
-            return ftpClient.mlistFile(NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+            String path =
+                NetCopyClientUtils.INSTANCE.extractRemotePathFrom(
+                    getParent(AppConfig.getInstance()));
+            ftpClient.changeWorkingDirectory(path);
+            for (FTPFile ftpFile : ftpClient.listFiles()) {
+              if (ftpFile.getName().equals(getName(AppConfig.getInstance()))) return ftpFile;
+            }
+            return null;
           }
         });
   }
@@ -950,7 +957,8 @@ public class HybridFile {
         NetCopyClientUtils.INSTANCE.execute(
             new FtpClientTemplate<Boolean>(path, false) {
               public Boolean executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
-                for (FTPFile ftpFile : ftpClient.listFiles(thisPath)) {
+                ftpClient.changeWorkingDirectory(thisPath);
+                for (FTPFile ftpFile : ftpClient.listFiles()) {
                   onFileFound.onFileFound(new HybridFileParcelable(path, ftpFile));
                 }
                 return true;
@@ -1076,9 +1084,12 @@ public class HybridFile {
                 new FtpClientTemplate<InputStream>(path, false) {
                   public InputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
+                    String parent = getParent(AppConfig.getInstance());
+                    ftpClient.changeWorkingDirectory(
+                        NetCopyClientUtils.INSTANCE.extractRemotePathFrom(parent));
+                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                     InputStream retval =
-                        ftpClient.retrieveFileStream(
-                            NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                        ftpClient.retrieveFileStream(getName(AppConfig.getInstance()));
                     if (retval != null) {
                       return FTPClientImpl.wrap(retval, ftpClient);
                     } else {
@@ -1247,7 +1258,10 @@ public class HybridFile {
         exists = false;
       }
     } else if (isFtp()) {
-      exists = getFtpFile() != null;
+      if (getPath().equals("/")) exists = true;
+      else {
+        exists = getFtpFile() != null;
+      }
     } else if (isDropBoxFile()) {
       CloudStorage cloudStorageDropbox = dataUtils.getAccount(OpenMode.DROPBOX);
       exists = cloudStorageDropbox.exists(CloudUtil.stripPath(OpenMode.DROPBOX, path));

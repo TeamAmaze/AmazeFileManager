@@ -33,6 +33,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
 import com.amaze.filemanager.utils.SmbUtil
+import io.reactivex.Maybe
 import io.reactivex.Scheduler
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -87,7 +88,7 @@ object NetCopyClientUtils {
         var retval: T? = null
         if (client != null) {
             retval = runCatching {
-                Single.fromCallable {
+                Maybe.fromCallable {
                     template.execute(client)
                 }.subscribeOn(getScheduler.invoke(client)).blockingGet()
             }.onFailure {
