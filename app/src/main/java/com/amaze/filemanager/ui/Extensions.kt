@@ -97,11 +97,17 @@ fun EditText.openKeyboard(context: Context) {
     )
 }
 
+/**
+ * Hides view with fade animation
+ */
 fun View.hideFade(duration: Long) {
     this.animate().alpha(0f).duration = duration
     this.visibility = View.GONE
 }
 
+/**
+ * Shows view with fade animation
+ */
 fun View.showFade(duration: Long) {
     this.animate().alpha(1f).duration = duration
     this.visibility = View.VISIBLE
