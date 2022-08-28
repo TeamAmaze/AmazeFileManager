@@ -168,14 +168,18 @@ public class MainFragment extends Fragment
           new ActivityResultContracts.StartActivityForResult(),
           result -> {
             if (SDK_INT >= Q) {
-              getContext()
-                  .getContentResolver()
-                  .takePersistableUriPermission(
-                      result.getData().getData(),
-                      Intent.FLAG_GRANT_READ_URI_PERMISSION
-                          | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-              SafRootHolder.setUriRoot(result.getData().getData());
-              loadlist(result.getData().getDataString(), false, OpenMode.DOCUMENT_FILE);
+              if (result.getData() != null && getContext() != null) {
+                getContext()
+                    .getContentResolver()
+                    .takePersistableUriPermission(
+                        result.getData().getData(),
+                        Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                SafRootHolder.setUriRoot(result.getData().getData());
+                loadlist(result.getData().getDataString(), false, OpenMode.DOCUMENT_FILE);
+              } else if (getContext() != null) {
+                AppConfig.toast(requireContext(), getString(R.string.operation_unsuccesful));
+              }
             }
           });
 
