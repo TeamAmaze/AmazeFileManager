@@ -25,12 +25,14 @@ import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
+import java.net.URLDecoder
 import kotlin.random.Random
 
 @RunWith(AndroidJUnit4::class)
@@ -78,5 +80,32 @@ class HybridFileTest {
             "ssh://user@127.0.0.1/home/user/next",
             file.getParent(ApplicationProvider.getApplicationContext())
         )
+    }
+
+    @Test
+    fun testGetName() {
+        for (
+            name: String in arrayOf(
+                "newfolder",
+                "new folder 2",
+                "new%20folder%203",
+                "あいうえお"
+            )
+        ) {
+            val file = HybridFile(OpenMode.FTP, "ftp://user:password@127.0.0.1/$name")
+            assertEquals(
+                URLDecoder.decode(name, Charsets.UTF_8.name()),
+                file.getName(AppConfig.getInstance())
+            )
+        }
+    }
+
+    @Test
+    fun testGetName2() {
+        val file = HybridFile(
+            OpenMode.FTP,
+            "ftp://user:password@127.0.0.1:22222/multiple/levels/down the pipe"
+        )
+        assertEquals("down the pipe", file.getName(AppConfig.getInstance()))
     }
 }

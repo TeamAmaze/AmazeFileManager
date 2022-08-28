@@ -31,7 +31,9 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
+import java.net.URLDecoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.text.DateFormat;
@@ -401,8 +403,17 @@ public class HybridFile {
     return s;
   }
 
+  /**
+   * Path accessor. Avoid direct access to path since path may have been URL encoded.
+   *
+   * @return URL decoded path
+   */
   public String getPath() {
-    return path;
+    try {
+      return URLDecoder.decode(path, "UTF-8");
+    } catch (UnsupportedEncodingException ignored) {
+      return path;
+    }
   }
 
   public String getSimpleName() {
@@ -447,7 +458,11 @@ public class HybridFile {
           return "";
         }
 
-        String _path = path;
+        String _path = null;
+        try {
+          _path = URLDecoder.decode(path, "UTF-8");
+        } catch (UnsupportedEncodingException ignored) {
+        }
         if (path.endsWith("/")) {
           _path = path.substring(0, path.length() - 1);
         }
@@ -519,23 +534,15 @@ public class HybridFile {
         return getFile().getParent();
       case SFTP:
       default:
-        if (path.length() == getName(context).length()) {
+        if (getPath().length() == getName(context).length()) {
           return null;
         }
 
         int start = 0;
-        int end = path.length() - getName(context).length() - 1;
+        int end = getPath().length() - getName(context).length() - 1;
 
-        return path.substring(start, end);
+        return getPath().substring(start, end);
     }
-  }
-
-  public String getParentName() {
-    StringBuilder builder = new StringBuilder(path);
-    StringBuilder parentPath =
-        new StringBuilder(builder.substring(0, builder.length() - (getSimpleName().length() + 1)));
-    String parentName = parentPath.substring(parentPath.lastIndexOf("/") + 1, parentPath.length());
-    return parentName;
   }
 
   /**
@@ -558,9 +565,6 @@ public class HybridFile {
           isDirectory = false;
         }
         break;
-      case FILE:
-        isDirectory = getFile().isDirectory();
-        break;
       case ROOT:
         isDirectory = NativeOperations.isDirectory(path);
         break;
@@ -571,6 +575,7 @@ public class HybridFile {
         // you need to manually call {@link RootHelper#getDocumentFile() method
         isDirectory = false;
         break;
+      case FILE:
       default:
         isDirectory = getFile().isDirectory();
         break;
@@ -1373,10 +1378,10 @@ public class HybridFile {
           });
     } else if (isFtp()) {
       NetCopyClientUtils.INSTANCE.execute(
-          new FtpClientTemplate<Void>(path, false) {
+          new FtpClientTemplate<Void>(getPath(), false) {
             public Void executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
               ExtensionsKt.makeDirectoryTree(
-                  ftpClient, NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path));
+                  ftpClient, NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath()));
               return null;
             }
           });
