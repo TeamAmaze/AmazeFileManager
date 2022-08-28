@@ -65,34 +65,4 @@
         tools:text="Total: 6.00 MB" >
     </TextView>
 
-    <LinearLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/material_generic"
-        android:gravity="center_vertical"
-        android:orientation="horizontal">
-        <CheckBox
-            android:id="@+id/dont_ask_again_checkbox"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content" />
-        <TextView
-            android:id="@+id/dont_ask_again_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="?android:attr/textColorPrimary"
-            android:textSize="@dimen/dialog_list"
-            android:text="@string/dont_ask_again"
-            tools:text="Don't ask again"/>
-    </LinearLayout>
-
-    <TextView
-        android:id="@+id/dont_ask_again_warning"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/dont_ask_again_warning"
-        android:textColor="@color/preferenceSecurity"
-        android:textSize="@dimen/dialog_list"
-        android:visibility="gone"
-        tools:text="Warning text" />
-
 </LinearLayout>

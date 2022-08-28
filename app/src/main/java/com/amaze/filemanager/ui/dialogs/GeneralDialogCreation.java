@@ -223,14 +223,6 @@ public class GeneralDialogCreation {
                   Toast.makeText(context, context.getString(R.string.deleting), Toast.LENGTH_SHORT)
                       .show();
                   mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
-                  CheckBox checkbox =
-                      dialog1.getCustomView().findViewById(R.id.dont_ask_again_checkbox);
-                  if (checkbox != null && checkbox.isChecked()) {
-                    sharedPreferences
-                        .edit()
-                        .putBoolean(PreferencesConstants.PREFERENCE_DELETE_CONFIRMATION, false)
-                        .apply();
-                  }
                 })
             .build();
 
@@ -241,23 +233,6 @@ public class GeneralDialogCreation {
     final TextView listDirectories = dialog.getCustomView().findViewById(R.id.list_directories);
     final TextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
     final TextView total = dialog.getCustomView().findViewById(R.id.total);
-    final TextView askAgainTxt = dialog.getCustomView().findViewById(R.id.dont_ask_again_text);
-    final TextView askAgainWarn = dialog.getCustomView().findViewById(R.id.dont_ask_again_warning);
-    ((CheckBox) dialog.getCustomView().findViewById(R.id.dont_ask_again_checkbox))
-        .setOnCheckedChangeListener(
-            (buttonView, isChecked) -> {
-              if (isChecked) {
-                askAgainWarn.setVisibility(View.VISIBLE);
-              } else {
-                askAgainWarn.setVisibility(View.GONE);
-              }
-            });
-    askAgainTxt.setOnClickListener(
-        v -> {
-          CheckBox checkbox = dialog.getCustomView().findViewById(R.id.dont_ask_again_checkbox);
-          checkbox.setChecked(!checkbox.isChecked());
-        });
-    // Parse items to delete.
 
     new AsyncTask<Void, Object, Void>() {
 
