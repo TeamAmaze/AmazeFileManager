@@ -1053,11 +1053,15 @@ public class FileUtils {
 
   public static File fromContentUri(@NonNull Uri uri) {
     if (!CONTENT.name().equalsIgnoreCase(uri.getScheme())) {
-      throw new IllegalArgumentException(
-          "URI must start with content://. URI was [" + uri.toString() + "]");
-    } else {
-      return new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
+      LOG.warn("URI must start with content://. URI was [" + uri + "]");
     }
+    File pathFile = new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
+    if (!pathFile.exists()) {
+      LOG.warn("failed to navigate to path {}", pathFile.getPath());
+      pathFile = new File(uri.getPath());
+      LOG.warn("trying to navigate to path {}", pathFile.getPath());
+    }
+    return pathFile;
   }
 
   /**
