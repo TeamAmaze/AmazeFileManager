@@ -74,6 +74,7 @@ object PreferencesConstants {
     const val PREFERENCE_SAVED_PATHS = "savepaths"
     const val PREFERENCE_ZIP_EXTRACT_PATH = "extractpath"
     const val PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack"
+    const val PREFERENCE_DELETE_CONFIRMATION = "delete_confirmation"
 
     // security_prefs.xml
     const val PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint"
@@ -98,4 +99,6 @@ object PreferencesConstants {
     const val PREFERENCE_SORTBY_ONLY_THIS = "sortby_only_this"
     const val PREFERENCE_APPLIST_SORTBY = "AppsListFragment.sortBy"
     const val PREFERENCE_APPLIST_ISASCENDING = "AppsListFragment.isAscending"
+
+    const val DEFAULT_PREFERENCE_DELETE_CONFIRMATION = true
 }
