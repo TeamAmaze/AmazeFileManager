@@ -562,7 +562,9 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
 
     for (LayoutElementParcelable e : elements) {
       if (invalidate || isItemsDigestedNullOrEmpty()) {
-        listItems.add(new ListItem(e.isBack, e));
+        if (e != null) {
+          listItems.add(new ListItem(e.isBack, e));
+        }
         uris.add(e != null ? e.iconData : null);
       }
     }

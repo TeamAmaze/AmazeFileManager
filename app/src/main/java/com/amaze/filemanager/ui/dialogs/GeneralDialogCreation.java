@@ -65,6 +65,7 @@ import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
@@ -104,6 +105,7 @@ import androidx.annotation.StringRes;
 import androidx.appcompat.widget.AppCompatButton;
 import androidx.core.text.TextUtilsCompat;
 import androidx.core.view.ViewCompat;
+import androidx.preference.PreferenceManager;
 
 /**
  * Here are a lot of function that create material dialogs
@@ -201,7 +203,11 @@ public class GeneralDialogCreation {
 
     final ArrayList<HybridFileParcelable> itemsToDelete = new ArrayList<>();
     int accentColor = mainActivity.getAccent();
-
+    SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    boolean needConfirmation =
+        sharedPreferences.getBoolean(
+            PreferencesConstants.PREFERENCE_DELETE_CONFIRMATION,
+            PreferencesConstants.DEFAULT_PREFERENCE_DELETE_CONFIRMATION);
     // Build dialog with custom view layout and accent color.
     MaterialDialog dialog =
         new MaterialDialog.Builder(context)
@@ -228,8 +234,6 @@ public class GeneralDialogCreation {
     final TextView listFiles = dialog.getCustomView().findViewById(R.id.list_files);
     final TextView total = dialog.getCustomView().findViewById(R.id.total);
 
-    // Parse items to delete.
-
     new AsyncTask<Void, Object, Void>() {
 
       long sizeTotal = 0;
@@ -241,10 +245,11 @@ public class GeneralDialogCreation {
       @Override
       protected void onPreExecute() {
         super.onPreExecute();
-
-        listFiles.setText(context.getString(R.string.loading));
-        listDirectories.setText(context.getString(R.string.loading));
-        total.setText(context.getString(R.string.loading));
+        if (needConfirmation) {
+          listFiles.setText(context.getString(R.string.loading));
+          listDirectories.setText(context.getString(R.string.loading));
+          total.setText(context.getString(R.string.loading));
+        }
       }
 
       @Override
@@ -253,42 +258,43 @@ public class GeneralDialogCreation {
         for (int i = 0; i < positions.size(); i++) {
           final LayoutElementParcelable layoutElement = positions.get(i);
           itemsToDelete.add(layoutElement.generateBaseFile());
+          if (needConfirmation) {
+            // Build list of directories to delete.
+            if (layoutElement.isDirectory) {
+              // Don't add newline between category and list.
+              if (counterDirectories != 0) {
+                directories.append("\n");
+              }
 
-          // Build list of directories to delete.
-          if (layoutElement.isDirectory) {
-            // Don't add newline between category and list.
-            if (counterDirectories != 0) {
-              directories.append("\n");
+              long sizeDirectory = layoutElement.generateBaseFile().folderSize(context);
+
+              directories
+                  .append(++counterDirectories)
+                  .append(". ")
+                  .append(layoutElement.title)
+                  .append(" (")
+                  .append(Formatter.formatFileSize(context, sizeDirectory))
+                  .append(")");
+              sizeTotal += sizeDirectory;
+              // Build list of files to delete.
+            } else {
+              // Don't add newline between category and list.
+              if (counterFiles != 0) {
+                files.append("\n");
+              }
+
+              files
+                  .append(++counterFiles)
+                  .append(". ")
+                  .append(layoutElement.title)
+                  .append(" (")
+                  .append(layoutElement.size)
+                  .append(")");
+              sizeTotal += layoutElement.longSize;
             }
 
-            long sizeDirectory = layoutElement.generateBaseFile().folderSize(context);
-
-            directories
-                .append(++counterDirectories)
-                .append(". ")
-                .append(layoutElement.title)
-                .append(" (")
-                .append(Formatter.formatFileSize(context, sizeDirectory))
-                .append(")");
-            sizeTotal += sizeDirectory;
-            // Build list of files to delete.
-          } else {
-            // Don't add newline between category and list.
-            if (counterFiles != 0) {
-              files.append("\n");
-            }
-
-            files
-                .append(++counterFiles)
-                .append(". ")
-                .append(layoutElement.title)
-                .append(" (")
-                .append(layoutElement.size)
-                .append(")");
-            sizeTotal += layoutElement.longSize;
+            publishProgress(sizeTotal, counterFiles, counterDirectories, files, directories);
           }
-
-          publishProgress(sizeTotal, counterFiles, counterDirectories, files, directories);
         }
         return null;
       }
@@ -296,25 +302,31 @@ public class GeneralDialogCreation {
       @Override
       protected void onProgressUpdate(Object... result) {
         super.onProgressUpdate(result);
+        if (needConfirmation) {
+          int tempCounterFiles = (int) result[1];
+          int tempCounterDirectories = (int) result[2];
+          long tempSizeTotal = (long) result[0];
+          StringBuilder tempFilesStringBuilder = (StringBuilder) result[3];
+          StringBuilder tempDirectoriesStringBuilder = (StringBuilder) result[4];
 
-        int tempCounterFiles = (int) result[1];
-        int tempCounterDirectories = (int) result[2];
-        long tempSizeTotal = (long) result[0];
-        StringBuilder tempFilesStringBuilder = (StringBuilder) result[3];
-        StringBuilder tempDirectoriesStringBuilder = (StringBuilder) result[4];
-
-        updateViews(
-            tempSizeTotal,
-            tempFilesStringBuilder,
-            tempDirectoriesStringBuilder,
-            tempCounterFiles,
-            tempCounterDirectories);
+          updateViews(
+              tempSizeTotal,
+              tempFilesStringBuilder,
+              tempDirectoriesStringBuilder,
+              tempCounterFiles,
+              tempCounterDirectories);
+        }
       }
 
       @Override
       protected void onPostExecute(Void aVoid) {
         super.onPostExecute(aVoid);
-        updateViews(sizeTotal, files, directories, counterFiles, counterDirectories);
+        if (needConfirmation) {
+          updateViews(sizeTotal, files, directories, counterFiles, counterDirectories);
+        } else {
+          Toast.makeText(context, context.getString(R.string.deleting), Toast.LENGTH_SHORT).show();
+          mainActivity.mainActivityHelper.deleteFiles(itemsToDelete);
+        }
       }
 
       private void updateViews(
@@ -378,8 +390,10 @@ public class GeneralDialogCreation {
       categoryFiles.setTextColor(accentColor);
     }
 
-    // Show dialog on screen.
-    dialog.show();
+    if (needConfirmation) {
+      // Show dialog on screen.
+      dialog.show();
+    }
   }
 
   public static void showPropertiesDialogWithPermissions(

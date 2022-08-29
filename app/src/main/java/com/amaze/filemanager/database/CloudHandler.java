@@ -76,7 +76,8 @@ public class CloudHandler {
                     .cloudEntryDao()
                     .delete(cloudEntry)
                     .subscribeOn(Schedulers.io())
-                    .subscribe());
+                    .subscribe(),
+            throwable -> LOG.warn("failed to delete cloud connection", throwable));
   }
 
   public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
