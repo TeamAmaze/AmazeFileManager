@@ -781,5 +781,8 @@ You only need to do this once, until the next time you select a new location for
     <string name="error_google_play_cannot_update_myself">Per Google Play policy mandates, apps are not allowed to update itself on its own. Please update app from Google Play.</string>
     <string name="error_cannot_get_package_info">Unable to get package info from file \"%s\". Either the specified file is not an APK, or the package file is corrupt.</string>
     <string name="AmazeFileExplorer">Amaze File Manager</string>
+    <string name="preference_delete_confirmation">Delete confirmation</string>
+    <string name="preference_delete_confirmation_summary">Ask for confirmation before deleting files. Disabling this is highly discouraged!</string>
+
 </resources>
 
