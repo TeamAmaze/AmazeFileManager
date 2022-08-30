@@ -44,6 +44,8 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.PasswordUtil;
 
+import android.util.Base64;
+
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
@@ -74,11 +76,12 @@ public class ShadowPasswordUtilTest {
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
     String encrypted =
-        PasswordUtil.INSTANCE.encryptPassword(ApplicationProvider.getApplicationContext(), text);
+        PasswordUtil.INSTANCE.encryptPassword(
+            ApplicationProvider.getApplicationContext(), text, Base64.DEFAULT);
     assertEquals(
         text,
         PasswordUtil.INSTANCE.decryptPassword(
-            ApplicationProvider.getApplicationContext(), encrypted));
+            ApplicationProvider.getApplicationContext(), encrypted, Base64.DEFAULT));
   }
 
   @Test

@@ -254,8 +254,8 @@ public class GenericCopyUtil {
     } finally {
 
       try {
-        if (inChannel != null) inChannel.close();
-        if (outChannel != null) outChannel.close();
+        if (inChannel != null && inChannel.isOpen()) inChannel.close();
+        if (outChannel != null && outChannel.isOpen()) outChannel.close();
         if (bufferedInputStream != null) bufferedInputStream.close();
         if (bufferedOutputStream != null) bufferedOutputStream.close();
       } catch (IOException e) {

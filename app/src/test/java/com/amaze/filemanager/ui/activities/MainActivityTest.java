@@ -66,6 +66,7 @@ import com.amaze.filemanager.utils.SmbUtil;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.storage.StorageManager;
+import android.util.Base64;
 
 import androidx.lifecycle.Lifecycle;
 import androidx.test.core.app.ActivityScenario;
@@ -181,7 +182,8 @@ public class MainActivityTest {
               verify.get(key),
               PasswordUtil.INSTANCE.decryptPassword(
                   ApplicationProvider.getApplicationContext(),
-                  (String) mocked.getArguments().get(key)));
+                  (String) mocked.getArguments().get(key),
+                  Base64.URL_SAFE));
         }
       }
     }

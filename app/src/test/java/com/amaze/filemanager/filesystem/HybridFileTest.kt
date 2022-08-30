@@ -40,7 +40,7 @@ import kotlin.random.Random
 class HybridFileTest {
 
     /**
-     * Test []
+     * Test [HybridFile.getParent]
      */
     @Test
     fun testGetParentGeneric() {
@@ -82,6 +82,9 @@ class HybridFileTest {
         )
     }
 
+    /**
+     * Test [HybridFile.getName]
+     */
     @Test
     fun testGetName() {
         for (
@@ -100,6 +103,9 @@ class HybridFileTest {
         }
     }
 
+    /**
+     * Test [HybridFile.getName] for files having space in name
+     */
     @Test
     fun testGetName2() {
         val file = HybridFile(

@@ -35,7 +35,6 @@ import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
 import com.amaze.filemanager.utils.SmbUtil
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
-import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.sftp.SFTPClient
 import org.apache.commons.net.ftp.FTPClient
@@ -258,7 +257,7 @@ object NetCopyClientUtils {
     @FolderState
     fun checkFolder(path: String): Int {
         val template: NetCopyClientTemplate<*, Int> = if (path.startsWith(SSH_URI_PREFIX)) {
-            object : SFtpClientTemplate<Int>(extractBaseUriFrom(path)) {
+            object : SFtpClientTemplate<Int>(extractBaseUriFrom(path), false) {
                 @FolderState
                 @Throws(IOException::class)
                 override fun execute(client: SFTPClient): Int {
@@ -270,7 +269,7 @@ object NetCopyClientUtils {
                 }
             }
         } else {
-            object : FtpClientTemplate<Int>(extractBaseUriFrom(path)) {
+            object : FtpClientTemplate<Int>(extractBaseUriFrom(path), false) {
                 override fun executeWithFtpClient(ftpClient: FTPClient): Int {
                     return if (ftpClient.stat(extractRemotePathFrom(path))
                         == FTPReply.DIRECTORY_STATUS
@@ -282,10 +281,6 @@ object NetCopyClientUtils {
                 }
             }
         }
-        return Single.fromCallable {
-            execute(template)
-        }
-            .subscribeOn(Schedulers.io())
-            .blockingGet() ?: DOESNT_EXIST
+        return execute(template) ?: DOESNT_EXIST
     }
 }
