@@ -156,6 +156,7 @@
         <activity
             android:name=".ui.activities.FlashScreen"
             android:exported="true"
+            android:noHistory="true"
             android:theme="@style/appCompatBlack">
             <intent-filter android:label="@string/appbar_name">
                 <action android:name="android.intent.action.MAIN" />
