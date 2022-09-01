@@ -24,6 +24,7 @@ import android.util.Log
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
 import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
+import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile
 import org.apache.commons.compress.PasswordRequiredException
 import org.apache.commons.compress.archivers.ArchiveException
@@ -50,31 +51,76 @@ class SevenZipHelperCallable(
             } else {
                 SevenZFile(File(filePath))
             }
+            val strings = ArrayList<String>()
             for (entry in sevenzFile.entries) {
-                val name = entry.name
-                val isInBaseDir = (
-                    relativePath == "" &&
-                        !name.contains(CompressedHelper.SEPARATOR)
-                    )
-                val isInRelativeDir = (
-                    name.contains(CompressedHelper.SEPARATOR) &&
-                        name.substring(0, name.lastIndexOf(CompressedHelper.SEPARATOR))
-                        == relativePath
-                    )
-                if (isInBaseDir || isInRelativeDir) {
-                    elements.add(
-                        CompressedObjectParcelable(
-                            entry.name,
-                            try {
-                                entry.lastModifiedDate.time
-                            } catch (e: UnsupportedOperationException) {
-                                Log.w(javaClass.simpleName, "Unable to get modified date for 7zip file")
-                                0L
-                            },
+                val file = File(entry.name)
+                val y = entry.name.let {
+                    if (it.startsWith(CompressedHelper.SEPARATOR)) {
+                        it.substring(1, it.length)
+                    } else {
+                        it
+                    }
+                }
+                if (relativePath.trim { it <= ' ' }.isEmpty()) {
+                    var path: String
+                    var zipObj: CompressedObjectParcelable
+                    if (file.parent == null || file.parent!!.isEmpty() || file.parent == "/") {
+                        path = y
+                        zipObj = CompressedObjectParcelable(
+                            y,
+                            getEntryDate(entry),
                             entry.size,
                             entry.isDirectory
                         )
-                    )
+                    } else {
+                        path = y.substring(0, y.indexOf(CompressedHelper.SEPARATOR) + 1)
+                        zipObj = CompressedObjectParcelable(
+                            path,
+                            getEntryDate(entry),
+                            entry.size,
+                            true
+                        )
+                    }
+                    if (!strings.contains(path)) {
+                        elements.add(zipObj)
+                        strings.add(path)
+                    }
+                } else {
+                    if (file.parent != null &&
+                        (
+                                file.parent == relativePath ||
+                                        file.parent == "/$relativePath"
+                                )
+                    ) {
+                        if (!strings.contains(y)) {
+                            elements.add(
+                                CompressedObjectParcelable(
+                                    y,
+                                    getEntryDate(entry),
+                                    entry.size,
+                                    entry.isDirectory
+                                )
+                            )
+                            strings.add(y)
+                        }
+                    } else if (y.startsWith("$relativePath/") &&
+                        y.length > relativePath.length + 1
+                    ) {
+                        val path1 = y.substring(relativePath.length + 1, y.length)
+                        val index = relativePath.length + 1 + path1.indexOf("/")
+                        val path = y.substring(0, index + 1)
+                        if (!strings.contains(path)) {
+                            elements.add(
+                                CompressedObjectParcelable(
+                                    y.substring(0, index + 1),
+                                    getEntryDate(entry),
+                                    entry.size,
+                                    true
+                                )
+                            )
+                            strings.add(path)
+                        }
+                    }
                 }
             }
         } catch (e: PasswordRequiredException) {
@@ -84,4 +130,15 @@ class SevenZipHelperCallable(
             throw ArchiveException(String.format("7zip archive %s is corrupt", filePath))
         }
     }
+
+    private fun getEntryDate(entry: SevenZArchiveEntry) =
+        try {
+            entry.lastModifiedDate.time
+        } catch (e: UnsupportedOperationException) {
+            Log.w(
+                javaClass.simpleName,
+                "Unable to get modified date for 7zip file"
+            )
+            0L
+        }
 }
