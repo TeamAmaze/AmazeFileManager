@@ -28,12 +28,12 @@ import androidx.preference.PreferenceManager
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.exceptions.ShellCommandInvalidException
-import com.amaze.filemanager.file_operations.filesystem.OpenMode
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
 import com.amaze.filemanager.test.TestUtils
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -47,11 +47,6 @@ import org.mockito.kotlin.argumentCaptor
 import org.robolectric.annotation.Config
 import java.io.InputStreamReader
 
-@RunWith(AndroidJUnit4::class)
-@Config(
-    shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
-    sdk = [JELLY_BEAN, KITKAT, P]
-)
 /**
  * Unit test for [ListFilesCommand]. This is to test the case when stat command fails.
  *
@@ -60,6 +55,11 @@ import java.io.InputStreamReader
  *
  * FIXME: add toybox outputs, just to be sure?
  */
+@RunWith(AndroidJUnit4::class)
+@Config(
+    shadows = [ShadowMultiDex::class, ShadowNativeOperations::class],
+    sdk = [JELLY_BEAN, KITKAT, P]
+)
 class ListFilesCommandTest2 {
 
     val sharedPreferences: SharedPreferences =
@@ -85,7 +85,9 @@ class ListFilesCommandTest2 {
         ).thenCallRealMethod()
         `when`(
             mockCommand.executeRootCommand(
-                anyString(), anyBoolean(), anyBoolean()
+                anyString(),
+                anyBoolean(),
+                anyBoolean()
             )
         ).thenCallRealMethod()
         `when`(mockCommand.runShellCommandToList("ls -l \"/bin\"")).thenReturn(lsLines)

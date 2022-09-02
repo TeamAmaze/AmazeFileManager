@@ -33,7 +33,7 @@ class AppDataSorter(var sort: Int, isAscending: Boolean) :
      */
     override fun compare(file1: AppDataParcelable?, file2: AppDataParcelable?): Int {
         safeLet(file1, file2) {
-            f1, f2 ->
+                f1, f2 ->
             if (f1.isSystemApp != f2.isSystemApp) {
                 return if (f1.isSystemApp) -1 else 1
             }

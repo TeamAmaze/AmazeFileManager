@@ -21,7 +21,7 @@
 package com.amaze.filemanager.ui.fragments;
 
 import com.amaze.filemanager.asynchronous.asynctasks.searchfilesystem.SearchAsyncTask;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 
 import android.content.Context;
@@ -56,7 +56,7 @@ public class SearchWorkerFragment extends Fragment {
 
     void onPostExecute(String query);
 
-    void onProgressUpdate(HybridFileParcelable val, String query);
+    void onProgressUpdate(@NonNull HybridFileParcelable val, String query);
 
     void onCancelled();
   }

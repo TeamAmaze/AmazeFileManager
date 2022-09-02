@@ -20,20 +20,6 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.texteditor.read;
 
-import android.content.ContentResolver;
-
-import androidx.annotation.WorkerThread;
-import androidx.documentfile.provider.DocumentFile;
-
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
-import com.amaze.filemanager.file_operations.exceptions.StreamNotFoundException;
-import com.amaze.filemanager.filesystem.EditableFileAbstraction;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
-import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -42,6 +28,20 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Objects;
 import java.util.concurrent.Callable;
+
+import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.exceptions.StreamNotFoundException;
+import com.amaze.filemanager.filesystem.EditableFileAbstraction;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
+import com.amaze.filemanager.ui.activities.texteditor.ReturnedValueOnReadFile;
+
+import android.content.ContentResolver;
+
+import androidx.annotation.WorkerThread;
+import androidx.documentfile.provider.DocumentFile;
 
 public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
 
@@ -131,7 +131,7 @@ public class ReadTextFileCallable implements Callable<ReturnedValueOnReadFile> {
       // try loading stream associated using root
       cachedFile = new File(externalCacheDir, file.getName());
       // Scrap previously cached file if exist
-      if(cachedFile.exists()) {
+      if (cachedFile.exists()) {
         cachedFile.delete();
       }
       cachedFile.createNewFile();

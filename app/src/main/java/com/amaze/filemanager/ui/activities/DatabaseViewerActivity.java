@@ -20,13 +20,16 @@
 
 package com.amaze.filemanager.ui.activities;
 
-import static com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_TEXTEDITOR_NEWSTACK;
 
 import java.io.File;
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
-import com.amaze.filemanager.file_operations.exceptions.ShellNotRunningException;
+import com.amaze.filemanager.fileoperations.exceptions.ShellNotRunningException;
 import com.amaze.filemanager.filesystem.root.CopyFilesCommand;
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
 import com.amaze.filemanager.ui.fragments.DbViewerFragment;
@@ -45,6 +48,8 @@ import androidx.fragment.app.FragmentTransaction;
 
 /** Created by Vishal on 02-02-2015. */
 public class DatabaseViewerActivity extends ThemedActivity {
+
+  private static final Logger LOG = LoggerFactory.getLogger(DatabaseViewerActivity.class);
 
   private String path;
   private ListView listView;
@@ -70,10 +75,10 @@ public class DatabaseViewerActivity extends ThemedActivity {
 
     path = getIntent().getStringExtra("path");
 
-    if(path == null) {
-        Toast.makeText(this, R.string.operation_not_supported, Toast.LENGTH_SHORT).show();
-        finish();
-        return;
+    if (path == null) {
+      Toast.makeText(this, R.string.operation_not_supported, Toast.LENGTH_SHORT).show();
+      finish();
+      return;
     }
 
     pathFile = new File(path);
@@ -118,7 +123,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
                       pathFile.getPath(), new File(file1.getPath(), file.getName()).getPath());
                   pathFile = new File(file1.getPath(), file.getName());
                 } catch (ShellNotRunningException e) {
-                  e.printStackTrace();
+                  LOG.warn("failed to copy file while showing database file", e);
                 }
                 delete = true;
               }
@@ -137,7 +142,7 @@ public class DatabaseViewerActivity extends ThemedActivity {
                         android.R.layout.simple_list_item_1,
                         arrayList);
               } catch (Exception e) {
-                e.printStackTrace();
+                LOG.warn("failed to load file in database viewer", e);
                 finish();
               }
               runOnUiThread(

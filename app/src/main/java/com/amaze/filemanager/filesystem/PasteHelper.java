@@ -22,14 +22,11 @@ package com.amaze.filemanager.filesystem;
 
 import static androidx.core.text.HtmlCompat.FROM_HTML_MODE_COMPACT;
 
-import android.os.AsyncTask;
-import android.os.Parcel;
-import android.os.Parcelable;
-import android.text.Spanned;
-import android.util.Log;
+import java.util.ArrayList;
+import java.util.Arrays;
 
-import androidx.annotation.Nullable;
-import androidx.core.text.HtmlCompat;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.asynctasks.movecopy.PrepareCopyTask;
@@ -39,9 +36,13 @@ import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.snackbar.BaseTransientBottomBar;
 import com.google.android.material.snackbar.Snackbar;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Objects;
+import android.os.AsyncTask;
+import android.os.Parcel;
+import android.os.Parcelable;
+import android.text.Spanned;
+
+import androidx.annotation.Nullable;
+import androidx.core.text.HtmlCompat;
 
 import io.reactivex.Single;
 import io.reactivex.SingleObserver;
@@ -55,6 +56,8 @@ import io.reactivex.schedulers.Schedulers;
  * @author Emmanuel on 5/9/2017, at 09:59.
  */
 public final class PasteHelper implements Parcelable {
+
+  private static final Logger LOG = LoggerFactory.getLogger(PasteHelper.class);
 
   public static final int OPERATION_COPY = 0, OPERATION_CUT = 1;
 
@@ -160,8 +163,7 @@ public final class PasteHelper implements Parcelable {
                         R.string.paste,
                         () -> {
                           final MainFragment mainFragment = mainActivity.getCurrentMainFragment();
-                          if (mainFragment == null)
-                              return;
+                          if (mainFragment == null) return;
                           String path = mainFragment.getCurrentPath();
                           ArrayList<HybridFileParcelable> arrayList =
                               new ArrayList<>(Arrays.asList(paths));
@@ -181,10 +183,7 @@ public final class PasteHelper implements Parcelable {
 
               @Override
               public void onError(Throwable e) {
-                Log.e(
-                    getClass().getSimpleName(),
-                    "Failed to show paste snackbar due to " + e.getCause());
-                e.printStackTrace();
+                LOG.warn("Failed to show paste snackbar" + e);
               }
             });
   }

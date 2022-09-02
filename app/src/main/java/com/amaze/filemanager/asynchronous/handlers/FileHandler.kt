@@ -23,13 +23,14 @@ package com.amaze.filemanager.asynchronous.handlers
 import android.os.Handler
 import android.os.Looper
 import android.os.Message
-import android.util.Log
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.amaze.filemanager.adapters.RecyclerAdapter
 import com.amaze.filemanager.filesystem.CustomFileObserver
 import com.amaze.filemanager.filesystem.HybridFile
 import com.amaze.filemanager.ui.fragments.MainFragment
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.io.File
 import java.lang.ref.WeakReference
 
@@ -41,10 +42,7 @@ class FileHandler(
     Looper.getMainLooper()
 ) {
     private val mainFragment: WeakReference<MainFragment> = WeakReference(mainFragment)
-
-    companion object {
-        private val TAG = FileHandler::class.java.simpleName
-    }
+    private val log: Logger = LoggerFactory.getLogger(FileHandler::class.java)
 
     override fun handleMessage(msg: Message) {
         super.handleMessage(msg)
@@ -62,11 +60,12 @@ class FileHandler(
             }
             CustomFileObserver.NEW_ITEM -> {
                 if (path == null) {
-                    Log.e(TAG, "Path is empty for file")
+                    log.error("Path is empty for file")
                     return
                 }
                 val fileCreated = HybridFile(
-                    mainFragmentViewModel.openMode, "${main.currentPath}/$path"
+                    mainFragmentViewModel.openMode,
+                    "${main.currentPath}/$path"
                 )
                 val newElement = fileCreated.generateLayoutElement(main.requireContext(), useThumbs)
                 main.elementsList?.add(newElement)
@@ -101,6 +100,9 @@ class FileHandler(
         } else {
             // there was no list view, means the directory was empty
             main.loadlist(main.currentPath, true, mainFragmentViewModel.openMode)
+        }
+        main.currentPath?.let {
+            main.mainActivityViewModel?.evictPathFromListCache(it)
         }
         main.computeScroll()
     }

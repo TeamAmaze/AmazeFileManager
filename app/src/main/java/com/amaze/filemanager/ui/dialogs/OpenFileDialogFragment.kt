@@ -28,7 +28,6 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -58,6 +57,8 @@ import com.amaze.filemanager.ui.views.ThemedTextView
 import com.amaze.filemanager.utils.GlideConstants
 import com.bumptech.glide.integration.recyclerview.RecyclerViewPreloader
 import com.bumptech.glide.util.ViewPreloadSizeProvider
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 
 class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<AppHolder> {
 
@@ -73,7 +74,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
 
     companion object {
 
-        private val TAG = OpenFileDialogFragment::class.java.simpleName
+        private val log: Logger = LoggerFactory.getLogger(OpenFileDialogFragment::class.java)
 
         private const val KEY_URI = "uri"
         private const val KEY_MIME_TYPE = "mime_type"
@@ -94,17 +95,22 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             if (mimeType == MimeTypes.ALL_MIME_TYPES ||
                 forceChooser ||
                 !getPreferenceAndStartActivity(
-                        uri, mimeType, useNewStack, activity
+                        uri,
+                        mimeType,
+                        useNewStack,
+                        activity
                     )
             ) {
                 if (forceChooser) {
                     clearMimeTypePreference(
-                        MimeTypes.getMimeType(uri.toString(), false), activity.prefs
+                        MimeTypes.getMimeType(uri.toString(), false),
+                        activity.prefs
                     )
                 }
                 val openFileDialogFragment = newInstance(uri, mimeType, useNewStack)
                 openFileDialogFragment.show(
-                    activity.supportFragmentManager, javaClass.simpleName
+                    activity.supportFragmentManager,
+                    javaClass.simpleName
                 )
             }
         }
@@ -125,7 +131,7 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
             try {
                 context.startActivity(intent)
             } catch (e: ActivityNotFoundException) {
-                Log.e(javaClass.simpleName, e.message, e)
+                log.error(e.message, e)
                 Toast.makeText(context, R.string.no_app_found, Toast.LENGTH_SHORT).show()
                 throw e
             }
@@ -191,7 +197,8 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
                     result = true
                 } catch (e: ActivityNotFoundException) {
                     activity.prefs.edit().putString(
-                        mimeType.plus(KEY_PREFERENCES_DEFAULT), null
+                        mimeType.plus(KEY_PREFERENCES_DEFAULT),
+                        null
                     ).apply()
                 }
             }
@@ -290,25 +297,35 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         val modelProvider = AppsAdapterPreloadModel(this, true)
         val sizeProvider = ViewPreloadSizeProvider<String>()
         var preloader = RecyclerViewPreloader(
-            GlideApp.with(this), modelProvider, sizeProvider, GlideConstants.MAX_PRELOAD_FILES
+            GlideApp.with(this),
+            modelProvider,
+            sizeProvider,
+            GlideConstants.MAX_PRELOAD_FILES
         )
         sharedPreferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
 
         val intent = buildIntent(
-            uri!!, mimeType!!, useNewStack!!, null, null
+            uri!!,
+            mimeType!!,
+            useNewStack!!,
+            null,
+            null
         )
         val appDataParcelableList = initAppDataParcelableList(intent)
         val lastClassAndPackageRaw = sharedPreferences
             .getString(mimeType.plus(KEY_PREFERENCES_LAST), null)
         val lastClassAndPackage = lastClassAndPackageRaw?.split(" ")
         val lastAppData: AppDataParcelable = initLastAppData(
-            lastClassAndPackage, appDataParcelableList
+            lastClassAndPackage,
+            appDataParcelableList
         ) ?: return
 
         adapter = AppsRecyclerAdapter(
             this,
             modelProvider,
-            true, this, appDataParcelableList
+            true,
+            this,
+            appDataParcelableList
         )
         loadViews(lastAppData)
 
@@ -362,7 +379,11 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         val appDataParcelableList: MutableList<AppDataParcelable> = ArrayList()
         packageManager.queryIntentActivities(intent, PackageManager.MATCH_ALL).forEach {
             val openFileParcelable = OpenFileParcelable(
-                uri, mimeType, useNewStack, it.activityInfo.name, it.activityInfo.packageName
+                uri,
+                mimeType,
+                useNewStack,
+                it.activityInfo.name,
+                it.activityInfo.packageName
             )
             val label = it.loadLabel(packageManager).toString()
             val appDataParcelable =
@@ -394,7 +415,6 @@ class OpenFileDialogFragment : BaseBottomSheetFragment(), AdjustListViewForTv<Ap
         }
 
         if (appDataParcelableList.size == 1) {
-
             requireContext().startActivityCatchingSecurityException(
                 buildIntent(
                     appDataParcelableList[0].openFileParcelable?.uri!!,

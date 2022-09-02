@@ -22,6 +22,9 @@ package com.amaze.filemanager.asynchronous.services;
 
 import java.util.ArrayList;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.filesystem.HybridFile;
@@ -39,16 +42,18 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.PowerManager;
 import android.text.format.Formatter;
-import android.util.Log;
 import android.widget.RemoteViews;
 
 import androidx.annotation.CallSuper;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
 
-/** @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 19:32. */
+/**
+ * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 19:32.
+ */
 public abstract class AbstractProgressiveService extends Service
     implements ServiceWatcherUtil.ServiceStatusCallbacks {
+  private final Logger LOG = LoggerFactory.getLogger(AbstractProgressiveService.class);
 
   private boolean isNotificationTitleSet = false;
   private PowerManager.WakeLock wakeLock;
@@ -83,7 +88,9 @@ public abstract class AbstractProgressiveService extends Service
 
   public abstract void setProgressListener(ProgressListener progressListener);
 
-  /** @return list of data packages, to initiate chart in process viewer fragment */
+  /**
+   * @return list of data packages, to initiate chart in process viewer fragment
+   */
   protected abstract ArrayList<DatapointParcelable> getDataPackages();
 
   protected abstract ProgressHandler getProgressHandler();
@@ -250,13 +257,13 @@ public abstract class AbstractProgressiveService extends Service
     try {
       getNotificationManager().cancel(id1);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to publish results", e);
     }
   }
 
   protected void addFirstDatapoint(String name, int amountOfFiles, long totalBytes, boolean move) {
     if (!getDataPackages().isEmpty()) {
-      Log.e(getClass().getSimpleName(), "This is not the first datapoint!");
+      LOG.error("This is not the first datapoint!");
       getDataPackages().clear();
     }
     DatapointParcelable intent1 =
@@ -267,7 +274,7 @@ public abstract class AbstractProgressiveService extends Service
 
   protected void addDatapoint(DatapointParcelable datapoint) {
     if (getDataPackages().isEmpty()) {
-      Log.e(getClass().getSimpleName(), "This is the first datapoint!");
+      LOG.error("This is the first datapoint!");
     }
 
     putDataPackage(datapoint);

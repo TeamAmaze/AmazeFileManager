@@ -20,6 +20,31 @@
 
 package com.amaze.filemanager.crashreport;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.TimeZone;
+import java.util.Vector;
+
+import org.acra.ReportField;
+import org.acra.data.CrashReportData;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.BuildConfig;
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
+import com.amaze.filemanager.utils.Utils;
+import com.google.android.material.snackbar.Snackbar;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -43,29 +68,6 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.NavUtils;
 
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity;
-import com.amaze.filemanager.utils.Utils;
-import com.google.android.material.snackbar.Snackbar;
-
-import org.acra.ReportField;
-import org.acra.data.CrashReportData;
-import org.json.JSONObject;
-
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.text.SimpleDateFormat;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TimeZone;
-import java.util.Vector;
-
 /*
  * Created by Christian Schabesberger on 24.10.15.
  *
@@ -88,7 +90,9 @@ import java.util.Vector;
 
 public class ErrorActivity extends ThemedActivity {
   // LOG TAGS
+  private static final Logger LOG = LoggerFactory.getLogger(ErrorActivity.class);
   public static final String TAG = ErrorActivity.class.toString();
+
   // BUNDLE TAGS
   public static final String ERROR_INFO = "error_info";
   public static final String ERROR_LIST = "error_list";
@@ -150,7 +154,7 @@ public class ErrorActivity extends ThemedActivity {
     // Add this to try figure out what happened when stacktrace is sent to acra.
     // Hope this will be useful for build failures...
     if (BuildConfig.DEBUG) {
-      for(String line: el) {
+      for (String line : el) {
         System.out.println(line);
       }
     }
@@ -278,7 +282,7 @@ public class ErrorActivity extends ThemedActivity {
   }
 
   private void sendReportEmail() {
-    final Intent i = Utils.buildEmailIntent(buildMarkdown(), Utils.EMAIL_NOREPLY_REPORTS);
+    final Intent i = Utils.buildEmailIntent(this, buildMarkdown(), Utils.EMAIL_NOREPLY_REPORTS);
     if (i.resolveActivity(getPackageManager()) != null) {
       startActivity(i);
     }
@@ -346,8 +350,7 @@ public class ErrorActivity extends ThemedActivity {
       jsonMap.put("user_comment", userCommentBox.getText().toString());
       return new JSONObject(jsonMap).toString();
     } catch (final Throwable e) {
-      Log.e(TAG, "Could not build json");
-      e.printStackTrace();
+      LOG.warn("failed to build json", e);
     }
 
     return "";
@@ -418,8 +421,7 @@ public class ErrorActivity extends ThemedActivity {
       htmlErrorReport.append("<hr>\n");
       return htmlErrorReport.toString();
     } catch (final Throwable e) {
-      Log.e(TAG, "Error while erroring: Could not build markdown");
-      e.printStackTrace();
+      LOG.warn("error while building markdown", e);
       return "";
     }
   }

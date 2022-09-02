@@ -21,7 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
-import com.amaze.filemanager.file_operations.utils.UpdatePosition
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream
 import java.io.InputStream
 
@@ -32,7 +32,11 @@ class TarExtractor(
     listener: OnUpdate,
     updatePosition: UpdatePosition
 ) : AbstractCommonsArchiveExtractor(
-    context, filePath, outputPath, listener, updatePosition
+    context,
+    filePath,
+    outputPath,
+    listener,
+    updatePosition
 ) {
 
     override fun createFrom(inputStream: InputStream): TarArchiveInputStream =

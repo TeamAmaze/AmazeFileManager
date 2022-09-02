@@ -27,7 +27,7 @@ import java.io.IOException
  * Template class for executing actions with [SFTPClient] while leave the complexities of
  * handling connection and session setup/teardown to [SshClientUtils].
  */
-abstract class SFtpClientTemplate <T>
+abstract class SFtpClientTemplate<T>
 /**
  * If closeClientOnFinish is set to true, calling code needs to handle closing of [ ] session.
  *

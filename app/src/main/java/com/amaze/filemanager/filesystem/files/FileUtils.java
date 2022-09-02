@@ -22,35 +22,25 @@ package com.amaze.filemanager.filesystem.files;
 
 import static com.amaze.filemanager.filesystem.EditableFileAbstraction.Scheme.CONTENT;
 
-import android.Manifest;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
-import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.media.MediaScannerConnection;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.util.Log;
-import android.view.View;
-import android.widget.Toast;
+import java.io.File;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicLong;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.content.FileProvider;
-import androidx.core.util.Pair;
-import androidx.documentfile.provider.DocumentFile;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.LayoutElementParcelable;
 import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.smbstreamer.Streamer;
 import com.amaze.filemanager.filesystem.ExternalSdCardOperation;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
@@ -65,40 +55,56 @@ import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.dialogs.OpenFileDialogFragment;
 import com.amaze.filemanager.ui.dialogs.share.ShareTask;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.ui.theme.AppTheme;
 import com.amaze.filemanager.utils.DataUtils;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnProgressUpdate;
+import com.amaze.filemanager.utils.PackageInstallValidation;
 import com.cloudrail.si.interfaces.CloudStorage;
 import com.cloudrail.si.types.CloudMetaData;
 import com.googlecode.concurrenttrees.radix.ConcurrentRadixTree;
 import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 
+import android.Manifest;
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
+import android.content.ActivityNotFoundException;
+import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.view.View;
+import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.content.FileProvider;
+import androidx.core.util.Pair;
+import androidx.documentfile.provider.DocumentFile;
+
+import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.sftp.SFTPException;
 
-import java.io.File;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.concurrent.atomic.AtomicLong;
-
-import jcifs.smb.SmbFile;
-import kotlin.collections.ArraysKt;
-
 /** Functions that deal with files */
 public class FileUtils {
 
-  private static final String TAG = FileUtils.class.getSimpleName();
+  private static final Logger LOG = LoggerFactory.getLogger(FileUtils.class);
 
   private static final String[] COMPRESSED_FILE_EXTENSIONS =
-      new String[] {"zip", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"};
+      new String[] {
+        "zip", "rar", "cab", "bz2", "ace", "bz", "gz", "7z", "jar", "apk", "xz", "lzma", "Z"
+      };
 
   public static final String FILE_PROVIDER_PREFIX = "storage_root";
   public static final String NOMEDIA_FILE = ".nomedia";
@@ -116,7 +122,7 @@ public class FileUtils {
         if (updateState != null) updateState.onUpdate(length);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get folder size", e);
     }
     return length;
   }
@@ -135,7 +141,7 @@ public class FileUtils {
         else length += folderSize(file);
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get folder size", e);
     }
     return length;
   }
@@ -158,7 +164,7 @@ public class FileUtils {
       }
     } catch (SFTPException e) {
       // Usually happens when permission denied listing files in directory
-      Log.e("folderSizeSftp", "Problem accessing " + remotePath, e);
+      LOG.error("folderSizeSftp", "Problem accessing " + remotePath, e);
     } finally {
       return retval;
     }
@@ -345,7 +351,8 @@ public class FileUtils {
     }.execute(path);
   }
 
-  public static void shareCloudFiles(ArrayList<LayoutElementParcelable> files, final OpenMode openMode, final Context context) {
+  public static void shareCloudFiles(
+      ArrayList<LayoutElementParcelable> files, final OpenMode openMode, final Context context) {
     String[] paths = new String[files.size()];
     for (int i = 0; i < files.size(); i++) {
       paths[i] = files.get(i).desc;
@@ -395,7 +402,7 @@ public class FileUtils {
 
       new ShareTask(c, uris, appTheme, fab_skin).execute(mime);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to get share files", e);
     }
   }
 
@@ -412,6 +419,25 @@ public class FileUtils {
    */
   public static void installApk(
       final @NonNull File f, final @NonNull PermissionsActivity permissionsActivity) {
+
+    try {
+      PackageInstallValidation.validatePackageInstallability(f);
+    } catch (PackageInstallValidation.PackageCannotBeInstalledException e) {
+      Toast.makeText(
+              permissionsActivity,
+              R.string.error_google_play_cannot_update_myself,
+              Toast.LENGTH_LONG)
+          .show();
+      return;
+    } catch (IllegalStateException e) {
+      Toast.makeText(
+              permissionsActivity,
+              permissionsActivity.getString(
+                  R.string.error_cannot_get_package_info, f.getAbsolutePath()),
+              Toast.LENGTH_LONG)
+          .show();
+    }
+
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
         && !permissionsActivity.getPackageManager().canRequestPackageInstalls()) {
       permissionsActivity.requestInstallApkPermission(
@@ -435,7 +461,7 @@ public class FileUtils {
     try {
       permissionsActivity.startActivity(intent);
     } catch (Exception e) {
-      e.printStackTrace();
+      LOG.warn("failed to install apk", e);
       Toast.makeText(permissionsActivity, R.string.failed_install_apk, Toast.LENGTH_SHORT).show();
     }
   }
@@ -460,7 +486,7 @@ public class FileUtils {
       try {
         c.startActivity(activityIntent);
       } catch (ActivityNotFoundException e) {
-        android.util.Log.e(TAG, e.getMessage(), e);
+        LOG.error(e.getMessage(), e);
         Toast.makeText(c, R.string.no_app_found, Toast.LENGTH_SHORT).show();
         openWith(contentUri, c, useNewStack);
       }
@@ -775,6 +801,55 @@ public class FileUtils {
     }
   }
 
+  public static void launchSMB(final HybridFile baseFile, final Activity activity) {
+    final Streamer s = Streamer.getInstance();
+    new Thread() {
+      public void run() {
+        try {
+          /*
+          List<SmbFile> subtitleFiles = new ArrayList<SmbFile>();
+
+          // finding subtitles
+          for (Layoutelements layoutelement : LIST_ELEMENTS) {
+              SmbFile smbFile = new SmbFile(layoutelement.getDesc());
+              if (smbFile.getName().contains(smbFile.getName())) subtitleFiles.add(smbFile);
+          }
+          */
+
+          s.setStreamSrc(baseFile.getSmbFile(), baseFile.length(activity));
+          activity.runOnUiThread(
+              () -> {
+                try {
+                  Uri uri =
+                      Uri.parse(
+                          Streamer.URL
+                              + Uri.fromFile(new File(Uri.parse(baseFile.getPath()).getPath()))
+                                  .getEncodedPath());
+                  Intent i = new Intent(Intent.ACTION_VIEW);
+                  i.setDataAndType(
+                      uri,
+                      MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory(activity)));
+                  PackageManager packageManager = activity.getPackageManager();
+                  List<ResolveInfo> resInfos = packageManager.queryIntentActivities(i, 0);
+                  if (resInfos != null && resInfos.size() > 0) activity.startActivity(i);
+                  else
+                    Toast.makeText(
+                            activity,
+                            activity.getResources().getString(R.string.smb_launch_error),
+                            Toast.LENGTH_SHORT)
+                        .show();
+                } catch (ActivityNotFoundException e) {
+                  LOG.warn("Failed to launch smb file due to no activity", e);
+                }
+              });
+
+        } catch (Exception e) {
+          LOG.warn("failed to launch smb file", e);
+        }
+      }
+    }.start();
+  }
+
   public static ArrayList<HybridFile> toHybridFileConcurrentRadixTree(
       ConcurrentRadixTree<VoidValue> a) {
     ArrayList<HybridFile> b = new ArrayList<>();
@@ -846,7 +921,7 @@ public class FileUtils {
       SimpleDateFormat simpledateformat = new SimpleDateFormat("yyyy-MM-dd | HH:mm");
       Date stringDate = simpledateformat.parse(date, pos);
       if (stringDate == null) {
-        Log.w(TAG, "parseName: unable to parse datetime string [" + date + "]");
+        LOG.warn("parseName: unable to parse datetime string [" + date + "]");
       }
       HybridFileParcelable baseFile =
           new HybridFileParcelable(
@@ -999,15 +1074,13 @@ public class FileUtils {
       context.startActivity(intent);
     } catch (Exception e) {
       Toast.makeText(context, "" + e, Toast.LENGTH_SHORT).show();
-      e.printStackTrace();
+      LOG.warn("failed to uninstall apk", e);
       return false;
     }
     return true;
   }
 
-  /**
-   * Determines the specified path is beyond storage level, i.e should require root access.
-   */
+  /** Determines the specified path is beyond storage level, i.e should require root access. */
   @SuppressWarnings("PMD.DoNotHardCodeSDCard")
   public static boolean isRunningAboveStorage(@NonNull String path) {
     return !path.startsWith("/storage") && !path.startsWith("/sdcard");

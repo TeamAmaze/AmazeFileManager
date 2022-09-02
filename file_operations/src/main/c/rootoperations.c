@@ -5,7 +5,7 @@
 #include <errno.h>
 #include <stdbool.h>
 
-JNIEXPORT jboolean JNICALL Java_com_amaze_filemanager_file_1operations_filesystem_root_NativeOperations_isDirectory(
+JNIEXPORT jboolean JNICALL Java_com_amaze_filemanager_fileoperations_filesystem_root_NativeOperations_isDirectory(
         JNIEnv * env,
         jobject thiz,
         jstring path

@@ -35,7 +35,7 @@ import java.util.concurrent.*;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.asynchronous.AbstractRepeatingRunnable;
 import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService;
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.ui.notifications.NotificationConstants;
 import com.amaze.filemanager.utils.ProgressHandler;
 
@@ -72,7 +72,9 @@ public class ServiceWatcherUtil {
 
   private static int haltCounter = -1;
 
-  /** @param progressHandler to publish progress after certain delay */
+  /**
+   * @param progressHandler to publish progress after certain delay
+   */
   public ServiceWatcherUtil(ProgressHandler progressHandler) {
     this.progressHandler = progressHandler;
     position = 0L;

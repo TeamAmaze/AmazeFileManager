@@ -22,8 +22,11 @@ package com.amaze.filemanager.filesystem.compressed;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.file_operations.utils.UpdatePosition;
+import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.Bzip2Extractor;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.helpers.GzipExtractor;
@@ -50,12 +53,12 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.helpers.ZipDecom
 import com.amaze.filemanager.utils.Utils;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public abstract class CompressedHelper {
+  private static final Logger LOG = LoggerFactory.getLogger(CompressedHelper.class);
 
   /**
    * Path separator used by all Decompressors and Extractors. e.g. rar internally uses '\' but is
@@ -97,7 +100,7 @@ public abstract class CompressedHelper {
 
     if (isZip(type)) {
       extractor = new ZipExtractor(context, file.getPath(), outputPath, listener, updatePosition);
-    } else if (isRar(type)) {
+    } else if (BuildConfig.FLAVOR.equals("play") && isRar(type)) {
       extractor = new RarExtractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else if (isTar(type)) {
       extractor = new TarExtractor(context, file.getPath(), outputPath, listener, updatePosition);
@@ -123,10 +126,10 @@ public abstract class CompressedHelper {
     } else if (isBzip2(type)) {
       extractor = new Bzip2Extractor(context, file.getPath(), outputPath, listener, updatePosition);
     } else {
-      if(BuildConfig.DEBUG) {
+      if (BuildConfig.DEBUG) {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
       }
-      Log.e(TAG, "The compressed file has no way of opening it: " + file);
+      LOG.error("The compressed file has no way of opening it: " + file);
       extractor = null;
     }
 
@@ -141,7 +144,7 @@ public abstract class CompressedHelper {
 
     if (isZip(type)) {
       decompressor = new ZipDecompressor(context);
-    } else if (isRar(type)) {
+    } else if (BuildConfig.FLAVOR.equals("play") && isRar(type)) {
       decompressor = new RarDecompressor(context);
     } else if (isTar(type)) {
       decompressor = new TarDecompressor(context);
@@ -161,11 +164,11 @@ public abstract class CompressedHelper {
       // without the compression extension
       decompressor = new UnknownCompressedFileDecompressor(context);
     } else {
-      if(BuildConfig.DEBUG) {
+      if (BuildConfig.DEBUG) {
         throw new IllegalArgumentException("The compressed file has no way of opening it: " + file);
       }
 
-      Log.e(TAG, "The compressed file has no way of opening it: " + file);
+      LOG.error("The compressed file has no way of opening it: " + file);
       decompressor = null;
     }
 

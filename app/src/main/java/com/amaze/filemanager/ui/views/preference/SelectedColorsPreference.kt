@@ -30,7 +30,7 @@ import androidx.preference.DialogPreference
 import androidx.preference.PreferenceViewHolder
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.dialogs.ColorPickerDialog
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
 import com.amaze.filemanager.ui.views.CircularColorsView
 
 /**
@@ -41,7 +41,10 @@ import com.amaze.filemanager.ui.views.CircularColorsView
 class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
     DialogPreference(context, attrs) {
     private var colors = intArrayOf(
-        Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT, Color.TRANSPARENT
+        Color.TRANSPARENT,
+        Color.TRANSPARENT,
+        Color.TRANSPARENT,
+        Color.TRANSPARENT
     )
     private var backgroundColor = 0
     private var visibility = View.VISIBLE

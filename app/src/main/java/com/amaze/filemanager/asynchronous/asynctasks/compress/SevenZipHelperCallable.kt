@@ -22,7 +22,7 @@ package com.amaze.filemanager.asynchronous.asynctasks.compress
 
 import android.util.Log
 import com.amaze.filemanager.adapters.data.CompressedObjectParcelable
-import com.amaze.filemanager.file_operations.filesystem.compressed.ArchivePasswordCache
+import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZArchiveEntry
 import com.amaze.filemanager.filesystem.compressed.sevenz.SevenZFile

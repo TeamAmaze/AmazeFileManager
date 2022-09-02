@@ -21,7 +21,6 @@
 package com.amaze.filemanager.asynchronous.asynctasks.hashcalculator
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -30,6 +29,8 @@ import com.amaze.filemanager.R
 import com.amaze.filemanager.asynchronous.asynctasks.Task
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.files.FileUtils
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import java.lang.ref.WeakReference
 import java.util.*
 import java.util.concurrent.Callable
@@ -42,9 +43,7 @@ class CalculateHashTask(
     view: View
 ) : Task<Hash, Callable<Hash>> {
 
-    companion object {
-        private val TAG = CalculateHashTask::class.java.simpleName
-    }
+    private val log: Logger = LoggerFactory.getLogger(CalculateHashTask::class.java)
 
     private val task: Callable<Hash> = if (file.isSftp) {
         CalculateHashSftpCallback(file)
@@ -58,7 +57,7 @@ class CalculateHashTask(
     override fun getTask(): Callable<Hash> = task
 
     override fun onError(error: Throwable) {
-        Log.e(TAG, "Error on calculate hash", error)
+        log.error("Error on calculate hash", error)
         updateView(null)
     }
 

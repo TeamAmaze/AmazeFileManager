@@ -26,6 +26,7 @@ import java.io.File
 class ListPasswordProtectedRarTest : PasswordProtectedRarTest() {
 
     override val archiveFile: File = File(
-        Environment.getExternalStorageDirectory(), "test-archive-encrypted-list.$archiveType"
+        Environment.getExternalStorageDirectory(),
+        "test-archive-encrypted-list.$archiveType"
     )
 }

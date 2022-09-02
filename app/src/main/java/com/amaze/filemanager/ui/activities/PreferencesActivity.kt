@@ -36,9 +36,9 @@ import com.afollestad.materialdialogs.folderselector.FolderChooserDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.ui.activities.superclasses.ThemedActivity
 import com.amaze.filemanager.ui.colors.ColorPreferenceHelper
-import com.amaze.filemanager.ui.fragments.preference_fragments.BasePrefsFragment
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants
-import com.amaze.filemanager.ui.fragments.preference_fragments.PrefsFragment
+import com.amaze.filemanager.ui.fragments.preferencefragments.BasePrefsFragment
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.amaze.filemanager.ui.fragments.preferencefragments.PrefsFragment
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.PreferenceUtils
 import com.amaze.filemanager.utils.Utils
@@ -146,16 +146,16 @@ class PreferencesActivity : ThemedActivity(), FolderChooserDialog.FolderCallback
             val tabStatusColor = PreferenceUtils.getStatusColor(primaryColor)
             window.statusBarColor = tabStatusColor
             when {
-                colouredNavigation         -> {
+                colouredNavigation -> {
                     window.navigationBarColor = tabStatusColor
                 }
                 appTheme == AppTheme.BLACK -> {
                     window.navigationBarColor = Color.BLACK
                 }
-                appTheme == AppTheme.DARK  -> {
+                appTheme == AppTheme.DARK -> {
                     window.navigationBarColor = Utils.getColor(this, R.color.holo_dark_background)
                 }
-                appTheme == AppTheme.LIGHT  -> {
+                appTheme == AppTheme.LIGHT -> {
                     window.navigationBarColor = Color.WHITE
                 }
             }

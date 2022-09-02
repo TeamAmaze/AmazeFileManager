@@ -20,12 +20,12 @@
 
 package com.amaze.filemanager.database.models.utilities;
 
+import com.amaze.filemanager.database.UtilitiesDatabase;
+
 import android.text.TextUtils;
 
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
-
-import com.amaze.filemanager.database.UtilitiesDatabase;
 
 /**
  * {@link Entity} representation of <code>sftp</code> table in utilities.db.
@@ -71,15 +71,15 @@ public class SftpEntry extends OperationDataWithName {
     SftpEntry sftpEntry = (SftpEntry) o;
 
     if (!hostKey.equals(sftpEntry.hostKey)) return false;
-    return (sshKey != null && sshKey.equals(sftpEntry.sshKey)) ||
-            sshKey == null && sftpEntry.sshKey == null;
+    return (sshKey != null && sshKey.equals(sftpEntry.sshKey))
+        || sshKey == null && sftpEntry.sshKey == null;
   }
 
   @Override
   public int hashCode() {
     int result = super.hashCode();
     result = 31 * result + hostKey.hashCode();
-    if(sshKey != null) {
+    if (sshKey != null) {
       result = 31 * result + sshKey.hashCode();
     }
     return result;

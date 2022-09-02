@@ -130,7 +130,9 @@ public class ProgressHandler {
    * for notification generation and process viewer fragment
    */
   public interface ProgressListener {
-    /** @param speed raw write speed in bytes */
+    /**
+     * @param speed raw write speed in bytes
+     */
     void onProgressed(long speed);
   }
 }

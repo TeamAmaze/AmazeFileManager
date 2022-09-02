@@ -42,7 +42,7 @@ android {
     externalNativeBuild {
         cmake {
             path file('src/main/c/CMakeLists.txt')
-            version '3.10.2'
+            version '3.18.1'
         }
     }
 
@@ -62,8 +62,6 @@ dependencies {
     }
 
     implementation "org.apache.commons:commons-compress:$commonsCompressVersion"
-
-    implementation "com.github.junrar:junrar:$junrarVersion"
 
     //zip4j: support password-protected zips
     implementation "net.lingala.zip4j:zip4j:$zip4jVersion"

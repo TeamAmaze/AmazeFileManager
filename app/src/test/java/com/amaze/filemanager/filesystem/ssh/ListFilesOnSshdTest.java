@@ -36,7 +36,7 @@ import java.util.List;
 
 import org.junit.Test;
 
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.HybridFile;
 
 import android.os.Environment;

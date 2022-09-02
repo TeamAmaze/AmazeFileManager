@@ -23,6 +23,9 @@ package com.amaze.filemanager.utils;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.R;
@@ -41,7 +44,6 @@ import com.android.billingclient.api.PurchasesUpdatedListener;
 import com.android.billingclient.api.SkuDetails;
 import com.android.billingclient.api.SkuDetailsParams;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -54,7 +56,7 @@ import androidx.recyclerview.widget.RecyclerView;
 public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     implements PurchasesUpdatedListener {
 
-  private static final String TAG = Billing.class.getSimpleName();
+  private final Logger LOG = LoggerFactory.getLogger(Billing.class);
 
   private BasicActivity activity;
   private List<String> skuList;
@@ -111,8 +113,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 } else {
                   AppConfig.toast(activity, R.string.error_fetching_google_play_product_list);
                   if (BuildConfig.DEBUG) {
-                    Log.w(
-                        TAG,
+                    LOG.warn(
                         "Error fetching product list - looks like you are running a DEBUG build.");
                   }
                 }
@@ -210,7 +211,7 @@ public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         new BillingClientStateListener() {
           @Override
           public void onBillingSetupFinished(BillingResult billingResponse) {
-            Log.d(TAG, "Setup finished. Response code: " + billingResponse.getResponseCode());
+            LOG.debug("Setup finished. Response code: " + billingResponse.getResponseCode());
             if (billingResponse.getResponseCode() == BillingClient.BillingResponseCode.OK) {
               isServiceConnected = true;
               if (executeOnSuccess != null) {

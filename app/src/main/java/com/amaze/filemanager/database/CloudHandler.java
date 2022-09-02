@@ -22,13 +22,15 @@ package com.amaze.filemanager.database;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.amaze.filemanager.database.models.explorer.CloudEntry;
-import com.amaze.filemanager.file_operations.exceptions.CloudPluginException;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
+import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 
 import android.content.Context;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 
@@ -46,6 +48,7 @@ public class CloudHandler {
   public static final String CLOUD_NAME_DROPBOX = "Dropbox";
   public static final String CLOUD_NAME_ONE_DRIVE = "One Drive";
   public static final String CLOUD_NAME_BOX = "Box";
+  private final Logger LOG = LoggerFactory.getLogger(CloudHandler.class);
 
   private final ExplorerDatabase database;
   private final Context context;
@@ -73,7 +76,8 @@ public class CloudHandler {
                     .cloudEntryDao()
                     .delete(cloudEntry)
                     .subscribeOn(Schedulers.io())
-                    .subscribe());
+                    .subscribe(),
+            throwable -> LOG.warn("failed to delete cloud connection", throwable));
   }
 
   public void updateEntry(OpenMode serviceType, CloudEntry newCloudEntry)
@@ -96,7 +100,7 @@ public class CloudHandler {
           .blockingGet();
     } catch (Exception e) {
       // catch error to handle Single#onError for blockingGet
-      Log.e(getClass().getSimpleName(), e.getMessage());
+      LOG.error(getClass().getSimpleName(), e);
       return null;
     }
   }

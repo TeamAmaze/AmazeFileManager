@@ -23,6 +23,28 @@ package com.amaze.filemanager.filesystem.files;
 import static com.amaze.filemanager.asynchronous.services.EncryptService.TAG_AESCRYPT;
 import static com.amaze.filemanager.filesystem.files.CryptUtil.AESCRYPT_EXTENSION;
 
+import java.io.IOException;
+import java.security.GeneralSecurityException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.amaze.filemanager.R;
+import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
+import com.amaze.filemanager.asynchronous.services.DecryptService;
+import com.amaze.filemanager.asynchronous.services.EncryptService;
+import com.amaze.filemanager.database.CryptHandler;
+import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.HybridFileParcelable;
+import com.amaze.filemanager.ui.activities.MainActivity;
+import com.amaze.filemanager.ui.dialogs.DecryptFingerprintDialog;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.fragments.MainFragment;
+import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
+import com.amaze.filemanager.ui.provider.UtilitiesProvider;
+import com.amaze.filemanager.utils.PasswordUtil;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -33,25 +55,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.preference.PreferenceManager;
 
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
-import com.amaze.filemanager.asynchronous.services.DecryptService;
-import com.amaze.filemanager.asynchronous.services.EncryptService;
-import com.amaze.filemanager.database.CryptHandler;
-import com.amaze.filemanager.database.models.explorer.EncryptedEntry;
-import com.amaze.filemanager.file_operations.filesystem.OpenMode;
-import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.ui.activities.MainActivity;
-import com.amaze.filemanager.ui.dialogs.DecryptFingerprintDialog;
-import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
-import com.amaze.filemanager.ui.fragments.MainFragment;
-import com.amaze.filemanager.ui.fragments.preference_fragments.PreferencesConstants;
-import com.amaze.filemanager.ui.provider.UtilitiesProvider;
-import com.amaze.filemanager.utils.PasswordUtil;
-
-import java.io.IOException;
-import java.security.GeneralSecurityException;
-
 /**
  * Provides useful interfaces and methods for encryption/decryption
  *
@@ -60,6 +63,7 @@ import java.security.GeneralSecurityException;
 public class EncryptDecryptUtils {
 
   public static final String DECRYPT_BROADCAST = "decrypt_broadcast";
+  private static final Logger LOG = LoggerFactory.getLogger(EncryptDecryptUtils.class);
   /**
    * Queries database to map path and password. Starts the encryption process after database query
    *
@@ -103,50 +107,51 @@ public class EncryptDecryptUtils {
 
     if (sourceFile.getPath().endsWith(AESCRYPT_EXTENSION)) {
       GeneralDialogCreation.showPasswordDialog(
-              c,
-              mainActivity,
-              utilsProvider.getAppTheme(),
-              R.string.crypt_decrypt,
-              R.string.authenticate_password,
-              (dialog, which) -> {
-                EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
-                decryptIntent.putExtra(EncryptService.TAG_PASSWORD, editText.getText().toString());
-                ServiceWatcherUtil.runService(main.getContext(), decryptIntent);
-                dialog.dismiss();
-              }, null);
+          c,
+          mainActivity,
+          utilsProvider.getAppTheme(),
+          R.string.crypt_decrypt,
+          R.string.authenticate_password,
+          (dialog, which) -> {
+            EditText editText = dialog.getView().findViewById(R.id.singleedittext_input);
+            decryptIntent.putExtra(EncryptService.TAG_PASSWORD, editText.getText().toString());
+            ServiceWatcherUtil.runService(main.getContext(), decryptIntent);
+            dialog.dismiss();
+          },
+          null);
     } else {
       EncryptedEntry encryptedEntry;
 
       try {
         encryptedEntry = findEncryptedEntry(sourceFile.getPath());
       } catch (GeneralSecurityException | IOException e) {
-        e.printStackTrace();
+        LOG.warn("failed to find encrypted entry while decrypting", e);
 
         // we couldn't find any entry in database or lost the key to decipher
         Toast.makeText(
                 main.getContext(),
                 main.getActivity().getString(R.string.crypt_decryption_fail),
                 Toast.LENGTH_LONG)
-                .show();
+            .show();
         return;
       }
 
       DecryptButtonCallbackInterface decryptButtonCallbackInterface =
-              new DecryptButtonCallbackInterface() {
-                @Override
-                public void confirm(Intent intent) {
-                  ServiceWatcherUtil.runService(main.getContext(), intent);
-                }
+          new DecryptButtonCallbackInterface() {
+            @Override
+            public void confirm(Intent intent) {
+              ServiceWatcherUtil.runService(main.getContext(), intent);
+            }
 
-                @Override
-                public void failed() {
-                  Toast.makeText(
-                          main.getContext(),
-                          main.getActivity().getString(R.string.crypt_decryption_fail_password),
-                          Toast.LENGTH_LONG)
-                          .show();
-                }
-              };
+            @Override
+            public void failed() {
+              Toast.makeText(
+                      main.getContext(),
+                      main.getActivity().getString(R.string.crypt_decryption_fail_password),
+                      Toast.LENGTH_LONG)
+                  .show();
+            }
+          };
 
       if (encryptedEntry == null && !sourceFile.getPath().endsWith(AESCRYPT_EXTENSION)) {
         // couldn't find the matching path in database, we lost the password
@@ -155,7 +160,7 @@ public class EncryptDecryptUtils {
                 main.getContext(),
                 main.getActivity().getString(R.string.crypt_decryption_fail),
                 Toast.LENGTH_LONG)
-                .show();
+            .show();
         return;
       }
 
@@ -164,51 +169,51 @@ public class EncryptDecryptUtils {
           try {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
               DecryptFingerprintDialog.show(
-                c,
-                mainActivity,
-                decryptIntent,
-                utilsProvider.getAppTheme(),
-                decryptButtonCallbackInterface);
+                  c,
+                  mainActivity,
+                  decryptIntent,
+                  utilsProvider.getAppTheme(),
+                  decryptButtonCallbackInterface);
             } else throw new IllegalStateException("API < M!");
           } catch (GeneralSecurityException | IOException | IllegalStateException e) {
-            e.printStackTrace();
+            LOG.warn("failed to form fingerprint dialog", e);
             Toast.makeText(
                     main.getContext(),
                     main.getString(R.string.crypt_decryption_fail),
                     Toast.LENGTH_LONG)
-                    .show();
+                .show();
           }
           break;
         case PreferencesConstants.ENCRYPT_PASSWORD_MASTER:
           try {
             GeneralDialogCreation.showDecryptDialog(
+                c,
+                mainActivity,
+                decryptIntent,
+                utilsProvider.getAppTheme(),
+                PasswordUtil.INSTANCE.decryptPassword(
                     c,
-                    mainActivity,
-                    decryptIntent,
-                    utilsProvider.getAppTheme(),
-                    PasswordUtil.INSTANCE.decryptPassword(
-                            c,
-                            preferences1.getString(
-                                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                                    PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)),
-                    decryptButtonCallbackInterface);
+                    preferences1.getString(
+                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
+                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)),
+                decryptButtonCallbackInterface);
           } catch (GeneralSecurityException | IOException e) {
-            e.printStackTrace();
+            LOG.warn("failed to show decrypt dialog, e");
             Toast.makeText(
                     main.getContext(),
                     main.getString(R.string.crypt_decryption_fail),
                     Toast.LENGTH_LONG)
-                    .show();
+                .show();
           }
           break;
         default:
           GeneralDialogCreation.showDecryptDialog(
-                  c,
-                  mainActivity,
-                  decryptIntent,
-                  utilsProvider.getAppTheme(),
-                  encryptedEntry.getPassword().value,
-                  decryptButtonCallbackInterface);
+              c,
+              mainActivity,
+              decryptIntent,
+              utilsProvider.getAppTheme(),
+              encryptedEntry.getPassword().value,
+              decryptButtonCallbackInterface);
           break;
       }
     }

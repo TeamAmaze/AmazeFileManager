@@ -20,16 +20,19 @@
 
 package com.amaze.filemanager;
 
-import android.util.Log;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class LogHelper {
+  private static final Logger LOG = LoggerFactory.getLogger(LogHelper.class);
+
   private LogHelper() {}
 
-  public static final void logOnProductionOrCrash(String tag, String message) {
+  public static final void logOnProductionOrCrash(String message) {
     if (BuildConfig.DEBUG) {
       throw new IllegalStateException(message);
     } else {
-      Log.e(tag, message);
+      LOG.error(message);
     }
   }
 }
