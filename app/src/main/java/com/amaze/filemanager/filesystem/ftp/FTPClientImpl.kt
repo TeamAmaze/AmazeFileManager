@@ -74,6 +74,7 @@ class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient>
             override fun available(): Int = inputStream.available()
             override fun close() {
                 inputStream.close()
+                // FIXME: should this be called at the end of whole process?
                 ftpClient.completePendingCommand()
             }
             override fun markSupported(): Boolean = inputStream.markSupported()
@@ -94,6 +95,7 @@ class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient>
             override fun flush() = outputStream.flush()
             override fun close() {
                 outputStream.close()
+                // FIXME: should this be called at the end of whole process?
                 ftpClient.completePendingCommand()
             }
         }
@@ -101,15 +103,7 @@ class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient>
 
     override fun getClientImpl() = ftpClient
 
-    override fun isConnectionValid(): Boolean {
-        return if (ftpClient.isConnected) {
-            runCatching { ftpClient.sendNoOp() }.onFailure {
-                logger.warn("Failure sending NOOP to FTP server", it)
-            }.getOrDefault(false)
-        } else {
-            false
-        }
-    }
+    override fun isConnectionValid(): Boolean = ftpClient.isAvailable
 
     override fun isRequireThreadSafety(): Boolean = true
 

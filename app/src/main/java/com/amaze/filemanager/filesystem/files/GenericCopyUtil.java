@@ -256,8 +256,13 @@ public class GenericCopyUtil {
       try {
         if (inChannel != null && inChannel.isOpen()) inChannel.close();
         if (outChannel != null && outChannel.isOpen()) outChannel.close();
-        if (bufferedInputStream != null) bufferedInputStream.close();
-        if (bufferedOutputStream != null) bufferedOutputStream.close();
+        /*
+         * It does seems closing the inChannel/outChannel is already sufficient closing the below
+         * bufferedInputStream and bufferedOutputStream instances. These 2 lines prevented FTP
+         * copy from working, especially on Android 9 - TranceLove
+         */
+        //        if (bufferedInputStream != null) bufferedInputStream.close();
+        //        if (bufferedOutputStream != null) bufferedOutputStream.close();
       } catch (IOException e) {
         LOG.warn("failed to close stream after copying", e);
         // failure in closing stream

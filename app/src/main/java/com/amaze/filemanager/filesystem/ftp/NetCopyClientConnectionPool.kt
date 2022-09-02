@@ -33,7 +33,6 @@ import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
 import net.schmizz.sshj.Config
 import net.schmizz.sshj.SSHClient
-import org.apache.commons.net.PrintCommandListener
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
 import org.json.JSONObject
@@ -71,7 +70,7 @@ object NetCopyClientConnectionPool {
     var ftpClientFactory: FTPClientFactory = DefaultFTPClientFactory()
 
     /**
-     * Obtain a [SSHClient] connection from the underlying connection pool.
+     * Obtain a [NetCopyClient] connection from the underlying connection pool.
      *
      *
      * Beneath it will return the connection if it exists; otherwise it will create a new one and
@@ -80,7 +79,7 @@ object NetCopyClientConnectionPool {
      * @param url SSH connection URL, in the form of `
      * ssh://<username>:<password>@<host>:<port>` or `
      * ssh://<username>@<host>:<port>`
-     * @return [SSHClient] connection, already opened and authenticated
+     * @return [NetCopyClient] connection, already opened and authenticated
      * @throws IOException IOExceptions that occur during connection setup
      */
     fun <ClientType> getConnection(url: String): NetCopyClient<ClientType>? {
@@ -109,7 +108,7 @@ object NetCopyClientConnectionPool {
     }
 
     /**
-     * Obtain a [SSHClient] connection from the underlying connection pool.
+     * Obtain a [NetCopyClient] connection from the underlying connection pool.
      *
      *
      * Beneath it will return the connection if it exists; otherwise it will create a new one and
@@ -203,11 +202,11 @@ object NetCopyClientConnectionPool {
     }
 
     /**
-     * Remove a SSH connection from connection pool. Disconnects from server before removing.
+     * Remove specified connection from connection pool. Disconnects from server before removing.
      *
-     * For updating SSH connection settings.
+     * For updating SSH/FTP connection settings.
      *
-     * This method will silently end without feedback if the specified SSH connection URI does not
+     * This method will silently end without feedback if the specified connection URI does not
      * exist in the connection pool.
      *
      * @param url SSH connection URI
@@ -468,7 +467,7 @@ object NetCopyClientConnectionPool {
     ) : Callable<Unit> {
 
         override fun call() {
-            NetCopyClientUtils.extractBaseUriFrom(url).run {
+            extractBaseUriFrom(url).run {
                 if (connections.containsKey(this)) {
                     connections[this]?.expire()
                     connections.remove(this)
@@ -521,7 +520,7 @@ object NetCopyClientConnectionPool {
                     FTPClient()
                 }
                 ).also {
-                it.addProtocolCommandListener(PrintCommandListener(System.out))
+                it.addProtocolCommandListener(Slf4jPrintCommandListener())
                 it.connectTimeout = CONNECT_TIMEOUT
                 it.controlEncoding = Charsets.UTF_8.name()
             }
