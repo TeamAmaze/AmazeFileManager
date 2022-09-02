@@ -88,9 +88,9 @@ class SevenZipHelperCallable(
                 } else {
                     if (file.parent != null &&
                         (
-                                file.parent == relativePath ||
-                                        file.parent == "/$relativePath"
-                                )
+                            file.parent == relativePath ||
+                                file.parent == "/$relativePath"
+                            )
                     ) {
                         if (!strings.contains(y)) {
                             elements.add(
