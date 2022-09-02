@@ -26,22 +26,29 @@ import android.view.animation.AnimationUtils
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.amaze.filemanager.R
+import kotlinx.coroutines.*
 import java.util.*
 
 class FlashScreen : AppCompatActivity() {
+    val activityScope = CoroutineScope(Dispatchers.Main)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_flash_screen)
         val text1 = findViewById<TextView>(R.id.flash_text)
         text1.startAnimation(AnimationUtils.loadAnimation(this, android.R.anim.slide_in_left))
-        Timer().schedule(
-            object : TimerTask() {
-                override fun run() {
-                    startActivity(Intent(this@FlashScreen, MainActivity::class.java))
-                    text1.clearAnimation()
-                }
-            },
-            1000
-        )
+
+        activityScope.launch {
+            delay(1000)
+
+            var intent = Intent(this@FlashScreen, MainActivity::class.java)
+            startActivity(intent)
+
+            text1.clearAnimation()
+            finish()
+        }
+    }
+    override fun onPause() {
+        activityScope.cancel()
+        super.onPause()
     }
 }
