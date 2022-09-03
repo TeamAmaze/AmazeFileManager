@@ -450,7 +450,11 @@ object NetCopyClientConnectionPool {
                 FTP_DEFAULT_PORT
             }
             this.port = port
-            this.queryString = url.substringAfter('?')
+            this.queryString = if (url.contains('?')) {
+                url.substringAfter('?')
+            } else {
+                null
+            }
         }
 
         override fun toString(): String {

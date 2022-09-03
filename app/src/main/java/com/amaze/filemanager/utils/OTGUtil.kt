@@ -37,7 +37,6 @@ import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg
 import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
-import kotlin.collections.ArrayList
 
 /** Created by Vishal on 27-04-2017.  */
 object OTGUtil {
@@ -206,33 +205,32 @@ object OTGUtil {
         val usbManager = context.getSystemService(Context.USB_SERVICE) as? UsbManager
         val devices = usbManager?.deviceList ?: mapOf()
         return devices.mapNotNullTo(
-            ArrayList(),
-            { entry ->
-                val device = entry.value
-                var retval: UsbOtgRepresentation? = null
-                for (i in 0 until device.interfaceCount) {
-                    if (device.getInterface(i).interfaceClass
-                        == UsbConstants.USB_CLASS_MASS_STORAGE
-                    ) {
-                        var serial: String? = null
-                        if (SDK_INT >= LOLLIPOP) {
-                            try {
-                                serial = device.serialNumber
-                            } catch (ifPermissionDenied: SecurityException) {
-                                // May happen when device is running Android 10 or above.
-                                Log.w(
-                                    TAG,
-                                    "Permission denied reading serial number of device " +
-                                        "${device.vendorId}:${device.productId}",
-                                    ifPermissionDenied
-                                )
-                            }
+            ArrayList()
+        ) { entry ->
+            val device = entry.value
+            var retval: UsbOtgRepresentation? = null
+            for (i in 0 until device.interfaceCount) {
+                if (device.getInterface(i).interfaceClass
+                    == UsbConstants.USB_CLASS_MASS_STORAGE
+                ) {
+                    var serial: String? = null
+                    if (SDK_INT >= LOLLIPOP) {
+                        try {
+                            serial = device.serialNumber
+                        } catch (ifPermissionDenied: SecurityException) {
+                            // May happen when device is running Android 10 or above.
+                            Log.w(
+                                TAG,
+                                "Permission denied reading serial number of device " +
+                                    "${device.vendorId}:${device.productId}",
+                                ifPermissionDenied
+                            )
                         }
-                        retval = UsbOtgRepresentation(device.productId, device.vendorId, serial)
                     }
+                    retval = UsbOtgRepresentation(device.productId, device.vendorId, serial)
                 }
-                retval
             }
-        )
+            retval
+        }
     }
 }
