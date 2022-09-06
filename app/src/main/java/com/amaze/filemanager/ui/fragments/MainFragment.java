@@ -24,8 +24,6 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
-import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
-import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -1021,17 +1019,14 @@ public class MainFragment extends Fragment
                   currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
             }
           } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
-            if (mainFragmentViewModel.getCurrentPath() != null
-                && ((mainFragmentViewModel.getCurrentPath().startsWith(FTP_URI_PREFIX)
-                        && !mainFragmentViewModel
-                            .getCurrentPath()
-                            .substring(FTP_URI_PREFIX.length())
-                            .contains("/"))
-                    || (mainFragmentViewModel.getCurrentPath().startsWith(FTPS_URI_PREFIX)
-                        && !mainFragmentViewModel
-                            .getCurrentPath()
-                            .substring(FTPS_URI_PREFIX.length())
-                            .contains("/")))) {
+            if (mainFragmentViewModel.getCurrentPath() != null) {
+              String parent = currentFile.getParent(getContext());
+              if (parent != null && parent.contains("://")) {
+                loadlist(parent, true, mainFragmentViewModel.getOpenMode());
+              } else {
+                loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+              }
+            } else {
               loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
             }
           } else if (("/").equals(mainFragmentViewModel.getCurrentPath())

@@ -33,7 +33,7 @@ import org.slf4j.event.Level
  * Can adjust the logger level by specifying the [loggerLevel] parameter.
  */
 internal class Slf4jPrintCommandListener(
-    private val nologin: Boolean = false,
+    private val nologin: Boolean = true,
     private val eolMarker: Char = 0.toChar(),
     private val directionMarker: Boolean = false,
     private val loggerLevel: Level = Level.DEBUG
