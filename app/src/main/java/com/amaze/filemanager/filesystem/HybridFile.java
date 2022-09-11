@@ -959,16 +959,18 @@ public class HybridFile {
         break;
       case FTP:
         String thisPath = NetCopyClientUtils.INSTANCE.extractRemotePathFrom(path);
-        NetCopyClientUtils.INSTANCE.execute(
-            new FtpClientTemplate<Boolean>(path, false) {
-              public Boolean executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
-                ftpClient.changeWorkingDirectory(thisPath);
-                for (FTPFile ftpFile : ftpClient.listFiles()) {
-                  onFileFound.onFileFound(new HybridFileParcelable(path, ftpFile));
-                }
-                return true;
-              }
-            });
+        FTPFile[] ftpFiles =
+            NetCopyClientUtils.INSTANCE.execute(
+                new FtpClientTemplate<FTPFile[]>(path, false) {
+                  public FTPFile[] executeWithFtpClient(@NonNull FTPClient ftpClient)
+                      throws IOException {
+                    ftpClient.changeWorkingDirectory(thisPath);
+                    return ftpClient.listFiles();
+                  }
+                });
+        for (FTPFile ftpFile : ftpFiles) {
+          onFileFound.onFileFound(new HybridFileParcelable(path, ftpFile));
+        }
         break;
       case OTG:
         OTGUtil.getDocumentFiles(path, context, onFileFound);
@@ -1378,11 +1380,11 @@ public class HybridFile {
           });
     } else if (isFtp()) {
       NetCopyClientUtils.INSTANCE.execute(
-          new FtpClientTemplate<Void>(getPath(), false) {
-            public Void executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
+          new FtpClientTemplate<Boolean>(getPath(), false) {
+            public Boolean executeWithFtpClient(@NonNull FTPClient ftpClient) throws IOException {
               ExtensionsKt.makeDirectoryTree(
                   ftpClient, NetCopyClientUtils.INSTANCE.extractRemotePathFrom(getPath()));
-              return null;
+              return true;
             }
           });
     } else if (isSmb()) {

@@ -1021,6 +1021,7 @@ public class MainFragment extends Fragment
           } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
             if (mainFragmentViewModel.getCurrentPath() != null) {
               String parent = currentFile.getParent(getContext());
+              // Hack.
               if (parent != null && parent.contains("://")) {
                 loadlist(parent, true, mainFragmentViewModel.getOpenMode());
               } else {
