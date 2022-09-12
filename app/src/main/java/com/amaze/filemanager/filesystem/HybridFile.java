@@ -28,6 +28,7 @@ import static com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -106,6 +107,7 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.io.ByteStreamsKt;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.common.IOUtils;
@@ -1092,16 +1094,27 @@ public class HybridFile {
                   public InputStream executeWithFtpClient(@NonNull FTPClient ftpClient)
                       throws IOException {
                     String parent = getParent(AppConfig.getInstance());
+                    /*
+                     * Use temp file to hold the FTP file.
+                     *
+                     * Due to the single thread nature of FTPClient, it is not possible to open
+                     * both input and output streams on the same FTP server on the same time.
+                     * Hence have to use placeholder temp file to hold contents for freeing out
+                     * the thread for output stream. - TranceLove
+                     */
+                    File tmpFile = File.createTempFile("ftp-transfer_", ".tmp");
+                    tmpFile.deleteOnExit();
                     ftpClient.changeWorkingDirectory(
                         NetCopyClientUtils.INSTANCE.extractRemotePathFrom(parent));
                     ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                    InputStream retval =
+                    InputStream fin =
                         ftpClient.retrieveFileStream(getName(AppConfig.getInstance()));
-                    if (retval != null) {
-                      return FTPClientImpl.wrap(retval, ftpClient);
-                    } else {
-                      return null;
-                    }
+                    FileOutputStream fout = new FileOutputStream(tmpFile);
+                    ByteStreamsKt.copyTo(fin, fout, GenericCopyUtil.DEFAULT_BUFFER_SIZE);
+                    fin.close();
+                    fout.close();
+                    ftpClient.completePendingCommand();
+                    return FTPClientImpl.wrap(tmpFile);
                   }
                 });
         break;

@@ -23,6 +23,8 @@ package com.amaze.filemanager.filesystem.ftp
 import org.apache.commons.net.ftp.FTPClient
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
+import java.io.File
+import java.io.FileInputStream
 import java.io.InputStream
 import java.io.OutputStream
 import kotlin.random.Random
@@ -61,11 +63,12 @@ class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient>
         }
 
         /**
-         * Wraps an [InputStream] returned by [FTPClient.retrieveFileStream].
-         * Most important part is to do [FTPClient.completePendingCommand] on [InputStream.close].
+         * Wraps an an temporary [File] returned by [FTPClient.retrieveFileStream].
+         * Most important part is to do [File.delete] when the reading is done.
          */
         @JvmStatic
-        fun wrap(inputStream: InputStream, ftpClient: FTPClient) = object : InputStream() {
+        fun wrap(inputFile: File) = object : InputStream() {
+            private val inputStream = FileInputStream(inputFile)
             override fun read() = inputStream.read()
             override fun read(b: ByteArray?): Int = inputStream.read(b)
             override fun read(b: ByteArray?, off: Int, len: Int): Int =
@@ -74,7 +77,7 @@ class FTPClientImpl(private val ftpClient: FTPClient) : NetCopyClient<FTPClient>
             override fun available(): Int = inputStream.available()
             override fun close() {
                 inputStream.close()
-                ftpClient.completePendingCommand()
+                inputFile.delete()
             }
             override fun markSupported(): Boolean = inputStream.markSupported()
             override fun mark(readlimit: Int) = inputStream.mark(readlimit)
