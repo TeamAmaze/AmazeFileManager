@@ -666,7 +666,9 @@ class SftpConnectDialog : DialogFragment() {
                                 OpenMode.SFTP
                             } else {
                                 OpenMode.FTP
-                            }, false)
+                            },
+                            false
+                        )
                         dismiss()
                     } else {
                         Snackbar.make(
