@@ -334,7 +334,8 @@ public class LoadFilesListTask
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
-        || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null || forceReload) {
+        || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null
+        || forceReload) {
       switch (Integer.parseInt(path)) {
         case 0:
           list = listImages();

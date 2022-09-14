@@ -104,7 +104,8 @@ class HiddenAdapter(
                         mainFragment.loadlist(
                             file.path,
                             false,
-                            OpenMode.UNKNOWN, false
+                            OpenMode.UNKNOWN,
+                            false
                         )
                     }
                 } else if (!file.isSmb) {
