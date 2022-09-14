@@ -193,7 +193,7 @@ class UtilsHandler(
         connectionName: String,
         oldConnectionName: String,
         path: String,
-        hostKey: String,
+        hostKey: String?,
         sshKeyName: String?,
         sshKey: String?
     ) {
@@ -347,16 +347,16 @@ class UtilsHandler(
     /**
      * Returns SSH host key of specified URI.
      */
-    fun getSshHostKey(uri: String): String? =
+    fun getRemoteHostKey(uri: String): String? =
         runCatching {
             utilitiesDatabase
                 .sftpEntryDao()
-                .getSshHostKey(uri)
+                .getRemoteHostKey(uri)
                 .subscribeOn(Schedulers.io())
                 .blockingGet()
         }.onFailure {
             if (BuildConfig.DEBUG) {
-                log.error("Error getting public key for URI [$uri]", it)
+                log.warn("Error getting public key for URI [$uri]", it)
             }
         }.getOrNull()
 

@@ -46,6 +46,7 @@ import com.amaze.filemanager.adapters.holders.EmptyViewHolder;
 import com.amaze.filemanager.adapters.holders.ItemViewHolder;
 import com.amaze.filemanager.adapters.holders.SpecialViewHolder;
 import com.amaze.filemanager.application.AppConfig;
+import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.ui.ItemPopupMenu;
 import com.amaze.filemanager.ui.activities.superclasses.PreferenceActivity;
@@ -859,7 +860,7 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     switch (rowItem.filetype) {
       case Icons.IMAGE:
       case Icons.VIDEO:
-        if (getBoolean(PREFERENCE_SHOW_THUMB)) {
+        if (getBoolean(PREFERENCE_SHOW_THUMB) && rowItem.getMode() != OpenMode.FTP) {
           if (getBoolean(PREFERENCE_USE_CIRCULAR_IMAGES)) {
             showThumbnailWithBackground(
                 holder, rowItem.iconData, holder.pictureIcon, rowItem.iconData::setImageBroken);
@@ -1006,27 +1007,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
     holder.checkImageViewGrid.setVisibility(View.INVISIBLE);
 
     if (rowItem.filetype == Icons.IMAGE || rowItem.filetype == Icons.VIDEO) {
-      if (getBoolean(PREFERENCE_SHOW_THUMB)) {
+      if (getBoolean(PREFERENCE_SHOW_THUMB) && rowItem.getMode() != OpenMode.FTP) {
         holder.imageView1.setVisibility(View.VISIBLE);
         holder.imageView1.setImageDrawable(null);
         if (utilsProvider.getAppTheme().equals(AppTheme.DARK)
-            || utilsProvider.getAppTheme().equals(AppTheme.BLACK)) {
+            || utilsProvider.getAppTheme().equals(AppTheme.BLACK))
           holder.imageView1.setBackgroundColor(Color.BLACK);
-        }
         showRoundedThumbnail(
             holder, rowItem.iconData, holder.imageView1, rowItem.iconData::setImageBroken);
       } else {
-        if (rowItem.filetype == Icons.IMAGE) {
+        if (rowItem.filetype == Icons.IMAGE)
           holder.genericIcon.setImageResource(R.drawable.ic_doc_image);
-        } else {
-          holder.genericIcon.setImageResource(R.drawable.ic_doc_video_am);
-        }
+        else holder.genericIcon.setImageResource(R.drawable.ic_doc_video_am);
       }
     } else if (rowItem.filetype == Icons.APK) {
-      if (getBoolean(PREFERENCE_SHOW_THUMB)) {
+      if (getBoolean(PREFERENCE_SHOW_THUMB))
         showRoundedThumbnail(
             holder, rowItem.iconData, holder.genericIcon, rowItem.iconData::setImageBroken);
-      } else {
+      else {
         holder.genericIcon.setImageResource(R.drawable.ic_doc_apk_white);
       }
     } else {

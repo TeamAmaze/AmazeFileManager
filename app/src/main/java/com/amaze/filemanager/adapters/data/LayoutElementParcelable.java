@@ -163,6 +163,11 @@ public class LayoutElementParcelable implements Parcelable {
             this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
           }
           break;
+          // Until we find a way to properly handle threading issues with thread unsafe FTPClient,
+          // we refrain from loading any files via FTP as file thumbnail. - TranceLove
+        case FTP:
+          this.iconData = new IconDataParcelable(IconDataParcelable.IMAGE_RES, fallbackIcon);
+          break;
         default:
           if (filetype == Icons.IMAGE || filetype == Icons.VIDEO || filetype == Icons.APK) {
             this.iconData =

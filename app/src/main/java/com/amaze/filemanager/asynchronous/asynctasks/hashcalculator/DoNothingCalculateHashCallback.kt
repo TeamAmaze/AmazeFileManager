@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2020 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -18,22 +18,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.database.typeconverters;
+package com.amaze.filemanager.asynchronous.asynctasks.hashcalculator
 
-import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import java.util.concurrent.Callable
 
-import androidx.room.TypeConverter;
-
-/** {@link TypeConverter} for {@link OpenMode} objects to database columns. */
-public class OpenModeTypeConverter {
-
-  @TypeConverter
-  public static int fromOpenMode(OpenMode from) {
-    return from.ordinal();
-  }
-
-  @TypeConverter
-  public static OpenMode fromDatabaseValue(int from) {
-    return OpenMode.getOpenMode(from);
-  }
+/**
+ * A do-nothing callback that will not perform calculations on file hashes.
+ */
+class DoNothingCalculateHashCallback : Callable<Hash> {
+    override fun call(): Hash = Hash("", "")
 }

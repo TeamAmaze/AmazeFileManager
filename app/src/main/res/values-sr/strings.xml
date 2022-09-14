@@ -231,7 +231,7 @@
     <string name="needs_access_summary">Одредите корени директоријум од \t</string>
     <string name="needs_access_summary1">\tда бисте одобрили дозволу уписа за радњу </string>
     <string name="smb_connection">СМБ веза</string>
-    <string name="smb_server">Сервер: ИП адреса или ИП адреса/дељена_фасцикла</string>
+    <string name="server_address">Сервер: ИП адреса или ИП адреса/дељена_фасцикла</string>
     <string name="username">Корисничко име</string>
     <string name="password">Лозинка</string>
     <string name="anonymous">Анонимно</string>

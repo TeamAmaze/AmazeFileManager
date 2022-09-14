@@ -244,7 +244,7 @@ I cambiamenti saranno effettivi dopo il riavvio dell\'app
     <string name="needs_access_summary">Seleziona la cartella root di \t</string>
     <string name="needs_access_summary1">\tper permettere la scrittura</string>
     <string name="smb_connection">Connessione SMB</string>
-    <string name="smb_server">Indirizzo IP server</string>
+    <string name="server_address">Indirizzo IP server</string>
     <string name="username">Nome utente</string>
     <string name="password">Password</string>
     <string name="anonymous">Anonimo</string>

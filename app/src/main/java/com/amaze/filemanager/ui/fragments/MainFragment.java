@@ -24,7 +24,7 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
-import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -1035,6 +1035,18 @@ public class MainFragment extends Fragment
                   true,
                   mainFragmentViewModel.getOpenMode(),
                   false);
+            }
+          } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
+            if (mainFragmentViewModel.getCurrentPath() != null) {
+              String parent = currentFile.getParent(getContext());
+              // Hack.
+              if (parent != null && parent.contains("://")) {
+                loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
+              } else {
+                loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+              }
+            } else {
+              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
             }
           } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
               || (mainFragmentViewModel.getHome() != null

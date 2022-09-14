@@ -405,7 +405,7 @@ public class CopyService extends AbstractProgressiveService {
                 break;
               }
             } catch (Exception e) {
-              LOG.error("Got exception checkout: " + f1.getPath());
+              LOG.error("Got exception checkout: " + f1.getPath(), e);
 
               failedFOps.add(sourceFiles.get(i));
               for (int j = i + 1; j < sourceFiles.size(); j++) failedFOps.add(sourceFiles.get(j));

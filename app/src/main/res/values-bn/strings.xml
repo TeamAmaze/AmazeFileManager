@@ -434,7 +434,7 @@ along with this program. If not, see <http://www.gnu.org/licenses/>.
 
     <string name="smb_connection">SMB Connection</string>
 
-    <string name="smb_server">Server IP Address</string>
+    <string name="server_address">Server IP Address</string>
 
     <string name="username">Username</string>
 

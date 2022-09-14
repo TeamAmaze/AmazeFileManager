@@ -172,13 +172,13 @@ public class LoadFilesListTask
         }
         break;
       case SFTP:
-        HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
+        HybridFile ftpHFile = new HybridFile(openmode, path);
         ArrayList<LayoutElementParcelable> sftpCache = mainActivityViewModel.getFromListCache(path);
         if (sftpCache != null && !forceReload) {
           list = sftpCache;
         } else {
-          list = new ArrayList();
-          sftpHFile.forEachChildrenFile(
+          list = new ArrayList<>();
+          ftpHFile.forEachChildrenFile(
               context,
               false,
               file -> {

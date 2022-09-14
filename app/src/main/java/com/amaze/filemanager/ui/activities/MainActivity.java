@@ -46,6 +46,7 @@ import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_KEYPAIR_NAM
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_NAME;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PASSWORD;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PORT;
+import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_PROTOCOL;
 import static com.amaze.filemanager.ui.dialogs.SftpConnectDialog.ARG_USERNAME;
 import static com.amaze.filemanager.ui.fragments.FtpServerFragment.REQUEST_CODE_SAF_FTP;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_BOOKMARKS_ADDED;
@@ -98,8 +99,8 @@ import com.amaze.filemanager.filesystem.MakeFileOperation;
 import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
-import com.amaze.filemanager.filesystem.ssh.SshConnectionPool;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
 import com.amaze.filemanager.ui.dialogs.AlertDialog;
@@ -148,6 +149,7 @@ import com.leinardi.android.speeddial.SpeedDialView;
 import com.readystatesoftware.systembartint.SystemBarTintManager;
 import com.topjohnwu.superuser.Shell;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
@@ -196,6 +198,7 @@ import androidx.loader.content.Loader;
 
 import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
+import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
@@ -934,7 +937,7 @@ public class MainActivity extends PermissionsActivity
 
   public void exit() {
     if (backPressedToExitOnce) {
-      SshConnectionPool.INSTANCE.shutdown();
+      NetCopyClientConnectionPool.INSTANCE.shutdown();
       finish();
       if (isRootExplorer()) {
         closeInteractiveShell();
@@ -1404,7 +1407,7 @@ public class MainActivity extends PermissionsActivity
     // TODO: 6/5/2017 Android may choose to not call this method before destruction
     // TODO: https://developer.android.com/reference/android/app/Activity.html#onDestroy%28%29
     closeInteractiveShell();
-    SshConnectionPool.INSTANCE.shutdown();
+    NetCopyClientConnectionPool.INSTANCE.shutdown();
     if (drawer != null && drawer.getBilling() != null) {
       drawer.getBilling().destroyBillingInstance();
     }
@@ -1955,33 +1958,44 @@ public class MainActivity extends PermissionsActivity
     smbConnectDialog.show(getFragmentManager(), "smbdailog");
   }
 
+  @SuppressLint("CheckResult")
   public void showSftpDialog(String name, String path, boolean edit) {
     if (path.length() > 0 && name.length() == 0) {
       int i = dataUtils.containsServer(new String[] {name, path});
       if (i != -1) name = dataUtils.getServers().get(i)[0];
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
-    SshConnectionPool.ConnectionInfo connInfo = new SshConnectionPool.ConnectionInfo(path);
+    String finalName = name;
+    Flowable.fromCallable(() -> new NetCopyClientConnectionPool.ConnectionInfo(path))
+        .flatMap(
+            connectionInfo -> {
+              Bundle retval = new Bundle();
+              retval.putString(ARG_PROTOCOL, connectionInfo.getPrefix());
+              retval.putString(ARG_NAME, finalName);
+              retval.putString(ARG_ADDRESS, connectionInfo.getHost());
+              retval.putInt(ARG_PORT, connectionInfo.getPort());
+              if (!TextUtils.isEmpty(connectionInfo.getDefaultPath())) {
+                retval.putString(ARG_DEFAULT_PATH, connectionInfo.getDefaultPath());
+              }
+              retval.putString(ARG_USERNAME, connectionInfo.getUsername());
 
-    Bundle bundle = new Bundle();
-    bundle.putString(ARG_NAME, name);
-    bundle.putString(ARG_ADDRESS, connInfo.getHost());
-    bundle.putInt(ARG_PORT, connInfo.getPort());
-    if (!TextUtils.isEmpty(connInfo.getDefaultPath())) {
-      bundle.putString(ARG_DEFAULT_PATH, connInfo.getDefaultPath());
-    }
-    bundle.putString(ARG_USERNAME, connInfo.getUsername());
-
-    if (connInfo.getPassword() == null) {
-      bundle.putBoolean(ARG_HAS_PASSWORD, false);
-      bundle.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
-    } else {
-      bundle.putBoolean(ARG_HAS_PASSWORD, true);
-      bundle.putString(ARG_PASSWORD, connInfo.getPassword());
-    }
-    bundle.putBoolean(ARG_EDIT, edit);
-    sftpConnectDialog.setArguments(bundle);
-    sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
+              if (connectionInfo.getPassword() == null) {
+                retval.putBoolean(ARG_HAS_PASSWORD, false);
+                retval.putString(ARG_KEYPAIR_NAME, utilsHandler.getSshAuthPrivateKeyName(path));
+              } else {
+                retval.putBoolean(ARG_HAS_PASSWORD, true);
+                retval.putString(ARG_PASSWORD, connectionInfo.getPassword());
+              }
+              retval.putBoolean(ARG_EDIT, edit);
+              return Flowable.just(retval);
+            })
+        .subscribeOn(Schedulers.computation())
+        .subscribe(
+            bundle -> {
+              sftpConnectDialog.setArguments(bundle);
+              sftpConnectDialog.setCancelable(true);
+              sftpConnectDialog.show(getSupportFragmentManager(), "sftpdialog");
+            });
   }
 
   /**
@@ -2048,33 +2062,41 @@ public class MainActivity extends PermissionsActivity
 
   @Override
   public void deleteConnection(final String name, final String path) {
-
     int i = dataUtils.containsServer(new String[] {name, path});
     if (i != -1) {
       dataUtils.removeServer(i);
-
-      AppConfig.getInstance()
-          .runInBackground(
+      Flowable.fromCallable(
               () -> {
                 utilsHandler.removeFromDatabase(
                     new OperationData(UtilsHandler.Operation.SMB, name, path));
-              });
-      // grid.removePath(name, path, DataUtils.SMB);
-      drawer.refreshDrawer();
+                return true;
+              })
+          .subscribeOn(Schedulers.io())
+          .subscribe(o -> drawer.refreshDrawer());
     }
   }
 
   @Override
   public void delete(String title, String path) {
-    utilsHandler.removeFromDatabase(
-        new OperationData(UtilsHandler.Operation.BOOKMARKS, title, path));
-    drawer.refreshDrawer();
+    Flowable.fromCallable(
+            () -> {
+              utilsHandler.removeFromDatabase(
+                  new OperationData(UtilsHandler.Operation.BOOKMARKS, title, path));
+              return true;
+            })
+        .subscribeOn(Schedulers.io())
+        .subscribe(o -> drawer.refreshDrawer());
   }
 
   @Override
   public void modify(String oldpath, String oldname, String newPath, String newname) {
-    utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
-    drawer.refreshDrawer();
+    Flowable.fromCallable(
+            () -> {
+              utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
+              return true;
+            })
+        .subscribeOn(Schedulers.io())
+        .subscribe(o -> drawer.refreshDrawer());
   }
 
   @Override
