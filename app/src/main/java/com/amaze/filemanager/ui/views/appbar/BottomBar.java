@@ -375,6 +375,7 @@ public class BottomBar implements View.OnTouchListener {
     switch (openmode) {
       case SFTP:
       case SMB:
+      case FTP:
         newPath = HybridFile.parseAndFormatUriForDisplay(news);
         break;
       case OTG:

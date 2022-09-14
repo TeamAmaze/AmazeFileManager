@@ -228,7 +228,7 @@
   <string name="needs_access_summary">Калі ласка, абярыце каранёвую тэчку\t</string>
   <string name="needs_access_summary1">\tпрадастаўляць доступ на запіс для працы </string>
   <string name="smb_connection">SMB злучэнне</string>
-  <string name="smb_server">IP-адрас сервера</string>
+  <string name="server_address">IP-адрас сервера</string>
   <string name="username">Імя карыстальніка</string>
   <string name="password">Пароль</string>
   <string name="anonymous">Ананімна</string>

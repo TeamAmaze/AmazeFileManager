@@ -169,26 +169,21 @@ public class LoadFilesListTask
         }
         break;
       case SFTP:
-        HybridFile sftpHFile = new HybridFile(OpenMode.SFTP, path);
-        ArrayList<LayoutElementParcelable> sftpCache = mainActivityViewModel.getFromListCache(path);
-        if (sftpCache != null) {
-          list = sftpCache;
-        } else {
-          list = new ArrayList();
-          sftpHFile.forEachChildrenFile(
-              context,
-              false,
-              file -> {
-                if (!(dataUtils.isFileHidden(file.getPath())
-                    || file.isHidden() && !showHiddenFiles)) {
-                  LayoutElementParcelable elem = createListParcelables(file);
-                  if (elem != null) {
-                    list.add(elem);
-                  }
+      case FTP:
+        HybridFile ftpHFile = new HybridFile(openmode, path);
+        list = new ArrayList<>();
+        ftpHFile.forEachChildrenFile(
+            context,
+            false,
+            file -> {
+              if (!(dataUtils.isFileHidden(file.getPath())
+                  || file.isHidden() && !showHiddenFiles)) {
+                LayoutElementParcelable elem = createListParcelables(file);
+                if (elem != null) {
+                  list.add(elem);
                 }
-              });
-          mainActivityViewModel.putInCache(path, list);
-        }
+              }
+            });
         break;
       case CUSTOM:
         list = getCachedMediaList(mainActivityViewModel);

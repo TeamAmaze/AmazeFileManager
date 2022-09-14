@@ -39,8 +39,6 @@ import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.fileoperations.filesystem.cloud.CloudStreamer;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
-import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.icons.MimeTypes;
 import com.amaze.filemanager.utils.DataUtils;
@@ -62,9 +60,6 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.documentfile.provider.DocumentFile;
-
-import net.schmizz.sshj.sftp.RemoteFile;
-import net.schmizz.sshj.sftp.SFTPClient;
 
 /**
  * Created by vishal on 19/4/17.
@@ -265,26 +260,12 @@ public class CloudUtil {
 
     switch (hybridFile.getMode()) {
       case SFTP:
-        inputStream =
-            SshClientUtils.execute(
-                new SFtpClientTemplate<InputStream>(hybridFile.getPath(), false) {
-                  @Override
-                  public InputStream execute(final SFTPClient client) throws IOException {
-                    final RemoteFile rf =
-                        client.open(SshClientUtils.extractRemotePathFrom(hybridFile.getPath()));
-                    return rf.new RemoteFileInputStream() {
-                      @Override
-                      public void close() throws IOException {
-                        try {
-                          super.close();
-                        } finally {
-                          rf.close();
-                          client.close();
-                        }
-                      }
-                    };
-                  }
-                });
+        inputStream = hybridFile.getInputStream(context);
+        break;
+      case FTP:
+        // Until we find a way to properly handle threading issues with thread unsafe FTPClient,
+        // we refrain from loading any files via FTP as file thumbnail. - TranceLove
+        inputStream = null;
         break;
       case SMB:
         try {

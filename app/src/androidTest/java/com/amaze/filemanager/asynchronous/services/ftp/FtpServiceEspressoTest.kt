@@ -29,6 +29,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ServiceTestRule
 import com.amaze.filemanager.utils.ObtainableServiceBinder
 import com.amaze.filemanager.utils.PasswordUtil
+import org.apache.commons.net.PrintCommandListener
 import org.apache.commons.net.ftp.FTP
 import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPSClient
@@ -92,9 +93,11 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
-        waitForServer()
+        await().atMost(10, TimeUnit.SECONDS).until {
+            FtpService.isRunning() && isServerReady()
+        }
         FTPClient().run {
+            addProtocolCommandListener(PrintCommandListener(System.err))
             loginAndVerifyWith(this)
             testUploadWith(this)
             testDownloadWith(this)
@@ -118,10 +121,12 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        await().atMost(10, TimeUnit.SECONDS).until { FtpService.isRunning() }
-        waitForServer()
+        await().atMost(10, TimeUnit.SECONDS).until {
+            FtpService.isRunning() && isServerReady()
+        }
 
         FTPSClient(true).run {
+            addProtocolCommandListener(PrintCommandListener(System.err))
             loginAndVerifyWith(this)
             testUploadWith(this)
             testDownloadWith(this)
@@ -150,9 +155,9 @@ class FtpServiceEspressoTest {
                 .putExtra(FtpService.TAG_STARTED_BY_TILE, false)
         )
 
-        while (!FtpService.isRunning());
-        assertTrue(FtpService.isRunning())
-        waitForServer()
+        await().atMost(10, TimeUnit.SECONDS).until {
+            FtpService.isRunning() && isServerReady()
+        }
 
         FTPClient().run {
             connect("localhost", FtpService.DEFAULT_PORT)
@@ -171,7 +176,7 @@ class FtpServiceEspressoTest {
         assertTrue(
             "No files found on device? It is also possible that app doesn't have " +
                 "permission to access storage, which may occur on broken Android emulators",
-            files.size > 0
+            files.isNotEmpty()
         )
         var downloadFolderExists = false
         for (f in files) {
@@ -203,12 +208,12 @@ class FtpServiceEspressoTest {
             enterLocalPassiveMode()
             setFileType(FTP.ASCII_FILE_TYPE)
             ByteArrayInputStream(randomString.toByteArray(charset("utf-8"))).run {
-                storeFile("test.txt", this)
+                this.copyTo(storeFileStream("test.txt"))
                 close()
             }
             ByteArrayInputStream(bytes2).run {
-                setFileType(FTP.BINARY_FILE_TYPE)
-                storeFile("test.bin", this)
+                assertTrue(setFileType(FTP.BINARY_FILE_TYPE))
+                this.copyTo(storeFileStream("test.bin"))
                 close()
             }
             logout()
@@ -296,17 +301,15 @@ class FtpServiceEspressoTest {
         }
     }
 
-    private fun waitForServer() {
-        var available = false
-        while (!available) {
-            Socket().run {
-                available = try {
-                    connect(InetSocketAddress(InetAddress.getLocalHost(), FtpService.DEFAULT_PORT))
-                    close()
-                    true
-                } catch (e: SocketException) {
-                    false
-                }
+    private fun isServerReady(): Boolean {
+        return Socket().let {
+            try {
+                it.connect(InetSocketAddress(InetAddress.getLocalHost(), FtpService.DEFAULT_PORT))
+                true
+            } catch (e: SocketException) {
+                false
+            } finally {
+                it.close()
             }
         }
     }

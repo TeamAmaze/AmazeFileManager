@@ -231,7 +231,7 @@
     <string name="needs_access_summary">Por favor escolha o diretório raiz do \t</string>
     <string name="needs_access_summary1">\tpara poder ter acesso de escrita </string>
     <string name="smb_connection">Ligação SMB</string>
-    <string name="smb_server">Endereço IP do servidor</string>
+    <string name="server_address">Endereço IP do servidor</string>
     <string name="username">Utilizador</string>
     <string name="password">Palavra-passe</string>
     <string name="anonymous">Anónimo</string>
