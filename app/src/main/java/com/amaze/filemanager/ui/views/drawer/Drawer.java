@@ -140,6 +140,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private View drawerHeaderLayout, drawerHeaderView;
   private ImageView donateImageView;
   private ImageView telegramImageView;
+  private ImageView instagramImageView;
   private TextView appVersion;
 
   /** Tablet is defined as 'width > 720dp' */
@@ -157,12 +158,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
     donateImageView = drawerHeaderLayout.findViewById(R.id.donate);
     telegramImageView = drawerHeaderLayout.findViewById(R.id.telegram);
+    instagramImageView = drawerHeaderLayout.findViewById(R.id.instagram);
     appVersion = drawerHeaderLayout.findViewById(R.id.app_version);
     if (BuildConfig.DEBUG) {
       appVersion.setVisibility(View.VISIBLE);
     }
     donateImageView.setOnClickListener(v -> new Billing(mainActivity));
     telegramImageView.setOnClickListener(v -> Utils.openTelegramURL(mainActivity));
+    instagramImageView.setOnClickListener(v -> Utils.openInstagramURL(mainActivity));
     initDrawerFocusItems();
     /*drawerHeaderView.setOnLongClickListener(
     v -> {
