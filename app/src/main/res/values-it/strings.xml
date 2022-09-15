@@ -674,6 +674,7 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="ftp_preference_saf_filesystem_title">Usa filesystem legacy</string>
     <string name="ftp_preference_saf_filesystem">Abilita questa opzione per usare la memoria esterna del dispositivo sulle versioni più recenti di Android</string>
     <string name="ftp_server_fallback_path_reset_prompt">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna poiché stai tornando all\'implementazione del filesystem legacy. Seleziona un nuovo percorso usando il menù in alto a destra.</string>
+    <string name="ftp_server_reset_notify">Il percorso condiviso del server FTP è stato reimpostato alla memoria interna</string>
     <string name="ftp_server_root_unavailable">Stai scegliendo un percorso che richiede l\'accesso root. Abilita l\'esplorazione root nelle impostazioni se il tuo dispositivo è abilitato.</string>
     <string name="ftp_server_root_filesystem_warning">Stai scegliendo un percorso che richiede l\'accesso come root, che permette operazioni di lettura/scrittura sull\'intero filesystem del tuo dispositivo, ed è pericoloso - operazioni incaute potrebbero bloccare il tuo dispositivo!</string>
     <string name="compressed_explorer_fragment_error_open_uri">Errore aprendo l\'URI \"%s\" per la lettura.</string>
@@ -716,5 +717,10 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="pdf_viewer">Amaze Pdf Viewer</string>
     <string name="epub_viewer">Amaze Epub Viewer</string>
     <string name="docx_viewer">Amaze Doc Viewer</string>
+    <string name="share_logs">Condividi i log</string>
+    <string name="share_logs_summary">Condividi i log acquisiti via email / telegram</string>
+    <string name="open_with_amaze">Apri con Amaze</string>
+    <string name="confirmation">Conferma</string>
+    <string name="open_file_confirmation">Sei sicuro di voler aprire il seguente file?\n\nNome:\n%s\n\nPercorso:\n%s\n\nDimensioni:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
 </resources>
 
