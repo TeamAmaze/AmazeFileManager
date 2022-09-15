@@ -303,6 +303,8 @@ public class MainActivity extends PermissionsActivity
    */
   public static final String ARGS_INTENT_ACTION_VIEW_MIME_FOLDER = "resource/folder";
 
+  public static final String ARGS_INTENT_ACTION_VIEW_APPLICATION_ALL = "application/*";
+
   public static final String CLOUD_AUTHENTICATOR_GDRIVE = "android.intent.category.BROWSABLE";
   public static final String CLOUD_AUTHENTICATOR_REDIRECT_URI = "com.amaze.filemanager:/auth";
 
@@ -572,7 +574,9 @@ public class MainActivity extends PermissionsActivity
       // zip viewer intent
       Uri uri = intent.getData();
 
-      if (type != null && type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)) {
+      if (type != null
+          && (type.equals(ARGS_INTENT_ACTION_VIEW_MIME_FOLDER)
+              || type.equals(ARGS_INTENT_ACTION_VIEW_APPLICATION_ALL))) {
         // support for syncting or intents from external apps that
         // need to start file manager from a specific path
 
