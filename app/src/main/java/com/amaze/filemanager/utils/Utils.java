@@ -83,6 +83,7 @@ public class Utils {
   private static final String EMAIL_RAYMOND = "airwave209gt@gmail.com";
   private static final String EMAIL_VISHAL = "vishalmeham2@gmail.com";
   private static final String URL_TELEGRAM = "https://t.me/AmazeFileManager";
+  private static final String URL_INSTGRAM = "https://www.instagram.com/teamamaze.xyz/";
 
   public static final String EMAIL_NOREPLY_REPORTS = "no-reply@teamamaze.xyz";
   public static final String EMAIL_SUPPORT = "support@teamamaze.xyz";
@@ -382,6 +383,11 @@ public class Utils {
   /** Open telegram in browser */
   public static void openTelegramURL(Context context) {
     openURL(URL_TELEGRAM, context);
+  }
+
+  /** Open instagram in browser */
+  public static void openInstagramURL(Context context) {
+    openURL(URL_INSTGRAM, context);
   }
 
   /**

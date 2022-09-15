@@ -47,11 +47,22 @@
             android:id="@+id/telegram"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:srcCompat="@drawable/telegram_app_96"
+            app:srcCompat="@drawable/ic_telegram_24"
             android:layout_toLeftOf="@+id/donate"
             android:layout_alignParentBottom="true"
             android:padding="@dimen/md_content_padding_top"
             android:layout_toStartOf="@+id/donate"
+            android:background="@drawable/ripple_focusable"
+            />
+        <ImageView
+            android:id="@+id/instagram"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:srcCompat="@drawable/ic_instagram_24"
+            android:layout_toLeftOf="@+id/telegram"
+            android:layout_alignParentBottom="true"
+            android:padding="@dimen/md_content_padding_top"
+            android:layout_toStartOf="@+id/telegram"
             android:background="@drawable/ripple_focusable"
             />
     </RelativeLayout>
