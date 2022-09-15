@@ -666,7 +666,8 @@ class SftpConnectDialog : DialogFragment() {
                                 OpenMode.SFTP
                             } else {
                                 OpenMode.FTP
-                            }
+                            },
+                            false
                         )
                         dismiss()
                     } else {

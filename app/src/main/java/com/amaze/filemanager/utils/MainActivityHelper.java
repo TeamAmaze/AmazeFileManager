@@ -554,7 +554,7 @@ public class MainActivityHelper {
                 .runOnUiThread(
                     () -> {
                       if (b) {
-                        ma.updateList();
+                        ma.updateList(false);
                       } else {
                         Toast.makeText(
                                 ma.getActivity(),
@@ -635,7 +635,7 @@ public class MainActivityHelper {
                 .runOnUiThread(
                     () -> {
                       if (b) {
-                        ma.updateList();
+                        ma.updateList(false);
                       } else {
                         Toast.makeText(
                                 ma.getActivity(),

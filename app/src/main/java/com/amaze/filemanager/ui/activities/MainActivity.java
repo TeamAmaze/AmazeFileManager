@@ -524,9 +524,9 @@ public class MainActivity extends PermissionsActivity
       // just refresh list
       if (tabFragment != null) {
         Fragment main = tabFragment.getFragmentAtIndex(0);
-        if (main != null) ((MainFragment) main).updateList();
+        if (main != null) ((MainFragment) main).updateList(false);
         Fragment main1 = tabFragment.getFragmentAtIndex(1);
-        if (main1 != null) ((MainFragment) main1).updateList();
+        if (main1 != null) ((MainFragment) main1).updateList(false);
       }
     }
   }
@@ -1180,7 +1180,7 @@ public class MainActivity extends PermissionsActivity
                                 SortHandler.getSortType(
                                     this, mainFragment.getMainFragmentViewModel().getCurrentPath()),
                                 getPrefs());
-                        mainFragment.updateList();
+                        mainFragment.updateList(false);
                         dialog1.dismiss();
                         return true;
                       });
@@ -1603,7 +1603,7 @@ public class MainActivity extends PermissionsActivity
                     false,
                     mainActivity,
                     isRootExplorer());
-                mainFragment.updateList();
+                mainFragment.updateList(false);
                 break;
               case NEW_FILE:
                 mainActivityHelper.mkFile(
@@ -1637,7 +1637,7 @@ public class MainActivity extends PermissionsActivity
               // otg access
               Uri usbOtgRoot = intent.getData();
               SingletonUsbOtg.getInstance().setUsbOtgRoot(usbOtgRoot);
-              mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG);
+              mainFragment.loadlist(OTGUtil.PREFIX_OTG, false, OpenMode.OTG, true);
               drawer.closeIfNotLocked();
               if (drawer.isLocked()) drawer.onDrawerClosed();
             } else if (requestCode == REQUEST_CODE_SAF_FTP) {
@@ -1888,7 +1888,7 @@ public class MainActivity extends PermissionsActivity
       if (new File(path).isDirectory()) {
         final MainFragment mainFragment = getCurrentMainFragment();
         if (mainFragment != null) {
-          mainFragment.loadlist(path, false, OpenMode.FILE);
+          mainFragment.loadlist(path, false, OpenMode.FILE, true);
         } else {
           goToMain(path);
         }
@@ -2030,7 +2030,7 @@ public class MainActivity extends PermissionsActivity
         // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
         executeWithMainFragment(
             mainFragment -> {
-              mainFragment.loadlist(path, false, OpenMode.UNKNOWN);
+              mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
               return null;
             },
             true);

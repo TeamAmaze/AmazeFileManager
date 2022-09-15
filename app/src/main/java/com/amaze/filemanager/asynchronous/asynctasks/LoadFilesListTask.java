@@ -87,6 +87,7 @@ public class LoadFilesListTask
   private boolean showHiddenFiles, showThumbs;
   private DataUtils dataUtils = DataUtils.getInstance();
   private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
+  private boolean forceReload;
 
   public LoadFilesListTask(
       Context context,
@@ -95,6 +96,7 @@ public class LoadFilesListTask
       OpenMode openmode,
       boolean showThumbs,
       boolean showHiddenFiles,
+      boolean forceReload,
       OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
     this.path = path;
     this.mainFragmentReference = new WeakReference<>(mainFragment);
@@ -103,6 +105,7 @@ public class LoadFilesListTask
     this.showThumbs = showThumbs;
     this.showHiddenFiles = showHiddenFiles;
     this.listener = l;
+    this.forceReload = forceReload;
   }
 
   @Override
@@ -148,7 +151,7 @@ public class LoadFilesListTask
         }
         ArrayList<LayoutElementParcelable> smbCache = mainActivityViewModel.getFromListCache(path);
         openmode = OpenMode.SMB;
-        if (smbCache != null) {
+        if (smbCache != null && !forceReload) {
           list = smbCache;
         } else {
           try {
@@ -169,21 +172,26 @@ public class LoadFilesListTask
         }
         break;
       case SFTP:
-      case FTP:
         HybridFile ftpHFile = new HybridFile(openmode, path);
-        list = new ArrayList<>();
-        ftpHFile.forEachChildrenFile(
-            context,
-            false,
-            file -> {
-              if (!(dataUtils.isFileHidden(file.getPath())
-                  || file.isHidden() && !showHiddenFiles)) {
-                LayoutElementParcelable elem = createListParcelables(file);
-                if (elem != null) {
-                  list.add(elem);
+        ArrayList<LayoutElementParcelable> sftpCache = mainActivityViewModel.getFromListCache(path);
+        if (sftpCache != null && !forceReload) {
+          list = sftpCache;
+        } else {
+          list = new ArrayList<>();
+          ftpHFile.forEachChildrenFile(
+              context,
+              false,
+              file -> {
+                if (!(dataUtils.isFileHidden(file.getPath())
+                    || file.isHidden() && !showHiddenFiles)) {
+                  LayoutElementParcelable elem = createListParcelables(file);
+                  if (elem != null) {
+                    list.add(elem);
+                  }
                 }
-              }
-            });
+              });
+          mainActivityViewModel.putInCache(path, list);
+        }
         break;
       case CUSTOM:
         list = getCachedMediaList(mainActivityViewModel);
@@ -200,7 +208,7 @@ public class LoadFilesListTask
         break;
       case DOCUMENT_FILE:
         ArrayList<LayoutElementParcelable> cache = mainActivityViewModel.getFromListCache(path);
-        if (cache != null) {
+        if (cache != null && !forceReload) {
           list = cache;
         } else {
           list = new ArrayList<>();
@@ -219,7 +227,7 @@ public class LoadFilesListTask
       case ONEDRIVE:
         ArrayList<LayoutElementParcelable> cloudCache =
             mainActivityViewModel.getFromListCache(path);
-        if (cloudCache != null) {
+        if (cloudCache != null && !forceReload) {
           list = cloudCache;
         } else {
           CloudStorage cloudStorage = dataUtils.getAccount(openmode);
@@ -249,7 +257,7 @@ public class LoadFilesListTask
         openmode =
             ListFilesCommand.INSTANCE.getOpenMode(
                 path, mainFragment.getMainActivity().isRootExplorer());
-        if (localCache != null) {
+        if (localCache != null && !forceReload) {
           list = localCache;
         } else {
           list = new ArrayList<>();
@@ -326,7 +334,8 @@ public class LoadFilesListTask
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
-        || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null) {
+        || mainActivityViewModel.getMediaCacheHash().get(mediaType) == null
+        || forceReload) {
       switch (Integer.parseInt(path)) {
         case 0:
           list = listImages();

@@ -762,7 +762,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
       MainFragment mainFragment = mainActivity.getCurrentMainFragment();
       if (mainFragment != null) {
-        mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN);
+        mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN, false);
       } else {
         mainActivity.goToMain(pendingPath);
         return;
