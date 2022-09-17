@@ -36,6 +36,7 @@
     <string name="uninstall">הסרת התקנה</string>
     <string name="play">חנות Play</string>
     <string name="properties">מאפיינים</string>
+    <string name="copyingapks">%d קובצי APK מועתקים אל %s</string>
     <string name="delbook">מחיקת סימנייה</string>
     <string name="add_to_bookmarks">הוספה לסימניות</string>
     <string name="enterpath">נא להקליד נתיב</string>
@@ -107,6 +108,7 @@
     <string name="dark">Material כהה</string>
     <string name="daytime">לפי שעה ביום</string>
     <string name="black">שחור (ל־OLED)</string>
+    <string name="system">מערכת (כמו עיצוב המערכת)</string>
     <!--Skin-->
     <!--DirectorySortMode-->
     <string name="foldersOnTop">תיקיות למעלה</string>
@@ -151,7 +153,7 @@
     <string name="thumb_summary">הצגת תמונות ממוזערות של יישומונים ותמונות</string>
     <string name="thumb">הצגת תמונות ממוזערות</string>
     <string name="hidden">הצגת תיקיות וקבצים מוסתרים</string>
-    <string name="lastModifiedSummary">הצגת את התאריך והשעה שבהם הקובץ שונה לאחרונה</string>
+    <string name="lastModifiedSummary">להציג את התאריך והשעה של השינוי האחרון</string>
     <string name="lastModifiedPref">הצגת מועד השינוי האחרון</string>
     <string name="size_pref_summary">הצגת גודל של קבצים, ומספר פריטים בתיקיות</string>
     <string name="size_pref">הצגת גדלים</string>
@@ -240,7 +242,7 @@
     <string name="needs_access_summary">נא לבחור בתיקיית הבסיס של \t</string>
     <string name="needs_access_summary1">ֿ\tלהעניק גישת כתיבה כדי להפעיל</string>
     <string name="smb_connection">חיבור SMB</string>
-    <string name="smb_server">כתובת IP של השרת</string>
+    <string name="server_address">כתובת IP של השרת</string>
     <string name="username">שם משתמש</string>
     <string name="password">סיסמה</string>
     <string name="anonymous">אלמוני</string>
@@ -617,11 +619,22 @@
     <string name="no_obtainable_info">אין מידע על הקובץ הזה</string>
     <string name="reopen_from_source">אי אפשר, נא לפתוח מהיישומון האחרון</string>
     <string name="no_file_error">משהו השתבש, אין מה לפתו</string>
+    <string name="file_too_long">הקובץ ארוך מדי ולא ניתן לערוך אותו, אפשר לקרוא את %d התווים הראשון בכל זאת</string>
     <string name="file_read_only">הקובץ שנפתח הוא לקריאה בלבד.</string>
     <string name="got_it">הבנתי!</string>
     <string name="encrypt_file_save_as">שמירת קובץ מוצפן בשם&#8230;</string>
     <string name="encrypt_folder_save_as">שמירת תיקייה מוצפנת בשם&#8230;</string>
+    <string name="encrypt_option_use_aze">להשתמש בתצורת הדחיסה של Amaze</string>
+    <string name="encrypt_option_use_aescrypt_desc"><![CDATA[
+        <p>AESCrypt היא תצורת הצפנת קבצים המבוססת על הצפנת AES. היא גם ניידת ואפשר לפענח אותה עם תוכניות, AESCrypt במערכות אחרות.</p>
+        <p><a href=\"https://www.aescrypt.com\" target=\"_blank>האתר של AESCrypt</a></p>]]>
+    </string>
+    <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
+        <p>תצורת ההצפנה של Amaze מבוססת גם היא על AES אך היא שונה מתצורת AESCrypt, אפשר לפענח אותה רק במכשיר הזה; כמו כן, אסור לך להסיר את מנהל הקבצים Amaze מהמכשיר הזה או לשנות את אופן נעילת המסך, אחרת לא תהיה לך אפשרות לשחזר את הקבצים המוצפנים.</p>
+    ]]></string>
     <string name="encrypt_file_must_end_with_aze">מומלץ להשתמש ב־„‎.ace” כסיומת לקובץ.</string>
+    <string name="encrypt_file_must_end_with_aes">הקבצים המוצפנים חייבים להשתמש בסיומת „‎.aes”.</string>
+    <string name="error_aescrypt_decrypt_failed">לא ניתן לפענח את ‚%s’: ‚%s’</string>
     <string name="cannot_overwrite">לא ניתן לשכתב על קובץ.</string>
     <string name="saved_single_file">קובץ נשמר בשם ‚%s’.</string>
     <string name="saved_multi_files">%d קבצים נשמרו.</string>
@@ -707,9 +720,14 @@
     <string name="android_data_prompt_saf_access_title">הענקת גישת לתשתית גישה לאחסון</string>
     <string name="ftp_preference_saf_filesystem_title">להשתמש במערכת קבצים מיושנת</string>
     <string name="ftp_preference_saf_filesystem">יש להפעיל את זה לקבלת תמיכה בשימוש באחסון החיצוני של המכשיר בגרסאות חדשות של Android</string>
-    <string name="ftp_server_fallback_path_reset_prompt">הנתיב המשותף של שרת ה־FTP אופס לאחסון המקומי עקב החלפה בחזרה להטמעה מיושנת של מערכת קבצים. נא לבחור בנתיב חדש באמצעות התפריט שמשמאל בהתאם לדרישה.</string>
+    <string name="ftp_server_fallback_path_reset_prompt">הנתיב המשותף לשרת ה־FTP אופס לאחסון הפנימי עקב בקשתך לחזור להטמעת מערכת קבצים מיושנת. נא לבחור נתיב חדש באמצעות התפריט משמאל למעלה במקרה הצורך.</string>
+    <string name="ftp_server_reset_notify">נתיב השיתוף ב־FTP התאפס לאחסון הפנימי</string>
+    <string name="ftp_server_root_unavailable">הנתיב הנבחר דורש גישת משתמש על (root). נא להפעיל את סייר משתמש העל בהגדרות אם המכשיר שלך פרוץ (rooted).</string>
+    <string name="ftp_server_root_filesystem_warning">הנתיב הנבחר דורש גישת משתמש על (root), שמאפשרת פעולות קריאה/כתיבה בכל מערכת הקבצים של המכשיר שלך ונחשבת מסוכנת - טעויות תמימות עשויות לפגום בפעולת המכשיר שלך!\n\nלהמשיך?</string>
     <string name="compressed_explorer_fragment_error_open_uri">שגיאה בפתיחת הכתובת „%s” לקריאה.</string>
     <string name="error_empty_archive">„%s” הוא ארכיון ריק.</string>
+    <string name="error_bad_archive_without_info">הארכיון „%s” פגום</string>
+    <string name="error_bad_archive_with_info">„%s” הוא ארכיון פגום.\nההודעה מהמחלץ היא: „%s”</string>
     <string name="security_error">אי אפשר לפתוח את הקובץ באמצעות היישום הזה</string>
     <string name="cloud_drive_tooltip">יצירת חיבור ל־Google Drive™‎ לטובת ניהול קבצים מתוך מנהל הקבצים Amaze.</string>
     <string name="signin_with_google_title">יש לעבור אימות כדי להשתמש ב־Google Drive™‎</string>
@@ -720,9 +738,36 @@
     <string name="select_by_date">בחירה לפי תאריך</string>
     <string name="select_similar">בחירת דומים</string>
     <string name="error_fetching_google_play_product_list">שגיאה במשיכת המוצר מ־Google Play.</string>
-    <string name="grant_all_files_permission"><html><body>ל־Amaze נדרשות כל הרשאות הקבצים כדי להמשיך.
-        \nבמסך הבא, נא לבחור ב־<b>Amaze</b> ואז באפשרות <b>לאפשר גישה לניהול כל הקבצים</b>.
-            \n\n<font color='#ff6347'><i>ביטול החלונית הזאת יסגור את היישומון.</i></font></body></html></string>
-    <string name="user_apps">יישומוני צד־שלישי</string>
+    <string name="grant_all_files_permission"><html><body>החל מ Android 11, דורשת Google ממנהלי קבצים לבקש הרשאה מהמשתמש לניהול כל הקבצים במכשיר. פרטים נוספים <a href="https://developer.android.com/training/data-storage/manage-all-files" target="_blank">כאן</a>.
+        \n\nגם מנהל הקבציםAmaze צריך את ההרשאה הזאת. לאחר לחיצה על „הענקה”, נא לבחור באפשרות <b>לאפשר גישה לניהול כל הקבצים</b> במסך העוקב.
+        \n\n<font color='#ff6347'><i>ביטול החלונית הזאת יסגור את היישומון.</i></font></body></html></string>
+    <string name="user_apps">יישומוני משתמש</string>
+    <string name="appearance">מראה</string>
+    <string name="behavior">התנהגות</string>
+    <string name="appearance_summary">התאמת ערכת העיצוב, הצבעים והמראה של מנהל הקבצים</string>
+    <string name="ui_summary">שליטה במידע שיוצג, התאמת סרגל הצד ושינוי העדפות במנשק המשתמש</string>
+    <string name="behavior_summary">שינוי התנהגויות כגון חיפוש מתקדם והאם לפתוח קבצים כמשימה חדשה</string>
+    <string name="security_summary">הגדרת סיסמה והצפנה</string>
+
+    <string name="quick_desc">קבצים אליהם ניגשת לאחרונה דרך Amaze</string>
+    <string name="recent_desc">קבצים שנוצרו או נערכו לאחרונה</string>
+    <string name="error_cannot_find_way_open">לא נמצאה דרך לפתוח את הקובץ</string>
+    <string name="error_cant_decompress_that_file">לא ניתן לעבד את הארכיון המבוקש</string>
+    <string name="analyse_storage">ניתוח האחסון</string>
+    <string name="download_amaze_utils_text">כעת תתבצע הפניה לכלי עזר לקבצים של Amaze. זה פיתוח שלנו עם אפשרות לפתוח שמע/וידאו/תמונות/מסמכים, מאפשר לך לנתח קובצי אחסון לאיתור תמונות מטושטשות/כהות, קבצים כפולים, העברה מהירה עם Wi-Fi נק׳ לנק׳ ועוד.\n אפשר לתמוך בנו על ידי התנסות בהם.</string>
+    <string name="download">הורדה</string>
+    <string name="wifip2p">נקודה לנקודה אלחוטית</string>
+    <string name="amaze_utils_installed_alias">תודה שהתקנת את כלי הקבצים של Amaze. מיד תתבצע העברה ליישומון.</string>
+    <string name="image_viewer">מציג התמונות של Amaze</string>
+    <string name="video_player">נגן הווידאו של Amaze</string>
+    <string name="amaze_audio_player">נגן המוזיקה של Amaze</string>
+    <string name="pdf_viewer">מציג ה־PDF של Amaze</string>
+    <string name="epub_viewer">מציג ה־Epub של Amaze</string>
+    <string name="docx_viewer">מציג ה־Doc של Amaze</string>
+    <string name="share_logs">שיתוף יומנים</string>
+    <string name="share_logs_summary">שיתוף היומנים שנאספו דרך דוא״ל / טלגרם</string>
+    <string name="open_with_amaze">פתיחה עם Amaze</string>
+    <string name="confirmation">אישור</string>
+    <string name="open_file_confirmation">לפתוח את הקובץ הבא?\n\nשם:\n%s\n\nמיקום:\n%s\n\nגודל:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
 </resources>
 

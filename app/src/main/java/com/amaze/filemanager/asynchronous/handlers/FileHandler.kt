@@ -99,7 +99,10 @@ class FileHandler(
             }
         } else {
             // there was no list view, means the directory was empty
-            main.loadlist(main.currentPath, true, mainFragmentViewModel.openMode)
+            main.loadlist(main.currentPath, true, mainFragmentViewModel.openMode, true)
+        }
+        main.currentPath?.let {
+            main.mainActivityViewModel?.evictPathFromListCache(it)
         }
         main.computeScroll()
     }

@@ -240,7 +240,7 @@
     <string name="needs_access_summary">請選擇根目錄下的 \t</string>
     <string name="needs_access_summary1">\t 以授予寫入的權限</string>
     <string name="smb_connection">SMB 連線</string>
-    <string name="smb_server">伺服器 IP 位址</string>
+    <string name="server_address">伺服器 IP 位址</string>
     <string name="username">使用者名稱</string>
     <string name="password">密碼</string>
     <string name="anonymous">匿名</string>

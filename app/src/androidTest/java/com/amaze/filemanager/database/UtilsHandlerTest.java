@@ -33,7 +33,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 
 import android.content.Context;
 import android.os.Environment;
@@ -118,7 +118,7 @@ public class UtilsHandlerTest {
   }
 
   private void performEncryptUriTest(@NonNull final String origPath) {
-    String encryptedPath = SshClientUtils.encryptSshPathAsNecessary(origPath);
+    String encryptedPath = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(origPath);
 
     utilsHandler.saveToDatabase(
         new OperationData(

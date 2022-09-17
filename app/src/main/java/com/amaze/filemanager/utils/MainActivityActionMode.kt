@@ -315,7 +315,8 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                     mainActivity.currentMainFragment?.loadlist(
                         File(checkedItems[0].desc).parent,
                         false,
-                        OpenMode.FILE
+                        OpenMode.FILE,
+                        false
                     )
 
                     true
@@ -355,7 +356,7 @@ class MainActivityActionMode(private val mainActivityReference: WeakReference<Ma
                         mainActivity.currentMainFragment?.hide(checkedItems[i1].desc)
                         i1++
                     }
-                    mainActivity.currentMainFragment?.updateList()
+                    mainActivity.currentMainFragment?.updateList(false)
                     mode.finish()
                     true
                 }

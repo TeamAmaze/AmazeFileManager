@@ -242,7 +242,7 @@
     <string name="needs_access_summary">Bitte Stammverzeichnis von \t wählen</string>
     <string name="needs_access_summary1">\tto Schreibrechte eingeräumt</string>
     <string name="smb_connection">SMB Verbindung</string>
-    <string name="smb_server">IP-Adresse des Servers</string>
+    <string name="server_address">IP-Adresse des Servers</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
     <string name="anonymous">Unbekannt</string>
@@ -672,6 +672,7 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="ftp_preference_saf_filesystem_title">Älteres Dateisystem verwenden</string>
     <string name="ftp_preference_saf_filesystem">Auf neuen Android-Versionen aktivieren, für die Unterstützung zur Verwendung externer Speichergeräte</string>
     <string name="ftp_server_fallback_path_reset_prompt">Der freigegebene Pfad des FTP-Servers wurde auf den internen Speicher zurückgesetzt, da Sie zur Legacy-Dateisystemimplementierung zurückwechseln. Bitte wählen Sie über das Menü oben rechts einen neuen Pfad aus.</string>
+    <string name="ftp_server_reset_notify">Geteilter Pfad des FTP-Server wurde auf den internen Speicher zurückgesetzt</string>
     <string name="ftp_server_root_unavailable">Sie wählen einen Pfad aus der Root-Zugriff erfordert. Bitte aktivieren Sie in den Einstellungen den Root-Explorer, wenn Ihr Gerät gerootet ist.</string>
     <string name="ftp_server_root_filesystem_warning">Sie wählen einen Pfad aus der Root-Zugriff erfordert. Dadurch aktivieren Sie Lese-/Schreibvorgänge im gesamten Dateisystem des Gerät und das ist gefährlich - Flüchtigkeitsfehler könnten Ihr Gerät beschädigen!\n\nSind Sie sicher?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Fehler beim Öffnen der URI \"%s\", um diese zu lesen.</string>
@@ -704,7 +705,7 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="error_cannot_find_way_open">Kein Weg gefunden um die Datei zu öffnen</string>
     <string name="error_cant_decompress_that_file">Angefragtes Archiv kann nicht bearbeitet werden</string>
     <string name="analyse_storage">Speicher analysieren</string>
-    <string name="download_amaze_utils_text">Sie werden zur den Amaze File Utillities weitergeleitet.Es ist unser Angebot, das über integrierte Audio-/Video-/Bild-/Dokumentenbetrachter verfügt, mit denen Sie gespeicherte Dateien auf verschwommene/dunkle Bilder und doppelte Dateien analysieren können, sowie schnelle Übertragung mit Wifi P2P und vieles mehr.\nBitte unterstützen Sie uns, indem Sie es ausprobieren. </string>
+    <string name="download_amaze_utils_text">Sie werden zur den Amaze File Utilities weitergeleitet.Es ist unser Angebot, das über integrierte Audio-/Video-/Bild-/Dokumentenbetrachter verfügt, mit denen Sie gespeicherte Dateien auf verschwommene/dunkle Bilder und doppelte Dateien analysieren können, sowie schnelle Übertragung mit Wifi P2P und vieles mehr.\nBitte unterstützen Sie uns, indem Sie es ausprobieren. </string>
     <string name="download">Download</string>
     <string name="wifip2p">Wi-Fi P2P</string>
     <string name="amaze_utils_installed_alias">Danke für die Installation der Amaze File Utilities. Sie werden zur App weitergeleitet.</string>
@@ -714,5 +715,10 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="pdf_viewer">Amaze-PDF-Betrachter</string>
     <string name="epub_viewer">Amaze-Epub-Betrachter</string>
     <string name="docx_viewer">Amaze-Doc-Betrachter</string>
+    <string name="share_logs">Protokolle teilen</string>
+    <string name="share_logs_summary">Erstellte Protokolle per E-Mail / Telegram teilen</string>
+    <string name="open_with_amaze">Mit Amaze öffnen</string>
+    <string name="confirmation">Bestätigung</string>
+    <string name="open_file_confirmation">Sind Sie sicher, dass Sie die folgende Datei öffnen wollen?\n\nName:\n%s\n\nOrt:\n%s\n\nGröße:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
 </resources>
 

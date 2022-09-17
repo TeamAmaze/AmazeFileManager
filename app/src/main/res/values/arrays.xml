@@ -64,4 +64,10 @@
         <item>@string/drag_to_move_copy</item>
     </string-array>
 
+    <string-array name="ftpProtocols">
+        <item>@string/protocol_ssh</item>
+        <item>@string/protocol_ftp</item>
+        <item>@string/protocol_ftps</item>
+    </string-array>
+
 </resources>

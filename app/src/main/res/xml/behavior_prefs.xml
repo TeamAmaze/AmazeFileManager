@@ -23,6 +23,13 @@
         app:key="texteditor_newstack"
         app:summary="@string/preference_newstack_summary"
         app:title="@string/preference_newstack_title" />
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:defaultValue="true"
+        app:key="delete_confirmation"
+        app:summary="@string/preference_delete_confirmation_summary"
+        app:title="@string/preference_delete_confirmation" />
     <Preference
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

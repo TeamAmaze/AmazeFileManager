@@ -60,7 +60,7 @@ class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val perm: TextView = view.findViewById(R.id.permis)
 
     @JvmField
-    val rl: View = view.findViewById(R.id.second)
+    val baseItemView: View = view.findViewById(R.id.second)
 
     @JvmField
     val genericText: TextView? = view.findViewById(R.id.generictext)

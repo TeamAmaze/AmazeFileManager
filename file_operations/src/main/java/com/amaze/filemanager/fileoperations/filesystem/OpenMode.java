@@ -29,7 +29,12 @@ public enum OpenMode {
   UNKNOWN,
   FILE,
   SMB,
+  /** SSH/SCP/SFTP */
   SFTP,
+  /** FTP/FTP over SSL (FTPS) */
+  FTP,
+  /** Network file system - reserved for #268 */
+  NFS,
 
   /** Custom file types like apk/images/downloads (which don't have a defined path) */
   CUSTOM,

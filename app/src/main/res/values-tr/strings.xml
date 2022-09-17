@@ -239,7 +239,7 @@ Devam etmek istiyor musunuz?\"</string>
     <string name="needs_access_summary">\t kök dizini seçiniz</string>
     <string name="needs_access_summary1">\tçalıştırmak için yazma iznine erişim için </string>
     <string name="smb_connection">SMB Bağlantısı</string>
-    <string name="smb_server">Sunucu IP Adresi</string>
+    <string name="server_address">Sunucu IP Adresi</string>
     <string name="username">Kullanıcı adı</string>
     <string name="password">Şifre</string>
     <string name="anonymous">Anonim</string>

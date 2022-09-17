@@ -24,6 +24,7 @@ import com.amaze.filemanager.database.UtilitiesDatabase;
 
 import android.text.TextUtils;
 
+import androidx.annotation.NonNull;
 import androidx.room.ColumnInfo;
 import androidx.room.Entity;
 
@@ -51,6 +52,7 @@ public class SftpEntry extends OperationDataWithName {
     this.sshKey = sshKey;
   }
 
+  @NonNull
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder(super.toString());

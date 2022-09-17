@@ -57,7 +57,7 @@ import com.amaze.filemanager.filesystem.compressed.CompressedHelper;
 import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -438,8 +438,9 @@ public class MainActivityHelper {
   public @FolderState int checkFolder(final String path, OpenMode openMode, Context context) {
     if (OpenMode.SMB.equals(openMode)) {
       return SmbUtil.checkFolder(path);
-    } else if (OpenMode.SFTP.equals(openMode)) {
-      return SshClientUtils.checkFolder(path);
+    } else if (OpenMode.SFTP.equals(openMode) || OpenMode.FTP.equals(openMode)) {
+      int result = NetCopyClientUtils.INSTANCE.checkFolder(path);
+      return result;
     } else if (OpenMode.DOCUMENT_FILE.equals(openMode)) {
       DocumentFile d =
           DocumentFile.fromTreeUri(AppConfig.getInstance(), SafRootHolder.getUriRoot());
@@ -553,7 +554,7 @@ public class MainActivityHelper {
                 .runOnUiThread(
                     () -> {
                       if (b) {
-                        ma.updateList();
+                        ma.updateList(false);
                       } else {
                         Toast.makeText(
                                 ma.getActivity(),
@@ -634,7 +635,7 @@ public class MainActivityHelper {
                 .runOnUiThread(
                     () -> {
                       if (b) {
-                        ma.updateList();
+                        ma.updateList(false);
                       } else {
                         Toast.makeText(
                                 ma.getActivity(),
@@ -665,8 +666,8 @@ public class MainActivityHelper {
 
   public void deleteFiles(ArrayList<HybridFileParcelable> files) {
     if (files == null || files.size() == 0) return;
-    if (files.get(0).isSmb()) {
-      new DeleteTask(mainActivity).execute((files));
+    if (files.get(0).isSmb() || files.get(0).isFtp()) {
+      new DeleteTask(mainActivity).execute(files);
       return;
     }
     @FolderState
@@ -799,11 +800,11 @@ public class MainActivityHelper {
    * @param matches is matches enabled for patter matching
    */
   public static void addSearchFragment(
-      FragmentManager fragmentManager,
-      Fragment fragment,
-      String path,
-      String input,
-      OpenMode openMode,
+      @NonNull FragmentManager fragmentManager,
+      @NonNull Fragment fragment,
+      @NonNull String path,
+      @NonNull String input,
+      @NonNull OpenMode openMode,
       boolean rootMode,
       boolean regex,
       boolean matches) {

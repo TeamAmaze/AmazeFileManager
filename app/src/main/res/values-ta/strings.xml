@@ -231,7 +231,7 @@
     <string name="needs_access_summary">தயவுசெய்து பின்வருவத்தின் ரூட் அடைவை தேர்வுசெய்க \\t</string>
     <string name="needs_access_summary1">\\t இயக்கத்திற்கு எழுத அணுகல் வழங்க</string>
     <string name="smb_connection">SMB தொடர்பு</string>
-    <string name="smb_server">சர்வர் ஐபி முகவரி</string>
+    <string name="server_address">சர்வர் ஐபி முகவரி</string>
     <string name="username">பயனர் பெயர்</string>
     <string name="password">கடவுச்சொல்</string>
     <string name="anonymous">பெயரில்லாத</string>
