@@ -52,7 +52,9 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
 
     @MainThread
     override fun onError(error: Throwable) {
-        progressDialog.dismiss()
+        if (progressDialog.isShowing) {
+            progressDialog.dismiss()
+        }
         Toast.makeText(
             AppConfig.getInstance(),
             AppConfig.getInstance()
@@ -70,6 +72,8 @@ abstract class AbstractGetHostInfoTask<V, T : Callable<V>>(
     @MainThread
     override fun onFinish(value: V) {
         callback(value)
-        progressDialog.dismiss()
+        if (progressDialog.isShowing) {
+            progressDialog.dismiss()
+        }
     }
 }
