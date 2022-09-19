@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -242,6 +242,7 @@
     <string name="needs_access_summary">נא לבחור בתיקיית הבסיס של \t</string>
     <string name="needs_access_summary1">ֿ\tלהעניק גישת כתיבה כדי להפעיל</string>
     <string name="smb_connection">חיבור SMB</string>
+    <string name="smb_server">כתובת IP של השרת</string>
     <string name="server_address">כתובת IP של השרת</string>
     <string name="username">שם משתמש</string>
     <string name="password">סיסמה</string>
@@ -580,6 +581,8 @@
 
     <string name="update">עדכון</string>
 	<string name="scp_connection">חיבור SCP/SFTP</string>
+    <string name="ftp_connection">חיבור FTP</string>
+    <string name="ftps_connection">FTP על גבי חיבור SSL</string>
     <string name="scp_port">פתחה</string>
     <string name="ssh_host_key_verification_prompt">לא ניתן לאמת את מהימנות המארח ‚%1$s’.\n\nטביעת האצבע של המפתח ה%2$s היא %3$s.\n\nנא לגעת בכפתור „כן” כדי לאמת זהות, אחרת יש ללחוץ על „לא”.</string>
     <string name="ssh_host_key_verification_prompt_title">אימות מארח</string>
@@ -769,5 +772,12 @@
     <string name="open_with_amaze">פתיחה עם Amaze</string>
     <string name="confirmation">אישור</string>
     <string name="open_file_confirmation">לפתוח את הקובץ הבא?\n\nשם:\n%s\n\nמיקום:\n%s\n\nגודל:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="error_google_play_cannot_update_myself">עקב אילוץ של מדיניות מצד Google Play, ליישומונים אסור לעדכן את עצמם. נא לעדכן את היישומון דרך Google Play.</string>
+    <string name="error_cannot_get_package_info">לא ניתן למשוך את פרטי החבילה מהקובץ „%s”.
+או שזה לא קובץ APK או שקובץ החבילה פגום.</string>
+    <string name="preference_delete_confirmation">אישור מחיקה</string>
+    <string name="preference_delete_confirmation_summary">לבקש אישור בטרם מחיקת קבצים. השבתת האפשרות לא מומלצת כלל!</string>
+    <string name="protocol_ftps">FTP מאובטח</string>
+    <string name="unavailable">לא זמין</string>
 </resources>
 
