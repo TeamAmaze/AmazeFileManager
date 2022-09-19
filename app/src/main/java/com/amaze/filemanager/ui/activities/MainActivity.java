@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
@@ -2155,6 +2156,10 @@ public class MainActivity extends PermissionsActivity
         // cloud entry already exists
         Toast.makeText(
                 this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG)
+            .show();
+      } else if (BuildConfig.IS_VERSION_FDROID) {
+        Toast.makeText(
+                this, getResources().getString(R.string.cloud_error_fdroid), Toast.LENGTH_LONG)
             .show();
       } else {
         Toast.makeText(
