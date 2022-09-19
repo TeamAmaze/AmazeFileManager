@@ -413,7 +413,8 @@ public class HybridFile {
   public String getPath() {
     try {
       return URLDecoder.decode(path, "UTF-8");
-    } catch (UnsupportedEncodingException ignored) {
+    } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+      LOG.warn("failed to decode path {}", path, e);
       return path;
     }
   }
@@ -463,7 +464,8 @@ public class HybridFile {
         String _path = null;
         try {
           _path = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException ignored) {
+        } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+          LOG.warn("failed to decode path {}", path, e);
         }
         if (path.endsWith("/")) {
           _path = path.substring(0, path.length() - 1);
