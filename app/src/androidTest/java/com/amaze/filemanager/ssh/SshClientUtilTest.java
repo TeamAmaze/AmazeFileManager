@@ -46,7 +46,7 @@ public class SshClientUtilTest {
     String result = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(uri);
     assertTrue(result.contains("ssh://testuser:"));
     assertTrue(result.contains("@127.0.0.1:22"));
-    String verify = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(result);
+    String verify = NetCopyClientUtils.INSTANCE.decryptFtpPathAsNecessary(result);
     assertEquals(uri, verify);
   }
 
@@ -56,7 +56,7 @@ public class SshClientUtilTest {
     String result = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(uri);
     assertTrue(result.contains("ssh://testuser:"));
     assertTrue(result.contains("@127.0.0.1:22"));
-    String verify = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(result);
+    String verify = NetCopyClientUtils.INSTANCE.decryptFtpPathAsNecessary(result);
     assertEquals(uri, verify);
   }
 
@@ -66,7 +66,7 @@ public class SshClientUtilTest {
     String result = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(uri);
     assertTrue(result.contains("ssh://testuser:"));
     assertTrue(result.contains("@127.0.0.1:22"));
-    String verify = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(result);
+    String verify = NetCopyClientUtils.INSTANCE.decryptFtpPathAsNecessary(result);
     assertEquals(uri, verify);
   }
 
@@ -76,7 +76,7 @@ public class SshClientUtilTest {
     String result = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(uri);
     assertTrue(result.contains("ssh://testuser:"));
     assertTrue(result.contains("@127.0.0.1:22"));
-    String verify = NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(result);
+    String verify = NetCopyClientUtils.INSTANCE.decryptFtpPathAsNecessary(result);
     assertEquals(uri, verify);
   }
 }
