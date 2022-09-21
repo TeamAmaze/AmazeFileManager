@@ -124,6 +124,12 @@ object ListFilesCommand : IRootCommand() {
                         PreferencesConstants.PREFERENCE_ROOT_LEGACY_LISTING,
                         false
                     )
+            // #3476: Check current working dir, change back to / before proceeding
+            runShellCommand("pwd").run {
+                if (out.first() != "/") {
+                    runShellCommand("cd /")
+                }
+            }
             return if (!retryWithLs && !enforceLegacyFileListing) {
                 log.info("Using stat for list parsing")
                 Pair(
