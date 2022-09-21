@@ -63,12 +63,6 @@
             android:theme="@style/appCompatBlack"
             android:configChanges="uiMode" >
 
-            <intent-filter android:label="@string/appbar_name">
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
-            </intent-filter>
-
             <intent-filter>
                 <action android:name="android.intent.action.GET_CONTENT" />
                 <data android:mimeType="*/*" />
@@ -158,6 +152,19 @@
             </intent-filter>
 
         </activity>
+
+        <activity
+            android:name=".ui.activities.FlashScreen"
+            android:exported="true"
+            android:noHistory="true"
+            android:theme="@style/appCompatBlack">
+            <intent-filter android:label="@string/appbar_name">
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+                <category android:name="android.intent.category.LEANBACK_LAUNCHER" />
+            </intent-filter>
+        </activity>
+
         <activity
             android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
