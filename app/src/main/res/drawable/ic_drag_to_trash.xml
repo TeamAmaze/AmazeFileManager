@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item>
+        <shape android:shape="oval">
+            <solid android:color="@color/grey" />
+        </shape>
+    </item>
+    <item
+        android:drawable="@drawable/ic_round_delete_outline_32"
+        android:bottom="@dimen/eight_dp"
+        android:left="@dimen/eight_dp"
+        android:right="@dimen/eight_dp"
+        android:top="@dimen/eight_dp" />
+</layer-list>

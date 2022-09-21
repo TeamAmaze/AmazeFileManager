@@ -49,6 +49,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.util.Base64;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -195,7 +196,8 @@ public class EncryptDecryptUtils {
                     c,
                     preferences1.getString(
                         PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD,
-                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT)),
+                        PreferencesConstants.PREFERENCE_CRYPT_MASTER_PASSWORD_DEFAULT),
+                    Base64.DEFAULT),
                 decryptButtonCallbackInterface);
           } catch (GeneralSecurityException | IOException e) {
             LOG.warn("failed to show decrypt dialog, e");

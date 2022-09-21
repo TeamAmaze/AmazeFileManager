@@ -29,7 +29,6 @@ import android.os.Environment.DIRECTORY_DOWNLOADS
 import android.os.Environment.DIRECTORY_MOVIES
 import android.os.Environment.DIRECTORY_MUSIC
 import android.os.Environment.DIRECTORY_PICTURES
-import androidx.arch.core.util.Function
 import androidx.room.Room
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.application.AppConfig
@@ -65,7 +64,7 @@ class UtilsHandlerTest {
         @BeforeClass
         @JvmStatic
         fun bootstrap() {
-            UtilitiesDatabase.overrideDatabaseBuilder = Function { context ->
+            UtilitiesDatabase.overrideDatabaseBuilder = { context ->
                 Room.inMemoryDatabaseBuilder(context, UtilitiesDatabase::class.java)
             }
         }

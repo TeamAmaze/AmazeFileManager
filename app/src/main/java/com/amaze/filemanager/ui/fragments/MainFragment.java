@@ -24,7 +24,7 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
-import static com.amaze.filemanager.filesystem.ssh.SshConnectionPool.SSH_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_HIDDENFILES;
@@ -176,7 +176,7 @@ public class MainFragment extends Fragment
                         Intent.FLAG_GRANT_READ_URI_PERMISSION
                             | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
                 SafRootHolder.setUriRoot(result.getData().getData());
-                loadlist(result.getData().getDataString(), false, OpenMode.DOCUMENT_FILE);
+                loadlist(result.getData().getDataString(), false, OpenMode.DOCUMENT_FILE, true);
               } else if (getContext() != null) {
                 AppConfig.toast(requireContext(), getString(R.string.operation_unsuccesful));
               }
@@ -235,7 +235,7 @@ public class MainFragment extends Fragment
 
     mSwipeRefreshLayout = rootView.findViewById(R.id.activity_main_swipe_refresh_layout);
 
-    mSwipeRefreshLayout.setOnRefreshListener(this::updateList);
+    mSwipeRefreshLayout.setOnRefreshListener(() -> updateList(true));
 
     // String itemsstring = res.getString(R.string.items);// TODO: 23/5/2017 use or delete
     mToolbarContainer.setBackgroundColor(
@@ -365,13 +365,17 @@ public class MainFragment extends Fragment
     if (mainFragmentViewModel.getCurrentPath() != null) {
       if (mainFragmentViewModel.getListElements().size() == 0
           && !mainFragmentViewModel.getResults()) {
-        loadlist(mainFragmentViewModel.getCurrentPath(), true, mainFragmentViewModel.getOpenMode());
+        loadlist(
+            mainFragmentViewModel.getCurrentPath(),
+            true,
+            mainFragmentViewModel.getOpenMode(),
+            false);
       } else {
         reloadListElements(
             true, mainFragmentViewModel.getResults(), !mainFragmentViewModel.isList());
       }
     } else {
-      loadlist(mainFragmentViewModel.getHome(), true, mainFragmentViewModel.getOpenMode());
+      loadlist(mainFragmentViewModel.getHome(), true, mainFragmentViewModel.getOpenMode(), false);
     }
   }
 
@@ -386,7 +390,7 @@ public class MainFragment extends Fragment
           if (getCurrentPath() != null) {
             mainActivityViewModel.evictPathFromListCache(getCurrentPath());
           }
-          updateList();
+          updateList(false);
         }
       };
 
@@ -407,7 +411,7 @@ public class MainFragment extends Fragment
       };
 
   public void home() {
-    loadlist((mainFragmentViewModel.getHome()), false, OpenMode.FILE);
+    loadlist((mainFragmentViewModel.getHome()), false, OpenMode.FILE, false);
   }
 
   /**
@@ -470,7 +474,7 @@ public class MainFragment extends Fragment
 
         if (layoutElementParcelable.isDirectory) {
           computeScroll();
-          loadlist(path, false, mainFragmentViewModel.getOpenMode());
+          loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
         } else if (layoutElementParcelable.desc.endsWith(CryptUtil.CRYPT_EXTENSION)
             || layoutElementParcelable.desc.endsWith(CryptUtil.AESCRYPT_EXTENSION)) {
           // decrypt the file
@@ -509,7 +513,7 @@ public class MainFragment extends Fragment
   public void updateTabWithDb(Tab tab) {
     mainFragmentViewModel.setCurrentPath(tab.path);
     mainFragmentViewModel.setHome(tab.home);
-    loadlist(mainFragmentViewModel.getCurrentPath(), false, OpenMode.UNKNOWN);
+    loadlist(mainFragmentViewModel.getCurrentPath(), false, OpenMode.UNKNOWN, false);
   }
 
   /**
@@ -549,9 +553,13 @@ public class MainFragment extends Fragment
    * @param providedPath the path to be loaded
    * @param back if we're coming back from any directory and want the scroll to be restored
    * @param providedOpenMode the mode in which the directory should be opened
+   * @param forceReload whether use cached list or force reload the list items
    */
   public void loadlist(
-      final String providedPath, final boolean back, final OpenMode providedOpenMode) {
+      final String providedPath,
+      final boolean back,
+      final OpenMode providedOpenMode,
+      boolean forceReload) {
     if (mainFragmentViewModel == null) {
       LOG.warn("Viewmodel not available to load the data");
       return;
@@ -590,6 +598,7 @@ public class MainFragment extends Fragment
             openMode,
             getBoolean(PREFERENCE_SHOW_THUMB),
             getBoolean(PREFERENCE_SHOW_HIDDENFILES),
+            forceReload,
             (data) -> {
               mSwipeRefreshLayout.setRefreshing(false);
               if (data != null && data.second != null) {
@@ -654,7 +663,10 @@ public class MainFragment extends Fragment
     nofilesview.setOnRefreshListener(
         () -> {
           loadlist(
-              (mainFragmentViewModel.getCurrentPath()), false, mainFragmentViewModel.getOpenMode());
+              (mainFragmentViewModel.getCurrentPath()),
+              false,
+              mainFragmentViewModel.getOpenMode(),
+              false);
           nofilesview.setRefreshing(false);
         });
     nofilesview
@@ -709,7 +721,7 @@ public class MainFragment extends Fragment
     } else {
       // list loading cancelled
       // TODO: Add support for cancelling list loading
-      loadlist(mainFragmentViewModel.getHome(), true, OpenMode.FILE);
+      loadlist(mainFragmentViewModel.getHome(), true, OpenMode.FILE, false);
     }
   }
 
@@ -979,7 +991,7 @@ public class MainFragment extends Fragment
 
   public void goBack() {
     if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
-      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
       return;
     }
 
@@ -1003,20 +1015,38 @@ public class MainFragment extends Fragment
                         .getCurrentPath()
                         .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
               loadlist(
-                  path.toString().replace("%3D", "="), true, mainFragmentViewModel.getOpenMode());
-            } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+                  path.toString().replace("%3D", "="),
+                  true,
+                  mainFragmentViewModel.getOpenMode(),
+                  false);
+            } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
           } else if (OpenMode.SFTP.equals(mainFragmentViewModel.getOpenMode())) {
             if (mainFragmentViewModel.getCurrentPath() != null
                 && !mainFragmentViewModel
                     .getCurrentPath()
                     .substring(SSH_URI_PREFIX.length())
                     .contains("/")) {
-              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
             } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
-              loadlist(currentFile.getParent(getContext()), true, currentFile.getMode());
+              loadlist(currentFile.getParent(getContext()), true, currentFile.getMode(), false);
             } else {
               loadlist(
-                  currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
+                  currentFile.getParent(getContext()),
+                  true,
+                  mainFragmentViewModel.getOpenMode(),
+                  false);
+            }
+          } else if (OpenMode.FTP.equals(mainFragmentViewModel.getOpenMode())) {
+            if (mainFragmentViewModel.getCurrentPath() != null) {
+              String parent = currentFile.getParent(getContext());
+              // Hack.
+              if (parent != null && parent.contains("://")) {
+                loadlist(parent, true, mainFragmentViewModel.getOpenMode(), false);
+              } else {
+                loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
+              }
+            } else {
+              loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
             }
           } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
               || (mainFragmentViewModel.getHome() != null
@@ -1028,7 +1058,7 @@ public class MainFragment extends Fragment
               mainFragmentViewModel.setOpenMode(OpenMode.FILE);
               currentFile.setMode(OpenMode.FILE);
               currentFile.setPath(Environment.getExternalStorageDirectory().getAbsolutePath());
-              loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
+              loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode(), false);
             } else {
               List<String> pathSegments = Uri.parse(currentFile.getPath()).getPathSegments();
               if (pathSegments.size() < 3) {
@@ -1041,16 +1071,22 @@ public class MainFragment extends Fragment
                             subPath.substring(
                                 subPath.lastIndexOf(':') + 1, subPath.lastIndexOf('/')))
                         .getAbsolutePath());
-                loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode());
+                loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode(), false);
               } else {
                 loadlist(
-                    currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
+                    currentFile.getParent(getContext()),
+                    true,
+                    mainFragmentViewModel.getOpenMode(),
+                    false);
               }
             }
 
           } else if (FileUtils.canGoBack(getContext(), currentFile)) {
             loadlist(
-                currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
+                currentFile.getParent(getContext()),
+                true,
+                mainFragmentViewModel.getOpenMode(),
+                false);
           } else getMainActivity().exit();
         }
       } else {
@@ -1081,7 +1117,7 @@ public class MainFragment extends Fragment
               sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
               sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
         } else {
-          loadlist(mainFragmentViewModel.getCurrentPath(), true, OpenMode.UNKNOWN);
+          loadlist(mainFragmentViewModel.getCurrentPath(), true, OpenMode.UNKNOWN, false);
         }
         mainFragmentViewModel.setRetainSearchTask(false);
       }
@@ -1097,7 +1133,10 @@ public class MainFragment extends Fragment
       }
       if (mainFragmentViewModel.getCurrentPath() != null) {
         loadlist(
-            new File(mainFragmentViewModel.getCurrentPath()).getPath(), true, OpenMode.UNKNOWN);
+            new File(mainFragmentViewModel.getCurrentPath()).getPath(),
+            true,
+            OpenMode.UNKNOWN,
+            false);
       }
       mainFragmentViewModel.setResults(false);
     }
@@ -1130,7 +1169,7 @@ public class MainFragment extends Fragment
 
   public void goBackItemClick() {
     if (mainFragmentViewModel.getOpenMode() == OpenMode.CUSTOM) {
-      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+      loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
       return;
     }
     HybridFile currentFile =
@@ -1150,23 +1189,31 @@ public class MainFragment extends Fragment
                   mainFragmentViewModel
                       .getCurrentPath()
                       .substring(mainFragmentViewModel.getCurrentPath().indexOf('?')));
-            loadlist(path.toString(), true, OpenMode.SMB);
-          } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE);
+            loadlist(path.toString(), true, OpenMode.SMB, false);
+          } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
         } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
             || mainFragmentViewModel.getIsOnCloudRoot()) {
           getMainActivity().exit();
         } else if (FileUtils.canGoBack(getContext(), currentFile)) {
-          loadlist(currentFile.getParent(getContext()), true, mainFragmentViewModel.getOpenMode());
+          loadlist(
+              currentFile.getParent(getContext()),
+              true,
+              mainFragmentViewModel.getOpenMode(),
+              false);
         } else getMainActivity().exit();
       }
     } else {
-      loadlist(currentFile.getPath(), true, mainFragmentViewModel.getOpenMode());
+      loadlist(currentFile.getPath(), true, mainFragmentViewModel.getOpenMode(), false);
     }
   }
 
-  public void updateList() {
+  public void updateList(boolean forceReload) {
     computeScroll();
-    loadlist(mainFragmentViewModel.getCurrentPath(), true, mainFragmentViewModel.getOpenMode());
+    loadlist(
+        mainFragmentViewModel.getCurrentPath(),
+        true,
+        mainFragmentViewModel.getOpenMode(),
+        forceReload);
   }
 
   @Override
@@ -1508,7 +1555,7 @@ public class MainFragment extends Fragment
 
   @Override
   public void changePath(@NonNull String path) {
-    loadlist(path, false, mainFragmentViewModel.getOpenMode());
+    loadlist(path, false, mainFragmentViewModel.getOpenMode(), false);
   }
 
   @Override

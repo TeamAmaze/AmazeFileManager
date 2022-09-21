@@ -32,12 +32,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.amaze.filemanager.R;
+import com.amaze.filemanager.application.AppConfig;
 import com.amaze.filemanager.database.TabHandler;
 import com.amaze.filemanager.database.models.explorer.Tab;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
 import com.amaze.filemanager.ui.ColorCircleDrawable;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.colors.UserColorPreferences;
+import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
+import com.amaze.filemanager.ui.drag.DragToTrashListener;
 import com.amaze.filemanager.ui.drag.TabFragmentSideDragListener;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.DisablableViewPager;
@@ -52,6 +56,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -456,15 +461,19 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
     final MainFragment mainFragment = requireMainActivity().getCurrentMainFragment();
     View leftPlaceholder = rootView.findViewById(R.id.placeholder_drag_left);
     View rightPlaceholder = rootView.findViewById(R.id.placeholder_drag_right);
+    ImageView dragToTrash = rootView.findViewById(R.id.placeholder_trash_bottom);
     DataUtils dataUtils = DataUtils.getInstance();
     if (destroy) {
       leftPlaceholder.setOnDragListener(null);
       rightPlaceholder.setOnDragListener(null);
+      dragToTrash.setOnDragListener(null);
       leftPlaceholder.setVisibility(View.GONE);
       rightPlaceholder.setVisibility(View.GONE);
+      ExtensionsKt.hideFade(dragToTrash, 150);
     } else {
       leftPlaceholder.setVisibility(View.VISIBLE);
       rightPlaceholder.setVisibility(View.VISIBLE);
+      ExtensionsKt.showFade(dragToTrash, 150);
       leftPlaceholder.setOnDragListener(
           new TabFragmentSideDragListener(
               () -> {
@@ -487,6 +496,26 @@ public class TabFragment extends Fragment implements ViewPager.OnPageChangeListe
                   }
                   viewPager.setCurrentItem(1, true);
                 }
+                return null;
+              }));
+      dragToTrash.setOnDragListener(
+          new DragToTrashListener(
+              () -> {
+                if (mainFragment != null) {
+                  GeneralDialogCreation.deleteFilesDialog(
+                      requireContext(),
+                      requireMainActivity(),
+                      mainFragment.adapter.getCheckedItems(),
+                      requireMainActivity().getAppTheme());
+                } else {
+                  AppConfig.toast(requireContext(), getString(R.string.operation_unsuccesful));
+                }
+                return null;
+              },
+              () -> {
+                dragToTrash.performHapticFeedback(
+                    HapticFeedbackConstants.LONG_PRESS,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
                 return null;
               }));
     }

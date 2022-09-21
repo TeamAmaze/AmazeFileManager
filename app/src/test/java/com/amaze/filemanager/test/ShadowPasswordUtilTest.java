@@ -40,9 +40,11 @@ import org.robolectric.shadows.ShadowSQLiteConnection;
 import com.amaze.filemanager.database.UtilitiesDatabase;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.database.models.OperationData;
-import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
 import com.amaze.filemanager.shadows.ShadowMultiDex;
 import com.amaze.filemanager.utils.PasswordUtil;
+
+import android.util.Base64;
 
 import androidx.test.core.app.ApplicationProvider;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -74,11 +76,12 @@ public class ShadowPasswordUtilTest {
   public void testEncryptDecrypt() throws GeneralSecurityException, IOException {
     String text = "test";
     String encrypted =
-        PasswordUtil.INSTANCE.encryptPassword(ApplicationProvider.getApplicationContext(), text);
+        PasswordUtil.INSTANCE.encryptPassword(
+            ApplicationProvider.getApplicationContext(), text, Base64.DEFAULT);
     assertEquals(
         text,
         PasswordUtil.INSTANCE.decryptPassword(
-            ApplicationProvider.getApplicationContext(), encrypted));
+            ApplicationProvider.getApplicationContext(), encrypted, Base64.DEFAULT));
   }
 
   @Test
@@ -95,7 +98,7 @@ public class ShadowPasswordUtilTest {
     utilsHandler.saveToDatabase(
         new OperationData(
             UtilsHandler.Operation.SFTP,
-            SshClientUtils.encryptSshPathAsNecessary(url),
+            NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(url),
             "Test",
             fingerprint,
             null,
@@ -107,7 +110,8 @@ public class ShadowPasswordUtilTest {
             () -> {
               assertEquals(
                   fingerprint,
-                  utilsHandler.getSshHostKey(SshClientUtils.encryptSshPathAsNecessary(url)));
+                  utilsHandler.getRemoteHostKey(
+                      NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(url)));
               utilitiesDatabase.close();
               return true;
             });

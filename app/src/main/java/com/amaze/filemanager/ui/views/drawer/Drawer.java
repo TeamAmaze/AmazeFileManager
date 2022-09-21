@@ -21,6 +21,9 @@
 package com.amaze.filemanager.ui.views.drawer;
 
 import static android.os.Build.VERSION.SDK_INT;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
+import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_FOLDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_SIDEBAR_QUICKACCESSES;
 
@@ -137,6 +140,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   private View drawerHeaderLayout, drawerHeaderView;
   private ImageView donateImageView;
   private ImageView telegramImageView;
+  private ImageView instagramImageView;
   private TextView appVersion;
 
   /** Tablet is defined as 'width > 720dp' */
@@ -154,12 +158,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
     drawerHeaderView = drawerHeaderLayout.findViewById(R.id.drawer_header);
     donateImageView = drawerHeaderLayout.findViewById(R.id.donate);
     telegramImageView = drawerHeaderLayout.findViewById(R.id.telegram);
+    instagramImageView = drawerHeaderLayout.findViewById(R.id.instagram);
     appVersion = drawerHeaderLayout.findViewById(R.id.app_version);
     if (BuildConfig.DEBUG) {
       appVersion.setVisibility(View.VISIBLE);
     }
     donateImageView.setOnClickListener(v -> new Billing(mainActivity));
     telegramImageView.setOnClickListener(v -> Utils.openTelegramURL(mainActivity));
+    instagramImageView.setOnClickListener(v -> Utils.openInstagramURL(mainActivity));
     initDrawerFocusItems();
     /*drawerHeaderView.setOnLongClickListener(
     v -> {
@@ -759,7 +765,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
       MainFragment mainFragment = mainActivity.getCurrentMainFragment();
       if (mainFragment != null) {
-        mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN);
+        mainFragment.loadlist(pendingPath, false, OpenMode.UNKNOWN, false);
       } else {
         mainActivity.goToMain(pendingPath);
         return;
@@ -847,7 +853,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
           mainActivity.renameBookmark(title, path);
         } else if (path.startsWith("smb:/")) {
           mainActivity.showSMBDialog(title, path, true);
-        } else if (path.startsWith("ssh:/")) {
+        } else if (path.startsWith(SSH_URI_PREFIX)
+            || path.startsWith(FTP_URI_PREFIX)
+            || path.startsWith(FTPS_URI_PREFIX)) {
           mainActivity.showSftpDialog(title, path, true);
         } else if (path.startsWith(CloudHandler.CLOUD_PREFIX_DROPBOX)) {
           GeneralDialogCreation.showCloudDialog(

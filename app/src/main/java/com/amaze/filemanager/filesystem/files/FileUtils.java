@@ -30,6 +30,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.concurrent.Callable;
 import java.util.concurrent.atomic.AtomicLong;
 
 import org.slf4j.Logger;
@@ -70,6 +71,7 @@ import com.googlecode.concurrenttrees.radix.node.concrete.voidvalue.VoidValue;
 import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -90,6 +92,8 @@ import androidx.core.content.FileProvider;
 import androidx.core.util.Pair;
 import androidx.documentfile.provider.DocumentFile;
 
+import io.reactivex.Flowable;
+import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbFile;
 import kotlin.collections.ArraysKt;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
@@ -222,21 +226,25 @@ public class FileUtils {
    * @param hybridFiles
    * @param context
    */
+  @SuppressLint("CheckResult")
   public static void scanFile(@NonNull Context context, @NonNull HybridFile[] hybridFiles) {
-    AsyncTask.execute(
-        () -> {
-          if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
-            String[] paths = new String[hybridFiles.length];
-            for (int i = 0; i < hybridFiles.length; i++) {
-              HybridFile hybridFile = hybridFiles[i];
-              paths[i] = hybridFile.getPath();
-            }
-            MediaScannerConnection.scanFile(context, paths, null, null);
-          }
-          for (HybridFile hybridFile : hybridFiles) {
-            scanFile(hybridFile, context);
-          }
-        });
+    Flowable.fromCallable(
+            (Callable<Void>)
+                () -> {
+                  if (hybridFiles[0].exists(context) && hybridFiles[0].isLocal()) {
+                    String[] paths = new String[hybridFiles.length];
+                    for (int i = 0; i < hybridFiles.length; i++) {
+                      HybridFile hybridFile = hybridFiles[i];
+                      paths[i] = hybridFile.getPath();
+                    }
+                    MediaScannerConnection.scanFile(context, paths, null, null);
+                  }
+                  for (HybridFile hybridFile : hybridFiles) {
+                    scanFile(hybridFile, context);
+                  }
+                  return null;
+                })
+        .subscribeOn(Schedulers.io());
   }
 
   /**
@@ -1053,11 +1061,15 @@ public class FileUtils {
 
   public static File fromContentUri(@NonNull Uri uri) {
     if (!CONTENT.name().equalsIgnoreCase(uri.getScheme())) {
-      throw new IllegalArgumentException(
-          "URI must start with content://. URI was [" + uri.toString() + "]");
-    } else {
-      return new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
+      LOG.warn("URI must start with content://. URI was [" + uri + "]");
     }
+    File pathFile = new File(uri.getPath().substring(FILE_PROVIDER_PREFIX.length() + 1));
+    if (!pathFile.exists()) {
+      LOG.warn("failed to navigate to path {}", pathFile.getPath());
+      pathFile = new File(uri.getPath());
+      LOG.warn("trying to navigate to path {}", pathFile.getPath());
+    }
+    return pathFile;
   }
 
   /**

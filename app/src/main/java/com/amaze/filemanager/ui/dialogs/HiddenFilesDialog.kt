@@ -60,7 +60,7 @@ object HiddenFilesDialog {
 
         adapter.materialDialog = materialDialog
         materialDialog.setOnDismissListener {
-            mainFragment.loadlist(mainFragment.currentPath, false, OpenMode.UNKNOWN)
+            mainFragment.loadlist(mainFragment.currentPath, false, OpenMode.UNKNOWN, false)
         }
         materialDialog.show()
     }

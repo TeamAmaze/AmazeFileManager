@@ -1001,7 +1001,7 @@ public class GeneralDialogCreation {
       sharedPref.edit().putString("sortby", String.valueOf(sortType)).apply();
     }
     sharedPref.edit().putStringSet(PREFERENCE_SORTBY_ONLY_THIS, onlyThisFloders).apply();
-    m.updateList();
+    m.updateList(false);
     dialog.dismiss();
   }
 
@@ -1114,7 +1114,7 @@ public class GeneralDialogCreation {
     a.onPositive(
         (dialog, which) -> {
           mainFragment.loadlist(
-              dialog.getInputEditText().getText().toString(), false, OpenMode.UNKNOWN);
+              dialog.getInputEditText().getText().toString(), false, OpenMode.UNKNOWN, false);
         });
 
     a.show();
