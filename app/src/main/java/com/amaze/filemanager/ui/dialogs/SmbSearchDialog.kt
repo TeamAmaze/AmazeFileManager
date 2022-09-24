@@ -152,7 +152,12 @@ class SmbSearchDialog : DialogFragment() {
          * Called by [ComputerParcelableViewModel], add found computer to list view
          */
         fun add(computer: ComputerParcelable) {
-            items.add(computer)
+            if (computer.addr == "-1" && computer.name == "-1") {
+                items.add(computer)
+            } else {
+                items.add(items.size - 1, computer)
+                removeDummy()
+            }
             notifyDataSetChanged()
         }
 
@@ -161,7 +166,11 @@ class SmbSearchDialog : DialogFragment() {
          * (dummy) host
          */
         fun removeDummy() {
-            items.removeFirst()
+            items.remove(
+                items.find {
+                    it.addr == "-1" && it.name == "-1"
+                }
+            )
             notifyDataSetChanged()
         }
 
@@ -176,7 +185,7 @@ class SmbSearchDialog : DialogFragment() {
          * Answers if the list is empty = only has the dummy [ComputerParcelable] instance
          */
         fun dummyOnly(): Boolean {
-            return items.size == 1 && items.first().addr == "-1"
+            return items.size == 1 && items.last().addr == "-1"
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

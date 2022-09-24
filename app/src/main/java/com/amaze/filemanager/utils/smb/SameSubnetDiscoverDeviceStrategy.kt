@@ -80,7 +80,16 @@ class SameSubnetDiscoverDeviceStrategy : SmbDeviceScannerObservable.DiscoverDevi
                 it is InetAddress
             }.doOnNext { addr ->
                 addr as InetAddress
-                callback.invoke(ComputerParcelable(addr.hostAddress, addr.hostName))
+                callback.invoke(
+                    ComputerParcelable(
+                        addr.hostAddress,
+                        if (addr.hostName == addr.hostAddress) {
+                            addr.canonicalHostName
+                        } else {
+                            addr.hostName
+                        }
+                    )
+                )
             }.sequential().subscribe()
     }
 
