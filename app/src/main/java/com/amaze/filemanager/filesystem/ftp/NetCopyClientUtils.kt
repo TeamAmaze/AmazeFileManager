@@ -38,7 +38,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLO
 import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLASH
 import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
-import com.amaze.filemanager.utils.SmbUtil
+import com.amaze.filemanager.utils.smb.SmbUtil
 import com.amaze.filemanager.utils.urlEncoded
 import io.reactivex.Maybe
 import io.reactivex.Scheduler
