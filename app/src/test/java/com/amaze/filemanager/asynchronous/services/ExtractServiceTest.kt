@@ -28,6 +28,7 @@ import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
@@ -228,9 +229,11 @@ class ExtractServiceTest {
      */
     @Test
     fun testExtractRar() {
-        performTest(rarfile)
-        assertNull(ShadowToast.getLatestToast())
-        assertNull(ShadowToast.getTextOfLatestToast())
+        if (BuildConfig.FLAVOR == "play") {
+            performTest(rarfile)
+            assertNull(ShadowToast.getLatestToast())
+            assertNull(ShadowToast.getTextOfLatestToast())
+        }
     }
 
     /**
@@ -335,9 +338,11 @@ class ExtractServiceTest {
      */
     @Test
     fun testExtractMultiVolumeRar() {
-        performTest(multiVolumeRarFilePart1)
-        assertNull(ShadowToast.getLatestToast())
-        assertNull(ShadowToast.getTextOfLatestToast())
+        if (BuildConfig.FLAVOR == "play") {
+            performTest(multiVolumeRarFilePart1)
+            assertNull(ShadowToast.getLatestToast())
+            assertNull(ShadowToast.getTextOfLatestToast())
+        }
     }
 
     /**
@@ -345,13 +350,15 @@ class ExtractServiceTest {
      */
     @Test
     fun testExtractMultiVolumeRarV5() {
-        performTest(multiVolumeRarFileV5Part1)
-        ShadowLooper.idleMainLooper()
-        await()
-            .atMost(10, TimeUnit.SECONDS)
-            .until {
-                ShadowToast.getLatestToast() != null
-            }
+        if (BuildConfig.FLAVOR == "play") {
+            performTest(multiVolumeRarFileV5Part1)
+            ShadowLooper.idleMainLooper()
+            await()
+                .atMost(10, TimeUnit.SECONDS)
+                .until {
+                    ShadowToast.getLatestToast() != null
+                }
+        }
     }
 
     /**
