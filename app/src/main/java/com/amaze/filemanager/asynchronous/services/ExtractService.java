@@ -64,8 +64,6 @@ import androidx.preference.PreferenceManager;
 
 public class ExtractService extends AbstractProgressiveService {
 
-  Context context;
-
   private final Logger LOG = LoggerFactory.getLogger(ExtractService.class);
   private final IBinder mBinder = new ObtainableServiceBinder<>(this);
 
@@ -89,7 +87,6 @@ public class ExtractService extends AbstractProgressiveService {
   public void onCreate() {
     super.onCreate();
     registerReceiver(receiver1, new IntentFilter(TAG_BROADCAST_EXTRACT_CANCEL));
-    context = getApplicationContext();
   }
 
   @Override
@@ -99,7 +96,7 @@ public class ExtractService extends AbstractProgressiveService {
     String[] entries = intent.getStringArrayExtra(KEY_ENTRIES_ZIP);
 
     mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+    sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     accentColor =
         ((AppConfig) getApplication())
             .getUtilsProvider()
@@ -118,12 +115,15 @@ public class ExtractService extends AbstractProgressiveService {
 
     Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
     PendingIntent stopPendingIntent =
-        PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getBroadcast(
+            getApplicationContext(), 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
     NotificationCompat.Action action =
         new NotificationCompat.Action(
             R.drawable.ic_zip_box_grey, getString(R.string.stop_ftp), stopPendingIntent);
 
-    mBuilder = new NotificationCompat.Builder(context, NotificationConstants.CHANNEL_NORMAL_ID);
+    mBuilder =
+        new NotificationCompat.Builder(
+            getApplicationContext(), NotificationConstants.CHANNEL_NORMAL_ID);
     mBuilder
         .setContentIntent(pendingIntent)
         .setSmallIcon(R.drawable.ic_zip_box_grey)
@@ -312,7 +312,10 @@ public class ExtractService extends AbstractProgressiveService {
                 ServiceWatcherUtil.UPDATE_POSITION);
 
         if (extractor == null) {
-          Toast.makeText(context, R.string.error_cant_decompress_that_file, Toast.LENGTH_LONG)
+          Toast.makeText(
+                  getApplicationContext(),
+                  R.string.error_cant_decompress_that_file,
+                  Toast.LENGTH_LONG)
               .show();
           return false;
         }
@@ -327,13 +330,13 @@ public class ExtractService extends AbstractProgressiveService {
         } catch (Extractor.EmptyArchiveNotice e) {
           LOG.error("Archive " + compressedPath + " is an empty archive");
           AppConfig.toast(
-              extractService,
+              getApplicationContext(),
               extractService.getString(R.string.error_empty_archive, compressedPath));
           return true;
         } catch (Extractor.BadArchiveNotice e) {
           LOG.error("Archive " + compressedPath + " is a corrupted archive.", e);
           AppConfig.toast(
-              extractService,
+              getApplicationContext(),
               e.getCause() != null && TextUtils.isEmpty(e.getCause().getMessage())
                   ? getString(R.string.error_bad_archive_without_info, compressedPath)
                   : getString(
@@ -348,7 +351,7 @@ public class ExtractService extends AbstractProgressiveService {
             if (ArchivePasswordCache.getInstance().containsKey(compressedPath)) {
               ArchivePasswordCache.getInstance().remove(compressedPath);
               AppConfig.toast(
-                  extractService,
+                  getApplicationContext(),
                   extractService.getString(R.string.error_archive_password_incorrect));
             }
             passwordProtected = true;
@@ -358,12 +361,12 @@ public class ExtractService extends AbstractProgressiveService {
               && UnsupportedRarV5Exception.class.isAssignableFrom(e.getCause().getClass())) {
             LOG.error("RAR " + compressedPath + " is unsupported V5 archive", e);
             AppConfig.toast(
-                extractService,
+                getApplicationContext(),
                 extractService.getString(R.string.error_unsupported_v5_rar, compressedPath));
             return false;
           } else {
             LOG.error("Error while extracting file " + compressedPath, e);
-            AppConfig.toast(extractService, extractService.getString(R.string.error));
+            AppConfig.toast(getApplicationContext(), extractService.getString(R.string.error));
             paused = true;
             publishProgress(e);
           }
@@ -382,7 +385,7 @@ public class ExtractService extends AbstractProgressiveService {
       IOException result = values[0];
       ArchivePasswordCache.getInstance().remove(compressedPath);
       GeneralDialogCreation.showPasswordDialog(
-          AppConfig.getInstance().getMainActivityContext(),
+          getApplicationContext(),
           (MainActivity) AppConfig.getInstance().getMainActivityContext(),
           AppConfig.getInstance().getUtilsProvider().getAppTheme(),
           R.string.archive_password_prompt,
@@ -419,7 +422,8 @@ public class ExtractService extends AbstractProgressiveService {
       extractService.stopSelf();
 
       if (!hasInvalidEntries)
-        AppConfig.toast(extractService, getString(R.string.multiple_invalid_archive_entries));
+        AppConfig.toast(
+            getApplicationContext(), getString(R.string.multiple_invalid_archive_entries));
     }
 
     @Override
@@ -430,7 +434,7 @@ public class ExtractService extends AbstractProgressiveService {
 
     private void toastOnParseError(IOException result) {
       Toast.makeText(
-              AppConfig.getInstance().getMainActivityContext(),
+              getApplicationContext(),
               AppConfig.getInstance()
                   .getResources()
                   .getString(

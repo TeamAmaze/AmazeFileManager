@@ -22,18 +22,24 @@ package com.amaze.filemanager.asynchronous.services
 
 import android.content.Context
 import android.content.Intent
-import android.os.Build.VERSION_CODES.JELLY_BEAN
-import android.os.Build.VERSION_CODES.KITKAT
+import android.os.Build.VERSION.SDK_INT
+import android.os.Build.VERSION_CODES.N
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
+import androidx.lifecycle.Lifecycle
+import androidx.test.core.app.ActivityScenario
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
 import com.amaze.filemanager.shadows.ShadowMultiDex
+import com.amaze.filemanager.test.ShadowTabHandler
+import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.test.randomBytes
 import com.amaze.filemanager.test.supportedArchiveExtensions
+import com.amaze.filemanager.ui.activities.MainActivity
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -60,7 +66,7 @@ import java.nio.file.Paths
 import java.util.concurrent.TimeUnit
 
 @RunWith(AndroidJUnit4::class)
-@Config(shadows = [ShadowMultiDex::class], sdk = [JELLY_BEAN, KITKAT, P])
+@Config(shadows = [ShadowMultiDex::class, ShadowTabHandler::class], sdk = [P])
 @LooperMode(LooperMode.Mode.PAUSED)
 @Suppress("TooManyFunctions", "StringLiteralDuplication")
 class ExtractServiceTest {
@@ -114,6 +120,7 @@ class ExtractServiceTest {
     }
 
     private lateinit var service: ExtractService
+    private lateinit var scenario: ActivityScenario<MainActivity>
 
     /**
      * Copy archives to storage.
@@ -160,6 +167,9 @@ class ExtractServiceTest {
         ShadowToast.reset()
 
         service = Robolectric.setupService(ExtractService::class.java)
+        if (SDK_INT >= N) TestUtils.initializeInternalStorage()
+        scenario = ActivityScenario.launch(MainActivity::class.java)
+        scenario.moveToState(Lifecycle.State.STARTED)
     }
 
     /**
@@ -178,6 +188,7 @@ class ExtractServiceTest {
         }
         service.stopSelf()
         service.onDestroy()
+        scenario.close()
     }
 
     /**
@@ -437,14 +448,18 @@ class ExtractServiceTest {
     }
 
     private fun performTest(archiveFile: File) {
-        val intent = Intent(ApplicationProvider.getApplicationContext(), ExtractService::class.java)
-            .putExtra(ExtractService.KEY_PATH_ZIP, archiveFile.absolutePath)
-            .putExtra(ExtractService.KEY_ENTRIES_ZIP, arrayOfNulls<String>(0))
-            .putExtra(
-                ExtractService.KEY_PATH_EXTRACT,
-                File(Environment.getExternalStorageDirectory(), "test-archive")
-                    .absolutePath
-            )
-        service.onStartCommand(intent, 0, 0)
+        scenario.onActivity { activity ->
+            AppConfig.getInstance().setMainActivityContext(activity)
+            val intent =
+                Intent(ApplicationProvider.getApplicationContext(), ExtractService::class.java)
+                    .putExtra(ExtractService.KEY_PATH_ZIP, archiveFile.absolutePath)
+                    .putExtra(ExtractService.KEY_ENTRIES_ZIP, arrayOfNulls<String>(0))
+                    .putExtra(
+                        ExtractService.KEY_PATH_EXTRACT,
+                        File(Environment.getExternalStorageDirectory(), "test-archive")
+                            .absolutePath
+                    )
+            service.onStartCommand(intent, 0, 0)
+        }
     }
 }
