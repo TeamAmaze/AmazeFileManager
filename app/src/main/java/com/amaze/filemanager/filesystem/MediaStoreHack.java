@@ -130,6 +130,12 @@ public class MediaStoreHack {
    * @return uri of file or null if resolver.query fails
    */
   public static @Nullable Uri getUriFromFile(final String path, Context context) {
+
+    if (path == null) {
+      Log.e(TAG, "Error when deleting file");
+      return null;
+    }
+
     ContentResolver resolver = context.getContentResolver();
 
     Cursor filecursor =
@@ -173,6 +179,9 @@ public class MediaStoreHack {
       Log.w(MediaStoreHack.TAG, "Error installing temporary track.", ex);
       return 0;
     }
+
+    if (temporaryTrack == null || temporaryTrack.getAbsolutePath() == null) return 0;
+
     final Uri filesUri = MediaStore.Files.getContentUri("external");
     final String[] selectionArgs = {temporaryTrack.getAbsolutePath()};
     final ContentResolver contentResolver = context.getContentResolver();
