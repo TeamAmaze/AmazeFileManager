@@ -127,7 +127,7 @@ abstract class UtilitiesDatabase : RoomDatabase() {
         const val COLUMN_PRIVATE_KEY = "ssh_key"
 
         @VisibleForTesting
-        var overrideDatabaseBuilder: ((Context) -> RoomDatabase.Builder<UtilitiesDatabase>)? = null
+        var overrideDatabaseBuilder: ((Context) -> Builder<UtilitiesDatabase>)? = null
 
         private const val TEMP_TABLE_PREFIX = "temp_"
         private const val queryHistory = (
