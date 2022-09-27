@@ -37,6 +37,7 @@ import com.amaze.filemanager.fileoperations.filesystem.usb.SingletonUsbOtg
 import com.amaze.filemanager.fileoperations.filesystem.usb.UsbOtgRepresentation
 import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.filesystem.RootHelper
+import java.net.URLDecoder
 
 /** Created by Vishal on 27-04-2017.  */
 object OTGUtil {
@@ -170,7 +171,7 @@ object OTGUtil {
         var retval: DocumentFile? = DocumentFile.fromTreeUri(context, rootUri)
             ?: throw DocumentFileNotFoundException(rootUri, path)
         val parts: Array<String> = if (openMode == OpenMode.DOCUMENT_FILE) {
-            path.substringAfter(rootUri.toString())
+            path.substringAfter(URLDecoder.decode(rootUri.toString(), Charsets.UTF_8.name()))
                 .split("/", PATH_SEPARATOR_ENCODED).toTypedArray()
         } else {
             path.split("/").toTypedArray()
@@ -180,7 +181,7 @@ object OTGUtil {
             if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
-            var nextDocument = retval?.findFile(part) ?: retval
+            var nextDocument = retval?.findFile(part)
             if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
                 nextDocument = retval?.createFile(part.substring(part.lastIndexOf(".")), part)
             }

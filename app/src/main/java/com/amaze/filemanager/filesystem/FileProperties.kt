@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem
 
 import android.app.usage.StorageStatsManager
+import android.content.ContentResolver.SCHEME_CONTENT
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -35,6 +36,7 @@ import com.amaze.filemanager.filesystem.ExternalSdCardOperation.isOnExtSdCard
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.smb.CifsContexts
 import com.amaze.filemanager.utils.OTGUtil
+import com.amaze.filemanager.utils.containsPath
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import java.io.File
@@ -53,10 +55,16 @@ object FileProperties {
     private const val COM_ANDROID_EXTERNALSTORAGE_DOCUMENTS =
         "com.android.externalstorage.documents"
 
-    val EXCLUDED_DIRS = arrayOf(
-        File(Environment.getExternalStorageDirectory(), "Android/data").absolutePath,
-        File(Environment.getExternalStorageDirectory(), "Android/obb").absolutePath
+    @JvmField
+    val ANDROID_DATA_DIRS = arrayOf(
+        "Android/data",
+        "Android/obb"
     )
+
+    @JvmField
+    val ANDROID_DEVICE_DATA_DIRS = ANDROID_DATA_DIRS.map {
+        File(Environment.getExternalStorageDirectory(), it).absolutePath
+    }
 
     /**
      * Check if a file is readable.
@@ -214,18 +222,27 @@ object FileProperties {
 
     @JvmStatic
     fun unmapPathForApi30OrAbove(uriPath: String): String? {
-        val uri = Uri.parse(uriPath)
-        return uri.path?.let { p ->
-            File(
-                Environment.getExternalStorageDirectory(),
-                p.substringAfter("tree/primary:")
-            ).absolutePath
+        return if (uriPath.startsWith(SCHEME_CONTENT)) {
+            val uri = Uri.parse(uriPath)
+            return uri.path?.let { p ->
+                File(
+                    Environment.getExternalStorageDirectory(),
+                    p.substringAfter("tree/primary:")
+                ).absolutePath
+            }
+        } else {
+            uriPath
         }
     }
 
     @JvmStatic
     fun remapPathForApi30OrAbove(path: String, openDocumentTree: Boolean = false): String {
-        return if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && EXCLUDED_DIRS.contains(path)) {
+        return if (ANDROID_DEVICE_DATA_DIRS.containsPath(path)) {
+            path
+        } else if (Build.VERSION.SDK_INT > Build.VERSION_CODES.Q && ANDROID_DEVICE_DATA_DIRS.any {
+            path.startsWith(it) && path != it
+        }
+        ) {
             val suffix =
                 path.substringAfter(Environment.getExternalStorageDirectory().absolutePath)
             val documentId = "$STORAGE_PRIMARY:${suffix.substring(1)}"

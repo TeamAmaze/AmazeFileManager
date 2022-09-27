@@ -166,9 +166,14 @@ public class MainActivityHelper {
         "",
         (dialog, which) -> {
           EditText textfield = dialog.getCustomView().findViewById(R.id.singleedittext_input);
+          String parentPath = path;
+          if (OpenMode.DOCUMENT_FILE.equals(openMode)
+              && Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            parentPath = FileProperties.remapPathForApi30OrAbove(path, false);
+          }
           mkDir(
-              new HybridFile(openMode, path),
-              new HybridFile(openMode, path, textfield.getText().toString().trim(), true),
+              new HybridFile(openMode, parentPath),
+              new HybridFile(openMode, parentPath, textfield.getText().toString().trim(), true),
               ma);
           dialog.dismiss();
         },

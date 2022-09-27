@@ -24,6 +24,8 @@ import static android.os.Build.VERSION.SDK_INT;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN;
 import static android.os.Build.VERSION_CODES.JELLY_BEAN_MR2;
 import static android.os.Build.VERSION_CODES.Q;
+import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DATA_DIRS;
+import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DEVICE_DATA_DIRS;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_DIVIDERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_SHOW_GOBACK_BUTTON;
@@ -63,6 +65,7 @@ import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -79,6 +82,7 @@ import com.amaze.filemanager.ui.views.FastScroller;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.amaze.filemanager.utils.BottomBarButtonPath;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
@@ -90,13 +94,11 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.UriPermission;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.text.TextUtils;
 import android.text.format.Formatter;
@@ -131,6 +133,8 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
+import kotlin.collections.CollectionsKt;
 
 public class MainFragment extends Fragment
     implements BottomBarButtonPath,
@@ -142,7 +146,6 @@ public class MainFragment extends Fragment
 
   public RecyclerAdapter adapter;
   private SharedPreferences sharedPref;
-  private Resources res;
 
   // ATTRIBUTES FOR APPEARANCE AND COLORS
   private LinearLayoutManager mLayoutManager;
@@ -164,7 +167,7 @@ public class MainFragment extends Fragment
   private MainFragmentViewModel mainFragmentViewModel;
   private MainActivityViewModel mainActivityViewModel;
 
-  private ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
+  private final ActivityResultLauncher<Intent> handleDocumentUriForRestrictedDirectories =
       registerForActivityResult(
           new ActivityResultContracts.StartActivityForResult(),
           result -> {
@@ -191,19 +194,18 @@ public class MainFragment extends Fragment
     mainActivityViewModel =
         new ViewModelProvider(requireMainActivity()).get(MainActivityViewModel.class);
 
-    utilsProvider = getMainActivity().getUtilsProvider();
+    utilsProvider = requireMainActivity().getUtilsProvider();
     sharedPref = PreferenceManager.getDefaultSharedPreferences(requireActivity());
-    res = getResources();
     mainFragmentViewModel.initBundleArguments(getArguments());
     mainFragmentViewModel.initIsList();
     mainFragmentViewModel.initColumns(sharedPref);
     mainFragmentViewModel.initSortModes(
         SortHandler.getSortType(getContext(), getCurrentPath()), sharedPref);
-    mainFragmentViewModel.setAccentColor(getMainActivity().getAccent());
+    mainFragmentViewModel.setAccentColor(requireMainActivity().getAccent());
     mainFragmentViewModel.setPrimaryColor(
-        getMainActivity().getCurrentColorPreference().getPrimaryFirstTab());
+        requireMainActivity().getCurrentColorPreference().getPrimaryFirstTab());
     mainFragmentViewModel.setPrimaryTwoColor(
-        getMainActivity().getCurrentColorPreference().getPrimarySecondTab());
+        requireMainActivity().getCurrentColorPreference().getPrimarySecondTab());
   }
 
   @Override
@@ -219,7 +221,7 @@ public class MainFragment extends Fragment
     super.onViewCreated(view, savedInstanceState);
     mainFragmentViewModel = new ViewModelProvider(this).get(MainFragmentViewModel.class);
     listView = rootView.findViewById(R.id.listView);
-    mToolbarContainer = getMainActivity().getAppbar().getAppbarLayout();
+    mToolbarContainer = requireMainActivity().getAppbar().getAppbarLayout();
     fastScroller = rootView.findViewById(R.id.fastscroll);
     fastScroller.setPressedHandleColor(mainFragmentViewModel.getAccentColor());
     View.OnTouchListener onTouchListener =
@@ -275,7 +277,7 @@ public class MainFragment extends Fragment
     // View footerView = getActivity().getLayoutInflater().inflate(R.layout.divider, null);// TODO:
     // 23/5/2017 use or delete
     dividerItemDecoration =
-        new DividerItemDecoration(getActivity(), false, getBoolean(PREFERENCE_SHOW_DIVIDERS));
+        new DividerItemDecoration(requireActivity(), false, getBoolean(PREFERENCE_SHOW_DIVIDERS));
     listView.addItemDecoration(dividerItemDecoration);
     mSwipeRefreshLayout.setColorSchemeColors(mainFragmentViewModel.getAccentColor());
     DefaultItemAnimator animator = new DefaultItemAnimator();
@@ -404,7 +406,7 @@ public class MainFragment extends Fragment
               && mainFragmentViewModel.getEncryptBaseFile() != null) {
             FileUtils.openFile(
                 mainFragmentViewModel.getEncryptBaseFile().getFile(),
-                getMainActivity(),
+                requireMainActivity(),
                 sharedPref);
             mainFragmentViewModel.setEncryptOpen(false);
           }
@@ -431,14 +433,14 @@ public class MainFragment extends Fragment
     if (mainFragmentViewModel.getResults()) {
       // check to initialize search results
       // if search task is been running, cancel it
-      FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+      FragmentManager fragmentManager = requireActivity().getSupportFragmentManager();
       SearchWorkerFragment fragment =
           (SearchWorkerFragment) fragmentManager.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
       if (fragment != null) {
         if (fragment.searchAsyncTask.getStatus() == AsyncTask.Status.RUNNING) {
           fragment.searchAsyncTask.cancel(true);
         }
-        getActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
+        requireActivity().getSupportFragmentManager().beginTransaction().remove(fragment).commit();
       }
 
       mainFragmentViewModel.setRetainSearchTask(true);
@@ -448,13 +450,13 @@ public class MainFragment extends Fragment
       MainActivityHelper.SEARCH_TEXT = null;
     }
 
-    if (getMainActivity().getListItemSelected()) {
+    if (requireMainActivity().getListItemSelected()) {
       if (isBackButton) {
-        getMainActivity().setListItemSelected(false);
-        if (getMainActivity().getActionModeHelper().getActionMode() != null) {
-          getMainActivity().getActionModeHelper().getActionMode().finish();
+        requireMainActivity().setListItemSelected(false);
+        if (requireMainActivity().getActionModeHelper().getActionMode() != null) {
+          requireMainActivity().getActionModeHelper().getActionMode().finish();
         }
-        getMainActivity().getActionModeHelper().setActionMode(null);
+        requireMainActivity().getActionModeHelper().setActionMode(null);
       } else {
         // the first {goback} item if back navigation is enabled
         adapter.toggleChecked(position, imageView);
@@ -464,8 +466,8 @@ public class MainFragment extends Fragment
         goBackItemClick();
       } else {
         // hiding search view if visible
-        if (getMainActivity().getAppbar().getSearchView().isEnabled()) {
-          getMainActivity().getAppbar().getSearchView().hideSearchView();
+        if (requireMainActivity().getAppbar().getSearchView().isEnabled()) {
+          requireMainActivity().getAppbar().getSearchView().hideSearchView();
         }
 
         String path =
@@ -523,9 +525,9 @@ public class MainFragment extends Fragment
    */
   public void returnIntentResults(HybridFileParcelable baseFile) {
 
-    getMainActivity().mReturnIntent = false;
+    requireMainActivity().mReturnIntent = false;
 
-    Uri mediaStoreUri = Utils.getUriForBaseFile(getActivity(), baseFile);
+    Uri mediaStoreUri = Utils.getUriForBaseFile(requireActivity(), baseFile);
     LOG.debug(
         mediaStoreUri.toString()
             + "\t"
@@ -534,7 +536,7 @@ public class MainFragment extends Fragment
     intent.setFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
     intent.setAction(Intent.ACTION_SEND);
 
-    if (getMainActivity().mRingtonePickerIntent) {
+    if (requireMainActivity().mRingtonePickerIntent) {
       intent.setDataAndType(
           mediaStoreUri, MimeTypes.getMimeType(baseFile.getPath(), baseFile.isDirectory()));
       intent.putExtra(RingtoneManager.EXTRA_RINGTONE_PICKED_URI, mediaStoreUri);
@@ -582,12 +584,13 @@ public class MainFragment extends Fragment
     OpenMode openMode = providedOpenMode;
     String actualPath = FileProperties.remapPathForApi30OrAbove(providedPath, false);
 
-    if (!providedPath.equals(actualPath) && SDK_INT >= Q) {
-      openMode = loadPathInQ(actualPath, providedPath);
+    if (SDK_INT >= Q && ArraysKt.any(ANDROID_DATA_DIRS, providedPath::contains)) {
+      openMode = loadPathInQ(actualPath, providedPath, providedOpenMode);
     }
     // Monkeypatch :( to fix problems with unexpected non content URI path while openMode is still
     // OpenMode.DOCUMENT_FILE
-    else if (actualPath.startsWith("/") && OpenMode.DOCUMENT_FILE.equals(openMode)) {
+    else if (actualPath.startsWith("/")
+        && (OpenMode.DOCUMENT_FILE.equals(openMode) || OpenMode.ANDROID_DATA.equals(openMode))) {
       openMode = OpenMode.FILE;
     }
 
@@ -616,52 +619,61 @@ public class MainFragment extends Fragment
   }
 
   @RequiresApi(api = Q)
-  private OpenMode loadPathInQ(String actualPath, String providedPath) {
+  private OpenMode loadPathInQ(String actualPath, String providedPath, OpenMode providedMode) {
 
-    boolean hasAccessToSpecialFolder = false;
-    List<UriPermission> uriPermissions =
-        getContext().getContentResolver().getPersistedUriPermissions();
+    if (GenericExtKt.containsPath(ANDROID_DEVICE_DATA_DIRS, providedPath)
+        && !OpenMode.ANDROID_DATA.equals(providedMode)) {
+      return OpenMode.ANDROID_DATA;
+    } else if (actualPath.startsWith("/")) {
+      return OpenMode.FILE;
+    } else if (actualPath.equals(providedPath)) {
+      return providedMode;
+    } else {
+      boolean hasAccessToSpecialFolder = false;
+      List<UriPermission> uriPermissions =
+          requireContext().getContentResolver().getPersistedUriPermissions();
 
-    if (uriPermissions != null && uriPermissions.size() > 0) {
-      for (UriPermission p : uriPermissions) {
-        if (p.isReadPermission() && actualPath.startsWith(p.getUri().toString())) {
-          hasAccessToSpecialFolder = true;
-          SafRootHolder.setUriRoot(p.getUri());
-          break;
+      if (uriPermissions != null && uriPermissions.size() > 0) {
+        for (UriPermission p : uriPermissions) {
+          if (p.isReadPermission() && actualPath.startsWith(p.getUri().toString())) {
+            hasAccessToSpecialFolder = true;
+            SafRootHolder.setUriRoot(p.getUri());
+            break;
+          }
         }
       }
-    }
 
-    if (!hasAccessToSpecialFolder) {
-      Intent intent =
-          new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-              .putExtra(
-                  DocumentsContract.EXTRA_INITIAL_URI,
-                  Uri.parse(FileProperties.remapPathForApi30OrAbove(providedPath, true)));
-      MaterialDialog d =
-          GeneralDialogCreation.showBasicDialog(
-              getMainActivity(),
-              R.string.android_data_prompt_saf_access,
-              R.string.android_data_prompt_saf_access_title,
-              android.R.string.ok,
-              android.R.string.cancel);
-      d.getActionButton(DialogAction.POSITIVE)
-          .setOnClickListener(
-              v -> {
-                ExtensionsKt.runIfDocumentsUIExists(
-                    intent,
-                    getMainActivity(),
-                    () -> handleDocumentUriForRestrictedDirectories.launch(intent));
+      if (!hasAccessToSpecialFolder) {
+        Intent intent =
+            new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+                .putExtra(
+                    DocumentsContract.EXTRA_INITIAL_URI,
+                    Uri.parse(FileProperties.remapPathForApi30OrAbove(providedPath, true)));
+        MaterialDialog d =
+            GeneralDialogCreation.showBasicDialog(
+                requireMainActivity(),
+                R.string.android_data_prompt_saf_access,
+                R.string.android_data_prompt_saf_access_title,
+                android.R.string.ok,
+                android.R.string.cancel);
+        d.getActionButton(DialogAction.POSITIVE)
+            .setOnClickListener(
+                v -> {
+                  ExtensionsKt.runIfDocumentsUIExists(
+                          intent,
+                          requireMainActivity(),
+                          () -> handleDocumentUriForRestrictedDirectories.launch(intent));
 
-                d.dismiss();
-              });
-      d.show();
-      // At this point LoadFilesListTask will be triggered.
-      // No harm even give OpenMode.FILE here, it loads blank when it doesn't; and after the
-      // UriPermission is granted loadlist will be called again
-      return OpenMode.FILE;
-    } else {
-      return OpenMode.DOCUMENT_FILE;
+                  d.dismiss();
+                });
+        d.show();
+        // At this point LoadFilesListTask will be triggered.
+        // No harm even give OpenMode.FILE here, it loads blank when it doesn't; and after the
+        // UriPermission is granted loadlist will be called again
+        return OpenMode.FILE;
+      } else {
+        return OpenMode.DOCUMENT_FILE;
+      }
     }
   }
 
@@ -683,9 +695,9 @@ public class MainFragment extends Fragment
             (v, keyCode, event) -> {
               if (event.getAction() == KeyEvent.ACTION_DOWN) {
                 if (event.getKeyCode() == KeyEvent.KEYCODE_DPAD_RIGHT) {
-                  getMainActivity().getFAB().requestFocus();
+                  requireMainActivity().getFAB().requestFocus();
                 } else if (event.getKeyCode() == KeyEvent.KEYCODE_BACK) {
-                  getMainActivity().onBackPressed();
+                  requireMainActivity().onBackPressed();
                 } else {
                   return false;
                 }
@@ -715,7 +727,7 @@ public class MainFragment extends Fragment
    * @param grid whether to set grid view or list view
    */
   public void setListElements(
-      ArrayList<LayoutElementParcelable> bitmap,
+      List<LayoutElementParcelable> bitmap,
       boolean back,
       String path,
       final OpenMode openMode,
@@ -776,7 +788,7 @@ public class MainFragment extends Fragment
 
         adapter =
             new RecyclerAdapter(
-                getMainActivity(),
+                requireMainActivity(),
                 this,
                 utilsProvider,
                 sharedPref,
@@ -803,7 +815,8 @@ public class MainFragment extends Fragment
 
       if (mainFragmentViewModel.getAddHeader() && mainFragmentViewModel.isList()) {
         dividerItemDecoration =
-            new DividerItemDecoration(getActivity(), true, getBoolean(PREFERENCE_SHOW_DIVIDERS));
+            new DividerItemDecoration(
+                requireMainActivity(), true, getBoolean(PREFERENCE_SHOW_DIVIDERS));
         listView.addItemDecoration(dividerItemDecoration);
         mainFragmentViewModel.setAddHeader(false);
       }
@@ -818,9 +831,9 @@ public class MainFragment extends Fragment
         }
       }
 
-      getMainActivity().updatePaths(mainFragmentViewModel.getNo());
-      getMainActivity().showFab();
-      getMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
+      requireMainActivity().updatePaths(mainFragmentViewModel.getNo());
+      requireMainActivity().showFab();
+      requireMainActivity().getAppbar().getAppbarLayout().setExpanded(true);
       listView.stopScroll();
       fastScroller.setRecyclerView(
           listView,
@@ -885,13 +898,13 @@ public class MainFragment extends Fragment
    */
   private void resumeDecryptOperations() {
     if (SDK_INT >= JELLY_BEAN_MR2) {
-      (getActivity())
+      (requireMainActivity())
           .registerReceiver(
               decryptReceiver, new IntentFilter(EncryptDecryptUtils.DECRYPT_BROADCAST));
       if (!mainFragmentViewModel.isEncryptOpen()
           && !Utils.isNullOrEmpty(mainFragmentViewModel.getEncryptBaseFiles())) {
         // we've opened the file and are ready to delete it
-        new DeleteTask(getActivity()).execute(mainFragmentViewModel.getEncryptBaseFiles());
+        new DeleteTask(requireMainActivity()).execute(mainFragmentViewModel.getEncryptBaseFiles());
         mainFragmentViewModel.setEncryptBaseFiles(new ArrayList<>());
       }
     }
@@ -1008,7 +1021,7 @@ public class MainFragment extends Fragment
     if (!mainFragmentViewModel.getResults()) {
       if (!mainFragmentViewModel.getRetainSearchTask()) {
         // normal case
-        if (getMainActivity().getListItemSelected()) {
+        if (requireMainActivity().getListItemSelected()) {
           adapter.toggleChecked(false);
         } else {
           if (OpenMode.SMB.equals(mainFragmentViewModel.getOpenMode())) {
@@ -1061,41 +1074,27 @@ public class MainFragment extends Fragment
                   && mainFragmentViewModel.getHome().equals(mainFragmentViewModel.getCurrentPath()))
               || mainFragmentViewModel.getIsOnCloudRoot()) {
             getMainActivity().exit();
-          } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())) {
-            if (!currentFile.getPath().startsWith("content://")) {
-              mainFragmentViewModel.setOpenMode(OpenMode.FILE);
-              currentFile.setMode(OpenMode.FILE);
-              currentFile.setPath(Environment.getExternalStorageDirectory().getAbsolutePath());
-              loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode(), false);
+          } else if (OpenMode.DOCUMENT_FILE.equals(mainFragmentViewModel.getOpenMode())
+              && !currentFile.getPath().startsWith("content://")) {
+            if (CollectionsKt.contains(
+                ANDROID_DEVICE_DATA_DIRS, currentFile.getParent(getContext()))) {
+              loadlist(currentFile.getParent(getContext()), false, OpenMode.ANDROID_DATA, false);
             } else {
-              List<String> pathSegments = Uri.parse(currentFile.getPath()).getPathSegments();
-              if (pathSegments.size() < 3) {
-                mainFragmentViewModel.setOpenMode(OpenMode.FILE);
-                String subPath = pathSegments.get(1);
-                currentFile.setMode(OpenMode.FILE);
-                currentFile.setPath(
-                    new File(
-                            Environment.getExternalStorageDirectory(),
-                            subPath.substring(
-                                subPath.lastIndexOf(':') + 1, subPath.lastIndexOf('/')))
-                        .getAbsolutePath());
-                loadlist(currentFile.getPath(), false, mainFragmentViewModel.getOpenMode(), false);
-              } else {
-                loadlist(
-                    currentFile.getParent(getContext()),
-                    true,
-                    mainFragmentViewModel.getOpenMode(),
-                    false);
-              }
+              loadlist(
+                  currentFile.getParent(getContext()),
+                  true,
+                  mainFragmentViewModel.getOpenMode(),
+                  false);
             }
-
           } else if (FileUtils.canGoBack(getContext(), currentFile)) {
             loadlist(
                 currentFile.getParent(getContext()),
                 true,
                 mainFragmentViewModel.getOpenMode(),
                 false);
-          } else getMainActivity().exit();
+          } else {
+            requireMainActivity().exit();
+          }
         }
       } else {
         // case when we had pressed on an item from search results and wanna go back
@@ -1104,7 +1103,7 @@ public class MainFragment extends Fragment
         if (MainActivityHelper.SEARCH_TEXT != null) {
 
           // starting the search query again :O
-          FragmentManager fm = getMainActivity().getSupportFragmentManager();
+          FragmentManager fm = requireMainActivity().getSupportFragmentManager();
 
           // getting parent path to resume search from there
           String parentPath =
@@ -1121,7 +1120,7 @@ public class MainFragment extends Fragment
               parentPath,
               MainActivityHelper.SEARCH_TEXT,
               mainFragmentViewModel.getOpenMode(),
-              getMainActivity().isRootExplorer(),
+              requireMainActivity().isRootExplorer(),
               sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX, false),
               sharedPref.getBoolean(SearchWorkerFragment.KEY_REGEX_MATCHES, false));
         } else {
@@ -1131,7 +1130,7 @@ public class MainFragment extends Fragment
       }
     } else {
       // to go back after search list have been popped
-      FragmentManager fm = getActivity().getSupportFragmentManager();
+      FragmentManager fm = requireMainActivity().getSupportFragmentManager();
       SearchWorkerFragment fragment =
           (SearchWorkerFragment) fm.findFragmentByTag(MainActivity.TAG_ASYNC_HELPER);
       if (fragment != null) {
@@ -1153,7 +1152,7 @@ public class MainFragment extends Fragment
   public void reauthenticateSmb() {
     if (mainFragmentViewModel.getSmbPath() != null) {
       try {
-        getMainActivity()
+        requireMainActivity()
             .runOnUiThread(
                 () -> {
                   int i;
@@ -1162,7 +1161,7 @@ public class MainFragment extends Fragment
                           DataUtils.getInstance()
                               .containsServer(mainFragmentViewModel.getSmbPath()))
                       != -1) {
-                    getMainActivity()
+                    requireMainActivity()
                         .showSMBDialog(
                             DataUtils.getInstance().getServers().get(i)[0],
                             mainFragmentViewModel.getSmbPath(),
@@ -1183,7 +1182,7 @@ public class MainFragment extends Fragment
     HybridFile currentFile =
         new HybridFile(mainFragmentViewModel.getOpenMode(), mainFragmentViewModel.getCurrentPath());
     if (!mainFragmentViewModel.getResults()) {
-      if (getMainActivity().getListItemSelected()) {
+      if (requireMainActivity().getListItemSelected()) {
         adapter.toggleChecked(false);
       } else {
         if (mainFragmentViewModel.getOpenMode() == OpenMode.SMB) {
@@ -1201,14 +1200,14 @@ public class MainFragment extends Fragment
           } else loadlist(mainFragmentViewModel.getHome(), false, OpenMode.FILE, false);
         } else if (("/").equals(mainFragmentViewModel.getCurrentPath())
             || mainFragmentViewModel.getIsOnCloudRoot()) {
-          getMainActivity().exit();
+          requireMainActivity().exit();
         } else if (FileUtils.canGoBack(getContext(), currentFile)) {
           loadlist(
               currentFile.getParent(getContext()),
               true,
               mainFragmentViewModel.getOpenMode(),
               false);
-        } else getMainActivity().exit();
+        } else requireMainActivity().exit();
       }
     } else {
       loadlist(currentFile.getPath(), true, mainFragmentViewModel.getOpenMode(), false);
@@ -1227,7 +1226,7 @@ public class MainFragment extends Fragment
   @Override
   public void onResume() {
     super.onResume();
-    (getActivity())
+    (requireActivity())
         .registerReceiver(receiver2, new IntentFilter(MainActivity.KEY_INTENT_LOAD_LIST));
 
     resumeDecryptOperations();
@@ -1237,13 +1236,13 @@ public class MainFragment extends Fragment
   @Override
   public void onPause() {
     super.onPause();
-    (getActivity()).unregisterReceiver(receiver2);
+    (requireActivity()).unregisterReceiver(receiver2);
     if (customFileObserver != null) {
       customFileObserver.stopWatching();
     }
 
     if (SDK_INT >= JELLY_BEAN_MR2) {
-      (getActivity()).unregisterReceiver(decryptReceiver);
+      (requireActivity()).unregisterReceiver(decryptReceiver);
     }
   }
 
@@ -1276,7 +1275,7 @@ public class MainFragment extends Fragment
 
         LayoutElementParcelable layoutElement =
             new LayoutElementParcelable(
-                getContext(),
+                requireContext(),
                 name,
                 aMFilePathBuilder.build().toString(),
                 "",
@@ -1296,7 +1295,7 @@ public class MainFragment extends Fragment
         mainFragmentViewModel.setFileCount(mainFragmentViewModel.getFileCount() + 1);
         LayoutElementParcelable layoutElement =
             new LayoutElementParcelable(
-                getContext(),
+                requireContext(),
                 name,
                 aMFile.getPath(),
                 "",
@@ -1326,7 +1325,7 @@ public class MainFragment extends Fragment
     if (hybridFileParcelable.isDirectory()) {
       LayoutElementParcelable layoutElement =
           new LayoutElementParcelable(
-              getContext(),
+              requireContext(),
               hybridFileParcelable.getPath(),
               hybridFileParcelable.getPermission(),
               hybridFileParcelable.getLink(),
@@ -1383,7 +1382,7 @@ public class MainFragment extends Fragment
       File f1 = new File(path + "/" + ".nomedia");
       if (!f1.exists()) {
         try {
-          getMainActivity()
+          requireMainActivity()
               .mainActivityHelper
               .mkFile(
                   new HybridFile(OpenMode.FILE, path),
@@ -1393,16 +1392,17 @@ public class MainFragment extends Fragment
           LOG.warn("failure when hiding file", e);
         }
       }
-      FileUtils.scanFile(getActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});
+      FileUtils.scanFile(
+          requireMainActivity(), new HybridFile[] {new HybridFile(OpenMode.FILE, path)});
     }
   }
 
   public void addShortcut(LayoutElementParcelable path) {
     // Adding shortcut for MainActivity
     // on Home screen
-    final Context ctx = getContext();
+    final Context ctx = requireContext();
 
-    if (!ShortcutManagerCompat.isRequestPinShortcutSupported(ctx)) {
+    if (!ShortcutManagerCompat.isRequestPinShortcutSupported(requireContext())) {
       Toast.makeText(
               getActivity(),
               getString(R.string.add_shortcut_not_supported_by_launcher),
@@ -1419,7 +1419,7 @@ public class MainFragment extends Fragment
     // Using file path as shortcut id.
     ShortcutInfoCompat info =
         new ShortcutInfoCompat.Builder(ctx, path.desc)
-            .setActivity(getMainActivity().getComponentName())
+            .setActivity(requireMainActivity().getComponentName())
             .setIcon(IconCompat.createWithResource(ctx, R.mipmap.ic_launcher))
             .setIntent(shortcutIntent)
             .setLongLabel(path.desc)
@@ -1431,8 +1431,8 @@ public class MainFragment extends Fragment
 
   // This method is used to implement the modification for the pre Searching
   public void onSearchPreExecute(String query) {
-    getMainActivity().getAppbar().getBottomBar().setPathText("");
-    getMainActivity()
+    requireMainActivity().getAppbar().getBottomBar().setPathText("");
+    requireMainActivity()
         .getAppbar()
         .getBottomBar()
         .setFullPathText(getString(R.string.searching, query));
@@ -1454,19 +1454,19 @@ public class MainFragment extends Fragment
 
     // adding new value to LIST_ELEMENTS
     @Nullable LayoutElementParcelable layoutElementAdded = addTo(hybridFileParcelable);
-    if (!getMainActivity()
+    if (!requireMainActivity()
         .getAppbar()
         .getBottomBar()
         .getFullPathText()
         .contains(getString(R.string.searching))) {
-      getMainActivity()
+      requireMainActivity()
           .getAppbar()
           .getBottomBar()
           .setFullPathText(getString(R.string.searching, query));
     }
     if (!mainFragmentViewModel.getResults()) {
       reloadListElements(false, true, !mainFragmentViewModel.isList());
-      getMainActivity().getAppbar().getBottomBar().setPathText("");
+      requireMainActivity().getAppbar().getBottomBar().setPathText("");
     } else if (layoutElementAdded != null) {
       adapter.addItem(layoutElementAdded);
     }
@@ -1474,7 +1474,7 @@ public class MainFragment extends Fragment
   }
 
   public void onSearchCompleted(final String query) {
-    final ArrayList<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
+    final List<LayoutElementParcelable> elements = mainFragmentViewModel.getListElements();
     if (!mainFragmentViewModel.getResults()) {
       // no results were found
       mainFragmentViewModel.getListElements().clear();
@@ -1506,7 +1506,7 @@ public class MainFragment extends Fragment
   }
 
   @Nullable
-  public ArrayList<LayoutElementParcelable> getElementsList() {
+  public List<LayoutElementParcelable> getElementsList() {
     return mainFragmentViewModel.getListElements();
   }
 
@@ -1577,7 +1577,7 @@ public class MainFragment extends Fragment
   }
 
   private boolean getBoolean(String key) {
-    return getMainActivity().getBoolean(key);
+    return requireMainActivity().getBoolean(key);
   }
 
   @Override
@@ -1638,10 +1638,10 @@ public class MainFragment extends Fragment
       int[] location = new int[2];
       viewHolder.baseItemView.getLocationOnScreen(location);
       LOG.info("Current x and y " + location[0] + " " + location[1]);
-      if (location[1] < getMainActivity().getAppbar().getAppbarLayout().getHeight()) {
+      if (location[1] < requireMainActivity().getAppbar().getAppbarLayout().getHeight()) {
         listView.scrollToPosition(Math.max(viewHolder.getAdapterPosition() - 5, 0));
       } else if (location[1] + viewHolder.baseItemView.getHeight()
-          > getContext().getResources().getDisplayMetrics().heightPixels) {
+          > requireContext().getResources().getDisplayMetrics().heightPixels) {
         listView.scrollToPosition(
             Math.min(viewHolder.getAdapterPosition() + 5, adapter.getItemCount() - 1));
       }

@@ -30,6 +30,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedList;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,6 +42,7 @@ import com.amaze.filemanager.database.SortHandler;
 import com.amaze.filemanager.database.UtilsHandler;
 import com.amaze.filemanager.fileoperations.exceptions.CloudPluginException;
 import com.amaze.filemanager.fileoperations.filesystem.OpenMode;
+import com.amaze.filemanager.filesystem.FileProperties;
 import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.HybridFileParcelable;
 import com.amaze.filemanager.filesystem.RootHelper;
@@ -53,6 +55,7 @@ import com.amaze.filemanager.ui.fragments.CloudSheetFragment;
 import com.amaze.filemanager.ui.fragments.MainFragment;
 import com.amaze.filemanager.ui.fragments.data.MainFragmentViewModel;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.OnAsyncTaskFinished;
 import com.amaze.filemanager.utils.OnFileFound;
@@ -60,6 +63,9 @@ import com.cloudrail.si.interfaces.CloudStorage;
 
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -74,9 +80,10 @@ import androidx.core.util.Pair;
 import jcifs.smb.SmbAuthException;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.collections.CollectionsKt;
 
 public class LoadFilesListTask
-    extends AsyncTask<Void, Void, Pair<OpenMode, ArrayList<LayoutElementParcelable>>> {
+    extends AsyncTask<Void, Void, Pair<OpenMode, List<LayoutElementParcelable>>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(LoadFilesListTask.class);
 
@@ -86,7 +93,7 @@ public class LoadFilesListTask
   private OpenMode openmode;
   private boolean showHiddenFiles, showThumbs;
   private DataUtils dataUtils = DataUtils.getInstance();
-  private OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> listener;
+  private OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> listener;
   private boolean forceReload;
 
   public LoadFilesListTask(
@@ -97,7 +104,7 @@ public class LoadFilesListTask
       boolean showThumbs,
       boolean showHiddenFiles,
       boolean forceReload,
-      OnAsyncTaskFinished<Pair<OpenMode, ArrayList<LayoutElementParcelable>>> l) {
+      OnAsyncTaskFinished<Pair<OpenMode, List<LayoutElementParcelable>>> l) {
     this.path = path;
     this.mainFragmentReference = new WeakReference<>(mainFragment);
     this.openmode = openmode;
@@ -109,7 +116,8 @@ public class LoadFilesListTask
   }
 
   @Override
-  protected @Nullable Pair<OpenMode, ArrayList<LayoutElementParcelable>> doInBackground(Void... p) {
+  @SuppressWarnings({"PMD.NPathComplexity", "ComplexMethod", "LongMethod"})
+  protected @Nullable Pair<OpenMode, List<LayoutElementParcelable>> doInBackground(Void... p) {
     final MainFragment mainFragment = this.mainFragmentReference.get();
     final Context context = this.context.get();
 
@@ -139,7 +147,7 @@ public class LoadFilesListTask
 
     mainFragmentViewModel.setFolderCount(0);
     mainFragmentViewModel.setFileCount(0);
-    final ArrayList<LayoutElementParcelable> list;
+    final List<LayoutElementParcelable> list;
 
     switch (openmode) {
       case SMB:
@@ -149,7 +157,7 @@ public class LoadFilesListTask
         if (!hFile.getPath().endsWith("/")) {
           hFile.setPath(hFile.getPath() + "/");
         }
-        ArrayList<LayoutElementParcelable> smbCache = mainActivityViewModel.getFromListCache(path);
+        List<LayoutElementParcelable> smbCache = mainActivityViewModel.getFromListCache(path);
         openmode = OpenMode.SMB;
         if (smbCache != null && !forceReload) {
           list = smbCache;
@@ -173,7 +181,7 @@ public class LoadFilesListTask
         break;
       case SFTP:
         HybridFile ftpHFile = new HybridFile(openmode, path);
-        ArrayList<LayoutElementParcelable> sftpCache = mainActivityViewModel.getFromListCache(path);
+        List<LayoutElementParcelable> sftpCache = mainActivityViewModel.getFromListCache(path);
         if (sftpCache != null && !forceReload) {
           list = sftpCache;
         } else {
@@ -207,7 +215,7 @@ public class LoadFilesListTask
         openmode = OpenMode.OTG;
         break;
       case DOCUMENT_FILE:
-        ArrayList<LayoutElementParcelable> cache = mainActivityViewModel.getFromListCache(path);
+        List<LayoutElementParcelable> cache = mainActivityViewModel.getFromListCache(path);
         if (cache != null && !forceReload) {
           list = cache;
         } else {
@@ -225,8 +233,7 @@ public class LoadFilesListTask
       case BOX:
       case GDRIVE:
       case ONEDRIVE:
-        ArrayList<LayoutElementParcelable> cloudCache =
-            mainActivityViewModel.getFromListCache(path);
+        List<LayoutElementParcelable> cloudCache = mainActivityViewModel.getFromListCache(path);
         if (cloudCache != null && !forceReload) {
           list = cloudCache;
         } else {
@@ -250,10 +257,12 @@ public class LoadFilesListTask
           }
         }
         break;
+      case ANDROID_DATA:
+        list = listAppDataDirectories(path);
+        break;
       default:
         // we're neither in OTG not in SMB, load the list based on root/general filesystem
-        ArrayList<LayoutElementParcelable> localCache =
-            mainActivityViewModel.getFromListCache(path);
+        List<LayoutElementParcelable> localCache = mainActivityViewModel.getFromListCache(path);
         openmode =
             ListFilesCommand.INSTANCE.getOpenMode(
                 path, mainFragment.getMainActivity().isRootExplorer());
@@ -324,13 +333,13 @@ public class LoadFilesListTask
   }
 
   @Override
-  protected void onPostExecute(@Nullable Pair<OpenMode, ArrayList<LayoutElementParcelable>> list) {
+  protected void onPostExecute(@Nullable Pair<OpenMode, List<LayoutElementParcelable>> list) {
     listener.onAsyncTaskFinished(list);
   }
 
-  private ArrayList<LayoutElementParcelable> getCachedMediaList(
+  private List<LayoutElementParcelable> getCachedMediaList(
       MainActivityViewModel mainActivityViewModel) throws IllegalStateException {
-    ArrayList<LayoutElementParcelable> list;
+    List<LayoutElementParcelable> list;
     int mediaType = Integer.parseInt(path);
     if (5 == mediaType
         || 6 == mediaType
@@ -633,6 +642,41 @@ public class LoadFilesListTask
     }
     cursor.close();
     return recentFiles;
+  }
+
+  private @NonNull List<LayoutElementParcelable> listAppDataDirectories(@NonNull String basePath) {
+    if (!GenericExtKt.containsPath(FileProperties.ANDROID_DEVICE_DATA_DIRS, basePath)) {
+      throw new IllegalArgumentException("Invalid base path: [" + basePath + "]");
+    }
+    Context ctx = context.get();
+    @Nullable PackageManager pm = ctx != null ? ctx.getPackageManager() : null;
+    List<LayoutElementParcelable> retval = new ArrayList<>();
+    if (pm != null) {
+      Intent intent = new Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_LAUNCHER);
+      for (ResolveInfo app :
+          CollectionsKt.distinctBy(
+              pm.queryIntentActivities(intent, 0),
+              resolveInfo -> resolveInfo.activityInfo.packageName)) {
+        File dir = new File(new File(basePath), app.activityInfo.packageName);
+        if (dir.exists()) {
+          LayoutElementParcelable element =
+              new LayoutElementParcelable(
+                  ctx,
+                  dir.getAbsolutePath(),
+                  "",
+                  "",
+                  Long.toString(dir.length()),
+                  dir.length(),
+                  false,
+                  Long.toString(dir.lastModified()),
+                  true,
+                  false,
+                  OpenMode.ANDROID_DATA);
+          retval.add(element);
+        }
+      }
+    }
+    return retval;
   }
 
   /**
