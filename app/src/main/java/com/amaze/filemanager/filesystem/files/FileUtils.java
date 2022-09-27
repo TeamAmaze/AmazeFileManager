@@ -599,7 +599,6 @@ public class FileUtils {
   /** Method determines if there is something to go back to */
   public static boolean canGoBack(Context context, HybridFile currentFile) {
     switch (currentFile.getMode()) {
-
         // we're on main thread and can't list the cloud files
       case DROPBOX:
       case BOX:

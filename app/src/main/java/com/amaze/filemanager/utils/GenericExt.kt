@@ -84,6 +84,15 @@ fun ByteArray.toHex(separatorStr: String = ""): String =
         "%02x".format(eachByte)
     }
 
+/**
+ * Test a [List] for given path. Assumed paths in the list are not ending with /, so check for
+ * both ended with or not ended with / with the given path parameter.
+ */
+fun List<*>.containsPath(path: String): Boolean {
+    return this.contains(path) ||
+        (path.endsWith('/') && this.contains(path.substringBeforeLast('/')))
+}
+
 interface Function<T, R> {
     fun apply(t: T): R
 }
