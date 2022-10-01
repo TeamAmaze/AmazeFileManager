@@ -34,6 +34,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.annotation.Config;
 
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.asynchronous.management.ServiceWatcherUtil;
 import com.amaze.filemanager.fileoperations.utils.UpdatePosition;
 import com.amaze.filemanager.filesystem.compressed.extractcontents.Extractor;
@@ -130,11 +131,13 @@ public class CompressedHelperTest {
         CompressedHelper.getExtractorInstance(
             context, file, "/test2", emptyUpdateListener, updatePosition);
     assertEquals(result.getClass(), TarGzExtractor.class);
-    file = new File("/test/test.rar"); // .rar used by RarExtractor
-    result =
-        CompressedHelper.getExtractorInstance(
-            context, file, "/test2", emptyUpdateListener, updatePosition);
-    assertEquals(result.getClass(), RarExtractor.class);
+    if (BuildConfig.FLAVOR == "play") {
+      file = new File("/test/test.rar"); // .rar used by RarExtractor
+      result =
+          CompressedHelper.getExtractorInstance(
+              context, file, "/test2", emptyUpdateListener, updatePosition);
+      assertEquals(result.getClass(), RarExtractor.class);
+    }
     file = new File("/test/test.tar.bz2"); // .rar used by RarExtractor
     result =
         CompressedHelper.getExtractorInstance(
@@ -186,9 +189,11 @@ public class CompressedHelperTest {
     file = new File("/test/test.tgz"); // .tar.gz used by GzipDecompressor
     result = CompressedHelper.getCompressorInstance(context, file);
     assertEquals(result.getClass(), TarGzDecompressor.class);
-    file = new File("/test/test.rar"); // .rar used by RarDecompressor
-    result = CompressedHelper.getCompressorInstance(context, file);
-    assertEquals(result.getClass(), RarDecompressor.class);
+    if (BuildConfig.FLAVOR == "play") {
+      file = new File("/test/test.rar"); // .rar used by RarDecompressor
+      result = CompressedHelper.getCompressorInstance(context, file);
+      assertEquals(result.getClass(), RarDecompressor.class);
+    }
     file = new File("/test/test.tar.bz2"); // .tar.bz2 used by TarBzip2Decompressor
     result = CompressedHelper.getCompressorInstance(context, file);
     assertEquals(result.getClass(), TarBzip2Decompressor.class);

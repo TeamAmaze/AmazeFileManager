@@ -119,6 +119,10 @@ class UtilitiesDatabaseMigrationTest {
                 "VALUES ('test', 'smb://user:$password1@127.0.0.1/user')"
         )
         db.execSQL(
+            "INSERT INTO $TABLE_SMB ($COLUMN_NAME, $COLUMN_PATH) " +
+                "VALUES ('test anonymous', 'smb://127.0.0.1/Public')"
+        )
+        db.execSQL(
             "INSERT INTO $TABLE_SFTP ($COLUMN_NAME, $COLUMN_PATH, $COLUMN_HOST_PUBKEY) " +
                 "VALUES ('test password', 'ssh://user:$password2@10.0.0.1', '12345678')"
         )
@@ -139,14 +143,25 @@ class UtilitiesDatabaseMigrationTest {
             .allowMainThreadQueries()
             .build()
         utilitiesDatabase.openHelper.writableDatabase
-        val smbEntry = utilitiesDatabase.smbEntryDao().list().blockingGet().first()
-        assertEquals(
-            "smb://user:passw0rd@127.0.0.1/user",
-            SmbUtil.getSmbDecryptedPath(
-                InstrumentationRegistry.getInstrumentation().targetContext,
-                smbEntry.path
+        val smbEntries = utilitiesDatabase.smbEntryDao().list().blockingGet()
+        smbEntries.find { it.name == "test" }?.run {
+            assertEquals(
+                "smb://user:passw0rd@127.0.0.1/user",
+                SmbUtil.getSmbDecryptedPath(
+                    InstrumentationRegistry.getInstrumentation().targetContext,
+                    this.path
+                )
             )
-        )
+        }
+        smbEntries.find { it.name == "test anonymous" }?.run {
+            assertEquals(
+                "smb://127.0.0.1/Public",
+                SmbUtil.getSmbDecryptedPath(
+                    InstrumentationRegistry.getInstrumentation().targetContext,
+                    this.path
+                )
+            )
+        }
         val sftpEntries = utilitiesDatabase.sftpEntryDao().list().blockingGet()
         sftpEntries.find { it.name == "test password" }?.run {
             assertEquals(

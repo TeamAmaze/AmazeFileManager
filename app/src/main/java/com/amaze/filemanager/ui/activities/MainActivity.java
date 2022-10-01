@@ -2016,6 +2016,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void addConnection(
       boolean edit,
       @NonNull final String name,
@@ -2026,19 +2027,25 @@ public class MainActivity extends PermissionsActivity
     String[] s = new String[] {name, path};
     if (!edit) {
       if ((dataUtils.containsServer(path)) == -1) {
-        dataUtils.addServer(s);
-        drawer.refreshDrawer();
-
-        utilsHandler.saveToDatabase(
-            new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
-
-        // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-        executeWithMainFragment(
-            mainFragment -> {
-              mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
-              return null;
-            },
-            true);
+        Completable.fromRunnable(
+                () -> {
+                  utilsHandler.saveToDatabase(
+                      new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
+                })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                () -> {
+                  dataUtils.addServer(s);
+                  drawer.refreshDrawer();
+                  // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
+                  executeWithMainFragment(
+                      mainFragment -> {
+                        mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
+                        return null;
+                      },
+                      true);
+                });
       } else {
         Snackbar.make(
                 findViewById(R.id.navigation),
@@ -2066,42 +2073,48 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void deleteConnection(final String name, final String path) {
     int i = dataUtils.containsServer(new String[] {name, path});
     if (i != -1) {
       dataUtils.removeServer(i);
-      Flowable.fromCallable(
+      Completable.fromCallable(
               () -> {
                 utilsHandler.removeFromDatabase(
                     new OperationData(UtilsHandler.Operation.SMB, name, path));
                 return true;
               })
           .subscribeOn(Schedulers.io())
-          .subscribe(o -> drawer.refreshDrawer());
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(() -> drawer.refreshDrawer());
     }
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void delete(String title, String path) {
-    Flowable.fromCallable(
+    Completable.fromCallable(
             () -> {
               utilsHandler.removeFromDatabase(
                   new OperationData(UtilsHandler.Operation.BOOKMARKS, title, path));
               return true;
             })
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> drawer.refreshDrawer());
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> drawer.refreshDrawer());
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void modify(String oldpath, String oldname, String newPath, String newname) {
-    Flowable.fromCallable(
+    Completable.fromCallable(
             () -> {
               utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
               return true;
             })
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> drawer.refreshDrawer());
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> drawer.refreshDrawer());
   }
 
   @Override
