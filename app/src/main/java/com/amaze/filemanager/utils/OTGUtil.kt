@@ -112,7 +112,7 @@ object OTGUtil {
             if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
-            rootUri = rootUri?.findFile(part)
+            rootUri = rootUri?.findFile(part) ?: rootUri
         }
 
         if (rootUri == null) {
@@ -180,9 +180,9 @@ object OTGUtil {
             if (part == "otg:" || part == "" || part == "content:") continue
 
             // iterating through the required path to find the end point
-            var nextDocument = retval!!.findFile(part)
+            var nextDocument = retval?.findFile(part) ?: retval
             if (createRecursive && (nextDocument == null || !nextDocument.exists())) {
-                nextDocument = retval.createFile(part.substring(part.lastIndexOf(".")), part)
+                nextDocument = retval?.createFile(part.substring(part.lastIndexOf(".")), part)
             }
             retval = nextDocument
         }

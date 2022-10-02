@@ -582,7 +582,7 @@ public class MainFragment extends Fragment
     String actualPath = FileProperties.remapPathForApi30OrAbove(providedPath, false);
 
     if (!providedPath.equals(actualPath) && SDK_INT >= Q) {
-      openMode = loadPathInQ(actualPath, providedPath, providedOpenMode);
+      openMode = loadPathInQ(actualPath, providedPath);
     }
     // Monkeypatch :( to fix problems with unexpected non content URI path while openMode is still
     // OpenMode.DOCUMENT_FILE
@@ -615,7 +615,7 @@ public class MainFragment extends Fragment
   }
 
   @RequiresApi(api = Q)
-  private OpenMode loadPathInQ(String actualPath, String providedPath, OpenMode providedMode) {
+  private OpenMode loadPathInQ(String actualPath, String providedPath) {
 
     boolean hasAccessToSpecialFolder = false;
     List<UriPermission> uriPermissions =
@@ -651,7 +651,10 @@ public class MainFragment extends Fragment
                 d.dismiss();
               });
       d.show();
-      return providedMode;
+      // At this point LoadFilesListTask will be triggered.
+      // No harm even give OpenMode.FILE here, it loads blank when it doesn't; and after the
+      // UriPermission is granted loadlist will be called again
+      return OpenMode.FILE;
     } else {
       return OpenMode.DOCUMENT_FILE;
     }
