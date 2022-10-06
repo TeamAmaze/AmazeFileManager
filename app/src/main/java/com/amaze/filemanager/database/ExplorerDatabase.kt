@@ -71,7 +71,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
 
     companion object {
         private const val DATABASE_NAME = "explorer.db"
-        const val DATABASE_VERSION = 9
+        const val DATABASE_VERSION = 10
         const val TABLE_TAB = "tab"
         const val TABLE_CLOUD_PERSIST = "cloud"
         const val TABLE_ENCRYPTED = "encrypted"
@@ -280,7 +280,21 @@ abstract class ExplorerDatabase : RoomDatabase() {
                 )
             }
         }
-        internal val MIGRATION_8_9: Migration = object : Migration(8, DATABASE_VERSION) {
+        internal val MIGRATION_8_9: Migration = object : Migration(8, 9) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "UPDATE " +
+                        TABLE_CLOUD_PERSIST +
+                        " SET " +
+                        COLUMN_CLOUD_SERVICE +
+                        " = " +
+                        COLUMN_CLOUD_SERVICE +
+                        "+1"
+                )
+            }
+        }
+
+        internal val MIGRATION_9_10: Migration = object : Migration(9, DATABASE_VERSION) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "UPDATE " +
@@ -314,6 +328,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
                 .addMigrations(MIGRATION_6_7)
                 .addMigrations(MIGRATION_7_8)
                 .addMigrations(MIGRATION_8_9)
+                .addMigrations(MIGRATION_9_10)
                 .allowMainThreadQueries()
                 .build()
         }
