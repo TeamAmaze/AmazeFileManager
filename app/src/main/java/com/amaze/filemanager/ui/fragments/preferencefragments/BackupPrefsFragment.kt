@@ -20,7 +20,9 @@
 
 package com.amaze.filemanager.ui.fragments.preferencefragments
 
+import android.app.Activity
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -29,21 +31,22 @@ import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
+import com.amaze.filemanager.TagsHelper
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.google.gson.Gson
-import java.io.File
-import java.io.FileWriter
-import java.io.IOException
+import com.google.gson.reflect.TypeToken
+import java.io.*
 
 class BackupPrefsFragment : BasePrefsFragment() {
 
-    private val TAG: String = BasePrefsFragment::class.java.simpleName
+    private val TAG: String = TagsHelper.getTag(BasePrefsFragment::class.java)
+    private val IMPORT_BACKUP_FILE: Int = 2
 
     override val title = R.string.backup
 
     private val onExportPrefClick = OnPreferenceClickListener {
 
-        val map: Map<*, *> = PreferenceManager.getDefaultSharedPreferences(getActivity()).all
+        val map: Map<String?, *> = PreferenceManager.getDefaultSharedPreferences(getActivity()).all
 
         val gsonString: String = Gson().toJson(map)
 
@@ -55,7 +58,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
             fileWriter.append(gsonString)
 
-            Log.e(TAG, "wrote export to :${file.absolutePath}")
+            Log.e(TAG, "wrote export to: ${file.absolutePath}")
 
             fileWriter.flush()
             fileWriter.close()
@@ -64,8 +67,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
                 context,
                 getString(R.string.select_save_location),
                 Toast.LENGTH_SHORT
-            )
-                .show()
+            ).show()
 
             val intent = Intent(context, MainActivity::class.java)
 
@@ -85,7 +87,81 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
     private val onImportPrefClick = OnPreferenceClickListener {
 
+        var intent = Intent(context, MainActivity::class.java)
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.type = "file/json"
+        intent = Intent.createChooser(intent, "Choose backup file")
+        startActivityForResult(intent, IMPORT_BACKUP_FILE)
+
         true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (requestCode == IMPORT_BACKUP_FILE && resultCode == Activity.RESULT_OK) {
+            if (data != null && data.data != null) {
+                val uri = data.data
+
+                Log.e(TAG, "read import file: $uri")
+
+                try {
+                    val inputStream = uri?.let {
+                        context?.contentResolver?.openInputStream(it)
+                    }
+
+                    val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+                    val stringBuilder = StringBuilder()
+
+                    var line: String?
+                    while (bufferedReader.readLine().also { line = it } != null)
+                        stringBuilder.append(line).append('\n')
+
+                    val type = object : TypeToken<Map<String?, Any>>() {}.type
+
+                    val map: Map<String?, Any> = Gson().fromJson(
+                        stringBuilder.toString(),
+                        type
+                    )
+
+                    val editor: SharedPreferences.Editor? =
+                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+
+                    for ((key, value) in map) try {
+                        if (value is Boolean) editor?.putBoolean(key, value)
+                        if (value is Float) editor?.putFloat(key, value)
+                        if (value is Int) editor?.putInt(key, value)
+                        if (value is Long) editor?.putLong(key, value)
+                        if (value is String) editor?.putString(key, value)
+                        if (value is Set<*>) editor?.putStringSet(key, value as Set<String>)
+                    } catch (e: java.lang.ClassCastException) {
+                        e.printStackTrace()
+                    }
+
+                    editor?.apply()
+
+                    Toast.makeText(
+                        context,
+                        getString(R.string.importing_completed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+
+                    startActivity(
+                        Intent(
+                            context,
+                            MainActivity::class.java
+                        )
+                    ) // restart Amaze for changes to take effect
+                } catch (e: IOException) {
+                    Toast.makeText(
+                        context,
+                        getString(R.string.importing_failed),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                    e.printStackTrace()
+                }
+            }
+        }
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {

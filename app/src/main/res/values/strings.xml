@@ -797,5 +797,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="unavailable">Unavailable</string>
 
     <string name="exporting_failed">Exporting failed</string>
+    <string name="importing_failed">Importing failed</string>
+    <string name="importing_completed">Importing completed</string>
 </resources>
 
