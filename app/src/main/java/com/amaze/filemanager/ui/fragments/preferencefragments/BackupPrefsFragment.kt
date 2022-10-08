@@ -20,15 +20,65 @@
 
 package com.amaze.filemanager.ui.fragments.preferencefragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.preference.Preference
 import androidx.preference.Preference.OnPreferenceClickListener
+import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.google.gson.Gson
+import java.io.File
+import java.io.FileWriter
+import java.io.IOException
 
 class BackupPrefsFragment : BasePrefsFragment() {
+
+    private val TAG: String = BasePrefsFragment::class.java.simpleName
+
     override val title = R.string.backup
 
     private val onExportPrefClick = OnPreferenceClickListener {
+
+        val map: Map<*, *> = PreferenceManager.getDefaultSharedPreferences(getActivity()).all
+
+        val gsonString: String = Gson().toJson(map)
+
+        try {
+
+            val file = File(context?.cacheDir?.absolutePath + File.separator + "amaze_backup.json")
+
+            val fileWriter = FileWriter(file)
+
+            fileWriter.append(gsonString)
+
+            Log.e(TAG, "wrote export to :${file.absolutePath}")
+
+            fileWriter.flush()
+            fileWriter.close()
+
+            Toast.makeText(
+                context,
+                getString(R.string.select_save_location),
+                Toast.LENGTH_SHORT
+            )
+                .show()
+
+            val intent = Intent(context, MainActivity::class.java)
+
+            intent.action = Intent.ACTION_SEND
+            intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+
+            intent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+
+            startActivity(intent)
+        } catch (e: IOException) {
+            Toast.makeText(context, getString(R.string.exporting_failed), Toast.LENGTH_SHORT).show()
+            e.printStackTrace()
+        }
 
         true
     }

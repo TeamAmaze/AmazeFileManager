@@ -242,6 +242,9 @@ dependencies {
     implementation "ch.acra:acra-core:5.7.0"
     runtimeOnly 'org.slf4j:slf4j-api:1.7.32'
     runtimeOnly "com.github.tony19:logback-android:$logbackAndroidVersion"
+
+    implementation 'com.google.code.gson:gson:2.9.1'
+
 }
 
 configurations.all {
