@@ -24,6 +24,7 @@ import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
@@ -87,11 +88,27 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
     private val onImportPrefClick = OnPreferenceClickListener {
 
-        var intent = Intent(context, MainActivity::class.java)
-        intent.action = Intent.ACTION_GET_CONTENT
-        intent.type = "file/json"
-        intent = Intent.createChooser(intent, "Choose backup file")
-        startActivityForResult(intent, IMPORT_BACKUP_FILE)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            startActivityForResult(
+                Intent(Intent.ACTION_OPEN_DOCUMENT)
+                    .addCategory(Intent.CATEGORY_OPENABLE)
+                    .setType("*/*")
+                    .putExtra(
+                        Intent.EXTRA_MIME_TYPES,
+                        arrayOf("application/json")
+                    ),
+                IMPORT_BACKUP_FILE
+            )
+        } else {
+            startActivityForResult(
+                Intent.createChooser(
+                    Intent(Intent.ACTION_GET_CONTENT)
+                        .setType("application/json"),
+                    "Choose backup file"
+                ),
+                IMPORT_BACKUP_FILE
+            )
+        }
 
         true
     }
@@ -99,68 +116,71 @@ class BackupPrefsFragment : BasePrefsFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if (requestCode == IMPORT_BACKUP_FILE && resultCode == Activity.RESULT_OK) {
-            if (data != null && data.data != null) {
-                val uri = data.data
+        if (requestCode == IMPORT_BACKUP_FILE &&
+            resultCode == Activity.RESULT_OK &&
+            data != null && data.data != null
+        ) {
+            val uri = data.data
 
-                Log.e(TAG, "read import file: $uri")
+            Log.e(TAG, "read import file: $uri")
 
-                try {
-                    val inputStream = uri?.let {
-                        context?.contentResolver?.openInputStream(it)
-                    }
+            try {
+                val inputStream = uri?.let {
+                    context?.contentResolver?.openInputStream(it)
+                }
 
-                    val bufferedReader = BufferedReader(InputStreamReader(inputStream))
-                    val stringBuilder = StringBuilder()
+                val bufferedReader = BufferedReader(InputStreamReader(inputStream))
+                val stringBuilder = StringBuilder()
 
-                    var line: String?
-                    while (bufferedReader.readLine().also { line = it } != null)
-                        stringBuilder.append(line).append('\n')
+                var line: String?
+                while (bufferedReader.readLine().also { line = it } != null)
+                    stringBuilder.append(line).append('\n')
 
-                    val type = object : TypeToken<Map<String?, Any>>() {}.type
+                val type = object : TypeToken<Map<String?, Any>>() {}.type
 
-                    val map: Map<String?, Any> = Gson().fromJson(
-                        stringBuilder.toString(),
-                        type
-                    )
+                val map: Map<String?, Any> = Gson().fromJson(
+                    stringBuilder.toString(),
+                    type
+                )
 
-                    val editor: SharedPreferences.Editor? =
-                        PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                val editor: SharedPreferences.Editor? =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 
-                    for ((key, value) in map) try {
-                        if (value is Boolean) editor?.putBoolean(key, value)
-                        if (value is Float) editor?.putFloat(key, value)
-                        if (value is Int) editor?.putInt(key, value)
-                        if (value is Long) editor?.putLong(key, value)
-                        if (value is String) editor?.putString(key, value)
-                        if (value is Set<*>) editor?.putStringSet(key, value as Set<String>)
-                    } catch (e: java.lang.ClassCastException) {
-                        e.printStackTrace()
-                    }
-
-                    editor?.apply()
-
-                    Toast.makeText(
-                        context,
-                        getString(R.string.importing_completed),
-                        Toast.LENGTH_SHORT
-                    ).show()
-
-                    startActivity(
-                        Intent(
-                            context,
-                            MainActivity::class.java
-                        )
-                    ) // restart Amaze for changes to take effect
-                } catch (e: IOException) {
-                    Toast.makeText(
-                        context,
-                        getString(R.string.importing_failed),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                for ((key, value) in map) try {
+                    if (value is Boolean) editor?.putBoolean(key, value)
+                    if (value is Float) editor?.putFloat(key, value)
+                    if (value is Int) editor?.putInt(key, value)
+                    if (value is Long) editor?.putLong(key, value)
+                    if (value is String) editor?.putString(key, value)
+                    if (value is Set<*>) editor?.putStringSet(key, value as Set<String>)
+                } catch (e: java.lang.ClassCastException) {
                     e.printStackTrace()
                 }
+
+                editor?.apply()
+
+                Toast.makeText(
+                    context,
+                    getString(R.string.importing_completed),
+                    Toast.LENGTH_SHORT
+                ).show()
+
+                startActivity(
+                    Intent(
+                        context,
+                        MainActivity::class.java
+                    )
+                ) // restart Amaze for changes to take effect
+            } catch (e: IOException) {
+                Toast.makeText(
+                    context,
+                    getString(R.string.importing_failed),
+                    Toast.LENGTH_SHORT
+                ).show()
+                e.printStackTrace()
             }
+        } else {
+            Toast.makeText(context, getString(R.string.unknown_error), Toast.LENGTH_SHORT).show()
         }
     }
 
