@@ -126,6 +126,7 @@
     <color name="preferenceUi">#f9a825</color>
     <color name="preferenceBehavior">#009688</color>
     <color name="preferenceSecurity">#da4336</color>
+    <color name="preferenceBackup">@color/accent_deep_orange</color>
     <color name="preferenceInfo">#757575</color>
 
     <color name="navy_blue_alt">#262a3e</color>

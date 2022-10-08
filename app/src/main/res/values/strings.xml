@@ -759,6 +759,12 @@ You only need to do this once, until the next time you select a new location for
     <string name="ui_summary">Control what information to show, customize the sidebar, and toggle UI preferences</string>
     <string name="behavior_summary">Modify behaviors such as advanced search and whether to open files as a new task</string>
     <string name="security_summary">Set up password and encryption</string>
+    <string name="backup_summary">Export/Import Amaze settings</string>
+
+    <string name="pref_export">Export</string>
+    <string name="pref_export_summary">Export settings</string>
+    <string name="pref_import">Import</string>
+    <string name="pref_import_summary">Import settings</string>
 
     <string name="quick_desc">Files recently accessed through Amaze</string>
     <string name="recent_desc">Recently created or modified files</string>
