@@ -145,7 +145,7 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testImplementation 'org.jsoup:jsoup:1.11.2'
+    testImplementation "org.jsoup:jsoup:$jsoupVersion"
     testImplementation "androidx.room:room-migration:$roomVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
@@ -157,7 +157,7 @@ dependencies {
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     // androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
-    androidTestImplementation 'commons-net:commons-net:3.6'
+    androidTestImplementation "commons-net:commons-net:$commonsNetVersion"
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     //Detect memory leaks
@@ -240,7 +240,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$androidXCoreVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
-    runtimeOnly 'org.slf4j:slf4j-api:1.7.32'
+    runtimeOnly 'org.slf4j:slf4j-api:1.7.36'
     runtimeOnly "com.github.tony19:logback-android:$logbackAndroidVersion"
 }
 

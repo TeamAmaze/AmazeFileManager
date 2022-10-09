@@ -73,9 +73,15 @@ class X509CertificateUtilTest {
         val verify = X509CertificateUtil.parse(cert)
 
         assertTrue(verify.containsKey(SUBJECT))
-        assertEquals("C=in, O=Team Amaze, CN=test.ftpsd.local", verify[SUBJECT])
+        assertEquals(
+            "C=in,O=Team Amaze,CN=test.ftpsd.local",
+            verify[SUBJECT]
+        )
         assertTrue(verify.containsKey(ISSUER))
-        assertEquals("C=in, O=Team Amaze, CN=test.ftpsd.local", verify[ISSUER])
+        assertEquals(
+            "C=in,O=Team Amaze,CN=test.ftpsd.local",
+            verify[ISSUER]
+        )
         assertTrue(verify.containsKey(SERIAL))
         assertEquals(
             "11:f5:7b:bf:1e:4f:da:f6:b9:e8:0c:e3:49:67:5e:f1:5f:b7:0a:1f",
