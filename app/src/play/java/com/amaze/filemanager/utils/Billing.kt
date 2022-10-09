@@ -18,239 +18,247 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package com.amaze.filemanager.utils;
+package com.amaze.filemanager.utils
 
-import java.util.ArrayList;
-import java.util.List;
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.widget.Toast
+import androidx.recyclerview.widget.RecyclerView
+import com.afollestad.materialdialogs.MaterialDialog
+import com.amaze.filemanager.BuildConfig
+import com.amaze.filemanager.R
+import com.amaze.filemanager.adapters.holders.DonationViewHolder
+import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.databinding.AdapterDonationBinding
+import com.amaze.filemanager.ui.activities.superclasses.BasicActivity
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.BillingClientStateListener
+import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ConsumeResponseListener
+import com.android.billingclient.api.ProductDetails
+import com.android.billingclient.api.Purchase
+import com.android.billingclient.api.PurchasesUpdatedListener
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryProductDetailsParams.Product
+import org.slf4j.LoggerFactory
+import java.util.concurrent.Callable
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+class Billing(private val activity: BasicActivity) :
+    RecyclerView.Adapter<RecyclerView.ViewHolder>(),
+    PurchasesUpdatedListener {
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.amaze.filemanager.BuildConfig;
-import com.amaze.filemanager.R;
-import com.amaze.filemanager.adapters.holders.DonationViewHolder;
-import com.amaze.filemanager.application.AppConfig;
-import com.amaze.filemanager.databinding.AdapterDonationBinding;
-import com.amaze.filemanager.ui.activities.superclasses.BasicActivity;
-import com.android.billingclient.api.BillingClient;
-import com.android.billingclient.api.BillingClientStateListener;
-import com.android.billingclient.api.BillingFlowParams;
-import com.android.billingclient.api.BillingResult;
-import com.android.billingclient.api.ConsumeParams;
-import com.android.billingclient.api.ConsumeResponseListener;
-import com.android.billingclient.api.Purchase;
-import com.android.billingclient.api.PurchasesUpdatedListener;
-import com.android.billingclient.api.SkuDetails;
-import com.android.billingclient.api.SkuDetailsParams;
+    private val LOG = LoggerFactory.getLogger(Billing::class.java)
 
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Toast;
+    // List of predefined IAP products SKU.
+    private val productList: List<Product>
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
+    // List of IAP products query result.
+    private lateinit var productDetails: List<ProductDetails>
 
-public class Billing extends RecyclerView.Adapter<RecyclerView.ViewHolder>
-    implements PurchasesUpdatedListener {
+    // create new donations client
+    private lateinit var billingClient: BillingClient
 
-  private final Logger LOG = LoggerFactory.getLogger(Billing.class);
+    // True if billing service is connected
+    private var isServiceConnected = false
 
-  private BasicActivity activity;
-  private List<String> skuList;
-  private List<SkuDetails> skuDetails;
-
-  // create new donations client
-  private BillingClient billingClient;
-  /** True if billing service is connected now. */
-  private boolean isServiceConnected;
-
-  public Billing(@NonNull BasicActivity activity) {
-    this.activity = activity;
-
-    skuList = new ArrayList<>();
-    skuList.add("donations");
-    skuList.add("donations_2");
-    skuList.add("donations_3");
-    skuList.add("donations_4");
-
-    billingClient =
-        BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases().build();
-    initiatePurchaseFlow();
-  }
-
-  @Override
-  public void onPurchasesUpdated(BillingResult response, @Nullable List<Purchase> purchases) {
-    if (response.getResponseCode() == BillingClient.BillingResponseCode.OK && purchases != null) {
-      for (Purchase purchase : purchases) {
-        ConsumeResponseListener listener =
-            (responseCode1, purchaseToken) -> {
-              // we consume the purchase, so that user can perform purchase again
-              Toast.makeText(activity, R.string.donation_thanks, Toast.LENGTH_LONG).show();
-            };
-        ConsumeParams consumeParams =
-            ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build();
-        billingClient.consumeAsync(consumeParams, listener);
-      }
-    }
-  }
-
-  /** Start a purchase flow */
-  private void initiatePurchaseFlow() {
-    Runnable purchaseFlowRequest =
-        () -> {
-          SkuDetailsParams.Builder params = SkuDetailsParams.newBuilder();
-          params.setSkusList(skuList).setType(BillingClient.SkuType.INAPP);
-          billingClient.querySkuDetailsAsync(
-              params.build(),
-              (responseCode, skuDetailsList) -> {
-                if (skuDetailsList != null && skuDetailsList.size() > 0) {
-                  // Successfully fetched product details
-                  skuDetails = skuDetailsList;
-                  popProductsList(responseCode, skuDetailsList);
-                } else {
-                  AppConfig.toast(activity, R.string.error_fetching_google_play_product_list);
-                  if (BuildConfig.DEBUG) {
-                    LOG.warn(
-                        "Error fetching product list - looks like you are running a DEBUG build.");
-                  }
-                }
-              });
-        };
-
-    executeServiceRequest(purchaseFlowRequest);
-  }
-
-  /**
-   * Got products list from play store, pop their details
-   *
-   * @param response
-   * @param skuDetailsList
-   */
-  private void popProductsList(BillingResult response, List<SkuDetails> skuDetailsList) {
-    if (response.getResponseCode() == BillingClient.BillingResponseCode.OK
-        && skuDetailsList != null) {
-      showPaymentsDialog(activity);
-    }
-  }
-
-  @NonNull
-  @Override
-  public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-    View rootView =
-        AdapterDonationBinding.inflate(LayoutInflater.from(this.activity), parent, false).getRoot();
-    return new DonationViewHolder(rootView);
-  }
-
-  @Override
-  public void onBindViewHolder(@NonNull RecyclerView.ViewHolder holder, int position) {
-    if (holder instanceof DonationViewHolder && skuDetails.size() > 0) {
-      String titleRaw = skuDetails.get(position).getTitle();
-      ((DonationViewHolder) holder)
-          .TITLE.setText(titleRaw.subSequence(0, titleRaw.lastIndexOf("(")));
-      ((DonationViewHolder) holder).SUMMARY.setText(skuDetails.get(position).getDescription());
-      ((DonationViewHolder) holder).PRICE.setText(skuDetails.get(position).getPrice());
-      ((DonationViewHolder) holder)
-          .ROOT_VIEW.setOnClickListener(
-              v -> purchaseProduct.purchaseItem(skuDetails.get(position)));
-    }
-  }
-
-  @Override
-  public int getItemCount() {
-    return skuList.size();
-  }
-
-  private interface PurchaseProduct {
-
-    void purchaseItem(SkuDetails skuDetails);
-
-    void purchaseCancel();
-  }
-
-  private PurchaseProduct purchaseProduct =
-      new PurchaseProduct() {
-        @Override
-        public void purchaseItem(SkuDetails skuDetails) {
-
-          BillingFlowParams billingFlowParams =
-              BillingFlowParams.newBuilder().setSkuDetails(skuDetails).build();
-          billingClient.launchBillingFlow(activity, billingFlowParams);
-        }
-
-        @Override
-        public void purchaseCancel() {
-          destroyBillingInstance();
-        }
-      };
-
-  /**
-   * We executes a connection request to Google Play
-   *
-   * @param runnable
-   */
-  private void executeServiceRequest(Runnable runnable) {
-    if (isServiceConnected) {
-      runnable.run();
-    } else {
-      // If billing service was disconnected, we try to reconnect 1 time.
-      // (feel free to introduce your retry policy here).
-      startServiceConnection(runnable);
-    }
-  }
-
-  /**
-   * Starts a connection to Google Play services
-   *
-   * @param executeOnSuccess
-   */
-  private void startServiceConnection(final Runnable executeOnSuccess) {
-    billingClient.startConnection(
-        new BillingClientStateListener() {
-          @Override
-          public void onBillingSetupFinished(BillingResult billingResponse) {
-            LOG.debug("Setup finished. Response code: " + billingResponse.getResponseCode());
-            if (billingResponse.getResponseCode() == BillingClient.BillingResponseCode.OK) {
-              isServiceConnected = true;
-              if (executeOnSuccess != null) {
-                executeOnSuccess.run();
-              }
+    override fun onPurchasesUpdated(response: BillingResult, purchases: List<Purchase>?) {
+        if (response.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
+            for (purchase in purchases) {
+                val listener =
+                    ConsumeResponseListener { _: BillingResult?, _: String? ->
+                        // we consume the purchase, so that user can perform purchase again
+                        Toast.makeText(activity, R.string.donation_thanks, Toast.LENGTH_LONG).show()
+                    }
+                val consumeParams: ConsumeParams =
+                    ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build()
+                billingClient.consumeAsync(consumeParams, listener)
             }
-          }
-
-          @Override
-          public void onBillingServiceDisconnected() {
-            isServiceConnected = false;
-          }
-        });
-  }
-
-  public void destroyBillingInstance() {
-    if (billingClient != null && billingClient.isReady()) {
-      billingClient.endConnection();
-      billingClient = null;
+        }
     }
-  }
 
-  private void showPaymentsDialog(final BasicActivity context) {
-    /*
+    /** Start a purchase flow  */
+    private fun initiatePurchaseFlow() {
+        val purchaseFlowRequest = Runnable {
+            val params = QueryProductDetailsParams.newBuilder().setProductList(productList)
+
+            billingClient.queryProductDetailsAsync(
+                params.build()
+            ) { responseCode: BillingResult, queryResult: List<ProductDetails> ->
+                if (queryResult.isNotEmpty()) {
+                    // Successfully fetched product details
+                    productDetails = queryResult
+                    popProductsList(responseCode, queryResult)
+                } else {
+                    AppConfig.toast(activity, R.string.error_fetching_google_play_product_list)
+                    if (BuildConfig.DEBUG) {
+                        /* ktlint-disable max-line-length */
+                        LOG.warn(
+                            "Error fetching product list - looks like you are running a DEBUG build."
+                        )
+                        /* ktlint-enable max-line-length */
+                    }
+                }
+            }
+        }
+        executeServiceRequest(purchaseFlowRequest)
+    }
+
+    private fun createProductWith(productId: String) =
+        Product.newBuilder()
+            .setProductId(productId)
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+
+    /**
+     * Got products list from play store, pop their details
+     *
+     * @param response
+     * @param productDetailsQueryResult
+     */
+    private fun popProductsList(
+        response: BillingResult,
+        productDetailsQueryResult: List<ProductDetails>
+    ) {
+        if (response.responseCode == BillingClient.BillingResponseCode.OK &&
+            productDetailsQueryResult.isNotEmpty()
+        ) {
+            showPaymentsDialog(activity)
+        }
+    }
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        val rootView: View = AdapterDonationBinding.inflate(
+            LayoutInflater.from(
+                activity
+            ),
+            parent,
+            false
+        ).root
+        return DonationViewHolder(rootView)
+    }
+
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        if (holder is DonationViewHolder && productDetails.isNotEmpty()) {
+            val titleRaw: String = productDetails[position].title
+            holder.TITLE.text = titleRaw.subSequence(
+                0,
+                titleRaw.lastIndexOf("(")
+            )
+            holder.SUMMARY.text = productDetails[position].description
+            holder.PRICE.text = productDetails[position].oneTimePurchaseOfferDetails?.formattedPrice
+            holder.ROOT_VIEW.setOnClickListener {
+                purchaseProduct.purchaseItem(
+                    productDetails[position]
+                )
+            }
+        }
+    }
+
+    override fun getItemCount(): Int = productList.size
+
+    private interface PurchaseProduct {
+        fun purchaseItem(productDetails: ProductDetails)
+        fun purchaseCancel()
+    }
+
+    private val purchaseProduct: PurchaseProduct = object : PurchaseProduct {
+        override fun purchaseItem(productDetailsArg: ProductDetails) {
+            val billingFlowParams: BillingFlowParams =
+                BillingFlowParams.newBuilder().setProductDetailsParamsList(
+                    listOf(
+                        BillingFlowParams.ProductDetailsParams.newBuilder()
+                            .setProductDetails(productDetailsArg)
+                            .build()
+                    )
+                ).build()
+            billingClient.launchBillingFlow(activity, billingFlowParams)
+        }
+
+        override fun purchaseCancel() {
+            destroyBillingInstance()
+        }
+    }
+
+    init {
+        productList = listOf(
+            createProductWith("donations"),
+            createProductWith("donations_2"),
+            createProductWith("donations_3"),
+            createProductWith("donations_4")
+        )
+        billingClient =
+            BillingClient.newBuilder(activity).setListener(this).enablePendingPurchases().build()
+        initiatePurchaseFlow()
+    }
+
+    /**
+     * We executes a connection request to Google Play
+     *
+     * @param runnable
+     */
+    private fun executeServiceRequest(runnable: Runnable) {
+        if (isServiceConnected) {
+            runnable.run()
+        } else {
+            // If billing service was disconnected, we try to reconnect 1 time.
+            // (feel free to introduce your retry policy here).
+            startServiceConnection(runnable)
+        }
+    }
+
+    /**
+     * Starts a connection to Google Play services
+     *
+     * @param executeOnSuccess
+     */
+    private fun startServiceConnection(executeOnSuccess: Runnable?) {
+        billingClient.startConnection(
+            object : BillingClientStateListener {
+                override fun onBillingSetupFinished(billingResponse: BillingResult) {
+                    LOG.debug("Setup finished. Response code: ${billingResponse.responseCode}")
+                    if (billingResponse.responseCode == BillingClient.BillingResponseCode.OK) {
+                        isServiceConnected = true
+                        executeOnSuccess?.run()
+                    }
+                }
+
+                override fun onBillingServiceDisconnected() {
+                    isServiceConnected = false
+                }
+            }
+        )
+    }
+
+    /**
+     * Drop the [BillingClient] on purchase process cancels.
+     */
+    fun destroyBillingInstance() {
+        if (billingClient.isReady) {
+            billingClient.endConnection()
+        }
+    }
+
+    private fun showPaymentsDialog(context: BasicActivity) {
+        /*
      * As of Billing library 4.0, all callbacks are running on background thread.
      * Need to use AppConfig.runInApplicationThread() for UI interactions
      *
      *
      */
-    AppConfig.getInstance()
-        .runInApplicationThread(
-            () -> {
-              final MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
-              builder.title(R.string.donate);
-              builder.adapter(this, null);
-              builder.theme(context.getAppTheme().getMaterialDialogTheme(context));
-              builder.cancelListener(dialog -> purchaseProduct.purchaseCancel());
-              builder.show();
-              return null;
-            });
-  }
+        AppConfig.getInstance()
+            .runInApplicationThread(
+                Callable {
+                    val builder: MaterialDialog.Builder = MaterialDialog.Builder(context)
+                    builder.title(R.string.donate)
+                    builder.adapter(this, null)
+                    builder.theme(context.appTheme.getMaterialDialogTheme(context))
+                    builder.cancelListener { purchaseProduct.purchaseCancel() }
+                    builder.show()
+                    null
+                }
+            )
+    }
 }
