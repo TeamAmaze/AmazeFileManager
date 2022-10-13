@@ -323,8 +323,12 @@ public class MainActivityHelper {
   }
 
   private void triggerStorageAccessFramework(int requestCode) {
+
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-    mainActivity.startActivityForResult(intent, requestCode);
+
+    if (intent.resolveActivity(mainActivity.getPackageManager()) != null)
+      mainActivity.startActivityForResult(intent, requestCode);
+    else Toast.makeText(mainActivity, R.string.no_app_found, Toast.LENGTH_SHORT).show();
   }
 
   public void rename(

@@ -790,5 +790,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Unavailable</string>
     <string name="cloud_error_fdroid">Amaze Cloud Plugin not supported with F-Droid version. Please use Play Store version of Amaze.</string>
+    <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
 </resources>
 
