@@ -67,6 +67,7 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.leinardi.android.speeddial.SpeedDialView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -322,6 +323,7 @@ public class MainActivityHelper {
     y.show();
   }
 
+  @SuppressLint("InlinedApi")
   private void triggerStorageAccessFramework(int requestCode) {
 
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
