@@ -93,6 +93,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -806,7 +807,13 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               .setOnClickListener(
                   (v) -> {
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+
+                    if (safIntent.resolveActivity(mainActivity.getPackageManager()) != null)
+                      mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+                    else
+                      Toast.makeText(mainActivity, R.string.no_app_found, Toast.LENGTH_SHORT)
+                          .show();
+
                     dialog.dismiss();
                   });
           dialog.show();
