@@ -82,6 +82,8 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -647,7 +649,16 @@ public class MainFragment extends Fragment
       d.getActionButton(DialogAction.POSITIVE)
           .setOnClickListener(
               v -> {
-                handleDocumentUriForRestrictedDirectories.launch(intent);
+                if (intent.resolveActivity(getMainActivity().getPackageManager()) != null) {
+                  handleDocumentUriForRestrictedDirectories.launch(intent);
+                } else {
+                  Snackbar.make(
+                          getMainActivity().findViewById(R.id.drawer_layout),
+                          R.string.no_app_found_intent,
+                          BaseTransientBottomBar.LENGTH_SHORT)
+                      .show();
+                }
+
                 d.dismiss();
               });
       d.show();

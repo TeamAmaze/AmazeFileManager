@@ -224,9 +224,20 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             }
             R.id.ftp_path -> {
                 if (shouldUseSafFileSystem()) {
-                    activityResultHandlerOnFtpServerPathUpdate.launch(
-                        Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                    )
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+                    if (intent.resolveActivity(mainActivity.packageManager) != null) {
+                        activityResultHandlerOnFtpServerPathUpdate.launch(
+                            intent
+                        )
+                    } else {
+                        Snackbar.make(
+                            mainActivity.findViewById(R.id.drawer_layout),
+                            R.string.no_app_found_intent,
+                            BaseTransientBottomBar.LENGTH_SHORT
+                        )
+                            .show()
+                    }
                 } else {
                     val dialogBuilder = FolderChooserDialog.Builder(requireActivity())
                     dialogBuilder
@@ -449,28 +460,40 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                             .positiveColor(accentColor)
                             .negativeText(R.string.cancel)
                             .negativeColor(accentColor)
-                            .onPositive { dialog, _ ->
-                                activityResultHandlerOnFtpServerPathGrantedSafAccess.launch(
-                                    Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).also {
-                                        if (SDK_INT >= O &&
-                                            directoryUri.startsWith(defaultPathFromPreferences)
-                                        ) {
-                                            it.putExtra(
-                                                EXTRA_INITIAL_URI,
-                                                DocumentsContract.buildDocumentUri(
-                                                    "com.android.externalstorage.documents",
-                                                    "primary:" +
-                                                        directoryUri
-                                                            .substringAfter(
-                                                                defaultPathFromPreferences
-                                                            )
+                            .onPositive(fun(dialog: MaterialDialog, _: DialogAction) {
+                                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+                                if (intent.resolveActivity(mainActivity.packageManager) != null) {
+                                    activityResultHandlerOnFtpServerPathGrantedSafAccess.launch(
+                                        intent.also {
+                                            if (SDK_INT >= O &&
+                                                directoryUri.startsWith(defaultPathFromPreferences)
+                                            ) {
+                                                it.putExtra(
+                                                    EXTRA_INITIAL_URI,
+                                                    DocumentsContract.buildDocumentUri(
+                                                        "com.android.externalstorage.documents",
+                                                        "primary:" +
+                                                            directoryUri
+                                                                .substringAfter(
+                                                                    defaultPathFromPreferences
+                                                                )
+                                                    )
                                                 )
-                                            )
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+                                } else {
+                                    Snackbar.make(
+                                        mainActivity.findViewById(R.id.drawer_layout),
+                                        R.string.no_app_found_intent,
+                                        BaseTransientBottomBar.LENGTH_SHORT
+                                    )
+                                        .show()
+                                }
+
                                 dialog.dismiss()
-                            }.build().show()
+                            }).build().show()
                     }
                 } else {
                     callback.invoke()
