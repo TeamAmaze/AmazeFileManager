@@ -65,6 +65,8 @@ import com.amaze.filemanager.ui.fragments.SearchWorkerFragment;
 import com.amaze.filemanager.ui.fragments.TabFragment;
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants;
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 import com.leinardi.android.speeddial.SpeedDialView;
 
 import android.annotation.SuppressLint;
@@ -331,7 +333,11 @@ public class MainActivityHelper {
     if (intent.resolveActivity(mainActivity.getPackageManager()) != null) {
       mainActivity.startActivityForResult(intent, requestCode);
     } else {
-      Toast.makeText(mainActivity, R.string.no_app_found, Toast.LENGTH_SHORT).show();
+      Snackbar.make(
+              mainActivity.findViewById(R.id.drawer_layout),
+              R.string.no_app_found_intent,
+              BaseTransientBottomBar.LENGTH_SHORT)
+          .show();
     }
   }
 

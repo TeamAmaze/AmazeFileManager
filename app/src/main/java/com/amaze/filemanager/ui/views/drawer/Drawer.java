@@ -75,6 +75,8 @@ import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.google.android.material.navigation.NavigationView;
+import com.google.android.material.snackbar.BaseTransientBottomBar;
+import com.google.android.material.snackbar.Snackbar;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -93,7 +95,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
@@ -811,7 +812,10 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                     if (safIntent.resolveActivity(mainActivity.getPackageManager()) != null) {
                       mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
                     } else {
-                      Toast.makeText(mainActivity, R.string.no_app_found, Toast.LENGTH_SHORT)
+                      Snackbar.make(
+                              mainActivity.findViewById(R.id.drawer_layout),
+                              R.string.no_app_found_intent,
+                              BaseTransientBottomBar.LENGTH_SHORT)
                           .show();
                     }
 
