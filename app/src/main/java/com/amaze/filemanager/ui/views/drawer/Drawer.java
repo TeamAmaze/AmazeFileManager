@@ -808,11 +808,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                   (v) -> {
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
-                    if (safIntent.resolveActivity(mainActivity.getPackageManager()) != null)
+                    if (safIntent.resolveActivity(mainActivity.getPackageManager()) != null) {
                       mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
-                    else
+                    } else {
                       Toast.makeText(mainActivity, R.string.no_app_found, Toast.LENGTH_SHORT)
                           .show();
+                    }
 
                     dialog.dismiss();
                   });
