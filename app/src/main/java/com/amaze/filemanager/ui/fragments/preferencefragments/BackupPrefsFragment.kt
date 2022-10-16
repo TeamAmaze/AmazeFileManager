@@ -147,12 +147,14 @@ class BackupPrefsFragment : BasePrefsFragment() {
                     PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
 
                 for ((key, value) in map) try {
-                    if (value is Boolean) editor?.putBoolean(key, value)
-                    if (value is Float) editor?.putFloat(key, value)
-                    if (value is Int) editor?.putInt(key, value)
-                    if (value is Long) editor?.putLong(key, value)
-                    if (value is String) editor?.putString(key, value)
-                    if (value is Set<*>) editor?.putStringSet(key, value as Set<String>)
+                    when (value::class.simpleName) {
+                        "Boolean" -> editor?.putBoolean(key, value as Boolean)
+                        "Float" -> editor?.putFloat(key, value as Float)
+                        "Int" -> editor?.putInt(key, value as Int)
+                        "Long" -> editor?.putLong(key, value as Long)
+                        "String" -> editor?.putString(key, value.toString())
+                        "Set<*>" -> editor?.putStringSet(key, value as Set<String>)
+                    }
                 } catch (e: java.lang.ClassCastException) {
                     e.printStackTrace()
                 }
