@@ -156,6 +156,11 @@ class BackupPrefsFragment : BasePrefsFragment() {
                         "Set<*>" -> editor?.putStringSet(key, value as Set<String>)
                     }
                 } catch (e: java.lang.ClassCastException) {
+                    Toast.makeText(
+                        context,
+                        "${getString(R.string.import_failed_for)} $key",
+                        Toast.LENGTH_SHORT
+                    ).show()
                     e.printStackTrace()
                 }
 
