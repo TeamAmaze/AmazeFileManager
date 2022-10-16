@@ -59,7 +59,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
             fileWriter.append(gsonString)
 
-            Log.e(TAG, "wrote export to: ${file.absolutePath}")
+            Log.i(TAG, "wrote export to: ${file.absolutePath}")
 
             fileWriter.flush()
             fileWriter.close()
@@ -122,7 +122,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
         ) {
             val uri = data.data
 
-            Log.e(TAG, "read import file: $uri")
+            Log.i(TAG, "read import file: $uri")
 
             try {
                 val inputStream = uri?.let {
