@@ -789,5 +789,6 @@ You only need to do this once, until the next time you select a new location for
     <string name="protocol_ftp" translatable="false">FTP</string>
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Unavailable</string>
+    <string name="free_of">"free of</string>
 </resources>
 
