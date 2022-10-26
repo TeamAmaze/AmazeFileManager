@@ -442,8 +442,8 @@ public class Operations {
       private final DataUtils dataUtils = DataUtils.getInstance();
 
       private final Boolean isCaseSensitiveRename =
-          !oldFile.getSimpleName().equals(newFile.getSimpleName())
-              && oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName());
+          oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName())
+              && !oldFile.getSimpleName().equals(newFile.getSimpleName());
 
       // random string that is appended to file to prevent name collision, max file name is 255
       // bytes
@@ -668,12 +668,10 @@ public class Operations {
           if (isCaseSensitiveRename) {
             HybridFile tempFile =
                 new HybridFile(oldFile.mode, oldFile.getPath().concat(TEMP_FILE_EXT));
-            if (localRename(oldFile, tempFile)) {
-              // stop if first rename failed
-              if (!localRename(tempFile, newFile)) {
-                // revert changes
-                localRename(tempFile, oldFile);
-              }
+            if (localRename(oldFile, tempFile) && !localRename(tempFile, newFile)) {
+              // revert changes
+              LOG.warn("reverting temporary file rename");
+              localRename(tempFile, oldFile);
             }
           } else {
             localRename(oldFile, newFile);
