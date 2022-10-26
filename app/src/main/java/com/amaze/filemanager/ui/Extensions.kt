@@ -31,6 +31,9 @@ import android.widget.EditText
 import android.widget.Toast
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.ui.activities.MainActivity
+import com.google.android.material.snackbar.BaseTransientBottomBar
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputLayout
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
@@ -111,4 +114,16 @@ fun View.hideFade(duration: Long) {
 fun View.showFade(duration: Long) {
     this.animate().alpha(1f).duration = duration
     this.visibility = View.VISIBLE
+}
+
+fun Intent.runIfDocumentsUIExists(mainActivity: MainActivity, callback: Runnable) {
+    if (this.resolveActivity(mainActivity.packageManager) != null) {
+        callback.run()
+    } else {
+        Snackbar.make(
+            mainActivity.findViewById(R.id.drawer_layout),
+            R.string.no_app_found_intent,
+            BaseTransientBottomBar.LENGTH_SHORT
+        ).show()
+    }
 }

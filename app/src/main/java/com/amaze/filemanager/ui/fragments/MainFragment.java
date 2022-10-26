@@ -62,6 +62,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -82,8 +83,6 @@ import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
 import com.amaze.filemanager.utils.Utils;
 import com.google.android.material.appbar.AppBarLayout;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -649,15 +648,10 @@ public class MainFragment extends Fragment
       d.getActionButton(DialogAction.POSITIVE)
           .setOnClickListener(
               v -> {
-                if (intent.resolveActivity(getMainActivity().getPackageManager()) != null) {
-                  handleDocumentUriForRestrictedDirectories.launch(intent);
-                } else {
-                  Snackbar.make(
-                          getMainActivity().findViewById(R.id.drawer_layout),
-                          R.string.no_app_found_intent,
-                          BaseTransientBottomBar.LENGTH_SHORT)
-                      .show();
-                }
+                ExtensionsKt.runIfDocumentsUIExists(
+                    intent,
+                    getMainActivity(),
+                    () -> handleDocumentUriForRestrictedDirectories.launch(intent));
 
                 d.dismiss();
               });

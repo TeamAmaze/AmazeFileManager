@@ -47,6 +47,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
@@ -75,8 +76,6 @@ import com.cloudrail.si.services.Dropbox;
 import com.cloudrail.si.services.GoogleDrive;
 import com.cloudrail.si.services.OneDrive;
 import com.google.android.material.navigation.NavigationView;
-import com.google.android.material.snackbar.BaseTransientBottomBar;
-import com.google.android.material.snackbar.Snackbar;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
@@ -809,15 +808,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
                   (v) -> {
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
 
-                    if (safIntent.resolveActivity(mainActivity.getPackageManager()) != null) {
-                      mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
-                    } else {
-                      Snackbar.make(
-                              mainActivity.findViewById(R.id.drawer_layout),
-                              R.string.no_app_found_intent,
-                              BaseTransientBottomBar.LENGTH_SHORT)
-                          .show();
-                    }
+                    ExtensionsKt.runIfDocumentsUIExists(
+                        safIntent,
+                        mainActivity,
+                        () ->
+                            mainActivity.startActivityForResult(
+                                safIntent, MainActivity.REQUEST_CODE_SAF));
 
                     dialog.dismiss();
                   });

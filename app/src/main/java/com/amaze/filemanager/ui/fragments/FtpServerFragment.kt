@@ -78,6 +78,7 @@ import com.amaze.filemanager.databinding.FragmentFtpBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
+import com.amaze.filemanager.ui.runIfDocumentsUIExists
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.OneCharacterCharSequence
 import com.amaze.filemanager.utils.PasswordUtil
@@ -226,17 +227,10 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                 if (shouldUseSafFileSystem()) {
                     val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
-                    if (intent.resolveActivity(mainActivity.packageManager) != null) {
+                    intent.runIfDocumentsUIExists(mainActivity) {
                         activityResultHandlerOnFtpServerPathUpdate.launch(
                             intent
                         )
-                    } else {
-                        Snackbar.make(
-                            mainActivity.findViewById(R.id.drawer_layout),
-                            R.string.no_app_found_intent,
-                            BaseTransientBottomBar.LENGTH_SHORT
-                        )
-                            .show()
                     }
                 } else {
                     val dialogBuilder = FolderChooserDialog.Builder(requireActivity())
@@ -463,7 +457,7 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                             .onPositive(fun(dialog: MaterialDialog, _: DialogAction) {
                                 val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
 
-                                if (intent.resolveActivity(mainActivity.packageManager) != null) {
+                                intent.runIfDocumentsUIExists(mainActivity) {
                                     activityResultHandlerOnFtpServerPathGrantedSafAccess.launch(
                                         intent.also {
                                             if (SDK_INT >= O &&
@@ -483,13 +477,6 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                                             }
                                         }
                                     )
-                                } else {
-                                    Snackbar.make(
-                                        mainActivity.findViewById(R.id.drawer_layout),
-                                        R.string.no_app_found_intent,
-                                        BaseTransientBottomBar.LENGTH_SHORT
-                                    )
-                                        .show()
                                 }
 
                                 dialog.dismiss()
