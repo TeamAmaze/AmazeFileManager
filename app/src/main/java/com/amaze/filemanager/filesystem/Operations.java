@@ -442,16 +442,14 @@ public class Operations {
       private final DataUtils dataUtils = DataUtils.getInstance();
 
       private final Boolean isCaseSensitiveRename =
-              !oldFile.getSimpleName().equals(newFile.getSimpleName()) &&
-              oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName());
+          !oldFile.getSimpleName().equals(newFile.getSimpleName())
+              && oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName());
 
-      // random string that is appended to file to prevent name collision
-      private static final String TEMP_FILE_EXT = "qwerty";
+      // random string that is appended to file to prevent name collision, max file name is 255
+      // bytes
+      private static final String TEMP_FILE_EXT = "u0CtHRqWUnvxIaeBQ@nY2umVm9MDyR1P";
 
-      private boolean defaultRename(
-          @NonNull HybridFile oldFile,
-          @NonNull HybridFile newFile
-      ) {
+      private boolean localRename(@NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
         File file = new File(oldFile.getPath());
         File file1 = new File(newFile.getPath());
         boolean result = false;
@@ -668,14 +666,17 @@ public class Operations {
           return null;
         } else {
           if (isCaseSensitiveRename) {
-            HybridFile tempFile = new HybridFile(
-              oldFile.mode, oldFile.getPath().concat(TEMP_FILE_EXT)
-            );
-            if (defaultRename(oldFile, tempFile)) {
-              defaultRename(tempFile, newFile);
+            HybridFile tempFile =
+                new HybridFile(oldFile.mode, oldFile.getPath().concat(TEMP_FILE_EXT));
+            if (localRename(oldFile, tempFile)) {
+              // stop if first rename failed
+              if (!localRename(tempFile, newFile)) {
+                // revert changes
+                localRename(tempFile, oldFile);
+              }
             }
           } else {
-            defaultRename(oldFile, newFile);
+            localRename(oldFile, newFile);
           }
         }
         return null;
