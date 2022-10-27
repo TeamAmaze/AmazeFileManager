@@ -406,16 +406,12 @@ public class HybridFile {
   }
 
   /**
-   * Path accessor. Avoid direct access to path since path may have been URL encoded.
+   * Path accessor.
    *
-   * @return URL decoded path
+   * @return path
    */
   public String getPath() {
-    try {
-      return URLDecoder.decode(path, "UTF-8");
-    } catch (UnsupportedEncodingException ignored) {
-      return path;
-    }
+    return path;
   }
 
   public String getSimpleName() {
