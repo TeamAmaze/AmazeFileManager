@@ -21,13 +21,17 @@
 package com.amaze.filemanager.asynchronous.asynctasks.ftp.auth
 
 import androidx.annotation.WorkerThread
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.CONNECT_TIMEOUT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
+import com.amaze.filemanager.utils.PasswordUtil
 import net.schmizz.sshj.userauth.UserAuthException
 import org.apache.commons.net.ftp.FTPClient
+import java.net.URLDecoder.decode
 import java.util.concurrent.Callable
+import kotlin.text.Charsets.UTF_8
 
 open class FtpAuthenticationTaskCallable(
     protected val hostname: String,
@@ -48,7 +52,13 @@ open class FtpAuthenticationTaskCallable(
                 FTPClientImpl.generateRandomEmailAddressForLogin()
             )
         } else {
-            ftpClient.login(username, password)
+            ftpClient.login(
+                username,
+                decode(
+                    PasswordUtil.decryptPassword(AppConfig.getInstance(), password),
+                    UTF_8.name()
+                )
+            )
         }
         return if (loginSuccess) {
             ftpClient.enterLocalPassiveMode()

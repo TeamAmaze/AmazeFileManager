@@ -26,6 +26,9 @@ import android.text.TextUtils
 import android.util.Log
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
 import com.amaze.filemanager.filesystem.smb.CifsContexts.createWithDisableIpcSigningCheck
 import io.reactivex.Single
 import io.reactivex.schedulers.Schedulers
@@ -48,42 +51,42 @@ object SmbUtil {
     /** Parse path to decrypt smb password  */
     @JvmStatic
     fun getSmbDecryptedPath(context: Context, path: String): String {
-        if (!(path.contains(":") && path.contains("@"))) {
-            // smb path doesn't have any credentials
-            return path
-        }
-        val buffer = StringBuilder()
-        val protocolPrefix = path.substringBefore("//")
-        val usernamePasswordSeparatorPos = path.indexOf(":", protocolPrefix.length) + 1
-        buffer.append(path.substring(0, usernamePasswordSeparatorPos))
-        val encryptedPassword = path.substring(usernamePasswordSeparatorPos, path.lastIndexOf("@"))
-        if (!TextUtils.isEmpty(encryptedPassword)) {
-            val decryptedPassword = PasswordUtil.decryptPassword(context, encryptedPassword)
-            buffer.append(decryptedPassword)
-        }
-        buffer.append(path.substring(path.lastIndexOf("@")))
-        return buffer.toString()
+        return buildPath(path, withPassword = {
+            PasswordUtil.decryptPassword(context, it)
+        })
     }
 
     /** Parse path to encrypt smb password  */
     @JvmStatic
     fun getSmbEncryptedPath(context: Context, path: String): String {
-        if (!(path.contains(":") && path.contains("@"))) {
+        return buildPath(path, withPassword = {
+            PasswordUtil.encryptPassword(context, it)
+        })
+    }
+
+    private fun buildPath(path: String, withPassword: (String) -> String?): String {
+        if (!(path.contains(COLON) && path.contains(AT))) {
             // smb path doesn't have any credentials
             return path
         }
         val buffer = StringBuilder()
-        // From index zero to user name including colon
-        val protocolPrefix = path.substringBefore("//")
-        val usernamePasswordSeparatorPos = path.indexOf(":", protocolPrefix.length) + 1
-        buffer.append(path.substring(0, usernamePasswordSeparatorPos))
-        val decryptedPassword = path.substring(usernamePasswordSeparatorPos, path.lastIndexOf("@"))
-        if (!TextUtils.isEmpty(decryptedPassword)) {
-            val encryptPassword = PasswordUtil.encryptPassword(context, decryptedPassword)
-            buffer.append(encryptPassword)
+        NetCopyConnectionInfo(path).let { connectionInfo ->
+            buffer.append(connectionInfo.prefix).append(
+                if (connectionInfo.username.isEmpty()) "" else connectionInfo.username.urlEncoded()
+            )
+            if (false == connectionInfo.password?.isEmpty()) {
+                val password = withPassword.invoke(connectionInfo.password)
+                buffer.append(COLON).append(password)
+            }
+            buffer.append(AT).append(connectionInfo.host)
+            if (connectionInfo.port > 0) {
+                buffer.append(COLON).append(connectionInfo.port)
+            }
+            connectionInfo.defaultPath?.apply {
+                buffer.append(this)
+            }
         }
-        buffer.append(path.substring(path.lastIndexOf("@")))
-        return buffer.toString()
+        return buffer.toString().replace("\n", "")
     }
 
     /**

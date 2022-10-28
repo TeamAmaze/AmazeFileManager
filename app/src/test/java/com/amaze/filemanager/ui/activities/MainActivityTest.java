@@ -98,7 +98,7 @@ import io.reactivex.schedulers.Schedulers;
 public class MainActivityTest {
 
   private static final String[] BUNDLE_KEYS = {
-    "address", "port", "keypairName", "name", "username", "password", "edit"
+    "address", "port", "keypairName", "name", "username", "password", "edit", "defaultPath"
   };
 
   @Rule
@@ -163,7 +163,60 @@ public class MainActivityTest {
     verify.putString("username", "root");
     verify.putBoolean("hasPassword", true);
     verify.putBoolean("edit", true);
-    verify.putString("password", "12345678");
+    verify.putString(
+        "password",
+        PasswordUtil.INSTANCE
+            .encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
+            .replace("\n", ""));
+
+    testOpenSftpConnectDialog(uri, verify);
+  }
+
+  @Test
+  public void testInvokeSftpConnectionDialogWithPasswordAndDefaultPath()
+      throws GeneralSecurityException, IOException {
+    String uri =
+        NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(
+            "ssh://root:12345678@127.0.0.1:22/data/incoming");
+
+    Bundle verify = new Bundle();
+    verify.putString("address", "127.0.0.1");
+    verify.putInt("port", 22);
+    verify.putString("name", "SCP/SFTP Connection");
+    verify.putString("username", "root");
+    verify.putBoolean("hasPassword", true);
+    verify.putBoolean("edit", true);
+    verify.putString("defaultPath", "/data/incoming");
+    verify.putString(
+        "password",
+        PasswordUtil.INSTANCE
+            .encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
+            .replace("\n", ""));
+
+    testOpenSftpConnectDialog(uri, verify);
+  }
+
+  @Test
+  public void testInvokeSftpConnectionDialogWithPasswordAndEncodedDefaultPath()
+      throws GeneralSecurityException, IOException {
+    String uri =
+        NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(
+            "ssh://root:12345678@127.0.0.1:22/Users/TranceLove/My+Documents/%7BReference%7D%20Zobius%20Facro%20%24%24%20%23RFII1");
+
+    Bundle verify = new Bundle();
+    verify.putString("address", "127.0.0.1");
+    verify.putInt("port", 22);
+    verify.putString("name", "SCP/SFTP Connection");
+    verify.putString("username", "root");
+    verify.putBoolean("hasPassword", true);
+    verify.putBoolean("edit", true);
+    verify.putString(
+        "defaultPath", "/Users/TranceLove/My Documents/{Reference} Zobius Facro $$ #RFII1");
+    verify.putString(
+        "password",
+        PasswordUtil.INSTANCE
+            .encryptPassword(AppConfig.getInstance(), "12345678", Base64.URL_SAFE)
+            .replace("\n", ""));
 
     testOpenSftpConnectDialog(uri, verify);
   }
@@ -180,7 +233,7 @@ public class MainActivityTest {
         "SCP/SFTP Connection", NetCopyClientUtils.INSTANCE.encryptFtpPathAsNecessary(uri), true);
     assertEquals(1, mc.constructed().size());
     SftpConnectDialog mocked = mc.constructed().get(0);
-    await().atMost(5, TimeUnit.SECONDS).until(() -> mocked.getArguments() != null);
+    await().atMost(999, TimeUnit.SECONDS).until(() -> mocked.getArguments() != null);
     for (String key : BUNDLE_KEYS) {
       if (mocked.getArguments().get(key) != null) {
         if (!key.equals("password")) {

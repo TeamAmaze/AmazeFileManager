@@ -51,7 +51,7 @@ class NetCopyClientUtilTest {
         assertEquals(
             "/root/.config",
             NetCopyClientUtils.extractRemotePathFrom(
-                "ssh://root:a8/875dbc-==@127.0.0.1:9899/root/.config"
+                "ssh://root:YTgvODc1ZGJjLT09@127.0.0.1:9899/root/.config"
             )
         )
         assertEquals(

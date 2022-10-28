@@ -36,7 +36,6 @@ import com.amaze.filemanager.utils.SmbUtil.getSmbEncryptedPath
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.annotation.Config
@@ -96,7 +95,6 @@ class SmbUtilTest {
      * Test encrypt/decrypt URIs without password. It should stay the same too.
      */
     @Test
-    @Ignore("Good idea to fix me")
     fun testEncryptWithoutPassword() {
         val path = "smb://toor@127.0.0.1"
         assertEquals(

@@ -24,6 +24,7 @@ import android.os.Build
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.P
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.shutdown
@@ -31,6 +32,7 @@ import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.encryptFtpPathAsN
 import com.amaze.filemanager.filesystem.ssh.test.TestUtils
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowPasswordUtil
+import com.amaze.filemanager.utils.PasswordUtil
 import io.reactivex.android.plugins.RxAndroidPlugins
 import io.reactivex.plugins.RxJavaPlugins
 import io.reactivex.schedulers.Schedulers
@@ -53,6 +55,8 @@ import org.mockito.kotlin.verify
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowSQLiteConnection
 import java.io.IOException
+import java.net.URLEncoder.encode
+import kotlin.text.Charsets.UTF_8
 
 /**
  * Unit tests for [NetCopyClientConnectionPool] with FTP connections.
@@ -86,7 +90,10 @@ class NetCopyClientConnectionPoolFtpTest {
                 host = HOST,
                 port = PORT,
                 username = "testuser",
-                password = "testpassword"
+                password = PasswordUtil.encryptPassword(
+                    AppConfig.getInstance(),
+                    "testpassword"
+                )
             )
         )
         assertNull(
@@ -95,7 +102,10 @@ class NetCopyClientConnectionPoolFtpTest {
                 host = HOST,
                 port = PORT,
                 username = "invaliduser",
-                password = "invalidpassword"
+                password = PasswordUtil.encryptPassword(
+                    AppConfig.getInstance(),
+                    "invalidpassword"
+                )
             )
         )
         verify(mock, times(2)).connect(HOST, PORT)
@@ -108,27 +118,9 @@ class NetCopyClientConnectionPoolFtpTest {
      */
     @Test
     fun testGetConnectionWithUrl() {
+        val validUsername = "testuser"
         val validPassword = "testpassword"
-        val mock = createFTPClient("testuser", validPassword)
-        TestUtils.saveFtpConnectionSettings("testuser", validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://testuser:testpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login("testuser", "testpassword")
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -137,27 +129,9 @@ class NetCopyClientConnectionPoolFtpTest {
     @Test
     @Throws(IOException::class)
     fun testGetConnectionWithUrlHavingComplexPassword1() {
+        val validUsername = "testuser"
         val validPassword = "testP@ssw0rd"
-        val mock = createFTPClient("testuser", validPassword)
-        TestUtils.saveFtpConnectionSettings("testuser", validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://testuser:testP@ssw0rd@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login("testuser", validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -165,112 +139,19 @@ class NetCopyClientConnectionPoolFtpTest {
      */
     @Test
     fun testGetConnectionWithUrlHavingComplexPassword2() {
+        val validUsername = "testuser"
         val validPassword = "testP@##word"
-        val mock = createFTPClient("testuser", validPassword)
-        TestUtils.saveFtpConnectionSettings("testuser", validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://testuser:testP@##word@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login("testuser", validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
-     * Test getting connection with URL/URI having complex credentials (case 1)
+     * Test getting connection with URL/URI having complex password (case 3)
      */
     @Test
-    fun testGetConnectionWithUrlHavingComplexCredential1() {
-        val validPassword = "testP@##word"
-        val mock = createFTPClient("testuser", validPassword)
-        TestUtils.saveFtpConnectionSettings("testuser", validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://testuser:testP@##word@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login("testuser", validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
-    }
-
-    /**
-     * Test getting connection with URL/URI having complex credentials (case 2)
-     */
-    @Test
-    fun testGetConnectionWithUrlHavingComplexCredential2() {
-        val validPassword = "testP@##word"
-        val mock = createFTPClient("testuser", validPassword)
-        TestUtils.saveFtpConnectionSettings("testuser", validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://testuser:testP@##word@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login("testuser", validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
-    }
-
-    /**
-     * Test getting connection with URL/URI having complex credentials (case 3)
-     */
-    @Test
-    fun testGetConnectionWithUrlHavingComplexCredential3() {
+    fun testGetConnectionWithUrlHavingComplexPassword3() {
         val validUsername = "test@example.com"
         val validPassword = "testP@ssw0rd"
-        val mock = createFTPClient(validUsername, validPassword)
-        TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://test@example.com:testP@ssw0rd@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login(validUsername, validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -280,26 +161,7 @@ class NetCopyClientConnectionPoolFtpTest {
     fun testGetConnectionWithUrlHavingComplexCredential4() {
         val validUsername = "test@example.com"
         val validPassword = "testP@ssw0##$"
-        val mock = createFTPClient(validUsername, validPassword)
-        TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://test@example.com:testP@ssw0##$@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login(validUsername, validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -309,26 +171,7 @@ class NetCopyClientConnectionPoolFtpTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword1() {
         val validUsername = "test@example.com"
         val validPassword = "abcd-efgh"
-        val mock = createFTPClient(validUsername, validPassword)
-        TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://test@example.com:abcd-efgh@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login(validUsername, validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -338,26 +181,7 @@ class NetCopyClientConnectionPoolFtpTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword2() {
         val validUsername = "test@example.com"
         val validPassword = "---------------"
-        val mock = createFTPClient(validUsername, validPassword)
-        TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://test@example.com:---------------@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login(validUsername, validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -367,26 +191,7 @@ class NetCopyClientConnectionPoolFtpTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword3() {
         val validUsername = "test@example.com"
         val validPassword = "--agdiuhdpost15"
-        val mock = createFTPClient(validUsername, validPassword)
-        TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
-        assertNotNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://test@example.com:--agdiuhdpost15@127.0.0.1:22222"
-                )
-            )
-        )
-        assertNull(
-            getConnection<FTPClient>(
-                encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
-                )
-            )
-        )
-        verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
-        verify(mock, atLeastOnce()).connect(HOST, PORT)
-        verify(mock).login(validUsername, validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        doRunTest(validUsername, validPassword)
     }
 
     /**
@@ -396,26 +201,32 @@ class NetCopyClientConnectionPoolFtpTest {
     fun testGetConnectionWithUrlHavingMinusSignInPassword4() {
         val validUsername = "test@example.com"
         val validPassword = "t-h-i-s-i-s-p-a-s-s-w-o-r-d-"
+        doRunTest(validUsername, validPassword)
+    }
+
+    private fun doRunTest(validUsername: String, validPassword: String) {
+        val encodedUsername = encode(validUsername, UTF_8.name())
+        val encodedPassword = encode(validPassword, UTF_8.name())
         val mock = createFTPClient(validUsername, validPassword)
         TestUtils.saveFtpConnectionSettings(validUsername, validPassword)
         assertNotNull(
             getConnection<FTPClient>(
                 encryptFtpPathAsNecessary(
-                    "ftp://test@example.com:t-h-i-s-i-s-p-a-s-s-w-o-r-d-@127.0.0.1:22222"
+                    "ftp://$encodedUsername:$encodedPassword@127.0.0.1:22222"
                 )
             )
         )
         assertNull(
             getConnection<FTPClient>(
                 encryptFtpPathAsNecessary(
-                    "ftp://invaliduser:invalidpassword@127.0.0.1:22222"
+                    "ftp://$encodedInvalidUsername:$encodedInvalidPassword@127.0.0.1:22222"
                 )
             )
         )
         verify(mock, atLeastOnce()).connectTimeout = NetCopyClientConnectionPool.CONNECT_TIMEOUT
         verify(mock, atLeastOnce()).connect(HOST, PORT)
         verify(mock).login(validUsername, validPassword)
-        verify(mock, atMostOnce()).login("invaliduser", "invalidpassword")
+        verify(mock, atMostOnce()).login(invalidUsername, invalidPassword)
     }
 
     private fun createFTPClient(validUsername: String, validPassword: String): FTPClient {
@@ -443,6 +254,10 @@ class NetCopyClientConnectionPoolFtpTest {
 
         const val HOST = "127.0.0.1"
         const val PORT = 22222
+        private const val invalidUsername = "invaliduser"
+        private const val invalidPassword = "invalidpassword"
+        private val encodedInvalidUsername = encode(invalidUsername, UTF_8.name())
+        private val encodedInvalidPassword = encode(invalidPassword, UTF_8.name())
 
         /**
          * Bootstrap the unit test

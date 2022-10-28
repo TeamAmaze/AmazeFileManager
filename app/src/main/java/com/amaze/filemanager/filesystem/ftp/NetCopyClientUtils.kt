@@ -26,11 +26,17 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.DOESNT_EXIST
 import com.amaze.filemanager.fileoperations.filesystem.FolderState
 import com.amaze.filemanager.fileoperations.filesystem.WRITABLE_ON_REMOTE
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.AT
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.COLON
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SLASH
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_DEFAULT_PORT
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_DEFAULT_PORT
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX
+import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_DEFAULT_PORT
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.getConnection
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.AT
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.COLON
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo.Companion.SLASH
+import com.amaze.filemanager.filesystem.smb.CifsContexts.SMB_URI_PREFIX
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate
 import com.amaze.filemanager.utils.SmbUtil
 import io.reactivex.Maybe
@@ -41,8 +47,6 @@ import org.apache.commons.net.ftp.FTPClient
 import org.apache.commons.net.ftp.FTPReply
 import org.slf4j.LoggerFactory
 import java.io.IOException
-import java.net.URLDecoder
-import java.security.GeneralSecurityException
 import java.security.KeyPair
 
 object NetCopyClientUtils {
@@ -109,15 +113,16 @@ object NetCopyClientUtils {
      * @return SSH URL with the password (if exists) encrypted
      */
     fun encryptFtpPathAsNecessary(fullUri: String): String {
-        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 3)
-        val uriWithoutProtocol: String = fullUri.substring(prefix.length)
-        return if (uriWithoutProtocol.substringBefore(AT).indexOf(COLON) > 0) {
-            SmbUtil.getSmbEncryptedPath(
-                AppConfig.getInstance(),
+        return NetCopyConnectionInfo(fullUri).run {
+            val uriWithoutProtocol: String = fullUri.substring(prefix.length)
+            if (uriWithoutProtocol.substringBefore(AT).indexOf(COLON) > 0) {
+                SmbUtil.getSmbEncryptedPath(
+                    AppConfig.getInstance(),
+                    fullUri
+                )
+            } else {
                 fullUri
-            ).replace("\n", "")
-        } else {
-            fullUri
+            }
         }
     }
 
@@ -128,18 +133,14 @@ object NetCopyClientUtils {
      * @param fullUri SSH URL
      * @return SSH URL with the password (if exists) decrypted
      */
-    fun decryptFtpPathAsNecessary(fullUri: String): String? {
-        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 3)
-        val uriWithoutProtocol: String = fullUri.substring(prefix.length)
-        return try {
+    fun decryptFtpPathAsNecessary(fullUri: String): String {
+        return NetCopyConnectionInfo(fullUri).runCatching {
+            val uriWithoutProtocol: String = fullUri.substring(prefix.length)
             if (uriWithoutProtocol.lastIndexOf(COLON) > 0) SmbUtil.getSmbDecryptedPath(
                 AppConfig.getInstance(),
                 fullUri
             ) else fullUri
-        } catch (e: IOException) {
-            LOG.error("Error decrypting path", e)
-            fullUri
-        } catch (e: GeneralSecurityException) {
+        }.getOrElse { e ->
             LOG.error("Error decrypting path", e)
             fullUri
         }
@@ -156,30 +157,21 @@ object NetCopyClientUtils {
      * @return The remote path part of the full SSH URL
      */
     fun extractBaseUriFrom(fullUri: String): String {
-        val prefix = fullUri.substring(0, fullUri.indexOf("://") + 3)
-        val uriWithoutProtocol: String = fullUri.substring(prefix.length)
-        val credentials: String
-        val hostAndPath: String
-        if (uriWithoutProtocol.contains(AT)) {
-            credentials = uriWithoutProtocol.substring(0, uriWithoutProtocol.lastIndexOf(AT))
-            hostAndPath = uriWithoutProtocol.substring(uriWithoutProtocol.lastIndexOf(AT) + 1)
-        } else {
-            credentials = ""
-            hostAndPath = uriWithoutProtocol
-        }
-        return if (hostAndPath.indexOf(SLASH) == -1) {
-            fullUri
-        } else {
-            val host = hostAndPath.substring(0, hostAndPath.indexOf(SLASH))
-            val credentialsLen = if (credentials == "") {
-                0
-            } else {
-                credentials.length + 1
+        return NetCopyConnectionInfo(fullUri).let {
+            buildString {
+                append(it.prefix)
+                append(it.username.ifEmpty { "" })
+                if (true == it.password?.isNotEmpty()) {
+                    append(COLON).append(it.password)
+                }
+                if (it.username.isNotEmpty()) {
+                    append(AT)
+                }
+                append(it.host)
+                if (it.port > 0) {
+                    append(COLON).append(it.port)
+                }
             }
-            fullUri.substring(
-                0,
-                prefix.length + credentialsLen + host.length
-            )
         }
     }
 
@@ -194,20 +186,14 @@ object NetCopyClientUtils {
      * @return The remote path part of the full SSH URL
      */
     fun extractRemotePathFrom(fullUri: String): String {
-        if (fullUri.contains(AT)) {
-            val hostPath = fullUri.substring(fullUri.lastIndexOf(AT))
-            return if (hostPath.indexOf(SLASH) == -1) {
-                SLASH.toString()
-            } else {
-                URLDecoder.decode(
-                    hostPath.substring(hostPath.indexOf(SLASH)),
-                    Charsets.UTF_8.name()
-                )
-            }
-        } else {
-            val hostAndPath = fullUri.substringAfter("://")
-            return if (hostAndPath.contains(SLASH)) {
-                hostAndPath.substring(hostAndPath.indexOf(SLASH))
+        return NetCopyConnectionInfo(fullUri).let { connInfo ->
+            if (true == connInfo.defaultPath?.isNotEmpty()) {
+                buildString {
+                    append(connInfo.defaultPath)
+                    if (true == connInfo.filename?.isNotEmpty()) {
+                        append(SLASH).append(connInfo.filename)
+                    }
+                }
             } else {
                 SLASH.toString()
             }
@@ -282,5 +268,18 @@ object NetCopyClientUtils {
             }
         }
         return execute(template) ?: DOESNT_EXIST
+    }
+
+    /**
+     * Return the default port used by different protocols.
+     *
+     * Reserved for future use.
+     */
+    fun defaultPort(prefix: String) = when (prefix) {
+        SSH_URI_PREFIX -> SSH_DEFAULT_PORT
+        FTPS_URI_PREFIX -> FTPS_DEFAULT_PORT
+        FTP_URI_PREFIX -> FTP_DEFAULT_PORT
+        SMB_URI_PREFIX -> 0 // SMB never requires explicit port number at URL
+        else -> throw IllegalArgumentException("Cannot derive default port")
     }
 }

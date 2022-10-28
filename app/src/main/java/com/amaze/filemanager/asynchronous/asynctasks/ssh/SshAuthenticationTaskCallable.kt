@@ -20,15 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
+import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool
 import com.amaze.filemanager.filesystem.ssh.CustomSshJConfig
+import com.amaze.filemanager.utils.PasswordUtil
 import net.schmizz.sshj.SSHClient
 import net.schmizz.sshj.common.KeyType
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider
+import java.net.URLDecoder.decode
 import java.security.KeyPair
 import java.security.PrivateKey
 import java.security.PublicKey
 import java.util.concurrent.Callable
+import kotlin.text.Charsets.UTF_8
 
 class SshAuthenticationTaskCallable(
     private val hostname: String,
@@ -68,7 +72,13 @@ class SshAuthenticationTaskCallable(
                 )
                 sshClient
             } else {
-                sshClient.authPassword(username, password)
+                sshClient.authPassword(
+                    username,
+                    decode(
+                        PasswordUtil.decryptPassword(AppConfig.getInstance(), password!!),
+                        UTF_8.name()
+                    )
+                )
                 sshClient
             }
         }

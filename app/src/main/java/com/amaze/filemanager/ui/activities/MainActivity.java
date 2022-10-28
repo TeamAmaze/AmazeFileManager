@@ -101,6 +101,7 @@ import com.amaze.filemanager.filesystem.PasteHelper;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo;
 import com.amaze.filemanager.filesystem.ssh.SshClientUtils;
 import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.superclasses.PermissionsActivity;
@@ -132,6 +133,7 @@ import com.amaze.filemanager.ui.views.drawer.Drawer;
 import com.amaze.filemanager.utils.AppConstants;
 import com.amaze.filemanager.utils.BookSorter;
 import com.amaze.filemanager.utils.DataUtils;
+import com.amaze.filemanager.utils.GenericExtKt;
 import com.amaze.filemanager.utils.MainActivityActionMode;
 import com.amaze.filemanager.utils.MainActivityHelper;
 import com.amaze.filemanager.utils.OTGUtil;
@@ -203,6 +205,9 @@ import io.reactivex.Flowable;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
+import kotlin.collections.ArraysKt;
+import kotlin.jvm.functions.Function1;
+import kotlin.text.Charsets;
 
 public class MainActivity extends PermissionsActivity
     implements SmbConnectionListener,
@@ -1985,7 +1990,7 @@ public class MainActivity extends PermissionsActivity
     }
     SftpConnectDialog sftpConnectDialog = new SftpConnectDialog();
     String finalName = name;
-    Flowable.fromCallable(() -> new NetCopyClientConnectionPool.ConnectionInfo(path))
+    Flowable.fromCallable(() -> new NetCopyConnectionInfo(path))
         .flatMap(
             connectionInfo -> {
               Bundle retval = new Bundle();
@@ -1994,7 +1999,17 @@ public class MainActivity extends PermissionsActivity
               retval.putString(ARG_ADDRESS, connectionInfo.getHost());
               retval.putInt(ARG_PORT, connectionInfo.getPort());
               if (!TextUtils.isEmpty(connectionInfo.getDefaultPath())) {
-                retval.putString(ARG_DEFAULT_PATH, connectionInfo.getDefaultPath());
+                retval.putString(
+                    ARG_DEFAULT_PATH,
+                    ArraysKt.joinToString(
+                        connectionInfo.getDefaultPath().split("/"),
+                        "/",
+                        "",
+                        "",
+                        -1,
+                        "",
+                        (Function1<String, String>)
+                            s -> GenericExtKt.urlDecoded(s, Charsets.UTF_8)));
               }
               retval.putString(ARG_USERNAME, connectionInfo.getUsername());
 
@@ -2042,10 +2057,9 @@ public class MainActivity extends PermissionsActivity
     if (!edit) {
       if ((dataUtils.containsServer(path)) == -1) {
         Completable.fromRunnable(
-                () -> {
-                  utilsHandler.saveToDatabase(
-                      new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
-                })
+                () ->
+                    utilsHandler.saveToDatabase(
+                        new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath)))
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(

@@ -69,8 +69,8 @@ import com.amaze.filemanager.filesystem.files.GenericCopyUtil;
 import com.amaze.filemanager.filesystem.ftp.ExtensionsKt;
 import com.amaze.filemanager.filesystem.ftp.FTPClientImpl;
 import com.amaze.filemanager.filesystem.ftp.FtpClientTemplate;
-import com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
+import com.amaze.filemanager.filesystem.ftp.NetCopyConnectionInfo;
 import com.amaze.filemanager.filesystem.root.DeleteFileCommand;
 import com.amaze.filemanager.filesystem.root.ListFilesCommand;
 import com.amaze.filemanager.filesystem.ssh.SFtpClientTemplate;
@@ -1054,8 +1054,7 @@ public class HybridFile {
     if (uriString.startsWith(SSH_URI_PREFIX)
         || uriString.startsWith(FTP_URI_PREFIX)
         || uriString.startsWith(FTPS_URI_PREFIX)) {
-      NetCopyClientConnectionPool.ConnectionInfo connInfo =
-          new NetCopyClientConnectionPool.ConnectionInfo(uriString);
+      NetCopyConnectionInfo connInfo = new NetCopyConnectionInfo(uriString);
       return connInfo.toString();
     } else {
       Uri uri = Uri.parse(uriString);
