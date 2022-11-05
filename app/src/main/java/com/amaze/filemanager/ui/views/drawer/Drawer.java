@@ -696,11 +696,11 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   }
 
   private void addNewItem(
-      Menu menu,
+      @NonNull Menu menu,
       int group,
       int order,
       String text,
-      MenuMetadata meta,
+      @NonNull MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon,
       @Nullable String freeSpace,
