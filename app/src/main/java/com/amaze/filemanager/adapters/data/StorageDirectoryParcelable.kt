@@ -17,59 +17,47 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
+package com.amaze.filemanager.adapters.data
 
-package com.amaze.filemanager.adapters.data;
+import android.os.Parcel
+import android.os.Parcelable
+import androidx.annotation.DrawableRes
 
-import android.os.Parcel;
-import android.os.Parcelable;
+/** Identifies a mounted volume  */
+data class StorageDirectoryParcelable(
+    @JvmField
+    val path: String,
+    @JvmField
+    val name: String,
+    @JvmField
+    @DrawableRes
+    val iconRes: Int,
+) : Parcelable {
 
-import androidx.annotation.DrawableRes;
-import androidx.annotation.NonNull;
+    constructor(im: Parcel) : this(
+        path = im.readString()!!,
+        name = im.readString()!!,
+        iconRes = im.readInt()
+    )
 
-/** Identifies a mounted volume */
-public class StorageDirectoryParcelable implements Parcelable {
-  @NonNull public final String path;
-  @NonNull public final String name;
-  public final @DrawableRes int iconRes;
+    override fun describeContents() = 0
 
-  public StorageDirectoryParcelable(@NonNull String path, @NonNull String name, int iconRes) {
-    this.path = path;
-    this.name = name;
-    this.iconRes = iconRes;
-  }
+    override fun writeToParcel(parcel: Parcel, i: Int) {
+        parcel.writeString(path)
+        parcel.writeString(name)
+        parcel.writeInt(iconRes)
+    }
 
-  public StorageDirectoryParcelable(@NonNull Parcel im) {
-    path = im.readString();
-    name = im.readString();
-    iconRes = im.readInt();
-  }
+    companion object {
+        @JvmField
+        val CREATOR = object : Parcelable.Creator<StorageDirectoryParcelable> {
+            override fun createFromParcel(parcel: Parcel): StorageDirectoryParcelable {
+                return StorageDirectoryParcelable(parcel)
+            }
 
-  @NonNull
-  @Override
-  public String toString() {
-    return "StorageDirectory(path=" + path + ", name=" + name + ", icon=" + iconRes + ")";
-  }
-
-  @Override
-  public int describeContents() {
-    return 0;
-  }
-
-  @Override
-  public void writeToParcel(Parcel parcel, int i) {
-    parcel.writeString(path);
-    parcel.writeString(name);
-    parcel.writeInt(iconRes);
-  }
-
-  public static final Creator<StorageDirectoryParcelable> CREATOR =
-      new Creator<StorageDirectoryParcelable>() {
-        public StorageDirectoryParcelable createFromParcel(Parcel in) {
-          return new StorageDirectoryParcelable(in);
+            override fun newArray(size: Int): Array<StorageDirectoryParcelable?> {
+                return arrayOfNulls(size)
+            }
         }
-
-        public StorageDirectoryParcelable[] newArray(int size) {
-          return new StorageDirectoryParcelable[size];
-        }
-      };
+    }
 }
