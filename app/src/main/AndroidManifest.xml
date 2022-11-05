@@ -57,6 +57,7 @@
         android:banner="@drawable/about_header">
 
         <activity
+            android:exported="true"
             android:label="@string/appbar_name"
             android:launchMode="singleInstance"
             android:name=".ui.activities.MainActivity"
@@ -130,6 +131,7 @@
         </activity>
 
         <activity
+            android:exported="false"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize|uiMode"
             android:label="@string/setting"
@@ -142,6 +144,7 @@
 
         </activity>
         <activity
+            android:exported="true"
             android:label="@string/textreader"
             android:name=".ui.activities.texteditor.TextEditorActivity"
             android:configChanges="uiMode"
@@ -159,6 +162,7 @@
 
         </activity>
         <activity
+            android:exported="true"
             android:label="@string/databasereader"
             android:name=".ui.activities.DatabaseViewerActivity"
             android:theme="@style/appCompatBlack"
@@ -278,6 +282,7 @@
             android:permission="${applicationId}.permission.CONTROL_FTP_SERVER"/>
 
         <service android:name=".asynchronous.services.ftp.FtpTileService"
+            android:exported="true"
             android:icon="@drawable/ic_ftp_dark"
             android:label="@string/ftp"
             android:permission="android.permission.BIND_QUICK_SETTINGS_TILE">

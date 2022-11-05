@@ -132,7 +132,7 @@ class DecryptServiceTest {
             assertEquals(START_NOT_STICKY, service.onStartCommand(this, 0, 0))
         }
         if (SDK_INT < M) {
-            assertTrue(notificationManager.allNotifications.isNotEmpty())
+            assertTrue("Found: ${notificationManager.activeNotifications}", notificationManager.allNotifications.isNotEmpty())
             await().atMost(100, TimeUnit.SECONDS).until {
                 notificationManager.allNotifications.isEmpty()
             }

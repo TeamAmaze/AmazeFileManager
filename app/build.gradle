@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 115
         versionName "3.8.3"
         multiDexEnabled true
