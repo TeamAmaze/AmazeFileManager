@@ -1074,9 +1074,7 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   private SpannableString getSpannableText(String text, String freeSpace, String totalSpace) {
 
-    String s =
-        String.format(
-            "%s\n%s %s %s", text, freeSpace, mainActivity.getString(R.string.free_of), totalSpace);
+    String s = mainActivity.getString(R.string.free_of, text, freeSpace, totalSpace);
 
     SpannableString spannableString = new SpannableString(s);
 
