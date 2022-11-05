@@ -49,7 +49,6 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -64,6 +63,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class CopyService extends AbstractProgressiveService {
@@ -77,7 +77,7 @@ public class CopyService extends AbstractProgressiveService {
 
   public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
 
-  private NotificationManager mNotifyManager;
+  private NotificationManagerCompat mNotifyManager;
   private NotificationCompat.Builder mBuilder;
   private Context c;
 
@@ -118,7 +118,7 @@ public class CopyService extends AbstractProgressiveService {
             .getCurrentUserColorPreferences(this, sharedPreferences)
             .getAccent();
 
-    mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    mNotifyManager = NotificationManagerCompat.from(getApplicationContext());
     b.putInt(TAG_COPY_START_ID, startId);
 
     Intent notificationIntent = new Intent(this, MainActivity.class);
@@ -172,7 +172,7 @@ public class CopyService extends AbstractProgressiveService {
   }
 
   @Override
-  protected NotificationManager getNotificationManager() {
+  protected NotificationManagerCompat getNotificationManager() {
     return mNotifyManager;
   }
 

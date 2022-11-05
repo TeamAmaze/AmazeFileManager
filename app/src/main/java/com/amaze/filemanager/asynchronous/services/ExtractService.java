@@ -44,7 +44,6 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.github.junrar.exception.UnsupportedRarV5Exception;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -60,6 +59,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class ExtractService extends AbstractProgressiveService {
@@ -70,7 +70,7 @@ public class ExtractService extends AbstractProgressiveService {
   // list of data packages,// to initiate chart in process viewer fragment
   private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
-  private NotificationManager mNotifyManager;
+  private NotificationManagerCompat mNotifyManager;
   private NotificationCompat.Builder mBuilder;
   private ProgressHandler progressHandler = new ProgressHandler();
   private ProgressListener progressListener;
@@ -95,7 +95,7 @@ public class ExtractService extends AbstractProgressiveService {
     String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
     String[] entries = intent.getStringArrayExtra(KEY_ENTRIES_ZIP);
 
-    mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    mNotifyManager = NotificationManagerCompat.from(getApplicationContext());
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     accentColor =
         ((AppConfig) getApplication())
@@ -156,7 +156,7 @@ public class ExtractService extends AbstractProgressiveService {
   }
 
   @Override
-  protected NotificationManager getNotificationManager() {
+  protected NotificationManagerCompat getNotificationManager() {
     return mNotifyManager;
   }
 

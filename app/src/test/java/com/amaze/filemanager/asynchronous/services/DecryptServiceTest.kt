@@ -26,7 +26,6 @@ import android.content.Intent
 import android.os.Build.VERSION.SDK_INT
 import android.os.Build.VERSION_CODES.KITKAT
 import android.os.Build.VERSION_CODES.M
-import android.os.Build.VERSION_CODES.O
 import android.os.Build.VERSION_CODES.P
 import android.os.Environment
 import android.util.Log
@@ -81,7 +80,7 @@ class DecryptServiceTest {
         source = Random(System.currentTimeMillis()).nextBytes(73)
         service = Robolectric.setupService(DecryptService::class.java)
         notificationManager = shadowOf(
-            ApplicationProvider.getApplicationContext<Context?>()
+            ApplicationProvider.getApplicationContext<Context>()
                 .getSystemService(NOTIFICATION_SERVICE) as NotificationManager
         )
         initMockSecretKeygen()
@@ -132,11 +131,19 @@ class DecryptServiceTest {
             putExtra(TAG_DECRYPT_PATH, Environment.getExternalStorageDirectory().absolutePath)
             assertEquals(START_NOT_STICKY, service.onStartCommand(this, 0, 0))
         }
-        assertTrue(notificationManager.activeNotifications.isNotEmpty())
-        notificationManager.activeNotifications.first().let {
-            assertEquals(NotificationConstants.DECRYPT_ID, it.id)
-            if (SDK_INT >= O) {
+        if (SDK_INT < M) {
+            assertTrue(notificationManager.allNotifications.isNotEmpty())
+            await().atMost(100, TimeUnit.SECONDS).until {
+                notificationManager.allNotifications.isEmpty()
+            }
+        } else {
+            assertTrue(notificationManager.activeNotifications.isNotEmpty())
+            notificationManager.activeNotifications.first().let {
+                assertEquals(NotificationConstants.DECRYPT_ID, it.id)
                 assertEquals(NotificationConstants.CHANNEL_NORMAL_ID, it.notification.channelId)
+            }
+            await().atMost(10, TimeUnit.SECONDS).until {
+                notificationManager.activeNotifications.isEmpty()
             }
         }
         val verifyFile = File(Environment.getExternalStorageDirectory(), "test.bin")

@@ -42,7 +42,6 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -56,6 +55,7 @@ import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 /** Created by vishal on 8/4/17 edited by Emmanuel Messulam <emmanuelbendavid@gmail.com> */
@@ -72,7 +72,7 @@ public class EncryptService extends AbstractProgressiveService {
 
   public static final String TAG_BROADCAST_CRYPT_CANCEL = "crypt_cancel";
 
-  private NotificationManager notificationManager;
+  private NotificationManagerCompat notificationManager;
   private NotificationCompat.Builder notificationBuilder;
   private Context context;
   private IBinder mBinder = new ObtainableServiceBinder<>(this);
@@ -118,7 +118,7 @@ public class EncryptService extends AbstractProgressiveService {
 
     OpenMode openMode =
         OpenMode.values()[intent.getIntExtra(TAG_OPEN_MODE, OpenMode.UNKNOWN.ordinal())];
-    notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
+    notificationManager = NotificationManagerCompat.from(getApplicationContext());
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -167,7 +167,7 @@ public class EncryptService extends AbstractProgressiveService {
   }
 
   @Override
-  protected NotificationManager getNotificationManager() {
+  protected NotificationManagerCompat getNotificationManager() {
     return notificationManager;
   }
 

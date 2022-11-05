@@ -35,7 +35,6 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.Utils;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -47,6 +46,7 @@ import android.widget.RemoteViews;
 import androidx.annotation.CallSuper;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 /**
  * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 19:32.
@@ -72,7 +72,7 @@ public abstract class AbstractProgressiveService extends Service
     wakeLock.setReferenceCounted(false);
   }
 
-  protected abstract NotificationManager getNotificationManager();
+  protected abstract NotificationManagerCompat getNotificationManager();
 
   protected abstract NotificationCompat.Builder getNotificationBuilder();
 
