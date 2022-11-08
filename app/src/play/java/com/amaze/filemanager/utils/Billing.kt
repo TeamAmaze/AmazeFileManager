@@ -64,17 +64,20 @@ class Billing(private val activity: BasicActivity) :
     // True if billing service is connected
     private var isServiceConnected = false
 
+    private lateinit var donationDialog: MaterialDialog
+
     override fun onPurchasesUpdated(response: BillingResult, purchases: List<Purchase>?) {
         if (response.responseCode == BillingClient.BillingResponseCode.OK && purchases != null) {
             for (purchase in purchases) {
-                val listener =
-                    ConsumeResponseListener { _: BillingResult?, _: String? ->
-                        // we consume the purchase, so that user can perform purchase again
-                        Toast.makeText(activity, R.string.donation_thanks, Toast.LENGTH_LONG).show()
-                    }
+                val listener = ConsumeResponseListener { _: BillingResult, _: String -> }
                 val consumeParams: ConsumeParams =
-                    ConsumeParams.newBuilder().setPurchaseToken(purchase.getPurchaseToken()).build()
+                    ConsumeParams.newBuilder().setPurchaseToken(purchase.purchaseToken).build()
                 billingClient.consumeAsync(consumeParams, listener)
+            }
+            // we consume the purchase, so that user can perform purchase again
+            activity.runOnUiThread {
+                Toast.makeText(activity, R.string.donation_thanks, Toast.LENGTH_LONG).show()
+                donationDialog.dismiss()
             }
         }
     }
@@ -256,7 +259,7 @@ class Billing(private val activity: BasicActivity) :
                     builder.adapter(this, null)
                     builder.theme(context.appTheme.getMaterialDialogTheme(context))
                     builder.cancelListener { purchaseProduct.purchaseCancel() }
-                    builder.show()
+                    donationDialog = builder.show()
                     null
                 }
             )
