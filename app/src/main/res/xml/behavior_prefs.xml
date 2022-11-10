@@ -36,6 +36,12 @@
         app:key="clear_open_file"
         app:summary="@string/clear_open_file_summary"
         app:title="@string/clear_open_file" />
+    <com.amaze.filemanager.ui.views.preference.CheckBox
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:key="disable_player_intent_filters"
+        app:summary="@string/disable_player_intent_filters_summary"
+        app:title="@string/disable_player_intent_filters" />
     <Preference
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
