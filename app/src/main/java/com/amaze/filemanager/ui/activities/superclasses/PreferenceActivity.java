@@ -24,6 +24,7 @@ import static com.amaze.filemanager.ui.fragments.preferencefragments.Preferences
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_CHANGEPATHS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORED_NAVIGATION;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_COLORIZE_ICONS;
+import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ENABLE_MARQUEE_FILENAME;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_NEED_TO_SET_HOME;
 import static com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE;
@@ -94,6 +95,7 @@ public class PreferenceActivity extends BasicActivity {
       case PREFERENCE_TEXTEDITOR_NEWSTACK:
       case PREFERENCE_CHANGEPATHS:
       case PREFERENCE_ROOT_LEGACY_LISTING:
+      case PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS:
         defaultValue = false;
         break;
       case PREFERENCE_SHOW_FILE_SIZE:
