@@ -71,7 +71,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
 
     companion object {
         private const val DATABASE_NAME = "explorer.db"
-        const val DATABASE_VERSION = 10
+        const val DATABASE_VERSION = 11
         const val TABLE_TAB = "tab"
         const val TABLE_CLOUD_PERSIST = "cloud"
         const val TABLE_ENCRYPTED = "encrypted"
@@ -156,7 +156,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
                 )
             }
         }
-        internal val MIGRATION_6_7: Migration = object : Migration(6, DATABASE_VERSION) {
+        internal val MIGRATION_6_7: Migration = object : Migration(6, 7) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "CREATE TABLE " +
@@ -190,9 +190,9 @@ abstract class ExplorerDatabase : RoomDatabase() {
                         " FROM " +
                         TABLE_TAB
                 )
-                database.execSQL("DROP TABLE " + TABLE_TAB)
+                database.execSQL("DROP TABLE $TABLE_TAB")
                 database.execSQL(
-                    "ALTER TABLE " + TEMP_TABLE_PREFIX + TABLE_TAB + " RENAME TO " + TABLE_TAB
+                    "ALTER TABLE $TEMP_TABLE_PREFIX$TABLE_TAB RENAME TO $TABLE_TAB"
                 )
                 database.execSQL(
                     "CREATE TABLE " +
@@ -205,11 +205,11 @@ abstract class ExplorerDatabase : RoomDatabase() {
                         " INTEGER NOT NULL)"
                 )
                 database.execSQL(
-                    "INSERT INTO " + TEMP_TABLE_PREFIX + TABLE_SORT + " SELECT * FROM " + TABLE_SORT
+                    "INSERT INTO $TEMP_TABLE_PREFIX$TABLE_SORT SELECT * FROM $TABLE_SORT"
                 )
-                database.execSQL("DROP TABLE " + TABLE_SORT)
+                database.execSQL("DROP TABLE $TABLE_SORT")
                 database.execSQL(
-                    "ALTER TABLE " + TEMP_TABLE_PREFIX + TABLE_SORT + " RENAME TO " + TABLE_SORT
+                    "ALTER TABLE $TEMP_TABLE_PREFIX$TABLE_SORT RENAME TO $TABLE_SORT"
                 )
                 database.execSQL(
                     "CREATE TABLE " +
@@ -230,7 +230,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
                         " SELECT * FROM " +
                         TABLE_ENCRYPTED
                 )
-                database.execSQL("DROP TABLE " + TABLE_ENCRYPTED)
+                database.execSQL("DROP TABLE $TABLE_ENCRYPTED")
                 database.execSQL(
                     "ALTER TABLE " +
                         TEMP_TABLE_PREFIX +
@@ -257,7 +257,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
                         " SELECT * FROM " +
                         TABLE_CLOUD_PERSIST
                 )
-                database.execSQL("DROP TABLE " + TABLE_CLOUD_PERSIST)
+                database.execSQL("DROP TABLE $TABLE_CLOUD_PERSIST")
                 database.execSQL(
                     "ALTER TABLE " +
                         TEMP_TABLE_PREFIX +
@@ -294,7 +294,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
             }
         }
 
-        internal val MIGRATION_9_10: Migration = object : Migration(9, DATABASE_VERSION) {
+        internal val MIGRATION_9_10: Migration = object : Migration(9, 10) {
             override fun migrate(database: SupportSQLiteDatabase) {
                 database.execSQL(
                     "UPDATE " +
@@ -304,6 +304,20 @@ abstract class ExplorerDatabase : RoomDatabase() {
                         " = " +
                         COLUMN_CLOUD_SERVICE +
                         "+1"
+                )
+            }
+        }
+
+        internal val MIGRATION_10_11: Migration = object : Migration(10, DATABASE_VERSION) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL(
+                    "UPDATE " +
+                        TABLE_CLOUD_PERSIST +
+                        " SET " +
+                        COLUMN_CLOUD_SERVICE +
+                        " = " +
+                        COLUMN_CLOUD_SERVICE +
+                        "-2"
                 )
             }
         }
@@ -329,6 +343,7 @@ abstract class ExplorerDatabase : RoomDatabase() {
                 .addMigrations(MIGRATION_7_8)
                 .addMigrations(MIGRATION_8_9)
                 .addMigrations(MIGRATION_9_10)
+                .addMigrations(MIGRATION_10_11)
                 .allowMainThreadQueries()
                 .build()
         }
