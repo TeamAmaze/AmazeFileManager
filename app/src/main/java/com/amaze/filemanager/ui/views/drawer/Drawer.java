@@ -304,7 +304,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       HybridFile hybridFile = new HybridFile(OpenMode.UNKNOWN, file);
       hybridFile.generateMode(mainActivity);
 
-      long totalSpace = hybridFile.getTotal(mainActivity), freeSpace = hybridFile.getUsableSpace();
+      long totalSpace = hybridFile.getTotal(mainActivity);
+      long freeSpace = hybridFile.getUsableSpace();
 
       storageDirectoryPaths.add(file);
 
