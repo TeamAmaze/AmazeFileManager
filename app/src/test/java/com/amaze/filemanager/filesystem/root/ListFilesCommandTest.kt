@@ -32,6 +32,7 @@ import com.amaze.filemanager.filesystem.HybridFileParcelable
 import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.topjohnwu.superuser.Shell
 import io.mockk.every
 import io.mockk.mockkObject
 import org.junit.Assert.assertEquals
@@ -90,6 +91,13 @@ class ListFilesCommandTest {
         every {
             ListFilesCommand.executeRootCommand(anyString(), anyBoolean(), anyBoolean())
         } answers { callOriginal() }
+        every { ListFilesCommand.runShellCommand("pwd") }.answers {
+            object : Shell.Result() {
+                override fun getOut(): MutableList<String> = listOf("/").toMutableList()
+                override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
+                override fun getCode(): Int = 0
+            }
+        }
         every { ListFilesCommand.runShellCommandToList("ls -l \"/bin\"") } answers { lsLines }
         every { ListFilesCommand.runShellCommandToList("ls -l \"/\"") } answers { lsRootLines }
         every {
