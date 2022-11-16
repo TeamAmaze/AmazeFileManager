@@ -31,8 +31,8 @@ import kotlinx.coroutines.launch
 class MainActivityViewModel(val applicationContext: Application) :
     AndroidViewModel(applicationContext) {
 
-    var mediaCacheHash: List<ArrayList<LayoutElementParcelable>?> = List(5) { null }
-    var listCache: LruCache<String, ArrayList<LayoutElementParcelable>> = LruCache(50)
+    var mediaCacheHash: List<List<LayoutElementParcelable>?> = List(5) { null }
+    var listCache: LruCache<String, List<LayoutElementParcelable>> = LruCache(50)
 
     companion object {
         /**
@@ -44,7 +44,7 @@ class MainActivityViewModel(val applicationContext: Application) :
     /**
      * Put list for a given path in cache
      */
-    fun putInCache(path: String, listToCache: ArrayList<LayoutElementParcelable>) {
+    fun putInCache(path: String, listToCache: List<LayoutElementParcelable>) {
         viewModelScope.launch(Dispatchers.Default) {
             listCache.put(path, listToCache)
         }
@@ -62,14 +62,14 @@ class MainActivityViewModel(val applicationContext: Application) :
     /**
      * Get cache from a given path and updates files / folder count
      */
-    fun getFromListCache(path: String): ArrayList<LayoutElementParcelable>? {
+    fun getFromListCache(path: String): List<LayoutElementParcelable>? {
         return listCache.get(path)
     }
 
     /**
      * Get cache from a given path and updates files / folder count
      */
-    fun getFromMediaFilesCache(mediaType: Int): ArrayList<LayoutElementParcelable>? {
+    fun getFromMediaFilesCache(mediaType: Int): List<LayoutElementParcelable>? {
         return mediaCacheHash[mediaType]
     }
 }
