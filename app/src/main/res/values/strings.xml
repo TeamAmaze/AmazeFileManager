@@ -790,5 +790,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="protocol_ftps">Secure FTP</string>
     <string name="unavailable">Unavailable</string>
     <string name="cloud_error_fdroid">Amaze Cloud Plugin not supported with F-Droid version. Please use Play Store version of Amaze.</string>
+    <string name="disable_player_intent_filters">Disable player intent filters</string>
+    <string name="disable_player_intent_filters_summary">Disables Amaze inbuilt media players from file chooser</string>
 </resources>
 
