@@ -599,7 +599,6 @@ public class FileUtils {
   /** Method determines if there is something to go back to */
   public static boolean canGoBack(Context context, HybridFile currentFile) {
     switch (currentFile.getMode()) {
-
         // we're on main thread and can't list the cloud files
       case DROPBOX:
       case BOX:
@@ -899,7 +898,7 @@ public class FileUtils {
       }
     }
     int p = getColonPosition(array);
-    if (p != -1) {
+    if (p != -1 && (p + 1) != array.length) {
       date = array[p - 1] + " | " + array[p];
       size = array[p - 2];
     } else if (isStat) {
@@ -916,6 +915,10 @@ public class FileUtils {
       int q = getLinkPosition(array);
       for (int i = p + 1; i < q; i++) {
         name.append(" ").append(array[i]);
+      }
+      // Newer *boxes may introduce full path during stat. Trim down to the very last /
+      if (name.lastIndexOf("/") > 0) {
+        name.delete(0, name.lastIndexOf("/") + 1);
       }
       name = new StringBuilder(name.toString().trim());
       for (int i = q + 1; i < array.length; i++) {

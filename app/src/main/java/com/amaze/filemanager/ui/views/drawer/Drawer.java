@@ -80,7 +80,6 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.content.res.Configuration;
-import android.content.res.Resources;
 import android.graphics.Color;
 import android.os.Build;
 import android.text.SpannableString;
@@ -126,7 +125,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
   };
 
   @NonNull private final MainActivity mainActivity;
-  private Resources resources;
   private DataUtils dataUtils;
 
   private ActionViewStateManager actionViewStateManager;
@@ -155,7 +153,6 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public Drawer(MainActivity mainActivity) {
     this.mainActivity = mainActivity;
-    resources = mainActivity.getResources();
     dataUtils = DataUtils.getInstance();
 
     drawerHeaderLayout = mainActivity.getLayoutInflater().inflate(R.layout.drawerheader, null);

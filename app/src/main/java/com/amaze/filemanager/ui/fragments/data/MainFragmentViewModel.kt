@@ -38,14 +38,13 @@ import com.amaze.filemanager.utils.DataUtils
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainFragmentViewModel : ViewModel() {
 
     var currentPath: String? = null
 
     /** This is not an exact copy of the elements in the adapter  */
-    var listElements = ArrayList<LayoutElementParcelable>()
+    var listElements: List<LayoutElementParcelable> = ArrayList<LayoutElementParcelable>()
 
     var adapterListItems: ArrayList<RecyclerAdapter.ListItem>? = null
     var iconList: ArrayList<IconDataParcelable>? = null

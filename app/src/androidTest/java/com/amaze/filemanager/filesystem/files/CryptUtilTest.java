@@ -30,6 +30,7 @@ import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.utils.PasswordUtil;
 
 import android.content.Context;
+import android.util.Base64;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
@@ -52,7 +53,8 @@ public class CryptUtilTest {
   @Test
   public void testEncryptDecrypt() throws Exception {
     String password = "hackme";
-    String encrypted = PasswordUtil.INSTANCE.encryptPassword(context, password);
-    assertEquals(password, PasswordUtil.INSTANCE.decryptPassword(context, encrypted));
+    String encrypted = PasswordUtil.INSTANCE.encryptPassword(context, password, Base64.URL_SAFE);
+    assertEquals(
+        password, PasswordUtil.INSTANCE.decryptPassword(context, encrypted, Base64.URL_SAFE));
   }
 }

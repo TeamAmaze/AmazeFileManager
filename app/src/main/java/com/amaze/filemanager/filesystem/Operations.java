@@ -149,6 +149,12 @@ public class Operations {
           return null;
         }
 
+        // Android data directory, prohibit create directory
+        if (file.isAndroidDataDir()) {
+          errorCallBack.done(file, false);
+          return null;
+        }
+
         if (file.isSftp() || file.isFtp()) {
           file.mkdir(context);
           /*
@@ -299,6 +305,13 @@ public class Operations {
           errorCallBack.exists(file);
           return null;
         }
+
+        // Android data directory, prohibit create file
+        if (file.isAndroidDataDir()) {
+          errorCallBack.done(file, false);
+          return null;
+        }
+
         if (file.isSftp() || file.isFtp()) {
           OutputStream out = file.getOutputStream(context);
           if (out == null) {

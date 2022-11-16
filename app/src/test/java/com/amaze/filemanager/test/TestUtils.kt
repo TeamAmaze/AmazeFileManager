@@ -29,6 +29,7 @@ import android.os.storage.StorageManager
 import android.os.storage.StorageVolume
 import androidx.annotation.StringRes
 import androidx.test.core.app.ApplicationProvider
+import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.filesystem.compressed.CompressedHelper
 import org.robolectric.Shadows
@@ -57,7 +58,11 @@ fun supportedArchiveExtensions(): List<String> {
         it.isAccessible = true
         it.get(null).toString()
     }.filter {
-        it != "tar"
+        if (BuildConfig.FLAVOR == "play") {
+            it != "tar"
+        } else {
+            it != "tar" && it != "rar"
+        }
     }
 }
 
