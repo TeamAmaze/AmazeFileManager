@@ -78,7 +78,9 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.MIGRATION_5_6,
                 ExplorerDatabase.MIGRATION_6_7,
                 ExplorerDatabase.MIGRATION_7_8,
-                ExplorerDatabase.MIGRATION_8_9
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
             )
             .build()
         explorerDatabase.openHelper.writableDatabase
@@ -98,7 +100,14 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_5_6, ExplorerDatabase.MIGRATION_6_7)
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_5_6,
+                ExplorerDatabase.MIGRATION_6_7,
+                ExplorerDatabase.MIGRATION_7_8,
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            )
             .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
@@ -117,7 +126,13 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_6_7)
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_6_7,
+                ExplorerDatabase.MIGRATION_7_8,
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            )
             .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
@@ -140,7 +155,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (1," +
-                (OpenMode.GDRIVE.ordinal - 3) +
+                (OpenMode.GDRIVE.ordinal - 1) +
                 ",'abcd')"
         )
         db.execSQL(
@@ -153,7 +168,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (2," +
-                (OpenMode.DROPBOX.ordinal - 3) +
+                (OpenMode.DROPBOX.ordinal - 1) +
                 ",'efgh')"
         )
         db.execSQL(
@@ -166,7 +181,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (3," +
-                (OpenMode.BOX.ordinal - 3) +
+                (OpenMode.BOX.ordinal - 1) +
                 ",'ijkl')"
         )
         db.execSQL(
@@ -179,7 +194,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (4," +
-                (OpenMode.ONEDRIVE.ordinal - 3) +
+                (OpenMode.ONEDRIVE.ordinal - 1) +
                 ",'mnop')"
         )
         db.close()
@@ -188,10 +203,12 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_7_8)
-            .addMigrations(ExplorerDatabase.MIGRATION_8_9)
-            .addMigrations(ExplorerDatabase.MIGRATION_9_10)
-            .allowMainThreadQueries()
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_7_8,
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            ).allowMainThreadQueries()
             .build()
         explorerDatabase.openHelper.writableDatabase
         var verify = explorerDatabase
@@ -242,7 +259,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (1," +
-                (OpenMode.GDRIVE.ordinal - 2) +
+                (OpenMode.GDRIVE.ordinal) +
                 ",'abcd')"
         )
         db.execSQL(
@@ -255,7 +272,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (2," +
-                (OpenMode.DROPBOX.ordinal - 2) +
+                (OpenMode.DROPBOX.ordinal) +
                 ",'efgh')"
         )
         db.execSQL(
@@ -268,7 +285,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (3," +
-                (OpenMode.BOX.ordinal - 2) +
+                (OpenMode.BOX.ordinal) +
                 ",'ijkl')"
         )
         db.execSQL(
@@ -281,7 +298,7 @@ class ExplorerDatabaseMigrationTest {
                 "," +
                 ExplorerDatabase.COLUMN_CLOUD_PERSIST +
                 ") VALUES (4," +
-                (OpenMode.ONEDRIVE.ordinal - 2) +
+                (OpenMode.ONEDRIVE.ordinal) +
                 ",'mnop')"
         )
         db.close()
@@ -290,8 +307,11 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_8_9)
-            .addMigrations(ExplorerDatabase.MIGRATION_9_10)
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            )
             .allowMainThreadQueries()
             .build()
         explorerDatabase.openHelper.writableDatabase
