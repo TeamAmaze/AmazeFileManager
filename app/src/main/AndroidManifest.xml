@@ -131,7 +131,7 @@
         </activity>
 
         <activity
-            android:exported="false"
+            android:exported="true"
             android:uiOptions="splitActionBarWhenNarrow"
             android:configChanges="orientation|screenSize|uiMode"
             android:label="@string/setting"
