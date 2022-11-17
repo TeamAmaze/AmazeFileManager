@@ -443,8 +443,7 @@ public class Operations {
       private final DataUtils dataUtils = DataUtils.getInstance();
 
       private final boolean isLocalFilesystemCaseInsensitive =
-          oldFile.isLocal()
-              && Objects.requireNonNull(oldFile.getFile()).exists()
+          Objects.requireNonNull(oldFile.getFile()).exists()
               && new File(oldFile.getFile().getParent(), oldFile.getSimpleName().toUpperCase())
                   .exists()
               && new File(oldFile.getFile().getParent(), oldFile.getSimpleName().toLowerCase())
