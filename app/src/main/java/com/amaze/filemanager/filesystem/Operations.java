@@ -30,7 +30,6 @@ import java.io.OutputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.concurrent.Executor;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -442,12 +441,13 @@ public class Operations {
 
       private final DataUtils dataUtils = DataUtils.getInstance();
 
-      private final boolean isLocalFilesystemCaseInsensitive =
-          Objects.requireNonNull(oldFile.getFile()).exists()
-              && new File(oldFile.getFile().getParent(), oldFile.getSimpleName().toUpperCase())
-                  .exists()
-              && new File(oldFile.getFile().getParent(), oldFile.getSimpleName().toLowerCase())
-                  .exists();
+      /**
+       * Determines whether double rename is required based on original and new file name regardless
+       * of the case-sensitivity of the filesystem
+       */
+      private final boolean isCaseSensitiveRename =
+          oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName())
+              && !oldFile.getSimpleName().equals(newFile.getSimpleName());
 
       /**
        * random string that is appended to file to prevent name collision, max file name is 255
@@ -530,7 +530,7 @@ public class Operations {
           return null;
         }
 
-        if (newFile.exists() && !isLocalFilesystemCaseInsensitive) {
+        if (newFile.exists() && !isCaseSensitiveRename) {
           errorCallBack.exists(newFile);
           return null;
         }
@@ -687,7 +687,7 @@ public class Operations {
           }
 
           boolean result;
-          if (isLocalFilesystemCaseInsensitive) {
+          if (isCaseSensitiveRename) {
             result = localDoubleRename(oldFile, newFile);
           } else {
             result = localRename(oldFile, newFile);
