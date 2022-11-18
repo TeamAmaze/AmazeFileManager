@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "com.amaze.filemanager"
         minSdkVersion 14
-        targetSdkVersion 30
+        targetSdkVersion 31
         versionCode 115
         versionName "3.8.3"
         multiDexEnabled true
@@ -80,6 +80,10 @@ android {
         }
     }
 
+    sourceSets {
+        test.java.srcDirs += '../testShared/src/test/java'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -127,7 +131,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$roomVersion"
     // RxJava support for Room
     implementation "androidx.room:room-rxjava2:$roomVersion"
-    kapt 'androidx.annotation:annotation:1.2.0'
+    kapt "androidx.annotation:annotation:$androidXAnnotationVersion"
 
     implementation "androidx.preference:preference:$androidXPrefVersion"
     implementation "androidx.preference:preference-ktx:$androidXPrefVersion"
@@ -145,7 +149,7 @@ dependencies {
     testImplementation "org.mockito.kotlin:mockito-kotlin:$mockitoKotlinVersion"
     testImplementation "org.apache.sshd:sshd-core:1.7.0"
     testImplementation "org.awaitility:awaitility:$awaitilityVersion"
-    testImplementation 'org.jsoup:jsoup:1.11.2'
+    testImplementation "org.jsoup:jsoup:$jsoupVersion"
     testImplementation "androidx.room:room-migration:$roomVersion"
     testImplementation "io.mockk:mockk:$mockkVersion"
     kaptTest "com.google.auto.service:auto-service:1.0-rc4"
@@ -157,7 +161,7 @@ dependencies {
     androidTestImplementation "androidx.test:rules:$androidXTestVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidXTestExtVersion"
     // androidTestImplementation "androidx.test.uiautomator:uiautomator:$uiAutomatorVersion"
-    androidTestImplementation 'commons-net:commons-net:3.6'
+    androidTestImplementation "commons-net:commons-net:$commonsNetVersion"
     androidTestImplementation "org.awaitility:awaitility:$awaitilityVersion"
 
     //Detect memory leaks
@@ -175,11 +179,11 @@ dependencies {
 
     //implementation files('libs/ftplet-api-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftplet-api
-    implementation group: 'org.apache.ftpserver', name: 'ftplet-api', version: '1.1.1'
+    implementation "org.apache.ftpserver:ftplet-api:$ftpserverVersion"
 
     //implementation files('libs/ftpserver-core-1.1.0-SNAPSHOT.jar')
     // https://mvnrepository.com/artifact/org.apache.ftpserver/ftpserver-core
-    implementation group: 'org.apache.ftpserver', name: 'ftpserver-core', version: '1.1.1'
+    implementation "org.apache.ftpserver:ftpserver-core:$ftpserverVersion"
 
     implementation 'org.greenrobot:eventbus:3.3.1'
 
@@ -237,10 +241,10 @@ dependencies {
 
     implementation project(':commons_compress_7z')
     implementation project(':file_operations')
-    implementation "androidx.core:core-ktx:$kotlin_version"
+    implementation "androidx.core:core-ktx:$androidXCoreVersion"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "ch.acra:acra-core:5.7.0"
-    runtimeOnly 'org.slf4j:slf4j-api:1.7.32'
+    runtimeOnly 'org.slf4j:slf4j-api:1.7.36'
     runtimeOnly "com.github.tony19:logback-android:$logbackAndroidVersion"
 }
 
@@ -286,6 +290,11 @@ clean.mustRunAfter supportOldLangCodes
 
 jacoco {
     toolVersion = "${jacocoVersion}"
+}
+
+jacocoAndroidUnitTestReport {
+    html.enabled true
+    xml.enabled true
 }
 
 tasks.withType(Test) {

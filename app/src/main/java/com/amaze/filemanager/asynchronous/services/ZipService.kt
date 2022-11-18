@@ -20,8 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.services
 
-import android.app.NotificationManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.*
 import android.net.Uri
 import android.os.AsyncTask
@@ -31,6 +31,7 @@ import android.os.IBinder
 import android.widget.RemoteViews
 import androidx.annotation.StringRes
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.preference.PreferenceManager
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
@@ -61,11 +62,11 @@ class ZipService : AbstractProgressiveService() {
     private val log: Logger = LoggerFactory.getLogger(ZipService::class.java)
 
     private val mBinder: IBinder = ObtainableServiceBinder(this)
-    private var asyncTask: CompressAsyncTask? = null
-    private var mNotifyManager: NotificationManager? = null
-    private var mBuilder: NotificationCompat.Builder? = null
+    private lateinit var asyncTask: CompressAsyncTask
+    private lateinit var mNotifyManager: NotificationManagerCompat
+    private lateinit var mBuilder: NotificationCompat.Builder
+    private lateinit var progressListener: ProgressListener
     private val progressHandler = ProgressHandler()
-    private var progressListener: ProgressListener? = null
 
     // list of data packages, to initiate chart in process viewer fragment
     private val dataPackages = ArrayList<DatapointParcelable>()
@@ -84,7 +85,7 @@ class ZipService : AbstractProgressiveService() {
         val baseFiles: ArrayList<HybridFileParcelable> =
             intent.getParcelableArrayListExtra(KEY_COMPRESS_FILES)!!
         val zipFile = File(mZipPath)
-        mNotifyManager = getSystemService(NOTIFICATION_SERVICE) as NotificationManager
+        mNotifyManager = NotificationManagerCompat.from(applicationContext)
         if (!zipFile.exists()) {
             try {
                 zipFile.createNewFile()
@@ -100,7 +101,12 @@ class ZipService : AbstractProgressiveService() {
 
         val notificationIntent = Intent(this, MainActivity::class.java)
             .putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            notificationIntent,
+            getPendingIntentFlag(0)
+        )
 
         customSmallContentViews = RemoteViews(packageName, R.layout.notification_service_small)
         customBigContentViews = RemoteViews(packageName, R.layout.notification_service_big)
@@ -110,7 +116,7 @@ class ZipService : AbstractProgressiveService() {
             applicationContext,
             1234,
             stopIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            getPendingIntentFlag(FLAG_UPDATE_CURRENT)
         )
         val action = NotificationCompat.Action(
             R.drawable.ic_zip_box_grey,
@@ -129,19 +135,19 @@ class ZipService : AbstractProgressiveService() {
             .setColor(accentColor)
 
         NotificationConstants.setMetadata(this, mBuilder, NotificationConstants.TYPE_NORMAL)
-        startForeground(NotificationConstants.ZIP_ID, mBuilder!!.build())
+        startForeground(NotificationConstants.ZIP_ID, mBuilder.build())
         initNotificationViews()
         super.onStartCommand(intent, flags, startId)
         super.progressHalted()
         asyncTask = CompressAsyncTask(this, baseFiles, mZipPath!!)
-        asyncTask!!.execute()
+        asyncTask.execute()
         // If we get killed, after returning from here, restart
         return START_NOT_STICKY
     }
 
-    override fun getNotificationManager(): NotificationManager = mNotifyManager!!
+    override fun getNotificationManager(): NotificationManagerCompat = mNotifyManager
 
-    override fun getNotificationBuilder(): NotificationCompat.Builder = mBuilder!!
+    override fun getNotificationBuilder(): NotificationCompat.Builder = mBuilder
 
     override fun getNotificationId(): Int = NotificationConstants.ZIP_ID
 
@@ -152,7 +158,7 @@ class ZipService : AbstractProgressiveService() {
 
     override fun getNotificationCustomViewBig(): RemoteViews = customBigContentViews!!
 
-    override fun getProgressListener(): ProgressListener = progressListener!!
+    override fun getProgressListener(): ProgressListener = progressListener
 
     override fun setProgressListener(progressListener: ProgressListener) {
         this.progressListener = progressListener
@@ -170,8 +176,8 @@ class ZipService : AbstractProgressiveService() {
         private val zipPath: String
     ) : AsyncTask<Void, Void?, Void?>() {
 
-        private var zos: ZipOutputStream? = null
-        private var watcherUtil: ServiceWatcherUtil? = null
+        private lateinit var zos: ZipOutputStream
+        private lateinit var watcherUtil: ServiceWatcherUtil
         private var totalBytes = 0L
 
         override fun doInBackground(vararg p1: Void): Void? {
@@ -206,7 +212,7 @@ class ZipService : AbstractProgressiveService() {
         }
 
         public override fun onPostExecute(a: Void?) {
-            watcherUtil!!.stopWatch()
+            watcherUtil.stopWatch()
             val intent = Intent(MainActivity.KEY_INTENT_LOAD_LIST)
                 .putExtra(MainActivity.KEY_INTENT_LOAD_LIST_FILE, zipPath)
             zipService.sendBroadcast(intent)
@@ -220,7 +226,7 @@ class ZipService : AbstractProgressiveService() {
             val out: OutputStream?
             val zipDirectory = File(zipPath)
             watcherUtil = ServiceWatcherUtil(progressHandler)
-            watcherUtil!!.watch(this@ZipService)
+            watcherUtil.watch(this@ZipService)
             try {
                 out = FileUtil.getOutputStream(zipDirectory, context)
                 zos = ZipOutputStream(BufferedOutputStream(out))
@@ -234,8 +240,8 @@ class ZipService : AbstractProgressiveService() {
                 log.warn("failed to zip file", e)
             } finally {
                 try {
-                    zos!!.flush()
-                    zos!!.close()
+                    zos.flush()
+                    zos.close()
                     context.sendBroadcast(
                         Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
                             .setData(Uri.fromFile(zipDirectory))
@@ -250,13 +256,13 @@ class ZipService : AbstractProgressiveService() {
         private fun compressFile(file: File, path: String) {
             if (progressHandler.cancelled) return
             if (!file.isDirectory) {
-                zos!!.putNextEntry(createZipEntry(file, path))
+                zos.putNextEntry(createZipEntry(file, path))
                 val buf = ByteArray(GenericCopyUtil.DEFAULT_BUFFER_SIZE)
                 var len: Int
                 BufferedInputStream(FileInputStream(file)).use { `in` ->
                     while (`in`.read(buf).also { len = it } > 0) {
                         if (!progressHandler.cancelled) {
-                            zos!!.write(buf, 0, len)
+                            zos.write(buf, 0, len)
                             ServiceWatcherUtil.position += len.toLong()
                         } else break
                     }

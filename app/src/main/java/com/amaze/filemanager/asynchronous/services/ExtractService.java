@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 import java.io.File;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -44,7 +46,6 @@ import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.github.junrar.exception.UnsupportedRarV5Exception;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -60,6 +61,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class ExtractService extends AbstractProgressiveService {
@@ -70,7 +72,7 @@ public class ExtractService extends AbstractProgressiveService {
   // list of data packages,// to initiate chart in process viewer fragment
   private ArrayList<DatapointParcelable> dataPackages = new ArrayList<>();
 
-  private NotificationManager mNotifyManager;
+  private NotificationManagerCompat mNotifyManager;
   private NotificationCompat.Builder mBuilder;
   private ProgressHandler progressHandler = new ProgressHandler();
   private ProgressListener progressListener;
@@ -95,7 +97,7 @@ public class ExtractService extends AbstractProgressiveService {
     String extractPath = intent.getStringExtra(KEY_PATH_EXTRACT);
     String[] entries = intent.getStringArrayExtra(KEY_ENTRIES_ZIP);
 
-    mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    mNotifyManager = NotificationManagerCompat.from(getApplicationContext());
     sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
     accentColor =
         ((AppConfig) getApplication())
@@ -107,7 +109,8 @@ public class ExtractService extends AbstractProgressiveService {
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
     notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
-    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+    PendingIntent pendingIntent =
+        PendingIntent.getActivity(this, 0, notificationIntent, getPendingIntentFlag(0));
 
     customSmallContentViews =
         new RemoteViews(getPackageName(), R.layout.notification_service_small);
@@ -116,7 +119,7 @@ public class ExtractService extends AbstractProgressiveService {
     Intent stopIntent = new Intent(TAG_BROADCAST_EXTRACT_CANCEL);
     PendingIntent stopPendingIntent =
         PendingIntent.getBroadcast(
-            getApplicationContext(), 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+            getApplicationContext(), 1234, stopIntent, getPendingIntentFlag(FLAG_UPDATE_CURRENT));
     NotificationCompat.Action action =
         new NotificationCompat.Action(
             R.drawable.ic_zip_box_grey, getString(R.string.stop_ftp), stopPendingIntent);
@@ -156,7 +159,7 @@ public class ExtractService extends AbstractProgressiveService {
   }
 
   @Override
-  protected NotificationManager getNotificationManager() {
+  protected NotificationManagerCompat getNotificationManager() {
     return mNotifyManager;
   }
 

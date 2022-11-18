@@ -33,7 +33,13 @@ import android.os.Bundle
 import android.os.IBinder
 import android.provider.MediaStore
 import android.util.Log
-import android.view.*
+import android.view.ActionMode
+import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuItem
+import android.view.MotionEvent
+import android.view.View
+import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -83,7 +89,6 @@ import org.apache.commons.compress.PasswordRequiredException
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
-import java.util.*
 
 @Suppress("TooManyFunctions")
 class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
@@ -657,7 +662,7 @@ class CompressedExplorerFragment : Fragment(), BottomBarButtonPath {
                 items,
                 this,
                 decompressor,
-                PreferenceManager.getDefaultSharedPreferences(activity)
+                PreferenceManager.getDefaultSharedPreferences(requireMainActivity())
             )
             listView?.adapter = compressedExplorerAdapter
         } else {

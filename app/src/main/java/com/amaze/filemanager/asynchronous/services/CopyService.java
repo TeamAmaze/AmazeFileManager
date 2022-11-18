@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -49,7 +51,6 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ObtainableServiceBinder;
 import com.amaze.filemanager.utils.ProgressHandler;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -64,6 +65,7 @@ import android.widget.Toast;
 
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.preference.PreferenceManager;
 
 public class CopyService extends AbstractProgressiveService {
@@ -77,7 +79,7 @@ public class CopyService extends AbstractProgressiveService {
 
   public static final String TAG_BROADCAST_COPY_CANCEL = "copycancel";
 
-  private NotificationManager mNotifyManager;
+  private NotificationManagerCompat mNotifyManager;
   private NotificationCompat.Builder mBuilder;
   private Context c;
 
@@ -118,14 +120,15 @@ public class CopyService extends AbstractProgressiveService {
             .getCurrentUserColorPreferences(this, sharedPreferences)
             .getAccent();
 
-    mNotifyManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+    mNotifyManager = NotificationManagerCompat.from(getApplicationContext());
     b.putInt(TAG_COPY_START_ID, startId);
 
     Intent notificationIntent = new Intent(this, MainActivity.class);
     notificationIntent.setAction(Intent.ACTION_MAIN);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
-    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+    PendingIntent pendingIntent =
+        PendingIntent.getActivity(this, 0, notificationIntent, getPendingIntentFlag(0));
 
     customSmallContentViews =
         new RemoteViews(getPackageName(), R.layout.notification_service_small);
@@ -133,7 +136,7 @@ public class CopyService extends AbstractProgressiveService {
 
     Intent stopIntent = new Intent(TAG_BROADCAST_COPY_CANCEL);
     PendingIntent stopPendingIntent =
-        PendingIntent.getBroadcast(c, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getBroadcast(c, 1234, stopIntent, getPendingIntentFlag(FLAG_UPDATE_CURRENT));
     NotificationCompat.Action action =
         new NotificationCompat.Action(
             R.drawable.ic_content_copy_white_36dp, getString(R.string.stop_ftp), stopPendingIntent);
@@ -172,7 +175,7 @@ public class CopyService extends AbstractProgressiveService {
   }
 
   @Override
-  protected NotificationManager getNotificationManager() {
+  protected NotificationManagerCompat getNotificationManager() {
     return mNotifyManager;
   }
 

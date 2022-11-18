@@ -27,6 +27,10 @@ android {
         }
     }
 
+    sourceSets {
+        test.java.srcDirs += '../testShared/src/test/java'
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

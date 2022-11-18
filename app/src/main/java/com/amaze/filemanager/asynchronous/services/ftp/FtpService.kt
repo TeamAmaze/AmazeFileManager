@@ -22,6 +22,7 @@ package com.amaze.filemanager.asynchronous.services.ftp
 
 import android.app.AlarmManager
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_ONE_SHOT
 import android.app.Service
 import android.content.Context
 import android.content.Intent
@@ -44,6 +45,7 @@ import androidx.preference.PreferenceManager
 import com.amaze.filemanager.BuildConfig
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
+import com.amaze.filemanager.asynchronous.services.AbstractProgressiveService.getPendingIntentFlag
 import com.amaze.filemanager.filesystem.ftpserver.AndroidFileSystemFactory
 import com.amaze.filemanager.filesystem.ftpserver.RootFileSystemFactory
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants.PREFERENCE_ROOTMODE
@@ -251,11 +253,7 @@ class FtpService : Service(), Runnable {
     override fun onTaskRemoved(rootIntent: Intent) {
         super.onTaskRemoved(rootIntent)
         val restartService = Intent(applicationContext, this.javaClass).setPackage(packageName)
-        val flag = if (SDK_INT >= M) {
-            PendingIntent.FLAG_ONE_SHOT or PendingIntent.FLAG_IMMUTABLE
-        } else {
-            PendingIntent.FLAG_ONE_SHOT
-        }
+        val flag = getPendingIntentFlag(FLAG_ONE_SHOT)
         val restartServicePI = PendingIntent.getService(
             applicationContext,
             1,
