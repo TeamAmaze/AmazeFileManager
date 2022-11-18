@@ -78,6 +78,7 @@ import com.amaze.filemanager.databinding.FragmentFtpBinding
 import com.amaze.filemanager.filesystem.files.FileUtils
 import com.amaze.filemanager.ui.activities.MainActivity
 import com.amaze.filemanager.ui.notifications.FtpNotification
+import com.amaze.filemanager.ui.runIfDocumentsUIExists
 import com.amaze.filemanager.ui.theme.AppTheme
 import com.amaze.filemanager.utils.OneCharacterCharSequence
 import com.amaze.filemanager.utils.PasswordUtil
@@ -224,9 +225,13 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
             }
             R.id.ftp_path -> {
                 if (shouldUseSafFileSystem()) {
-                    activityResultHandlerOnFtpServerPathUpdate.launch(
-                        Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
-                    )
+                    val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+                    intent.runIfDocumentsUIExists(mainActivity) {
+                        activityResultHandlerOnFtpServerPathUpdate.launch(
+                            intent
+                        )
+                    }
                 } else {
                     val dialogBuilder = FolderChooserDialog.Builder(requireActivity())
                     dialogBuilder
@@ -449,28 +454,33 @@ class FtpServerFragment : Fragment(R.layout.fragment_ftp) {
                             .positiveColor(accentColor)
                             .negativeText(R.string.cancel)
                             .negativeColor(accentColor)
-                            .onPositive { dialog, _ ->
-                                activityResultHandlerOnFtpServerPathGrantedSafAccess.launch(
-                                    Intent(Intent.ACTION_OPEN_DOCUMENT_TREE).also {
-                                        if (SDK_INT >= O &&
-                                            directoryUri.startsWith(defaultPathFromPreferences)
-                                        ) {
-                                            it.putExtra(
-                                                EXTRA_INITIAL_URI,
-                                                DocumentsContract.buildDocumentUri(
-                                                    "com.android.externalstorage.documents",
-                                                    "primary:" +
-                                                        directoryUri
-                                                            .substringAfter(
-                                                                defaultPathFromPreferences
-                                                            )
+                            .onPositive(fun(dialog: MaterialDialog, _: DialogAction) {
+                                val intent = Intent(Intent.ACTION_OPEN_DOCUMENT_TREE)
+
+                                intent.runIfDocumentsUIExists(mainActivity) {
+                                    activityResultHandlerOnFtpServerPathGrantedSafAccess.launch(
+                                        intent.also {
+                                            if (SDK_INT >= O &&
+                                                directoryUri.startsWith(defaultPathFromPreferences)
+                                            ) {
+                                                it.putExtra(
+                                                    EXTRA_INITIAL_URI,
+                                                    DocumentsContract.buildDocumentUri(
+                                                        "com.android.externalstorage.documents",
+                                                        "primary:" +
+                                                            directoryUri
+                                                                .substringAfter(
+                                                                    defaultPathFromPreferences
+                                                                )
+                                                    )
                                                 )
-                                            )
+                                            }
                                         }
-                                    }
-                                )
+                                    )
+                                }
+
                                 dialog.dismiss()
-                            }.build().show()
+                            }).build().show()
                     }
                 } else {
                     callback.invoke()

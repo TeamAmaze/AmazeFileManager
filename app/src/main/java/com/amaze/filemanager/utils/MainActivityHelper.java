@@ -58,6 +58,7 @@ import com.amaze.filemanager.filesystem.compressed.showcontents.Decompressor;
 import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
 import com.amaze.filemanager.ui.fragments.MainFragment;
@@ -67,6 +68,7 @@ import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstan
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator;
 import com.leinardi.android.speeddial.SpeedDialView;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -327,9 +329,13 @@ public class MainActivityHelper {
     y.show();
   }
 
+  @SuppressLint("InlinedApi")
   private void triggerStorageAccessFramework(int requestCode) {
+
     Intent intent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-    mainActivity.startActivityForResult(intent, requestCode);
+
+    ExtensionsKt.runIfDocumentsUIExists(
+        intent, mainActivity, () -> mainActivity.startActivityForResult(intent, requestCode));
   }
 
   public void rename(

@@ -47,6 +47,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
@@ -845,7 +846,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               .setOnClickListener(
                   (v) -> {
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+
+                    ExtensionsKt.runIfDocumentsUIExists(
+                        safIntent,
+                        mainActivity,
+                        () ->
+                            mainActivity.startActivityForResult(
+                                safIntent, MainActivity.REQUEST_CODE_SAF));
+
                     dialog.dismiss();
                   });
           dialog.show();

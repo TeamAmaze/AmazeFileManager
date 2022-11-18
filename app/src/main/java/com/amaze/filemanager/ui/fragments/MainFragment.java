@@ -64,6 +64,7 @@ import com.amaze.filemanager.filesystem.files.CryptUtil;
 import com.amaze.filemanager.filesystem.files.EncryptDecryptUtils;
 import com.amaze.filemanager.filesystem.files.FileListSorter;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.MainActivityViewModel;
 import com.amaze.filemanager.ui.dialogs.GeneralDialogCreation;
@@ -657,7 +658,11 @@ public class MainFragment extends Fragment
         d.getActionButton(DialogAction.POSITIVE)
             .setOnClickListener(
                 v -> {
-                  handleDocumentUriForRestrictedDirectories.launch(intent);
+                  ExtensionsKt.runIfDocumentsUIExists(
+                      intent,
+                      requireMainActivity(),
+                      () -> handleDocumentUriForRestrictedDirectories.launch(intent));
+
                   d.dismiss();
                 });
         d.show();
