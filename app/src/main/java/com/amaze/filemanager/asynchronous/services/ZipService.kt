@@ -21,6 +21,7 @@
 package com.amaze.filemanager.asynchronous.services
 
 import android.app.PendingIntent
+import android.app.PendingIntent.FLAG_UPDATE_CURRENT
 import android.content.*
 import android.net.Uri
 import android.os.AsyncTask
@@ -100,7 +101,12 @@ class ZipService : AbstractProgressiveService() {
 
         val notificationIntent = Intent(this, MainActivity::class.java)
             .putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true)
-        val pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0)
+        val pendingIntent = PendingIntent.getActivity(
+            this,
+            0,
+            notificationIntent,
+            getPendingIntentFlag(0)
+        )
 
         customSmallContentViews = RemoteViews(packageName, R.layout.notification_service_small)
         customBigContentViews = RemoteViews(packageName, R.layout.notification_service_big)
@@ -110,7 +116,7 @@ class ZipService : AbstractProgressiveService() {
             applicationContext,
             1234,
             stopIntent,
-            PendingIntent.FLAG_UPDATE_CURRENT
+            getPendingIntentFlag(FLAG_UPDATE_CURRENT)
         )
         val action = NotificationCompat.Action(
             R.drawable.ic_zip_box_grey,

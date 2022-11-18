@@ -20,6 +20,8 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+
 import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
@@ -123,7 +125,8 @@ public class EncryptService extends AbstractProgressiveService {
     notificationIntent.setAction(Intent.ACTION_MAIN);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     notificationIntent.putExtra(MainActivity.KEY_INTENT_PROCESS_VIEWER, true);
-    PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+    PendingIntent pendingIntent =
+        PendingIntent.getActivity(this, 0, notificationIntent, getPendingIntentFlag(0));
 
     customSmallContentViews =
         new RemoteViews(getPackageName(), R.layout.notification_service_small);
@@ -131,7 +134,8 @@ public class EncryptService extends AbstractProgressiveService {
 
     Intent stopIntent = new Intent(TAG_BROADCAST_CRYPT_CANCEL);
     PendingIntent stopPendingIntent =
-        PendingIntent.getBroadcast(context, 1234, stopIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getBroadcast(
+            context, 1234, stopIntent, getPendingIntentFlag(FLAG_UPDATE_CURRENT));
     NotificationCompat.Action action =
         new NotificationCompat.Action(
             getSmallIcon(), getString(R.string.stop_ftp), stopPendingIntent);
