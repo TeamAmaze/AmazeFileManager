@@ -390,8 +390,8 @@ public abstract class AbstractProgressiveService extends Service
   }
 
   /**
-   * For compatibility purposes. Wraps the pending intent flag, return with FLAG_IMMUTABLE if
-   * device SDK >= 32.
+   * For compatibility purposes. Wraps the pending intent flag, return with FLAG_IMMUTABLE if device
+   * SDK >= 32.
    *
    * @see PendingIntent.FLAG_IMMUTABLE
    * @param pendingIntentFlag proposed PendingIntent flag
