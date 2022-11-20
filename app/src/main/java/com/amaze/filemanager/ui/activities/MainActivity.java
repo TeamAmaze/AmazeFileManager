@@ -359,8 +359,20 @@ public class MainActivity extends PermissionsActivity
     mainActivityActionMode = new MainActivityActionMode(new WeakReference<>(MainActivity.this));
 
     if (CloudSheetFragment.isCloudProviderAvailable(this)) {
-
-      LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      try {
+        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      } catch (Exception errorRaised) {
+        LOG.error("Error initializing cloud connections", errorRaised);
+        cloudHandler.clearAllCloudConnections();
+        AlertDialog.show(
+            this,
+            R.string.cloud_connection_credentials_cleared_msg,
+            R.string.cloud_connection_credentials_cleared,
+            android.R.string.ok,
+            null,
+            false);
+        LoaderManager.getInstance(this).initLoader(REQUEST_CODE_CLOUD_LIST_KEYS, null, this);
+      }
     }
 
     path = intent.getStringExtra("path");
