@@ -794,5 +794,7 @@ You only need to do this once, until the next time you select a new location for
     <string name="disable_player_intent_filters">Disable player intent filters</string>
     <string name="disable_player_intent_filters_summary">Disables Amaze inbuilt media players from file chooser</string>
     <string name="no_app_found_intent">No app found to handle this intent. Do you have DocumentsUI installed?</string>
+    <string name="cloud_connection_credentials_cleared">Cloud Connection credentials cleared</string>
+    <string name="cloud_connection_credentials_cleared_msg">Unfortunately, we were unable to migrate your cloud connection credentials to the new database schema, and we had to remove them from the app. Please create the cloud connection again.</string>
 </resources>
 
