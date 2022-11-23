@@ -111,6 +111,7 @@
         <com.amaze.filemanager.ui.views.drawer.CustomNavigationView
             android:id="@+id/navigation"
             android:layout_width="@dimen/drawer_width"
+            app:itemMaxLines="2"
             android:layout_height="match_parent"
             android:layout_gravity="start"/>
     </androidx.drawerlayout.widget.DrawerLayout>

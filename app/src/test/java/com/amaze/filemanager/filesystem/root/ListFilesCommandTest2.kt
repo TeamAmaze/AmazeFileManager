@@ -34,6 +34,7 @@ import com.amaze.filemanager.shadows.ShadowMultiDex
 import com.amaze.filemanager.test.ShadowNativeOperations
 import com.amaze.filemanager.test.TestUtils
 import com.amaze.filemanager.ui.fragments.preferencefragments.PreferencesConstants
+import com.topjohnwu.superuser.Shell
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -90,6 +91,13 @@ class ListFilesCommandTest2 {
                 anyBoolean()
             )
         ).thenCallRealMethod()
+        `when`(mockCommand.runShellCommand("pwd")).thenReturn(
+            object : Shell.Result() {
+                override fun getOut(): MutableList<String> = listOf("/").toMutableList()
+                override fun getErr(): MutableList<String> = emptyList<String>().toMutableList()
+                override fun getCode(): Int = 0
+            }
+        )
         `when`(mockCommand.runShellCommandToList("ls -l \"/bin\"")).thenReturn(lsLines)
         `when`(
             mockCommand.runShellCommandToList(

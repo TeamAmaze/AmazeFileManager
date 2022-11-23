@@ -20,6 +20,11 @@
 
 package com.amaze.filemanager.asynchronous.services;
 
+import static android.app.PendingIntent.FLAG_IMMUTABLE;
+import static android.app.PendingIntent.FLAG_UPDATE_CURRENT;
+import static android.os.Build.VERSION.SDK_INT;
+import static android.os.Build.VERSION_CODES.S;
+
 import java.util.ArrayList;
 
 import org.slf4j.Logger;
@@ -35,7 +40,6 @@ import com.amaze.filemanager.utils.DatapointParcelable;
 import com.amaze.filemanager.utils.ProgressHandler;
 import com.amaze.filemanager.utils.Utils;
 
-import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.Context;
@@ -47,6 +51,7 @@ import android.widget.RemoteViews;
 import androidx.annotation.CallSuper;
 import androidx.annotation.StringRes;
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 /**
  * @author Emmanuel Messulam <emmanuelbendavid@gmail.com> on 28/11/2017, at 19:32.
@@ -72,7 +77,7 @@ public abstract class AbstractProgressiveService extends Service
     wakeLock.setReferenceCounted(false);
   }
 
-  protected abstract NotificationManager getNotificationManager();
+  protected abstract NotificationManagerCompat getNotificationManager();
 
   protected abstract NotificationCompat.Builder getNotificationBuilder();
 
@@ -342,7 +347,7 @@ public abstract class AbstractProgressiveService extends Service
     intent.putExtra("move", move);
 
     PendingIntent pIntent =
-        PendingIntent.getActivity(this, 101, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent.getActivity(this, 101, intent, getPendingIntentFlag(FLAG_UPDATE_CURRENT));
 
     mBuilder.setContentIntent(pIntent);
     mBuilder.setSmallIcon(R.drawable.ic_folder_lock_open_white_36dp);
@@ -382,5 +387,21 @@ public abstract class AbstractProgressiveService extends Service
     getNotificationCustomViewBig()
         .setProgressBar(R.id.notification_service_progressBar_big, 0, 0, true);
     getNotificationManager().notify(getNotificationId(), getNotificationBuilder().build());
+  }
+
+  /**
+   * For compatibility purposes. Wraps the pending intent flag, return with FLAG_IMMUTABLE if device
+   * SDK >= 32.
+   *
+   * @see PendingIntent.FLAG_IMMUTABLE
+   * @param pendingIntentFlag proposed PendingIntent flag
+   * @return original PendingIntent flag if SDK < 32, otherwise adding FLAG_IMMUTABLE flag.
+   */
+  public static int getPendingIntentFlag(final int pendingIntentFlag) {
+    if (SDK_INT < S) {
+      return pendingIntentFlag;
+    } else {
+      return pendingIntentFlag | FLAG_IMMUTABLE;
+    }
   }
 }

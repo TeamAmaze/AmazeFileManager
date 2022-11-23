@@ -94,4 +94,7 @@
         <item name="android:windowDrawsSystemBarBackgrounds">false</item>
         <item name="android:fitsSystemWindows">true</item>
     </style>
+    <style name="DrawerItemDriveSizeTextStyle">
+        <item name="android:letterSpacing">0.05</item>
+    </style>
 </resources>

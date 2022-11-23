@@ -400,7 +400,9 @@ public class MainActivity extends PermissionsActivity
               ExtensionsKt.updateAUAlias(
                   this,
                   !PackageUtils.Companion.appInstalledOrNot(
-                      AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager()));
+                          AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager())
+                      && !getBoolean(
+                          PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())

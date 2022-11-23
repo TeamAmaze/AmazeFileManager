@@ -29,7 +29,7 @@ import com.amaze.filemanager.R
 /** @author Emmanuel on 17/4/2017, at 22:22.
  */
 class PathSwitchPreference(
-    context: Context?,
+    context: Context,
     private val onEdit: (PathSwitchPreference) -> Unit,
     private val onDelete: (PathSwitchPreference) -> Unit
 ) : Preference(context) {
@@ -40,8 +40,8 @@ class PathSwitchPreference(
         widgetLayoutResource = R.layout.namepathswitch_preference
     }
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
-        holder?.itemView?.let { view ->
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
+        holder.itemView.let { view ->
             view.findViewById<View>(R.id.edit).setOnClickListener { onEdit(this) }
             view.findViewById<View>(R.id.delete).setOnClickListener { onDelete(this) }
             view.setOnClickListener(null)

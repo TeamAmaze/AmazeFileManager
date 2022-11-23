@@ -112,3 +112,14 @@ fun View.showFade(duration: Long) {
     this.animate().alpha(1f).duration = duration
     this.visibility = View.VISIBLE
 }
+
+/**
+ * Extension function to check for activity in package manager before triggering code
+ */
+fun Intent.runIfDocumentsUIExists(context: Context, callback: Runnable) {
+    if (this.resolveActivity(context.packageManager) != null) {
+        callback.run()
+    } else {
+        AppConfig.toast(context, R.string.no_app_found_intent)
+    }
+}

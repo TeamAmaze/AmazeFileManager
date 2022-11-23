@@ -38,7 +38,7 @@ import com.amaze.filemanager.ui.views.CircularColorsView
  *
  * @author Emmanuel on 6/10/2017, at 15:36.
  */
-class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
+class SelectedColorsPreference(context: Context, attrs: AttributeSet) :
     DialogPreference(context, attrs) {
     private var colors = intArrayOf(
         Color.TRANSPARENT,
@@ -58,9 +58,9 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
         dialogIcon = null
     }
 
-    override fun onBindViewHolder(holder: PreferenceViewHolder?) {
+    override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
-        (holder?.findViewById(R.id.colorsection) as CircularColorsView).let { colorsView ->
+        (holder.findViewById(R.id.colorsection) as CircularColorsView).let { colorsView ->
             colorsView.setColors(colors[0], colors[1], colors[2], colors[3])
             colorsView.setDividerColor(backgroundColor)
             colorsView.visibility = visibility
@@ -68,15 +68,15 @@ class SelectedColorsPreference(context: Context?, attrs: AttributeSet?) :
     }
 
     override fun getSummary(): CharSequence {
-        val colorPickerPref = sharedPreferences.getInt(
+        val colorPickerPref = sharedPreferences?.getInt(
             PreferencesConstants.PREFERENCE_COLOR_CONFIG,
             ColorPickerDialog.NO_DATA
-        )
+        ) ?: ColorPickerDialog.NO_DATA
         return context.getString(ColorPickerDialog.getTitle(colorPickerPref))
     }
 
-    override fun onGetDefaultValue(a: TypedArray?, index: Int): Any {
-        return a!!.getString(index)!!
+    override fun onGetDefaultValue(a: TypedArray, index: Int): Any {
+        return a.getString(index)!!
     }
 
     override fun onSaveInstanceState(): Parcelable {

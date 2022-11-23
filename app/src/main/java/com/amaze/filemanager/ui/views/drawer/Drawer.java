@@ -47,6 +47,7 @@ import com.amaze.filemanager.filesystem.HybridFile;
 import com.amaze.filemanager.filesystem.RootHelper;
 import com.amaze.filemanager.filesystem.cloud.CloudUtil;
 import com.amaze.filemanager.filesystem.files.FileUtils;
+import com.amaze.filemanager.ui.ExtensionsKt;
 import com.amaze.filemanager.ui.activities.AboutActivity;
 import com.amaze.filemanager.ui.activities.MainActivity;
 import com.amaze.filemanager.ui.activities.PreferencesActivity;
@@ -82,7 +83,11 @@ import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Build;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.format.Formatter;
+import android.text.style.RelativeSizeSpan;
+import android.text.style.TextAppearanceSpan;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
@@ -97,6 +102,7 @@ import android.widget.TextView;
 import androidx.annotation.ColorInt;
 import androidx.annotation.DrawableRes;
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.FragmentTransaction;
@@ -296,6 +302,12 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       String name = storageDirectory.name;
       int icon = storageDirectory.iconRes;
 
+      HybridFile hybridFile = new HybridFile(OpenMode.UNKNOWN, file);
+      hybridFile.generateMode(mainActivity);
+
+      long totalSpace = hybridFile.getTotal(mainActivity);
+      long freeSpace = hybridFile.getUsableSpace();
+
       storageDirectoryPaths.add(file);
 
       if (file.contains(OTGUtil.PREFIX_OTG) || file.startsWith(OTGUtil.PREFIX_MEDIA_REMOVABLE)) {
@@ -306,7 +318,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             "OTG",
             new MenuMetadata(file),
             R.drawable.ic_usb_white_24dp,
-            R.drawable.ic_show_chart_black_24dp);
+            R.drawable.ic_show_chart_black_24dp,
+            Formatter.formatFileSize(mainActivity, freeSpace),
+            Formatter.formatFileSize(mainActivity, totalSpace));
         continue;
       }
 
@@ -318,7 +332,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
             name,
             new MenuMetadata(file),
             icon,
-            R.drawable.ic_show_chart_black_24dp);
+            R.drawable.ic_show_chart_black_24dp,
+            Formatter.formatFileSize(mainActivity, freeSpace),
+            Formatter.formatFileSize(mainActivity, totalSpace));
         if (phoneStorageCount == 0) firstPath = file;
         else if (phoneStorageCount == 1) secondPath = file;
 
@@ -665,7 +681,8 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
-    addNewItem(menu, group, order, mainActivity.getString(text), meta, icon, actionViewIcon);
+    addNewItem(
+        menu, group, order, mainActivity.getString(text), meta, icon, actionViewIcon, null, null);
   }
 
   private void addNewItem(
@@ -676,9 +693,30 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       MenuMetadata meta,
       @DrawableRes int icon,
       @DrawableRes Integer actionViewIcon) {
+    addNewItem(menu, group, order, text, meta, icon, actionViewIcon, null, null);
+  }
+
+  private void addNewItem(
+      @NonNull Menu menu,
+      int group,
+      int order,
+      String text,
+      @NonNull MenuMetadata meta,
+      @DrawableRes int icon,
+      @DrawableRes Integer actionViewIcon,
+      @Nullable String freeSpace,
+      @Nullable String totalSpace) {
     if (BuildConfig.DEBUG && menu.findItem(order) != null)
       throw new IllegalStateException("Item already id exists: " + order);
-    MenuItem item = menu.add(group, order, order, text).setIcon(icon);
+
+    MenuItem item = null;
+
+    if (freeSpace != null && totalSpace != null)
+      item =
+          menu.add(group, order, order, getSpannableText(text, freeSpace, totalSpace))
+              .setIcon(icon);
+    else item = menu.add(group, order, order, text).setIcon(icon);
+
     if (TextUtils.isEmpty(meta.path)) {
       DrawerViewModel model = new ViewModelProvider(mainActivity).get(DrawerViewModel.class);
       model.putDrawerMetadata(item, meta);
@@ -698,7 +736,9 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
       if (!mainActivity.getAppTheme().equals(AppTheme.LIGHT)) {
         imageView.setColorFilter(Color.WHITE);
       }
-      item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(item));
+
+      MenuItem finalItem = item;
+      item.getActionView().setOnClickListener((view) -> onNavigationItemActionClick(finalItem));
     }
   }
 
@@ -806,7 +846,14 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
               .setOnClickListener(
                   (v) -> {
                     Intent safIntent = new Intent(Intent.ACTION_OPEN_DOCUMENT_TREE);
-                    mainActivity.startActivityForResult(safIntent, MainActivity.REQUEST_CODE_SAF);
+
+                    ExtensionsKt.runIfDocumentsUIExists(
+                        safIntent,
+                        mainActivity,
+                        () ->
+                            mainActivity.startActivityForResult(
+                                safIntent, MainActivity.REQUEST_CODE_SAF));
+
                     dialog.dismiss();
                   });
           dialog.show();
@@ -1029,5 +1076,22 @@ public class Drawer implements NavigationView.OnNavigationItemSelectedListener {
 
   public Billing getBilling() {
     return this.billing;
+  }
+
+  private SpannableString getSpannableText(String text, String freeSpace, String totalSpace) {
+
+    String s = mainActivity.getString(R.string.free_of, text, freeSpace, totalSpace);
+
+    SpannableString spannableString = new SpannableString(s);
+
+    spannableString.setSpan(new RelativeSizeSpan(0.8f), text.length() + 1, s.length(), 0);
+
+    spannableString.setSpan(
+        new TextAppearanceSpan(mainActivity, R.style.DrawerItemDriveSizeTextStyle),
+        text.length() + 1,
+        s.length(),
+        0);
+
+    return spannableString;
   }
 }

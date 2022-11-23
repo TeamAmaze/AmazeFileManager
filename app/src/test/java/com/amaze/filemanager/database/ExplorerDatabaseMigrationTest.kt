@@ -78,7 +78,9 @@ class ExplorerDatabaseMigrationTest {
                 ExplorerDatabase.MIGRATION_5_6,
                 ExplorerDatabase.MIGRATION_6_7,
                 ExplorerDatabase.MIGRATION_7_8,
-                ExplorerDatabase.MIGRATION_8_9
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
             )
             .build()
         explorerDatabase.openHelper.writableDatabase
@@ -98,7 +100,14 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_5_6, ExplorerDatabase.MIGRATION_6_7)
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_5_6,
+                ExplorerDatabase.MIGRATION_6_7,
+                ExplorerDatabase.MIGRATION_7_8,
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            )
             .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
@@ -117,7 +126,13 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_6_7)
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_6_7,
+                ExplorerDatabase.MIGRATION_7_8,
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            )
             .build()
         explorerDatabase.openHelper.writableDatabase
         explorerDatabase.close()
@@ -130,107 +145,6 @@ class ExplorerDatabaseMigrationTest {
     @Throws(IOException::class)
     fun migrateFromV7() {
         val db = helper.createDatabase(TEST_DB, 7)
-        db.execSQL(
-            "INSERT INTO " +
-                ExplorerDatabase.TABLE_CLOUD_PERSIST +
-                "(" +
-                ExplorerDatabase.COLUMN_CLOUD_ID +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
-                ") VALUES (1," +
-                (OpenMode.GDRIVE.ordinal - 2) +
-                ",'abcd')"
-        )
-        db.execSQL(
-            "INSERT INTO " +
-                ExplorerDatabase.TABLE_CLOUD_PERSIST +
-                "(" +
-                ExplorerDatabase.COLUMN_CLOUD_ID +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
-                ") VALUES (2," +
-                (OpenMode.DROPBOX.ordinal - 2) +
-                ",'efgh')"
-        )
-        db.execSQL(
-            "INSERT INTO " +
-                ExplorerDatabase.TABLE_CLOUD_PERSIST +
-                "(" +
-                ExplorerDatabase.COLUMN_CLOUD_ID +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
-                ") VALUES (3," +
-                (OpenMode.BOX.ordinal - 2) +
-                ",'ijkl')"
-        )
-        db.execSQL(
-            "INSERT INTO " +
-                ExplorerDatabase.TABLE_CLOUD_PERSIST +
-                "(" +
-                ExplorerDatabase.COLUMN_CLOUD_ID +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
-                "," +
-                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
-                ") VALUES (4," +
-                (OpenMode.ONEDRIVE.ordinal - 2) +
-                ",'mnop')"
-        )
-        db.close()
-        val explorerDatabase = Room.databaseBuilder(
-            InstrumentationRegistry.getInstrumentation().targetContext,
-            ExplorerDatabase::class.java,
-            TEST_DB
-        )
-            .addMigrations(ExplorerDatabase.MIGRATION_7_8)
-            .addMigrations(ExplorerDatabase.MIGRATION_8_9)
-            .allowMainThreadQueries()
-            .build()
-        explorerDatabase.openHelper.writableDatabase
-        var verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.GDRIVE.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
-        Assert.assertEquals(1, verify.id.toLong())
-        Assert.assertEquals("abcd", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.BOX.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
-        Assert.assertEquals(3, verify.id.toLong())
-        Assert.assertEquals("ijkl", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.DROPBOX.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
-        Assert.assertEquals(2, verify.id.toLong())
-        Assert.assertEquals("efgh", verify.persistData.toString())
-        verify = explorerDatabase
-            .cloudEntryDao()
-            .findByServiceType(OpenMode.ONEDRIVE.ordinal)
-            .subscribeOn(Schedulers.trampoline())
-            .blockingGet()
-        Assert.assertEquals(4, verify.id.toLong())
-        Assert.assertEquals("mnop", verify.persistData.toString())
-        explorerDatabase.close()
-    }
-
-    /**
-     * Test migrate from v8 to v9, after shifting OpenMode by 1 again.
-     */
-    @Test
-    @Throws(IOException::class)
-    fun migrateFromV8() {
-        val db = helper.createDatabase(TEST_DB, 8)
         db.execSQL(
             "INSERT INTO " +
                 ExplorerDatabase.TABLE_CLOUD_PERSIST +
@@ -289,7 +203,115 @@ class ExplorerDatabaseMigrationTest {
             ExplorerDatabase::class.java,
             TEST_DB
         )
-            .addMigrations(ExplorerDatabase.MIGRATION_8_9)
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_7_8,
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            ).allowMainThreadQueries()
+            .build()
+        explorerDatabase.openHelper.writableDatabase
+        var verify = explorerDatabase
+            .cloudEntryDao()
+            .findByServiceType(OpenMode.GDRIVE.ordinal)
+            .subscribeOn(Schedulers.trampoline())
+            .blockingGet()
+        Assert.assertEquals(1, verify.id.toLong())
+        Assert.assertEquals("abcd", verify.persistData.toString())
+        verify = explorerDatabase
+            .cloudEntryDao()
+            .findByServiceType(OpenMode.BOX.ordinal)
+            .subscribeOn(Schedulers.trampoline())
+            .blockingGet()
+        Assert.assertEquals(3, verify.id.toLong())
+        Assert.assertEquals("ijkl", verify.persistData.toString())
+        verify = explorerDatabase
+            .cloudEntryDao()
+            .findByServiceType(OpenMode.DROPBOX.ordinal)
+            .subscribeOn(Schedulers.trampoline())
+            .blockingGet()
+        Assert.assertEquals(2, verify.id.toLong())
+        Assert.assertEquals("efgh", verify.persistData.toString())
+        verify = explorerDatabase
+            .cloudEntryDao()
+            .findByServiceType(OpenMode.ONEDRIVE.ordinal)
+            .subscribeOn(Schedulers.trampoline())
+            .blockingGet()
+        Assert.assertEquals(4, verify.id.toLong())
+        Assert.assertEquals("mnop", verify.persistData.toString())
+        explorerDatabase.close()
+    }
+
+    /**
+     * Test migrate from v8 to v9, after shifting OpenMode by 1 again.
+     */
+    @Test
+    @Throws(IOException::class)
+    fun migrateFromV8() {
+        val db = helper.createDatabase(TEST_DB, 8)
+        db.execSQL(
+            "INSERT INTO " +
+                ExplorerDatabase.TABLE_CLOUD_PERSIST +
+                "(" +
+                ExplorerDatabase.COLUMN_CLOUD_ID +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
+                ") VALUES (1," +
+                (OpenMode.GDRIVE.ordinal) +
+                ",'abcd')"
+        )
+        db.execSQL(
+            "INSERT INTO " +
+                ExplorerDatabase.TABLE_CLOUD_PERSIST +
+                "(" +
+                ExplorerDatabase.COLUMN_CLOUD_ID +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
+                ") VALUES (2," +
+                (OpenMode.DROPBOX.ordinal) +
+                ",'efgh')"
+        )
+        db.execSQL(
+            "INSERT INTO " +
+                ExplorerDatabase.TABLE_CLOUD_PERSIST +
+                "(" +
+                ExplorerDatabase.COLUMN_CLOUD_ID +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
+                ") VALUES (3," +
+                (OpenMode.BOX.ordinal) +
+                ",'ijkl')"
+        )
+        db.execSQL(
+            "INSERT INTO " +
+                ExplorerDatabase.TABLE_CLOUD_PERSIST +
+                "(" +
+                ExplorerDatabase.COLUMN_CLOUD_ID +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_SERVICE +
+                "," +
+                ExplorerDatabase.COLUMN_CLOUD_PERSIST +
+                ") VALUES (4," +
+                (OpenMode.ONEDRIVE.ordinal) +
+                ",'mnop')"
+        )
+        db.close()
+        val explorerDatabase = Room.databaseBuilder(
+            InstrumentationRegistry.getInstrumentation().targetContext,
+            ExplorerDatabase::class.java,
+            TEST_DB
+        )
+            .addMigrations(
+                ExplorerDatabase.MIGRATION_8_9,
+                ExplorerDatabase.MIGRATION_9_10,
+                ExplorerDatabase.MIGRATION_10_11
+            )
             .allowMainThreadQueries()
             .build()
         explorerDatabase.openHelper.writableDatabase
