@@ -731,6 +731,10 @@ Dovrai farlo solo questa volta, fino a quando non sceglierai un percorso diverso
     <string name="preference_delete_confirmation_summary">Chiede una conferma prima di cancellare file. La disabilitazione di questa funzione è altamente sconsigliata!</string>
     <string name="protocol_ftps">FTP sicuro</string>
     <string name="unavailable">Non disponibile</string>
+    <string name="free_of">\"%s\n%s liberi di %s</string>
     <string name="cloud_error_fdroid">Il plugin Amaze Cloud non è supportato dalla versione F-Droid. Si prega di usare la versione di Amaze disponibile sul Play Store.</string>
+    <string name="disable_player_intent_filters">Disabilita filtri intent del player</string>
+    <string name="disable_player_intent_filters_summary">Disabilita i filtri intent del player Amaze nel selettore dei file</string>
+    <string name="no_app_found_intent">Nessuna app trovata per gestire questo intent. DocumentsUI è installato?</string>
 </resources>
 
