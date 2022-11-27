@@ -779,6 +779,10 @@
     <string name="preference_delete_confirmation_summary">לבקש אישור בטרם מחיקת קבצים. השבתת האפשרות לא מומלצת כלל!</string>
     <string name="protocol_ftps">FTP מאובטח</string>
     <string name="unavailable">לא זמין</string>
+    <string name="free_of">\"%s\n%s פנויים מתוך %s</string>
     <string name="cloud_error_fdroid">אין תמיכה בתוסף Amaze Cloud בגרסת ה־F-Droid. נא להשתמש בגרסת חנות ה־Play של Amaze.</string>
+    <string name="disable_player_intent_filters">השבתת מסנני Intent של הנגן</string>
+    <string name="disable_player_intent_filters_summary">משבית את נגני המדיה המובנים של Amaze בבוחר הקבצים</string>
+    <string name="no_app_found_intent">לא נמצא יישומון לטיפול ב־Intent הזה. האם מותקן אצלך DocumentsUI?</string>
 </resources>
 
