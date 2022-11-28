@@ -388,7 +388,7 @@ public class ExtractService extends AbstractProgressiveService {
       IOException result = values[0];
       ArchivePasswordCache.getInstance().remove(compressedPath);
       GeneralDialogCreation.showPasswordDialog(
-          getApplicationContext(),
+          AppConfig.getInstance().getMainActivityContext(),
           (MainActivity) AppConfig.getInstance().getMainActivityContext(),
           AppConfig.getInstance().getUtilsProvider().getAppTheme(),
           R.string.archive_password_prompt,
