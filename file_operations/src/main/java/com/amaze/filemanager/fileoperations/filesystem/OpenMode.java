@@ -45,7 +45,9 @@ public enum OpenMode {
   GDRIVE,
   DROPBOX,
   BOX,
-  ONEDRIVE;
+  ONEDRIVE,
+
+  ANDROID_DATA;
 
   /**
    * Get open mode based on the id assigned. Generally used to retrieve this type after config

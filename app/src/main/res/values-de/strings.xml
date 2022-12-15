@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 
 <!--
     Copyright (C) 2014-2017 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>
@@ -56,7 +56,7 @@
     <string name="size_capitalized">Größe</string>
     <string name="size">Größe des Ordners</string>
     <string name="enterzipname">Zip-Namen eingeben</string>
-    <string name="no_app_found">Keine App zum öffnen dieser Datei gefunden</string>
+    <string name="no_app_found">Keine App zum Öffnen dieser Datei gefunden</string>
     <string name="copying">Kopieren</string>
     <string name="moving">Verschieben</string>
     <string name="file">Datei</string>
@@ -147,15 +147,15 @@
     <string name="set_random">Änderungen werden nach einem Neustart der App durchgeführt</string>
     <string name="authors">Autoren</string>
     <string name="changelog">Changelog</string>
-    <string name="ok">Ok</string>
-    <string name="ui">Aussehen</string>
+    <string name="ok">OK</string>
+    <string name="ui">Benutzeroberfläche</string>
     <string name="general">Allgemein</string>
     <string name="thumb_summary">Zeige Miniaturansicht von Apps und Bildern</string>
     <string name="thumb">Thumbnails anzeigen</string>
     <string name="hidden">Zeige versteckte Dateien und Ordner an</string>
     <string name="lastModifiedSummary">Datum und Uhrzeit der letzten Änderung anzeigen</string>
     <string name="lastModifiedPref">Änderungsdatum anzeigen</string>
-    <string name="size_pref_summary">Zeige die Größe bei Dateien und Anzahl der enthaltenen Elemente bei Ordnern an</string>
+    <string name="size_pref_summary">Zeige bei Dateien die Größe an, bei Ordnern die Anzahl der enthaltenen Elemente</string>
     <string name="size_pref">Größe anzeigen</string>
     <string name="miscellaneous">Verschiedenes</string>
     <string name="root_pref_summary">Zeige die Berechtigungen der Dateien und Ordner an</string>
@@ -205,7 +205,7 @@
     <string name="japanese_translation_title">Japanisch</string>
     <string name="tamil_translation_title">Tamil</string>
 
-    <string name="zip_viewer">Zip Betrachter</string>
+    <string name="zip_viewer">Zip-Betrachter</string>
     <string name="unin_system_apk">Das ist eine Systemanwendung. Das Löschen könnte zu einer Instabilität des Systems führen. Ausführen?</string>
     <string name="warning">Warnung</string>
     <string name="donate">Spenden</string>
@@ -218,19 +218,19 @@
     <string name="other">Anderer</string>
     <string name="image">Bild</string>
     <string name="contributors">Mitwirkende</string>
-    <string name="save_paths">Merke Pfad</string>
-    <string name="save_path_summary">Beim Start zeigt jeder Reiter den zuletzt aufgerufenen Ordner an</string>
+    <string name="save_paths">Pfade merken</string>
+    <string name="save_path_summary">Beim Start zeigt jeder Tab den zuletzt aufgerufenen Ordner an</string>
     <string name="select_intent">Auswählen</string>
     <string name="database">Datenbank</string>
     <string name="colored_navigation">Farbige Navigationsleiste</string>
-    <string name="colored_navigvation_sum">Ob oder nicht, die Navigationsleiste wird mit der Farbe des Skins angezeigt.</string>
+    <string name="colored_navigvation_sum">Ob die Navigationsleiste mit der Farbe des Skins angezeigt wird oder nicht.</string>
 
     <string name="color_title">Farbe</string>
     <string name="color_summary">Farbe für diverse Elemente setzen</string>
     <string name="primary_color_title">Primärfarbe</string>
-    <string name="primary_color_summary">Farbe für große Elemente des linken Reiters setzen</string>
+    <string name="primary_color_summary">Farbe für große Elemente des linken Tabs setzen</string>
     <string name="accent_color_title">Akzentfarbe</string>
-    <string name="accent_color_summary">Setze Farbe des FAB und anderen kleinen UI Elementen</string>
+    <string name="accent_color_summary">Setze Farbe des FAB und anderer kleiner UI Elemente</string>
     <string name="icon_color_title">Farbe der Icons</string>
     <string name="icon_color_summary">Icon-Farbe setzen</string>
     <string name="choose_color">Wähle eine Farbe</string>
@@ -242,6 +242,7 @@
     <string name="needs_access_summary">Bitte Stammverzeichnis von \t wählen</string>
     <string name="needs_access_summary1">\tto Schreibrechte eingeräumt</string>
     <string name="smb_connection">SMB Verbindung</string>
+    <string name="smb_server">IP-Adresse des Servers</string>
     <string name="server_address">IP-Adresse des Servers</string>
     <string name="username">Benutzername</string>
     <string name="password">Passwort</string>
@@ -252,7 +253,7 @@
     <string name="videos">Videos</string>
     <string name="apks">APKs</string>
     <string name="documents">Dokumente</string>
-    <string name="images">Installieren</string>
+    <string name="images">Bilder</string>
     <string name="clear">Löschen</string>
     <string name="md5">MD5:</string>
     <string name="total">Insgesamt:</string>
@@ -299,16 +300,16 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="domain">Domain</string>
     <string name="smb_share">Pfad teilen</string>
     <string name="invalid">Ungültig %s</string>
-    <string name="ftp_notif_starting">FTP Server startet</string>
+    <string name="ftp_notif_starting">FTP-Server startet</string>
     <string name="ftp_notif_starting_title">FTP-Server</string>
-    <string name="ftp_notif_title">Amaze FTP Server startet</string>
+    <string name="ftp_notif_title">Amaze FTP-Server startet</string>
     <string name="ftp_notif_text">bei %s</string>
     <string name="ftp_notif_stop_server">STOPP</string>
     <string name="ftp_port_edit_menu_title">FTP-Port wählen</string>
     <string name="ftp_port_change_success">FTP-Port erfolgreich geändert</string>
     <string name="ftp_port_change_error_invalid">Gewählte Portnummer ist ungültig</string>
     <string name="primary_two_title">Primärfarbe (rechter Tab)</string>
-    <string name="primary_two_summary">Setze Farbe für große UI Elemente in dem rechten Tab</string>
+    <string name="primary_two_summary">Setze Farbe für große UI Elemente im rechten Tab</string>
     <string name="support_development">Unterstütze die Entwicklung</string>
     <string name="report_bugs_title">Melde Fehler</string>
     <string name="source_title">Quelltext</string>
@@ -316,7 +317,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="report_bugs_summary">Melde Fehler oder schlage neue Funktionen vor</string>
     <string name="translate_title">Übersetzen</string>
     <string name="translate_summary">Übersetze Amaze in deine Sprache</string>
-    <string name="paypal_copy_message">PayPal ID in die Zwischenablage kopiert</string>
+    <string name="paypal_copy_message">PayPal-ID in die Zwischenablage kopiert</string>
     <string name="searching_devices">Suche nach Geräten</string>
     <string name="use_custom_ip">Verwende benutzerdefinierte IP</string>
     <string name="bookmark_lost">Lesezeichen nicht gefunden, erstelle erneut&#8230;</string>
@@ -439,7 +440,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="contributors_3_summary">Theme Engine</string>
     <string name="contributors_4_summary">Schatten hinter FAB</string>
     <string name="contributors_5_summary">Farbübergang beim Wischen von Tabs</string>
-    <string name="contributors_6_summary">FTP Server</string>
+    <string name="contributors_6_summary">FTP-Server</string>
     <string name="contributors_7_summary">Eine interaktive Shell starten</string>
     <string name="connection_exists">Verbindung ist bereits vorhanden</string>
 
@@ -451,7 +452,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="crypt_encrypt">Verschlüsseln</string>
     <string name="crypt_decrypt">Entschlüsseln</string>
     <string name="operation_fail_following">Für die folgenden Dateien ist die Operation fehlgeschlagen</string>
-    <string name="crypt_pref_master_password_title">Master Passwort</string>
+    <string name="crypt_pref_master_password_title">Master-Passwort</string>
     <string name="crypt_pref_master_password_summary">Legen Sie ein Master-Passwort für die Verschlüsselung fest.
          Lassen Sie das Feld leer um es zu entfernen.</string>
     <string name="crypt_pref_fingerprint_title">Fingerabdruck</string>
@@ -480,9 +481,9 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="show_bookmarks_pref">Lesezeichen</string>
     <string name="create_bookmark">Lesezeichen erstellen</string>
     <string name="edit_bookmark">Lesezeichen bearbeiten</string>
-    <string name="question_delete_bookmark">Leseueichen löschen?</string>
+    <string name="question_delete_bookmark">Lesezeichen löschen?</string>
 
-    <string name="cloud_error_plugin">Amaze Cloud Plugin konnte nicht gefunden werden. Bitte laden Sie es aus dem Play Store herunter.</string>
+    <string name="cloud_error_plugin">Amaze Cloud-Plugin konnte nicht gefunden werden. Bitte laden Sie es aus dem Play Store herunter.</string>
     <string name="cloud_error_failed_restart">Fehler beim Laden der Verbindung.
          Bitte öffnen Sie Amaze Cloud einmal.</string>
     <string name="cloud_remove">Möchten Sie die Cloud-Verbindung entfernen?</string>
@@ -521,7 +522,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="preference_newstack_summary">Erlaubt es Ihnen, Dateien in verschiedenen Aufgaben zu öffnen. Greifen Sie über die Anzeige des letzten Bildschirms des Systems zu.</string>
     <string name="developers">Entwickler</string>
     <string name="no_bitcoin_app">Bitte installieren Sie eine Bitcoin-Wallet-App</string>
-    <string name="channel_name_normal">Amaze Benachrichtigungen</string>
+    <string name="channel_name_normal">Amaze-Benachrichtigungen</string>
     <string name="channel_description_normal">Benachrichtigungen von Amaze Dateimanager </string>
     <string name="channel_name_ftp">Amaze FTP-Server</string>
     <string name="channel_description_ftp">Benachrichtigungen für den Amaze Dateimanager FTP-Server</string>
@@ -531,6 +532,8 @@ andernfalls wird nach Treffern gesucht.</string>
 
     <string name="update">AKTUALISIERUNG</string>
 	<string name="scp_connection">SCP/SFTP-Verbindung</string>
+    <string name="ftp_connection">FTP-Verbindung</string>
+    <string name="ftps_connection">FTP per SSL-Verbindung</string>
     <string name="scp_port">Port</string>
     <string name="ssh_host_key_verification_prompt">Die Authentizität des Geräts \'%1$s\' kann nicht bestätigt werden.\n\n%2$s Fingerabdruck des Schlüssels ist %3$s.\n\nBitte tippen Sie auf \"Ja\" um die Identität zu bestätigen; andernfalls tippen Sie bitte auf \"Nein\".</string>
     <string name="ssh_host_key_verification_prompt_title">Gerät verifizieren</string>
@@ -541,7 +544,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ssh_authentication_failure_key">Anmeldung fehlgeschlagen: Benutzername oder Privater Schlüssel ungültig.</string>
     <string name="ssh_connect_failed">Kann keine Verbindung herstellen zu %1$s:%2$d: %3$s</string>
     <string name="ssh_connect_failed_host_key_changed_title">WARNUNG: DIE ID DES ENTFERNTEN COMPUTERS HAT SICH VERÄNDERT!</string>
-    <string name="ssh_connect_failed_host_key_changed_message">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (Mittelsmann-Attacke)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nBitte kontaktieren Sie Ihren Systemadministrator oder richten Sie eine neue Verbindung ein, um sich weiterhin mit dem Server zu verbinden.</string>
+    <string name="ssh_connect_failed_host_key_changed_message">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (man-in-the-middle-Angriff)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nBitte kontaktieren Sie Ihren Systemadministrator oder richten Sie eine neue Verbindung ein, um sich weiterhin mit dem Server zu verbinden.</string>
     <string name="ssh_key_prompt_passphrase">Bitte geben Sie die Schlüsselpassphrase ein.</string>
     <string name="add_shortcut_not_supported_by_launcher">Die Erstellung von Verknüpfungen wird von Ihrem Launcher nicht unterstützt.</string>
     
@@ -570,7 +573,7 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="no_obtainable_info">Es gibt keine Info zu dieser Datei</string>
     <string name="reopen_from_source">Klappt nicht, bitte erneut von letzter App aus öffnen</string>
     <string name="no_file_error">Etwas ist schief gelaufen, hier gibt es nichts zu öffnen</string>
-    <string name="file_too_long">Die Datei ist zu lang und kann nicht bearbeitet werden. Sie können jedoch den ersten %d Zeichen lesen</string>
+    <string name="file_too_long">Die Datei ist zu lang und kann nicht bearbeitet werden. Sie können jedoch die ersten %d Zeichen lesen</string>
     <string name="file_read_only">Die Datei wurde als nur lesend geöffnet.</string>
     <string name="got_it">Alles klar!</string>
     <string name="encrypt_file_save_as">Verschlüsselte Datei speichern als&#8230;</string>
@@ -581,7 +584,7 @@ andernfalls wird nach Treffern gesucht.</string>
         <p><a href=\"https://www.aescrypt.com\" target=\"_blank>AESCrypt Webseite</a></p>]]>
 </string>
     <string name="encrypt_option_use_azecrypt_desc"><![CDATA[
-        <p>Das Verschlüsselungsformat von Amaze basiert ebenfalls auf AES, unterscheidet sich aber vom AESCrypt-Format. Es kann nur von diesem Gerät entschlüsselt werden. Es sollte beachtet werden, dass mit der Deinstallation von Amaze File Manager auf diesem Gerät oder bei Änderung wie der Sperrbildschirm gehandhabt wird, verschlüsselte Dateien nicht wiederhergestellt werdne können.</p>
+        <p>Das Verschlüsselungsformat von Amaze basiert ebenfalls auf AES, unterscheidet sich aber vom AESCrypt-Format. Es kann nur von diesem Gerät entschlüsselt werden. Es sollte beachtet werden, dass mit der Deinstallation von Amaze File Manager auf diesem Gerät oder bei Änderung wie der Sperrbildschirm gehandhabt wird, verschlüsselte Dateien nicht wiederhergestellt werden können.</p>
     ]]></string>
     <string name="encrypt_file_must_end_with_aze">Verschlüsselte Dateien müssen \".aze\" als Dateierweiterung verwenden.</string>
     <string name="encrypt_file_must_end_with_aes">Verschlüsselte Dateien müssen \".aes\" als Dateierweiterung verwenden.</string>
@@ -590,21 +593,21 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="saved_single_file">Datei als \'%s\' gespeichert.</string>
     <string name="saved_multi_files">%d Dateien gespeichert.</string>
     <string name="create_hidden_file_warn">Die erstellte Datei wird in der Dateiliste ausgeblendet.</string>
-    <string name="grant_apkinstall_permission">App benötigt die Berechtigung zum Installieren von Apps um Fortzufahren.</string>
+    <string name="grant_apkinstall_permission">App benötigt die Berechtigung zum Installieren von Apps um fortzufahren.</string>
     <string name="time_remaining">Zeit verbleibend</string>
     <string name="transfer_rate">Transferrate</string>
     <string name="unknown">unbekannt</string>
     <string name="multiple_invalid_archive_entries">Einige Dateien aus dem Archiv können nicht extrahiert werden. Das Archiv könnte beschädigt sein oder stammt von einer bösartigen Quelle.</string>
     <string name="saf_otg_explanation">Aus Sicherheitsgründen wird nun das Dateisystem von Android selbst aufgerufen. Bitte wählen Sie das USB-Gerät aus der Liste auf der linken Seite.</string>
     <string name="donation_thanks">Vielen Dank für Ihre Spende. Das hält uns motiviert! (:</string>
-    <string name="enable_marquee_filename">Markisen-Effekt für Dateinamen aktivieren</string>
+    <string name="enable_marquee_filename">Lauftext für lange Dateinamen aktivieren</string>
     <string name="archive_password_prompt">Bitte geben Sie das Archivpasswort ein:</string>
     <string name="cannot_extract_archive">Kann Archiv \"%s\":%s nicht extrahieren</string>
     <string name="archive_unsupported_or_corrupt">Das ARchiv \"%s\" kann nicht geöffnet werden. Entweder können wir das Archiv nicht öffnen oder das Archiv wurde beschädigt.</string>
     <string name="close">Schließen</string>
     <string name="bookmark_exists">Lesezeichen existiert</string>
     <string name="hide_media">Vor Media-Browser verstecken</string>
-    <string name="ssh_connect_failed_host_key_changed_prompt">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (Mittelsmann-Attacke)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nSie können den Fingerabdruck des Geräts aktualisieren oder die Aktualisierung der Einstellungen für SSH-Verbindungen abbrechen.</string>
+    <string name="ssh_connect_failed_host_key_changed_prompt">ES IST MÖGLICH, DASS JEMAND ETWAS BÖSARTIGES TUT!\n\nJemand könnte Sie möglicherweise gerade beobachten (man-in-the-middle-Angriff)! Es wäre aber auch möglich, dass sich lediglich der Geräteschlüssel verändert hat. Der Fingerabdruck für den öffentlichen Schlüssel, der vom entfernten Gerät gesendet wurde, passt nicht zu dem in Amaze gespeicherten.\n\nSie können den Fingerabdruck des Geräts aktualisieren oder die Aktualisierung der Einstellungen für SSH-Verbindungen abbrechen.</string>
     <string name="update_host_key">Geräteschlüssel aktualisieren</string>
     <string name="cancel_recommended">Abbrechen (empfohlen)</string>
     <string name="failed_install_apk">Installation fehlgeschlagen</string>
@@ -651,15 +654,15 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="clear_open_file_summary">Setzt die Auswahl der Standard-Apps für das Öffnen von Dateien zurück</string>
     <string name="ftp_readonly">Nur-Lesen Zugriff</string>
     <string name="legacy_listing_title">Alte Auflistung für Root verwenden</string>
-    <string name="legacy_listing_summary">Wenn aktiviert, wird die Legacy-Methode fur Auflistung von Dateien verwendet</string>
+    <string name="legacy_listing_summary">Wenn aktiviert, wird die Legacy-Methode für die Auflistung von Dateien verwendet</string>
     <string name="error_unsupported_v5_rar">RAR-Archiv \"%s\" ist ein nicht unterstütztes RAR v5-Archiv.</string>
     <string name="ftp_prompt_restart_server">Sie müssen den FTP-Server neu starten, damit die Änderungen angewendet werden.</string>
     <string name="error_permission_denied">Berechtigung verweigert</string>
     <string name="error_archive_password_incorrect">Falsches Archiv-Passwort.</string>
     <string name="error_archive_cannot_extract">Kann Archiv-Eintrag \"%s\" nicht nach \"%s\" extrahieren.</string>
     <string name="drag_and_drop_preference">Drag and Drop Präferenz auswählen (Experimentell)</string>
-    <string name="drag_to_move_copy">Berühren und Wischen um Dateien zu verschieben oder zu kopieren</string>
-    <string name="drag_to_select">Berühren und Wischen um Dateien auszuwählen</string>
+    <string name="drag_to_move_copy">Berühren und wischen um Dateien zu verschieben oder zu kopieren</string>
+    <string name="drag_to_select">Berühren und wischen um Dateien auszuwählen</string>
     <string name="disable">Deaktivieren</string>
     <string name="choose_operation">Aktion für Durchführung auswählen</string>
     <string name="remember">Für nächstes mal merken</string>
@@ -667,14 +670,14 @@ andernfalls wird nach Treffern gesucht.</string>
     <string name="ftp_prompt_accept_first_start_saf_access">Da dies der erste Start des FTP-Servers ist und Sie den internen Speicher als freigegebenen Ordner verwenden, erlauben Sie Amaze den Zugriff auf den Speicher über das Storage Access Framework (SAF).\n\n
 
 Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für die Datenfreigabe verwenden.</string>
-    <string name="android_data_prompt_saf_access">Seit Android 10 gibt es bestimmte Einschränkungen auf Verzeichnisse. Für den Zugriff ist das Storage Access Framework (SAF) erforderlich.\n\nBitte erlauben Sie Amaze den Zugriff auf das Verzeichnis von dem systemweiten Dateimanager aus, durch Drücken auf \"Zugriff erlauben\".</string>
+    <string name="android_data_prompt_saf_access">Seit Android 10 gibt es bestimmte Einschränkungen auf Verzeichnisse. Für den Zugriff ist das Storage Access Framework (SAF) erforderlich.\n\nBitte erlauben Sie Amaze den Zugriff auf das Verzeichnis vom systemweiten Dateimanager aus, durch Drücken auf \"Zugriff erlauben\".</string>
     <string name="android_data_prompt_saf_access_title">Zugriff auf SAF erlauben</string>
     <string name="ftp_preference_saf_filesystem_title">Älteres Dateisystem verwenden</string>
     <string name="ftp_preference_saf_filesystem">Auf neuen Android-Versionen aktivieren, für die Unterstützung zur Verwendung externer Speichergeräte</string>
     <string name="ftp_server_fallback_path_reset_prompt">Der freigegebene Pfad des FTP-Servers wurde auf den internen Speicher zurückgesetzt, da Sie zur Legacy-Dateisystemimplementierung zurückwechseln. Bitte wählen Sie über das Menü oben rechts einen neuen Pfad aus.</string>
-    <string name="ftp_server_reset_notify">Geteilter Pfad des FTP-Server wurde auf den internen Speicher zurückgesetzt</string>
-    <string name="ftp_server_root_unavailable">Sie wählen einen Pfad aus der Root-Zugriff erfordert. Bitte aktivieren Sie in den Einstellungen den Root-Explorer, wenn Ihr Gerät gerootet ist.</string>
-    <string name="ftp_server_root_filesystem_warning">Sie wählen einen Pfad aus der Root-Zugriff erfordert. Dadurch aktivieren Sie Lese-/Schreibvorgänge im gesamten Dateisystem des Gerät und das ist gefährlich - Flüchtigkeitsfehler könnten Ihr Gerät beschädigen!\n\nSind Sie sicher?</string>
+    <string name="ftp_server_reset_notify">Geteilter Pfad des FTP-Servers wurde auf den internen Speicher zurückgesetzt</string>
+    <string name="ftp_server_root_unavailable">Sie wählen einen Pfad aus, der Root-Zugriff erfordert. Bitte aktivieren Sie in den Einstellungen den Root-Explorer, wenn Ihr Gerät gerootet ist.</string>
+    <string name="ftp_server_root_filesystem_warning">Sie wählen einen Pfad aus, der Root-Zugriff erfordert. Dadurch aktivieren Sie Lese-/Schreibvorgänge im gesamten Dateisystem des Gerätes. Das ist gefährlich - Flüchtigkeitsfehler könnten Ihr Gerät beschädigen!\n\nSind Sie sicher?</string>
     <string name="compressed_explorer_fragment_error_open_uri">Fehler beim Öffnen der URI \"%s\", um diese zu lesen.</string>
     <string name="error_empty_archive">\"%s\" ist ein leeres Archiv.</string>
     <string name="error_bad_archive_without_info">\"%s\" ist ein defektes Archiv.</string>
@@ -684,7 +687,7 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="signin_with_google_title">Authentifizieren um Google Drive™ zu nutzen</string>
     <string name="show_system_apps">System-Apps anzeigen</string>
     <string name="system_apps">System-Apps</string>
-    <string name="select_inverse">Auswal umkehren</string>
+    <string name="select_inverse">Auswahl umkehren</string>
     <string name="select_by_type">Nach Typ auswählen</string>
     <string name="select_by_date">Nach Datum auswählen</string>
     <string name="select_similar">Ähnliche auswählen</string>
@@ -696,13 +699,13 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="appearance">Aussehen</string>
     <string name="behavior">Verhalten</string>
     <string name="appearance_summary">Thema, Farben und Aussehen des Dateimanagers anpassen</string>
-    <string name="ui_summary">Steuerung was für Informationen angezeigt werden, die Seitenleiste anpassen und Vorlieben der Oberfläche umstellen</string>
+    <string name="ui_summary">Steuert, welche Informationen angezeigt werden, erlaubt das Anpassen von Seitenleiste und Oberfläche</string>
     <string name="behavior_summary">Ändern Sie Verhaltensweisen wie die erweiterte Suche und ob Dateien als neuer Task geöffnet werden sollen</string>
     <string name="security_summary">Passwort und Verschlüsselung festlegen</string>
 
-    <string name="quick_desc">Dateien auf die über Amaze kürzlich zugegriffen wurde</string>
+    <string name="quick_desc">Dateien, auf die über Amaze kürzlich zugegriffen wurde</string>
     <string name="recent_desc">Kürzlich erstellte oder geänderte Dateien</string>
-    <string name="error_cannot_find_way_open">Kein Weg gefunden um die Datei zu öffnen</string>
+    <string name="error_cannot_find_way_open">Keine Möglichkeit gefunden, die Datei zu öffnen</string>
     <string name="error_cant_decompress_that_file">Angefragtes Archiv kann nicht bearbeitet werden</string>
     <string name="analyse_storage">Speicher analysieren</string>
     <string name="download_amaze_utils_text">Sie werden zur den Amaze File Utilities weitergeleitet.Es ist unser Angebot, das über integrierte Audio-/Video-/Bild-/Dokumentenbetrachter verfügt, mit denen Sie gespeicherte Dateien auf verschwommene/dunkle Bilder und doppelte Dateien analysieren können, sowie schnelle Übertragung mit Wifi P2P und vieles mehr.\nBitte unterstützen Sie uns, indem Sie es ausprobieren. </string>
@@ -720,5 +723,12 @@ Sie müssen diesen Schritt nur einmalig ausführen, bis Sie einen neuen Ort für
     <string name="open_with_amaze">Mit Amaze öffnen</string>
     <string name="confirmation">Bestätigung</string>
     <string name="open_file_confirmation">Sind Sie sicher, dass Sie die folgende Datei öffnen wollen?\n\nName:\n%s\n\nOrt:\n%s\n\nGröße:\n%s\n\nMD5:\n%s\n\nSHA256:\n%s\n\n</string>
+    <string name="error_google_play_cannot_update_myself">Laut Google Play-Richtlinien ist es Apps nicht gestattet, sich selbsttätig zu aktualisieren. Bitte aktualisieren Sie die App über den Play Store.</string>
+    <string name="error_cannot_get_package_info">Die Package-Info aus der Datei \"%s\" zu erhalten war nicht möglich. Entweder ist diese Datei kein APK oder sie ist defekt.</string>
+    <string name="preference_delete_confirmation">Löschen bestätigen</string>
+    <string name="preference_delete_confirmation_summary">Sicherheitsabfrage vor dem Löschen von Dateien. Dies sollte möglichst nicht deaktiviert werden. </string>
+    <string name="protocol_ftps">Secure FTP</string>
+    <string name="unavailable">Nicht verfügbar</string>
+    <string name="cloud_error_fdroid">Das Amaze Cloud-Plug-In wird von der F-Droid-Version nicht unterstützt. Bitte verwenden Sie die Play Store-Version von Amaze.</string>
 </resources>
 

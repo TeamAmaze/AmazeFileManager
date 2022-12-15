@@ -20,6 +20,7 @@
 
 package com.amaze.filemanager.filesystem;
 
+import static com.amaze.filemanager.filesystem.FileProperties.ANDROID_DATA_DIRS;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTPS_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.FTP_URI_PREFIX;
 import static com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.SSH_URI_PREFIX;
@@ -42,6 +43,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.EnumSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
@@ -107,7 +109,9 @@ import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import jcifs.smb.SmbException;
 import jcifs.smb.SmbFile;
+import kotlin.collections.ArraysKt;
 import kotlin.io.ByteStreamsKt;
+import kotlin.text.Charsets;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.Buffer;
 import net.schmizz.sshj.common.IOUtils;
@@ -258,6 +262,10 @@ public class HybridFile {
 
   public boolean isGoogleDriveFile() {
     return mode == OpenMode.GDRIVE;
+  }
+
+  public boolean isAndroidDataDir() {
+    return mode == OpenMode.ANDROID_DATA;
   }
 
   public boolean isCloudDriveFile() {
@@ -413,7 +421,8 @@ public class HybridFile {
   public String getPath() {
     try {
       return URLDecoder.decode(path, "UTF-8");
-    } catch (UnsupportedEncodingException ignored) {
+    } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+      LOG.warn("failed to decode path {}", path, e);
       return path;
     }
   }
@@ -463,7 +472,8 @@ public class HybridFile {
         String _path = null;
         try {
           _path = URLDecoder.decode(path, "UTF-8");
-        } catch (UnsupportedEncodingException ignored) {
+        } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+          LOG.warn("failed to decode path {}", path, e);
         }
         if (path.endsWith("/")) {
           _path = path.substring(0, path.length() - 1);
@@ -535,6 +545,22 @@ public class HybridFile {
       case ROOT:
         return getFile().getParent();
       case SFTP:
+      case DOCUMENT_FILE:
+        String thisPath = path;
+        if (thisPath.contains("%")) {
+          try {
+            thisPath = URLDecoder.decode(path, Charsets.UTF_8.name());
+          } catch (UnsupportedEncodingException ignored) {
+          }
+        }
+        List<String> pathSegments = Uri.parse(thisPath).getPathSegments();
+        String currentName = pathSegments.get(pathSegments.size() - 1);
+        String parent = thisPath.substring(0, thisPath.lastIndexOf(currentName));
+        if (ArraysKt.any(ANDROID_DATA_DIRS, dir -> parent.endsWith(dir + "/"))) {
+          return FileProperties.unmapPathForApi30OrAbove(parent);
+        } else {
+          return parent;
+        }
       default:
         if (getPath().length() == getName(context).length()) {
           return null;
@@ -1433,7 +1459,7 @@ public class HybridFile {
       } catch (Exception e) {
         LOG.warn("failed to create folder for cloud file", e);
       }
-    } else MakeDirectoryOperation.mkdir(getFile(), context);
+    } else MakeDirectoryOperation.mkdirs(context, this);
   }
 
   public boolean delete(Context context, boolean rootmode)

@@ -26,10 +26,12 @@ import org.apache.ftpserver.ConnectionConfigFactory
 import org.apache.ftpserver.FtpServerFactory
 import org.apache.ftpserver.usermanager.impl.BaseUser
 import org.apache.ftpserver.usermanager.impl.WritePermission
+import org.junit.Ignore
 
 /**
  * Test [HybridFile] FTP protocol handling with anonymous logins.
  */
+@Ignore
 class FtpHybridFileAnonymousLoginTest : FtpHybridFileTest() {
 
     override val ftpPort: Int

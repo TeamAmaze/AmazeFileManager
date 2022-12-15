@@ -68,6 +68,7 @@ import org.slf4j.LoggerFactory;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.afollestad.materialdialogs.folderselector.FolderChooserDialog;
+import com.amaze.filemanager.BuildConfig;
 import com.amaze.filemanager.LogHelper;
 import com.amaze.filemanager.R;
 import com.amaze.filemanager.adapters.data.StorageDirectoryParcelable;
@@ -399,7 +400,9 @@ public class MainActivity extends PermissionsActivity
               ExtensionsKt.updateAUAlias(
                   this,
                   !PackageUtils.Companion.appInstalledOrNot(
-                      AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager()));
+                          AboutActivity.PACKAGE_AMAZE_UTILS, mainActivity.getPackageManager())
+                      && !getBoolean(
+                          PreferencesConstants.PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS));
             })
         .subscribeOn(Schedulers.io())
         .observeOn(AndroidSchedulers.mainThread())
@@ -2015,6 +2018,7 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void addConnection(
       boolean edit,
       @NonNull final String name,
@@ -2025,19 +2029,25 @@ public class MainActivity extends PermissionsActivity
     String[] s = new String[] {name, path};
     if (!edit) {
       if ((dataUtils.containsServer(path)) == -1) {
-        dataUtils.addServer(s);
-        drawer.refreshDrawer();
-
-        utilsHandler.saveToDatabase(
-            new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
-
-        // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
-        executeWithMainFragment(
-            mainFragment -> {
-              mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
-              return null;
-            },
-            true);
+        Completable.fromRunnable(
+                () -> {
+                  utilsHandler.saveToDatabase(
+                      new OperationData(UtilsHandler.Operation.SMB, name, encryptedPath));
+                })
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                () -> {
+                  dataUtils.addServer(s);
+                  drawer.refreshDrawer();
+                  // grid.addPath(name, encryptedPath, DataUtils.SMB, 1);
+                  executeWithMainFragment(
+                      mainFragment -> {
+                        mainFragment.loadlist(path, false, OpenMode.UNKNOWN, true);
+                        return null;
+                      },
+                      true);
+                });
       } else {
         Snackbar.make(
                 findViewById(R.id.navigation),
@@ -2065,42 +2075,48 @@ public class MainActivity extends PermissionsActivity
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void deleteConnection(final String name, final String path) {
     int i = dataUtils.containsServer(new String[] {name, path});
     if (i != -1) {
       dataUtils.removeServer(i);
-      Flowable.fromCallable(
+      Completable.fromCallable(
               () -> {
                 utilsHandler.removeFromDatabase(
                     new OperationData(UtilsHandler.Operation.SMB, name, path));
                 return true;
               })
           .subscribeOn(Schedulers.io())
-          .subscribe(o -> drawer.refreshDrawer());
+          .observeOn(AndroidSchedulers.mainThread())
+          .subscribe(() -> drawer.refreshDrawer());
     }
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void delete(String title, String path) {
-    Flowable.fromCallable(
+    Completable.fromCallable(
             () -> {
               utilsHandler.removeFromDatabase(
                   new OperationData(UtilsHandler.Operation.BOOKMARKS, title, path));
               return true;
             })
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> drawer.refreshDrawer());
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> drawer.refreshDrawer());
   }
 
   @Override
+  @SuppressLint("CheckResult")
   public void modify(String oldpath, String oldname, String newPath, String newname) {
-    Flowable.fromCallable(
+    Completable.fromCallable(
             () -> {
               utilsHandler.renameBookmark(oldname, oldpath, newname, newPath);
               return true;
             })
         .subscribeOn(Schedulers.io())
-        .subscribe(o -> drawer.refreshDrawer());
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(() -> drawer.refreshDrawer());
   }
 
   @Override
@@ -2155,6 +2171,10 @@ public class MainActivity extends PermissionsActivity
         // cloud entry already exists
         Toast.makeText(
                 this, getResources().getString(R.string.connection_exists), Toast.LENGTH_LONG)
+            .show();
+      } else if (BuildConfig.IS_VERSION_FDROID) {
+        Toast.makeText(
+                this, getResources().getString(R.string.cloud_error_fdroid), Toast.LENGTH_LONG)
             .show();
       } else {
         Toast.makeText(

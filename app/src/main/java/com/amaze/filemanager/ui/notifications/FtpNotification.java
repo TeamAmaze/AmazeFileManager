@@ -20,6 +20,9 @@
 
 package com.amaze.filemanager.ui.notifications;
 
+import static android.app.PendingIntent.FLAG_ONE_SHOT;
+import static com.amaze.filemanager.asynchronous.services.AbstractProgressiveService.getPendingIntentFlag;
+
 import java.net.InetAddress;
 
 import com.amaze.filemanager.R;
@@ -48,7 +51,8 @@ public class FtpNotification {
       Context context, @StringRes int contentTitleRes, String contentText, boolean noStopButton) {
     Intent notificationIntent = new Intent(context, MainActivity.class);
     notificationIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-    PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent, 0);
+    PendingIntent contentIntent =
+        PendingIntent.getActivity(context, 0, notificationIntent, getPendingIntentFlag(0));
 
     long when = System.currentTimeMillis();
 
@@ -69,7 +73,7 @@ public class FtpNotification {
       Intent stopIntent =
           new Intent(FtpService.ACTION_STOP_FTPSERVER).setPackage(context.getPackageName());
       PendingIntent stopPendingIntent =
-          PendingIntent.getBroadcast(context, 0, stopIntent, PendingIntent.FLAG_ONE_SHOT);
+          PendingIntent.getBroadcast(context, 0, stopIntent, getPendingIntentFlag(FLAG_ONE_SHOT));
 
       builder.addAction(stopIcon, stopText, stopPendingIntent);
     }

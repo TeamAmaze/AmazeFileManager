@@ -21,6 +21,7 @@
 package com.amaze.filemanager.filesystem.compressed.extractcontents.helpers
 
 import android.content.Context
+import android.os.Build
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.fileoperations.filesystem.compressed.ArchivePasswordCache
@@ -47,6 +48,9 @@ class ZipExtractor(
     listener: OnUpdate,
     updatePosition: UpdatePosition
 ) : Extractor(context, filePath, outputPath, listener, updatePosition) {
+
+    private val isRobolectricTest = Build.HARDWARE == "robolectric"
+
     @Throws(IOException::class)
     override fun extractWithFilter(filter: Filter) {
         var totalBytes: Long = 0
@@ -108,7 +112,9 @@ class ZipExtractor(
         outputDir: String
     ) {
         val outputFile = File(outputDir, fixEntryName(entry.fileName))
-        if (!outputFile.canonicalPath.startsWith(outputDir)) {
+        if (!outputFile.canonicalPath.startsWith(outputDir) &&
+            (isRobolectricTest && !outputFile.canonicalPath.startsWith("/private$outputDir"))
+        ) {
             throw IOException("Incorrect ZipEntry path!")
         }
         if (entry.isDirectory) {

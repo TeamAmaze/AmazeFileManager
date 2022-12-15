@@ -149,6 +149,12 @@ public class Operations {
           return null;
         }
 
+        // Android data directory, prohibit create directory
+        if (file.isAndroidDataDir()) {
+          errorCallBack.done(file, false);
+          return null;
+        }
+
         if (file.isSftp() || file.isFtp()) {
           file.mkdir(context);
           /*
@@ -299,6 +305,13 @@ public class Operations {
           errorCallBack.exists(file);
           return null;
         }
+
+        // Android data directory, prohibit create file
+        if (file.isAndroidDataDir()) {
+          errorCallBack.done(file, false);
+          return null;
+        }
+
         if (file.isSftp() || file.isFtp()) {
           OutputStream out = file.getOutputStream(context);
           if (out == null) {
@@ -441,6 +454,74 @@ public class Operations {
 
       private final DataUtils dataUtils = DataUtils.getInstance();
 
+      /**
+       * Determines whether double rename is required based on original and new file name regardless
+       * of the case-sensitivity of the filesystem
+       */
+      private final boolean isCaseSensitiveRename =
+          oldFile.getSimpleName().equalsIgnoreCase(newFile.getSimpleName())
+              && !oldFile.getSimpleName().equals(newFile.getSimpleName());
+
+      /**
+       * random string that is appended to file to prevent name collision, max file name is 255
+       * bytes
+       */
+      private static final String TEMP_FILE_EXT = "u0CtHRqWUnvxIaeBQ@nY2umVm9MDyR1P";
+
+      private boolean localRename(@NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
+        File file = new File(oldFile.getPath());
+        File file1 = new File(newFile.getPath());
+        boolean result = false;
+
+        switch (oldFile.getMode()) {
+          case FILE:
+            int mode = checkFolder(file.getParentFile(), context);
+            if (mode == 1 || mode == 0) {
+              try {
+                RenameOperation.renameFolder(file, file1, context);
+              } catch (ShellNotRunningException e) {
+                LOG.warn("failed to rename file in local filesystem", e);
+              }
+              result = !file.exists() && file1.exists();
+              if (!result && rootMode) {
+                try {
+                  RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
+                } catch (ShellNotRunningException e) {
+                  LOG.warn("failed to rename file in local filesystem", e);
+                }
+                oldFile.setMode(OpenMode.ROOT);
+                newFile.setMode(OpenMode.ROOT);
+                result = !file.exists() && file1.exists();
+              }
+            }
+            break;
+          case ROOT:
+            try {
+              result = RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
+            } catch (ShellNotRunningException e) {
+              LOG.warn("failed to rename file in root", e);
+            }
+            newFile.setMode(OpenMode.ROOT);
+            break;
+        }
+        return result;
+      }
+
+      private boolean localDoubleRename(@NonNull HybridFile oldFile, @NonNull HybridFile newFile) {
+        HybridFile tempFile = new HybridFile(oldFile.mode, oldFile.getPath().concat(TEMP_FILE_EXT));
+        if (localRename(oldFile, tempFile)) {
+          if (localRename(tempFile, newFile)) {
+            return true;
+          } else {
+            // attempts to rollback
+            // changes the temporary file name back to original file name
+            LOG.warn("reverting temporary file rename");
+            return localRename(tempFile, oldFile);
+          }
+        }
+        return false;
+      }
+
       private Function<DocumentFile, Void> safRenameFile =
           input -> {
             boolean result = false;
@@ -462,7 +543,7 @@ public class Operations {
           return null;
         }
 
-        if (newFile.exists()) {
+        if (newFile.exists() && !isCaseSensitiveRename) {
           errorCallBack.exists(newFile);
           return null;
         }
@@ -611,44 +692,20 @@ public class Operations {
           return null;
         } else {
           File file = new File(oldFile.getPath());
-          File file1 = new File(newFile.getPath());
-          switch (oldFile.getMode()) {
-            case FILE:
-              int mode = checkFolder(file.getParentFile(), context);
-              if (mode == 2) {
-                errorCallBack.launchSAF(oldFile, newFile);
-              } else if (mode == 1 || mode == 0) {
-                try {
-                  RenameOperation.renameFolder(file, file1, context);
-                } catch (ShellNotRunningException e) {
-                  LOG.warn("failed to rename file in local filesystem", e);
-                }
-                boolean a = !file.exists() && file1.exists();
-                if (!a && rootMode) {
-                  try {
-                    RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
-                  } catch (ShellNotRunningException e) {
-                    LOG.warn("failed to rename file in local filesystem", e);
-                  }
-                  oldFile.setMode(OpenMode.ROOT);
-                  newFile.setMode(OpenMode.ROOT);
-                  a = !file.exists() && file1.exists();
-                }
-                errorCallBack.done(newFile, a);
-                return null;
-              }
-              break;
-            case ROOT:
-              try {
-                RenameFileCommand.INSTANCE.renameFile(file.getPath(), file1.getPath());
-              } catch (ShellNotRunningException e) {
-                LOG.warn("failed to rename file in root", e);
-              }
-
-              newFile.setMode(OpenMode.ROOT);
-              errorCallBack.done(newFile, true);
-              break;
+          if (oldFile.getMode() == OpenMode.FILE) {
+            int mode = checkFolder(file.getParentFile(), context);
+            if (mode == 2) {
+              errorCallBack.launchSAF(oldFile, newFile);
+            }
           }
+
+          boolean result;
+          if (isCaseSensitiveRename) {
+            result = localDoubleRename(oldFile, newFile);
+          } else {
+            result = localRename(oldFile, newFile);
+          }
+          errorCallBack.done(newFile, result);
         }
         return null;
       }

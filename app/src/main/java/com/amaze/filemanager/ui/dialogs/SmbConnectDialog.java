@@ -249,9 +249,8 @@ public class SmbConnectDialog extends DialogFragment {
           chkSmbDisableIpcSignature.setChecked(
               Boolean.parseBoolean(sanitizer.getValue(PARAM_DISABLE_IPC_SIGNING_CHECK)));
         }
-
-      } catch (UnsupportedEncodingException e) {
-        LOG.warn("failed to load smb dialog info", e);
+      } catch (UnsupportedEncodingException | IllegalArgumentException e) {
+        LOG.warn("failed to load smb dialog info for path {}", path, e);
       } catch (MalformedURLException e) {
         LOG.warn("failed to load smb dialog info", e);
       }
@@ -376,7 +375,7 @@ public class SmbConnectDialog extends DialogFragment {
       return smbFile;
     } catch (MalformedURLException e) {
       LOG.warn("failed to load smb path", e);
-    } catch (UnsupportedEncodingException e) {
+    } catch (UnsupportedEncodingException | IllegalArgumentException e) {
       LOG.warn("Failed to load smb path", e);
     }
     return null;

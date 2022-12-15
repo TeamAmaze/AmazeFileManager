@@ -75,6 +75,7 @@ object PreferencesConstants {
     const val PREFERENCE_ZIP_EXTRACT_PATH = "extractpath"
     const val PREFERENCE_TEXTEDITOR_NEWSTACK = "texteditor_newstack"
     const val PREFERENCE_DELETE_CONFIRMATION = "delete_confirmation"
+    const val PREFERENCE_DISABLE_PLAYER_INTENT_FILTERS = "disable_player_intent_filters"
 
     // security_prefs.xml
     const val PREFERENCE_CRYPT_FINGERPRINT = "crypt_fingerprint"
