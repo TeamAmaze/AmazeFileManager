@@ -45,14 +45,13 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
     override val title = R.string.backup
 
-    private val onExportPrefClick = OnPreferenceClickListener {
-
-        val map: Map<String?, *> = PreferenceManager.getDefaultSharedPreferences(getActivity()).all
+    fun exportPrefs() {
+        val map: Map<String?, *> = PreferenceManager
+            .getDefaultSharedPreferences(requireActivity()).all
 
         val gsonString: String = Gson().toJson(map)
 
         try {
-
             val file = File(context?.cacheDir?.absolutePath + File.separator + "amaze_backup.json")
 
             val fileWriter = FileWriter(file)
@@ -82,12 +81,9 @@ class BackupPrefsFragment : BasePrefsFragment() {
             Toast.makeText(context, getString(R.string.exporting_failed), Toast.LENGTH_SHORT).show()
             e.printStackTrace()
         }
-
-        true
     }
 
-    private val onImportPrefClick = OnPreferenceClickListener {
-
+    fun importPrefs() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             startActivityForResult(
                 Intent(Intent.ACTION_OPEN_DOCUMENT)
@@ -109,8 +105,6 @@ class BackupPrefsFragment : BasePrefsFragment() {
                 IMPORT_BACKUP_FILE
             )
         }
-
-        true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -144,7 +138,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
                 )
 
                 val editor: SharedPreferences.Editor? =
-                    PreferenceManager.getDefaultSharedPreferences(getActivity()).edit()
+                    PreferenceManager.getDefaultSharedPreferences(requireActivity()).edit()
 
                 for ((key, value) in map) try {
                     when (value::class.simpleName) {
@@ -196,10 +190,16 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
         findPreference<Preference>(
             PreferencesConstants.PREFERENCE_EXPORT_SETTINGS
-        )?.onPreferenceClickListener = onExportPrefClick
+        )?.onPreferenceClickListener = OnPreferenceClickListener {
+            exportPrefs()
+            true
+        }
 
         findPreference<Preference>(
             PreferencesConstants.PREFERENCE_IMPORT_SETTINGS
-        )?.onPreferenceClickListener = onImportPrefClick
+        )?.onPreferenceClickListener = OnPreferenceClickListener {
+            importPrefs()
+            true
+        }
     }
 }
