@@ -41,7 +41,10 @@ import java.io.*
 class BackupPrefsFragment : BasePrefsFragment() {
 
     private val TAG: String = TagsHelper.getTag(BasePrefsFragment::class.java)
-    private val IMPORT_BACKUP_FILE: Int = 2
+
+    companion object {
+        val IMPORT_BACKUP_FILE: Int = 2
+    }
 
     override val title = R.string.backup
 
