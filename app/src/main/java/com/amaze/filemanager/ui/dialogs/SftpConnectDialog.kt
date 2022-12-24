@@ -46,7 +46,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.AbstractGetHostInfoTask
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.hostcert.FtpsGetHostCertificateTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairObservable
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.databinding.SftpDialogBinding
@@ -66,6 +66,8 @@ import com.amaze.filemanager.utils.MinMaxInputFilter
 import com.amaze.filemanager.utils.SimpleTextWatcher
 import com.amaze.filemanager.utils.X509CertificateUtil.FINGERPRINT
 import com.google.android.material.snackbar.Snackbar
+import io.reactivex.Observable
+import io.reactivex.Observable.create
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
@@ -579,19 +581,33 @@ class SftpConnectDialog : DialogFragment() {
                 runCatching {
                     requireContext().contentResolver.openInputStream(this)?.let {
                             selectedKeyContent ->
-                        PemToKeyPairTask(selectedKeyContent) { result: KeyPair? ->
-                            selectedParsedKeyPair = result
-                            selectedParsedKeyPairName = this
-                                .lastPathSegment!!
-                                .substring(
-                                    this.lastPathSegment!!
-                                        .indexOf('/') + 1
-                                )
-                            val okBTN = (dialog as MaterialDialog)
-                                .getActionButton(DialogAction.POSITIVE)
-                            okBTN.isEnabled = okBTN.isEnabled || true
-                            binding.selectPemBTN.text = selectedParsedKeyPairName
-                        }.execute()
+                        val observable = PemToKeyPairObservable(selectedKeyContent)
+                        create(observable).subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retryWhen { exceptions ->
+                                exceptions.flatMap { exception ->
+                                    Observable.create<Any> { subscriber ->
+                                        observable.displayPassphraseDialog(exception, {
+                                            subscriber.onNext(Unit)
+                                        }, {
+                                            subscriber.onError(exception)
+                                        })
+                                    }
+                                }
+                            }
+                            .subscribe({ result ->
+                                selectedParsedKeyPair = result
+                                selectedParsedKeyPairName = this
+                                    .lastPathSegment!!
+                                    .substring(
+                                        this.lastPathSegment!!
+                                            .indexOf('/') + 1
+                                    )
+                                val okBTN = (dialog as MaterialDialog)
+                                    .getActionButton(DialogAction.POSITIVE)
+                                okBTN.isEnabled = okBTN.isEnabled || true
+                                binding.selectPemBTN.text = selectedParsedKeyPairName
+                            }, {})
                     }
                 }.onFailure {
                     log.error("Error reading PEM key", it)
@@ -694,7 +710,7 @@ class SftpConnectDialog : DialogFragment() {
     ): Boolean {
         DataUtils.getInstance().removeServer(DataUtils.getInstance().containsServer(oldPath))
         DataUtils.getInstance().addServer(arrayOf(connectionName, encryptedPath))
-        Collections.sort(DataUtils.getInstance().servers, BookSorter())
+        DataUtils.getInstance().servers.sortWith(BookSorter())
         (activity as MainActivity).drawer.refreshDrawer()
         AppConfig.getInstance().runInBackground {
             AppConfig.getInstance().utilsHandler.updateSsh(

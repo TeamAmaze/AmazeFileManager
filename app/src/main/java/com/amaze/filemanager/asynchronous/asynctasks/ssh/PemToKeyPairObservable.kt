@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2014-2021 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
+ * Copyright (C) 2014-2022 Arpit Khurana <arpitkh96@gmail.com>, Vishal Nehra <vishalmeham2@gmail.com>,
  * Emmanuel Messulam<emmanuelbendavid@gmail.com>, Raymond Lai <airwave209gt at gmail.com> and Contributors.
  *
  * This file is part of Amaze File Manager.
@@ -20,22 +20,19 @@
 
 package com.amaze.filemanager.asynchronous.asynctasks.ssh
 
-import android.os.AsyncTask
 import android.text.InputType
-import android.view.View
-import android.widget.EditText
+import android.view.LayoutInflater
 import android.widget.Toast
 import com.afollestad.materialdialogs.DialogAction
 import com.afollestad.materialdialogs.MaterialDialog
 import com.amaze.filemanager.R
 import com.amaze.filemanager.application.AppConfig
-import com.amaze.filemanager.asynchronous.asynctasks.AsyncTaskResult
+import com.amaze.filemanager.databinding.DialogSingleedittextBinding
 import com.amaze.filemanager.ui.views.WarnableTextInputLayout
 import com.amaze.filemanager.ui.views.WarnableTextInputValidator
-import com.amaze.filemanager.ui.views.WarnableTextInputValidator.ReturnState
 import com.hierynomus.sshj.userauth.keyprovider.OpenSSHKeyV1KeyFile
-import net.schmizz.sshj.common.IOUtils
-import net.schmizz.sshj.userauth.keyprovider.KeyProvider
+import io.reactivex.ObservableEmitter
+import io.reactivex.ObservableOnSubscribe
 import net.schmizz.sshj.userauth.keyprovider.OpenSSHKeyFile
 import net.schmizz.sshj.userauth.keyprovider.PuTTYKeyFile
 import net.schmizz.sshj.userauth.password.PasswordFinder
@@ -50,86 +47,67 @@ import java.io.InputStream
 import java.io.StringReader
 import java.security.KeyPair
 
-/**
- * [AsyncTask] to convert given [InputStream] into [KeyPair] which is requird by
- * sshj, using [JcaPEMKeyConverter].
- *
- * @see JcaPEMKeyConverter
- *
- * @see KeyProvider
- *
- * @see OpenSSHKeyV1KeyFile
- *
- * @see PuTTYKeyFile
- *
- * @see com.amaze.filemanager.filesystem.ftp.NetCopyClientConnectionPool.create
- * @see net.schmizz.sshj.SSHClient.authPublickey
- */
-class PemToKeyPairTask(
-    private val pemFile: ByteArray,
-    private val callback: AsyncTaskResult.Callback<KeyPair?>
-) :
-    AsyncTask<Void, IOException?, KeyPair?>() {
+class PemToKeyPairObservable(private val pemFile: ByteArray) : ObservableOnSubscribe<KeyPair> {
+
     private val converters = arrayOf(
         JcaPemToKeyPairConverter(),
         OpenSshPemToKeyPairConverter(),
         OpenSshV1PemToKeyPairConverter(),
         PuttyPrivateKeyToKeyPairConverter()
     )
-    private val log: Logger = LoggerFactory.getLogger(PemToKeyPairTask::class.java)
-
-    private var paused = false
     private var passwordFinder: PasswordFinder? = null
     private var errorMessage: String? = null
 
-    constructor(pemFile: InputStream, callback: AsyncTaskResult.Callback<KeyPair?>) :
-        this(IOUtils.readFully(pemFile).toByteArray(), callback)
-    constructor(pemContent: String, callback: AsyncTaskResult.Callback<KeyPair?>) :
-        this(pemContent.toByteArray(), callback)
-
-    override fun doInBackground(vararg voids: Void): KeyPair? {
-        while (true) {
-            if (isCancelled) {
-                return null
-            }
-            if (paused) {
-                continue
-            }
-            for (converter in converters) {
-                val keyPair = converter.convert(String(pemFile))
-                if (keyPair != null) {
-                    paused = false
-                    return keyPair
-                }
-            }
-            if (passwordFinder != null) {
-                errorMessage = AppConfig
-                    .getInstance()
-                    .getString(R.string.ssh_key_invalid_passphrase)
-            }
-            paused = true
-            publishProgress(IOException("No converter available to parse selected PEM"))
-        }
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(PemToKeyPairObservable::class.java)
     }
 
-    override fun onProgressUpdate(vararg values: IOException?) {
-        super.onProgressUpdate(*values)
-        if (values.isEmpty()) {
-            return
+    constructor(pemFile: InputStream) : this(pemFile.readBytes())
+    constructor(pemContent: String) : this(pemContent.toByteArray())
+
+    override fun subscribe(emitter: ObservableEmitter<KeyPair>) {
+        for (converter in converters) {
+            val keyPair = converter.convert(String(pemFile))
+            if (keyPair != null) {
+                emitter.onNext(keyPair)
+                emitter.onComplete()
+                return
+            }
         }
-        val result = values[0]
-        val builder = MaterialDialog.Builder(AppConfig.getInstance().mainActivityContext!!)
-        val dialogLayout = View.inflate(
-            AppConfig.getInstance().mainActivityContext,
-            R.layout.dialog_singleedittext,
-            null
+        if (passwordFinder != null) {
+            errorMessage = AppConfig
+                .getInstance()
+                .getString(R.string.ssh_key_invalid_passphrase)
+        } else {
+            errorMessage = AppConfig
+                .getInstance()
+                .getString(R.string.ssh_key_no_decoder_decrypt)
+        }
+        emitter.onError(IOException(errorMessage))
+    }
+
+    /**
+     * For generating the callback when decoding the PEM failed. Opens dialog and prompt for
+     * password.
+     */
+    fun displayPassphraseDialog(
+        exception: Throwable,
+        positiveCallback: (() -> Unit),
+        negativeCallback: (() -> Unit)
+    ) {
+        val builder = MaterialDialog.Builder(
+            AppConfig.getInstance().mainActivityContext!!
+        )
+        val dialogLayout = DialogSingleedittextBinding.inflate(
+            LayoutInflater.from(AppConfig.getInstance().mainActivityContext)
         )
         val wilTextfield: WarnableTextInputLayout =
-            dialogLayout.findViewById(R.id.singleedittext_warnabletextinputlayout)
-        val textfield = dialogLayout.findViewById<EditText>(R.id.singleedittext_input)
-        textfield.inputType = InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_VARIATION_PASSWORD
+            dialogLayout.singleedittextWarnabletextinputlayout
+        val textfield = dialogLayout.singleedittextInput
+        textfield.inputType = InputType.TYPE_CLASS_TEXT or
+            InputType.TYPE_TEXT_VARIATION_PASSWORD
         builder
-            .customView(dialogLayout, false)
+            .customView(dialogLayout.root, false)
             .autoDismiss(false)
             .title(R.string.ssh_key_prompt_passphrase)
             .positiveText(R.string.ok)
@@ -138,19 +116,18 @@ class PemToKeyPairTask(
                     override fun reqPassword(resource: Resource<*>?): CharArray {
                         return textfield.text.toString().toCharArray()
                     }
-
                     override fun shouldRetry(resource: Resource<*>?): Boolean {
                         return false
                     }
                 }
-                paused = false
                 dialog.dismiss()
+                positiveCallback.invoke()
             }
             .negativeText(R.string.cancel)
             .onNegative { dialog: MaterialDialog, which: DialogAction? ->
                 dialog.dismiss()
-                toastOnParseError(result!!)
-                cancel(true)
+                toastOnParseError(exception)
+                negativeCallback.invoke()
             }
         val dialog = builder.show()
         WarnableTextInputValidator(
@@ -160,12 +137,12 @@ class PemToKeyPairTask(
             dialog.getActionButton(DialogAction.POSITIVE)
         ) { text: String ->
             if (text.isEmpty()) {
-                ReturnState(
-                    ReturnState.STATE_ERROR,
+                WarnableTextInputValidator.ReturnState(
+                    WarnableTextInputValidator.ReturnState.STATE_ERROR,
                     R.string.field_empty
                 )
             }
-            ReturnState()
+            WarnableTextInputValidator.ReturnState()
         }
         if (errorMessage != null) {
             wilTextfield.error = errorMessage
@@ -173,11 +150,7 @@ class PemToKeyPairTask(
         }
     }
 
-    override fun onPostExecute(result: KeyPair?) {
-        callback.onResult(result)
-    }
-
-    private fun toastOnParseError(result: IOException) {
+    private fun toastOnParseError(result: Throwable) {
         Toast.makeText(
             AppConfig.getInstance().mainActivityContext,
             AppConfig.getInstance()
@@ -189,18 +162,16 @@ class PemToKeyPairTask(
     }
 
     private abstract inner class PemToKeyPairConverter {
-        fun convert(source: String?): KeyPair? = runCatching {
+        fun convert(source: String): KeyPair? = runCatching {
             throwingConvert(source)
         }.onFailure {
             log.warn("failed to convert pem to keypair", it)
         }.getOrNull()
 
-        @Throws(Exception::class)
         protected abstract fun throwingConvert(source: String?): KeyPair?
     }
 
     private inner class JcaPemToKeyPairConverter : PemToKeyPairConverter() {
-        @Throws(Exception::class)
         override fun throwingConvert(source: String?): KeyPair? {
             val pemParser = PEMParser(StringReader(source))
             val keyPair = pemParser.readObject() as PEMKeyPair?
@@ -210,8 +181,7 @@ class PemToKeyPairTask(
     }
 
     private inner class OpenSshPemToKeyPairConverter : PemToKeyPairConverter() {
-        @Throws(Exception::class)
-        public override fun throwingConvert(source: String?): KeyPair {
+        override fun throwingConvert(source: String?): KeyPair {
             val converter = OpenSSHKeyFile()
             converter.init(StringReader(source), passwordFinder)
             return KeyPair(converter.public, converter.private)
@@ -219,8 +189,7 @@ class PemToKeyPairTask(
     }
 
     private inner class OpenSshV1PemToKeyPairConverter : PemToKeyPairConverter() {
-        @Throws(Exception::class)
-        public override fun throwingConvert(source: String?): KeyPair {
+        override fun throwingConvert(source: String?): KeyPair {
             val converter = OpenSSHKeyV1KeyFile()
             converter.init(StringReader(source), passwordFinder)
             return KeyPair(converter.public, converter.private)

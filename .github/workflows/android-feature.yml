@@ -45,10 +45,3 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: jacocoTestPlayDebugUnitTestReport --stacktrace --info
-      - name: Publish test results
-        uses: dorny/test-reporter@v1
-        if: always()
-        with:
-          name: test-results
-          path: 'app/build/test-results/testPlayDebugUnitTest/TEST-*.xml'
-          reporter: java-junit

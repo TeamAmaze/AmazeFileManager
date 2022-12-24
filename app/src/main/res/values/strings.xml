@@ -618,6 +618,7 @@
     <string name="create_file_suggest_txt_extension">It\'s recommended to use \".txt\" as the file extension.</string>
     <string name="ssh_select_pem">Select private key for authentication</string>
     <string name="ssh_key_invalid_passphrase">Invalid key passphrase.</string>
+    <string name="ssh_key_no_decoder_decrypt">No valid decoder to decrypt PEM.</string>
     <string name="encryption_fail_copy">Failed to update encryption entry in database</string>
     <string name="extracted">Extracted</string>
     <string name="compressed">Compressed</string>
