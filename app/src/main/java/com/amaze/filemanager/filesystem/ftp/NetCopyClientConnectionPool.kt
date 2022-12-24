@@ -23,7 +23,7 @@ package com.amaze.filemanager.filesystem.ftp
 import android.annotation.SuppressLint
 import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.auth.FtpAuthenticationTask
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairObservable
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.SshAuthenticationTask
 import com.amaze.filemanager.filesystem.ftp.NetCopyClientUtils.extractBaseUriFrom
 import com.amaze.filemanager.utils.PasswordUtil
@@ -255,9 +255,9 @@ object NetCopyClientConnectionPool {
         val keyPair = AtomicReference<KeyPair?>(null)
         if (true == pem?.isNotEmpty()) {
             keyPair.set(
-                PemToKeyPairTask(
-                    pem
-                ) { }.execute().get()
+                PemToKeyPairObservable(pem)
+                    .subscribeOn(Schedulers.io())
+                    .blockingFirst()
             )
         }
         val hostKey = utilsHandler.getRemoteHostKey(url) ?: return null

@@ -46,7 +46,7 @@ import com.amaze.filemanager.application.AppConfig
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.AbstractGetHostInfoTask
 import com.amaze.filemanager.asynchronous.asynctasks.ftp.hostcert.FtpsGetHostCertificateTask
 import com.amaze.filemanager.asynchronous.asynctasks.ssh.GetSshHostFingerprintTask
-import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairTask
+import com.amaze.filemanager.asynchronous.asynctasks.ssh.PemToKeyPairObservable
 import com.amaze.filemanager.database.UtilsHandler
 import com.amaze.filemanager.database.models.OperationData
 import com.amaze.filemanager.databinding.SftpDialogBinding
@@ -579,19 +579,23 @@ class SftpConnectDialog : DialogFragment() {
                 runCatching {
                     requireContext().contentResolver.openInputStream(this)?.let {
                             selectedKeyContent ->
-                        PemToKeyPairTask(selectedKeyContent) { result: KeyPair? ->
-                            selectedParsedKeyPair = result
-                            selectedParsedKeyPairName = this
-                                .lastPathSegment!!
-                                .substring(
-                                    this.lastPathSegment!!
-                                        .indexOf('/') + 1
-                                )
-                            val okBTN = (dialog as MaterialDialog)
-                                .getActionButton(DialogAction.POSITIVE)
-                            okBTN.isEnabled = okBTN.isEnabled || true
-                            binding.selectPemBTN.text = selectedParsedKeyPairName
-                        }.execute()
+                        val observable = PemToKeyPairObservable(selectedKeyContent)
+                        observable.subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .retryWhen(observable.onErrorRetry())
+                            .subscribe { result ->
+                                selectedParsedKeyPair = result
+                                selectedParsedKeyPairName = this
+                                    .lastPathSegment!!
+                                    .substring(
+                                        this.lastPathSegment!!
+                                            .indexOf('/') + 1
+                                    )
+                                val okBTN = (dialog as MaterialDialog)
+                                    .getActionButton(DialogAction.POSITIVE)
+                                okBTN.isEnabled = okBTN.isEnabled || true
+                                binding.selectPemBTN.text = selectedParsedKeyPairName
+                            }
                     }
                 }.onFailure {
                     log.error("Error reading PEM key", it)

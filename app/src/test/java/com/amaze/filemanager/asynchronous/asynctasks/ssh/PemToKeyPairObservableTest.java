@@ -24,18 +24,18 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.security.KeyPair;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.userauth.password.PasswordFinder;
 import net.schmizz.sshj.userauth.password.Resource;
 
 @RunWith(AndroidJUnit4.class)
-public class PemToKeyPairTaskTest {
+public class PemToKeyPairObservableTest {
 
   private static final String unencryptedPuttyKey =
       "PuTTY-User-Key-File-2: ssh-rsa\n"
@@ -95,20 +95,18 @@ public class PemToKeyPairTaskTest {
           + "Private-MAC: f742e2954fbb0c98984db0d9855a0f15507ecc0a";
 
   @Test
-  public void testUnencryptedKeyToKeyPair() throws InterruptedException, ExecutionException {
-    PemToKeyPairTask task = new PemToKeyPairTask(unencryptedPuttyKey, result -> {});
-    KeyPair result = task.execute().get();
+  public void testUnencryptedKeyToKeyPair() {
+    PemToKeyPairObservable task = new PemToKeyPairObservable(unencryptedPuttyKey);
+    KeyPair result = task.subscribeOn(Schedulers.single()).blockingFirst();
     assertNotNull(result);
     assertNotNull(result.getPublic());
     assertNotNull(result.getPrivate());
   }
 
   @Test
-  public void testEncryptedKeyToKeyPair()
-      throws InterruptedException, NoSuchFieldException, IllegalAccessException,
-          ExecutionException {
-    PemToKeyPairTask task = new PemToKeyPairTask(encryptedPuttyKey, result -> {});
-    Field field = PemToKeyPairTask.class.getDeclaredField("passwordFinder");
+  public void testEncryptedKeyToKeyPair() throws NoSuchFieldException, IllegalAccessException {
+    PemToKeyPairObservable task = new PemToKeyPairObservable(encryptedPuttyKey);
+    Field field = PemToKeyPairObservable.class.getDeclaredField("passwordFinder");
     field.setAccessible(true);
     field.set(
         task,
@@ -123,7 +121,7 @@ public class PemToKeyPairTaskTest {
             return false;
           }
         });
-    KeyPair result = task.execute().get();
+    KeyPair result = task.subscribeOn(Schedulers.single()).blockingFirst();
     assertNotNull(result);
     assertNotNull(result.getPublic());
     assertNotNull(result.getPrivate());

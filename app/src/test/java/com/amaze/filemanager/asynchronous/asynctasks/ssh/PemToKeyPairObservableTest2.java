@@ -24,18 +24,18 @@ import static org.junit.Assert.assertNotNull;
 
 import java.lang.reflect.Field;
 import java.security.KeyPair;
-import java.util.concurrent.ExecutionException;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 
+import io.reactivex.schedulers.Schedulers;
 import net.schmizz.sshj.userauth.password.PasswordFinder;
 import net.schmizz.sshj.userauth.password.Resource;
 
 @RunWith(AndroidJUnit4.class)
-public class PemToKeyPairTaskTest2 {
+public class PemToKeyPairObservableTest2 {
 
   // public key for authorized_keys: ssh-ed25519
   // AAAAC3NzaC1lZDI1NTE5AAAAIGxJHFewxU9tJn9hUq9e2C/+ELFw83NpmJ5NLFOzU7O3 test-openssh-key
@@ -62,20 +62,18 @@ public class PemToKeyPairTaskTest2 {
           + "-----END OPENSSH PRIVATE KEY-----";
 
   @Test
-  public void testUnencryptedKeyToKeyPair() throws ExecutionException, InterruptedException {
-    PemToKeyPairTask task = new PemToKeyPairTask(unencryptedOpenSshKey, result -> {});
-    KeyPair result = task.execute().get();
+  public void testUnencryptedKeyToKeyPair() {
+    PemToKeyPairObservable task = new PemToKeyPairObservable(unencryptedOpenSshKey);
+    KeyPair result = task.subscribeOn(Schedulers.single()).blockingFirst();
     assertNotNull(result);
     assertNotNull(result.getPublic());
     assertNotNull(result.getPrivate());
   }
 
   @Test
-  public void testEncryptedKeyToKeyPair()
-      throws InterruptedException, NoSuchFieldException, IllegalAccessException,
-          ExecutionException {
-    PemToKeyPairTask task = new PemToKeyPairTask(encryptedOpenSshKey, result -> {});
-    Field field = PemToKeyPairTask.class.getDeclaredField("passwordFinder");
+  public void testEncryptedKeyToKeyPair() throws NoSuchFieldException, IllegalAccessException {
+    PemToKeyPairObservable task = new PemToKeyPairObservable(encryptedOpenSshKey);
+    Field field = PemToKeyPairObservable.class.getDeclaredField("passwordFinder");
     field.setAccessible(true);
     field.set(
         task,
@@ -90,7 +88,7 @@ public class PemToKeyPairTaskTest2 {
             return false;
           }
         });
-    KeyPair result = task.execute().get();
+    KeyPair result = task.subscribeOn(Schedulers.single()).blockingFirst();
     assertNotNull(result);
     assertNotNull(result.getPublic());
     assertNotNull(result.getPrivate());
