@@ -50,6 +50,7 @@ class BackupPrefsFragmentTest {
     var storagePath = "/storage/emulated/0"
     var fileName = "amaze_backup.json"
 
+    /** Test exporting */
     @Test
     fun testExport() {
         val backupPrefsFragment = BackupPrefsFragment()
@@ -94,6 +95,7 @@ class BackupPrefsFragmentTest {
         Assert.assertTrue(exportFile.exists())
     }
 
+    /** Test whether the exported file contains the expected preference values */
     @Test
     fun verifyExportFile() {
         val backupPrefsFragment = BackupPrefsFragment()
@@ -147,6 +149,7 @@ class BackupPrefsFragmentTest {
         }
     }
 
+    /** Test import */
     @Test
     fun testImport() {
         val backupPrefsFragment = BackupPrefsFragment()

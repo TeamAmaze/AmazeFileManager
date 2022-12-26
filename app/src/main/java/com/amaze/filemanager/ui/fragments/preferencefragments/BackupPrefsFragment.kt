@@ -48,6 +48,7 @@ class BackupPrefsFragment : BasePrefsFragment() {
 
     override val title = R.string.backup
 
+    /** Export app settings to a JSON file */
     fun exportPrefs() {
         val map: Map<String?, *> = PreferenceManager
             .getDefaultSharedPreferences(requireActivity()).all
@@ -86,7 +87,8 @@ class BackupPrefsFragment : BasePrefsFragment() {
         }
     }
 
-    fun importPrefs() {
+    /** Import app settings from a JSON file */
+    private fun importPrefs() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             startActivityForResult(
                 Intent(Intent.ACTION_OPEN_DOCUMENT)
