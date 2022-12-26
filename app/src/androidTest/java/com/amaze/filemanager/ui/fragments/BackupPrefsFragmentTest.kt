@@ -23,6 +23,7 @@ package com.amaze.filemanager.ui.fragments
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.lifecycle.Lifecycle
 import androidx.preference.PreferenceManager
@@ -200,35 +201,35 @@ class BackupPrefsFragmentTest {
             val preferenceMap: Map<String?, *> = preferences.all
 
             for ((key, value) in preferenceMap) {
-                when (value!!::class.simpleName) {
-                    "Boolean" -> Assert.assertEquals(
-                        importMap[key] as Boolean,
-                        preferences.getBoolean(key, false)
-                    )
-                    "Float" -> Assert.assertEquals(
-                        importMap[key] as Float,
-                        preferences.getFloat(key, 0f)
-                    )
-                    "Int" -> {
-                        // since Gson parses Integer as Double
-                        val toInt = (importMap[key] as Double).toInt()
-
-                        Assert.assertEquals(toInt, preferences.getInt(key, 0))
-                    }
-                    "Long" -> Assert.assertEquals(
-                        importMap[key] as Long,
-                        preferences.getLong(key, 0L)
-                    )
-                    "String" -> Assert.assertEquals(
-                        importMap[key] as String,
-                        preferences.getString(key, null)
-                    )
-                    "Set<*>" -> Assert.assertEquals(
-                        importMap[key] as Set<*>,
-                        preferences.getStringSet(key, null)
-                    )
-                }
+                Assert.assertTrue(checkPrefEqual(preferences, importMap, key, value))
             }
         }
+    }
+
+    private fun checkPrefEqual(
+        preferences: SharedPreferences,
+        importMap: Map<String?, *>,
+        key: String?,
+        value: Any?
+    ): Boolean {
+        when (value!!::class.simpleName) {
+            "Boolean" -> return importMap[key] as Boolean ==
+                preferences.getBoolean(key, false)
+            "Float" -> importMap[key] as Float ==
+                preferences.getFloat(key, 0f)
+            "Int" -> {
+                // since Gson parses Integer as Double
+                val toInt = (importMap[key] as Double).toInt()
+
+                return toInt == preferences.getInt(key, 0)
+            }
+            "Long" -> return importMap[key] as Long ==
+                preferences.getLong(key, 0L)
+            "String" -> return importMap[key] as String ==
+                preferences.getString(key, null)
+            "Set<*>" -> return importMap[key] as Set<*> ==
+                preferences.getStringSet(key, null)
+        }
+        return false
     }
 }
