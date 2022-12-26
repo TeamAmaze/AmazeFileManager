@@ -145,23 +145,8 @@ class BackupPrefsFragment : BasePrefsFragment() {
                 val editor: SharedPreferences.Editor? =
                     PreferenceManager.getDefaultSharedPreferences(requireActivity()).edit()
 
-                for ((key, value) in map) try {
-                    when (value::class.simpleName) {
-                        "Boolean" -> editor?.putBoolean(key, value as Boolean)
-                        "Float" -> editor?.putFloat(key, value as Float)
-                        "Int" -> editor?.putInt(key, value as Int)
-                        "Long" -> editor?.putLong(key, value as Long)
-                        "String" -> editor?.putString(key, value.toString())
-                        "Set<*>" -> editor?.putStringSet(key, value as Set<String>)
-                    }
-                } catch (e: java.lang.ClassCastException) {
-                    Toast.makeText(
-                        context,
-                        "${getString(R.string.import_failed_for)} $key",
-                        Toast.LENGTH_SHORT
-                    ).show()
-                    e.printStackTrace()
-                }
+                for ((key, value) in map)
+                    putBoolean(editor, key, value)
 
                 editor?.apply()
 
@@ -187,6 +172,27 @@ class BackupPrefsFragment : BasePrefsFragment() {
             }
         } else {
             Toast.makeText(context, getString(R.string.unknown_error), Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    @Suppress("UNCHECKED_CAST")
+    private fun putBoolean(editor: SharedPreferences.Editor?, key: String?, value: Any) {
+        try {
+            when (value::class.simpleName) {
+                "Boolean" -> editor?.putBoolean(key, value as Boolean)
+                "Float" -> editor?.putFloat(key, value as Float)
+                "Int" -> editor?.putInt(key, value as Int)
+                "Long" -> editor?.putLong(key, value as Long)
+                "String" -> editor?.putString(key, value.toString())
+                "Set<*>" -> editor?.putStringSet(key, value as Set<String>)
+            }
+        } catch (e: java.lang.ClassCastException) {
+            Toast.makeText(
+                context,
+                "${getString(R.string.import_failed_for)} $key",
+                Toast.LENGTH_SHORT
+            ).show()
+            e.printStackTrace()
         }
     }
 
