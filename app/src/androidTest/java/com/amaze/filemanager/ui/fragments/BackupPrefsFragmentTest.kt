@@ -47,7 +47,7 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 class BackupPrefsFragmentTest {
 
-    var storagePath = "`/storage/emulated/0`"
+    var storagePath = "/storage/emulated/0"
     var fileName = "amaze_backup.json"
 
     @Test
