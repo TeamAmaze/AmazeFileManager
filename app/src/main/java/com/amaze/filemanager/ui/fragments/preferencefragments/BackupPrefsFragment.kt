@@ -113,11 +113,13 @@ class BackupPrefsFragment : BasePrefsFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
+        val nonNull = data != null && data.data != null
+
         if (requestCode == IMPORT_BACKUP_FILE &&
             resultCode == Activity.RESULT_OK &&
-            data != null && data.data != null
+            nonNull
         ) {
-            val uri = data.data
+            val uri = data!!.data
 
             Log.i(TAG, "read import file: $uri")
 
