@@ -46,6 +46,8 @@ import java.io.File
 @RunWith(AndroidJUnit4::class)
 class BackupPrefsFragmentTest {
 
+    var storagePath = "`/storage/emulated/0`"
+
     @Test
     fun testExport() {
         val backupPrefsFragment = BackupPrefsFragment()
@@ -56,7 +58,7 @@ class BackupPrefsFragmentTest {
 
         val exportFile =
             File(
-                "/storage/emulated/0" +
+                storagePath +
                     File.separator +
                     "amaze_backup.json"
             )
@@ -100,7 +102,7 @@ class BackupPrefsFragmentTest {
 
         val file =
             File(
-                "/storage/emulated/0" +
+                storagePath +
                     File.separator +
                     "amaze_backup.json"
             )
@@ -153,7 +155,7 @@ class BackupPrefsFragmentTest {
 
         val exportFile =
             File(
-                "/storage/emulated/0" +
+                storagePath +
                     File.separator +
                     "amaze_backup.json"
             )
