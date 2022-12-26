@@ -47,6 +47,7 @@ import java.io.File
 class BackupPrefsFragmentTest {
 
     var storagePath = "`/storage/emulated/0`"
+    var fileName = "amaze_backup.json"
 
     @Test
     fun testExport() {
@@ -60,7 +61,7 @@ class BackupPrefsFragmentTest {
             File(
                 storagePath +
                     File.separator +
-                    "amaze_backup.json"
+                    fileName
             )
 
         exportFile.delete() // delete if already exists
@@ -77,7 +78,7 @@ class BackupPrefsFragmentTest {
             File(
                 ApplicationProvider.getApplicationContext<Context>().cacheDir.absolutePath +
                     File.separator +
-                    "amaze_backup.json"
+                    fileName
             )
 
         Assert.assertTrue(tempFile.exists())
@@ -104,7 +105,7 @@ class BackupPrefsFragmentTest {
             File(
                 storagePath +
                     File.separator +
-                    "amaze_backup.json"
+                    fileName
             )
 
         activityScenario.onActivity { preferencesActivity ->
@@ -157,7 +158,7 @@ class BackupPrefsFragmentTest {
             File(
                 storagePath +
                     File.separator +
-                    "amaze_backup.json"
+                    fileName
             )
 
         exportFile.delete() // delete if already exists
@@ -167,7 +168,7 @@ class BackupPrefsFragmentTest {
                 .add(backupPrefsFragment, null)
                 .commitNow()
 
-            javaClass.getResourceAsStream("/amaze_backup.json")?.copyTo(exportFile.outputStream())
+            javaClass.getResourceAsStream("/$fileName")?.copyTo(exportFile.outputStream())
 
             backupPrefsFragment.onActivityResult(
                 BackupPrefsFragment.IMPORT_BACKUP_FILE,
