@@ -594,7 +594,7 @@ public class LoadFilesListTask
       _file = new HybridFile(OpenMode.SMB, path);
     }
     if (!_file.getPath().endsWith("/")) {
-      _file.setPath(hFile.getPath() + "/");
+      _file.setPath(_file.getPath() + "/");
     }
     @NonNull List<LayoutElementParcelable> list;
     List<LayoutElementParcelable> smbCache = mainActivityViewModel.getFromListCache(path);
