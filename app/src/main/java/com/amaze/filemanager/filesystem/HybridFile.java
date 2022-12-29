@@ -533,6 +533,7 @@ public class HybridFile {
   }
 
   /** Helper method to get parent path */
+  @Nullable
   public String getParent(Context context) {
     switch (mode) {
       case SMB:
@@ -554,6 +555,9 @@ public class HybridFile {
           }
         }
         List<String> pathSegments = Uri.parse(thisPath).getPathSegments();
+
+        if (thisPath.isEmpty() || pathSegments.isEmpty()) return null;
+
         String currentName = pathSegments.get(pathSegments.size() - 1);
         String parent = thisPath.substring(0, thisPath.lastIndexOf(currentName));
         if (ArraysKt.any(ANDROID_DATA_DIRS, dir -> parent.endsWith(dir + "/"))) {
