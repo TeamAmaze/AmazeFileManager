@@ -264,7 +264,14 @@ public class LoadFilesListTask
 
     MainFragmentViewModel viewModel = mainFragment.getMainFragmentViewModel();
 
-    for (LayoutElementParcelable layoutElementParcelable : list) {
+    for (int i = 0; i < list.size(); i++) {
+      LayoutElementParcelable layoutElementParcelable = list.get(i);
+
+      if (layoutElementParcelable == null) {
+        list.remove(i);
+        continue;
+      }
+
       if (layoutElementParcelable.isDirectory) {
         viewModel.setFolderCount(mainFragment.getMainFragmentViewModel().getFolderCount() + 1);
       } else {
